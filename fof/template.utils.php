@@ -36,7 +36,15 @@ class FOFTemplateUtils
 		
 		switch($protocol) {
 			case 'media':
-				$url .= 'media/';
+				// Do we have a media override in the template?
+				$pathAndParams = explode('?', $path, 2);
+				$altPath = JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/media/'.$pathAndParams[0];
+				if(file_exists($altPath)) {
+					$url .= JFactory::getApplication()->isAdmin() ? 'administrator/' : '';
+					$url .= '/templates/'.JFactory::getApplication()->getTemplate().'/media/';
+				} else {
+					$url .= 'media/';
+				}
 				break;
 			
 			case 'admin':
