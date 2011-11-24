@@ -65,10 +65,12 @@ class FOFViewHtml extends FOFView
 		// Call the relevant method
 		$method_name = 'on'.ucfirst($task);
 		if(method_exists($this, $method_name)) {
-			$this->$method_name($tpl);
+			$result = $this->$method_name($tpl);
 		} else {
-			$this->onDisplay();
+			$result = $this->onDisplay();
 		}
+		
+		if($result === false) { return; }
 		
 		if(JFactory::getApplication()->isAdmin()) {
 			$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$this->input), $this->config);
@@ -84,7 +86,7 @@ class FOFViewHtml extends FOFView
 	{
 		// When in interactive browsing mode, save the state to the session
 		$this->getModel()->savestate(1);
-		$this->onDisplay($tpl);
+		return $this->onDisplay($tpl);
 	}
 
 	protected function onDisplay($tpl = null)
@@ -103,24 +105,27 @@ class FOFViewHtml extends FOFView
 		$this->assign   ( 'items',		$model->getItemList() );
 		$this->assignRef( 'pagination',	$model->getPagination());
 		$this->assignRef( 'lists',		$this->lists);
+		
+		return true;
 	}
 
 	protected function onAdd($tpl = null)
 	{
 		JRequest::setVar('hidemainmenu', true);
 		$model = $this->getModel();
-		$this->assignRef( 'item',		$model->getItem() );	
+		$this->assignRef( 'item',		$model->getItem() );
+		return true;
 	}
 
 	protected function onEdit($tpl = null)
 	{
 		// An editor is an editor, no matter if the record is new or old :p
-		$this->onAdd();
+		return $this->onAdd();
 	}
 	
 	protected function onRead($tpl = null)
 	{
 		// All I need is to read the record
-		$this->onAdd();
+		return $this->onAdd();
 	}
 }
