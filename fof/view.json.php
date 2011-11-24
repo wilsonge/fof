@@ -31,6 +31,7 @@ class FOFViewJson extends FOFViewHtml
 		$document->setMimeEncoding('application/json');
 
 		JError::setErrorHandling(E_ALL,'ignore');
+		if(is_null($tpl)) $tpl = 'json';
 		$result = $this->loadTemplate($tpl);
 		JError::setErrorHandling(E_WARNING,'callback');
 		
