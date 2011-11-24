@@ -20,6 +20,7 @@ jimport('joomla.application.component.view');
 class FOFViewCsv extends FOFViewHtml
 {
 	protected $csvHeader = true;
+	protected $csvFilename = null;
 	
 	function  __construct($config = array()) {
 		parent::__construct($config);
@@ -28,6 +29,18 @@ class FOFViewCsv extends FOFViewHtml
 			$this->csvHeader = $config['csv_header'];
 		} elseif(array_key_exists('csv_header', $this->input)) {
 			$this->csvHeader = FOFInput::getBool('csv_header',true,$this->input);
+		}
+		
+		if(array_key_exists('csv_filename', $config)) {
+			$this->csvFilename = $config['csv_filename'];
+		} elseif(array_key_exists('csv_filename', $this->input)) {
+			$this->csvFilename = FOFInput::getString('csv_filename','',$this->input);
+		}
+		
+		if(empty($this->csvFilename)) {
+			$view = FOFInput::getCmd('view','cpanel', $this->input);
+			$view = FOFInflector::pluralize($view);
+			$this->csvFilename = strtolower($view);
 		}
 	}
 	
@@ -41,8 +54,15 @@ class FOFViewCsv extends FOFViewHtml
 		
 		$document = JFactory::getDocument();
 		$document->setMimeEncoding('text/csv');
+		JResponse::setHeader('Pragma','public');
+		JResponse::setHeader('Expires','0');
+		JResponse::setHeader('Cache-Control','must-revalidate, post-check=0, pre-check=0');
+		JResponse::setHeader('Cache-Control','public', false);
+		JResponse::setHeader('Content-Description','File Transfer');
+		JResponse::setHeader('Content-Disposition','attachment; filename='.$this->csvFilename);
 
 		JError::setErrorHandling(E_ALL,'ignore');
+		if(is_null($tpl)) $tpl = 'csv';
 		$result = $this->loadTemplate($tpl);
 		JError::setErrorHandling(E_WARNING,'callback');
 		
