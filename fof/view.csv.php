@@ -91,7 +91,7 @@ class FOFViewCsv extends FOFViewHtml
 				}
 				echo implode(",", $csv) . "\r\n";
 			}
-			return;
+			return false;
 		}
 	}
 }
