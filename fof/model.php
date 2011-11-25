@@ -226,7 +226,7 @@ class FOFModel extends JModel
 	 * 
 	 * @return FOFModel
 	 */
-	public final function setId($id=0)
+	public function setId($id=0)
 	{
 		$this->reset();
 		$this->id = (int)$id;
@@ -238,7 +238,7 @@ class FOFModel extends JModel
 	 * Returns the currently set ID
 	 * @return int
 	 */
-	public final function getId()
+	public function getId()
 	{
 		return $this->id;
 	}
@@ -248,7 +248,7 @@ class FOFModel extends JModel
 	 * 
 	 * @return FOFModel
 	 */
-	public final function setIds($idlist)
+	public function setIds($idlist)
 	{
 		$this->reset();
 		$this->id_list = array();
@@ -267,7 +267,7 @@ class FOFModel extends JModel
 	 * Returns the list of IDs for batch operations
 	 * @return array An array of integers
 	 */
-	public final function getIds()
+	public function getIds()
 	{
 		return $this->id_list;
 	}
@@ -323,7 +323,7 @@ class FOFModel extends JModel
 	 * 
 	 * @return FOFTable A copy of the item's JTable array
 	 */
-	public final function &getItem($id = null)
+	public function &getItem($id = null)
 	{
 		if(!is_null($id)) {
 			$this->record = null;
@@ -364,7 +364,7 @@ class FOFModel extends JModel
 	 * Alias for getItemList
 	 * @return array
 	 */
-	public final function &getList($overrideLimits = false)
+	public function &getList($overrideLimits = false)
 	{
 		return $this->getItemList($overrideLimits);
 	}
@@ -374,7 +374,7 @@ class FOFModel extends JModel
 	 * @param bool $overrideLimits When true, the limits (pagination) will be ignored
 	 * @return array
 	 */
-	public final function &getItemList($overrideLimits = false)
+	public function &getItemList($overrideLimits = false)
 	{
 		if(empty($this->list)) {
 			$query = $this->buildQuery($overrideLimits);
@@ -399,7 +399,7 @@ class FOFModel extends JModel
 	 * @param bool $overrideLimits
 	 * @return FOFTable 
 	 */
-	public final function &getFirstItem($overrideLimits = false)
+	public function &getFirstItem($overrideLimits = false)
 	{
 		$table = $this->getTable($this->table);
 		
@@ -456,7 +456,7 @@ class FOFModel extends JModel
 	 * Returns the table object after the last save() operation
 	 * @return JTable
 	 */
-	public final function getSavedTable()
+	public function getSavedTable()
 	{
 		return $this->otable;
 	}
@@ -609,7 +609,7 @@ class FOFModel extends JModel
 	 * @return JPagination
 	 *
 	 */
-	public final function getPagination()
+	public function getPagination()
 	{
 		if( empty($this->pagination) )
 		{
@@ -634,7 +634,7 @@ class FOFModel extends JModel
 	 * @access public
 	 * @return integer
 	 */
-	public final function getTotal()
+	public function getTotal()
 	{
 		if( empty($this->total) )
 		{
@@ -699,7 +699,7 @@ class FOFModel extends JModel
 		}
 	}
 
-	public final function getHash()
+	public function getHash()
 	{
 		return FOFInput::getCmd('option', 'com_foobar', $this->input).'.'.str_replace('Model', '', $this->getName()).'.';
 	}
