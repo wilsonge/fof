@@ -120,6 +120,9 @@ class FOFToolbar
 	
 	public function renderToolbar($view = null, $task = null)
 	{
+		// If there is a render.toolbar=0 in the URL, do not render a toolbar
+		if(!FOFInput::getBool('render.toolbar',true,$this->input)) return;
+		
 		// Get the view and task
 		if(empty($view)) $view = FOFInput::getCmd('view','cpanel',$this->input);
 		if(empty($task)) $task = FOFInput::getCmd('task','default',$this->input);
