@@ -118,8 +118,13 @@ class FOFToolbar
 		}
 	}
 	
-	public function renderToolbar($view = null, $task = null)
+	public function renderToolbar($view = null, $task = null, $input = null)
 	{
+		if(!empty($input)) {
+			$saveInput = $this->input;
+			$this->input = $input;
+		}
+		
 		// If there is a render.toolbar=0 in the URL, do not render a toolbar
 		if(!FOFInput::getBool('render.toolbar',true,$this->input)) return;
 		
@@ -148,7 +153,11 @@ class FOFToolbar
 		$methodName = 'on'.ucfirst($task);
 		if(method_exists($this, $methodName)) {
 			return $this->$methodName();
-		}		
+		}
+		
+		if(!empty($input)) {
+			$this->input = $saveInput;
+		}
 	}
 	
 	/**
