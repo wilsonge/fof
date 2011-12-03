@@ -218,6 +218,8 @@ class FOFModel extends JModel
 				$this->setId($id);
 			}
 		}
+		
+		return $this;
 	}
 
 	/**
