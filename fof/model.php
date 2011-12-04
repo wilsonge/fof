@@ -65,7 +65,8 @@ class FOFModel extends JModel
 		if (!class_exists( $modelClass ))
 		{
 			$include_paths = JModel::addIncludePath();
-			if(JFactory::getApplication()->isAdmin()) {
+			$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
+			if($isAdmin) {
 				$extra_paths = array(
 					JPATH_ADMINISTRATOR.'/components/'.$component.'/models',
 					JPATH_SITE.'/components/'.$component.'/models'
@@ -168,9 +169,14 @@ class FOFModel extends JModel
 		}
 		
 		// Get and store the pagination request variables
-		$app = JFactory::getApplication();
-		$limit = $this->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
-		$limitstart = $this->getUserStateFromRequest(JRequest::getCmd('option','com_ars').$this->getName().'limitstart','limitstart',0);
+		if(!JFactory::$application) {
+			$limit = 20;
+			$limitstart = 0;
+		} else {
+			$app = JFactory::getApplication();
+			$limit = $this->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+			$limitstart = $this->getUserStateFromRequest(JRequest::getCmd('option','com_ars').$this->getName().'limitstart','limitstart',0);
+		}
 		$this->setState('limit',$limit);
 		$this->setState('limitstart',$limitstart);
 
@@ -718,6 +724,8 @@ class FOFModel extends JModel
 	 */
 	protected function getUserStateFromRequest( $key, $request, $default = null, $type = 'none' )
 	{
+		if(!JFactory::$application) return $default;
+		
 		$app = JFactory::getApplication();
 		$old_state = $app->getUserState( $key );
 		$cur_state = (!is_null($old_state)) ? $old_state : $default;

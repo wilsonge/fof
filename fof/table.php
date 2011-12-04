@@ -58,8 +58,8 @@ class FOFTable extends JTable
 		
 		if(!array_key_exists($tableClass, $instances)) {
 			if (!class_exists( $tableClass )) {
-				$app = JFactory::getApplication();
-				if($app->isSite()) {
+				$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
+				if(!$isAdmin) {
 					$basePath = JPATH_SITE;
 				} else {
 					$basePath = JPATH_ADMINISTRATOR;
