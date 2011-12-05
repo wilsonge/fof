@@ -175,7 +175,8 @@ class FOFController extends JController
 		}
 		
 		// Set the _basePath / basePath variable
-		$basePath = JFactory::getApplication()->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_ROOT;
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		$basePath = $isAdmin ? JPATH_ADMINISTRATOR : JPATH_ROOT;
 		$basePath .= '/components/'.$this->component;
 		if(array_key_exists('base_path', $config)) $basePath = $options['base_path'];
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
@@ -1075,7 +1076,8 @@ class FOFController extends JController
 	 */
 	protected function onBeforeBrowse()
 	{
-		if(JFactory::getApplication()->isAdmin()) {
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if($isAdmin) {
 			return $this->checkACL('core.manage');
 		} else {
 			return true;

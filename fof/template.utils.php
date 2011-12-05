@@ -40,7 +40,8 @@ class FOFTemplateUtils
 				$pathAndParams = explode('?', $path, 2);
 				$altPath = JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/media/'.$pathAndParams[0];
 				if(file_exists($altPath)) {
-					$url .= JFactory::getApplication()->isAdmin() ? 'administrator/' : '';
+					$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+					$url .= $isAdmin ? 'administrator/' : '';
 					$url .= '/templates/'.JFactory::getApplication()->getTemplate().'/media/';
 				} else {
 					$url .= 'media/';

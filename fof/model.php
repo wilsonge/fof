@@ -65,7 +65,8 @@ class FOFModel extends JModel
 		if (!class_exists( $modelClass ))
 		{
 			$include_paths = JModel::addIncludePath();
-			$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
+			
+			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
 			if($isAdmin) {
 				$extra_paths = array(
 					JPATH_ADMINISTRATOR.'/components/'.$component.'/models',
@@ -169,7 +170,8 @@ class FOFModel extends JModel
 		}
 		
 		// Get and store the pagination request variables
-		if(!JFactory::$application) {
+		$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? !JFactory::$application : false;
+		if($isCLI) {
 			$limit = 20;
 			$limitstart = 0;
 		} else {
@@ -724,7 +726,8 @@ class FOFModel extends JModel
 	 */
 	protected function getUserStateFromRequest( $key, $request, $default = null, $type = 'none' )
 	{
-		if(!JFactory::$application) return $default;
+		$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? !JFactory::$application : false;
+		if($isCLI) return $default;
 		
 		$app = JFactory::getApplication();
 		$old_state = $app->getUserState( $key );

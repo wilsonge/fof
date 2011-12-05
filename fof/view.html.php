@@ -72,7 +72,8 @@ class FOFViewHtml extends FOFView
 		
 		if($result === false) { return; }
 		
-		if(JFactory::getApplication()->isAdmin()) {
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if($isAdmin) {
 			$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$this->input), $this->config);
 			$toolbar->perms = $this->perms;
 			$toolbar->renderToolbar(FOFInput::getCmd('view','cpanel',$this->input), $task, $this->input);

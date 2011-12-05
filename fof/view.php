@@ -64,7 +64,8 @@ class FOFView extends JView
 		if (array_key_exists('base_path', $config)) {
 			$this->_basePath	= $config['base_path'];
 		} else {
-			$this->_basePath	= (JFactory::getApplication()->isAdmin() ? JPATH_ADMINISTRATOR : JPATH_COMPONENT).'/'.$config['option'];
+			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			$this->_basePath	= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_COMPONENT).'/'.$config['option'];
 		}
 		
 		// Set the default template search path

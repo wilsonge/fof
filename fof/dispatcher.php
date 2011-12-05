@@ -136,7 +136,8 @@ class FOFDispatcher extends JObject
 		}
 		
 		// Master access check for the back-end
-		if(version_compare(JVERSION, '1.6.0', 'ge') && JFactory::getApplication()->isAdmin()) {
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if($isAdmin) {
 			// Access check, Joomla! 1.6 style.
 			$user = JFactory::getUser();
 			if (
@@ -148,7 +149,7 @@ class FOFDispatcher extends JObject
 		}
 		
 		// Merge English and local translations
-		if(JFactory::getApplication()->isAdmin()) {
+		if($isAdmin) {
 			$paths = array(JPATH_ROOT, JPATH_ADMINISTRATOR);
 		} else {
 			$paths = array(JPATH_ADMINISTRATOR, JPATH_ROOT);
