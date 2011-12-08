@@ -137,7 +137,7 @@ class FOFDispatcher extends JObject
 		
 		// Master access check for the back-end
 		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
-		if($isAdmin) {
+		if($isAdmin && version_compare(JVERSION, '1.6.0', 'ge')) {
 			// Access check, Joomla! 1.6 style.
 			$user = JFactory::getUser();
 			if (
