@@ -51,7 +51,7 @@ class FOFDispatcher extends JObject
 			$input = JRequest::get('default', 3);
 		}
 		$config['option'] = !is_null($option) ? $option : FOFInput::getCmd('option','com_foobar',$input);
-		$config['view'] = !is_null($view) ? $view : FOFInput::getCmd('view','cpanel',$input);
+		$config['view'] = !is_null($view) ? $view : FOFInput::getCmd('view','',$input);
 		$input['option'] = $config['option'];
 		$input['view'] = $config['view'];
 		$config['input'] = $input;
@@ -90,7 +90,7 @@ class FOFDispatcher extends JObject
 			$className = 'FOFDispatcher';
 		}
 		$instance = new $className($config);
-
+		
 		return $instance;
 	}
 	
@@ -107,12 +107,13 @@ class FOFDispatcher extends JObject
 		
 		// Get the default values for the component and view names
 		$this->component = FOFInput::getCmd('option','com_foobar',$this->input);
-		$this->view = FOFInput::getCmd('view','cpanel',$this->input);
+		$this->view = FOFInput::getCmd('view',$this->defaultView,$this->input);
+		if(empty($this->view)) $this->view = $this->defaultView;
 		$this->layout = FOFInput::getCmd('layout',null,$this->input);
 		
 		// Overrides from the config
 		if(array_key_exists('option', $config)) $this->component = $config['option'];
-		if(array_key_exists('view', $config)) $this->view = $config['view'];
+		if(array_key_exists('view', $config)) $this->view = empty($config['view']) ? $this->view : $config['view'];
 		if(array_key_exists('layout', $config)) $this->layout = $config['layout'];
 		
 		FOFInput::setVar('option', $this->component, $this->input);
