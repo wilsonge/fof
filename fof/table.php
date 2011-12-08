@@ -536,7 +536,7 @@ class FOFTable extends JTable
 	{
 		// Do we have a "Created" set of fields?
 		if(property_exists($this, 'created_on') && property_exists($this, 'created_by') && $updateNulls) {
-			if(empty($this->created_by) || ($this->created_on == '0000-00-00 00:00:00') || empty($this->create_on)) {
+			if(empty($this->created_by) || ($this->created_on == '0000-00-00 00:00:00') || empty($this->created_on)) {
 				$this->created_by = JFactory::getUser()->id;
 				jimport('joomla.utilities.date');
 				$date = new JDate();
