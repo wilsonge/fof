@@ -418,7 +418,7 @@ class FOFTable extends JTable
 		if(!$this->onBeforeDelete($oid)) return false;
 		$result = parent::delete($oid);
 		if($result) {
-			$result = $this->onAfterDelete();
+			$result = $this->onAfterDelete($oid);
 		}
 		return $result;
 	}
@@ -428,7 +428,7 @@ class FOFTable extends JTable
 		if(!$this->onBeforeHit($oid, $log)) return false;
 		$result = parent::hit($oid, $log);
 		if($result) {
-			$result = $this->onAfterHit();
+			$result = $this->onAfterHit($oid);
 		}
 		return $result;
 	}
@@ -582,7 +582,7 @@ class FOFTable extends JTable
 		return true;
 	}
 	
-	protected function onAfterDelete()
+	protected function onAfterDelete($oid)
 	{
 		return true;
 	}
@@ -592,7 +592,7 @@ class FOFTable extends JTable
 		return true;
 	}
 	
-	protected function onAfterHit()
+	protected function onAfterHit($oid)
 	{
 		return true;
 	}
