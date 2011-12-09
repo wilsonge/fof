@@ -63,6 +63,10 @@ class FOFController extends JController
 		'core.edit'			=> 'Editor',
 		'core.edit.state'	=> 'Publisher'
 	);
+	
+	private $viewObject = null;
+	
+	private $modelObject = null;
 
 	/**
 	 * Gets a static (Singleton) instance of a controller class. It loads the
@@ -778,29 +782,23 @@ class FOFController extends JController
 	 */
 	public final function getThisModel($config = array())
 	{
-		static $object = null;
-		static $prefix = null;
-		static $modelName = null;
-
-		if(!is_object($object)) {
-			if(empty($modelName)) {
-				if(!empty($this->modelName)) {
-					$parts = FOFInflector::explode($this->modelName);
-					$modelName = ucfirst(array_pop($parts));
-					$prefix = FOFInflector::implode($parts);
-				} else {
-					$prefix = ucfirst($this->bareComponent).'Model';
-					$modelName = ucfirst(FOFInflector::pluralize($this->view));
-				}
+		if(!is_object($this->modelObject)) {
+			if(!empty($this->modelName)) {
+				$parts = FOFInflector::explode($this->modelName);
+				$modelName = ucfirst(array_pop($parts));
+				$prefix = FOFInflector::implode($parts);
+			} else {
+				$prefix = ucfirst($this->bareComponent).'Model';
+				$modelName = ucfirst(FOFInflector::pluralize($this->view));
 			}
 
-			$object = $this->getModel($modelName, $prefix, array_merge(array(
+			$this->modelObject = $this->getModel($modelName, $prefix, array_merge(array(
 					'input'	=> $this->input
 				), $config
 			));
 		}
 		
-		return $object;
+		return $this->modelObject;
 	}
 
 	/**
@@ -809,35 +807,36 @@ class FOFController extends JController
 	 */
 	public final function getThisView($config = array())
 	{
-		static $object = null;
-		static $prefix = null;
-		static $viewName = null;
-		static $viewType = null;
+		if(!is_object($this->viewObject)) {
+			$prefix = null;
+			$viewName = null;
+			$viewType = null;
 
-		if(!is_object($object)) {
-			if(empty($viewName)) {
-				if(!empty($this->viewName)) {
-					$parts = FOFInflector::explode($this->viewName);
-					$viewName = ucfirst(array_pop($parts));
-					$prefix = FOFInflector::implode($parts);
-				} else {
-					$prefix = ucfirst($this->bareComponent).'View';
-					$viewName = ucfirst($this->view);
-				}
+			if(!empty($this->viewName)) {
+				$parts = FOFInflector::explode($this->viewName);
+				$viewName = ucfirst(array_pop($parts));
+				$prefix = FOFInflector::implode($parts);
+			} else {
+				$prefix = ucfirst($this->bareComponent).'View';
+				$viewName = ucfirst($this->view);
 			}
 			
 			$document =& JFactory::getDocument();
 			$viewType	= $document->getType();
+			
+			if(!array_key_exists('input', $config)) {
+				$config['input'] = $this->input;
+			}
 
 			$basePath = ($this->jversion == '15') ? $this->_basePath : $this->basePath;
-			$object = $this->getView( $viewName, $viewType, $prefix, array_merge(array(
+			$this->viewObject = $this->getView( $viewName, $viewType, $prefix, array_merge(array(
 					'input'		=> $this->input,
 					'base_path'	=>$basePath
 				), $config)
 			);
 		}
 		
-		return $object;
+		return $this->viewObject;
 	}
 	
 	protected function createModel($name, $prefix = '', $config = array())
