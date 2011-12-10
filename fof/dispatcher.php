@@ -39,7 +39,7 @@ class FOFDispatcher extends JObject
 		if(!array_key_exists($hash, $instances)) {
 			$instances[$hash] = self::getTmpInstance($option, $view, $config);
 		}
-		
+
 		return $instances[$hash];
 	}
 	

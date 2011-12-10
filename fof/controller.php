@@ -422,9 +422,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$model = $this->getThisModel();
@@ -446,9 +444,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$this->applySave();
@@ -468,9 +464,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$this->applySave();
@@ -506,9 +500,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$this->setaccess(0);
@@ -518,9 +510,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$this->setaccess(1);
@@ -530,9 +520,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$this->setaccess(2);
@@ -542,9 +530,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$this->setstate(1);
@@ -554,9 +540,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$this->setstate(0);
@@ -566,9 +550,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$model = $this->getThisModel();
@@ -608,9 +590,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$model = $this->getThisModel();
@@ -635,9 +615,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$model = $this->getThisModel();
@@ -662,9 +640,7 @@ class FOFController extends JController
 	{
 		// CSRF prevention
 		if($this->csrfProtection) {
-			if(!FOFInput::getVar(JUtility::getToken(), false, $this->input)) {
-				JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? 'JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN' : 'Request Forbidden');
-			}
+			$this->_csrfProtection();
 		}
 		
 		$model = $this->getThisModel();
@@ -1181,5 +1157,20 @@ class FOFController extends JController
 	protected function onBeforeUnpublish()
 	{
 		return $this->checkACL('core.edit.state');
+	}
+	
+	/**
+	 * Applies CSRF protection by means of a standard Joomla! token (nonce) check.
+	 * Raises a 403 Access Forbidden error through JError if the check fails.
+	 */
+	protected function _csrfProtection()
+	{
+		$token = JUtility::getToken();
+		$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
+		if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+		
+		if(!$hasToken) {
+			JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN') : JText::_('Request Forbidden'));
+		}
 	}
 }
