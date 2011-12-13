@@ -123,6 +123,38 @@ class FOFController extends JController
 				require_once $path;
 			}
 		}
+		
+		if(!class_exists($className)) {
+			$classType = FOFInflector::singularize($config['view']);
+			$className = ucfirst(str_replace('com_', '', $config['option'])).'Controller'.ucfirst($classType);
+		}
+		
+		if (!class_exists( $className )) {
+			$app = JFactory::getApplication();
+			if($app->isSite()) {
+				$basePath = JPATH_SITE;
+			} else {
+				$basePath = JPATH_ADMINISTRATOR;
+			}
+
+			$searchPaths = array(
+				$basePath.'/components/'.$config['option'].'/controllers',
+				JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/controllers'
+			);
+			if(array_key_exists('searchpath', $config)) {
+				array_unshift($searchPaths, $config['searchpath']);
+			}
+
+			jimport('joomla.filesystem.path');
+			$path = JPath::find(
+				$searchPaths,
+				strtolower(FOFInflector::singularize($config['view'])).'.php'
+			);
+
+			if ($path) {
+				require_once $path;
+			}
+		}
 
 		if (!class_exists( $className )) {
 			$className = 'FOFController';
