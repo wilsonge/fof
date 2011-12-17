@@ -860,6 +860,13 @@ class FOFModel extends JModel
 			}
 		}
 		
+		if(!$overrideLimits) {
+			$order = $this->getState('filter_order',null,'cmd');
+			if(!in_array($order, array_keys($this->getTable()->getData()))) $order = $tableKey;
+			$dir = $this->getState('filter_order_Dir', 'ASC', 'cmd');
+			$query->order($db->nameQuote($order).' '.$dir);
+		}
+		
 		return $query;
 	}
 
