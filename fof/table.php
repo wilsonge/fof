@@ -553,13 +553,38 @@ class FOFTable extends JTable
 		return $cache[$this->_tbl];
 	}
 	
+	/**
+	 * NOTE TO 3RD PART DEVELOPERS:
+	 *
+	 * When you override the following methods in your child classes,
+	 * be sure to call parent::method *AFTER* your code, otherwise the 
+	 * plugin events do NOT get triggered
+	 *
+	 * Example:
+	 * protected function onAfterStore(){
+	 * 	   // Your code here
+	 *     return $your_result && parent::onAfterStore();	
+	 * }
+	 */
 	protected function onBeforeBind(&$from)
 	{
+		if($this->_trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforeBind'.ucfirst($name), array( &$this, &$from ) );
+		}
 		return true;
 	}
 	
 	protected function onAfterLoad(&$result)
 	{
+		if($this->_trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			$dispatcher->trigger( 'onAfterLoad'.ucfirst($name), array( &$this, &$result ) );
+		}
 	}
 	
 	protected function onBeforeStore($updateNulls)
@@ -577,6 +602,13 @@ class FOFTable extends JTable
 				$date = new JDate();
 				$this->modified_on = $date->toMySQL();
 			}
+		}
+
+		if($this->_trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforeStore'.ucfirst($name), array( &$this, $updateNulls ) );
 		}
 		
 		return true;
