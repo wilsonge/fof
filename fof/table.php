@@ -21,8 +21,12 @@ require_once(dirname(__FILE__).'/input.php');
  */
 class FOFTable extends JTable
 {
+	/**
+	 * If this is set to true, it triggers automatically plugin events for 
+	 * table actions
+	 */
 	protected $trigger_events = false;
-	
+
 	/**
 	 * Returns a static object instance of a particular table type
 	 * 
@@ -556,61 +560,133 @@ class FOFTable extends JTable
 	
 	protected function onAfterStore()
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onAfterStore'.ucfirst($name), array( &$this ) );
+		}
 		return true;
 	}
 	
 	protected function onBeforeMove($updateNulls)
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforeMove'.ucfirst($name), array( &$this, $updateNulls ) );
+		}
 		return true;
 	}
 	
 	protected function onAfterMove()
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onAfterMove'.ucfirst($name), array( &$this ) );
+		}
 		return true;
 	}
 	
 	protected function onBeforeReorder($where = '')
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforeReorder'.ucfirst($name), array( &$this, $where ) );
+		}
 		return true;
 	}
 	
 	protected function onAfterReorder()
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onAfterReorder'.ucfirst($name), array( &$this ) );
+		}
 		return true;
 	}
 	
 	protected function onBeforeDelete($oid)
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforeDelete'.ucfirst($name), array( &$this, $oid ) );
+		}
 		return true;
 	}
 	
 	protected function onAfterDelete($oid)
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onAfterDelete'.ucfirst($name), array( &$this, $oid ) );
+		}
 		return true;
 	}
 	
 	protected function onBeforeHit($oid, $log)
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforeHit'.ucfirst($name), array( &$this, $oid, $log ) );
+		}
 		return true;
 	}
 	
 	protected function onAfterHit($oid)
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onAfterHit'.ucfirst($name), array( &$this, $oid ) );
+		}
 		return true;
 	}
 	
 	protected function onBeforePublish(&$cid, $publish)
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforePublish'.ucfirst($name), array( &$this, &$cid, $publish ) );
+		}
 		return true;
 	}
 	
 	protected function onAfterReset()
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onAfterReset'.ucfirst($name), array( &$this ) );
+		}
 		return true;
 	}
 	
 	protected function onBeforeReset()
 	{
+		if($this->trigger_events){
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$dispatcher = JDispatcher::getInstance();
+			return $dispatcher->trigger( 'onBeforeReset'.ucfirst($name), array( &$this ) );
+		}
 		return true;
 	}
 }
