@@ -21,6 +21,8 @@ require_once(dirname(__FILE__).'/input.php');
  */
 class FOFTable extends JTable
 {
+	protected $trigger_events = false;
+	
 	/**
 	 * Returns a static object instance of a particular table type
 	 * 
