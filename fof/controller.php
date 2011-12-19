@@ -436,7 +436,6 @@ class FOFController extends JController
 			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 			$this->setRedirect($url, $model->getError(), 'error');
-			$this->redirect();
 			return;
 		}
 
@@ -466,7 +465,6 @@ class FOFController extends JController
 		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=edit&id='.$id;
 		$this->setRedirect($url, JText::_($textkey));
-		$this->redirect();
 	}
 
 	/**
@@ -486,7 +484,6 @@ class FOFController extends JController
 		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		$this->setRedirect($url, JText::_($textkey));
-		$this->redirect();
 	}
 
 	/**
@@ -506,7 +503,6 @@ class FOFController extends JController
 		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=add';
 		$this->setRedirect($url, JText::_($textkey));
-		$this->redirect();
 	}
 
 	/**
@@ -525,7 +521,6 @@ class FOFController extends JController
 		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		$this->setRedirect($url);
-		$this->redirect();
 	}
 
 	public function accesspublic()
@@ -614,7 +609,6 @@ class FOFController extends JController
 		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		$this->setRedirect($url);
-		$this->redirect();
 		return;
 	}
 
@@ -640,7 +634,6 @@ class FOFController extends JController
 		{
 			$this->setRedirect($url);
 		}
-		$this->redirect();
 	}
 
 	public function orderup()
@@ -665,7 +658,6 @@ class FOFController extends JController
 		{
 			$this->setRedirect($url);
 		}
-		$this->redirect();
 	}
 
 	public function remove()
@@ -690,7 +682,6 @@ class FOFController extends JController
 		{
 			$this->setRedirect($url);
 		}
-		$this->redirect();
 		return;
 	}
 
@@ -712,7 +703,6 @@ class FOFController extends JController
 		{
 			$this->setRedirect($url);
 		}
-		$this->redirect();
 		return;
 	}
 
@@ -748,7 +738,6 @@ class FOFController extends JController
 		{
 			$this->setRedirect($url);
 		}
-		$this->redirect();
 		return;
 	}
 
@@ -776,7 +765,6 @@ class FOFController extends JController
 			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=edit&id='.$id;
 			$this->setRedirect($url, '<li>'.implode('</li><li>',$model->getErrors()), 'error').'</li>';
-			$this->redirect();
 			return;
 		} else {
 			$session = JFactory::getSession();
