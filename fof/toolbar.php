@@ -103,6 +103,7 @@ class FOFToolbar
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			$user = JFactory::getUser();
 			$perms = (object)array(
+				'manage'	=> $user->authorise('core.manage', FOFInput::getCmd('option','com_foobar',$this->input) ),
 				'create'	=> $user->authorise('core.create', FOFInput::getCmd('option','com_foobar',$this->input) ),
 				'edit'		=> $user->authorise('core.edit', FOFInput::getCmd('option','com_foobar',$this->input)),
 				'editstate'	=> $user->authorise('core.edit.state', FOFInput::getCmd('option','com_foobar',$this->input)),
@@ -110,6 +111,7 @@ class FOFToolbar
 			);
 		} else {
 			$perms = (object)array(
+				'manage'	=> true,
 				'create'	=> true,
 				'edit'		=> true,
 				'editstate'	=> true,
