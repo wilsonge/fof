@@ -25,7 +25,7 @@ class FOFTable extends JTable
 	 * If this is set to true, it triggers automatically plugin events for 
 	 * table actions
 	 */
-	protected $trigger_events = false;
+	protected $_trigger_events = false;
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -107,6 +107,10 @@ class FOFTable extends JTable
 			}
 
 			$instance = new $tableClass($config['tbl'],$config['tbl_key'],$config['db']);
+			
+			if(array_key_exists('trigger_events', $config)) {
+				$instance->setTriggerEvents($config['trigger_events']);
+			}
 
 			$instances[$tableClass] = $instance;
 		}
@@ -143,6 +147,26 @@ class FOFTable extends JTable
 				$this->access = (int) JFactory::getConfig()->get('access');
 			}
 		}
+	}
+	
+	/**
+	 * Sets the events trigger switch state
+	 * 
+	 * @param bool $newState 
+	 */
+	public function setTriggerEvents($newState = false)
+	{
+		$this->_trigger_events = $newState ? true : false;
+	}
+	
+	/**
+	 * Gets the events trigger switch state
+	 * 
+	 * @return bool
+	 */
+	public function getTriggerEvents()
+	{
+		return $this->_trigger_events;
 	}
 	
 	/**
@@ -560,7 +584,7 @@ class FOFTable extends JTable
 	
 	protected function onAfterStore()
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -571,7 +595,7 @@ class FOFTable extends JTable
 	
 	protected function onBeforeMove($updateNulls)
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -582,7 +606,7 @@ class FOFTable extends JTable
 	
 	protected function onAfterMove()
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -593,7 +617,7 @@ class FOFTable extends JTable
 	
 	protected function onBeforeReorder($where = '')
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -604,7 +628,7 @@ class FOFTable extends JTable
 	
 	protected function onAfterReorder()
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -615,7 +639,7 @@ class FOFTable extends JTable
 	
 	protected function onBeforeDelete($oid)
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -626,7 +650,7 @@ class FOFTable extends JTable
 	
 	protected function onAfterDelete($oid)
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -637,7 +661,7 @@ class FOFTable extends JTable
 	
 	protected function onBeforeHit($oid, $log)
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -648,7 +672,7 @@ class FOFTable extends JTable
 	
 	protected function onAfterHit($oid)
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -659,7 +683,7 @@ class FOFTable extends JTable
 	
 	protected function onBeforePublish(&$cid, $publish)
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -670,7 +694,7 @@ class FOFTable extends JTable
 	
 	protected function onAfterReset()
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
@@ -681,7 +705,7 @@ class FOFTable extends JTable
 	
 	protected function onBeforeReset()
 	{
-		if($this->trigger_events){
+		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
