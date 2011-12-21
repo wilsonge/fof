@@ -38,7 +38,7 @@ class FOFViewJson extends FOFViewHtml
 		if($result instanceof JException) {
 			// Default JSON behaviour in case the template isn't there!
 			echo json_encode($items);
-			return;
+			return false;
 		}
 	}
 }
