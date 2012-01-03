@@ -711,7 +711,9 @@ class FOFModel extends JModel
 
 	public function getHash()
 	{
-		return FOFInput::getCmd('option', 'com_foobar', $this->input).'.'.str_replace('Model', '', $this->getName()).'.';
+		$option = FOFInput::getCmd('option', 'com_foobar', $this->input);
+		$view = FOFInflector::pluralize(FOFInput::getCmd('view','cpanel',$this->input));
+		return "$option.$view.";
 	}
 
 	/**
