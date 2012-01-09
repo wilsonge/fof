@@ -870,7 +870,6 @@ class FOFController extends JController
 	
 	function &_createView( $name, $prefix = '', $type = '', $config = array() )
 	{
-		$name = FOFInflector::pluralize($name);
 		$result = null;
 
 		// Clean the view name
@@ -947,6 +946,12 @@ class FOFController extends JController
 			}
 			if ($path) {
 				require_once $path;
+			}
+			
+			if(!class_exists($viewClass) && FOFInflector::isSingular($name)) {
+				$name = FOFInflector::pluralize($name);
+				$viewClass = $classPrefix . ucfirst($name);
+				$result = $this->_createView($name, $prefix, $type, $config);
 			}
 			
 			if(!class_exists($viewClass)) {
