@@ -457,14 +457,16 @@ class FOFController extends JController
 		}
 		
 		$model = $this->getThisModel();
-		$this->applySave();
+		$result = $this->applySave();
 
 		// Redirect to the edit task
-		$id = FOFInput::getInt('id', 0, $this->input);
-		$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
-		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=edit&id='.$id;
-		$this->setRedirect($url, JText::_($textkey));
+		if($result) {
+			$id = FOFInput::getInt('id', 0, $this->input);
+			$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
+			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=edit&id='.$id;
+			$this->setRedirect($url, JText::_($textkey));
+		}
 	}
 
 	/**
@@ -477,13 +479,15 @@ class FOFController extends JController
 			$this->_csrfProtection();
 		}
 		
-		$this->applySave();
+		$result = $this->applySave();
 
 		// Redirect to the display task
-		$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
-		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
-		$this->setRedirect($url, JText::_($textkey));
+		if($result) {
+			$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
+			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
+			$this->setRedirect($url, JText::_($textkey));
+		}
 	}
 
 	/**
@@ -496,13 +500,15 @@ class FOFController extends JController
 			$this->_csrfProtection();
 		}
 		
-		$this->applySave();
+		$result = $this->applySave();
 
 		// Redirect to the display task
-		$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
-		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=add';
-		$this->setRedirect($url, JText::_($textkey));
+		if($result) {
+			$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
+			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=add';
+			$this->setRedirect($url, JText::_($textkey));
+		}
 	}
 
 	/**
@@ -765,10 +771,11 @@ class FOFController extends JController
 			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=edit&id='.$id;
 			$this->setRedirect($url, '<li>'.implode('</li><li>',$model->getErrors()), 'error').'</li>';
-			return;
+			return false;
 		} else {
 			$session = JFactory::getSession();
 			$session->set($model->getHash().'savedata', null );
+			return true;
 		}
 	}
 
