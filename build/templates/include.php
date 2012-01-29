@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
 
 if(!defined('FOF_INCLUDED'))
 {
-	define('FOF_INCLUDED','1.0.b1');
+	define('FOF_INCLUDED','##VERSION##');
 	
 	function fofRegisterClasses()
 	{
