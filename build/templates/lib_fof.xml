@@ -12,7 +12,10 @@
 	<version>##VERSION##</version>
 	<packager>AkeebaBackup.com</packager>
 	<packagerurl>https://www.AkeebaBackup.com</packagerurl>
-	<updateservers>http://cdn.akeebabackup.com/updates/libraries/fof</updateservers>
+	<updateservers>
+		<server type="extension" priority="1" name="Akeeba Subscriptions Updates">http://cdn.akeebabackup.com/updates/libraries/fof</server>
+	</updateservers>
+	<scriptfile>script.fof.php</scriptfile>
 	<files folder="fof">
 		<file>LICENSE.TXT</file>
 		<file>index.html</file>
