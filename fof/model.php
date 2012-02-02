@@ -821,10 +821,10 @@ class FOFModel extends JModel
 
 		//Make sure we are returning a DBO object
 		if (!array_key_exists('dbo', $config))  {
-			$config['dbo'] =& $this->getDBO();;
+			$config['dbo'] = $this->getDBO();;
 		}
 
-		$instance =& FOFTable::getAnInstance($name, $prefix, $config );
+		$instance = FOFTable::getAnInstance($name, $prefix, $config );
 		return $instance;
 	}
 	

@@ -120,7 +120,7 @@ class FOFInput
 			return self::getVar($name, $default, $input, 'html');
 		} else {
 			$data = self::getVar($name, $default, $input, 'none');
-			$filter =& JFilterInput::getInstance();
+			$filter = JFilterInput::getInstance();
 			return $filter->_remove((string)$data);
 		}
 	}

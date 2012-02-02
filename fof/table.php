@@ -319,7 +319,7 @@ class FOFTable extends JTable
 			$this->$k = $oid;
 		}
 
-		$date =& JFactory::getDate();
+		$date = JFactory::getDate();
 		$time = $date->toMysql();
 		
 		$query = FOFQueryAbstract::getNew($this->_db)
@@ -382,7 +382,7 @@ class FOFTable extends JTable
 			return  false;
 		}
 
-		$session =& JTable::getInstance('session');
+		$session = JTable::getInstance('session');
 		return $session->exists($against);
 	}
 	

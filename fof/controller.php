@@ -233,7 +233,7 @@ class FOFController extends JController
 		// Set the ACL preferences
 		if( !version_compare( JVERSION, '1.6.0', 'ge' ) ) {
 			// Joomla! 1.5 ACL mapping
-			$acl =& JFactory::getACL();
+			$acl = JFactory::getACL();
 			foreach($this->aclMapJoomla15 as $area => $mingroup) {
 				$mingroup = strtolower($mingroup);
 				$groups = array();
@@ -316,7 +316,7 @@ class FOFController extends JController
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		$document =& JFactory::getDocument();
+		$document = JFactory::getDocument();
 		$viewType	= $document->getType();
 
 		$view = $this->getThisView();
@@ -360,7 +360,7 @@ class FOFController extends JController
 			}
 		} else {
 			if (JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed') {
-				$cache =& JFactory::getCache($this->component, 'view');
+				$cache = JFactory::getCache($this->component, 'view');
 				$cache->get($view, 'display');
 			} else {
 				$view->display();
@@ -824,7 +824,7 @@ class FOFController extends JController
 				$viewName = ucfirst($this->view);
 			}
 			
-			$document =& JFactory::getDocument();
+			$document = JFactory::getDocument();
 			$viewType	= $document->getType();
 			
 			if(!array_key_exists('input', $config)) {
@@ -866,7 +866,7 @@ class FOFController extends JController
 		$modelName	 = preg_replace( '/[^A-Z0-9_]/i', '', $name );
 		$classPrefix = preg_replace( '/[^A-Z0-9_]/i', '', $prefix );
 
-		$result =& FOFModel::getAnInstance($modelName, $classPrefix, $config);
+		$result = FOFModel::getAnInstance($modelName, $classPrefix, $config);
 		return $result;
 	}
 	
