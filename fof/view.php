@@ -83,7 +83,7 @@ class FOFView extends JView
 		} else {
 			$this->_setPath('helper', $this->_basePath . '/helpers');
 		}
-		
+
 		$this->config = $config;
 	}
 	
@@ -186,5 +186,41 @@ class FOFView extends JView
 		}
 		
 		return $parts;
+	}
+	
+	/**
+	 * This little bugger is reponsible for setting up the default template
+	 * paths during the class instanciation. The default implementation in
+	 * Joomla! adds the fallback path based on the currently loaded component.
+	 * Our implementation adds the fallback path based on the view's component,
+	 * which allows it to be compatible with HMVC.
+	 * 
+	 * @param string $type
+	 * @param string $path 
+	 */
+	protected function _setPath($type, $path)
+	{
+		$component = strtolower(FOFInput::getCmd('option','com_foobar',$this->input));
+		$app = JFactory::getApplication();
+
+		// Clear out the prior search dirs
+		$this->_path[$type] = array();
+
+		// Actually add the user-specified directories
+		$this->_addPath($type, $path);
+
+		// Always add the fallback directories as last resort
+		switch (strtolower($type))
+		{
+			case 'template':
+				// Set the alternative template search dir
+				if (isset($app))
+				{
+					$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $component);
+					$fallback = JPATH_THEMES . '/' . $app->getTemplate() . '/html/' . $component . '/' . $this->getName();
+					$this->_addPath('template', $fallback);
+				}
+				break;
+		}
 	}
 }
