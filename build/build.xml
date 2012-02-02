@@ -78,6 +78,16 @@
 			</filterchain>
 		</copy>
 		
+		<!-- Generate version.txt file -->
+		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		
 		<!-- Generate main include file -->
 		<copy file="./templates/include.php" tofile="${dirs.library}/include.php" overwrite="true">
 			<filterchain>
