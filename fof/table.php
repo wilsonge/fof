@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).'/input.php');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFTable extends JTable
+abstract class FOFTable_COMMONBASE extends JTable
 {
 	/**
 	 * If this is set to true, it triggers automatically plugin events for 
@@ -266,13 +266,6 @@ class FOFTable extends JTable
 	{
 		if(!$this->onBeforeBind($from)) return false;
 		return parent::bind($from, $ignore);
-	}
-	
-	public function load( $oid=null )
-	{
-		$result = parent::load($oid);
-		$this->onAfterLoad($result);
-		return $result;
 	}
 	
 	public function store( $updateNulls=false )
@@ -744,5 +737,27 @@ class FOFTable extends JTable
 			return $dispatcher->trigger( 'onBeforeReset'.ucfirst($name), array( &$this ) );
 		}
 		return true;
+	}
+}
+
+if(version_compare(JVERSION, '1.6.0', 'ge')) {
+	class FOFTable extends FOFTable_COMMONBASE
+	{
+		public function load( $keys=null, $reset=true )
+		{
+			$result = parent::load($keys, $reset);
+			$this->onAfterLoad($result);
+			return $result;
+		}
+	}
+} else {
+	class FOFTable extends FOFTable_COMMONBASE
+	{
+		public function load( $oid=null )
+		{
+			$result = parent::load($oid);
+			$this->onAfterLoad($result);
+			return $result;
+		}
 	}
 }
