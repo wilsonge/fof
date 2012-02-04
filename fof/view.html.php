@@ -104,7 +104,7 @@ class FOFViewHtml extends FOFView
 
 		// Assign data to the view
 		$this->assign   ( 'items',		$model->getItemList() );
-		$this->assignRef( 'pagination',	$model->getPagination());
+		$this->assign   ( 'pagination',	$model->getPagination());
 		$this->assignRef( 'lists',		$this->lists);
 		
 		return true;
@@ -114,7 +114,7 @@ class FOFViewHtml extends FOFView
 	{
 		JRequest::setVar('hidemainmenu', true);
 		$model = $this->getModel();
-		$this->assignRef( 'item',		$model->getItem() );
+		$this->assign( 'item',		$model->getItem() );
 		return true;
 	}
 
