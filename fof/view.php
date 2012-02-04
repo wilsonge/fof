@@ -17,7 +17,7 @@ jimport('joomla.application.component.view');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFView extends JView
+abstract class FOFView_COMMONBASE extends JView
 {
 	protected $config = array();
 	
@@ -198,7 +198,7 @@ class FOFView extends JView
 	 * @param string $type
 	 * @param string $path 
 	 */
-	protected function _setPath($type, $path)
+	protected function _setPath_FOF($type, $path)
 	{
 		$component = strtolower(FOFInput::getCmd('option','com_foobar',$this->input));
 		$app = JFactory::getApplication();
@@ -221,6 +221,24 @@ class FOFView extends JView
 					$this->_addPath('template', $fallback);
 				}
 				break;
+		}
+	}
+}
+
+if(version_compare(JVERSION, '1.6.0', 'ge')) {
+	class FOFView extends FOFView_COMMONBASE
+	{
+		protected function _setPath($type, $path)
+		{
+			return $this->_setPath_FOF($type, $path);
+		}
+	}
+} else {
+	class FOFView extends FOFView_COMMONBASE
+	{
+		public function _setPath($type, $path)
+		{
+			return $this->_setPath_FOF($type, $path);
 		}
 	}
 }
