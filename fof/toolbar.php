@@ -118,6 +118,9 @@ class FOFToolbar
 				'delete'	=> true,
 			);
 		}
+
+		// Store permissions in the local toolbar object
+		$this->perms = $perms;
 	}
 	
 	public function renderToolbar($view = null, $task = null, $input = null)

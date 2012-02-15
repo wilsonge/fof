@@ -761,6 +761,11 @@ class FOFController extends JController
 		if($status && ($id != 0)) {
 			// Try to check-in the record if it's not a new one
 			$status = $model->checkin();
+
+			if($status)
+			{
+				$status = $this->onAfterApplySave();
+			}
 		}
 		
 		FOFInput::setVar('id', $model->getId(), $this->input);
@@ -1024,6 +1029,11 @@ class FOFController extends JController
 	protected function onBeforeApplySave(&$data)
 	{
 		return $data;
+	}
+
+	protected function onAfterApplySave()
+	{
+		return true;
 	}
 	
 	/**
