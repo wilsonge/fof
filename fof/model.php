@@ -176,7 +176,12 @@ class FOFModel extends JModel
 			$limitstart = 0;
 		} else {
 			$app = JFactory::getApplication();
-			$limit = $this->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'));
+			if(method_exists($app, 'getCfg')) {
+				$default_limit = $app->getCfg('list_limit');
+			} else {
+				$default_limit = 20;
+			}
+			$limit = $this->getUserStateFromRequest('global.list.limit', 'limit', $default_limit);
 			$limitstart = $this->getUserStateFromRequest(JRequest::getCmd('option','com_ars').$this->getName().'limitstart','limitstart',0);
 		}
 		$this->setState('limit',$limit);
@@ -732,7 +737,11 @@ class FOFModel extends JModel
 		if($isCLI) return $default;
 		
 		$app = JFactory::getApplication();
-		$old_state = $app->getUserState( $key );
+		if(method_exists($app, 'getUserState')) {
+			$old_state = $app->getUserState( $key );
+		} else {
+			$old_state = null;
+		}
 		$cur_state = (!is_null($old_state)) ? $old_state : $default;
 		$new_state = FOFInput::getVar($request, null, $this->input, $type);
 
