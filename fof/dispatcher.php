@@ -1,7 +1,7 @@
 <?php
 /**
  *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2011 Nicholas K. Dionysopoulos
+ *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
  *  @license GNU General Public License version 3, or later
  */
 
@@ -155,7 +155,7 @@ class FOFDispatcher extends JObject
 		} else {
 			$paths = array(JPATH_ADMINISTRATOR, JPATH_ROOT);
 		}
-		$jlang =& JFactory::getLanguage();
+		$jlang = JFactory::getLanguage();
 		$jlang->load($this->component, $paths[0], 'en-GB', true);
 		$jlang->load($this->component, $paths[0], null, true);
 		$jlang->load($this->component, $paths[1], 'en-GB', true);

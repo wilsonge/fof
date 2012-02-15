@@ -1,7 +1,7 @@
 <?php
 /**
  *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2011 Nicholas K. Dionysopoulos
+ *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
  *  @license GNU General Public License version 3, or later
  */
 
@@ -17,7 +17,7 @@ jimport('joomla.application.component.view');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFView extends JView
+abstract class FOFView_COMMONBASE extends JView
 {
 	protected $config = array();
 	
@@ -83,7 +83,7 @@ class FOFView extends JView
 		} else {
 			$this->_setPath('helper', $this->_basePath . '/helpers');
 		}
-		
+
 		$this->config = $config;
 	}
 	
@@ -186,5 +186,59 @@ class FOFView extends JView
 		}
 		
 		return $parts;
+	}
+	
+	/**
+	 * This little bugger is reponsible for setting up the default template
+	 * paths during the class instanciation. The default implementation in
+	 * Joomla! adds the fallback path based on the currently loaded component.
+	 * Our implementation adds the fallback path based on the view's component,
+	 * which allows it to be compatible with HMVC.
+	 * 
+	 * @param string $type
+	 * @param string $path 
+	 */
+	protected function _setPath_FOF($type, $path)
+	{
+		$component = strtolower(FOFInput::getCmd('option','com_foobar',$this->input));
+		$app = JFactory::getApplication();
+
+		// Clear out the prior search dirs
+		$this->_path[$type] = array();
+
+		// Actually add the user-specified directories
+		$this->_addPath($type, $path);
+
+		// Always add the fallback directories as last resort
+		switch (strtolower($type))
+		{
+			case 'template':
+				// Set the alternative template search dir
+				if (isset($app))
+				{
+					$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $component);
+					$fallback = JPATH_THEMES . '/' . $app->getTemplate() . '/html/' . $component . '/' . $this->getName();
+					$this->_addPath('template', $fallback);
+				}
+				break;
+		}
+	}
+}
+
+if(version_compare(JVERSION, '1.6.0', 'ge')) {
+	class FOFView extends FOFView_COMMONBASE
+	{
+		protected function _setPath($type, $path)
+		{
+			return $this->_setPath_FOF($type, $path);
+		}
+	}
+} else {
+	class FOFView extends FOFView_COMMONBASE
+	{
+		public function _setPath($type, $path)
+		{
+			return $this->_setPath_FOF($type, $path);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2011 Nicholas K. Dionysopoulos
+ *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
  *  @license GNU General Public License version 3, or later
  */
 
@@ -711,7 +711,9 @@ class FOFModel extends JModel
 
 	public function getHash()
 	{
-		return FOFInput::getCmd('option', 'com_foobar', $this->input).'.'.str_replace('Model', '', $this->getName()).'.';
+		$option = FOFInput::getCmd('option', 'com_foobar', $this->input);
+		$view = FOFInflector::pluralize(FOFInput::getCmd('view','cpanel',$this->input));
+		return "$option.$view.";
 	}
 
 	/**
@@ -819,10 +821,10 @@ class FOFModel extends JModel
 
 		//Make sure we are returning a DBO object
 		if (!array_key_exists('dbo', $config))  {
-			$config['dbo'] =& $this->getDBO();;
+			$config['dbo'] = $this->getDBO();;
 		}
 
-		$instance =& FOFTable::getAnInstance($name, $prefix, $config );
+		$instance = FOFTable::getAnInstance($name, $prefix, $config );
 		return $instance;
 	}
 	

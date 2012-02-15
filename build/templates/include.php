@@ -1,7 +1,7 @@
 <?php
 /**
  *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2011 Nicholas K. Dionysopoulos
+ *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
  *  @license GNU General Public License version 3, or later
  */
 
@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
 
 if(!defined('FOF_INCLUDED'))
 {
-	define('FOF_INCLUDED','1.0.b1');
+	define('FOF_INCLUDED','##VERSION##');
 	
 	function fofRegisterClasses()
 	{

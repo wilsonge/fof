@@ -1,7 +1,7 @@
 <?php
 /**
  *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2011 Nicholas K. Dionysopoulos
+ *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
  *  @license GNU General Public License version 3, or later
  */
 
@@ -19,7 +19,7 @@ require_once(dirname(__FILE__).'/input.php');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFTable extends JTable
+abstract class FOFTable_COMMONBASE extends JTable
 {
 	/**
 	 * If this is set to true, it triggers automatically plugin events for 
@@ -268,13 +268,6 @@ class FOFTable extends JTable
 		return parent::bind($from, $ignore);
 	}
 	
-	public function load( $oid=null )
-	{
-		$result = parent::load($oid);
-		$this->onAfterLoad($result);
-		return $result;
-	}
-	
 	public function store( $updateNulls=false )
 	{
 		if(!$this->onBeforeStore($updateNulls)) return false;
@@ -319,7 +312,7 @@ class FOFTable extends JTable
 			$this->$k = $oid;
 		}
 
-		$date =& JFactory::getDate();
+		$date = JFactory::getDate();
 		$time = $date->toMysql();
 		
 		$query = FOFQueryAbstract::getNew($this->_db)
@@ -382,7 +375,7 @@ class FOFTable extends JTable
 			return  false;
 		}
 
-		$session =& JTable::getInstance('session');
+		$session = JTable::getInstance('session');
 		return $session->exists($against);
 	}
 	
@@ -744,5 +737,27 @@ class FOFTable extends JTable
 			return $dispatcher->trigger( 'onBeforeReset'.ucfirst($name), array( &$this ) );
 		}
 		return true;
+	}
+}
+
+if(version_compare(JVERSION, '1.6.0', 'ge')) {
+	class FOFTable extends FOFTable_COMMONBASE
+	{
+		public function load( $keys=null, $reset=true )
+		{
+			$result = parent::load($keys, $reset);
+			$this->onAfterLoad($result);
+			return $result;
+		}
+	}
+} else {
+	class FOFTable extends FOFTable_COMMONBASE
+	{
+		public function load( $oid=null )
+		{
+			$result = parent::load($oid);
+			$this->onAfterLoad($result);
+			return $result;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2011 Nicholas K. Dionysopoulos
+ *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
  *  @license GNU General Public License version 3, or later
  */
 
@@ -38,7 +38,7 @@ class FOFViewJson extends FOFViewHtml
 		if($result instanceof JException) {
 			// Default JSON behaviour in case the template isn't there!
 			echo json_encode($items);
-			return;
+			return false;
 		}
 	}
 }

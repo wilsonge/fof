@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="FrameworkOnFramework" description="Framework-on-Framework for Joomla!" default="all" >
+	<property file="./build.properties" />
+	
+	<!-- Default properties, set only if not already assigned in the build.properties file -->
+	<property name="dirs.root" value=".." />
+	<property name="dirs.library" value="../fof" />
+	<property name="dirs.plugins" value="../plugins" />
+	<property name="dirs.release" value="../release" />
+	<property name="version" value="dev" />
+
+	<property name="dirs.bin" value="bin" />
+	<property name="dirs.bin.libxml" value="${dirs.bin}/libxml" />
+	<property name="dirs.bin.fop" value="${dirs.bin}/fop" />
+	<property name="dirs.bin.dbxsl" value="${dirs.bin}/dbxsl" />
+	<property name="dirs.bin.release" value="../release" />
+	<property name="dirs.documentation" value="../documentation" />
+
+	<taskdef name="zipme" classname="phingext.ZipmeTask" />
+	<taskdef name="gitversion" classname="phingext.GitVersionTask" />
+		
+	<!--
+	====================================================================================================
+	Tasks - General
+	====================================================================================================
+	-->
+	
+	<target name="all" description="Makes everything"
+		depends="dev-release">
+	</target>
+	
+	<target name="git" description="Makes only the library package"
+		depends="new-release,setup-properties,library-package">
+	</target>
+	
+	<target name="dev-release" description="Makes only packages, not the documentation"
+		depends="git">
+	</target>
+
+	<target name="new-release" description="Create the release directory afresh">
+		<!-- Recreate the release directory -->
+		<delete dir="${dirs.release}" quiet="yes" includeemptydirs="false" />
+		<mkdir dir="${dirs.release}" />
+	</target>
+	
+	<target name="setup-properties" description="Set up version and build properties">
+		<!-- Initialize the build.date timestamp -->
+		<tstamp>
+			<format property="build.date" pattern="%Y-%m-%d" />
+		</tstamp>
+
+		<!-- Initialize the version if it's not set -->
+		<if>
+			<equals arg1="${version}" arg2="dev" />
+			<then>
+				<gitversion workingcopy="${dirs.root}" propertyname="git.lastrevision" />
+				<property name="version" value="rev${git.lastrevision}" override="true" />
+			</then>
+		</if>
+	</target>
+	
+	<!--
+	====================================================================================================
+	Tasks - Joomla! packages
+	====================================================================================================
+	-->
+	
+	<target name="library-package" description="FOF Installation Package for Joomla! 1.6+"
+		depends="new-release,setup-properties">
+		
+		<!-- Generate XML file -->
+		<copy file="./templates/lib_fof.xml" tofile="${dirs.root}/lib_fof.xml" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		
+		<!-- Generate version.txt file -->
+		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		
+		<!-- Generate main include file -->
+		<copy file="./templates/include.php" tofile="${dirs.library}/include.php" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		
+		<!-- Create the package -->
+		<zipme basedir="${dirs.library}" prefix="fof/" destfile="${dirs.release}/lib_fof-${version}.zip" includeemptydirs="true">
+			<fileset dir="${dirs.library}" id="library">
+				<include name="**" />
+			</fileset>
+		</zipme>
+		<zipme basedir="${dirs.root}" destfile="${dirs.release}/lib_fof-${version}.zip" includeemptydirs="true">
+			<fileset dir="${dirs.root}">
+				<include name="lib_fof.xml" />
+			</fileset>
+		</zipme>
+		
+		<!-- Clean up -->
+		<delete>
+			<fileset dir="${dirs.root}">
+				<include name="lib_fof.xml" />
+			</fileset>
+		</delete>
+	</target>
+	
+</project>

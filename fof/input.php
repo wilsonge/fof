@@ -1,7 +1,7 @@
 <?php
 /**
  *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2011 Nicholas K. Dionysopoulos
+ *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
  *  @license GNU General Public License version 3, or later
  */
 
@@ -120,7 +120,7 @@ class FOFInput
 			return self::getVar($name, $default, $input, 'html');
 		} else {
 			$data = self::getVar($name, $default, $input, 'none');
-			$filter =& JFilterInput::getInstance();
+			$filter = JFilterInput::getInstance();
 			return $filter->_remove((string)$data);
 		}
 	}
