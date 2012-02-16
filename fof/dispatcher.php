@@ -176,6 +176,12 @@ class FOFDispatcher extends JObject
 		if(empty($task)) {
 			$task = $this->getTask($view);
 		}
+		// Pluralise/sungularise the view name for typical tasks
+		if(in_array($task,array('edit', 'add', 'read'))) {
+			$view = FOFInflector::singularize($view);
+		} elseif(in_array($task,array('browse'))) {
+			$view = FOFInflector::pluralize($view);
+		}
 		FOFInput::setVar('view',$view,$this->input);
 		FOFInput::setVar('task',$task,$this->input);
 		
