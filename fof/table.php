@@ -64,7 +64,12 @@ abstract class FOFTable_COMMONBASE extends JTable
 		
 		if(!array_key_exists($tableClass, $instances)) {
 			if (!class_exists( $tableClass )) {
-				$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+				if($isCLI) {
+					$isAdmin = false;
+				} else {
+					$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+				}
 				if(!$isAdmin) {
 					$basePath = JPATH_SITE;
 				} else {

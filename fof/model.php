@@ -66,7 +66,12 @@ class FOFModel extends JModel
 		{
 			$include_paths = JModel::addIncludePath();
 			
-			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+			if($isCLI) {
+				$isAdmin = false;
+			} else {
+				$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			}
 			if($isAdmin) {
 				$extra_paths = array(
 					JPATH_ADMINISTRATOR.'/components/'.$component.'/models',
@@ -170,7 +175,7 @@ class FOFModel extends JModel
 		}
 		
 		// Get and store the pagination request variables
-		$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? !JFactory::$application : false;
+		$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
 		if($isCLI) {
 			$limit = 20;
 			$limitstart = 0;
@@ -733,7 +738,7 @@ class FOFModel extends JModel
 	 */
 	protected function getUserStateFromRequest( $key, $request, $default = null, $type = 'none' )
 	{
-		$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? !JFactory::$application : false;
+		$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
 		if($isCLI) return $default;
 		
 		$app = JFactory::getApplication();
