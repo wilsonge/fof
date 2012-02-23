@@ -74,6 +74,8 @@ abstract class FOFView_COMMONBASE extends JView
 			$this->_setPath('template', $config['template_path']);
 		} else {
 			$this->_setPath('template', $this->_basePath . '/views/' . $this->getName() . '/tmpl');
+			$altView = FOFInflector::isSingular($this->getName()) ? FOFInflector::pluralize($this->getName()) : FOFInflector::singularize($this->getName());
+			$this->_addPath('template', $this->_basePath . '/views/' . $altView . '/tmpl');
 		}
 		
 		// Set the default helper search path
