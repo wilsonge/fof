@@ -22,6 +22,7 @@ if(!defined('FOF_INCLUDED'))
 	
 	function fofRegisterClasses()
 	{
+		jimport('joomla.filesystem.folder');
 		$fofPath = dirname(__FILE__);
 		$fofFiles = JFolder::files($fofPath, '\.php$');
 		foreach($fofFiles as $file) {
