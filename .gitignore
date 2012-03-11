@@ -3,3 +3,6 @@ nbproject/
 fof/include.php
 fof/version.txt
 release/*.zip
+.buildpath
+.settings/
+.project

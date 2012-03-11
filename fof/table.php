@@ -14,7 +14,7 @@ require_once(dirname(__FILE__).'/input.php');
 
 /**
  * FrameworkOnFramework table class
- * 
+ *
  * FrameworkOnFramework is a set of classes which extend Joomla! 1.5 and later's
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
@@ -22,14 +22,21 @@ require_once(dirname(__FILE__).'/input.php');
 abstract class FOFTable_COMMONBASE extends JTable
 {
 	/**
-	 * If this is set to true, it triggers automatically plugin events for 
+	 * If this is set to true, it triggers automatically plugin events for
 	 * table actions
 	 */
 	protected $_trigger_events = false;
 
 	/**
+	 * Array with alias for "special" columns such as ordering, hits etc etc
+	 *
+	 * @var    array
+	 */
+	protected $columnAlias = array();
+
+	/**
 	 * Returns a static object instance of a particular table type
-	 * 
+	 *
 	 * @param string $type The table name
 	 * @param string $prefix The prefix of the table class
 	 * @param array $config Optional configuration variables
@@ -38,13 +45,13 @@ abstract class FOFTable_COMMONBASE extends JTable
 	public static function &getAnInstance($type = null, $prefix = 'JTable', $config = array())
 	{
 		static $instances = array();
-		
+
 		// Guess the component name
 		if(array_key_exists('input', $config)) {
 			$option = FOFInput::getCmd('option','',$config['input']);
 			FOFInput::setVar('option',$option,$config['input']);
 		}
-		
+
 		if(!in_array($prefix,array('Table','JTable'))) {
 			preg_match('/(.*)Table$/', $prefix, $m);
 			$option = 'com_'.strtolower($m[1]);
@@ -52,16 +59,16 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		if(array_key_exists('option', $config)) $option = $config['option'];
 		$config['option'] = $option;
-		
+
 		if(!array_key_exists('view', $config)) $config['view'] = JRequest::getCmd('view','cpanel');
 		if(is_null($type)) {
 			if($prefix == 'JTable') $prefix = 'Table';
 			$type = $config['view'];
 		}
-		
+
 		$type = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
 		$tableClass = $prefix.ucfirst($type);
-		
+
 		if(!array_key_exists($tableClass, $instances)) {
 			if (!class_exists( $tableClass )) {
 				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
@@ -75,7 +82,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				} else {
 					$basePath = JPATH_ADMINISTRATOR;
 				}
-				
+
 				$searchPaths = array(
 					$basePath.'/components/'.$config['option'].'/tables',
 					JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/tables'
@@ -83,22 +90,22 @@ abstract class FOFTable_COMMONBASE extends JTable
 				if(array_key_exists('tablepath', $config)) {
 					array_unshift($searchPaths, $config['tablepath']);
 				}
-				
+
 				jimport('joomla.filesystem.path');
 				$path = JPath::find(
 					$searchPaths,
 					strtolower($type).'.php'
 				);
-				
+
 				if ($path) {
 					require_once $path;
 				}
 			}
-			
+
 			if (!class_exists( $tableClass )) {
 				$tableClass = 'FOFTable';
 			}
-			
+
 			$tbl_common = str_replace('com_', '', $config['option']).'_';
 			if(!array_key_exists('tbl', $config)) {
 				$config['tbl'] = strtolower('#__'.$tbl_common.strtolower(FOFInflector::pluralize($type)));
@@ -112,23 +119,23 @@ abstract class FOFTable_COMMONBASE extends JTable
 			}
 
 			$instance = new $tableClass($config['tbl'],$config['tbl_key'],$config['db']);
-			
+
 			if(array_key_exists('trigger_events', $config)) {
 				$instance->setTriggerEvents($config['trigger_events']);
 			}
 
 			$instances[$tableClass] = $instance;
 		}
-		
+
 		return $instances[$tableClass];
 	}
-	
+
 	function __construct( $table, $key, &$db )
 	{
 		$this->_tbl		= $table;
 		$this->_tbl_key	= $key;
 		$this->_db		= &$db;
-		
+
 		// Initialise the table properties.
 		if ($fields = $this->getTableFields()) {
 			foreach ($fields as $name => $v)
@@ -139,7 +146,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				}
 			}
 		}
-		
+
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			// If we are tracking assets, make sure an access field exists and initially set the default.
 			if (property_exists($this, 'asset_id')) {
@@ -153,27 +160,27 @@ abstract class FOFTable_COMMONBASE extends JTable
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets the events trigger switch state
-	 * 
-	 * @param bool $newState 
+	 *
+	 * @param bool $newState
 	 */
 	public function setTriggerEvents($newState = false)
 	{
 		$this->_trigger_events = $newState ? true : false;
 	}
-	
+
 	/**
 	 * Gets the events trigger switch state
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function getTriggerEvents()
 	{
 		return $this->_trigger_events;
 	}
-	
+
 	/**
 	 * Method to reset class properties to the defaults set in the class
 	 * definition. It will ignore the primary key as well as any private class
@@ -193,7 +200,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		if(!$this->onAfterReset()) return false;
 	}
-	
+
 	/**
 	 * Generic check for whether dependancies exist for this object in the db schema
 	 */
@@ -217,7 +224,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				$query->select(array(
 					'COUNT(DISTINCT '.$db->nameQuote('t'.$tableNo).'.'.$db->nameQuote($table['idfield']).') AS '.$db->nameQuote($table['idalias'])
 				));
-				$query->join('LEFT', 
+				$query->join('LEFT',
 						$db->nameQuote($table['name']).
 						' AS '.$db->nameQuote('t'.$tableNo).
 						' ON '.$db->nameQuote('t'.$tableNo).'.'.$db->nameQuote($table['joinfield']).
@@ -252,7 +259,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				$comName = str_replace('com_','',$option);
 				$tview = str_replace('#__'.$comName.'_', '', $this->_tbl);
 				$prefix = $option.'_'.$tview.'_NODELETE_';
-				
+
 				foreach($msg as $key) {
 					$this->setError(JText::_($prefix.$key));
 				}
@@ -266,13 +273,13 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		return true;
 	}
-	
+
 	public function bind( $from, $ignore=array() )
 	{
 		if(!$this->onBeforeBind($from)) return false;
 		return parent::bind($from, $ignore);
 	}
-	
+
 	public function store( $updateNulls=false )
 	{
 		if(!$this->onBeforeStore($updateNulls)) return false;
@@ -282,7 +289,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return $result;
 	}
-	
+
 	public function move( $dirn, $where='' )
 	{
 		if(!$this->onBeforeMove($dirn, $where)) return false;
@@ -292,7 +299,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return $result;
 	}
-	
+
 	public function reorder( $where='' )
 	{
 		if(!$this->onBeforeReorder($where)) return false;
@@ -302,7 +309,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return $result;
 	}
-	
+
 	public function checkout( $who, $oid = null )
 	{
 		if (!(
@@ -319,7 +326,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		$date = JFactory::getDate();
 		$time = $date->toMysql();
-		
+
 		$query = FOFQueryAbstract::getNew($this->_db)
 				->update($this->_db->nameQuote( $this->_tbl ))
 				->set(array(
@@ -334,7 +341,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		return $this->_db->query();
 	}
-	
+
 	function checkin( $oid=null )
 	{
 		if (!(
@@ -368,7 +375,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		return $this->_db->query();
 	}
-	
+
 	function isCheckedOut( $with = 0, $against = null)
 	{
 		if(isset($this) && is_a($this, 'JTable') && is_null($against)) {
@@ -383,7 +390,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		$session = JTable::getInstance('session');
 		return $session->exists($against);
 	}
-	
+
 	function publish( $cid=null, $publish=1, $user_id=0 )
 	{
 		JArrayHelper::toInteger( $cid );
@@ -400,27 +407,30 @@ abstract class FOFTable_COMMONBASE extends JTable
 				return false;
 			}
 		}
-		
+
 		if(!$this->onBeforePublish($cid, $publish)) return false;
-		
+
+		$enabledName	= $this->getColumnAlias('enabled');
+		$locked_byName	= $this->getColumnAlias('locked_by');
+
 		$query = FOFQueryAbstract::getNew($this->_db)
 				->update($this->_db->nameQuote($this->_tbl))
-				->set($this->_db->nameQuote('enabled').' = '.(int) $publish);
+				->set($this->_db->nameQuote($enabledName).' = '.(int) $publish);
 
-		$checkin = in_array( 'locked_by', array_keys($this->getProperties()) );
+		$checkin = in_array( $locked_byName, array_keys($this->getProperties()) );
 		if ($checkin)
 		{
 			$query->where(
-				' ('.$this->_db->nameQuote('locked_by').
-				' = 0 OR '.$this->_db->nameQuote('locked_by').' = '.(int) $user_id.')',
+				' ('.$this->_db->nameQuote($locked_byName).
+				' = 0 OR '.$this->_db->nameQuote($locked_byName).' = '.(int) $user_id.')',
 				'AND'
 			);
 		}
-		
+
 		$cids = $this->_db->nameQuote($k).' = ' .
 				implode(' OR '.$this->_db->nameQuote($k).' = ',$cid);
 		$query->where('('.$cids.')');
-		
+
 		$this->_db->setQuery( (string)$query );
 		if (!$this->_db->query())
 		{
@@ -440,7 +450,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		$this->setError('');
 		return true;
 	}
-	
+
 	public function delete( $oid=null )
 	{
 		if(!$this->onBeforeDelete($oid)) return false;
@@ -450,7 +460,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return $result;
 	}
-	
+
 	public function hit( $oid=null, $log=false )
 	{
 		if(!$this->onBeforeHit($oid, $log)) return false;
@@ -460,7 +470,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * Export item list to CSV
 	 */
@@ -484,7 +494,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		return $csv;
 	}
-	
+
 	/**
 	 * Exports the table in array format
 	 */
@@ -503,7 +513,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		return $ret;
 	}
-	
+
 	/**
 	 * Get the header for exporting item list to CSV
 	 */
@@ -527,7 +537,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		return $csv;
 	}
-	
+
 	/**
 	 * Get the columns from database table.
 	 *
@@ -550,18 +560,59 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		return $cache[$this->_tbl];
 	}
-	
+
+	/**
+	* Method to return the real name of a "special" column such as ordering, hits, published
+	* etc etc. In this way you are free to follow your db naming convention and use the
+	* built in Joomla functions.
+	*
+	* @param   string  $column  Name of the "special" column (ie ordering, hits etc etc)
+	*
+	* @return  string  The string that identify the special
+	*/
+	protected function getColumnAlias($column)
+	{
+		if (isset($this->columnAlias[$column]))
+		{
+			$return = $this->columnAlias[$column];
+		}
+		else
+		{
+			$return = $column;
+		}
+		$return = preg_replace('#[^A-Z0-9_]#i', '', $return);
+
+		return $return;
+	}
+
+	/**
+	* Method to register a column alias for a "special" column.
+	*
+	* @param   string  $column       The "special" column (ie ordering)
+	* @param   string  $columnAlias  The real column name (ie foo_ordering)
+	*
+	* @return  void
+	*
+	*/
+	protected function setColumnAlias($column, $columnAlias)
+	{
+		$column = strtolower($column);
+
+		$column = preg_replace('#[^A-Z0-9_]#i', '', $column);
+		$this->columnAlias[$column] = $columnAlias;
+	}
+
 	/**
 	 * NOTE TO 3RD PART DEVELOPERS:
 	 *
 	 * When you override the following methods in your child classes,
-	 * be sure to call parent::method *AFTER* your code, otherwise the 
+	 * be sure to call parent::method *AFTER* your code, otherwise the
 	 * plugin events do NOT get triggered
 	 *
 	 * Example:
 	 * protected function onAfterStore(){
 	 * 	   // Your code here
-	 *     return $your_result && parent::onAfterStore();	
+	 *     return $your_result && parent::onAfterStore();
 	 * }
 	 */
 	protected function onBeforeBind(&$from)
@@ -574,7 +625,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onAfterLoad(&$result)
 	{
 		if($this->_trigger_events){
@@ -584,7 +635,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$dispatcher->trigger( 'onAfterLoad'.ucfirst($name), array( &$this, &$result ) );
 		}
 	}
-	
+
 	protected function onBeforeStore($updateNulls)
 	{
 		// Do we have a "Created" set of fields?
@@ -608,10 +659,10 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$dispatcher = JDispatcher::getInstance();
 			return $dispatcher->trigger( 'onBeforeStore'.ucfirst($name), array( &$this, $updateNulls ) );
 		}
-		
+
 		return true;
 	}
-	
+
 	protected function onAfterStore()
 	{
 		if($this->_trigger_events){
@@ -622,7 +673,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onBeforeMove($updateNulls)
 	{
 		if($this->_trigger_events){
@@ -633,7 +684,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onAfterMove()
 	{
 		if($this->_trigger_events){
@@ -644,7 +695,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onBeforeReorder($where = '')
 	{
 		if($this->_trigger_events){
@@ -655,7 +706,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onAfterReorder()
 	{
 		if($this->_trigger_events){
@@ -666,7 +717,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onBeforeDelete($oid)
 	{
 		if($this->_trigger_events){
@@ -677,7 +728,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onAfterDelete($oid)
 	{
 		if($this->_trigger_events){
@@ -688,7 +739,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onBeforeHit($oid, $log)
 	{
 		if($this->_trigger_events){
@@ -699,7 +750,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onAfterHit($oid)
 	{
 		if($this->_trigger_events){
@@ -710,7 +761,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onBeforePublish(&$cid, $publish)
 	{
 		if($this->_trigger_events){
@@ -721,7 +772,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onAfterReset()
 	{
 		if($this->_trigger_events){
@@ -732,7 +783,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 		return true;
 	}
-	
+
 	protected function onBeforeReset()
 	{
 		if($this->_trigger_events){
