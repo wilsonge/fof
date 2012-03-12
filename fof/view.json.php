@@ -41,4 +41,26 @@ class FOFViewJson extends FOFViewHtml
 			return false;
 		}
 	}
+	
+	protected function onRead($tpl = null)
+	{
+		$model = $this->getModel();
+
+		$item = $model->getItem();
+		$this->assign('item', $item );
+
+		$document = JFactory::getDocument();
+		$document->setMimeEncoding('application/json');
+
+		JError::setErrorHandling(E_ALL,'ignore');
+		if(is_null($tpl)) $tpl = 'json';
+		$result = $this->loadTemplate($tpl);
+		JError::setErrorHandling(E_WARNING,'callback');
+
+		if($result instanceof JException) {
+			// Default JSON behaviour in case the template isn't there!
+			echo json_encode($item);
+			return false;
+		}
+	}
 }
