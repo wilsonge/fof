@@ -64,7 +64,7 @@ class FOFTemplateUtils
 	
 	public static function loadPosition($position, $style = -2)
 	{
-		$document	= &JFactory::getDocument();
+		$document	= JFactory::getDocument();
 		$renderer	= $document->loadRenderer('module');
 		$params		= array('style'=>$style);
 		
