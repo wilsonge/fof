@@ -384,9 +384,9 @@ class FOFModel extends JModel
 	 * Alias for getItemList
 	 * @return array
 	 */
-	public function &getList($overrideLimits = false)
+	public function &getList($overrideLimits = false, $group = '')
 	{
-		return $this->getItemList($overrideLimits);
+		return $this->getItemList($overrideLimits, $group);
 	}
 	
 	/**
@@ -394,16 +394,16 @@ class FOFModel extends JModel
 	 * @param bool $overrideLimits When true, the limits (pagination) will be ignored
 	 * @return array
 	 */
-	public function &getItemList($overrideLimits = false)
+	public function &getItemList($overrideLimits = false, $group = '')
 	{
 		if(empty($this->list)) {
 			$query = $this->buildQuery($overrideLimits);
 			if(!$overrideLimits) {
 				$limitstart = $this->getState('limitstart');
 				$limit = $this->getState('limit');
-				$this->list = $this->_getList((string)$query, $limitstart, $limit);
+				$this->list = $this->_getList((string)$query, $limitstart, $limit, $group);
 			} else {
-				$this->list = $this->_getList((string)$query);
+				$this->list = $this->_getList((string)$query, 0, 0, $group);
 			}
 		}
 
@@ -413,7 +413,7 @@ class FOFModel extends JModel
 	/**
 	 * A cross-breed between getItem and getItemList. It runs the complete query,
 	 * like getItemList does. However, instead of returning an array of ad-hoc
-	 * pbjects, it binds the data from the first item fetched on the list to an
+	 * objects, it binds the data from the first item fetched on the list to an
 	 * instance of the table object and returns that table object instead.
 	 * 
 	 * @param bool $overrideLimits
@@ -770,10 +770,10 @@ class FOFModel extends JModel
 	 * @access	protected
 	 * @since	1.5
 	 */
-	function &_getList( $query, $limitstart=0, $limit=0 )
+	function &_getList( $query, $limitstart=0, $limit=0, $group = '' )
 	{
 		$this->_db->setQuery( $query, $limitstart, $limit );
-		$result = $this->_db->loadObjectList();
+		$result = $this->_db->loadObjectList($group);
 
 		$this->onProcessList($result);
 		
