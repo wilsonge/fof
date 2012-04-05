@@ -677,6 +677,14 @@ class FOFController extends JController
 		if(!$model->getId()) $model->setIDsFromRequest();
 		$status = $model->delete();
 
+		//check if i'm deleting using an AJAX call, in this case there is no need to redirect
+		$format = FOFInput::getString('format','', $this->input);
+		if($format == 'json')
+		{
+			echo json_encode($status);
+			return;
+		}
+
 		// redirect
 		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
