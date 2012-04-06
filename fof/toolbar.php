@@ -101,6 +101,7 @@ class FOFToolbar
 		
 		// Get default permissions (can be overriden by the view)
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
+			$isAdmin = JFactory::getApplication()->isAdmin();
 			$user = JFactory::getUser();
 			$perms = (object)array(
 				'manage'	=> $user->authorise('core.manage', FOFInput::getCmd('option','com_foobar',$this->input) ),
@@ -110,6 +111,7 @@ class FOFToolbar
 				'delete'	=> $user->authorise('core.delete', FOFInput::getCmd('option','com_foobar',$this->input)),
 			);
 		} else {
+			$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
 			$perms = (object)array(
 				'manage'	=> true,
 				'create'	=> true,
@@ -119,6 +121,13 @@ class FOFToolbar
 			);
 		}
 
+		//if not in the administrative area, load the JToolbarHelper
+		if(!$isAdmin)
+		{
+			//pretty ugly require...
+			require_once(JPATH_ROOT.'/administrator/includes/toolbar.php');
+		}
+		
 		// Store permissions in the local toolbar object
 		$this->perms = $perms;
 	}
@@ -170,6 +179,10 @@ class FOFToolbar
 	 */
 	public function onCpanelsBrowse()
 	{
+		//on frontend, buttons must be added specifically
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if(!$isAdmin) return;
+		
 		JToolBarHelper::title(JText::_( FOFInput::getCmd('option','com_foobar',$this->input)), str_replace('com_', '', FOFInput::getCmd('option','com_foobar',$this->input)));
 		JToolBarHelper::preferences(FOFInput::getCmd('option','com_foobar',$this->input), 550, 875);
 		$this->renderSubmenu();
@@ -180,6 +193,10 @@ class FOFToolbar
 	 */
 	public function onBrowse()
 	{
+		//on frontend, buttons must be added specifically
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if(!$isAdmin) return;
+
 		// Set toolbar title
 		$subtitle_key = FOFInput::getCmd('option','com_foobar',$this->input).'_TITLE_'.strtoupper(FOFInput::getCmd('view','cpanel',$this->input));
 		JToolBarHelper::title(JText::_( FOFInput::getCmd('option','com_foobar',$this->input)).' &ndash; <small>'.JText::_($subtitle_key).'</small>', str_replace('com_', '', FOFInput::getCmd('option','com_foobar',$this->input)));
@@ -208,6 +225,10 @@ class FOFToolbar
 	 */
 	public function onRead()
 	{
+		//on frontend, buttons must be added specifically
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if(!$isAdmin) return;
+		
 		$option = FOFInput::getCmd('option','com_foobar',$this->input);
 		$componentName = str_replace('com_', '', $option);
 		
@@ -222,6 +243,10 @@ class FOFToolbar
 	
 	public function onAdd()
 	{
+		//on frontend, buttons must be added specifically
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if(!$isAdmin) return;
+
 		$option = FOFInput::getCmd('option','com_foobar',$this->input);
 		$componentName = str_replace('com_', '', $option);
 		
@@ -243,6 +268,10 @@ class FOFToolbar
 	
 	public function onEdit()
 	{
+		//on frontend, buttons must be added specifically
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if(!$isAdmin) return;
+
 		$this->onAdd();
 	}
 	
