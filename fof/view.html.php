@@ -77,6 +77,7 @@ class FOFViewHtml extends FOFView
 		$toolbar->renderToolbar(FOFInput::getCmd('view','cpanel',$this->input), $task, $this->input);
 
 		//if i'm not the admin and i have some buttons or a title to show, let's render them before the layout
+		//Framework will only create the HTML structure, 3rd part developers will have to add CSS to correctly style it
 		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
 		if(!$isAdmin) 
 		{
