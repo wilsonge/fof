@@ -6,3 +6,4 @@ release/*.zip
 .buildpath
 .settings/
 .project
+/fof/lib_fof.xml

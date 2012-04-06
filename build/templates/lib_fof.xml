@@ -18,6 +18,7 @@
 	<scriptfile>script.fof.php</scriptfile>
 	<files folder="fof">
 		<file>LICENSE.TXT</file>
+		<file>version.txt</file>
 		<file>index.html</file>
 		<file>controller.php</file>
 		<file>dispatcher.php</file>
