@@ -101,7 +101,7 @@ class FOFToolbar
 		
 		// Get default permissions (can be overriden by the view)
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$isAdmin = JFactory::getApplication()->isAdmin();
+			$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
 			$user = JFactory::getUser();
 			$perms = (object)array(
 				'manage'	=> $user->authorise('core.manage', FOFInput::getCmd('option','com_foobar',$this->input) ),
@@ -111,7 +111,7 @@ class FOFToolbar
 				'delete'	=> $user->authorise('core.delete', FOFInput::getCmd('option','com_foobar',$this->input)),
 			);
 		} else {
-			$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
+			$isAdmin = JFactory::getApplication()->isAdmin();
 			$perms = (object)array(
 				'manage'	=> true,
 				'create'	=> true,
