@@ -1215,9 +1215,22 @@ class FOFController extends JController
 	 */
 	protected function _csrfProtection()
 	{
-		$token = JUtility::getToken();
-		$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
-		if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+		$hasToken = false;
+		// Joomla! 1.5/1.6/1.7/2.5 (classic Joomla! API) method
+		if(method_exists('JUtility', 'getToekn')) {
+			$token = JUtility::getToken();
+			$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
+			if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+		}
+		// Joomla! 2.5+ (Platform 12.1+) method
+		if(!$hasToken) {
+			$session = JFactory::getSession();
+			if(method_exists($session, 'getToken')) {
+				$token = JFactory::getSession()->getToken();
+				$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
+				if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+			}
+		}
 		
 		if(!$hasToken) {
 			JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN') : JText::_('Request Forbidden'));
