@@ -19,9 +19,20 @@ jimport('joomla.application.component.view');
  */
 class FOFViewHtml extends FOFView
 {
+	/** @var array Data lists */
 	protected $lists = null;
+	
+	/** @var array Permissions map */
 	protected $perms = null;
+	
+	/** @var bool Set to true to render a toolbar in the front-end */
+	protected $frontendToolbar = false;
 
+	/**
+	 * Class constructor
+	 * 
+	 * @param array $config Configuration parameters
+	 */
 	function  __construct($config = array()) {
 		parent::__construct($config);
 		
@@ -54,8 +65,19 @@ class FOFViewHtml extends FOFView
 		}
 		$this->assign('aclperms', $perms);
 		$this->perms = $perms;
+		
+		if(array_key_exists('frontendToolbar', $this->config)) {
+			$this->frontendToolbar = $this->config['frontendToolbar'];
+		}
 	}
 
+	/**
+	 * Displays the view
+	 * 
+	 * @param string $tpl The template to use
+	 * 
+	 * @return bool
+	 */
 	function  display($tpl = null)
 	{
 		// Get the task set in the model
@@ -79,7 +101,7 @@ class FOFViewHtml extends FOFView
 		//if i'm not the admin and i have some buttons or a title to show, let's render them before the layout
 		//Framework will only create the HTML structure, 3rd part developers will have to add CSS to correctly style it
 		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
-		if(!$isAdmin) 
+		if(!$isAdmin && $this->frontendToolbar) 
 		{
 			$title = JFactory::getApplication()->get('JComponentTitle');
 			$bar = JToolBar::getInstance('toolbar');
