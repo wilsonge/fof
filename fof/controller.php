@@ -1217,7 +1217,7 @@ class FOFController extends JController
 	{
 		$hasToken = false;
 		// Joomla! 1.5/1.6/1.7/2.5 (classic Joomla! API) method
-		if(method_exists('JUtility', 'getToekn')) {
+		if(method_exists('JUtility', 'getToken')) {
 			$token = JUtility::getToken();
 			$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
 			if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
