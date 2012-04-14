@@ -129,7 +129,7 @@ abstract class FOFQueryAbstract
 		
 		// -- Some sites use a mysqlcached or some other funky mysql driver
 		$type = strtolower($db->name);
-		if(strpos($type, 'mysql') && !in_array($type, array('mysql','mysqli'))) $type = 'mysql';
+		if(strpos($type, 'mysql') !== false && !in_array($type, array('mysql','mysqli'))) $type = 'mysql';
 		
 		if(!array_key_exists($type, $classNames)) {
 			$cname = 'FOFQuery'.ucfirst($type);
