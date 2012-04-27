@@ -871,8 +871,23 @@ class FOFModel extends JModel
 		foreach($fields as $fieldname => $fieldtype) {
 			$filterName = ($fieldname == $tableKey) ? 'id' : $fieldname;
 			$filterState = $this->getState($filterName, null);
-			if(!empty($filterState)) {
-				$query->where('('.$db->nameQuote($fieldname).'='.$db->Quote($filterState).')');
+			if(!empty($filterState) || ($filterState === '0')) {
+				switch($fieldname) {
+					case 'title':
+					case 'description':
+						$query->where('('.$db->nameQuote($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
+						break;
+					
+					case 'enabled':
+						if($filterState !== '') {
+							$query->where($db->nameQuote($fieldname).' = '.$db->Quote((int)$filterState));
+						}
+						break;
+					
+					default:
+						$query->where('('.$db->nameQuote($fieldname).'='.$db->Quote($filterState).')');
+						break;
+				}
 			}
 		}
 		
