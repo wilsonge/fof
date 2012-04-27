@@ -873,12 +873,12 @@ class FOFModel extends JModel
 			$filterState = $this->getState($filterName, null);
 			if(!empty($filterState) || ($filterState === '0')) {
 				switch($fieldname) {
-					case 'title':
-					case 'description':
+					case $table->getColumnAlias('title'):
+					case $table->getColumnAlias('description'):
 						$query->where('('.$db->nameQuote($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
 						break;
 					
-					case 'enabled':
+					case $table->getColumnAlias('enabled'):
 						if($filterState !== '') {
 							$query->where($db->nameQuote($fieldname).' = '.$db->Quote((int)$filterState));
 						}

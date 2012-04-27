@@ -570,7 +570,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	*
 	* @return  string  The string that identify the special
 	*/
-	protected function getColumnAlias($column)
+	public function getColumnAlias($column)
 	{
 		if (isset($this->columnAlias[$column]))
 		{
@@ -594,7 +594,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	* @return  void
 	*
 	*/
-	protected function setColumnAlias($column, $columnAlias)
+	public function setColumnAlias($column, $columnAlias)
 	{
 		$column = strtolower($column);
 
