@@ -141,8 +141,6 @@ class FOFViewHtml extends FOFView
 
 	protected function onDisplay($tpl = null)
 	{
-		$params = JFactory::getApplication()->getParams();
-		
 		$view = FOFInput::getCmd('view','cpanel',$this->input);
 		if(in_array($view,array('cpanel','cpanels'))) return;
 
@@ -157,7 +155,14 @@ class FOFViewHtml extends FOFView
 		$this->assign   ( 'items',		$model->getItemList() );
 		$this->assign   ( 'pagination',	$model->getPagination());
 		$this->assignRef( 'lists',		$this->lists);
-		$this->assignRef( 'params',		$params);
+
+		//pass page params on frontend only
+		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		if(!$isAdmin)
+		{
+			$params = JFactory::getApplication()->getParams();
+			$this->assignRef('params', $params);
+		}
 
 		return true;
 	}
