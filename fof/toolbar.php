@@ -208,7 +208,7 @@ class FOFToolbar
 			JToolBarHelper::divider();
 		}
 		if($this->perms->delete) {
-			$msg = JText::_(FOFInput::getCmd('option','com_foobar',$this->input.'_CONFIRM_DELETE'));
+			$msg = JText::_(FOFInput::getCmd('option','com_foobar',$this->input).'_CONFIRM_DELETE');
 			JToolBarHelper::deleteList($msg);
 		}
 		if($this->perms->edit) {
