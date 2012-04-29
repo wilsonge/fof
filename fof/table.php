@@ -639,7 +639,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	protected function onBeforeStore($updateNulls)
 	{
 		// Do we have a "Created" set of fields?
-		if(property_exists($this, 'created_on') && property_exists($this, 'created_by') && $updateNulls) {
+		if(property_exists($this, 'created_on') && property_exists($this, 'created_by')) {
 			if(empty($this->created_by) || ($this->created_on == '0000-00-00 00:00:00') || empty($this->created_on)) {
 				$this->created_by = JFactory::getUser()->id;
 				jimport('joomla.utilities.date');
@@ -652,7 +652,44 @@ abstract class FOFTable_COMMONBASE extends JTable
 				$this->modified_on = $date->toMySQL();
 			}
 		}
+		
+		// Do we have a set of title and slug fields?
+		if(property_exists($this, 'title') && property_exists($this, 'slug')) {
+			if(empty($this->slug)) {
+				// Create a slug from the title
+				$this->slug = FOFStringUtils::toSlug($this->title);
+			} else {
+				// Filter the slug for invalid characters
+				$this->slug = FOFStringUtils::toSlug($this->slug);
+			}
+			
+			// Make sure we don't have a duplicate slug on this table
+			$db = $this->getDbo();
+			$query = FOFQueryAbstract::getNew($db)
+				->select($db->nameQuote('slug'))
+				->from($this->_tbl)
+				->where($db->nameQuote('slug').' = '.$db->quote($this->slug))
+				->where($db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}), 'AND NOT');
+			$db->setQuery($query);
+			$existingItems = $db->loadAssocList();
+			
+			$count = 0;
+			$newSlug = $this->slug;
+			while(!empty($existingItems)) {
+				$count++;
+				$newSlug = $this->slug .'-'. $count;
+				$query = FOFQueryAbstract::getNew($db)
+					->select($db->nameQuote('slug'))
+					->from($this->_tbl)
+					->where($db->nameQuote('slug').' = '.$db->quote($newSlug))
+					->where($db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}), 'AND NOT');
+				$db->setQuery($query);
+				$existingItems = $db->loadAssocList();
+			}
+			$this->slug = $newSlug;
+		}
 
+		// Execute onBeforeStore<tablename> events in loaded plugins
 		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 
