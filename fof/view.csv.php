@@ -59,7 +59,7 @@ class FOFViewCsv extends FOFViewHtml
 		JResponse::setHeader('Cache-Control','must-revalidate, post-check=0, pre-check=0');
 		JResponse::setHeader('Cache-Control','public', false);
 		JResponse::setHeader('Content-Description','File Transfer');
-		JResponse::setHeader('Content-Disposition','attachment; filename='.$this->csvFilename);
+		JResponse::setHeader('Content-Disposition','attachment; filename="'.$this->csvFilename.'"');
 
 		JError::setErrorHandling(E_ALL,'ignore');
 		if(is_null($tpl)) $tpl = 'csv';
