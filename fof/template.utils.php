@@ -74,4 +74,74 @@ class FOFTemplateUtils
 		}
 		return $contents;
 	}
+	
+	public static function route($route = '')
+    {
+        $route = trim($route);
+
+        // Special cases
+        if ($route == 'index.php' || $route == 'index.php?')
+        {
+            $result = $route;
+        }
+        else if (substr($route, 0, 1) == '&')
+        {
+            $url = JURI::getInstance();
+            $vars = array();
+            parse_str($route, $vars);
+
+            $url->setQuery(array_merge($url->getQuery(true), $vars));
+
+            $result = 'index.php?' . $url->getQuery();
+        }
+        else
+        {
+
+            $url = JURI::getInstance();
+            $props = $url->getQuery(true);
+
+            // Strip 'index.php?'
+            if (substr($route, 0, 10) == 'index.php?')
+            {
+                $route = substr($route, 10);
+            }
+
+            // Parse route
+            $parts = array();
+            parse_str($route, $parts);
+            $result = array();
+
+            // Check to see if there is component information in the route if not add it
+            if (!isset($parts['option']) && isset($props['option']))
+            {
+                $result[] = 'option=' . $props['option'];
+            }
+
+            // Add the layout information to the route only if it's not 'default'
+            if (!isset($parts['view']) && isset($props['view']))
+            {
+                $result[] = 'view=' . $props['view'];
+                if (!isset($parts['layout']) && isset($props['layout']))
+                {
+                    $result[] = 'layout=' . $props['layout'];
+                }
+            }
+
+            // Add the format information to the URL only if it's not 'html'
+            if (!isset($parts['format']) && isset($props['format']) && $props['format'] != 'html')
+            {
+                $result[] = 'format=' . $props['format'];
+            }
+
+            // Reconstruct the route
+            if (!empty($route))
+            {
+                $result[] = $route;
+            }
+
+            $result = 'index.php?' . implode('&', $result);
+        }
+
+        return JRoute::_($result);
+    }
 }
