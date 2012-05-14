@@ -29,6 +29,7 @@
 		<file>query.mysqli.php</file>
 		<file>query.sqlazure.php</file>
 		<file>query.sqlsrv.php</file>
+		<file>string.utils.php</file>
 		<file>table.php</file>
 		<file>template.utils.php</file>
 		<file>toolbar.php</file>
