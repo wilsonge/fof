@@ -669,7 +669,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				->select($db->nameQuote('slug'))
 				->from($this->_tbl)
 				->where($db->nameQuote('slug').' = '.$db->quote($this->slug))
-				->where($db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}), 'AND NOT');
+				->where('NOT '.$db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}));
 			$db->setQuery($query);
 			$existingItems = $db->loadAssocList();
 			
@@ -692,7 +692,6 @@ abstract class FOFTable_COMMONBASE extends JTable
 		// Execute onBeforeStore<tablename> events in loaded plugins
 		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
-
 			$dispatcher = JDispatcher::getInstance();
 			return $dispatcher->trigger( 'onBeforeStore'.ucfirst($name), array( &$this, $updateNulls ) );
 		}
