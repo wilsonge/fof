@@ -453,6 +453,8 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 	public function delete( $oid=null )
 	{
+		if($oid) $this->load($oid);
+
 		if(!$this->onBeforeDelete($oid)) return false;
 		$result = parent::delete($oid);
 		if($result) {
@@ -652,7 +654,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				$this->modified_on = $date->toMySQL();
 			}
 		}
-		
+
 		// Do we have a set of title and slug fields?
 		if(property_exists($this, 'title') && property_exists($this, 'slug')) {
 			if(empty($this->slug)) {
@@ -662,7 +664,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				// Filter the slug for invalid characters
 				$this->slug = FOFStringUtils::toSlug($this->slug);
 			}
-			
+
 			// Make sure we don't have a duplicate slug on this table
 			$db = $this->getDbo();
 			$query = FOFQueryAbstract::getNew($db)
@@ -672,7 +674,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				->where('NOT '.$db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}));
 			$db->setQuery($query);
 			$existingItems = $db->loadAssocList();
-			
+
 			$count = 0;
 			$newSlug = $this->slug;
 			while(!empty($existingItems)) {
