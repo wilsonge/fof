@@ -260,10 +260,18 @@ abstract class FOFTable_COMMONBASE extends JTable
 			}
 			$this->_db->setQuery( (string)$query );
 
-			if (!$obj = $this->_db->loadObject())
-			{
-				$this->setError($this->_db->getErrorMsg());
-				return false;
+			if(version_compare(JVERSION, '3.0', 'ge')) {
+				try {
+					$obj = $this->_db->loadObject();
+				} catch(JDatabaseException $e) {
+					$this->setError($e->getMessage());
+				}
+			} else {
+				if (!$obj = $this->_db->loadObject())
+				{
+					$this->setError($this->_db->getErrorMsg());
+					return false;
+				}
 			}
 			$msg = array();
 			$i = 0;
@@ -495,10 +503,18 @@ abstract class FOFTable_COMMONBASE extends JTable
 		$query->where('('.$cids.')');
 
 		$this->_db->setQuery( (string)$query );
-		if (!$this->_db->query())
-		{
-			$this->setError($this->_db->getErrorMsg());
-			return false;
+		if(version_compare(JVERSION, '3.0', 'ge')) {
+			try {
+				$this->_db->query();
+			} catch(JDatabaseException $e) {
+				$this->setError($e->getMessage());
+			}
+		} else {
+			if (!$this->_db->query())
+			{
+				$this->setError($this->_db->getErrorMsg());
+				return false;
+			}
 		}
 
 		if (count( $cid ) == 1 && $checkin)
