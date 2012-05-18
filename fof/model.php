@@ -861,9 +861,15 @@ class FOFModel extends JModel
 		$tableKey = $table->getKeyName();
 		$db = $this->getDBO();
 
-		$query = FOFQueryAbstract::getNew()
-			->select('*')
-			->from($db->nameQuote($tableName));
+		if(version_compare(JVERSION, '3.0', 'ge')) {
+			$query = FOFQueryAbstract::getNew()
+				->select('*')
+				->from($db->qn($tableName));
+		} else {
+			$query = FOFQueryAbstract::getNew()
+				->select('*')
+				->from($db->nameQuote($tableName));
+		}
 
 		$where = array();
 		$fieldsArray = $db->getTableFields($tableName, true);
@@ -875,17 +881,29 @@ class FOFModel extends JModel
 				switch($fieldname) {
 					case $table->getColumnAlias('title'):
 					case $table->getColumnAlias('description'):
-						$query->where('('.$db->nameQuote($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
+						if(version_compare(JVERSION, '3.0', 'ge')) {
+							$query->where('('.$db->qn($fieldname).' LIKE '.$db->q('%'.$filterState.'%').')');
+						} else {
+							$query->where('('.$db->nameQuote($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
+						}
 						break;
 
 					case $table->getColumnAlias('enabled'):
 						if($filterState !== '') {
-							$query->where($db->nameQuote($fieldname).' = '.$db->Quote((int)$filterState));
+							if(version_compare(JVERSION, '3.0', 'ge')) {
+								$query->where($db->qn($fieldname).' = '.$db->q((int)$filterState));
+							} else {
+								$query->where($db->nameQuote($fieldname).' = '.$db->Quote((int)$filterState));
+							}
 						}
 						break;
 
 					default:
-						$query->where('('.$db->nameQuote($fieldname).'='.$db->Quote($filterState).')');
+						if(version_compare(JVERSION, '3.0', 'ge')) {
+							$query->where('('.$db->qn($fieldname).'='.$db->q($filterState).')');
+						} else {
+							$query->where('('.$db->nameQuote($fieldname).'='.$db->Quote($filterState).')');
+						}
 						break;
 				}
 			}
@@ -895,7 +913,11 @@ class FOFModel extends JModel
 			$order = $this->getState('filter_order',null,'cmd');
 			if(!in_array($order, array_keys($this->getTable()->getData()))) $order = $tableKey;
 			$dir = $this->getState('filter_order_Dir', 'ASC', 'cmd');
-			$query->order($db->nameQuote($order).' '.$dir);
+			if(version_compare(JVERSION, '3.0', 'ge')) {
+				$query->order($db->qn($order).' '.$dir);
+			} else {
+				$query->order($db->nameQuote($order).' '.$dir);
+			}
 		}
 
 		return $query;
