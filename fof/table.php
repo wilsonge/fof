@@ -631,7 +631,11 @@ abstract class FOFTable_COMMONBASE extends JTable
 		if(!array_key_exists($this->_tbl, $cache)) {
 			// Lookup the fields for this table only once.
 			$name	= $this->_tbl;
-			$fields	= $this->_db->getTableFields($name, false);
+			if(version_compare(JVERSION, '3.0', 'ge')) {
+				$fields	= $this->_db->getTableColumns($name, true);
+			} else {
+				$fields	= $this->_db->getTableFields($name, false);
+			}
 
 			if (!isset($fields[$name])) {
 				return false;
