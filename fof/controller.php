@@ -214,7 +214,7 @@ class FOFController extends JController
 		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
 		$basePath = $isAdmin ? JPATH_ADMINISTRATOR : JPATH_ROOT;
 		$basePath .= '/components/'.$this->component;
-		if(array_key_exists('base_path', $config)) $basePath = $options['base_path'];
+		if(array_key_exists('base_path', $config)) $basePath = $config['base_path'];
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			$this->basePath = $basePath;
 		} else {
