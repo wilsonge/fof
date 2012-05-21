@@ -627,7 +627,7 @@ class FOFController extends JController
 			}
 		}
 
-		$model->reorder();
+		$status = $model->reorder();
 
 		//check if i'm using an AJAX call, in this case there is no need to redirect
 		$format = FOFInput::getString('format','', $this->input);
