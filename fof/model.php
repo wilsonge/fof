@@ -444,6 +444,8 @@ class FOFModel extends JModel
 
 		$table = $this->getTable($this->table);
 
+		if(is_object($data)) $data = clone($data);
+
 		$key = $table->getKeyName();
 		if(array_key_exists($key, (array)$data))
 		{
