@@ -40,8 +40,9 @@ class FOFViewJson extends FOFViewHtml
 			$json = json_encode($items);
 			
 			// JSONP support
-			if(JRequest::getVar('callback', null)) {
-				echo JRequest::getVar('callback', '') . '('.$json.')';
+			$callback = FOFInput::getVar('callback', null, $this->input);
+			if(!empty($callback)) {
+				echo $callback . '('.$json.')';
 			} else {
 				echo $json;	
 			}
@@ -70,8 +71,9 @@ class FOFViewJson extends FOFViewHtml
 			$json = json_encode($item);
 			
 			// JSONP support
-			if(JRequest::getVar('callback', null)) {
-				echo JRequest::getVar('callback', '') . '('.$json.')';
+			$callback = FOFInput::getVar('callback', null, $this->input);
+			if(!empty($callback)) {
+				echo $callback . '('.$json.')';
 			} else {
 				echo $json;	
 			}
