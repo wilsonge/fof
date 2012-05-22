@@ -37,7 +37,15 @@ class FOFViewJson extends FOFViewHtml
 		
 		if($result instanceof JException) {
 			// Default JSON behaviour in case the template isn't there!
-			echo json_encode($items);
+			$json = json_encode($items);
+			
+			// JSONP support
+			if(JRequest::getVar('callback', null)) {
+				echo JRequest::getVar('callback', '') . '('.$json.')';
+			} else {
+				echo $json;	
+			}
+						
 			return false;
 		}
 	}
@@ -59,7 +67,15 @@ class FOFViewJson extends FOFViewHtml
 
 		if($result instanceof JException) {
 			// Default JSON behaviour in case the template isn't there!
-			echo json_encode($item);
+			$json = json_encode($item);
+			
+			// JSONP support
+			if(JRequest::getVar('callback', null)) {
+				echo JRequest::getVar('callback', '') . '('.$json.')';
+			} else {
+				echo $json;	
+			}
+			
 			return false;
 		}
 	}
