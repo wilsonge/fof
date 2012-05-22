@@ -134,7 +134,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	{
 		$this->_tbl		= $table;
 		$this->_tbl_key	= $key;
-		$this->_db		= &$db;
+		$this->_db		= $db;
 
 		// Initialise the table properties.
 		if ($fields = $this->getTableFields()) {
