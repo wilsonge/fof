@@ -8,6 +8,13 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
+// Normally this shouldn't be required. Some PHP versions, however, seem to
+// require this. Why? No idea whatsoever. If I remove it, FOF crashes on some
+// hosts. Same PHP version on another host and no problem occurs. Any takers?
+if(class_exists('FOFTable', false)) {
+	return;
+}
+
 jimport('joomla.database.table');
 
 require_once(dirname(__FILE__).'/input.php');
