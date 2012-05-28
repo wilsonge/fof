@@ -351,9 +351,12 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 	public function checkout( $who, $oid = null )
 	{
+		$fldLockedBy = $this->getColumnAlias('locked_by');
+		$fldLockedOn = $this->getColumnAlias('locked_on');
+		
 		if (!(
-			in_array( 'locked_by', array_keys($this->getProperties()) ) ||
-	 		in_array( 'locked_on', array_keys($this->getProperties()) )
+			in_array( $fldLockedBy, array_keys($this->getProperties()) ) ||
+	 		in_array( $fldLockedOn, array_keys($this->getProperties()) )
 		)) {
 			return true;
 		}
@@ -370,32 +373,35 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$query = FOFQueryAbstract::getNew($this->_db)
 					->update($this->_db->qn( $this->_tbl ))
 					->set(array(
-						$this->_db->qn('locked_by').' = '.(int)$who,
-						$this->_db->qn('locked_on').' = '.$this->_db->q($time)
+						$this->_db->qn($fldLockedBy).' = '.(int)$who,
+						$this->_db->qn($fldLockedOn).' = '.$this->_db->q($time)
 					))
 					->where($this->_db->qn($this->_tbl_key).' = '. $this->_db->q($this->$k));
 		} else {
 			$query = FOFQueryAbstract::getNew($this->_db)
 					->update($this->_db->nameQuote( $this->_tbl ))
 					->set(array(
-						$this->_db->nameQuote('locked_by').' = '.(int)$who,
-						$this->_db->nameQuote('locked_on').' = '.$this->_db->quote($time)
+						$this->_db->nameQuote($fldLockedBy).' = '.(int)$who,
+						$this->_db->nameQuote($fldLockedOn).' = '.$this->_db->quote($time)
 					))
 					->where($this->_db->nameQuote($this->_tbl_key).' = '. $this->_db->quote($this->$k));
 		}
 		$this->_db->setQuery( (string)$query );
 
-		$this->checked_out = $who;
-		$this->checked_out_time = $time;
+		$this->$fldLockedBy = $who;
+		$this->$fldLockedOn = $time;
 
 		return $this->_db->query();
 	}
 
 	function checkin( $oid=null )
 	{
+		$fldLockedBy = $this->getColumnAlias('locked_by');
+		$fldLockedOn = $this->getColumnAlias('locked_on');
+		
 		if (!(
-			in_array( 'locked_by', array_keys($this->getProperties()) ) ||
-	 		in_array( 'locked_on', array_keys($this->getProperties()) )
+			in_array( $fldLockedBy, array_keys($this->getProperties()) ) ||
+	 		in_array( $fldLockedOn, array_keys($this->getProperties()) )
 		)) {
 			return true;
 		}
@@ -414,31 +420,33 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$query = FOFQueryAbstract::getNew($this->_db)
 					->update($this->_db->qn( $this->_tbl ))
 					->set(array(
-						$this->_db->qn('locked_by').' = 0',
-						$this->_db->qn('locked_on').' = '.$this->_db->q($this->_db->getNullDate())
+						$this->_db->qn($fldLockedBy).' = 0',
+						$this->_db->qn($fldLockedOn).' = '.$this->_db->q($this->_db->getNullDate())
 					))
 					->where($this->_db->qn($this->_tbl_key).' = '. $this->_db->q($this->$k));
 		} else {
 			$query = FOFQueryAbstract::getNew($this->_db)
 					->update($this->_db->nameQuote( $this->_tbl ))
 					->set(array(
-						$this->_db->nameQuote('locked_by').' = 0',
-						$this->_db->nameQuote('locked_on').' = '.$this->_db->quote($this->_db->getNullDate())
+						$this->_db->nameQuote($fldLockedBy).' = 0',
+						$this->_db->nameQuote($fldLockedOn).' = '.$this->_db->quote($this->_db->getNullDate())
 					))
 					->where($this->_db->nameQuote($this->_tbl_key).' = '. $this->_db->quote($this->$k));
 		}
 		$this->_db->setQuery( (string)$query );
 
-		$this->checked_out = 0;
-		$this->checked_out_time = '';
+		$this->$fldLockedBy = 0;
+		$this->$fldLockedOn = '';
 
 		return $this->_db->query();
 	}
 
 	function isCheckedOut( $with = 0, $against = null)
 	{
+		$fldLockedBy = $this->getColumnAlias('locked_by');
+		
 		if(isset($this) && is_a($this, 'JTable') && is_null($against)) {
-			$against = $this->get( 'locked_by' );
+			$against = $this->get( $fldLockedBy );
 		}
 
 		//item is not checked out, or being checked out by the same user
@@ -731,70 +739,79 @@ abstract class FOFTable_COMMONBASE extends JTable
 	protected function onBeforeStore($updateNulls)
 	{
 		// Do we have a "Created" set of fields?
-		if(property_exists($this, 'created_on') && property_exists($this, 'created_by')) {
-			if(empty($this->created_by) || ($this->created_on == '0000-00-00 00:00:00') || empty($this->created_on)) {
-				$this->created_by = JFactory::getUser()->id;
+		$created_on		= $this->getColumnAlias('created_on');
+		$created_by		= $this->getColumnAlias('created_by');
+		$modified_on	= $this->getColumnAlias('modified_on');
+		$modified_by	= $this->getColumnAlias('modified_by');
+		$locked_on		= $this->getColumnAlias('locked_on');
+		$locked_by		= $this->getColumnAlias('locked_by');
+		$title			= $this->getColumnAlias('title');
+		$slug			= $this->getColumnAlias('slug');
+		
+		if(property_exists($this, $created_on) && property_exists($this, $created_by)) {
+			if(empty($this->$created_by) || ($this->$created_on == '0000-00-00 00:00:00') || empty($this->$created_on)) {
+				$this->$created_by = JFactory::getUser()->id;
 				jimport('joomla.utilities.date');
 				$date = new JDate();
-				$this->created_on = $date->toMySQL();
-			} elseif(property_exists($this, 'modified_on') && property_exists($this, 'modified_by')) {
-				$this->modified_by = JFactory::getUser()->id;
+				$this->$created_on = $date->toMySQL();
+			} elseif(property_exists($this, $modified_on) && property_exists($this, $modified_by)) {
+				$this->$modified_by = JFactory::getUser()->id;
 				jimport('joomla.utilities.date');
 				$date = new JDate();
-				$this->modified_on = $date->toMySQL();
+				$this->$modified_on = $date->toMySQL();
 			}
 		}
-
+		
 		// Do we have a set of title and slug fields?
-		if(property_exists($this, 'title') && property_exists($this, 'slug')) {
-			if(empty($this->slug)) {
+		if(property_exists($this, $title) && property_exists($this, $slug)) {
+			if(empty($this->$slug)) {
 				// Create a slug from the title
-				$this->slug = FOFStringUtils::toSlug($this->title);
+				$this->$slug = FOFStringUtils::toSlug($this->$title);
 			} else {
 				// Filter the slug for invalid characters
-				$this->slug = FOFStringUtils::toSlug($this->slug);
+				$this->$slug = FOFStringUtils::toSlug($this->$slug);
 			}
 
 			// Make sure we don't have a duplicate slug on this table
 			$db = $this->getDbo();
 			if(version_compare(JVERSION, '3.0', 'ge')) {
 				$query = FOFQueryAbstract::getNew($db)
-					->select($db->qn('slug'))
+					->select($db->qn($slug))
 					->from($this->_tbl)
-					->where($db->qn('slug').' = '.$db->q($this->slug))
+					->where($db->qn($slug).' = '.$db->q($this->$slug))
 					->where('NOT '.$db->qn($this->_tbl_key).' = '.$db->q($this->{$this->_tbl_key}));
 			} else {
 				$query = FOFQueryAbstract::getNew($db)
-					->select($db->nameQuote('slug'))
+					->select($db->nameQuote($slug))
 					->from($this->_tbl)
-					->where($db->nameQuote('slug').' = '.$db->quote($this->slug))
+					->where($db->nameQuote($slug).' = '.$db->quote($this->$slug))
 					->where('NOT '.$db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}));
 			}
 			$db->setQuery($query);
 			$existingItems = $db->loadAssocList();
 
 			$count = 0;
-			$newSlug = $this->slug;
+			$newSlug = $this->$slug;
 			while(!empty($existingItems)) {
 				$count++;
-				$newSlug = $this->slug .'-'. $count;
+				$newSlug = $this->$slug .'-'. $count;
 				if(version_compare(JVERSION, '3.0', 'ge')) {
 					$query = FOFQueryAbstract::getNew($db)
-						->select($db->qn('slug'))
+						->select($db->qn($slug))
 						->from($this->_tbl)
-						->where($db->qn('slug').' = '.$db->q($newSlug))
+						->where($db->qn($slug).' = '.$db->q($newSlug))
 						->where($db->qn($this->_tbl_key).' = '.$db->q($this->{$this->_tbl_key}), 'AND NOT');
 				} else {
 					$query = FOFQueryAbstract::getNew($db)
-						->select($db->nameQuote('slug'))
+						->select($db->nameQuote($slug))
 						->from($this->_tbl)
-						->where($db->nameQuote('slug').' = '.$db->quote($newSlug))
+						->where($db->nameQuote($slug).' = '.$db->quote($newSlug))
 						->where($db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}), 'AND NOT');
 				}
 				$db->setQuery($query);
 				$existingItems = $db->loadAssocList();
 			}
-			$this->slug = $newSlug;
+			$this->$slug = $newSlug;
 		}
 
 		// Execute onBeforeStore<tablename> events in loaded plugins
