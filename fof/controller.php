@@ -64,6 +64,15 @@ class FOFController extends JController
 		'core.edit.state'	=> 'Publisher'
 	);
 
+	/**
+	 * @var int Bit mask to enable JRouting on redirects.
+	 * 0 = never
+	 * 1 = frontend only
+	 * 2 = backend  only
+	 * 3 = always
+	 */
+	protected $autoRouting = 0;
+
 	private $viewObject = null;
 
 	private $modelObject = null;
@@ -190,13 +199,13 @@ class FOFController extends JController
 
 		// Get the default values for the component and view names
 		$this->component = FOFInput::getCmd('option','com_foobar',$this->input);
-		$this->view = FOFInput::getCmd('view','cpanel',$this->input);
-		$this->layout = FOFInput::getCmd('layout',null,$this->input);
+		$this->view      = FOFInput::getCmd('view','cpanel',$this->input);
+		$this->layout    = FOFInput::getCmd('layout',null,$this->input);
 
 		// Overrides from the config
 		if(array_key_exists('option', $config)) $this->component = $config['option'];
-		if(array_key_exists('view', $config)) $this->view = $config['view'];
-		if(array_key_exists('layout', $config)) $this->layout = $config['layout'];
+		if(array_key_exists('view', $config))   $this->view      = $config['view'];
+		if(array_key_exists('layout', $config)) $this->layout    = $config['layout'];
 
 		FOFInput::setVar('option', $this->component, $this->input);
 
@@ -211,8 +220,8 @@ class FOFController extends JController
 		}
 
 		// Set the _basePath / basePath variable
-		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
-		$basePath = $isAdmin ? JPATH_ADMINISTRATOR : JPATH_ROOT;
+		$isAdmin   = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		$basePath  = $isAdmin ? JPATH_ADMINISTRATOR : JPATH_ROOT;
 		$basePath .= '/components/'.$this->component;
 		if(array_key_exists('base_path', $config)) $basePath = $config['base_path'];
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
@@ -265,6 +274,9 @@ class FOFController extends JController
 		if(array_key_exists('cacheableTasks', $config)) {
 			if(is_array($config['cacheableTasks'])) $this->cacheableTasks = $config['cacheableTasks'];
 		}
+
+		//Bit mask for auto routing on setRedirect
+		if(array_key_exists('autoRouting', $config)) $this->autoRouting = $config['autoRouting'];
 	}
 
 	/**
@@ -741,6 +753,25 @@ class FOFController extends JController
 			$this->setRedirect($url);
 		}
 		return;
+	}
+
+	public function setRedirect($url, $msg = null, $type = null)
+	{
+		//do the logic only if we're parsing a raw url (index.php?foo=bar&etc=etc)
+		if(strpos($url, 'index.php') === 0)
+		{
+			//@TODO Should we check for CLI case, too?
+			$isCLI   = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			$auto	 = false;
+
+			if    (($this->autoRouting == 2 || $this->autoRouting == 3) &&  $isAdmin)	$auto = true;
+			elseif(($this->autoRouting == 1 || $this->autoRouting == 3) && !$isAdmin)	$auto = true;
+
+			if($auto) $url = JRoute::_($url);
+		}
+
+		parent::setRedirect($url, $msg, $type);
 	}
 
 	protected final function setstate($state = 0)
