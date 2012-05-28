@@ -194,9 +194,6 @@ class FOFDispatcher extends JObject
 
 		$config = array('input'=>$this->input);
 
-		//Merge standard config params with extension specific ones
-		$config = array_merge($config, $this->readExtensionParams());
-
 		$controller = FOFController::getTmpInstance($option, $view, $config);
 		$status = $controller->execute($task);
 
@@ -217,24 +214,6 @@ class FOFDispatcher extends JObject
 		}
 
 		$controller->redirect();
-	}
-
-	/**
-	 * Reads component params. By default they are read from the #__extension/#__components table
-	 * (ie using JComponentHelper::getParams(); 3rd part developers should override this method
-	 * if they store their params in another way.
-	 *
-	 * @return array Associative array with custom params
-	 */
-	protected function readExtensionParams()
-	{
-		$option = FOFInput::getCmd('option','com_foobar',$this->input);
-		$params = JComponentHelper::getParams($option);
-
-		//as default we always enable auto-routing
-		$config['autoRouting'] = $params->get('autoRouting', 3);
-
-		return $config;
 	}
 
 	protected function getTask($view)
