@@ -765,8 +765,11 @@ class FOFController extends JController
 			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
 			$auto	 = false;
 
-			if    (($this->autoRouting == 2 || $this->autoRouting == 3) &&  $isAdmin)	$auto = true;
-			elseif(($this->autoRouting == 1 || $this->autoRouting == 3) && !$isAdmin)	$auto = true;
+			if(($this->autoRouting == 2 || $this->autoRouting == 3) &&  $isAdmin) {
+				$auto = true;
+			} elseif(($this->autoRouting == 1 || $this->autoRouting == 3) && !$isAdmin) {
+				$auto = true;
+			}
 
 			if($auto) $url = JRoute::_($url);
 		}
