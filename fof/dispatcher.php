@@ -192,7 +192,8 @@ class FOFDispatcher extends JObject
 		FOFInput::setVar('view',$view,$this->input);
 		FOFInput::setVar('task',$task,$this->input);
 
-		$config = array('input'=>$this->input);
+		$config = $this->config;
+		$config['input'] = $this->input;
 
 		$controller = FOFController::getTmpInstance($option, $view, $config);
 		$status = $controller->execute($task);
