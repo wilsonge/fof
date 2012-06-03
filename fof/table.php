@@ -703,7 +703,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	}
 
 	/**
-	 * NOTE TO 3RD PART DEVELOPERS:
+	 * NOTE TO 3RD PARTY DEVELOPERS:
 	 *
 	 * When you override the following methods in your child classes,
 	 * be sure to call parent::method *AFTER* your code, otherwise the
@@ -712,8 +712,12 @@ abstract class FOFTable_COMMONBASE extends JTable
 	 * Example:
 	 * protected function onAfterStore(){
 	 * 	   // Your code here
-	 *     return $your_result && parent::onAfterStore();
+	 *     return parent::onAfterStore() && $your_result;
 	 * }
+	 * 
+	 * Do not do it the other way around, e.g. return $your_result && parent::onAfterStore()
+	 * Due to  PHP short-circuit boolean evaluation the parent::onAfterStore()
+	 * will not be called if $your_result is false.
 	 */
 	protected function onBeforeBind(&$from)
 	{
