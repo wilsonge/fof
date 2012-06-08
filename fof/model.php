@@ -187,7 +187,7 @@ class FOFModel extends JModel
 				$default_limit = 20;
 			}
 			$limit = $this->getUserStateFromRequest('global.list.limit', 'limit', $default_limit);
-			$limitstart = $this->getUserStateFromRequest(JRequest::getCmd('option','com_ars').$this->getName().'limitstart','limitstart',0);
+			$limitstart = $this->getUserStateFromRequest($component.'.'.$view.'.limitstart','limitstart',0);
 		}
 		$this->setState('limit',$limit);
 		$this->setState('limitstart',$limitstart);
