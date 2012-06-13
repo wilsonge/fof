@@ -693,10 +693,14 @@ class FOFModel extends JModel
 		}
 
 		// Get the savestate status
-		$savestate = parent::getState('savestate');
+		$savestate = FOFInput::getBool('savestate', false, $this->input);
+		/*
+		$savestate = parent::getState('savestate', false);
 		if(is_null($savestate)) {
-			$savestate = FOFInput::getBool('savestate',false,$this->input);
+			$savestate = FOFInput::getBool('savestate', 0, $this->input);
+			parent::setState('savestate', $savestate);
 		}
+		*/
 
 		$value = parent::getState($key);
 		if(is_null($value))
