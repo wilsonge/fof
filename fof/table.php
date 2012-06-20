@@ -367,7 +367,11 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 
 		$date = JFactory::getDate();
-		$time = $date->toMysql();
+		if(version_compare(JVERSION, '3.0.0', 'ge')) {
+			$time = $date->toSql();
+		} else {
+			$time = $date->toMysql();
+		}
 
 		if(version_compare(JVERSION, '3.0', 'ge')) {
 			$query = FOFQueryAbstract::getNew($this->_db)
@@ -760,12 +764,20 @@ abstract class FOFTable_COMMONBASE extends JTable
 				$this->$created_by = JFactory::getUser()->id;
 				jimport('joomla.utilities.date');
 				$date = new JDate();
-				$this->$created_on = $date->toMySQL();
+				if(version_compare(JVERSION, '3.0.0', 'ge')) {
+					$this->$created_on = $date->toSql();
+				} else {
+					$this->$created_on = $date->toMysql();
+				}
 			} elseif(property_exists($this, $modified_on) && property_exists($this, $modified_by)) {
 				$this->$modified_by = JFactory::getUser()->id;
 				jimport('joomla.utilities.date');
 				$date = new JDate();
-				$this->$modified_on = $date->toMySQL();
+				if(version_compare(JVERSION, '3.0.0', 'ge')) {
+					$this->$modified_on = $date->toSql();
+				} else {
+					$this->$modified_on = $date->toMysql();
+				}
 			}
 		}
 		
