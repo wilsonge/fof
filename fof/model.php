@@ -881,11 +881,11 @@ class FOFModel extends JModel
 
 		$where = array();
 		if(version_compare(JVERSION, '3.0', 'ge')) {
-			$fieldsArray = $db->getTableColumns($tableName, true);
+			$fields = $db->getTableColumns($tableName, true);
 		} else {
 			$fieldsArray = $db->getTableFields($tableName, true);
+			$fields = array_shift($fieldsArray);
 		}
-		$fields = array_shift($fieldsArray);
 		foreach($fields as $fieldname => $fieldtype) {
 			$filterName = ($fieldname == $tableKey) ? 'id' : $fieldname;
 			$filterState = $this->getState($filterName, null);
