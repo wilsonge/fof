@@ -390,6 +390,9 @@ class FOFController extends JController
 	 */
 	public function browse()
 	{
+		if(FOFInput::getInt('savestate', -999, $this->input) == -999) {
+			FOFInput::setVar('savestate', true, $this->input);
+		}
 		$this->display(in_array('browse', $this->cacheableTasks));
 	}
 
