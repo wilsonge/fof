@@ -623,7 +623,7 @@ class FOFModel extends JModel
 				// Call the plugin events
 				$dispatcher = JDispatcher::getInstance();
 				JPluginHelper::importPlugin('content');
-				$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+				$name = FOFInput::getCmd('view','cpanel',$this->input);
 				$context = $this->option.'.'.$name;
 				$result = $dispatcher->trigger($this->event_change_state, array($context, $this->id_list, $publish));
 			}
@@ -1180,7 +1180,7 @@ class FOFModel extends JModel
 		try {
 			$table->load($id);
 			
-			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$name = FOFInput::getCmd('view','cpanel',$this->input);
 			$context = $this->option.'.'.$name;
 			$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
 			
@@ -1204,7 +1204,7 @@ class FOFModel extends JModel
 		JPluginHelper::importPlugin('content');
 		$dispatcher = JDispatcher::getInstance();
 		try {
-			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$name = FOFInput::getCmd('view','cpanel',$this->input);
 			$context = $this->option.'.'.$name;
 			$result = $dispatcher->trigger($this->event_after_delete, array($context, $this->_recordForDeletion));
 			unset($this->_recordForDeletion);
