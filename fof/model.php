@@ -19,18 +19,89 @@ jimport('joomla.application.component.model');
  */
 class FOFModel extends JModel
 {
+	/**
+	 * The name of the table to use
+	 * @var string
+	 */
 	protected $table = null;
+	
+	/**
+	 * The table object, populated when saving data
+	 * @var FOFTable 
+	 */
 	protected $otable = null;
 
+	/**
+	 * Stores a list of IDs passed to the model's state
+	 * @var array
+	 */
 	protected $id_list = array();
+	
+	/**
+	 * The first row ID passed to the model's state
+	 * @var int
+	 */
 	protected $id = null;
+	
+	/**
+	 * The table object, populated when retrieving data
+	 * @var FOFTable
+	 */
 	protected $record = null;
+	
+	/**
+	 * The list of records made available through getList
+	 * @var array
+	 */
 	protected $list = null;
 
+	/**
+	 * Pagination object
+	 * @var JPagination
+	 */
 	protected $pagination = null;
+	
+	/**
+	 * Total rows based on the filters set in the model's state
+	 * @var int
+	 */
 	protected $total = 0;
 
+	/**
+	 * Input variables, passed on from the controller, in an associative array
+	 * @var array
+	 */
 	protected $input = array();
+	
+	/**
+	 * The event to trigger after deleting the data.
+	 * @var    string
+	 */
+	protected $event_after_delete = 'onContentAfterDelete';
+
+	/**
+	 * The event to trigger after saving the data.
+	 * @var    string
+	 */
+	protected $event_after_save = 'onContentAfterSave';
+
+	/**
+	 * The event to trigger before deleting the data.
+	 * @var    string
+	 */
+	protected $event_before_delete = 'onContentBeforeDelete';
+
+	/**
+	 * The event to trigger before saving the data.
+	 * @var    string
+	 */
+	protected $event_before_save = 'onContentBeforeSave';
+
+	/**
+	 * The event to trigger after changing the published state of the data.
+	 * @var    string
+	 */
+	protected $event_change_state = 'onContentChangeState';
 
 	/**
 	 * Returns a new model object. Unless overriden by the $config array, it will
@@ -154,6 +225,7 @@ class FOFModel extends JModel
 		} else {
 			$this->_name = $name;
 		}
+		$this->option = $component;
 		
 		// Get the view name
 		$className = get_class($this);
@@ -213,6 +285,23 @@ class FOFModel extends JModel
 		else
 		{
 			$this->setId($id);
+		}
+		
+		// Populate the event names from the $config array
+		if(isset($config['event_after_delete'])) {
+			$this->event_after_delete = $config['event_after_delete'];
+		}
+		if(isset($config['event_after_save'])) {
+			$this->event_after_save = $config['event_after_save'];
+		}
+		if(isset($config['event_before_delete'])) {
+			$this->event_before_delete = $config['event_before_delete'];
+		}
+		if(isset($config['event_before_save'])) {
+			$this->event_before_save = $config['event_before_save'];
+		}
+		if(isset($config['event_change_state'])) {
+			$this->event_change_state = $config['event_change_state'];
 		}
 	}
 
@@ -528,7 +617,15 @@ class FOFModel extends JModel
 				$this->setError($table->getError());
 				return false;
 			} else {
+				// Call our itnernal event
 				$this->onAfterPublish($table);
+				
+				// Call the plugin events
+				$dispatcher = JDispatcher::getInstance();
+				JPluginHelper::importPlugin('content');
+				$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+				$context = $this->option.'.'.$name;
+				$result = $dispatcher->trigger($this->event_change_state, array($context, $this->id_list, $publish));
 			}
 		}
 		return true;
@@ -1018,6 +1115,37 @@ class FOFModel extends JModel
 	 */
 	protected function onBeforeSave(&$data, &$table)
 	{
+		JPluginHelper::importPlugin('content');
+		$dispatcher = JDispatcher::getInstance();
+		try {
+			// Do I have a new record?
+			$key = $table->getKeyName();
+			$pk = (!empty($data[$key])) ? $data[$key] : 0;
+			$this->_isNewRecord = $pk <= 0;
+			
+			// Bind the data
+			$table->bind($data);
+			// Call the plugin
+			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$result = $dispatcher->trigger($this->event_before_save, array($this->option.'.'.$name, &$table, $this->_isNewRecord));
+			if (in_array(false, $result, true)) {
+				// Plugin failed, return false
+				$this->setError($table->getError());
+				return false;
+			} else {
+				// Plugin successful, refetch the possibly modified data
+				if(is_object($data)) $data = (array)$data;
+				if(!empty($data)) {
+					foreach($data as $k => $v) {
+						$data[$k] = $table->$k;
+					}
+				}
+			}
+		} catch(Exception $e) {
+			// Oops, an exception occured!
+			$this->setError($e->getMessage());
+			return false;
+		}
 		return true;
 	}
 
@@ -1028,6 +1156,16 @@ class FOFModel extends JModel
 	 */
 	protected function onAfterSave(&$table)
 	{
+		JPluginHelper::importPlugin('content');
+		$dispatcher = JDispatcher::getInstance();
+		try {
+			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$dispatcher->trigger($this->event_after_save, array($this->option.'.'.$name, &$table, $this->_isNewRecord));
+		} catch(Exception $e) {
+			// Oops, an exception occured!
+			$this->setError($e->getMessage());
+			return false;
+		}
 	}
 
 	/**
@@ -1037,11 +1175,44 @@ class FOFModel extends JModel
 	 */
 	protected function onBeforeDelete(&$id, &$table)
 	{
+		JPluginHelper::importPlugin('content');
+		$dispatcher = JDispatcher::getInstance();
+		try {
+			$table->load($id);
+			
+			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$context = $this->option.'.'.$name;
+			$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
+			
+			if (in_array(false, $result, true)) {
+				// Plugin failed, return false
+				$this->setError($table->getError());
+				return false;
+			}
+			
+			$this->_recordForDeletion = clone $table;
+		} catch(Exception $e) {
+			// Oops, an exception occured!
+			$this->setError($e->getMessage());
+			return false;
+		}
 		return true;
 	}
 
 	protected function onAfterDelete($id)
 	{
+		JPluginHelper::importPlugin('content');
+		$dispatcher = JDispatcher::getInstance();
+		try {
+			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$context = $this->option.'.'.$name;
+			$result = $dispatcher->trigger($this->event_after_delete, array($context, $this->_recordForDeletion));
+			unset($this->_recordForDeletion);
+		} catch(Exception $e) {
+			// Oops, an exception occured!
+			$this->setError($e->getMessage());
+			return false;
+		}
 	}
 
 	protected function onBeforePublish(&$table)
