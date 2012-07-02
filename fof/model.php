@@ -1120,11 +1120,19 @@ class FOFModel extends JModel
 		try {
 			// Do I have a new record?
 			$key = $table->getKeyName();
-			$pk = (!empty($data[$key])) ? $data[$key] : 0;
+			if($data instanceof FOFTable) {
+				$allData = $data->getData();
+			} elseif(is_object($data)) {
+				$allData = (array)$data;
+			} else {
+				$allData = $data;
+			}
+			$pk = (!empty($allData[$key])) ? $allData[$key] : 0;
+			
 			$this->_isNewRecord = $pk <= 0;
 			
 			// Bind the data
-			$table->bind($data);
+			$table->bind($allData);
 			// Call the plugin
 			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
 			$result = $dispatcher->trigger($this->event_before_save, array($this->option.'.'.$name, &$table, $this->_isNewRecord));
@@ -1134,11 +1142,12 @@ class FOFModel extends JModel
 				return false;
 			} else {
 				// Plugin successful, refetch the possibly modified data
-				if(is_object($data)) $data = (array)$data;
-				if(!empty($data)) {
-					foreach($data as $k => $v) {
-						$data[$k] = $table->$k;
-					}
+				if($data instanceof FOFTable) {
+					$data->bind($allData);
+				} elseif(is_object($data)) {
+					$data = (object)$allData;
+				} else {
+					$data = $allData;
 				}
 			}
 		} catch(Exception $e) {
