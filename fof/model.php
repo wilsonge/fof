@@ -138,7 +138,11 @@ class FOFModel extends JModel
 			$include_paths = JModel::addIncludePath();
 
 			try {
-				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+				if(is_null(JFactory::$application)) {
+					$isCLI = true;
+				} else {
+					$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+				}
 			} catch(Exception $e) {
 				$isCLI = true;
 			}
@@ -254,7 +258,11 @@ class FOFModel extends JModel
 
 		// Get and store the pagination request variables
 		try {
-			$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+			if(is_null(JFactory::$application)) {
+				$isCLI = true;
+			} else {
+				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+			}
 		} catch(Exception $e) {
 			$isCLI = true;
 		}
@@ -852,7 +860,11 @@ class FOFModel extends JModel
 	protected function getUserStateFromRequest( $key, $request, $default = null, $type = 'none' )
 	{
 		try {
-			$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+			if(is_null(JFactory::$application)) {
+				$isCLI = true;
+			} else {
+				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+			}
 		} catch(Exception $e) {
 			$isCLI = true;
 		}
