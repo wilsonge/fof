@@ -1138,9 +1138,16 @@ class FOFModel extends JModel
 	 * @return bool
 	 */
 	protected function onBeforeSave(&$data, &$table)
-	{
-		JPluginHelper::importPlugin('content');
+	{		
+		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+		
+		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
+		if(!$isCLI){
+			JPluginHelper::importPlugin('content');			
+		}
+		
 		$dispatcher = JDispatcher::getInstance();
+		
 		try {
 			// Do I have a new record?
 			$key = $table->getKeyName();
@@ -1189,7 +1196,13 @@ class FOFModel extends JModel
 	 */
 	protected function onAfterSave(&$table)
 	{
-		JPluginHelper::importPlugin('content');
+		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+		
+		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
+		if(!$isCLI){
+			JPluginHelper::importPlugin('content');			
+		}
+		
 		$dispatcher = JDispatcher::getInstance();
 		try {
 			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
@@ -1208,7 +1221,13 @@ class FOFModel extends JModel
 	 */
 	protected function onBeforeDelete(&$id, &$table)
 	{
-		JPluginHelper::importPlugin('content');
+		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+		
+		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
+		if(!$isCLI){
+			JPluginHelper::importPlugin('content');			
+		}
+		
 		$dispatcher = JDispatcher::getInstance();
 		try {
 			$table->load($id);
@@ -1234,7 +1253,13 @@ class FOFModel extends JModel
 
 	protected function onAfterDelete($id)
 	{
-		JPluginHelper::importPlugin('content');
+		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+		
+		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
+		if(!$isCLI){
+			JPluginHelper::importPlugin('content');			
+		}
+		
 		$dispatcher = JDispatcher::getInstance();
 		try {
 			$name = FOFInput::getCmd('view','cpanel',$this->input);
