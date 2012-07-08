@@ -102,6 +102,12 @@ class FOFModel extends JModel
 	 * @var    string
 	 */
 	protected $event_change_state = 'onContentChangeState';
+	
+	/**
+	 * Should I save the model's state in the session?
+	 * @var bool
+	 */
+	protected $_savestate = null;
 
 	/**
 	 * Returns a new model object. Unless overriden by the $config array, it will
@@ -276,8 +282,9 @@ class FOFModel extends JModel
 			} else {
 				$default_limit = 20;
 			}
-			$limit = $this->getUserStateFromRequest('global.list.limit', 'limit', $default_limit);
-			$limitstart = $this->getUserStateFromRequest($component.'.'.$view.'.limitstart','limitstart',0);
+			
+			$limit = $this->getUserStateFromRequest($component.'.'.$view.'.limit', 'limit', $default_limit, 'int', false);
+			$limitstart = $this->getUserStateFromRequest($component.'.'.$view.'.limitstart', 'limitstart', 0, 'int', false);
 		}
 		$this->setState('limit',$limit);
 		$this->setState('limitstart',$limitstart);
@@ -806,24 +813,19 @@ class FOFModel extends JModel
 		}
 
 		// Get the savestate status
-		$savestate = FOFInput::getBool('savestate', false, $this->input);
-		/*
-		$savestate = parent::getState('savestate', false);
+		$savestate = $this->_savestate;
 		if(is_null($savestate)) {
-			$savestate = FOFInput::getBool('savestate', 0, $this->input);
-			parent::setState('savestate', $savestate);
+			$savestate = FOFInput::getInt('savestate', -999, $this->input);
+			if($savestate == -999) {
+				$savestate = true;
+			}
 		}
-		*/
+		$this->_savestate = $savestate;
 
 		$value = parent::getState($key);
 		if(is_null($value))
 		{
-			// Try to fetch it from the request or session
-			if($savestate) {
-				$value = $this->getUserStateFromRequest($this->getHash().$key,$key,null);
-			} else {
-				$value = FOFInput::getVar($key, null, $this->input);
-			}
+			$value = $this->getUserStateFromRequest($this->getHash().$key,$key,null,'none',$savestate);
 
 			if(is_null($value))	return $default;
 		}
@@ -855,9 +857,10 @@ class FOFModel extends JModel
 	 * @param	string	The name of the variable passed in a request.
 	 * @param	string	The default value for the variable if not found. Optional.
 	 * @param	string	Filter for the variable, for valid values see {@link JFilterInput::clean()}. Optional.
+	 * @param	bool	Should I save the variable in the user state? Default: true. Optional.
 	 * @return	The request user state.
 	 */
-	protected function getUserStateFromRequest( $key, $request, $default = null, $type = 'none' )
+	protected function getUserStateFromRequest( $key, $request, $default = null, $type = 'none', $setUserState = true )
 	{
 		try {
 			if(is_null(JFactory::$application)) {
@@ -880,10 +883,12 @@ class FOFModel extends JModel
 		$new_state = FOFInput::getVar($request, null, $this->input, $type);
 
 		// Save the new value only if it was set in this request
-		if ($new_state !== null) {
-			$app->setUserState($key, $new_state);
-		} else {
-			$new_state = $cur_state;
+		if($setUserState) {
+			if ($new_state !== null) {
+				$app->setUserState($key, $new_state);
+			} else {
+				$new_state = $cur_state;
+			}
 		}
 
 		return $new_state;
@@ -1104,6 +1109,19 @@ class FOFModel extends JModel
 	public function __call($name, $arguments) {
 		$arg1 = array_shift($arguments);
 		$this->setState($name, $arg1);
+		return $this;
+	}
+	
+	/**
+	 * Sets the model state auto-save status. By default the model is set up to
+	 * save its state to the session.
+	 * 
+	 * @param bool $newState True to save the state, false to not save it.
+	 */
+	public function &savestate($newState)
+	{
+		$this->_savestate = $newState ? true : false;
+		
 		return $this;
 	}
 
