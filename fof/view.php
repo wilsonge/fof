@@ -116,16 +116,16 @@ abstract class FOFView extends JView
 		
 		// Get the default paths
 		$paths = array();
-		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE).'/components/'.
-			$templateParts['component'].'/views/'.$templateParts['view'].'/tmpl';
 		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE).'/templates/'.
 			$template.'/html/'.$templateParts['component'].'/'.$templateParts['view'];
+		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE).'/components/'.
+			$templateParts['component'].'/views/'.$templateParts['view'].'/tmpl';
 		
 		// Look for a template override
 		if (isset($layoutTemplate) && $layoutTemplate != '_' && $layoutTemplate != $template)
 		{
-			$apath = array_pop($paths);
-			$paths[] = str_replace($template, $layoutTemplate, $apath);
+			$apath = array_shift($paths);
+			array_unshift($paths, str_replace($template, $layoutTemplate, $apath));
 		}
 		
 		$filetofind = $templateParts['template'].'.php';
