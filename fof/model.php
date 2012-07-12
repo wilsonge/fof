@@ -827,11 +827,7 @@ class FOFModel extends JModel
 		{
 			$value = $this->getUserStateFromRequest($this->getHash().$key,$key,null,'none',$savestate);
 			if(is_null($value))	{
-				if(in_array($key, array('limit','limitstart'))) {
-					$value = $this->getUserStateFromRequest('global.list.'.$key,$key,null,'none',$savestate);
-				} else {
-					return $default;
-				}
+				return $default;
 			}
 		}
 
@@ -894,6 +890,8 @@ class FOFModel extends JModel
 			} else {
 				$new_state = $cur_state;
 			}
+		} else {
+			$new_state = $cur_state;
 		}
 
 		return $new_state;
