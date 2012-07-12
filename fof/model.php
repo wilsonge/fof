@@ -826,8 +826,13 @@ class FOFModel extends JModel
 		if(is_null($value))
 		{
 			$value = $this->getUserStateFromRequest($this->getHash().$key,$key,null,'none',$savestate);
-
-			if(is_null($value))	return $default;
+			if(is_null($value))	{
+				if(in_array($key, array('limit','limitstart'))) {
+					$value = $this->getUserStateFromRequest('global.list.'.$key,$key,null,'none',$savestate);
+				} else {
+					return $default;
+				}
+			}
 		}
 
 		if( strtoupper($filter_type) == 'RAW' )
