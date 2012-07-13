@@ -1127,7 +1127,7 @@ class FOFController extends JController
 			return JFactory::getUser()->authorise($area, $this->component);
 		} else {
 			$user = JFactory::getUser();
-			return $user->authorize($this->component, $area);
+			return $user->authorise($this->component, $area);
 		}
 	}
 
