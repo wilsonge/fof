@@ -11,13 +11,23 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 
 /**
+ * Guess what? JModel is an interface in Joomla! 3.0. Holly smoke, Batman! 
+ */
+if(interface_exists('JModel')) {
+	abstract class FOFWorksAroundJoomlaToGetAModel extends JModelLegacy {}
+} else {
+	class FOFWorksAroundJoomlaToGetAModel extends JModel {}
+}
+
+
+/**
  * FrameworkOnFramework model class
  *
  * FrameworkOnFramework is a set of classes whcih extend Joomla! 1.5 and later's
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFModel extends JModel
+class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 {
 	/**
 	 * The name of the table to use
@@ -141,7 +151,11 @@ class FOFModel extends JModel
 
 		if (!class_exists( $modelClass ))
 		{
-			$include_paths = JModel::addIncludePath();
+			if(interface_exists('JModel')) {
+				$include_paths = JModelLegacy::addIncludePath();
+			} else {
+				$include_paths = JModel::addIncludePath();
+			}
 
 			try {
 				if(is_null(JFactory::$application)) {
@@ -172,10 +186,17 @@ class FOFModel extends JModel
 
 			// Try to load the model file
 			jimport('joomla.filesystem.path');
-			$path = JPath::find(
-				$include_paths,
-				JModel::_createFileName( 'model', array( 'name' => $type))
-			);
+			if(interface_exists('JModel')) {
+				$path = JPath::find(
+					$include_paths,
+					JModelLegacy::_createFileName( 'model', array( 'name' => $type))
+				);
+			} else {
+				$path = JPath::find(
+					$include_paths,
+					JModel::_createFileName( 'model', array( 'name' => $type))
+				);
+			}
 			if ($path)
 			{
 				require_once $path;
