@@ -13,12 +13,13 @@ jimport('joomla.application.component.model');
 /**
  * Guess what? JModel is an interface in Joomla! 3.0. Holly smoke, Batman! 
  */
-if(interface_exists('JModel')) {
-	abstract class FOFWorksAroundJoomlaToGetAModel extends JModelLegacy {}
-} else {
-	class FOFWorksAroundJoomlaToGetAModel extends JModel {}
+if(!class_exists('FOFWorksAroundJoomlaToGetAModel')) {
+	if(interface_exists('JModel')) {
+		abstract class FOFWorksAroundJoomlaToGetAModel extends JModelLegacy {}
+	} else {
+		class FOFWorksAroundJoomlaToGetAModel extends JModel {}
+	}
 }
-
 
 /**
  * FrameworkOnFramework model class

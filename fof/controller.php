@@ -15,12 +15,13 @@ require_once(dirname(__FILE__).'/input.php');
 /**
  * Guess what? JController is an interface in Joomla! 3.0. Holly smoke, Batman! 
  */
-if(interface_exists('JController')) {
-	abstract class FOFWorksAroundJoomlaToGetAController extends JControllerLegacy {}
-} else {
-	class FOFWorksAroundJoomlaToGetAController extends JController {}
+if(!class_exists('FOFWorksAroundJoomlaToGetAController')) {
+	if(interface_exists('JController')) {
+		abstract class FOFWorksAroundJoomlaToGetAController extends JControllerLegacy {}
+	} else {
+		class FOFWorksAroundJoomlaToGetAController extends JController {}
+	}
 }
-
 /**
  * FrameworkOnFramework controller class
  *

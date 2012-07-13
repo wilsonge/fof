@@ -13,10 +13,12 @@ jimport('joomla.application.component.view');
 /**
  * Guess what? JView is an interface in Joomla! 3.0. Holly smoke, Batman! 
  */
-if(interface_exists('JModel')) {
-	abstract class FOFWorksAroundJoomlaToGetAView extends JViewLegacy {}
-} else {
-	class FOFWorksAroundJoomlaToGetAView extends JView {}
+if(!class_exists('FOFWorksAroundJoomlaToGetAView')) {
+	if(interface_exists('JModel')) {
+		abstract class FOFWorksAroundJoomlaToGetAView extends JViewLegacy {}
+	} else {
+		class FOFWorksAroundJoomlaToGetAView extends JView {}
+	}
 }
 
 /**
