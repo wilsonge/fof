@@ -825,7 +825,7 @@ class FOFModel extends JModel
 		$value = parent::getState($key);
 		if(is_null($value))
 		{
-			$value = $this->getUserStateFromRequest($this->getHash().$key,$key,null,'none',$savestate);
+			$value = $this->getUserStateFromRequest($this->getHash().$key,$key,$value,'none',$savestate);
 			if(is_null($value))	{
 				return $default;
 			}
@@ -890,7 +890,7 @@ class FOFModel extends JModel
 			} else {
 				$new_state = $cur_state;
 			}
-		} else {
+		} elseif(is_null($new_state)) {
 			$new_state = $cur_state;
 		}
 
