@@ -1005,7 +1005,7 @@ class FOFModel extends JModel
 		} else {
 			$query = FOFQueryAbstract::getNew()
 				->select('*')
-				->from($db->nameQuote($tableName));
+				->from($db->quoteName($tableName));
 		}
 
 		$where = array();
@@ -1025,7 +1025,7 @@ class FOFModel extends JModel
 						if(version_compare(JVERSION, '3.0', 'ge')) {
 							$query->where('('.$db->qn($fieldname).' LIKE '.$db->q('%'.$filterState.'%').')');
 						} else {
-							$query->where('('.$db->nameQuote($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
+							$query->where('('.$db->quoteName($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
 						}
 						break;
 
@@ -1034,7 +1034,7 @@ class FOFModel extends JModel
 							if(version_compare(JVERSION, '3.0', 'ge')) {
 								$query->where($db->qn($fieldname).' = '.$db->q((int)$filterState));
 							} else {
-								$query->where($db->nameQuote($fieldname).' = '.$db->Quote((int)$filterState));
+								$query->where($db->quoteName($fieldname).' = '.$db->Quote((int)$filterState));
 							}
 						}
 						break;
@@ -1043,7 +1043,7 @@ class FOFModel extends JModel
 						if(version_compare(JVERSION, '3.0', 'ge')) {
 							$query->where('('.$db->qn($fieldname).'='.$db->q($filterState).')');
 						} else {
-							$query->where('('.$db->nameQuote($fieldname).'='.$db->Quote($filterState).')');
+							$query->where('('.$db->quoteName($fieldname).'='.$db->Quote($filterState).')');
 						}
 						break;
 				}
@@ -1057,7 +1057,7 @@ class FOFModel extends JModel
 			if(version_compare(JVERSION, '3.0', 'ge')) {
 				$query->order($db->qn($order).' '.$dir);
 			} else {
-				$query->order($db->nameQuote($order).' '.$dir);
+				$query->order($db->quoteName($order).' '.$dir);
 			}
 		}
 
