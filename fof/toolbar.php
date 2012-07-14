@@ -203,10 +203,18 @@ class FOFToolbar
 
 		// Add toolbar buttons
 		if($this->perms->create) {
-			JToolBarHelper::addNewX();
+			if(version_compare(JVERSION, '3.0', 'ge')) {
+				JToolBarHelper::addNew();
+			} else {
+				JToolBarHelper::addNewX();
+			}
 		}
 		if($this->perms->edit) {
-			JToolBarHelper::editListX();
+			if(version_compare(JVERSION, '3.0', 'ge')) {
+				JToolBarHelper::editList();
+			} else {
+				JToolBarHelper::editListX();
+			}
 		}
 		if($this->perms->create || $this->perms->edit) {
 			JToolBarHelper::divider();
