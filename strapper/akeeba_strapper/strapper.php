@@ -36,6 +36,9 @@ class AkeebaStrapper {
  	/** @var string The jQuery UI theme to use, default is 'smoothness' */
  	protected static $jqUItheme = 'smoothness';
  	
+	/** @var string A query tag to append to CSS and JS files for versioning purposes */
+	public static $tag = null;
+	
 	/**
 	 * Is this something running under the CLI mode?
 	 * @staticvar bool|null $isCli
@@ -173,12 +176,20 @@ class AkeebaStrapper {
  {
  	// If there are no script defs, just go to sleep
  	if(empty(AkeebaStrapper::$scriptURLs) && empty(AkeebaStrapper::$scriptDefs) ) return;
+	
+	// Get the query tag
+	$tag = AkeebaStrapper::$tag;
+	if(empty($tag)) {
+		$tag = '';
+	} else {
+		$tag = '?'.ltrim($tag,'?');
+	}
  
  	$myscripts = '';
  	
  	if(!empty(AkeebaStrapper::$scriptURLs)) foreach(AkeebaStrapper::$scriptURLs as $url)
  	{
- 		$myscripts .= '<script type="text/javascript" src="'.$url.'"></script>'."\n";
+ 		$myscripts .= '<script type="text/javascript" src="'.$url.$tag.'"></script>'."\n";
  	}
  	
  	if(!empty(AkeebaStrapper::$scriptDefs))
@@ -193,7 +204,7 @@ class AkeebaStrapper {
  	
  	if(!empty(AkeebaStrapper::$cssURLs)) foreach(AkeebaStrapper::$cssURLs as $url)
  	{
- 		$myscripts .= '<link type="text/css" rel="stylesheet" href="'.$url.'" />'."\n";
+ 		$myscripts .= '<link type="text/css" rel="stylesheet" href="'.$url.$tag.'" />'."\n";
  	}
  	
  	if(!empty(AkeebaStrapper::$cssDefs))
