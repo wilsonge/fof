@@ -194,7 +194,7 @@ class AkeebaStrapper {
  	
  	if(!empty(AkeebaStrapper::$scriptDefs))
  	{
- 		$myscripts .= '<script type="text/javascript">'."\n";
+ 		$myscripts .= '<script type="text/javascript" language="javascript">'."\n";
  		foreach(AkeebaStrapper::$scriptDefs as $def)
  		{
  			$myscripts .= $def."\n";
