@@ -158,20 +158,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 				$include_paths = JModel::addIncludePath();
 			}
 
-			try {
-				if(is_null(JFactory::$application)) {
-					$isCLI = true;
-				} else {
-					$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
-				}
-			} catch(Exception $e) {
-				$isCLI = true;
-			}
-			if($isCLI) {
-				$isAdmin = false;
-			} else {
-				$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
-			}
+			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 			if($isAdmin) {
 				$extra_paths = array(
 					JPATH_ADMINISTRATOR.'/components/'.$component.'/models',
@@ -285,15 +272,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 		}
 
 		// Get and store the pagination request variables
-		try {
-			if(is_null(JFactory::$application)) {
-				$isCLI = true;
-			} else {
-				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
-			}
-		} catch(Exception $e) {
-			$isCLI = true;
-		}
+		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if($isCLI) {
 			$limit = 20;
 			$limitstart = 0;
@@ -885,15 +864,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 */
 	protected function getUserStateFromRequest( $key, $request, $default = null, $type = 'none', $setUserState = true )
 	{
-		try {
-			if(is_null(JFactory::$application)) {
-				$isCLI = true;
-			} else {
-				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
-			}
-		} catch(Exception $e) {
-			$isCLI = true;
-		}
+		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if($isCLI) return $default;
 
 		$app = JFactory::getApplication();
