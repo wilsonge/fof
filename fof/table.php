@@ -39,7 +39,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	 *
 	 * @var    array
 	 */
-	protected $columnAlias = array();
+	protected $_columnAlias = array();
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -255,7 +255,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 							' = '.$db->quoteName('master').'.'.$db->quoteName($k)
 							);
 				}
-					
+
 			}
 
 			if(version_compare(JVERSION, '3.0', 'ge')) {
@@ -353,7 +353,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
-		
+
 		if (!(
 			in_array( $fldLockedBy, array_keys($this->getProperties()) ) ||
 	 		in_array( $fldLockedOn, array_keys($this->getProperties()) )
@@ -402,7 +402,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
-		
+
 		if (!(
 			in_array( $fldLockedBy, array_keys($this->getProperties()) ) ||
 	 		in_array( $fldLockedOn, array_keys($this->getProperties()) )
@@ -448,7 +448,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	function isCheckedOut( $with = 0, $against = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
-		
+
 		if(isset($this) && is_a($this, 'JTable') && is_null($against)) {
 			$against = $this->get( $fldLockedBy );
 		}
@@ -679,9 +679,9 @@ abstract class FOFTable_COMMONBASE extends JTable
 	*/
 	public function getColumnAlias($column)
 	{
-		if (isset($this->columnAlias[$column]))
+		if (isset($this->_columnAlias[$column]))
 		{
-			$return = $this->columnAlias[$column];
+			$return = $this->_columnAlias[$column];
 		}
 		else
 		{
@@ -706,7 +706,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		$column = strtolower($column);
 
 		$column = preg_replace('#[^A-Z0-9_]#i', '', $column);
-		$this->columnAlias[$column] = $columnAlias;
+		$this->_columnAlias[$column] = $columnAlias;
 	}
 
 	/**
@@ -721,7 +721,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 	 * 	   // Your code here
 	 *     return parent::onAfterStore() && $your_result;
 	 * }
-	 * 
+	 *
 	 * Do not do it the other way around, e.g. return $your_result && parent::onAfterStore()
 	 * Due to  PHP short-circuit boolean evaluation the parent::onAfterStore()
 	 * will not be called if $your_result is false.
@@ -758,7 +758,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 		$locked_by		= $this->getColumnAlias('locked_by');
 		$title			= $this->getColumnAlias('title');
 		$slug			= $this->getColumnAlias('slug');
-		
+
 		if(property_exists($this, $created_on) && property_exists($this, $created_by)) {
 			if(empty($this->$created_by) || ($this->$created_on == '0000-00-00 00:00:00') || empty($this->$created_on)) {
 				$this->$created_by = JFactory::getUser()->id;
@@ -780,7 +780,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				}
 			}
 		}
-		
+
 		// Do we have a set of title and slug fields?
 		if(property_exists($this, $title) && property_exists($this, $slug)) {
 			if(empty($this->$slug)) {
