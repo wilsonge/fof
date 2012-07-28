@@ -272,6 +272,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 		}
 
 		// Get and store the pagination request variables
+		$this->populateSavesate();
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if($isCLI) {
 			$limit = 20;
@@ -283,9 +284,9 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 			} else {
 				$default_limit = 20;
 			}
-			
-			$limit = $this->getUserStateFromRequest($component.'.'.$view.'.limit', 'limit', $default_limit, 'int', false);
-			$limitstart = $this->getUserStateFromRequest($component.'.'.$view.'.limitstart', 'limitstart', 0, 'int', false);
+
+			$limit = $this->getUserStateFromRequest($component.'.'.$view.'.limit', 'limit', $default_limit, 'int', $this->_savestate);
+			$limitstart = $this->getUserStateFromRequest($component.'.'.$view.'.limitstart', 'limitstart', 0, 'int', $this->_savestate);
 		}
 		$this->setState('limit',$limit);
 		$this->setState('limitstart',$limitstart);
@@ -814,19 +815,10 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 		}
 
 		// Get the savestate status
-		$savestate = $this->_savestate;
-		if(is_null($savestate)) {
-			$savestate = FOFInput::getInt('savestate', -999, $this->input);
-			if($savestate == -999) {
-				$savestate = true;
-			}
-		}
-		$this->_savestate = $savestate;
-
 		$value = parent::getState($key);
 		if(is_null($value))
 		{
-			$value = $this->getUserStateFromRequest($this->getHash().$key,$key,$value,'none',$savestate);
+			$value = $this->getUserStateFromRequest($this->getHash().$key,$key,$value,'none',$this->_savestate);
 			if(is_null($value))	{
 				return $default;
 			}
@@ -1119,6 +1111,17 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 		$this->_savestate = $newState ? true : false;
 		
 		return $this;
+	}
+	
+	public function populateSavesate()
+	{
+		if(is_null($this->_savestate)) {
+			$savestate = FOFInput::getInt('savestate', -999, $this->input);
+			if($savestate == -999) {
+				$savestate = true;
+			}
+			$this->savestate($savestate);
+		}
 	}
 
 	/**
