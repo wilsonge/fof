@@ -183,8 +183,10 @@ class FOFToolbar
 		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
 		if(!$isAdmin) return;
 
-		JToolBarHelper::title(JText::_( FOFInput::getCmd('option','com_foobar',$this->input)), str_replace('com_', '', FOFInput::getCmd('option','com_foobar',$this->input)));
-		JToolBarHelper::preferences(FOFInput::getCmd('option','com_foobar',$this->input), 550, 875);
+		$option = FOFInput::getCmd('option','com_foobar',$this->input);
+
+		JToolBarHelper::title(JText::_(strtoupper($option)), str_replace('com_', '', $option));
+		JToolBarHelper::preferences($option, 550, 875);
 		$this->renderSubmenu();
 	}
 
@@ -198,8 +200,9 @@ class FOFToolbar
 		if(!$isAdmin) return;
 
 		// Set toolbar title
-		$subtitle_key = FOFInput::getCmd('option','com_foobar',$this->input).'_TITLE_'.strtoupper(FOFInput::getCmd('view','cpanel',$this->input));
-		JToolBarHelper::title(JText::_( FOFInput::getCmd('option','com_foobar',$this->input)).' &ndash; <small>'.JText::_($subtitle_key).'</small>', str_replace('com_', '', FOFInput::getCmd('option','com_foobar',$this->input)));
+		$option = FOFInput::getCmd('option','com_foobar',$this->input);
+		$subtitle_key = strtoupper($option.'_TITLE_'.FOFInput::getCmd('view','cpanel',$this->input));
+		JToolBarHelper::title(JText::_( strtoupper($option)).' &ndash; <small>'.JText::_($subtitle_key).'</small>', str_replace('com_', '', $option));
 
 		// Add toolbar buttons
 		if($this->perms->create) {
@@ -224,7 +227,7 @@ class FOFToolbar
 			JToolBarHelper::publishList();
 			JToolBarHelper::unpublishList();
 			JToolBarHelper::divider();
-		} 
+		}
 		if($this->perms->delete) {
 			$msg = JText::_(FOFInput::getCmd('option','com_foobar',$this->input).'_CONFIRM_DELETE');
 			JToolBarHelper::deleteList($msg);
@@ -246,8 +249,8 @@ class FOFToolbar
 		$componentName = str_replace('com_', '', $option);
 
 		// Set toolbar title
-		$subtitle_key = FOFInput::getCmd('option','com_foobar',$this->input).'_TITLE_'.strtoupper(FOFInput::getCmd('view','cpanel',$this->input)).'_READ';
-		JToolBarHelper::title(JText::_(FOFInput::getCmd('option','com_foobar',$this->input)).' &ndash; <small>'.JText::_($subtitle_key).'</small>', $componentName);
+		$subtitle_key = strtoupper($option.'_TITLE_'.FOFInput::getCmd('view','cpanel',$this->input).'_READ');
+		JToolBarHelper::title(JText::_(strtoupper($option)).' &ndash; <small>'.JText::_($subtitle_key).'</small>', $componentName);
 
 		// Set toolbar icons
 		JToolBarHelper::back();
@@ -264,8 +267,8 @@ class FOFToolbar
 		$componentName = str_replace('com_', '', $option);
 
 		// Set toolbar title
-		$subtitle_key = FOFInput::getCmd('option','com_foobar',$this->input).'_TITLE_'.strtoupper(FOFInflector::pluralize(FOFInput::getCmd('view','cpanel',$this->input))).'_EDIT';
-		JToolBarHelper::title(JText::_(FOFInput::getCmd('option','com_foobar',$this->input)).' &ndash; <small>'.JText::_($subtitle_key).'</small>',$componentName);
+		$subtitle_key = strtoupper($option.'_TITLE_'.FOFInflector::pluralize(FOFInput::getCmd('view','cpanel',$this->input))).'_EDIT';
+		JToolBarHelper::title(JText::_(strtoupper($option)).' &ndash; <small>'.JText::_($subtitle_key).'</small>',$componentName);
 
 		// Set toolbar icons
 		JToolBarHelper::apply();
