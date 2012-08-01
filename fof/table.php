@@ -42,6 +42,20 @@ abstract class FOFTable_COMMONBASE extends JTable
 	protected $_columnAlias = array();
 
 	/**
+	 * If set to true, it enabled automatic checks on fields based on columns properties
+	 *
+	 * @var boolean
+	 */
+	protected $_autoChecks = false;
+
+	/**
+	 * Array with fields that should be skipped by automatic checks
+	 *
+	 * @var array
+	 */
+	protected $_skipChecks = array();
+
+	/**
 	 * Returns a static object instance of a particular table type
 	 *
 	 * @param string $type The table name
@@ -181,6 +195,47 @@ abstract class FOFTable_COMMONBASE extends JTable
 	public function getTriggerEvents()
 	{
 		return $this->_trigger_events;
+	}
+
+	/**
+	 * Sets fields to be skipped from automatic checks.
+	 *
+	 * @param array/string	$skip	Fields to be skipped by automatic checks
+	 */
+	function setSkipChecks($skip)
+	{
+		$this->_skipChecks = (array) $skip;
+	}
+
+	/**
+	 * Based on fields properties (nullable column), checks if the field is required or not
+	 *
+	 * @return boolean
+	 */
+	function check()
+	{
+		if(!$this->_autoChecks)	return parent::check();
+
+		$fields = $this->getTableFields();
+		$result = true;
+
+		foreach($fields as $field)
+		{
+			//primary key, better skip that
+			if($field->Field == $this->_tbl_key) continue;
+
+			$fieldName = $field->Field;
+
+			//field is not nullable but it's null, set error
+			if($field->Null == 'NO' && $this->$fieldName == '' && !in_array($fieldName, $this->_skipChecks))
+			{
+				$text = str_replace('#__', 'COM_', $this->getTableName()).'_ERR_'.$fieldName;
+				$this->setError(JText::_(strtoupper($text)));
+				$result = false;
+			}
+		}
+
+		return $result;
 	}
 
 	/**
