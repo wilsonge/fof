@@ -97,6 +97,7 @@ class FOFViewHtml extends FOFView
 		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$this->input), $this->config);
 		$toolbar->perms = $this->perms;
 		$toolbar->renderToolbar(FOFInput::getCmd('view','cpanel',$this->input), $task, $this->input);
+		$this->renderLinkbar();
 
 		//if i'm not the admin and i have some buttons or a title to show, let's render them before the layout
 		//Framework will only create the HTML structure, 3rd part developers will have to add CSS to correctly style it
@@ -130,6 +131,17 @@ class FOFViewHtml extends FOFView
 
 		// Show the view
 		parent::display($tpl);
+	}
+	
+	protected function renderLinkbar()
+	{
+		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$this->input), $this->config);
+		$links = $toolbar->getLinks();
+		if(!empty($links)) {
+			foreach($links as $link) {
+				JSubMenuHelper::addEntry($link['name'], $link['link'], $link['active']);
+			}
+		}
 	}
 
 	protected function onBrowse($tpl = null)

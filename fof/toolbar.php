@@ -10,11 +10,17 @@ defined('_JEXEC') or die();
 
 class FOFToolbar
 {
+	/** @var array Configuration parameters */
 	protected $config = array();
 
+	/** @var array Input (e.g. request) variables */
 	protected $input = array();
 
+	/** @var arary Permissions map, see the __construct method for more information */
 	public $perms = array();
+	
+	/** @var The links to be rendered in the toolbar */
+	protected $linkbar = array();
 
 	/**
 	 *
@@ -292,6 +298,61 @@ class FOFToolbar
 	}
 
 	/**
+	 * Removes all links from the link bar
+	 */
+	public function clearLinks()
+	{
+		$this->linkbar = array();
+	}
+	
+	/**
+	 * Get the link bar's link definitions
+	 * @return array
+	 */
+	public function &getLinks()
+	{
+		return $this->linkbar;
+	}
+	
+	/**
+	 * Append a link to the link bar
+	 * 
+	 * @param string $name The text of the link
+	 * @param string|null $link The link to render; set to null to render a separator
+	 * @param bool $active True if it's an active link
+	 * @param srting|null $icon Icon class (used by some renderers, like the Bootstrap renderer)
+	 */
+	public function appendLink($name, $link = null, $active = false, $icon = null)
+	{
+		$linkDefinition = array(
+			'name'		=> $name,
+			'link'		=> $link,
+			'active'	=> $active,
+			'icon'		=> $icon
+		);
+		$this->linkbar[] = $linkDefinition;
+	}
+	
+	/**
+	 * Prefixes (some people erroneously call this "prepend" – there is no such word) a link to the link bar
+	 * 
+	 * @param string $name The text of the link
+	 * @param string|null $link The link to render; set to null to render a separator
+	 * @param bool $active True if it's an active link
+	 * @param srting|null $icon Icon class (used by some renderers, like the Bootstrap renderer)
+	 */
+	public function prefixLink($name, $link = null, $active = false, $icon = null)
+	{
+		$linkDefinition = array(
+			'name'		=> $name,
+			'link'		=> $link,
+			'active'	=> $active,
+			'icon'		=> $icon
+		);
+		array_unshift($this->linkbar[], $linkDefinition);
+	}
+	
+	/**
 	 * Renders the submenu (toolbar links) for all detected views of this component
 	 */
 	protected function renderSubmenu()
@@ -320,7 +381,7 @@ class FOFToolbar
 
 			$active = $view == $activeView;
 
-			JSubMenuHelper::addEntry($name, $link, $active);
+			$this->appendLink($name, $link, $active);
 		}
 	}
 
