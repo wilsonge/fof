@@ -29,6 +29,10 @@
 		<file>query.mysqli.php</file>
 		<file>query.sqlazure.php</file>
 		<file>query.sqlsrv.php</file>
+		<file>render.abstract.php</file>
+		<file>render.joomla.php</file>
+		<file>render.joomla3.php</file>
+		<file>render.strapper.php</file>
 		<file>string.utils.php</file>
 		<file>table.php</file>
 		<file>template.utils.php</file>

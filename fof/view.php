@@ -30,9 +30,13 @@ if(!class_exists('FOFWorksAroundJoomlaToGetAView')) {
  */
 abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 {
+	static $renderers = array();
+	
 	protected $config = array();
 	
 	protected $input = array();
+	
+	protected $rendererObject = null;
 	
 	public function  __construct($config = array()) {
 		parent::__construct($config);
@@ -207,5 +211,71 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 		}
 		
 		return $parts;
+	}
+	
+	/**
+	 * Get the renderer object for this view
+	 * @return FOFRenderAbstract
+	 */
+	public function &getRenderer()
+	{
+		if(!($this->rendererObject instanceof FOFRenderAbstract)) {
+			$this->rendererObject = $this->findRenderer();
+		}
+		return $this->rendererObject;
+	}
+	
+	/**
+	 * Sets the renderer object for this view
+	 * @param FOFRenderAbstract $renderer 
+	 */
+	public function setRenderer(FOFRenderAbstract &$renderer)
+	{
+		$this->rendererObject = $renderer;
+	}
+	
+	/**
+	 * Finds a suitable renderer
+	 * 
+	 * @return FOFRenderAbstract
+	 */
+	protected function findRenderer()
+	{
+		// Try loading the stock renderers shipped with FOF
+		if(empty(self::$renderers) || !class_exists('FOFRenderJoomla', false)) {
+			$path = dirname(__FILE__);
+			$renderFiles = JFolder::files($path, 'render.');
+			if(!empty($renderFiles)) {
+				foreach($renderFiles as $filename) {
+					if($filename == 'render.abstract.php') continue;
+					@include_once $path.'/'.$filename;
+					$camel = FOFInflector::camelize($filename);
+					$className = 'FOFRender'.  ucfirst(FOFInflector::getPart($camel, 1));
+					$o = new $className;
+					self::registerRenderer($o);
+				}
+			}
+		}
+		
+		// Try to detect the most suitable renderer
+		$o = null;
+		$priority = 0;
+		if(!empty(self::$renderers)) {
+			foreach(self::$renderers as $r) {
+				$info = $r->getInformation();
+				if(!$info->enabled) continue;
+				if($info->priority > $priority) {
+					$o = $r;
+				}
+			}
+		}
+		
+		// Return the current renderer
+		return $o;
+	}
+	
+	public static function registerRenderer(FOFRenderAbstract &$renderer)
+	{
+		self::$renderers[] = $renderer;
 	}
 }
