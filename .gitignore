@@ -2,6 +2,7 @@
 nbproject/
 fof/include.php
 fof/version.txt
+strapper/version.txt
 release/*.zip
 .buildpath
 .settings/
