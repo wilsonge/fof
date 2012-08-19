@@ -5,6 +5,7 @@
 	<!-- Default properties, set only if not already assigned in the build.properties file -->
 	<property name="dirs.root" value=".." />
 	<property name="dirs.library" value="../fof" />
+	<property name="dirs.strapper" value="../strapper" />
 	<property name="dirs.plugins" value="../plugins" />
 	<property name="dirs.release" value="../release" />
 	<property name="version" value="dev" />
@@ -79,8 +80,17 @@
 		</copy>
 		<copy file="${dirs.root}/lib_fof.xml" tofile="${dirs.library}/lib_fof.xml" overwrite="true" />
 		
-		<!-- Generate version.txt file -->
+		<!-- Generate version.txt file for FOF -->
 		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${build.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<!-- Generate version.txt file for Akeeba Strapper -->
+		<copy file="./templates/version.txt" tofile="${dirs.strapper}/version.txt" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
 					<token key="DATE" value="${build.date}" />
