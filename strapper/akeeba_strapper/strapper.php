@@ -116,7 +116,17 @@ class AkeebaStrapper {
  			self::jQuery();
  		}
  		
- 		self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
+		$loadJS = true;
+		if(version_compare(JVERSION, '3.0', 'ge')) {
+			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+			if($isAdmin) {
+				$template = JFactory::getApplication()->getTemplate();
+				if(in_array($template, array('isis'))) {
+					$loadJS = false;
+				}
+			}
+		}
+ 		if($loadJS) self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
  		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.min.css');
  		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/strapper.css');
  	}
