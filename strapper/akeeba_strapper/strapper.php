@@ -116,17 +116,7 @@ class AkeebaStrapper {
  			self::jQuery();
  		}
  		
-		$loadJS = true;
-		if(version_compare(JVERSION, '3.0', 'ge')) {
-			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-			if($isAdmin) {
-				$template = JFactory::getApplication()->getTemplate();
-				if(in_array($template, array('isis'))) {
-					$loadJS = false;
-				}
-			}
-		}
- 		if($loadJS) self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
+ 		self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
  		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.min.css');
  		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/strapper.css');
  	}
@@ -197,9 +187,27 @@ class AkeebaStrapper {
 	}
  
  	$myscripts = '';
+	
+	$buffer = JResponse::getBody();
  	
  	if(!empty(AkeebaStrapper::$scriptURLs)) foreach(AkeebaStrapper::$scriptURLs as $url)
  	{
+		if(basename($url) == 'bootstrap.min.js') {
+			// Special case: check that nobody else is using bootstrap[.min].js on the page.
+			$scriptRegex="/<script [^>]+(\/>|><\/script>)/i";
+			$jsRegex="/([^\"\'=]+\.(js)(\?[^\"\']*){0,1})[\"\']/i";
+			preg_match_all($scriptRegex, $buffer, $matches);
+			$scripts=@implode('',$matches[0]);
+			preg_match_all($jsRegex,$scripts,$matches);
+			$skip = false;
+			foreach( $matches[1] as $scripturl ) {
+				$scripturl = basename($scripturl);
+				if(in_array($scripturl, array('bootstrap.min.js','bootstrap.js'))) {
+					$skip = true;
+				}
+			}
+			if($skip) continue;
+		}
  		$myscripts .= '<script type="text/javascript" src="'.$url.$tag.'"></script>'."\n";
  	}
  	
@@ -228,7 +236,6 @@ class AkeebaStrapper {
  		$myscripts .= '</style>'."\n";
  	}
  	
- 	$buffer = JResponse::getBody();
  	$pos = strpos($buffer, "<head>");
  	if($pos > 0)
  	{
