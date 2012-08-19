@@ -265,6 +265,7 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 				$info = $r->getInformation();
 				if(!$info->enabled) continue;
 				if($info->priority > $priority) {
+					$priority = $info->priority;
 					$o = $r;
 				}
 			}
