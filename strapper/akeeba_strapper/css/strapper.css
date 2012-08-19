@@ -90,3 +90,10 @@ td.order input.text_area { width: 20px; }
 	display: block;
 	text-align: center;
 }
+
+/**
+ * Joomla! 3.x workarounds for missing icon classes
+ */
+div#toolbar div#toolbar-back button.btn span.icon-back::before {
+	content: "";
+}
