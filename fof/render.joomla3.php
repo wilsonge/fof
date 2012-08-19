@@ -8,14 +8,15 @@
 defined('_JEXEC') or die;
 
 /**
- * Joomla! 3.x view renderer class 
+ * Joomla! 3.0.0-alpha2 view renderer class 
  */
 class FOFRenderJoomla3 extends FOFRenderStrapper
 {
 	public function __construct() {
 		$this->priority = 55;
 		if(version_compare(JVERSION, '3.0', 'ge')) {
-			$this->enabled = true;
+			$version = strtolower(JVERSION);
+			if(substr($version, -7) == '_alpha2') $this->enabled = true;
 		}
 	}
 	
