@@ -27,6 +27,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	public function preRender($view, $task, $input, $config=array())
 	{
 		echo "<div class=\"akeeba-bootstrap\">\n";
+		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
 	}
 	
@@ -45,9 +46,12 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	protected function renderLinkbar($view, $task, $input, $config=array())
 	{
 		// Do not render a submenu unless we are in the the admin area
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if(!$isAdmin) return;
 		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
+		
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if(!$isAdmin && !$renderFrontendSubmenu) return;
+
 		$links = $toolbar->getLinks();
 		if(!empty($links)) {
 			echo "<ul class=\"nav nav-tabs\">\n";
@@ -69,4 +73,56 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			echo "</ul>\n";
 		}
 	}
+	
+	protected function renderButtons($view, $task, $input, $config=array())
+	{
+		// Do not render buttons unless we are in the the frontend area and we are asked to do so
+		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
+		
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if($isAdmin || !$renderFrontendButtons) return;
+		
+		$bar = JToolBar::getInstance('toolbar');
+		$items = $bar->getItems();
+		
+		$substitutions = array(
+			'icon-32-new'		=>  'icon-plus',
+			'icon-32-edit'		=>  'icon-pencil',
+			'icon-32-publish'	=>  'icon-eye-open',
+			'icon-32-unpublish'	=>  'icon-eye-close',
+			'icon-32-delete'	=>  'icon-trash',
+			'icon-32-edit'		=>  'icon-edit',
+			'icon-32-copy'		=>  'icon-th-large',
+			'icon-32-cancel'	=>  'icon-remove',
+			'icon-32-back'		=>  'icon-circle-arrow-left',
+			'icon-32-apply'		=>  'icon-ok',
+			'icon-32-save'		=>  'icon-hdd',
+			'icon-32-save-new'	=>  'icon-repeat',
+		);
+		
+		$html = array();
+		$html[] = '<div class="well" id="' . $bar->getName() . '">';
+		foreach($items as $node) {
+			$type = $node[0];
+			$button = $bar->loadButtonType($type);
+			if ($button !== false) {
+				if(method_exists($button, 'fetchId')) {
+					$id = call_user_func_array(array(&$button, 'fetchId'), $node);
+				} else {
+					$id = null;
+				}
+				$action = call_user_func_array(array(&$button, 'fetchButton'), $node);
+				$action = str_replace('class="toolbar"', 'class="toolbar btn"', $action);
+				$action = str_replace('<span ', '<i ', $action);
+				$action = str_replace('</span>', '</i>', $action);
+				$action = str_replace(array_keys($substitutions), array_values($substitutions), $action);
+				$html[] = $action;
+			}
+		}
+		$html[] = '</div>';
+		
+		echo implode("\n", $html);
+	}
+
 }

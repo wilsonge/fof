@@ -22,6 +22,7 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	
 	public function preRender($view, $task, $input, $config=array())
 	{
+		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
 	}
 	
@@ -29,4 +30,16 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	{
 	}
 	
+	protected function renderButtons($view, $task, $input, $config=array())
+	{
+		// Do not render buttons unless we are in the the frontend area and we are asked to do so
+		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
+		
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if($isAdmin || !$renderFrontendButtons) return;
+		
+		$bar = JToolBar::getInstance('toolbar');
+		echo $bar->render();
+	}
 }

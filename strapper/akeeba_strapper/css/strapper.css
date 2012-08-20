@@ -43,6 +43,11 @@ td.order input.text_area { width: 20px; }
 .popover-content p,.popover-content ul,.popover-content ol{margin-bottom:0}
 
 /**
+ * Beez2 overrides for front-end link bars
+ */
+div.akeeba-bootstrap ul.nav-tabs li { list-style: none }
+
+/**
  * Backport of Joomla! 1.x/2.x cpanel icons to Joomla! 3.x
  */
 .akeeba-bootstrap .cpanel div.icon,

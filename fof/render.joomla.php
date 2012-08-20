@@ -44,14 +44,30 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	protected function renderLinkbar($view, $task, $input, $config=array())
 	{
 		// Do not render a submenu unless we are in the the admin area
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if(!$isAdmin) return;
 		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
+		
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if(!$isAdmin && !$renderFrontendSubmenu) return;
+
 		$links = $toolbar->getLinks();
 		if(!empty($links)) {
 			foreach($links as $link) {
 				JSubMenuHelper::addEntry($link['name'], $link['link'], $link['active']);
 			}
 		}
+	}
+	
+	protected function renderButtons($view, $task, $input, $config=array())
+	{
+		// Do not render buttons unless we are in the the frontend area and we are asked to do so
+		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
+		
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if($isAdmin || !$renderFrontendButtons) return;
+		
+		$bar = JToolBar::getInstance('toolbar');
+		echo $bar->render();
 	}
 }
