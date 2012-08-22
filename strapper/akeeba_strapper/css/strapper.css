@@ -52,10 +52,11 @@ div.akeeba-bootstrap ul.nav-tabs li { list-style: none }
  */
 .akeeba-bootstrap .cpanel div.icon,
 .akeeba-bootstrap #cpanel div.icon {
-	test-align: center;
+	text-align: center;
 	margin-right: 15px;
 	float: left;
 	margin-bottom: 15px;
+	font-size: 0.9em;
 }
 
 .akeeba-bootstrap .cpanel div.icon a,
@@ -95,6 +96,14 @@ div.akeeba-bootstrap ul.nav-tabs li { list-style: none }
 	display: block;
 	text-align: center;
 }
+
+/**
+ * Akeeba Live Update button stling
+ */
+span.liveupdate-icon-notsupported { color: gray; }
+span.liveupdate-icon-crashed { color: gray; }
+span.liveupdate-icon-updates { font-weight: bold; color: red; font-size: 0.87em; }
+span.liveupdate-icon-noupdates { color: green; }
 
 /**
  * Joomla! 3.x workarounds for missing icon classes
