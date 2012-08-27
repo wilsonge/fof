@@ -267,10 +267,10 @@ class FOFDispatcher extends JObject
 	{
 		return true;
 	}
-	
+
 	/**
 	 * Main function to detect if we're running in a CLI environment and we're admin
-	 * 
+	 *
 	 * @return array isCLI and isAdmin. It's not an associtive array, so we can use list
 	 */
 	public static function isCliAdmin()
@@ -289,7 +289,7 @@ class FOFDispatcher extends JObject
 		} else {
 			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
 		}
-		
+
 		return array($isCLI, $isAdmin);
 	}
 }
