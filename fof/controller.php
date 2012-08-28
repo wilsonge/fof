@@ -13,7 +13,7 @@ jimport('joomla.application.component.controller');
 require_once(dirname(__FILE__).'/input.php');
 
 /**
- * Guess what? JController is an interface in Joomla! 3.0. Holly smoke, Batman! 
+ * Guess what? JController is an interface in Joomla! 3.0. Holly smoke, Batman!
  */
 if(!class_exists('FOFWorksAroundJoomlaToGetAController')) {
 	if(interface_exists('JController')) {
@@ -1137,7 +1137,7 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 			return JFactory::getUser()->authorise($area, $this->component);
 		} else {
 			$user = JFactory::getUser();
-			return $user->authorise($this->component, $area);
+			return $user->authorize($this->component, $area);
 		}
 	}
 
