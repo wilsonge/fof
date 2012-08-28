@@ -26,6 +26,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	public function preRender($view, $task, $input, $config=array())
 	{
+		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
 	}
 	
