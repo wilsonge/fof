@@ -276,10 +276,19 @@ class FOFDispatcher extends JObject
 	public static function isCliAdmin()
 	{
 		try {
-			if(is_null(JFactory::$application)) {
-				$isCLI = true;
-			} else {
-				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+			// cannot try with null static property, so i'll guess using the JVERSION
+			// (on J1.5 there is not CLI support)
+			if(version_compare(JVERSION, '1.6.0', 'ge'))
+			{
+				if(is_null(JFactory::$application)) {
+					$isCLI = true;
+				} else {
+					$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+				}
+			}
+			else
+			{
+				$isCLI = false;
 			}
 		} catch(Exception $e) {
 			$isCLI = true;

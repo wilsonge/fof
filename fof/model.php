@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 
 /**
- * Guess what? JModel is an interface in Joomla! 3.0. Holly smoke, Batman! 
+ * Guess what? JModel is an interface in Joomla! 3.0. Holly smoke, Batman!
  */
 if(!class_exists('FOFWorksAroundJoomlaToGetAModel')) {
 	if(interface_exists('JModel')) {
@@ -35,10 +35,10 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 * @var string
 	 */
 	protected $table = null;
-	
+
 	/**
 	 * The table object, populated when saving data
-	 * @var FOFTable 
+	 * @var FOFTable
 	 */
 	protected $otable = null;
 
@@ -47,19 +47,19 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 * @var array
 	 */
 	protected $id_list = array();
-	
+
 	/**
 	 * The first row ID passed to the model's state
 	 * @var int
 	 */
 	protected $id = null;
-	
+
 	/**
 	 * The table object, populated when retrieving data
 	 * @var FOFTable
 	 */
 	protected $record = null;
-	
+
 	/**
 	 * The list of records made available through getList
 	 * @var array
@@ -71,7 +71,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 * @var JPagination
 	 */
 	protected $pagination = null;
-	
+
 	/**
 	 * Total rows based on the filters set in the model's state
 	 * @var int
@@ -83,7 +83,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 * @var array
 	 */
 	protected $input = array();
-	
+
 	/**
 	 * The event to trigger after deleting the data.
 	 * @var    string
@@ -113,7 +113,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 * @var    string
 	 */
 	protected $event_change_state = 'onContentChangeState';
-	
+
 	/**
 	 * Should I save the model's state in the session?
 	 * @var bool
@@ -249,7 +249,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 			$this->_name = $name;
 		}
 		$this->option = $component;
-		
+
 		// Get the view name
 		$className = get_class($this);
 		if($className == 'FOFModel') {
@@ -311,7 +311,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 		{
 			$this->setId($id);
 		}
-		
+
 		// Populate the event names from the $config array
 		if(isset($config['event_after_delete'])) {
 			$this->event_after_delete = $config['event_after_delete'];
@@ -644,7 +644,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 			} else {
 				// Call our itnernal event
 				$this->onAfterPublish($table);
-				
+
 				// Call the plugin events
 				$dispatcher = JDispatcher::getInstance();
 				JPluginHelper::importPlugin('content');
@@ -987,10 +987,14 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 			$query = FOFQueryAbstract::getNew()
 				->select('*')
 				->from($db->qn($tableName));
-		} else {
+		} elseif(version_compare(JVERSION, '1.6', 'ge')) {
 			$query = FOFQueryAbstract::getNew()
 				->select('*')
 				->from($db->quoteName($tableName));
+		}else {
+			$query = FOFQueryAbstract::getNew()
+				->select('*')
+				->from($db->nameQuote($tableName));
 		}
 
 		$where = array();
@@ -1009,17 +1013,22 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 					case $table->getColumnAlias('description'):
 						if(version_compare(JVERSION, '3.0', 'ge')) {
 							$query->where('('.$db->qn($fieldname).' LIKE '.$db->q('%'.$filterState.'%').')');
-						} else {
+						} elseif(version_compare(JVERSION, '1.6', 'ge')) {
 							$query->where('('.$db->quoteName($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
+						} else {
+							$query->where('('.$db->nameQuote($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
 						}
+
 						break;
 
 					case $table->getColumnAlias('enabled'):
 						if($filterState !== '') {
 							if(version_compare(JVERSION, '3.0', 'ge')) {
 								$query->where($db->qn($fieldname).' = '.$db->q((int)$filterState));
-							} else {
+							} elseif(version_compare(JVERSION, '1.6', 'ge')) {
 								$query->where($db->quoteName($fieldname).' = '.$db->Quote((int)$filterState));
+							} else {
+								$query->where($db->nameQuote($fieldname).' = '.$db->Quote((int)$filterState));
 							}
 						}
 						break;
@@ -1027,8 +1036,10 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 					default:
 						if(version_compare(JVERSION, '3.0', 'ge')) {
 							$query->where('('.$db->qn($fieldname).'='.$db->q($filterState).')');
-						} else {
+						} elseif(version_compare(JVERSION, '1.6', 'ge')) {
 							$query->where('('.$db->quoteName($fieldname).'='.$db->Quote($filterState).')');
+						} else {
+							$query->where('('.$db->nameQuote($fieldname).'='.$db->Quote($filterState).')');
 						}
 						break;
 				}
@@ -1041,8 +1052,10 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 			$dir = $this->getState('filter_order_Dir', 'ASC', 'cmd');
 			if(version_compare(JVERSION, '3.0', 'ge')) {
 				$query->order($db->qn($order).' '.$dir);
-			} else {
+			} elseif(version_compare(JVERSION, '1.6', 'ge')) {
 				$query->order($db->quoteName($order).' '.$dir);
+			} else {
+				$query->order($db->nameQuote($order).' '.$dir);
 			}
 		}
 
@@ -1099,20 +1112,20 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 		$this->setState($name, $arg1);
 		return $this;
 	}
-	
+
 	/**
 	 * Sets the model state auto-save status. By default the model is set up to
 	 * save its state to the session.
-	 * 
+	 *
 	 * @param bool $newState True to save the state, false to not save it.
 	 */
 	public function &savestate($newState)
 	{
 		$this->_savestate = $newState ? true : false;
-		
+
 		return $this;
 	}
-	
+
 	public function populateSavesate()
 	{
 		if(is_null($this->_savestate)) {
@@ -1155,16 +1168,16 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 * @return bool
 	 */
 	protected function onBeforeSave(&$data, &$table)
-	{		
+	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 		if(!$isCLI){
-			JPluginHelper::importPlugin('content');			
+			JPluginHelper::importPlugin('content');
 		}
-		
+
 		$dispatcher = JDispatcher::getInstance();
-		
+
 		try {
 			// Do I have a new record?
 			$key = $table->getKeyName();
@@ -1176,9 +1189,9 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 				$allData = $data;
 			}
 			$pk = (!empty($allData[$key])) ? $allData[$key] : 0;
-			
+
 			$this->_isNewRecord = $pk <= 0;
-			
+
 			// Bind the data
 			$table->bind($allData);
 			// Call the plugin
@@ -1214,12 +1227,12 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	protected function onAfterSave(&$table)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 		if(!$isCLI){
-			JPluginHelper::importPlugin('content');			
+			JPluginHelper::importPlugin('content');
 		}
-		
+
 		$dispatcher = JDispatcher::getInstance();
 		try {
 			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
@@ -1239,26 +1252,26 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	protected function onBeforeDelete(&$id, &$table)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 		if(!$isCLI){
-			JPluginHelper::importPlugin('content');			
+			JPluginHelper::importPlugin('content');
 		}
-		
+
 		$dispatcher = JDispatcher::getInstance();
 		try {
 			$table->load($id);
-			
+
 			$name = FOFInput::getCmd('view','cpanel',$this->input);
 			$context = $this->option.'.'.$name;
 			$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
-			
+
 			if (in_array(false, $result, true)) {
 				// Plugin failed, return false
 				$this->setError($table->getError());
 				return false;
 			}
-			
+
 			$this->_recordForDeletion = clone $table;
 		} catch(Exception $e) {
 			// Oops, an exception occured!
@@ -1271,12 +1284,12 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	protected function onAfterDelete($id)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 		if(!$isCLI){
-			JPluginHelper::importPlugin('content');			
+			JPluginHelper::importPlugin('content');
 		}
-		
+
 		$dispatcher = JDispatcher::getInstance();
 		try {
 			$name = FOFInput::getCmd('view','cpanel',$this->input);
