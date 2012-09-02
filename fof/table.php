@@ -275,7 +275,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				$query = FOFQueryAbstract::getNew($this->_db)
 					->select($db->qn('master').'.'.$db->qn($k))
 					->from($db->qn($this->_tbl).' AS '.$db->qn('master'));
-			} elseif(version_compare(JVERSION, '1.6.0'. 'ge')){
+			} elseif(version_compare(JVERSION, '1.6.0', 'ge')){
 				$query = FOFQueryAbstract::getNew($this->_db)
 					->select($db->quoteName('master').'.'.$db->quoteName($k))
 					->from($db->quoteName($this->_tbl).' AS '.$db->quoteName('master'));
@@ -298,7 +298,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 							' ON '.$db->qn('t'.$tableNo).'.'.$db->qn($table['joinfield']).
 							' = '.$db->qn('master').'.'.$db->qn($k)
 							);
-				} elseif(version_compare(JVERSION, '1.6.0'. 'ge')){
+				} elseif(version_compare(JVERSION, '1.6.0', 'ge')){
 					$query->select(array(
 						'COUNT(DISTINCT '.$db->quoteName('t'.$tableNo).'.'.$db->quoteName($table['idfield']).') AS '.$db->quoteName($table['idalias'])
 					));
@@ -325,7 +325,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 			if(version_compare(JVERSION, '3.0', 'ge')) {
 				$query->where($db->qn('master').'.'.$db->qn($k).' = '.$db->q($this->$k));
 				$query->group($db->qn('master').'.'.$db->qn($k));
-			} elseif(version_compare(JVERSION, '1.6.0'. 'ge')){
+			} elseif(version_compare(JVERSION, '1.6.0', 'ge')){
 				$query->where($db->quoteName('master').'.'.$db->quoteName($k).' = '.$db->quote($this->$k));
 				$query->group($db->quoteName('master').'.'.$db->quoteName($k));
 			} else {
@@ -555,7 +555,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$query = FOFQueryAbstract::getNew($this->_db)
 					->update($this->_db->qn($this->_tbl))
 					->set($this->_db->qn($enabledName).' = '.(int) $publish);
-		} elseif(version_compare(JVERSION, '1.6.0'. 'ge')) {
+		} elseif(version_compare(JVERSION, '1.6.0', 'ge')) {
 			$query = FOFQueryAbstract::getNew($this->_db)
 					->update($this->_db->quoteName($this->_tbl))
 					->set($this->_db->quoteName($enabledName).' = '.(int) $publish);
@@ -574,7 +574,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 					' = 0 OR '.$this->_db->qn($locked_byName).' = '.(int) $user_id.')',
 					'AND'
 				);
-			} elseif(version_compare(JVERSION, '1.6.0'. 'ge')) {
+			} elseif(version_compare(JVERSION, '1.6.0', 'ge')) {
 				$query->where(
 					' ('.$this->_db->quoteName($locked_byName).
 					' = 0 OR '.$this->_db->quoteName($locked_byName).' = '.(int) $user_id.')',
@@ -592,11 +592,11 @@ abstract class FOFTable_COMMONBASE extends JTable
 		if(version_compare(JVERSION, '3.0', 'ge')) {
 			$cids = $this->_db->qn($k).' = ' .
 					implode(' OR '.$this->_db->qn($k).' = ',$cid);
-		} elseif(version_compare(JVERSION, '1.6.0'. 'ge')){
+		} elseif(version_compare(JVERSION, '1.6.0', 'ge')){
 			$cids = $this->_db->quoteName($k).' = ' .
 					implode(' OR '.$this->_db->quoteName($k).' = ',$cid);
 		} else {
-			$cids = $this->_db->quoteName($k).' = ' .
+			$cids = $this->_db->nameQuote($k).' = ' .
 					implode(' OR '.$this->_db->nameQuote($k).' = ',$cid);
 		}
 
@@ -880,12 +880,18 @@ abstract class FOFTable_COMMONBASE extends JTable
 					->from($this->_tbl)
 					->where($db->qn($slug).' = '.$db->q($this->$slug))
 					->where('NOT '.$db->qn($this->_tbl_key).' = '.$db->q($this->{$this->_tbl_key}));
-			} else {
+			} elseif(version_compare(JVERSION, '1.6.0', 'ge')) {
 				$query = FOFQueryAbstract::getNew($db)
 					->select($db->quoteName($slug))
 					->from($this->_tbl)
 					->where($db->quoteName($slug).' = '.$db->quote($this->$slug))
 					->where('NOT '.$db->quoteName($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}));
+			} else {
+				$query = FOFQueryAbstract::getNew($db)
+					->select($db->nameQuote($slug))
+					->from($this->_tbl)
+					->where($db->nameQuote($slug).' = '.$db->quote($this->$slug))
+					->where('NOT '.$db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}));
 			}
 			$db->setQuery($query);
 			$existingItems = $db->loadAssocList();
@@ -901,12 +907,18 @@ abstract class FOFTable_COMMONBASE extends JTable
 						->from($this->_tbl)
 						->where($db->qn($slug).' = '.$db->q($newSlug))
 						->where($db->qn($this->_tbl_key).' = '.$db->q($this->{$this->_tbl_key}), 'AND NOT');
-				} else {
+				} elseif(version_compare(JVERSION, '1.6.0', 'ge')) {
 					$query = FOFQueryAbstract::getNew($db)
 						->select($db->quoteName($slug))
 						->from($this->_tbl)
 						->where($db->quoteName($slug).' = '.$db->quote($newSlug))
 						->where($db->quoteName($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}), 'AND NOT');
+				} else {
+					$query = FOFQueryAbstract::getNew($db)
+						->select($db->nameQuote($slug))
+						->from($this->_tbl)
+						->where($db->nameQuote($slug).' = '.$db->quote($newSlug))
+						->where($db->nameQuote($this->_tbl_key).' = '.$db->quote($this->{$this->_tbl_key}), 'AND NOT');
 				}
 				$db->setQuery($query);
 				$existingItems = $db->loadAssocList();
