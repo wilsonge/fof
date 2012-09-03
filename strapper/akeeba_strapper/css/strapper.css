@@ -9,6 +9,7 @@
 /**
  * Selective reset of Bootstrap styling
  */
+.akeeba-bootstrap { font-size: 10pt; }
 div.akeeba-bootstrap { background: transparent; }
 div.icon a.modal { position: relative; top: inherit; left: inherit; z-index: inherit; margin: 0 !important; box-shadow: none;  }
 div.ak_clr_left { clear: left; }
