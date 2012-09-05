@@ -1,0 +1,12 @@
+NOTES FOR TINKERERES
+================================================================================
+
+When importing a new Bootstrap release you have to:
+
+• Rename bootstrap.css to bootstrap.less and add this at the top:
+     .akeeba-bootstrap {
+  and this at the bottom of the file:
+     }
+  then compile it with a LESS compiler such as SimpLESS
+
+• Remove all .modal definitions; the conflict with Joomla!
