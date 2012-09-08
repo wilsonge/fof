@@ -444,9 +444,26 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 		return $this;
 	}
 
+	/**
+	 * Clears the input array.
+	 *
+	 * @return FOFModel
+	 */
 	public function clearInput()
 	{
 		$this->input = array();
+
+		return $this;
+	}
+	
+	/**
+	 * Resets the saved state for this view
+	 *
+	 * @return FOFModel
+	 */
+	public function resetSavedState()
+	{
+		JFactory::getApplication()->setUserState(substr($this->getHash(),0,-1), null);
 
 		return $this;
 	}
