@@ -76,6 +76,9 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$title = JFactory::getApplication()->get('JComponentTitle');
 		$bar = JToolBar::getInstance('toolbar');
 
-		echo '<div id="FOFHeaderHolder">' , $title , $bar->render() , '<div style="clear:both"></div>', '</div>';
+		// delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
+		$bar_content = str_replace('href="#"','', $bar->render());
+
+		echo '<div id="FOFHeaderHolder">' , $title , $bar_content , '<div style="clear:both"></div>', '</div>';
 	}
 }
