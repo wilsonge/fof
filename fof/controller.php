@@ -784,7 +784,7 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 				$auto = true;
 			}
 
-			if($auto) $url = JRoute::_($url);
+			if($auto) $url = JRoute::_($url, false);
 		}
 
 		parent::setRedirect($url, $msg, $type);
