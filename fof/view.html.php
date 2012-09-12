@@ -196,4 +196,44 @@ class FOFViewHtml extends FOFView
 		// All I need is to read the record
 		return $this->onAdd();
 	}
+	
+	protected function hasAjaxOrderingSupport()
+	{
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			return false;
+		}
+		
+		$model = $this->getModel();
+		
+		if(!method_exists($model, 'getTable')) {
+			return false;
+		}
+		
+		$table = $this->getModel()->getTable();
+		
+		if(!method_exists($table, 'getColumnAlias') || !method_exists($table, 'getTableFields')) {
+			return false;
+		}
+		
+		$orderingColumn = $table->getColumnAlias('ordering');
+		$fields = $table->getTableFields();
+		if(!array_key_exists($orderingColumn, $fields)) {
+			return false;
+		}
+		
+		$listOrder	= $this->escape($model->getState('filter_order', null, 'cmd'));
+		$listDirn	= $this->escape($model->getState('filter_order_Dir', 'ASC', 'cmd'));
+		$saveOrder	= $listOrder == $orderingColumn;
+		
+		if ($saveOrder)
+		{
+			$saveOrderingUrl = 'index.php?option='.$this->config['option'].'&view='.$this->config['view'].'&task=saveorder&format=json';
+			JHtml::_('sortablelist.sortable', 'itemsList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+		}
+		
+		return array(
+			'saveOrder'			=> $saveOrder,
+			'orderingColumn'	=> $orderingColumn
+		);
+	}
 }
