@@ -74,12 +74,15 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 		} else {
 			$this->_name = $config['view'];
 		}
+		FOFInput::setVar('view', $this->_name, $config['input']);
+		$config['name'] = $this->_name;
+		$config['view'] = $this->_name;
 		
 		// Set a base path for use by the view
 		if (array_key_exists('base_path', $config)) {
 			$this->_basePath	= $config['base_path'];
 		} else {
-			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 			$this->_basePath	= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_COMPONENT).'/'.$config['option'];
 		}
 		
@@ -116,11 +119,46 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 	 * Loads a template given any path. The path is in the format:
 	 * [admin|site]:com_foobar/viewname/templatename
 	 * e.g. admin:com_foobar/myview/default
+	 * 
+	 * This function searches for Joomla! version override templates. For example,
+	 * if you have run this under Joomla! 3.0 and you try to load
+	 * admin:com_foobar/myview/default it will automatically search for the
+	 * template files default.j30.php, default.j3.php and default.php, in this
+	 * order.
+	 * 
 	 * @param string $path 
 	 * @param array $forceParams A hash array of variables to be extracted in the local scope of the template file
 	 */
 	public function loadAnyTemplate($path = '', $forceParams = array())
 	{
+		// Automatically check for a Joomla! version specific override
+		$throwErrorIfNotFound = true;
+		
+		$jversion = new JVersion();
+		$versionParts = explode('.', $jversion->getLongVersion());
+		$majorVersion = array_shift($versionParts);
+		$suffixes = array(
+			'.j'.str_replace('.', '', $jversion->getHelpVersion()),
+			'.j'.$majorVersion,
+		);
+		unset($jversion, $versionParts, $majorVersion);
+		
+		foreach($suffixes as $suffix) {
+			if(substr($path, -strlen($suffix)) == $suffix) {
+				$throwErrorIfNotFound = false;
+				break;
+			}
+		}
+		
+		if($throwErrorIfNotFound) {
+			foreach($suffixes as $suffix) {
+				$result = $this->loadAnyTemplate($path.$suffix, $forceParams);
+				if($result !== false) {
+					return $result;
+				}
+			}
+		}
+		
 		$template = JFactory::getApplication()->getTemplate();
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			$layoutTemplate = $this->getLayoutTemplate();
@@ -135,6 +173,11 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 			$template.'/html/'.$templateParts['component'].'/'.$templateParts['view'];
 		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE).'/components/'.
 			$templateParts['component'].'/views/'.$templateParts['view'].'/tmpl';
+		if(property_exists($this, '_path')) {
+			$paths = array_merge($paths, $this->_path['template']);
+		} elseif(property_exists($this, 'path')) {
+			$paths = array_merge($paths, $this->path['template']);
+		}
 		
 		// Look for a template override
 		if (isset($layoutTemplate) && $layoutTemplate != '_' && $layoutTemplate != $template)
@@ -174,9 +217,39 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 
 			return $this->_output;
 		} else {
-			return JError::raiseError(500, JText::sprintf('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND', $path));
+			if($throwErrorIfNotFound) {
+				return JError::raiseError(500, JText::sprintf('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND', $path));
+			}
 			return false;
 		}
+	}
+	
+	/**
+	 * Overrides the default method to execute and display a template script.
+	 * Instead of loadTemplate is uses loadAnyTemplate which allows for automatic
+	 * Joomla! version overrides. A little slice of awesome pie!
+	 *
+	 * @param   string  $tpl  The name of the template file to parse
+	 *
+	 * @return  mixed  A string if successful, otherwise a Error object.
+	 */
+	public function display($tpl = null)
+	{
+		$path = '';
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		$path = $isAdmin ? 'admin:' : 'site:';
+		
+		$path .= $this->config['option'].'/';
+		$path .= $this->config['view'].'/';
+		$path .= $this->getLayout();
+		
+		$result = $this->loadAnyTemplate($path);
+		if ($result instanceof Exception)
+		{
+			return $result;
+		}
+
+		echo $result;
 	}
 	
 	private function _parseTemplatePath($path = '')
