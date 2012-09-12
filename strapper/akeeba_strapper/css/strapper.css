@@ -112,3 +112,9 @@ span.liveupdate-icon-noupdates { color: green; }
 div#toolbar div#toolbar-back button.btn span.icon-back::before {
 	content: "";
 }
+
+/**
+ * Joomla! 3.x workarounds for sort icons
+ */
+.akeeba-bootstrap .icon-downarrow::before, .akeeba-bootstrap .icon-arrow-down::before {content:""}
+.akeeba-bootstrap .icon-uparrow::before, .akeeba-bootstrap .icon-arrow-up::before {content:""}
