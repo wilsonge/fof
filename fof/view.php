@@ -218,7 +218,7 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 			return $this->_output;
 		} else {
 			if($throwErrorIfNotFound) {
-				return JError::raiseError(500, JText::sprintf('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND', $path));
+				return new Exception(JText::sprintf('JLIB_APPLICATION_ERROR_LAYOUTFILE_NOT_FOUND', $path), 500);
 			}
 			return false;
 		}
@@ -235,18 +235,25 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 	 */
 	public function display($tpl = null)
 	{
-		$path = '';
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		$path = $isAdmin ? 'admin:' : 'site:';
-		
-		$path .= $this->config['option'].'/';
-		$path .= $this->config['view'].'/';
-		$path .= $this->getLayout();
+
+		$basePath = $isAdmin ? 'admin:' : 'site:';
+		$basePath .= $this->config['option'].'/';
+		$basePath .= $this->config['view'].'/';
+		$path = $basePath.$this->getLayout();
 		
 		$result = $this->loadAnyTemplate($path);
-		if ($result instanceof Exception)
-		{
-			return $result;
+		if ($result instanceof Exception) {
+			if($this->getLayout() != 'default') {
+				$path = $basePath.'default';
+				$result = $this->loadAnyTemplate($path, array(), false);
+				if ($result instanceof Exception) {
+					JError::raiseError($result->getCode(), $result->getMessage());
+					return $result;
+				}
+			} else {
+				return $result;
+			}
 		}
 
 		echo $result;
