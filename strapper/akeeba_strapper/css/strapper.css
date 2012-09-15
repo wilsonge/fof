@@ -49,6 +49,11 @@ td.order input.text_area { width: 20px; }
 div.akeeba-bootstrap ul.nav-tabs li { list-style: none }
 
 /**
+ * RocketTheme templates force a background image in alerts
+ */
+.akeeba-bootstrap .alert { background-image: none; }
+
+/**
  * Backport of Joomla! 1.x/2.x cpanel icons to Joomla! 3.x
  */
 .akeeba-bootstrap .cpanel div.icon,
