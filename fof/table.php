@@ -813,7 +813,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforeBind'.ucfirst($name), array( &$this, &$from ) );
+			$result = $dispatcher->trigger( 'onBeforeBind'.ucfirst($name), array( &$this, &$from ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -930,7 +937,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 		if($this->_trigger_events){
 			$name = FOFInflector::pluralize($this->getKeyName());
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforeStore'.ucfirst($name), array( &$this, $updateNulls ) );
+			$result = $dispatcher->trigger( 'onBeforeStore'.ucfirst($name), array( &$this, $updateNulls ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 
 		return true;
@@ -942,7 +956,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onAfterStore'.ucfirst($name), array( &$this ) );
+			$result =  $dispatcher->trigger( 'onAfterStore'.ucfirst($name), array( &$this ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -953,7 +974,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforeMove'.ucfirst($name), array( &$this, $updateNulls ) );
+			$result = $dispatcher->trigger( 'onBeforeMove'.ucfirst($name), array( &$this, $updateNulls ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -964,7 +992,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onAfterMove'.ucfirst($name), array( &$this ) );
+			$result = $dispatcher->trigger( 'onAfterMove'.ucfirst($name), array( &$this ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -975,7 +1010,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforeReorder'.ucfirst($name), array( &$this, $where ) );
+			$result = $dispatcher->trigger( 'onBeforeReorder'.ucfirst($name), array( &$this, $where ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -986,7 +1028,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onAfterReorder'.ucfirst($name), array( &$this ) );
+			$result = $dispatcher->trigger( 'onAfterReorder'.ucfirst($name), array( &$this ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -997,7 +1046,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforeDelete'.ucfirst($name), array( &$this, $oid ) );
+			$result = $dispatcher->trigger( 'onBeforeDelete'.ucfirst($name), array( &$this, $oid ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -1008,7 +1064,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onAfterDelete'.ucfirst($name), array( &$this, $oid ) );
+			$result = $dispatcher->trigger( 'onAfterDelete'.ucfirst($name), array( &$this, $oid ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -1019,7 +1082,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforeHit'.ucfirst($name), array( &$this, $oid, $log ) );
+			$result = $dispatcher->trigger( 'onBeforeHit'.ucfirst($name), array( &$this, $oid, $log ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -1030,7 +1100,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onAfterHit'.ucfirst($name), array( &$this, $oid ) );
+			$result = $dispatcher->trigger( 'onAfterHit'.ucfirst($name), array( &$this, $oid ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -1041,7 +1118,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforePublish'.ucfirst($name), array( &$this, &$cid, $publish ) );
+			$result = $dispatcher->trigger( 'onBeforePublish'.ucfirst($name), array( &$this, &$cid, $publish ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -1052,7 +1136,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onAfterReset'.ucfirst($name), array( &$this ) );
+			$result = $dispatcher->trigger( 'onAfterReset'.ucfirst($name), array( &$this ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
@@ -1063,7 +1154,14 @@ abstract class FOFTable_COMMONBASE extends JTable
 			$name = FOFInflector::pluralize($this->getKeyName());
 
 			$dispatcher = JDispatcher::getInstance();
-			return $dispatcher->trigger( 'onBeforeReset'.ucfirst($name), array( &$this ) );
+			$result = $dispatcher->trigger( 'onBeforeReset'.ucfirst($name), array( &$this ) );
+
+			if(in_array(false, $result, true)){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return true;
 	}
