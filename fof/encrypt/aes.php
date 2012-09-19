@@ -79,10 +79,16 @@ class FOFEncryptAES
 		
 		// Set up the IV (Initialization Vector)
 		$iv_size = mcrypt_get_iv_size($this->_cipherType, $this->_cipherMode);
-		$iv = mcrypt_create_iv($iv_size);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_URANDOM);
+		if(empty($iv)) {
+			$iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_RANDOM);
+		}
+		if(empty($iv)) {
+			$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+		}
 		
 		// Encrypt the data
-		$cipherText = mcrypt_encrypt($this->_cipherType, $key, $stringToEncrypt, $this->_cipherMode);
+		$cipherText = mcrypt_encrypt($this->_cipherType, $key, $stringToEncrypt, $this->_cipherMode, $iv);
 		
 		// Prepend the IV to the ciphertext
 		$cipherText = $iv . $cipherText;
