@@ -224,6 +224,10 @@ ENDSCRIPT;
  
  	$myscripts = '';
 	
+	if(version_compare(JVERSION, '3.0', 'lt')) {
+		$buffer = JResponse::getBody();
+	}
+	
  	if(!empty(AkeebaStrapper::$scriptURLs)) foreach(AkeebaStrapper::$scriptURLs as $url)
  	{
 		if(basename($url) == 'bootstrap.min.js') {
@@ -291,7 +295,6 @@ ENDSCRIPT;
  	}
  	
 	if(version_compare(JVERSION, '3.0', 'lt')) {
-		$buffer = JResponse::getBody();
 		$pos = strpos($buffer, "<head>");
 		if($pos > 0)
 		{
