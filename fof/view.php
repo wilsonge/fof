@@ -325,6 +325,8 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 	 */
 	protected function findRenderer()
 	{
+		jimport('joomla.filesystem.folder');
+		
 		// Try loading the stock renderers shipped with FOF
 		if(empty(self::$renderers) || !class_exists('FOFRenderJoomla', false)) {
 			$path = dirname(__FILE__);
