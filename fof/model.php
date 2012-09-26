@@ -926,7 +926,7 @@ class FOFModel extends FOFWorksAroundJoomlaToGetAModel
 	 * @param   string   $prefix   The class prefix. Optional.
 	 * @param   array    $options  Configuration array for model. Optional.
 	 *
-	 * @return  JTable  A JTable object
+	 * @return  FOFTable  A FOFTable object
 	 * @since   11.1
 	 */
 	public function getTable($name = '', $prefix = null, $options = array())
