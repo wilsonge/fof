@@ -128,3 +128,8 @@ div#toolbar div#toolbar-back button.btn span.icon-back::before {
  * Joomla! 2.5+ workaround for booleanlist controls
  */
 .akeeba-bootstrap label.radiobtn { display: inline-block }
+/**
+ * Joomla! 3.0+ workaround for booleanlist controls
+ */
+.akeeba-bootstrap label.radio { display: inline-block }
+.akeeba-bootstrap div.controls>div.controls {margin: 0}

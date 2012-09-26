@@ -139,7 +139,7 @@ ENDSCRIPT;
  		if(!self::$_includedJQuery) {
  			self::jQuery();
  		}
- 		
+ 	
 		if(version_compare(JVERSION, '3.0', 'lt')) {
 			self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
 			self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.min.css');
@@ -205,7 +205,14 @@ ENDSCRIPT;
  function AkeebaStrapperLoader()
  {
  	// If there are no script defs, just go to sleep
- 	if(empty(AkeebaStrapper::$scriptURLs) && empty(AkeebaStrapper::$scriptDefs) ) return;
+ 	if(
+		empty(AkeebaStrapper::$scriptURLs) &&
+		empty(AkeebaStrapper::$scriptDefs) &&
+		empty(AkeebaStrapper::$cssDefs) &&
+		empty(AkeebaStrapper::$cssURLs)
+	) {
+		return;
+	}
 	
 	// Get the query tag
 	$tag = AkeebaStrapper::$tag;
@@ -217,8 +224,6 @@ ENDSCRIPT;
  
  	$myscripts = '';
 	
-	$buffer = JResponse::getBody();
- 	
  	if(!empty(AkeebaStrapper::$scriptURLs)) foreach(AkeebaStrapper::$scriptURLs as $url)
  	{
 		if(basename($url) == 'bootstrap.min.js') {
@@ -237,22 +242,38 @@ ENDSCRIPT;
 			}
 			if($skip) continue;
 		}
- 		$myscripts .= '<script type="text/javascript" src="'.$url.$tag.'"></script>'."\n";
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			$myscripts .= '<script type="text/javascript" src="'.$url.$tag.'"></script>'."\n";
+		} else {
+			JFactory::getDocument()->addScript($url.$tag);
+		}
  	}
  	
  	if(!empty(AkeebaStrapper::$scriptDefs))
  	{
- 		$myscripts .= '<script type="text/javascript" language="javascript">'."\n";
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			$myscripts .= '<script type="text/javascript" language="javascript">'."\n";
+		} else {
+			$myscripts = '';
+		}
  		foreach(AkeebaStrapper::$scriptDefs as $def)
  		{
  			$myscripts .= $def."\n";
  		}
- 		$myscripts .= '</script>'."\n";
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			$myscripts .= '</script>'."\n";
+		} else {
+			JFactory::getDocument()->addScriptDeclaration($myscripts);
+		}
  	}
- 	
+	
  	if(!empty(AkeebaStrapper::$cssURLs)) foreach(AkeebaStrapper::$cssURLs as $url)
  	{
- 		$myscripts .= '<link type="text/css" rel="stylesheet" href="'.$url.$tag.'" />'."\n";
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			$myscripts .= '<link type="text/css" rel="stylesheet" href="'.$url.$tag.'" />'."\n";
+		} else {
+			JFactory::getDocument()->addStyleSheet($url.$tag);
+		}
  	}
  	
  	if(!empty(AkeebaStrapper::$cssDefs))
@@ -260,21 +281,32 @@ ENDSCRIPT;
  		$myscripts .= '<style type="text/css">'."\n";
  		foreach(AkeebaStrapper::$cssDefs as $def)
  		{
- 			$myscripts .= $def."\n";
+			if(version_compare(JVERSION, '3.0', 'lt')) {
+				$myscripts .= $def."\n";
+			} else {
+				JFactory::getDocument()->addScriptDeclaration($def."\n");
+			}
  		}
  		$myscripts .= '</style>'."\n";
  	}
  	
- 	$pos = strpos($buffer, "<head>");
- 	if($pos > 0)
- 	{
- 		$buffer = substr($buffer, 0, $pos + 6).$myscripts.substr($buffer, $pos + 6);
- 		JResponse::setBody($buffer);
- 	}
+	if(version_compare(JVERSION, '3.0', 'lt')) {
+		$buffer = JResponse::getBody();
+		$pos = strpos($buffer, "<head>");
+		if($pos > 0)
+		{
+			$buffer = substr($buffer, 0, $pos + 6).$myscripts.substr($buffer, $pos + 6);
+			JResponse::setBody($buffer);
+		}
+	}
  }
  
 // Add our pseudo-plugin to the application event queue
 if(!AkeebaStrapper::isCli()) {
 	$app = JFactory::getApplication();
-	$app->registerEvent('onAfterRender', 'AkeebaStrapperLoader');
+	if(version_compare(JVERSION, '3.0', 'lt')) {
+		$app->registerEvent('onAfterRender', 'AkeebaStrapperLoader');
+	} else {
+		$app->registerEvent('onBeforeRender', 'AkeebaStrapperLoader');
+	}
 }
