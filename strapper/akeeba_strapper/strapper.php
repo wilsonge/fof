@@ -70,7 +70,23 @@ class AkeebaStrapper {
 		
  		self::$_includedJQuery = true;
  		
- 		self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajq.js');
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			// Joomla! 2.5 and earlier, load our own library
+			self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajq.js');
+		} else {
+			if(AkeebaStrapper::isCli()) return;
+			// Joomla! 3.0 and later, use Joomla! code to load the library
+			JHtml::_('jquery.framework');
+			$script = <<<ENDSCRIPT
+if(typeof(akeeba) == 'undefined') {
+	var akeeba = {};
+}
+if(typeof(akeeba.jQuery) == 'undefined') {
+	akeeba.jQuery = jQuery.noConflict();
+}
+ENDSCRIPT;
+			JFactory::getDocument()->addScriptDeclaration($script);
+		}
  	}
  	
  	/**
@@ -100,7 +116,15 @@ class AkeebaStrapper {
  		self::$_includedJQueryUI = true;
  		$theme = self::$jqUItheme;
  		
- 		self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajqui.js');
+		$url = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajqui.js');
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			// Joomla! 2.5, use our magic loader
+			self::$scriptURLs[] = $url;
+		} else {
+			// Joomla! 3.0 and later, use Joomla!'s loader
+			if(AkeebaStrapper::isCli()) return;
+			JFactory::getDocument()->addScript($url);
+		}
  		self::$cssURLs[] = FOFTemplateUtils::parsePath("media://akeeba_strapper/css/$theme/theme.css");
  	}
  	
@@ -116,9 +140,14 @@ class AkeebaStrapper {
  			self::jQuery();
  		}
  		
- 		self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
- 		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.min.css');
- 		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/strapper.css');
+		if(version_compare(JVERSION, '3.0', 'lt')) {
+			self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
+			self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.min.css');
+		} else {
+			self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.j3.css');
+		}
+		
+		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/strapper.css');
  	}
  	
  	/**
