@@ -51,6 +51,9 @@ class FOFViewJson extends FOFViewHtml
 			}
 						
 			return false;
+		} else {
+			echo $result;
+			return false;
 		}
 	}
 	
@@ -84,6 +87,9 @@ class FOFViewJson extends FOFViewHtml
 				echo $json;	
 			}
 			
+			return false;
+		} else {
+			echo $result;
 			return false;
 		}
 	}
