@@ -44,6 +44,9 @@ class FOFViewJson extends FOFViewHtml
 			if(!empty($callback)) {
 				echo $callback . '('.$json.')';
 			} else {
+				$defaultName = FOFInput::getCmd('view', 'joomla', $this->input);
+				$filename = FOFInput::getCmd('basename', $defaultName, $this->input);
+				$document->setName($filename);
 				echo $json;	
 			}
 						
@@ -75,6 +78,9 @@ class FOFViewJson extends FOFViewHtml
 			if(!empty($callback)) {
 				echo $callback . '('.$json.')';
 			} else {
+				$defaultName = FOFInput::getCmd('view', 'joomla', $this->input);
+				$filename = FOFInput::getCmd('basename', $defaultName, $this->input);
+				$document->setName($filename);
 				echo $json;	
 			}
 			
