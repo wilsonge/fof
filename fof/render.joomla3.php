@@ -22,6 +22,9 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	
 	public function preRender($view, $task, $input, $config=array())
 	{
+		$format = FOFInput::getCmd('format', 'html', $input);
+		if($format != 'html') return;
+		
 		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
 	}
