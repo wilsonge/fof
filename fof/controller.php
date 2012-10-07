@@ -504,6 +504,42 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 	}
 
 	/**
+	 * Duplicates selected items
+	 */
+	public function copy()
+	{
+		// CSRF prevention
+		if($this->csrfProtection) {
+			$this->_csrfProtection();
+		}
+
+		$model = $this->getThisModel();
+		if(!$model->getId()) $model->setIDsFromRequest();
+
+		$status = $model->copy();
+
+		//check if i'm using an AJAX call, in this case there is no need to redirect
+		$format = FOFInput::getString('format','', $this->input);
+		if($format == 'json')
+		{
+			echo json_encode($status);
+			return;
+		}
+
+		// redirect
+		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
+		if(!$status)
+		{
+			$this->setRedirect($url, $model->getError(), 'error');
+		}
+		else
+		{
+			$this->setRedirect($url);
+		}
+	}
+
+	/**
 	 * Save the incoming data and then return to the Browse task
 	 */
 	public function save()
