@@ -358,9 +358,10 @@ class FOFToolbar
 	 * @param string $name The text of the link
 	 * @param string|null $link The link to render; set to null to render a separator
 	 * @param bool $active True if it's an active link
-	 * @param srting|null $icon Icon class (used by some renderers, like the Bootstrap renderer)
+	 * @param string|null $icon Icon class (used by some renderers, like the Bootstrap renderer)
+	 * @param string|null $parent The parent element (referenced by name)) Thsi will create a dropdown list
 	 */
-	public function appendLink($name, $link = null, $active = false, $icon = null)
+	public function appendLink($name, $link = null, $active = false, $icon = null, $parent = '')
 	{
 		$linkDefinition = array(
 			'name'		=> $name,
@@ -368,7 +369,27 @@ class FOFToolbar
 			'active'	=> $active,
 			'icon'		=> $icon
 		);
-		$this->linkbar[] = $linkDefinition;
+		if(empty($parent)) {
+			$this->linkbar[$name] = $linkDefinition;
+		} else {
+			if(!array_key_exists($parent, $this->linkbar)) {
+				$parentElement = $linkDefinition;
+				$parentElement['link'] = null;
+				$this->linkbar[$parent] = $parentElement;
+				$parentElement['dropdown'] = true;
+				$parentElement['items'] = array();
+			} else {
+				$parentElement = $this->linkbar[$parent];
+				if(!array_key_exists('dropdown', $parentElement) && !empty($parentElement['link'])) {
+					$newSubElement = $parentElement;
+					$parentElement['items'] = array($newSubElement);
+				}
+			}
+			
+			$parentElement['items'][] = $linkDefinition;
+			
+			$this->linkbar[$parent] = $parentElement;
+		}
 	}
 	
 	/**
