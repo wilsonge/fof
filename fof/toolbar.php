@@ -376,7 +376,6 @@ class FOFToolbar
 				$parentElement = $linkDefinition;
 				$parentElement['link'] = null;
 				$this->linkbar[$parent] = $parentElement;
-				$parentElement['dropdown'] = true;
 				$parentElement['items'] = array();
 			} else {
 				$parentElement = $this->linkbar[$parent];
@@ -387,6 +386,7 @@ class FOFToolbar
 			}
 			
 			$parentElement['items'][] = $linkDefinition;
+			$parentElement['dropdown'] = true;
 			
 			$this->linkbar[$parent] = $parentElement;
 		}
