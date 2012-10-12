@@ -117,7 +117,7 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 		$classType = FOFInflector::pluralize($config['view']);
 		$className = ucfirst(str_replace('com_', '', $config['option'])).'Controller'.ucfirst($classType);
 		if (!class_exists( $className )) {
-			list($isCli, $isAdmin) = self::isCliAdmin();
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 			if($isAdmin) {
 				$basePath = JPATH_ADMINISTRATOR;
 			} elseif($isCli) {
@@ -151,7 +151,7 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 		}
 
 		if (!class_exists( $className )) {
-			list($isCli, $isAdmin) = self::isCliAdmin();
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 			if($isAdmin) {
 				$basePath = JPATH_ADMINISTRATOR;
 			} elseif($isCli) {
@@ -1124,7 +1124,7 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 			if(!class_exists($viewClass)) {
 				$viewClass = 'FOFView'.ucfirst($type);
 
-				list($isCli, $isAdmin) = self::isCliAdmin();
+				list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 				if($isAdmin) {
 					$basePath = JPATH_ADMINISTRATOR;
 				} elseif($isCli) {

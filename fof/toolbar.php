@@ -53,7 +53,7 @@ class FOFToolbar
 
 			$className = ucfirst(str_replace('com_', '', $config['option'])).'Toolbar';
 			if (!class_exists( $className )) {
-				list($isCli, $isAdmin) = self::isCliAdmin();
+				list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 				if($isAdmin) {
 					$basePath = JPATH_ADMINISTRATOR;
 				} elseif($isCli) {
@@ -455,7 +455,7 @@ class FOFToolbar
 	{
 		$views = array();
 
-		list($isCli, $isAdmin) = self::isCliAdmin();
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if($isAdmin) {
 			$basePath = JPATH_ADMINISTRATOR;
 		} elseif($isCli) {
