@@ -406,7 +406,7 @@ class FOFDispatcher extends JObject
 					$authInfo = json_decode($jsonencoded, true);
 					if(!is_array($authInfo)) {
 						$authInfo = null;
-					} elseif(!in_array('username', $authInfo) || !in_array('password', $authInfo)) {
+					} elseif(!array_key_exists('username', $authInfo) || !array_key_exists('password', $authInfo)) {
 						$authInfo = null;
 					}
 					break;
