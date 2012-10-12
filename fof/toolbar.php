@@ -53,11 +53,13 @@ class FOFToolbar
 
 			$className = ucfirst(str_replace('com_', '', $config['option'])).'Toolbar';
 			if (!class_exists( $className )) {
-				$app = JFactory::getApplication();
-				if($app->isSite()) {
-					$basePath = JPATH_SITE;
-				} else {
+				list($isCli, $isAdmin) = self::isCliAdmin();
+				if($isAdmin) {
 					$basePath = JPATH_ADMINISTRATOR;
+				} elseif($isCli) {
+					$basePath = JPATH_ROOT;
+				} else {
+					$basePath = JPATH_SITE;
 				}
 
 				$searchPaths = array(
@@ -453,11 +455,13 @@ class FOFToolbar
 	{
 		$views = array();
 
-		$app = JFactory::getApplication();
-		if($app->isSite()) {
-			$basePath = JPATH_SITE;
-		} else {
+		list($isCli, $isAdmin) = self::isCliAdmin();
+		if($isAdmin) {
 			$basePath = JPATH_ADMINISTRATOR;
+		} elseif($isCli) {
+			$basePath = JPATH_ROOT;
+		} else {
+			$basePath = JPATH_SITE;
 		}
 		$searchPath = $basePath.'/components/'.$this->component.'/views';
 

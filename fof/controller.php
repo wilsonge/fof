@@ -117,11 +117,13 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 		$classType = FOFInflector::pluralize($config['view']);
 		$className = ucfirst(str_replace('com_', '', $config['option'])).'Controller'.ucfirst($classType);
 		if (!class_exists( $className )) {
-			$app = JFactory::getApplication();
-			if($app->isSite()) {
-				$basePath = JPATH_SITE;
-			} else {
+			list($isCli, $isAdmin) = self::isCliAdmin();
+			if($isAdmin) {
 				$basePath = JPATH_ADMINISTRATOR;
+			} elseif($isCli) {
+				$basePath = JPATH_ROOT;
+			} else {
+				$basePath = JPATH_SITE;
 			}
 
 			$searchPaths = array(
@@ -149,11 +151,13 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 		}
 
 		if (!class_exists( $className )) {
-			$app = JFactory::getApplication();
-			if($app->isSite()) {
-				$basePath = JPATH_SITE;
-			} else {
+			list($isCli, $isAdmin) = self::isCliAdmin();
+			if($isAdmin) {
 				$basePath = JPATH_ADMINISTRATOR;
+			} elseif($isCli) {
+				$basePath = JPATH_ROOT;
+			} else {
+				$basePath = JPATH_SITE;
 			}
 
 			$searchPaths = array(
@@ -1120,11 +1124,13 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 			if(!class_exists($viewClass)) {
 				$viewClass = 'FOFView'.ucfirst($type);
 
-				$app = JFactory::getApplication();
-				if($app->isSite()) {
-					$basePath = JPATH_SITE;
-				} else {
+				list($isCli, $isAdmin) = self::isCliAdmin();
+				if($isAdmin) {
 					$basePath = JPATH_ADMINISTRATOR;
+				} elseif($isCli) {
+					$basePath = JPATH_ROOT;
+				} else {
+					$basePath = JPATH_SITE;
 				}
 
 				if(!array_key_exists('template_path', $config)) {

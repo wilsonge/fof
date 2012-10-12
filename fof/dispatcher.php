@@ -307,11 +307,12 @@ class FOFDispatcher extends JObject
 
 			case 'GET':
 			default:
+				list($isCli, $isAdmin) = self::isCliAdmin();
 				// If it's an edit without an ID or ID=0, it's really an add
 				if(($task == 'edit') && ($id == 0)) {
 					$task = 'add';
 				// If it's an edit in the frontend, it's really a read
-				} elseif(($task == 'edit') && JFactory::getApplication()->isSite()) {
+				} elseif(($task == 'edit') && !$isCli && !$isAdmin) {
 					$task = 'read';
 				}
 				break;
