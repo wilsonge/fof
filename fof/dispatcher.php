@@ -294,6 +294,9 @@ class FOFDispatcher extends JObject
 		}
 
 		// Check the request method
+		if(!array_key_exists('REQUEST_METHOD', $_SERVER)) {
+			$_SERVER['REQUEST_METHOD'] = 'GET';
+		}
 		$requestMethod = strtoupper($_SERVER['REQUEST_METHOD']);
 		switch($requestMethod) {
 			case 'POST':
