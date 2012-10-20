@@ -27,6 +27,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	public function preRender($view, $task, $input, $config=array())
 	{
 		$format = FOFInput::getCmd('format', 'html', $input);
+		if(empty($format)) $format = 'html';
 		if($format != 'html') return;
 		
 		echo "<div class=\"akeeba-bootstrap\">\n";
