@@ -365,4 +365,42 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 	{
 		self::$renderers[] = $renderer;
 	}
+	
+	/**
+	 * Load a helper file
+	 *
+	 * @param   string  $hlp  The name of the helper source file automatically searches the helper paths and compiles as needed.
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 */
+	public function loadHelper($hlp = null)
+	{
+		// Clean the file name
+		$file = preg_replace('/[^A-Z0-9_\.-]/i', '', $hlp);
+
+		// Load the template script using the default Joomla! features
+		jimport('joomla.filesystem.path');
+		$helper = JPath::find($this->_path['helper'], $this->_createFileName('helper', array('name' => $file)));
+
+		if($helper == false) {
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/components/' .
+					$this->config['option'] . '/helpers';
+			$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
+			
+			if($helper == false) {
+				$path = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR) . '/components/' .
+					$this->config['option'] . '/helpers';
+				$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
+			}
+		}
+		
+		if ($helper != false)
+		{
+			// Include the requested template filename in the local scope
+			include_once $helper;
+		}
+	}
 }
