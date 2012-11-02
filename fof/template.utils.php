@@ -22,6 +22,22 @@ class FOFTemplateUtils
 		JFactory::getDocument()->addScript($url);
 	}
 	
+	/**
+	 * Parse a fancy path definition into a path relative to the site's root,
+	 * respecting template overrides, suitable for inclusion of media files.
+	 * For example, media://com_foobar/css/test.css is parsed into
+	 * media/com_foobar/css/test.css if no override is found, or
+	 * templates/mytemplate/media/com_foobar/css/test.css if the current
+	 * template is called mytemplate and there's a media override for it.
+	 * 
+	 * The valid protocols are:
+	 * media://		The media directory or a media override
+	 * admin://		Path relative to administrator directory (no overrides)
+	 * site://		Path relative to site's root (no overrides)
+	 * 
+	 * @param string $path Fancy path
+	 * @return string Parsed path
+	 */
 	public static function parsePath($path)
 	{
 		$protoAndPath = explode('://', $path, 2);
@@ -40,7 +56,7 @@ class FOFTemplateUtils
 				$pathAndParams = explode('?', $path, 2);
 				$altPath = JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/media/'.$pathAndParams[0];
 				if(file_exists($altPath)) {
-					$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+					list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 					$url .= $isAdmin ? 'administrator/' : '';
 					$url .= 'templates/'.JFactory::getApplication()->getTemplate().'/media/';
 				} else {
@@ -51,7 +67,7 @@ class FOFTemplateUtils
 			case 'admin':
 				$url .= 'administrator/';
 				break;
-			
+
 			default:
 			case 'site':
 				break;
@@ -62,6 +78,14 @@ class FOFTemplateUtils
 		return $url;
 	}
 	
+	/**
+	 * Returns the contents of a module position
+	 * 
+	 * @param string $position The position name, e.g. "position-1"
+	 * @param int $style Rendering style; please refer to Joomla!'s code for more information
+	 * 
+	 * @return string The contents of the module position
+	 */
 	public static function loadPosition($position, $style = -2)
 	{
 		$document	= JFactory::getDocument();
@@ -75,31 +99,31 @@ class FOFTemplateUtils
 		return $contents;
 	}
 	
-        /**
-         * Merges the current url with new or changed parameters.
-         * 
-         * This method merges the route string with the url parameters defined
-         * in current url. The parameters defined in current url, but not given
-         * in route string, will automatically reused in the resulting url. 
-         * But only these following parameters will be reused:
-         * 
-         * option, view, layout, format
-         * 
-         * Example:
-         * 
-         * Assuming that current url is: 
-         * http://fobar.com/index.php?option=com_foo&view=cpanel
-         * 
-         * <code>
-         * <?php echo FOFTemplateutils::route('view=categories&layout=tree'); ?>
-         * </code>
-         * 
-         * Result: 
-         * http://fobar.com/index.php?option=com_foo&view=categories&layout=tree
-         * 
-         * @param string $route    The parameters string
-         * @return string          The human readable, complete url
-         */
+	/**
+	 * Merges the current url with new or changed parameters.
+	 * 
+	 * This method merges the route string with the url parameters defined
+	 * in current url. The parameters defined in current url, but not given
+	 * in route string, will automatically reused in the resulting url. 
+	 * But only these following parameters will be reused:
+	 * 
+	 * option, view, layout, format
+	 * 
+	 * Example:
+	 * 
+	 * Assuming that current url is: 
+	 * http://fobar.com/index.php?option=com_foo&view=cpanel
+	 * 
+	 * <code>
+	 * <?php echo FOFTemplateutils::route('view=categories&layout=tree'); ?>
+	 * </code>
+	 * 
+	 * Result: 
+	 * http://fobar.com/index.php?option=com_foo&view=categories&layout=tree
+	 * 
+	 * @param string $route    The parameters string
+	 * @return string          The human readable, complete url
+	 */
 	public static function route($route = '')
     {
         $route = trim($route);
