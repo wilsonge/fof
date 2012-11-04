@@ -1365,6 +1365,7 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 	protected function _csrfProtection()
 	{
 		$hasToken = false;
+		$session = JFactory::getSession();
 		// Joomla! 1.5/1.6/1.7/2.5 (classic Joomla! API) method
 		if(method_exists('JUtility', 'getToken')) {
 			$token = JUtility::getToken();
@@ -1373,9 +1374,16 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 		}
 		// Joomla! 2.5+ (Platform 12.1+) method
 		if(!$hasToken) {
-			$session = JFactory::getSession();
 			if(method_exists($session, 'getToken')) {
-				$token = JFactory::getSession()->getToken();
+				$token = $session->getToken();
+				$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
+				if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+			}
+		}
+		// Joomla! 2.5+ formToken method
+		if(!$hasToken) {
+			if(method_exists($session, 'getFormToken')) {
+				$token = $session->getFormToken();
 				$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
 				if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
 			}
@@ -1383,6 +1391,7 @@ class FOFController extends FOFWorksAroundJoomlaToGetAController
 
 		if(!$hasToken) {
 			JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN') : JText::_('Request Forbidden'));
+			return false;
 		}
 	}
 }
