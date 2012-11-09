@@ -157,7 +157,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 			foreach ($fields as $name => $v)
 			{
 				// Add the field if it is not already present.
-				if (!property_exists($this, $name)) {
+				if (!isset($this->$name)) {
 					$this->$name = null;
 				}
 			}
@@ -165,13 +165,13 @@ abstract class FOFTable_COMMONBASE extends JTable
 
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			// If we are tracking assets, make sure an access field exists and initially set the default.
-			if (property_exists($this, 'asset_id')) {
+			if (isset($this->asset_id) || property_exists($this, 'asset_id')) {
 				jimport('joomla.access.rules');
 				$this->_trackAssets = true;
 			}
 
 			// If the acess property exists, set the default.
-			if (property_exists($this, 'access')) {
+			if (isset($this->access) ||property_exists($this, 'access')) {
 				$this->access = (int) JFactory::getConfig()->get('access');
 			}
 		}
@@ -902,7 +902,12 @@ abstract class FOFTable_COMMONBASE extends JTable
 		$title			= $this->getColumnAlias('title');
 		$slug			= $this->getColumnAlias('slug');
 
-		if(property_exists($this, $created_on) && property_exists($this, $created_by)) {
+		$hasCreatedOn = isset($this->$created_on) || property_exists($this, $created_on);
+		$hasCreatedBy = isset($this->$created_by) || property_exists($this, $created_by);
+		
+		if($hasCreatedOn && $hasCreatedBy) {
+			$hasModifiedOn = isset($this->$modified_on) || property_exists($this, $modified_on);
+			$hasModifiedBy = isset($this->$modified_by) || property_exists($this, $modified_by);
 			if(empty($this->$created_by) || ($this->$created_on == '0000-00-00 00:00:00') || empty($this->$created_on)) {
 				$uid = JFactory::getUser()->id;
 				if($uid) {
@@ -915,7 +920,7 @@ abstract class FOFTable_COMMONBASE extends JTable
 				} else {
 					$this->$created_on = $date->toMysql();
 				}
-			} elseif(property_exists($this, $modified_on) && property_exists($this, $modified_by)) {
+			} elseif($hasModifiedOn && $hasModifiedBy) {
 				$uid = JFactory::getUser()->id;
 				if($uid) {
 					$this->$modified_by = JFactory::getUser()->id;
@@ -931,7 +936,9 @@ abstract class FOFTable_COMMONBASE extends JTable
 		}
 
 		// Do we have a set of title and slug fields?
-		if(property_exists($this, $title) && property_exists($this, $slug)) {
+		$hasTitle = isset($this->$title) || property_exists($this, $title);
+		$hasSlug = isset($this->$slug) || property_exists($this, $slug);
+		if($hasTitle && $hasSlug) {
 			if(empty($this->$slug)) {
 				// Create a slug from the title
 				$this->$slug = FOFStringUtils::toSlug($this->$title);

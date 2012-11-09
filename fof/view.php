@@ -173,9 +173,9 @@ abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
 			$template.'/html/'.$templateParts['component'].'/'.$templateParts['view'];
 		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE).'/components/'.
 			$templateParts['component'].'/views/'.$templateParts['view'].'/tmpl';
-		if(property_exists($this, '_path')) {
+		if(isset($this->_path) || property_exists($this, '_path')) {
 			$paths = array_merge($paths, $this->_path['template']);
-		} elseif(property_exists($this, 'path')) {
+		} elseif(isset($this->path) || property_exists($this, 'path')) {
 			$paths = array_merge($paths, $this->path['template']);
 		}
 
