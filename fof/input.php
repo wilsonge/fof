@@ -151,7 +151,7 @@ class FOFInput
 		if(is_array($var)) {
 			$temp = array();
 			foreach($var as $k => $v) {
-				$temp[$k] = self::_cleanVar($v);
+				$temp[$k] = self::_cleanVar($v, $mask);
 			}
 			return $temp;
 		}
