@@ -502,6 +502,7 @@ class FOFToolbar
 			}
 			else{
 				// Next place. It's ok since the index are 0-based and count is 1-based
+				if(!isset($to_order)) $to_order = array();
 				$order = count($to_order);
 			}
 
