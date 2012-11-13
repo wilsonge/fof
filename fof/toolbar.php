@@ -18,13 +18,13 @@ class FOFToolbar
 
 	/** @var arary Permissions map, see the __construct method for more information */
 	public $perms = array();
-	
+
 	/** @var array The links to be rendered in the toolbar */
 	protected $linkbar = array();
-	
+
 	/** @var bool Should I render the submenu in the front-end? */
 	protected $renderFrontendSubmenu = false;
-	
+
 	/** @var bool Should I render buttons in the front-end? */
 	protected $renderFrontendButtons = false;
 
@@ -138,20 +138,20 @@ class FOFToolbar
 		// Save front-end toolbar and submenu rendering flags if present in the config
 		if(array_key_exists('renderFrontendButtons', $config)) $this->renderFrontendButtons = $config['renderFrontendButtons'];
 		if(array_key_exists('renderFrontendSubmenu', $config)) $this->renderFrontendSubmenu = $config['renderFrontendSubmenu'];
-		
+
 		//if not in the administrative area, load the JToolbarHelper
 		if(!$isAdmin)
 		{
 			//pretty ugly require...
 			require_once(JPATH_ROOT.'/administrator/includes/toolbar.php');
-			
+
 			// Things to do if we have to render a front-end toolbar
 			if($this->renderFrontendButtons) {
 				// Load back-end toolbar language files in front-end
 				$jlang = JFactory::getLanguage();
 				$jlang->load('', JPATH_ADMINISTRATOR, 'en-GB', true);
 				$jlang->load('', JPATH_ADMINISTRATOR, null, true);
-				
+
 				// Load the core Javascript
 				if(version_compare(JVERSION, '2.5', 'lt')) {
 					JHtml::_('behavior.mootools');
@@ -159,8 +159,8 @@ class FOFToolbar
 					JHtml::_('behavior.framework', true);
 				}
 			}
-			
-				
+
+
 		}
 
 		// Store permissions in the local toolbar object
@@ -216,11 +216,11 @@ class FOFToolbar
 	{
 		//on frontend, buttons must be added specifically
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		if($isAdmin || $this->renderFrontendSubmenu) {
 			$this->renderSubmenu();
 		}
-		
+
 		if(!$isAdmin && !$this->renderFrontendButtons) return;
 
 		$option = FOFInput::getCmd('option','com_foobar',$this->input);
@@ -236,11 +236,11 @@ class FOFToolbar
 	{
 		//on frontend, buttons must be added specifically
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		if($isAdmin || $this->renderFrontendSubmenu) {
 			$this->renderSubmenu();
 		}
-		
+
 		if(!$isAdmin && !$this->renderFrontendButtons) return;
 
 		// Set toolbar title
@@ -285,11 +285,11 @@ class FOFToolbar
 	{
 		//on frontend, buttons must be added specifically
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		if($isAdmin || $this->renderFrontendSubmenu) {
 			$this->renderSubmenu();
 		}
-		
+
 		if(!$isAdmin && !$this->renderFrontendButtons) return;
 
 		$option = FOFInput::getCmd('option','com_foobar',$this->input);
@@ -344,7 +344,7 @@ class FOFToolbar
 	{
 		$this->linkbar = array();
 	}
-	
+
 	/**
 	 * Get the link bar's link definitions
 	 * @return array
@@ -353,10 +353,10 @@ class FOFToolbar
 	{
 		return $this->linkbar;
 	}
-	
+
 	/**
 	 * Append a link to the link bar
-	 * 
+	 *
 	 * @param string $name The text of the link
 	 * @param string|null $link The link to render; set to null to render a separator
 	 * @param bool $active True if it's an active link
@@ -386,17 +386,17 @@ class FOFToolbar
 					$parentElement['items'] = array($newSubElement);
 				}
 			}
-			
+
 			$parentElement['items'][] = $linkDefinition;
 			$parentElement['dropdown'] = true;
-			
+
 			$this->linkbar[$parent] = $parentElement;
 		}
 	}
-	
+
 	/**
 	 * Prefixes (some people erroneously call this "prepend" – there is no such word) a link to the link bar
-	 * 
+	 *
 	 * @param string $name The text of the link
 	 * @param string|null $link The link to render; set to null to render a separator
 	 * @param bool $active True if it's an active link
@@ -412,7 +412,7 @@ class FOFToolbar
 		);
 		array_unshift($this->linkbar[], $linkDefinition);
 	}
-	
+
 	/**
 	 * Renders the submenu (toolbar links) for all detected views of this component
 	 */
@@ -453,7 +453,9 @@ class FOFToolbar
 	 */
 	protected function getMyViews()
 	{
-		$views = array();
+		$views		= array();
+		$t_views 	= array();
+		$using_meta = false;
 
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if($isAdmin) {
@@ -466,37 +468,80 @@ class FOFToolbar
 		$searchPath = $basePath.'/components/'.$this->component.'/views';
 
 		jimport('joomla.filesystem.folder');
+		jimport('joomla.utilities.arrayhelper');
+
 		$allFolders = JFolder::folders($searchPath);
 
 		if(!empty($allFolders)) foreach($allFolders as $folder) {
-			$view = $folder;
+			$view  = $folder;
+
+			// View already added
+			if(in_array(FOFInflector::pluralize($view), $t_views)) continue;
+
 			// Do we have a 'skip.xml' file in there?
 			$files = JFolder::files($searchPath.'/'.$view,'^skip\.xml$');
 			if(!empty($files)) continue;
-			if($view != 'cpanel') {
-				$view = FOFInflector::pluralize($view);
-				if(!in_array($view, $views)) $views[] = $view;
-			} else {
-				array_unshift($views, 'cpanel');
+
+			//Do we have extra information about this view? (ie. ordering)
+			$meta = JFolder::files($searchPath.'/'.$view,'^metadata\.xml$');
+
+			//Not found, do we have it inside the plural one?
+			if(!$meta){
+				$plural = FOFInflector::pluralize($view);
+				if(in_array($plural, $allFolders)){
+					$view = $plural;
+					$meta = JFolder::files($searchPath.'/'.$view,'^metadata\.xml$');
+				}
 			}
+
+			if(!empty($meta))
+			{
+				$using_meta = true;
+				$xml 		= simplexml_load_file($searchPath.'/'.$view.'/'.$meta[0]);
+				$order 		= (int) $xml->foflib->ordering;
+			}
+			else{
+				// Next place. It's ok since the index are 0-based and count is 1-based
+				$order = count($to_order);
+			}
+
+			$view = FOFInflector::pluralize($view);
+
+			$t_view 			= new stdClass();
+			$t_view->ordering 	= $order;
+			$t_view->view 		= $view;
+
+			$to_order[] = $t_view;
+			$t_views[] 	= $view;
+		}
+
+		JArrayHelper::sortObjects($to_order, 'ordering');
+		$views = JArrayHelper::getColumn($to_order, 'view');
+
+		//if not using the metadata file, let's put the cpanel view on top
+		if(!$using_meta)
+		{
+			$cpanel = array_search('cpanel', $views);
+			unset($views[$cpanel]);
+			array_unshift($views, 'cpanel');
 		}
 
 		return $views;
 	}
-	
+
 	/**
 	 * Return the front-end toolbar rendering flag
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function getRenderFrontendButtons()
 	{
 		return $this->renderFrontendButtons;
 	}
-	
+
 	/**
 	 * Return the front-end submenu rendering flag
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function getRenderFrontendSubmenu()
