@@ -475,6 +475,9 @@ class FOFToolbar
 		if(!empty($allFolders)) foreach($allFolders as $folder) {
 			$view  = $folder;
 
+			// View already added
+			if(in_array(FOFInflector::pluralize($view), $t_views)) continue;
+
 			// Do we have a 'skip.xml' file in there?
 			$files = JFolder::files($searchPath.'/'.$view,'^skip\.xml$');
 			if(!empty($files)) continue;
@@ -482,11 +485,20 @@ class FOFToolbar
 			//Do we have extra information about this view? (ie. ordering)
 			$meta = JFolder::files($searchPath.'/'.$view,'^metadata\.xml$');
 
+			//Not found, do we have it inside the plural one?
+			if(!$meta){
+				$plural = FOFInflector::pluralize($view);
+				if(in_array($plural, $allFolders)){
+					$view = $plural;
+					$meta = JFolder::files($searchPath.'/'.$view,'^metadata\.xml$');
+				}
+			}
+
 			if(!empty($meta))
 			{
 				$using_meta = true;
-				$xml = simplexml_load_file($searchPath.'/'.$view.'/'.$meta[0]);
-				$order = (int) $xml->foflib->ordering;
+				$xml 		= simplexml_load_file($searchPath.'/'.$view.'/'.$meta[0]);
+				$order 		= (int) $xml->foflib->ordering;
 			}
 			else{
 				// Next place. It's ok since the index are 0-based and count is 1-based
@@ -495,15 +507,12 @@ class FOFToolbar
 
 			$view = FOFInflector::pluralize($view);
 
-			if(!in_array($view, $t_views))
-			{
-				$t_view = new stdClass();
-				$t_view->ordering = $order;
-				$t_view->view = $view;
+			$t_view 			= new stdClass();
+			$t_view->ordering 	= $order;
+			$t_view->view 		= $view;
 
-				$to_order[] = $t_view;
-				$t_views[] = $view;
-			}
+			$to_order[] = $t_view;
+			$t_views[] 	= $view;
 		}
 
 		JArrayHelper::sortObjects($to_order, 'ordering');
@@ -512,9 +521,9 @@ class FOFToolbar
 		//if not using the metadata file, let's put the cpanel view on top
 		if(!$using_meta)
 		{
-			$cpanel = array_search('cpanels', $views);
+			$cpanel = array_search('cpanel', $views);
 			unset($views[$cpanel]);
-			array_unshift($views, 'cpanels');
+			array_unshift($views, 'cpanel');
 		}
 
 		return $views;
