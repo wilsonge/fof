@@ -522,9 +522,9 @@ class FOFToolbar
 		//if not using the metadata file, let's put the cpanel view on top
 		if(!$using_meta)
 		{
-			$cpanel = array_search('cpanel', $views);
+			$cpanel = array_search('cpanels', $views);
 			unset($views[$cpanel]);
-			array_unshift($views, 'cpanel');
+			array_unshift($views, 'cpanels');
 		}
 
 		return $views;
