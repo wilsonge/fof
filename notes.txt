@@ -1,5 +1,7 @@
-NOTES FOR TINKERERES
+NOTES FOR TINKERS
 ================================================================================
+Last update: November 17th, 2012 w/ Bootstrap 2.2.1
+
 
 When importing a new Bootstrap release you have to:
 
