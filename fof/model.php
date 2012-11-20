@@ -241,11 +241,7 @@ class FOFModel extends JModelLegacy
 		$this->input->set('option', $component);
 		$name = str_replace('com_', '', strtolower($component));
 		if(array_key_exists('name', $config)) $name = $config['name'];
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$this->name = $name;
-		} else {
-			$this->_name = $name;
-		}
+		$this->name = $name;
 		$this->option = $component;
 
 		// Get the view name
@@ -433,11 +429,7 @@ class FOFModel extends JModelLegacy
 	 */
 	public function clearState()
 	{
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$this->state = new JObject();
-		} else {
-			$this->_state = new JObject();
-		}
+		$this->state = new JObject();
 
 		return $this;
 	}
@@ -1200,7 +1192,7 @@ class FOFModel extends JModelLegacy
 			// Bind the data
 			$table->bind($allData);
 			// Call the plugin
-			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$name = $this->name;
 			$result = $dispatcher->trigger($this->event_before_save, array($this->option.'.'.$name, &$table, $this->_isNewRecord));
 			if (in_array(false, $result, true)) {
 				// Plugin failed, return false
@@ -1240,7 +1232,7 @@ class FOFModel extends JModelLegacy
 
 		$dispatcher = JDispatcher::getInstance();
 		try {
-			$name = version_compare(JVERSION, '1.6.0', 'ge') ? $this->name : $this->_name;
+			$name = $this->name;
 			$dispatcher->trigger($this->event_after_save, array($this->option.'.'.$name, &$table, $this->_isNewRecord));
 		} catch(Exception $e) {
 			// Oops, an exception occured!

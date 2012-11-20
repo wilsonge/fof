@@ -120,24 +120,14 @@ class FOFToolbar
 		// Get default permissions (can be overriden by the view)
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$user = JFactory::getUser();
-			$perms = (object)array(
-				'manage'	=> $user->authorise('core.manage', $this->input->getCmd('option','com_foobar') ),
-				'create'	=> $user->authorise('core.create', $this->input->getCmd('option','com_foobar') ),
-				'edit'		=> $user->authorise('core.edit', $this->input->getCmd('option','com_foobar')),
-				'editstate'	=> $user->authorise('core.edit.state', $this->input->getCmd('option','com_foobar')),
-				'delete'	=> $user->authorise('core.delete', $this->input->getCmd('option','com_foobar')),
-			);
-		} else {
-			$perms = (object)array(
-				'manage'	=> true,
-				'create'	=> true,
-				'edit'		=> true,
-				'editstate'	=> true,
-				'delete'	=> true,
-			);
-		}
+		$user = JFactory::getUser();
+		$perms = (object)array(
+			'manage'	=> $user->authorise('core.manage', $this->input->getCmd('option','com_foobar') ),
+			'create'	=> $user->authorise('core.create', $this->input->getCmd('option','com_foobar') ),
+			'edit'		=> $user->authorise('core.edit', $this->input->getCmd('option','com_foobar')),
+			'editstate'	=> $user->authorise('core.edit.state', $this->input->getCmd('option','com_foobar')),
+			'delete'	=> $user->authorise('core.delete', $this->input->getCmd('option','com_foobar')),
+		);
 
 		// Save front-end toolbar and submenu rendering flags if present in the config
 		if(array_key_exists('renderFrontendButtons', $config)) $this->renderFrontendButtons = $config['renderFrontendButtons'];
@@ -157,11 +147,7 @@ class FOFToolbar
 				$jlang->load('', JPATH_ADMINISTRATOR, null, true);
 
 				// Load the core Javascript
-				if(version_compare(JVERSION, '2.5', 'lt')) {
-					JHtml::_('behavior.mootools');
-				} else {
-					JHtml::_('behavior.framework', true);
-				}
+				JHtml::_('behavior.framework', true);
 			}
 
 
@@ -323,12 +309,7 @@ class FOFToolbar
 		// Set toolbar icons
 		JToolBarHelper::apply();
 		JToolBarHelper::save();
-		if(version_compare(JVERSION,'1.6.0','ge')) {
-			JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
-		} else {
-			$sanTitle = 'Save & New';
-			JToolBar::getInstance('toolbar')->appendButton( 'Standard', 'save', $sanTitle, 'savenew', false, false );
-		}
+		JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		JToolBarHelper::cancel();
 	}
 

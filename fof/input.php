@@ -163,28 +163,6 @@ class FOFInput extends JInput
 		return (string) self::getVar($name, $default, $input, 'string', $mask);
 	}
 	
-	public static function getUint($name, $default = '', $input = array())
-	{
-		JLog::add('FOFInput::getUint() is deprecated. Use get() instead.', JLog::WARNING, 'deprecated');
-		if(!version_compare(JVERSION, '1.6.0', 'ge')) {
-			return @abs((int) self::getVar($name, $default, $input, 'uint'));
-		} else {
-			return self::getVar($name, $default, $input, 'uint');
-		}
-	}
-	
-	public static function getHtml($name, $default = '', $input = array())
-	{
-		JLog::add('FOFInput::getHtml() is deprecated. Use get() instead.', JLog::WARNING, 'deprecated');
-		if(version_compare(JVERSION,'1.6.0','ge')) {
-			return self::getVar($name, $default, $input, 'html');
-		} else {
-			$data = self::getVar($name, $default, $input, 'none');
-			$filter = JFilterInput::getInstance();
-			return $filter->_remove((string)$data);
-		}
-	}
-	
 	/**
 	 * Custom filter implementation. Works better with arrays and allows the use
 	 * of a filter mask.

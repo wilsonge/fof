@@ -48,22 +48,13 @@ class FOFViewHtml extends FOFView
 
 		$this->lists = new JObject();
 
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$user = JFactory::getUser();
-			$perms = (object)array(
-				'create'	=> $user->authorise('core.create', $this->input->getCmd('option','com_foobar') ),
-				'edit'		=> $user->authorise('core.edit', $this->input->getCmd('option','com_foobar')),
-				'editstate'	=> $user->authorise('core.edit.state', $this->input->getCmd('option','com_foobar')),
-				'delete'	=> $user->authorise('core.delete', $this->input->getCmd('option','com_foobar')),
-			);
-		} else {
-			$perms = (object)array(
-				'create'	=> true,
-				'edit'		=> true,
-				'editstate'	=> true,
-				'delete'	=> true,
-			);
-		}
+		$user = JFactory::getUser();
+		$perms = (object)array(
+			'create'	=> $user->authorise('core.create', $this->input->getCmd('option','com_foobar') ),
+			'edit'		=> $user->authorise('core.edit', $this->input->getCmd('option','com_foobar')),
+			'editstate'	=> $user->authorise('core.edit.state', $this->input->getCmd('option','com_foobar')),
+			'delete'	=> $user->authorise('core.delete', $this->input->getCmd('option','com_foobar')),
+		);
 		$this->assign('aclperms', $perms);
 		$this->perms = $perms;
 	}
@@ -171,7 +162,7 @@ class FOFViewHtml extends FOFView
 		$this->assignRef( 'lists',		$this->lists);
 
 		//pass page params on frontend only
-		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if(!$isAdmin)
 		{
 			$params = JFactory::getApplication()->getParams();

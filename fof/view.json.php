@@ -47,10 +47,7 @@ class FOFViewJson extends FOFViewHtml
 				$defaultName = $this->input->getCmd('view', 'joomla');
 				$filename = $this->input->getCmd('basename', $defaultName);
 
-				//On Joomla! 1.5 there is no setName method
-				if(version_compare(JVERSION, '1.6', 'ge')){
-					$document->setName($filename);
-				}
+				$document->setName($filename);
 				echo $json;
 			}
 

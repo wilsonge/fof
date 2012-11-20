@@ -167,17 +167,15 @@ class FOFTable extends JTable
 			}
 		}
 
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			// If we are tracking assets, make sure an access field exists and initially set the default.
-			if (isset($this->asset_id) || property_exists($this, 'asset_id')) {
-				jimport('joomla.access.rules');
-				$this->_trackAssets = true;
-			}
+		// If we are tracking assets, make sure an access field exists and initially set the default.
+		if (isset($this->asset_id) || property_exists($this, 'asset_id')) {
+			jimport('joomla.access.rules');
+			$this->_trackAssets = true;
+		}
 
-			// If the acess property exists, set the default.
-			if (isset($this->access) ||property_exists($this, 'access')) {
-				$this->access = (int) JFactory::getConfig()->get('access');
-			}
+		// If the acess property exists, set the default.
+		if (isset($this->access) ||property_exists($this, 'access')) {
+			$this->access = (int) JFactory::getConfig()->get('access');
 		}
 	}
 

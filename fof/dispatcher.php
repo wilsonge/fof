@@ -181,20 +181,8 @@ class FOFDispatcher extends JObject
 	public function dispatch()
 	{
 		// Timezone fix; avoids errors printed out by PHP 5.3.3+
-		if( !version_compare(JVERSION, '1.6.0', 'ge') && function_exists('date_default_timezone_get') && function_exists('date_default_timezone_set')) {
-			if(function_exists('error_reporting')) {
-				$oldLevel = error_reporting(0);
-			}
-			$serverTimezone = @date_default_timezone_get();
-			if(empty($serverTimezone) || !is_string($serverTimezone)) $serverTimezone = 'UTC';
-			if(function_exists('error_reporting')) {
-				error_reporting($oldLevel);
-			}
-			@date_default_timezone_set( $serverTimezone);
-		}
-		
-		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
-		if($isAdmin && version_compare(JVERSION, '1.6.0', 'ge')) {
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if($isAdmin) {
 			// Master access check for the back-end, Joomla! 1.6 style.
 			$user = JFactory::getUser();
 			if (
@@ -203,7 +191,7 @@ class FOFDispatcher extends JObject
 			) {
 				return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 			}
-		} elseif(!$isAdmin) {
+		} else {
 			// Perform transparent authentication for front-end requests
 			$this->transparentAuthentication();
 		}
@@ -228,11 +216,7 @@ class FOFDispatcher extends JObject
 				exit();
 			}
 
-			if(version_compare(JVERSION, '1.6.0', 'ge')) {
-				return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
-			} else {
-				return JError::raiseError(403, JText::_('ALERTNOTAUTH'));
-			}
+			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		// Get and execute the controller
@@ -258,19 +242,11 @@ class FOFDispatcher extends JObject
 		$status = $controller->execute($task);
 
 		if($status === false) {
-			if(version_compare(JVERSION, '1.6.0', 'ge')) {
-				return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
-			} else {
-				return JError::raiseError(403, JText::_('ALERTNOTAUTH'));
-			}
+			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		if(!$this->onAfterDispatch()) {
-			if(version_compare(JVERSION, '1.6.0', 'ge')) {
-				return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
-			} else {
-				return JError::raiseError(403, JText::_('ALERTNOTAUTH'));
-			}
+			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 		}
 
 		$controller->redirect();
@@ -434,14 +410,13 @@ class FOFDispatcher extends JObject
 			if ($response->status == JAUTHENTICATE_STATUS_SUCCESS) {
 				JPluginHelper::importPlugin('user');
 				$results = $app->triggerEvent('onLoginUser', array((array)$response, $options));
-				if(version_compare(JVERSION,'1.6.0','ge')) {
-					jimport('joomla.user.helper');
-					$userid = JUserHelper::getUserId($response->username);
-					$user = JFactory::getUser($userid);
-					
-					$session = JFactory::getSession();
-					$session->set('user', $user);
-				}
+				
+				jimport('joomla.user.helper');
+				$userid = JUserHelper::getUserId($response->username);
+				$user = JFactory::getUser($userid);
+
+				$session = JFactory::getSession();
+				$session->set('user', $user);
 				//$results = $app->triggerEvent('onLogoutUser', array($parameters, $options));
 				
 				$this->_fofAuth_isLoggedIn = true;
@@ -502,19 +477,10 @@ class FOFDispatcher extends JObject
 	public static function isCliAdmin()
 	{
 		try {
-			// cannot try with null static property, so i'll guess using the JVERSION
-			// (on J1.5 there is not CLI support)
-			if(version_compare(JVERSION, '1.6.0', 'ge'))
-			{
-				if(is_null(JFactory::$application)) {
-					$isCLI = true;
-				} else {
-					$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
-				}
-			}
-			else
-			{
-				$isCLI = false;
+			if(is_null(JFactory::$application)) {
+				$isCLI = true;
+			} else {
+				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
 			}
 		} catch(Exception $e) {
 			$isCLI = true;

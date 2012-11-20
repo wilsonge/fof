@@ -161,9 +161,7 @@ abstract class FOFView extends JViewLegacy
 		}
 
 		$template = JFactory::getApplication()->getTemplate();
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$layoutTemplate = $this->getLayoutTemplate();
-		}
+		$layoutTemplate = $this->getLayoutTemplate();
 
 		// Parse the path
 		$templateParts = $this->_parseTemplatePath($path);

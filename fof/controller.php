@@ -19,9 +19,6 @@ jimport('legacy.controller.legacy');
  */
 class FOFController extends JControllerLegacy
 {
-	/** @var string Current Joomla! version family (15 or 16) */
-	protected $jversion = '15';
-
 	/** @var string The current view name; you can override it in the configuration */
 	protected $view = '';
 
@@ -51,16 +48,6 @@ class FOFController extends JControllerLegacy
 
 	/** @var array The tasks for which caching should be enabled by default */
 	protected $cacheableTasks = array('browse','read');
-
-	/** @var array ACL permissions to group mapping for Joomla! 1.5; please note that we follow Joomla! 1.6's ACL naming conventions for uniformity in here. */
-	protected $aclMapJoomla15 = array(
-		'core.admin'		=> 'Super Administrator',
-		'core.manage'		=> 'Administrator',
-		'core.create'		=> 'Author',
-		'core.delete'		=> 'Manager',
-		'core.edit'			=> 'Editor',
-		'core.edit.state'	=> 'Publisher'
-	);
 
 	/**
 	 * @var int Bit mask to enable JRouting on redirects.
@@ -184,11 +171,6 @@ class FOFController extends JControllerLegacy
 	{
 		parent::__construct();
 
-		// Do we have Joomla! 1.6 or later?
-		if( version_compare( JVERSION, '1.6.0', 'ge' ) ) {
-			$this->jversion = '16';
-		}
-
 		// Cache the config
 		$this->config = $config;
 
@@ -225,22 +207,14 @@ class FOFController extends JControllerLegacy
 		$this->bareComponent = str_replace('com_', '', strtolower($this->component));
 
 		// Set the $name/$_name variable
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$this->name = $this->bareComponent;
-		} else {
-			$this->_name = $this->bareComponent;
-		}
+		$this->name = $this->bareComponent;
 
 		// Set the _basePath / basePath variable
-		$isAdmin   = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		$basePath  = $isAdmin ? JPATH_ADMINISTRATOR : JPATH_ROOT;
 		$basePath .= '/components/'.$this->component;
 		if(array_key_exists('base_path', $config)) $basePath = $config['base_path'];
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$this->basePath = $basePath;
-		} else {
-			$this->_basePath = $basePath;
-		}
+		$this->basePath = $basePath;
 
 		// Set the CSRF protection
 		if(array_key_exists('csrf_protection', $config)) {
@@ -250,37 +224,6 @@ class FOFController extends JControllerLegacy
 		// Set any model/view name overrides
 		if(array_key_exists('viewName', $config)) $this->setThisViewName($config['viewName']);
 		if(array_key_exists('modelName', $config)) $this->setThisModelName($config['modelName']);
-
-		// Set the ACL preferences
-		if( !version_compare( JVERSION, '1.6.0', 'ge' ) ) {
-			// Joomla! 1.5 ACL mapping
-			$acl = JFactory::getACL();
-			foreach($this->aclMapJoomla15 as $area => $mingroup) {
-				$mingroup = strtolower($mingroup);
-				$groups = array();
-				switch($mingroup) {
-					case 'registered':
-						$groups[] = 'registered';
-					case 'author':
-						$groups[] = 'author';
-					case 'editor':
-						$groups[] = 'editor';
-					case 'publisher':
-						$groups[] = 'publisher';
-					case 'manager':
-						$groups[] = 'manager';
-					case 'administrator':
-						$groups[] = 'administrator';
-					case 'super administrator':
-						$groups[] = 'super administrator';
-						break;
-				}
-				if(empty($groups)) continue;
-				foreach($groups as $group) {
-					$acl->addACL($this->component, $area, 'users', $group );
-				}
-			}
-		}
 
 		// Caching
 		if(array_key_exists('cacheableTasks', $config)) {
@@ -355,43 +298,32 @@ class FOFController extends JControllerLegacy
 		$view->setLayout(is_null($this->layout) ? 'default' : $this->layout);
 
 		// Display the view
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			$conf = JFactory::getConfig();
-			if (JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1) {
-				$option	= $this->input->get('option', 'com_foobar', 'cmd');
-				$cache	= JFactory::getCache($option, 'view');
+		$conf = JFactory::getConfig();
+		if (JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1) {
+			$option	= $this->input->get('option', 'com_foobar', 'cmd');
+			$cache	= JFactory::getCache($option, 'view');
 
-				if (is_array($urlparams)) {
-					$app = JFactory::getApplication();
+			if (is_array($urlparams)) {
+				$app = JFactory::getApplication();
 
-					$registeredurlparams = $app->get('registeredurlparams');
+				$registeredurlparams = $app->get('registeredurlparams');
 
-					if (empty($registeredurlparams)) {
-						$registeredurlparams = new stdClass;
-					}
-
-					foreach ($urlparams AS $key => $value)
-					{
-						// Add your safe url parameters with variable type as value {@see JFilterInput::clean()}.
-						$registeredurlparams->$key = $value;
-					}
-
-					$app->set('registeredurlparams', $registeredurlparams);
+				if (empty($registeredurlparams)) {
+					$registeredurlparams = new stdClass;
 				}
-				$cache->get($view, 'display');
-			} else {
-				$view->display();
+
+				foreach ($urlparams AS $key => $value)
+				{
+					// Add your safe url parameters with variable type as value {@see JFilterInput::clean()}.
+					$registeredurlparams->$key = $value;
+				}
+
+				$app->set('registeredurlparams', $registeredurlparams);
 			}
+			$cache->get($view, 'display');
 		} else {
-			if (JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed') {
-				$cache = JFactory::getCache($this->component, 'view');
-				$cache->get($view, 'display');
-			} else {
-				$view->display();
-			}
+			$view->display();
 		}
-
-
 	}
 
 	/**
@@ -811,9 +743,7 @@ class FOFController extends JControllerLegacy
 		//do the logic only if we're parsing a raw url (index.php?foo=bar&etc=etc)
 		if(strpos($url, 'index.php') === 0)
 		{
-			//@TODO Should we check for CLI case, too?
-			$isCLI   = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
-			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 			$auto	 = false;
 
 			if(($this->autoRouting == 2 || $this->autoRouting == 3) &&  $isAdmin) {
@@ -989,10 +919,9 @@ class FOFController extends JControllerLegacy
 				$config['input'] = $this->input;
 			}
 
-			$basePath = ($this->jversion == '15') ? $this->_basePath : $this->basePath;
 			$this->viewObject = $this->getView( $viewName, $viewType, $prefix, array_merge(array(
 					'input'		=> $this->input,
-					'base_path'	=>$basePath
+					'base_path'	=> $this->basePath
 				), $config)
 			);
 		}
@@ -1077,7 +1006,7 @@ class FOFController extends JControllerLegacy
 		if ( !class_exists( $viewClass ) )
 		{
 			jimport( 'joomla.filesystem.path' );
-			$thisPath = version_compare(JVERSION, '1.6.0', 'ge') ? $this->paths : $this->_path;
+			$thisPath = $this->paths;
 			if(JFactory::getApplication()->isSite()) {
 				$thisPath['view'] = array_merge(array(
 					JPATH_SITE.'/components/'.$config['option'].'/views',
@@ -1092,21 +1021,13 @@ class FOFController extends JControllerLegacy
 				$thisPath['view'][] = JPATH_SITE.'/components/'.$config['option'].'/views';
 			}
 
-			if(version_compare(JVERSION, '1.6.0', 'ge')) {
-				$viewPath = $this->createFileName( 'view', array( 'name' => $viewName, 'type' => $viewType) );
-			} else {
-				$viewPath = $this->_createFileName( 'view', array( 'name' => $viewName, 'type' => $viewType) );
-			}
+			$viewPath = $this->createFileName( 'view', array( 'name' => $viewName, 'type' => $viewType) );
 			$path = JPath::find(
 				$thisPath['view'],
 				$viewPath
 			);
 			if(!$path) {
-				if(version_compare(JVERSION, '1.6.0', 'ge')) {
-					$viewPath = $this->createFileName( 'view', array( 'name' => FOFInflector::singularize($viewName), 'type' => $viewType) );
-				} else {
-					$viewPath = $this->_createFileName( 'view', array( 'name' => FOFInflector::singularize($viewName), 'type' => $viewType) );
-				}
+				$viewPath = $this->createFileName( 'view', array( 'name' => FOFInflector::singularize($viewName), 'type' => $viewType) );
 
 				$path = JPath::find(
 					$thisPath['view'],
@@ -1180,12 +1101,7 @@ class FOFController extends JControllerLegacy
 	 */
 	protected function checkACL($area)
 	{
-		if(version_compare(JVERSION, '1.6.0', 'ge')) {
-			return JFactory::getUser()->authorise($area, $this->component);
-		} else {
-			$user = JFactory::getUser();
-			return $user->authorize($this->component, $area);
-		}
+		return JFactory::getUser()->authorise($area, $this->component);
 	}
 
 	protected function onBeforeApplySave(&$data)
@@ -1255,7 +1171,7 @@ class FOFController extends JControllerLegacy
 	 */
 	protected function onBeforeBrowse()
 	{
-		$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if($isAdmin) {
 			return $this->checkACL('core.manage');
 		} else {
@@ -1395,7 +1311,7 @@ class FOFController extends JControllerLegacy
 		}
 
 		if(!$hasToken) {
-			JError::raiseError('403', version_compare(JVERSION, '1.6.0', 'ge') ? JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN') : JText::_('Request Forbidden'));
+			JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 			return false;
 		}
 	}
