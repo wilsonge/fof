@@ -328,14 +328,14 @@ abstract class FOFView extends JViewLegacy
 		
 		// Try loading the stock renderers shipped with FOF
 		if(empty(self::$renderers) || !class_exists('FOFRenderJoomla', false)) {
-			$path = dirname(__FILE__);
-			$renderFiles = JFolder::files($path, 'render.');
+			$path = dirname(__FILE__).'/../render/';
+			$renderFiles = JFolder::files($path, '.php');
 			if(!empty($renderFiles)) {
 				foreach($renderFiles as $filename) {
-					if($filename == 'render.abstract.php') continue;
+					if($filename == 'abstract.php') continue;
 					@include_once $path.'/'.$filename;
 					$camel = FOFInflector::camelize($filename);
-					$className = 'FOFRender'.  ucfirst(FOFInflector::getPart($camel, 1));
+					$className = 'FOFRender'.  ucfirst(FOFInflector::getPart($camel, 0));
 					$o = new $className;
 					self::registerRenderer($o);
 				}
