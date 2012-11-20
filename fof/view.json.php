@@ -40,12 +40,12 @@ class FOFViewJson extends FOFViewHtml
 			$json = json_encode($items);
 
 			// JSONP support
-			$callback = FOFInput::getVar('callback', null, $this->input);
+			$callback = $this->input->getVar('callback', null);
 			if(!empty($callback)) {
 				echo $callback . '('.$json.')';
 			} else {
-				$defaultName = FOFInput::getCmd('view', 'joomla', $this->input);
-				$filename = FOFInput::getCmd('basename', $defaultName, $this->input);
+				$defaultName = $this->input->getCmd('view', 'joomla');
+				$filename = $this->input->getCmd('basename', $defaultName);
 
 				//On Joomla! 1.5 there is no setName method
 				if(version_compare(JVERSION, '1.6', 'ge')){
@@ -81,12 +81,12 @@ class FOFViewJson extends FOFViewHtml
 			$json = json_encode($item);
 
 			// JSONP support
-			$callback = FOFInput::getVar('callback', null, $this->input);
+			$callback = $this->input->get('callback', null);
 			if(!empty($callback)) {
 				echo $callback . '('.$json.')';
 			} else {
-				$defaultName = FOFInput::getCmd('view', 'joomla', $this->input);
-				$filename = FOFInput::getCmd('basename', $defaultName, $this->input);
+				$defaultName = $this->input->getCmd('view', 'joomla');
+				$filename = $this->input->getCmd('basename', $defaultName);
 				$document->setName($filename);
 				echo $json;
 			}

@@ -129,7 +129,12 @@ class FOFModel extends JModelLegacy
 		$component = 'com_'.strtolower($m[1]);
 
 		if(array_key_exists('input', $config)) {
-			$component = FOFInput::getCmd('option',$component,$config['input']);
+			if($config['input'] instanceof FOFInput) {
+				$tmpInput = $config['input'];
+			} else {
+				$tmpInput = new FOFInput($config['input']);
+			}
+			$component = $tmpInput->getCmd('option',$component);
 		}
 		$config['option'] = $component;
 
@@ -221,15 +226,19 @@ class FOFModel extends JModelLegacy
 
 		// Get the input
 		if(array_key_exists('input', $config)) {
-			$this->input = $config['input'];
+			if($config['input'] instanceof FOFInput) {
+				$this->input = $config['input'];
+			} else {
+				$this->input = new FOFInput($config['input']);
+			}
 		} else {
-			$this->input = JRequest::get('default', 3);
+			$this->input = new FOFInput();
 		}
 
 		// Set the $name/$_name variable
-		$component = FOFInput::getCmd('option','com_foobar',$this->input);
+		$component = $this->input->getCmd('option','com_foobar');
 		if(array_key_exists('option', $config)) $component = $config['option'];
-		FOFInput::setVar('option', $component, $this->input);
+		$this->input->set('option', $component);
 		$name = str_replace('com_', '', strtolower($component));
 		if(array_key_exists('name', $config)) $name = $config['name'];
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
@@ -246,7 +255,7 @@ class FOFModel extends JModelLegacy
 				$view = $config['view'];
 			}
 			if(empty($view)) {
-				$view = FOFInput::getCmd('view','cpanel',$this->input);
+				$view = $this->input->getCmd('view','cpanel');
 			}
 		} else {
 			$eliminatePart = ucfirst($name).'Model';
@@ -284,12 +293,12 @@ class FOFModel extends JModelLegacy
 		if(array_key_exists('cid', $config)) {
 			$cid = $config['cid'];
 		} else {
-			$cid = FOFInput::getVar('cid', null, $this->input, 'array');
+			$cid = $this->input->getArray('cid');
 		}
 		if(array_key_exists('id', $config)) {
 			$id = $config['id'];
 		} else {
-			$id = FOFInput::getInt('id', 0, $this->input);
+			$id = $this->input->getInt('id', 0);
 		}
 
 		if(is_array($cid) && !empty($cid))
@@ -325,9 +334,9 @@ class FOFModel extends JModelLegacy
 	public function setIDsFromRequest()
 	{
 		// Get the ID or list of IDs from the request or the configuration
-		$cid = FOFInput::getVar('cid', null, $this->input, 'array');
-		$id = FOFInput::getInt('id', 0, $this->input);
-		$kid = FOFInput::getInt($this->getTable($this->table)->getKeyName(), 0, $this->input);
+		$cid = $this->input->getArray('cid');
+		$id = $this->input->getInt('id', 0);
+		$kid = $this->input->getInt($this->getTable($this->table)->getKeyName(), 0);
 
 		if(is_array($cid) && !empty($cid))
 		{
@@ -678,7 +687,7 @@ class FOFModel extends JModelLegacy
 				// Call the plugin events
 				$dispatcher = JDispatcher::getInstance();
 				JPluginHelper::importPlugin('content');
-				$name = FOFInput::getCmd('view','cpanel',$this->input);
+				$name = $this->input->getCmd('view','cpanel');
 				$context = $this->option.'.'.$name;
 				$result = $dispatcher->trigger($this->event_change_state, array($context, $this->id_list, $publish));
 			}
@@ -868,8 +877,8 @@ class FOFModel extends JModelLegacy
 
 	public function getHash()
 	{
-		$option = FOFInput::getCmd('option', 'com_foobar', $this->input);
-		$view = FOFInflector::pluralize(FOFInput::getCmd('view','cpanel',$this->input));
+		$option = $this->input->getCmd('option', 'com_foobar');
+		$view = FOFInflector::pluralize($this->input->getCmd('view','cpanel'));
 		return "$option.$view.";
 	}
 
@@ -896,7 +905,7 @@ class FOFModel extends JModelLegacy
 			$old_state = null;
 		}
 		$cur_state = (!is_null($old_state)) ? $old_state : $default;
-		$new_state = FOFInput::getVar($request, null, $this->input, $type);
+		$new_state = $this->input->get($request, null, $type);
 
 		// Save the new value only if it was set in this request
 		if($setUserState) {
@@ -1125,7 +1134,7 @@ class FOFModel extends JModelLegacy
 	public function populateSavesate()
 	{
 		if(is_null($this->_savestate)) {
-			$savestate = FOFInput::getInt('savestate', -999, $this->input);
+			$savestate = $this->input->getInt('savestate', -999);
 			if($savestate == -999) {
 				$savestate = true;
 			}
@@ -1258,7 +1267,7 @@ class FOFModel extends JModelLegacy
 		try {
 			$table->load($id);
 
-			$name = FOFInput::getCmd('view','cpanel',$this->input);
+			$name = $this->input->getCmd('view','cpanel');
 			$context = $this->option.'.'.$name;
 			$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
 
@@ -1288,7 +1297,7 @@ class FOFModel extends JModelLegacy
 
 		$dispatcher = JDispatcher::getInstance();
 		try {
-			$name = FOFInput::getCmd('view','cpanel',$this->input);
+			$name = $this->input->getCmd('view','cpanel');
 			$context = $this->option.'.'.$name;
 			$result = $dispatcher->trigger($this->event_after_delete, array($context, $this->_recordForDeletion));
 			unset($this->_recordForDeletion);

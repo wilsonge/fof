@@ -37,7 +37,7 @@ class FOFController extends JControllerLegacy
 	/** @var array A cached copy of the class configuration parameter passed during initialisation */
 	protected $config = array();
 
-	/** @var array The input variables array for this MVC triad; you can override it in the configuration */
+	/** @var FOFInput The input object for this MVC triad; you can override it in the configuration */
 	protected $input = array();
 
 	/** @var bool Set to true to enable CSRF protection on selected tasks */
@@ -194,22 +194,32 @@ class FOFController extends JControllerLegacy
 
 		// Get the input for this MVC triad
 		if(array_key_exists('input', $config)) {
-			$this->input = $config['input'];
+			$input = $config['input'];
 		} else {
-			$this->input = JRequest::get('default', 3);
+			$input = null;
+		}
+		if(array_key_exists('input_options', $config)) {
+			$input_options = $config['input_options'];
+		} else {
+			$input_options = array();
+		}
+		if($input instanceof FOFInput) {
+			$this->input = $input;
+		} else {
+			$this->input = new FOFInput($input, $input_options);
 		}
 
 		// Get the default values for the component and view names
-		$this->component = FOFInput::getCmd('option','com_foobar',$this->input);
-		$this->view      = FOFInput::getCmd('view','cpanel',$this->input);
-		$this->layout    = FOFInput::getCmd('layout',null,$this->input);
+		$this->component = $this->input->get('option',	'com_filter',	'cmd');
+		$this->view      = $this->input->get('view',	'cpanel',		'cmd');
+		$this->layout    = $this->input->get('layout',	null,			'cmd');
 
 		// Overrides from the config
 		if(array_key_exists('option', $config)) $this->component = $config['option'];
 		if(array_key_exists('view', $config))   $this->view      = $config['view'];
 		if(array_key_exists('layout', $config)) $this->layout    = $config['layout'];
 
-		FOFInput::setVar('option', $this->component, $this->input);
+		$this->input->set('option', $this->component);
 
 		// Set the bareComponent variable
 		$this->bareComponent = str_replace('com_', '', strtolower($this->component));
@@ -348,7 +358,7 @@ class FOFController extends JControllerLegacy
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			$conf = JFactory::getConfig();
 			if (JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1) {
-				$option	= FOFInput::getCmd('option','com_foobar',$this->input);
+				$option	= $this->input->get('option', 'com_foobar', 'cmd');
 				$cache	= JFactory::getCache($option, 'view');
 
 				if (is_array($urlparams)) {
@@ -392,8 +402,8 @@ class FOFController extends JControllerLegacy
 	 */
 	public function browse()
 	{
-		if(FOFInput::getInt('savestate', -999, $this->input) == -999) {
-			FOFInput::setVar('savestate', true, $this->input);
+		if($this->input->get('savestate', -999, 'int') == -999) {
+			$this->input->set('savestate', true);
 		}
 		$this->display(in_array('browse', $this->cacheableTasks));
 	}
@@ -450,7 +460,7 @@ class FOFController extends JControllerLegacy
 
 		if(!$status) {
 			// Redirect on error
-			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 			$this->setRedirect($url, $model->getError(), 'error');
 			return;
@@ -480,16 +490,16 @@ class FOFController extends JControllerLegacy
 		if($result)
 		{
 			//check if i'm using an AJAX call, in this case there is no need to redirect
-			$format = FOFInput::getString('format','', $this->input);
+			$format = $this->input->get('format','', 'string');
 			if($format == 'json')
 			{
 				echo json_encode($result);
 				return;
 			}
 
-			$id = FOFInput::getInt('id', 0, $this->input);
+			$id = $this->input->get('id', 0, 'int');
 			$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
-			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=edit&id='.$id;
 			$this->setRedirect($url, JText::_($textkey));
 		}
@@ -511,7 +521,7 @@ class FOFController extends JControllerLegacy
 		$status = $model->copy();
 
 		//check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = FOFInput::getString('format','', $this->input);
+		$format = $this->input->get('format','', 'string');
 		if($format == 'json')
 		{
 			echo json_encode($status);
@@ -519,7 +529,7 @@ class FOFController extends JControllerLegacy
 		}
 
 		// redirect
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl', '', 'string')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		if(!$status)
 		{
@@ -547,7 +557,7 @@ class FOFController extends JControllerLegacy
 		if($result)
 		{
 			//check if i'm using an AJAX call, in this case there is no need to redirect
-			$format = FOFInput::getString('format','', $this->input);
+			$format = $this->input->get('format','', 'string');
 			if($format == 'json')
 			{
 				echo json_encode($result);
@@ -555,7 +565,7 @@ class FOFController extends JControllerLegacy
 			}
 
 			$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
-			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			if($customURL = $this->input->get('returnurl', '', 'string')) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 			$this->setRedirect($url, JText::_($textkey));
 		}
@@ -576,7 +586,7 @@ class FOFController extends JControllerLegacy
 		// Redirect to the display task
 		if($result) {
 			$textkey = strtoupper($this->component).'_LBL_'.strtoupper($this->view).'_SAVED';
-			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			if($customURL = $this->input->get('returnurl', '', 'string')) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=add';
 			$this->setRedirect($url, JText::_($textkey));
 		}
@@ -595,7 +605,7 @@ class FOFController extends JControllerLegacy
 		JFactory::getSession()->set($model->getHash().'savedata', null );
 
 		// Redirect to the display task
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		$this->setRedirect($url);
 	}
@@ -661,7 +671,7 @@ class FOFController extends JControllerLegacy
 		if(!$model->getId()) $model->setIDsFromRequest();
 
 		$ids = $model->getIds();
-		$orders = FOFInput::getArray('order', array(), $this->input);
+		$orders = $this->input->getArray('order');
 
 		if($n = count($ids))
 		{
@@ -683,7 +693,7 @@ class FOFController extends JControllerLegacy
 		$status = $model->reorder();
 
 		//check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = FOFInput::getString('format','', $this->input);
+		$format = $this->input->get('format','', 'string');
 		if($format == 'json')
 		{
 			echo json_encode($status);
@@ -691,7 +701,7 @@ class FOFController extends JControllerLegacy
 		}
 
 		// redirect
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		$this->setRedirect($url);
 		return;
@@ -710,7 +720,7 @@ class FOFController extends JControllerLegacy
 		$status = $model->move(1);
 
 		//check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = FOFInput::getString('format','', $this->input);
+		$format = $this->input->get('format','', 'string');
 		if($format == 'json')
 		{
 			echo json_encode($status);
@@ -718,7 +728,7 @@ class FOFController extends JControllerLegacy
 		}
 
 		// redirect
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		if(!$status)
 		{
@@ -743,7 +753,7 @@ class FOFController extends JControllerLegacy
 		$status = $model->move(-1);
 
 		//check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = FOFInput::getString('format','', $this->input);
+		$format = $this->input->get('format','', 'string');
 		if($format == 'json')
 		{
 			echo json_encode($status);
@@ -751,7 +761,7 @@ class FOFController extends JControllerLegacy
 		}
 
 		// redirect
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		if(!$status)
 		{
@@ -775,7 +785,7 @@ class FOFController extends JControllerLegacy
 		$status = $model->delete();
 
 		//check if i'm deleting using an AJAX call, in this case there is no need to redirect
-		$format = FOFInput::getString('format','', $this->input);
+		$format = $this->input->get('format','', 'string');
 		if($format == 'json')
 		{
 			echo json_encode($status);
@@ -783,7 +793,7 @@ class FOFController extends JControllerLegacy
 		}
 
 		// redirect
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl','','input')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		if(!$status)
 		{
@@ -826,7 +836,7 @@ class FOFController extends JControllerLegacy
 		$status = $model->publish($state);
 
 		//check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = FOFInput::getString('format','', $this->input);
+		$format = $this->input->get('format','', 'string');
 		if($format == 'json')
 		{
 			echo json_encode($status);
@@ -834,7 +844,7 @@ class FOFController extends JControllerLegacy
 		}
 
 		// redirect
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		if(!$status)
 		{
@@ -869,7 +879,7 @@ class FOFController extends JControllerLegacy
 
 
 		// redirect
-		if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+		if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 		$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.FOFInflector::pluralize($this->view);
 		if(!$status)
 		{
@@ -903,11 +913,11 @@ class FOFController extends JControllerLegacy
 			}
 		}
 
-		FOFInput::setVar('id', $model->getId(), $this->input);
+		$this->input->set('id', $model->getId());
 
 		if(!$status) {
 			//check if i'm using an AJAX call, in this case there is no need to redirect
-			$format = FOFInput::getString('format','', $this->input);
+			$format = $this->input->get('format','', 'string');
 			if($format == 'json')
 			{
 				echo json_encode($status);
@@ -916,7 +926,7 @@ class FOFController extends JControllerLegacy
 
 			// Redirect on error
 			$id = $model->getId();
-			if($customURL = FOFInput::getString('returnurl','',$this->input)) $customURL = base64_decode($customURL);
+			if($customURL = $this->input->get('returnurl','','string')) $customURL = base64_decode($customURL);
 			$url = !empty($customURL) ? $customURL : 'index.php?option='.$this->component.'&view='.$this->view.'&task=edit&id='.$id;
 			$this->setRedirect($url, '<li>'.implode('</li><li>',$model->getErrors()), 'error').'</li>';
 			return false;
@@ -1032,26 +1042,33 @@ class FOFController extends JControllerLegacy
 		$classPrefix = preg_replace( '/[^A-Z0-9_]/i', '', $prefix );
 		$viewType	 = preg_replace( '/[^A-Z0-9_]/i', '', $type );
 
+		if(($config['input'] instanceof FOFInput)) {
+			$tmpInput = $config['input'];
+		} else {
+			$tmpInput = new FOFInput($config['input']);
+		}
+		
 		// Guess the component name and view
 		preg_match('/(.*)View$/', $prefix, $m);
 		$component = 'com_'.strtolower($m[1]);
 		if(array_key_exists('input', $config)) {
-			$component = FOFInput::getCmd('option',$component,$config['input']);
+			$component = $tmpInput->get('option',$component,'cmd');
 		}
 		if(array_key_exists('option', $config)) if($config['option']) $component = $config['option'];
 		$config['option'] = $component;
 
 		$view = strtolower($viewName);
 		if(array_key_exists('input', $config)) {
-			$view = FOFInput::getCmd('view',$view,$config['input']);
+			$view = $tmpInput->get('view',$view,'cmd');
 		}
 		if(array_key_exists('view', $config)) if($config['view']) $view = $config['view'];
 
 		$config['view'] = $view;
 
 		if(array_key_exists('input', $config)) {
-			FOFInput::setVar('option', $config['option'], $config['input']);
-			FOFInput::setVar('view', $config['view'], $config['input']);
+			$tmpInput->set('option', $config['option']);
+			$tmpInput->set('view', $config['view']);
+			$config['input'] = $tmpInput;
 		}
 
 		// Build the view class name
@@ -1357,23 +1374,23 @@ class FOFController extends JControllerLegacy
 		// Joomla! 1.5/1.6/1.7/2.5 (classic Joomla! API) method
 		if(method_exists('JUtility', 'getToken')) {
 			$token = JUtility::getToken();
-			$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
-			if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+			$hasToken = $this->input->get($token, false, 'none') == 1;
+			if(!$hasToken) $hasToken = $this->input->get('_token', null, 'none') == $token;
 		}
 		// Joomla! 2.5+ (Platform 12.1+) method
 		if(!$hasToken) {
 			if(method_exists($session, 'getToken')) {
 				$token = $session->getToken();
-				$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
-				if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+				$hasToken = $this->input->get($token, false, 'none') == 1;
+				if(!$hasToken) $hasToken = $this->input->get('_token', null, 'none') == $token;
 			}
 		}
 		// Joomla! 2.5+ formToken method
 		if(!$hasToken) {
 			if(method_exists($session, 'getFormToken')) {
 				$token = $session->getFormToken();
-				$hasToken = FOFInput::getVar($token, false, $this->input) == 1;
-				if(!$hasToken) $hasToken = FOFInput::getVar('_token', null, $this->input) == $token;
+				$hasToken = $this->input->get($token, false, 'none') == 1;
+				if(!$hasToken) $hasToken = $this->input->get('_token', null, 'none') == $token;
 			}
 		}
 

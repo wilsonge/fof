@@ -67,8 +67,14 @@ abstract class FOFTable extends JTable
 
 		// Guess the component name
 		if(array_key_exists('input', $config)) {
-			$option = FOFInput::getCmd('option','',$config['input']);
-			FOFInput::setVar('option',$option,$config['input']);
+			if($config['input'] instanceof FOFInput) {
+				$tmpInput = $config['input'];
+			} else {
+				$tmpInput = new FOFInput($config['input']);
+			}
+			$option = $tmpInput->getCmd('option','');
+			$tmpInput->set('option', $option);
+			$config['input'] = $tmpInput;
 		}
 
 		if(!in_array($prefix,array('Table','JTable'))) {
@@ -325,7 +331,7 @@ abstract class FOFTable extends JTable
 
 			if (count( $msg ))
 			{
-				$option = FOFInput::getCmd('option','com_foobar',$this->input);
+				$option = $this->input->getCmd('option','com_foobar');
 				$comName = str_replace('com_','',$option);
 				$tview = str_replace('#__'.$comName.'_', '', $this->_tbl);
 				$prefix = $option.'_'.$tview.'_NODELETE_';

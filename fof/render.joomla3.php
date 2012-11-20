@@ -22,7 +22,7 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	
 	public function preRender($view, $task, $input, $config=array())
 	{
-		$format = FOFInput::getCmd('format', 'html', $input);
+		$format = $input->getCmd('format', 'html');
 		if(empty($format)) $format = 'html';
 		if($format != 'html') return;
 		
@@ -37,7 +37,7 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	protected function renderButtons($view, $task, $input, $config=array())
 	{
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
-		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option','com_foobar'), $config);
 		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
 		
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();

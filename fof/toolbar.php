@@ -43,11 +43,15 @@ class FOFToolbar
 		$hash = $option;
 		if(!array_key_exists($hash, $instances)) {
 			if(array_key_exists('input', $config)) {
-				$input = $config['input'];
+				if($config['input'] instanceof FOFInput) {
+					$input = $config['input'];
+				} else {
+					$input = new FOFInput($config['input']);
+				}
 			} else {
-				$input = JRequest::get('default', 3);
+				$input = new FOFInput();
 			}
-			$config['option'] = !is_null($option) ? $option : FOFInput::getCmd('option','com_foobar',$input);
+			$config['option'] = !is_null($option) ? $option : $input->getCmd('option','com_foobar');
 			$input['option'] = $config['option'];
 			$config['input'] = $input;
 
@@ -106,12 +110,12 @@ class FOFToolbar
 		}
 
 		// Get the default values for the component and view names
-		$this->component = FOFInput::getCmd('option','com_foobar',$this->input);
+		$this->component = $this->input->getCmd('option','com_foobar');
 
 		// Overrides from the config
 		if(array_key_exists('option', $config)) $this->component = $config['option'];
 
-		FOFInput::setVar('option', $this->component, $this->input);
+		$this->input->set('option', $this->component);
 
 		// Get default permissions (can be overriden by the view)
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
@@ -119,11 +123,11 @@ class FOFToolbar
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			$user = JFactory::getUser();
 			$perms = (object)array(
-				'manage'	=> $user->authorise('core.manage', FOFInput::getCmd('option','com_foobar',$this->input) ),
-				'create'	=> $user->authorise('core.create', FOFInput::getCmd('option','com_foobar',$this->input) ),
-				'edit'		=> $user->authorise('core.edit', FOFInput::getCmd('option','com_foobar',$this->input)),
-				'editstate'	=> $user->authorise('core.edit.state', FOFInput::getCmd('option','com_foobar',$this->input)),
-				'delete'	=> $user->authorise('core.delete', FOFInput::getCmd('option','com_foobar',$this->input)),
+				'manage'	=> $user->authorise('core.manage', $this->input->getCmd('option','com_foobar') ),
+				'create'	=> $user->authorise('core.create', $this->input->getCmd('option','com_foobar') ),
+				'edit'		=> $user->authorise('core.edit', $this->input->getCmd('option','com_foobar')),
+				'editstate'	=> $user->authorise('core.edit.state', $this->input->getCmd('option','com_foobar')),
+				'delete'	=> $user->authorise('core.delete', $this->input->getCmd('option','com_foobar')),
 			);
 		} else {
 			$perms = (object)array(
@@ -175,11 +179,11 @@ class FOFToolbar
 		}
 
 		// If there is a render.toolbar=0 in the URL, do not render a toolbar
-		if(!FOFInput::getBool('render.toolbar',true,$this->input)) return;
+		if(!$this->input->getBool('render.toolbar',true)) return;
 
 		// Get the view and task
-		if(empty($view)) $view = FOFInput::getCmd('view','cpanel',$this->input);
-		if(empty($task)) $task = FOFInput::getCmd('task','default',$this->input);
+		if(empty($view)) $view = $this->input->getCmd('view','cpanel');
+		if(empty($task)) $task = $this->input->getCmd('task','default');
 
 		$this->view = $view;
 		$this->task = $task;
@@ -223,7 +227,7 @@ class FOFToolbar
 
 		if(!$isAdmin && !$this->renderFrontendButtons) return;
 
-		$option = FOFInput::getCmd('option','com_foobar',$this->input);
+		$option = $this->input->getCmd('option','com_foobar');
 
 		JToolBarHelper::title(JText::_(strtoupper($option)), str_replace('com_', '', $option));
 		JToolBarHelper::preferences($option, 550, 875);
@@ -244,8 +248,8 @@ class FOFToolbar
 		if(!$isAdmin && !$this->renderFrontendButtons) return;
 
 		// Set toolbar title
-		$option = FOFInput::getCmd('option','com_foobar',$this->input);
-		$subtitle_key = strtoupper($option.'_TITLE_'.FOFInput::getCmd('view','cpanel',$this->input));
+		$option = $this->input->getCmd('option','com_foobar');
+		$subtitle_key = strtoupper($option.'_TITLE_'.$this->input->getCmd('view','cpanel'));
 		JToolBarHelper::title(JText::_( strtoupper($option)).' &ndash; <small>'.JText::_($subtitle_key).'</small>', str_replace('com_', '', $option));
 
 		// Add toolbar buttons
@@ -273,7 +277,7 @@ class FOFToolbar
 			JToolBarHelper::divider();
 		}
 		if($this->perms->delete) {
-			$msg = JText::_(FOFInput::getCmd('option','com_foobar',$this->input).'_CONFIRM_DELETE');
+			$msg = JText::_($this->input->getCmd('option','com_foobar').'_CONFIRM_DELETE');
 			JToolBarHelper::deleteList($msg);
 		}
 	}
@@ -292,11 +296,11 @@ class FOFToolbar
 
 		if(!$isAdmin && !$this->renderFrontendButtons) return;
 
-		$option = FOFInput::getCmd('option','com_foobar',$this->input);
+		$option = $this->input->getCmd('option','com_foobar');
 		$componentName = str_replace('com_', '', $option);
 
 		// Set toolbar title
-		$subtitle_key = strtoupper($option.'_TITLE_'.FOFInput::getCmd('view','cpanel',$this->input).'_READ');
+		$subtitle_key = strtoupper($option.'_TITLE_'.$this->input->getCmd('view','cpanel').'_READ');
 		JToolBarHelper::title(JText::_(strtoupper($option)).' &ndash; <small>'.JText::_($subtitle_key).'</small>', $componentName);
 
 		// Set toolbar icons
@@ -309,11 +313,11 @@ class FOFToolbar
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if(!$isAdmin && !$this->renderFrontendButtons) return;
 
-		$option = FOFInput::getCmd('option','com_foobar',$this->input);
+		$option = $this->input->getCmd('option','com_foobar');
 		$componentName = str_replace('com_', '', $option);
 
 		// Set toolbar title
-		$subtitle_key = strtoupper($option.'_TITLE_'.FOFInflector::pluralize(FOFInput::getCmd('view','cpanel',$this->input))).'_EDIT';
+		$subtitle_key = strtoupper($option.'_TITLE_'.FOFInflector::pluralize($this->input->getCmd('view','cpanel'))).'_EDIT';
 		JToolBarHelper::title(JText::_(strtoupper($option)).' &ndash; <small>'.JText::_($subtitle_key).'</small>',$componentName);
 
 		// Set toolbar icons
@@ -421,7 +425,7 @@ class FOFToolbar
 		$views = $this->getMyViews();
 		if(empty($views)) return;
 
-		$activeView = FOFInput::getCmd('view','cpanel',$this->input);
+		$activeView = $this->input->getCmd('view','cpanel');
 
 		foreach($views as $view) {
 			// Get the view name

@@ -37,9 +37,13 @@ class FOFViewHtml extends FOFView
 
 		// Get the input
 		if(array_key_exists('input', $config)) {
-			$this->input = $config['input'];
+			if($config['input'] instanceof FOFInput) {
+				$this->input = $config['input'];
+			} else {
+				$this->input = new FOFInput($config['input']);
+			}
 		} else {
-			$this->input = JRequest::get('default', 3);
+			$this->input = new FOFInput();
 		}
 
 		$this->lists = new JObject();
@@ -47,10 +51,10 @@ class FOFViewHtml extends FOFView
 		if(version_compare(JVERSION, '1.6.0', 'ge')) {
 			$user = JFactory::getUser();
 			$perms = (object)array(
-				'create'	=> $user->authorise('core.create', FOFInput::getCmd('option','com_foobar',$this->input) ),
-				'edit'		=> $user->authorise('core.edit', FOFInput::getCmd('option','com_foobar',$this->input)),
-				'editstate'	=> $user->authorise('core.edit.state', FOFInput::getCmd('option','com_foobar',$this->input)),
-				'delete'	=> $user->authorise('core.delete', FOFInput::getCmd('option','com_foobar',$this->input)),
+				'create'	=> $user->authorise('core.create', $this->input->getCmd('option','com_foobar') ),
+				'edit'		=> $user->authorise('core.edit', $this->input->getCmd('option','com_foobar')),
+				'editstate'	=> $user->authorise('core.edit.state', $this->input->getCmd('option','com_foobar')),
+				'delete'	=> $user->authorise('core.delete', $this->input->getCmd('option','com_foobar')),
 			);
 		} else {
 			$perms = (object)array(
@@ -87,9 +91,9 @@ class FOFViewHtml extends FOFView
 
 		if($result === false) { return; }
 
-		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$this->input), $this->config);
+		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option','com_foobar'), $this->config);
 		$toolbar->perms = $this->perms;
-		$toolbar->renderToolbar(FOFInput::getCmd('view','cpanel',$this->input), $task, $this->input);
+		$toolbar->renderToolbar($this->input->getCmd('view','cpanel'), $task, $this->input);
 
 		// Show the view
 		$this->preRender();
@@ -105,7 +109,7 @@ class FOFViewHtml extends FOFView
 		// Do not render a submenu unless we are in the the admin area
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		if(!$isAdmin) return;
-		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$this->input), $this->config);
+		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option','com_foobar'), $this->config);
 		$links = $toolbar->getLinks();
 		if(!empty($links)) {
 			foreach($links as $link) {
@@ -123,7 +127,7 @@ class FOFViewHtml extends FOFView
 		if(!($renderer instanceof FOFRenderAbstract)) {
 			$this->renderLinkbar();
 		} else {
-			$view = FOFInput::getCmd('view','cpanel',$this->input);
+			$view = $this->input->getCmd('view','cpanel');
 			$task = $this->getModel()->getState('task','browse');
 			$renderer->preRender($view, $task, $this->input, $this->config);
 		}
@@ -136,7 +140,7 @@ class FOFViewHtml extends FOFView
 	{
 		$renderer = $this->getRenderer();
 		if($renderer instanceof FOFRenderAbstract) {
-			$view = FOFInput::getCmd('view','cpanel',$this->input);
+			$view = $this->input->getCmd('view','cpanel');
 			$task = $this->getModel()->getState('task','browse');
 			$renderer->postRender($view, $task, $this->input, $this->config);
 		}
@@ -151,7 +155,7 @@ class FOFViewHtml extends FOFView
 
 	protected function onDisplay($tpl = null)
 	{
-		$view = FOFInput::getCmd('view','cpanel',$this->input);
+		$view = $this->input->getCmd('view','cpanel');
 		if(in_array($view,array('cpanel','cpanels'))) return;
 
 		// Load the model

@@ -27,18 +27,18 @@ class FOFViewCsv extends FOFViewHtml
 		
 		if(array_key_exists('csv_header', $config)) {
 			$this->csvHeader = $config['csv_header'];
-		} elseif(array_key_exists('csv_header', $this->input)) {
-			$this->csvHeader = FOFInput::getBool('csv_header',true,$this->input);
+		} else {
+			$this->csvHeader = $this->input->getBool('csv_header',true);
 		}
 		
 		if(array_key_exists('csv_filename', $config)) {
 			$this->csvFilename = $config['csv_filename'];
-		} elseif(array_key_exists('csv_filename', $this->input)) {
-			$this->csvFilename = FOFInput::getString('csv_filename','',$this->input);
+		} else {
+			$this->csvFilename = $this->input->getString('csv_filename','');
 		}
 		
 		if(empty($this->csvFilename)) {
-			$view = FOFInput::getCmd('view','cpanel', $this->input);
+			$view = $this->input->getCmd('view','cpanel');
 			$view = FOFInflector::pluralize($view);
 			$this->csvFilename = strtolower($view);
 		}

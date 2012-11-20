@@ -22,11 +22,11 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 *
 	 * @param string $view The current view
 	 * @param string $task The current task
-	 * @param array $input The input array (request parameters)
+	 * @param FOFInput $input The input array (request parameters)
 	 */
 	public function preRender($view, $task, $input, $config=array())
 	{
-		$format = FOFInput::getCmd('format', 'html', $input);
+		$format = $input->getCmd('format', 'html');
 		if(empty($format)) $format = 'html';
 		if($format != 'html') return;
 
@@ -49,7 +49,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	protected function renderLinkbar($view, $task, $input, $config=array())
 	{
 		// Do not render a submenu unless we are in the the admin area
-		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option','com_foobar'), $config);
 		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
 
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
@@ -66,7 +66,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	protected function renderButtons($view, $task, $input, $config=array())
 	{
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
-		$toolbar = FOFToolbar::getAnInstance(FOFInput::getCmd('option','com_foobar',$input), $config);
+		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option','com_foobar'), $config);
 		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
 
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();

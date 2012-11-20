@@ -32,29 +32,40 @@ abstract class FOFView extends JViewLegacy
 
 		// Get the input
 		if(array_key_exists('input', $config)) {
-			$this->input = $config['input'];
+			if($config['input'] instanceof FOFInput) {
+				$this->input = $config['input'];
+			} else {
+				$this->input = new FOFInput($config['input']);
+			}
 		} else {
-			$this->input = JRequest::get('default', 3);
+			$this->input = new FOFInput();
 		}
 
 		// Get the component name
 		if(array_key_exists('input', $config)) {
-			$component = FOFInput::getCmd('option','',$config['input']);
+			if($config['input'] instanceof FOFInput) {
+				$tmpInput = $config['input'];
+			} else {
+				$tmpInput = new FOFInput($config['input']);
+			}
+			$component = $tmpInput->getCmd('option','');
+		} else {
+			$tmpInput = $this->input;
 		}
 		if(array_key_exists('option', $config)) if($config['option']) $component = $config['option'];
 		$config['option'] = $component;
 
 		// Get the view name
 		if(array_key_exists('input', $config)) {
-			$view = FOFInput::getCmd('view','',$config['input']);
+			$view = $tmpInput->getCmd('view','');
 		}
 		if(array_key_exists('view', $config)) if($config['view']) $view = $config['view'];
 		$config['view'] = $view;
 
 		// Set the component and the view to the input array
 		if(array_key_exists('input', $config)) {
-			FOFInput::setVar('option', $config['option'], $config['input']);
-			FOFInput::setVar('view', $config['view'], $config['input']);
+			$tmpInput->set('option', $config['option']);
+			$tmpInput->set('view', $config['view']);
 		}
 
 		// Set the view name
@@ -63,7 +74,8 @@ abstract class FOFView extends JViewLegacy
 		} else {
 			$this->_name = $config['view'];
 		}
-		FOFInput::setVar('view', $this->_name, $config['input']);
+		$tmpInput->set('view', $this->_name);
+		$config['input'] = $tmpInput;
 		$config['name'] = $this->_name;
 		$config['view'] = $this->_name;
 

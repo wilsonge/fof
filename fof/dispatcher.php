@@ -20,7 +20,7 @@ class FOFDispatcher extends JObject
 	/** @var array Configuration variables */
 	protected $config = array();
 
-	/** @var array Input variables */
+	/** @var FOFInput Input variables */
 	protected $input = array();
 
 	/** @var string The name of the default view, in case none is specified */
@@ -85,12 +85,16 @@ class FOFDispatcher extends JObject
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
 		if(array_key_exists('input', $config)) {
-			$input = $config['input'];
+			if($config['input'] instanceof FOFInput) {
+				$input = $config['input'];
+			} else {
+				$input = new FOFInput($config['input']);
+			}
 		} else {
-			$input = JRequest::get('default', 3);
+			$input = new FOFInput();
 		}
-		$config['option'] = !is_null($option) ? $option : FOFInput::getCmd('option','com_foobar',$input);
-		$config['view'] = !is_null($view) ? $view : FOFInput::getCmd('view','',$input);
+		$config['option'] = !is_null($option) ? $option : $input->getCmd('option','com_foobar');
+		$config['view'] = !is_null($view) ? $view : $input->getCmd('view','');
 		$input['option'] = $config['option'];
 		$input['view'] = $config['view'];
 		$config['input'] = $input;
@@ -153,19 +157,19 @@ class FOFDispatcher extends JObject
 		}
 
 		// Get the default values for the component and view names
-		$this->component = FOFInput::getCmd('option','com_foobar',$this->input);
-		$this->view = FOFInput::getCmd('view',$this->defaultView,$this->input);
+		$this->component = $this->input->getCmd('option','com_foobar');
+		$this->view = $this->input->getCmd('view',$this->defaultView);
 		if(empty($this->view)) $this->view = $this->defaultView;
-		$this->layout = FOFInput::getCmd('layout',null,$this->input);
+		$this->layout = $this->input->getCmd('layout',null);
 
 		// Overrides from the config
 		if(array_key_exists('option', $config)) $this->component = $config['option'];
 		if(array_key_exists('view', $config)) $this->view = empty($config['view']) ? $this->view : $config['view'];
 		if(array_key_exists('layout', $config)) $this->layout = $config['layout'];
 
-		FOFInput::setVar('option', $this->component, $this->input);
-		FOFInput::setVar('view', $this->view, $this->input);
-		FOFInput::setVar('layout', $this->layout, $this->input);
+		$this->input->set('option', $this->component);
+		$this->input->set('view', $this->view);
+		$this->input->set('layout', $this->layout);
 	}
 
 	/**
@@ -194,8 +198,8 @@ class FOFDispatcher extends JObject
 			// Master access check for the back-end, Joomla! 1.6 style.
 			$user = JFactory::getUser();
 			if (
-				!$user->authorise('core.manage', FOFInput::getCmd('option','com_foobar',$this->input) )
-				&& !$user->authorise('core.admin', FOFInput::getCmd('option','com_foobar',$this->input))
+				!$user->authorise('core.manage', $this->input->getCmd('option','com_foobar') )
+				&& !$user->authorise('core.admin', $this->input->getCmd('option','com_foobar'))
 			) {
 				return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
 			}
@@ -219,7 +223,7 @@ class FOFDispatcher extends JObject
 		if(!$this->onBeforeDispatch()) {
 
 			// For json, don't use normal 403 page, but a json encoded message
-			if(FOFInput::getVar('format', '') == 'json'){
+			if($this->input->get('format', '') == 'json'){
 				echo json_encode(array('code' => '403', 'error' => $this->getError()));
 				exit();
 			}
@@ -232,9 +236,9 @@ class FOFDispatcher extends JObject
 		}
 
 		// Get and execute the controller
-		$option = FOFInput::getCmd('option','com_foobar',$this->input);
-		$view = FOFInput::getCmd('view',$this->defaultView, $this->input);
-		$task = FOFInput::getCmd('task','',$this->input);
+		$option = $this->input->getCmd('option','com_foobar');
+		$view = $this->input->getCmd('view',$this->defaultView);
+		$task = $this->input->getCmd('task','');
 		if(empty($task)) {
 			$task = $this->getTask($view);
 		}
@@ -244,8 +248,8 @@ class FOFDispatcher extends JObject
 		} elseif(in_array($task,array('browse'))) {
 			$view = FOFInflector::pluralize($view);
 		}
-		FOFInput::setVar('view',$view,$this->input);
-		FOFInput::setVar('task',$task,$this->input);
+		$this->input->set('view',$view);
+		$this->input->set('task',$task);
 
 		$config = $this->config;
 		$config['input'] = $this->input;
@@ -285,9 +289,9 @@ class FOFDispatcher extends JObject
 		$task = FOFInflector::isPlural($view) ? 'browse' : 'edit';
 
 		// Get a potential ID, we might need it later
-		$id = FOFInput::getVar('id', null, $this->input);
+		$id = $this->input->get('id', null);
 		if($id == 0) {
-			$ids = FOFInput::getArray('ids',array(),$this->input);
+			$ids = $this->input->getArray('ids');
 			if(!empty($ids)) {
 				$id = array_shift($ids);
 			}
@@ -363,7 +367,7 @@ class FOFDispatcher extends JObject
 		if(!JFactory::getUser()->guest) return;
 		
 		// @todo Check the format
-		$format = FOFInput::getCmd('format', 'html', $this->input);
+		$format = $this->input->getCmd('format', 'html');
 		if(!in_array($format, $this->_fofAuth_Formats)) return;
 		
 		foreach($this->_fofAuth_AuthMethods as $method) {
@@ -387,7 +391,7 @@ class FOFDispatcher extends JObject
 					break;
 
 				case 'QueryString_TOTP':
-					$encryptedData = FOFInput::getVar('_fofauthentication', '', $this->input);
+					$encryptedData = $this->input->get('_fofauthentication', '');
 					
 					if(empty($encryptedData)) continue;
 					
@@ -404,7 +408,7 @@ class FOFDispatcher extends JObject
 					break;
 				
 				case 'QueryString_Plaintext':
-					$jsonencoded = FOFInput::getVar('_fofauthentication', '', $this->input);
+					$jsonencoded = $this->input->get('_fofauthentication', '');
 					if(empty($jsonencoded)) continue;
 					$authInfo = json_decode($jsonencoded, true);
 					if(!is_array($authInfo)) {
