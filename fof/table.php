@@ -24,7 +24,7 @@ jimport('joomla.database.table');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-abstract class FOFTable extends JTable
+class FOFTable extends JTable
 {
 	/**
 	 * If this is set to true, it triggers automatically plugin events for

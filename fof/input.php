@@ -88,21 +88,21 @@ class FOFInput extends JInput
 	 * @param array $arguments The arguments passed to the method
 	 * @return mixed
 	 */
-	public function __callStatic($name, $arguments) {
+	public static function __callStatic($name, $arguments) {
 		JLog::add('FOFInput: static getXXX() methods are deprecated. Use the input object\'s methods instead.', JLog::WARNING, 'deprecated');
 		
 		if(substr($name, 0, 3) == 'get') {
 			// Initialise arguments
-			$name = array_unshift($arguments);
-			$default = array_unshift($arguments);
-			$input = array_unshift($arguments);
+			$name = array_shift($arguments);
+			$default = array_shift($arguments);
+			$input = array_shift($arguments);
 			$type = 'none';
 			$mask = 0;
 			
 			$type = strtolower(substr($name, 4));
 			if($type == 'var') {
-				$type = array_unshift($arguments);
-				$mask = array_unshift($arguments);
+				$type = array_shift($arguments);
+				$mask = array_shift($arguments);
 			}
 			if(is_null($type)) {
 				$type = 'none';
@@ -146,7 +146,11 @@ class FOFInput extends JInput
 			
 			$previous = array_key_exists($name, $input) ? $input[$name] : null;
 			
-			$input[$name] = $value;
+			if(is_array($input)) {
+				$input[$name] = $value;
+			} elseif($input instanceof FOFInput) {
+				$input->set($name, $value);
+			}
 			
 			return $previous;
 		}

@@ -293,7 +293,7 @@ class FOFModel extends JModelLegacy
 		if(array_key_exists('cid', $config)) {
 			$cid = $config['cid'];
 		} else {
-			$cid = $this->input->getArray('cid');
+			$cid = $this->input->get('cid', array(), 'array');
 		}
 		if(array_key_exists('id', $config)) {
 			$id = $config['id'];
@@ -334,7 +334,7 @@ class FOFModel extends JModelLegacy
 	public function setIDsFromRequest()
 	{
 		// Get the ID or list of IDs from the request or the configuration
-		$cid = $this->input->getArray('cid');
+		$cid = $this->input->get('cid', array(), 'array');
 		$id = $this->input->getInt('id', 0);
 		$kid = $this->input->getInt($this->getTable($this->table)->getKeyName(), 0);
 
@@ -449,7 +449,7 @@ class FOFModel extends JModelLegacy
 	 */
 	public function clearInput()
 	{
-		$this->input = array();
+		$this->input = new FOFInput(array());
 
 		return $this;
 	}

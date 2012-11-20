@@ -671,7 +671,7 @@ class FOFController extends JControllerLegacy
 		if(!$model->getId()) $model->setIDsFromRequest();
 
 		$ids = $model->getIds();
-		$orders = $this->input->getArray('order');
+		$orders = $this->input->get('order', array(), 'array');
 
 		if($n = count($ids))
 		{

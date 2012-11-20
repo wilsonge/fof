@@ -95,8 +95,8 @@ class FOFDispatcher extends JObject
 		}
 		$config['option'] = !is_null($option) ? $option : $input->getCmd('option','com_foobar');
 		$config['view'] = !is_null($view) ? $view : $input->getCmd('view','');
-		$input['option'] = $config['option'];
-		$input['view'] = $config['view'];
+		$input->set('option', $config['option']);
+		$input->set('view', $config['view']);
 		$config['input'] = $input;
 
 		$className = ucfirst(str_replace('com_', '', $config['option'])).'Dispatcher';
@@ -291,7 +291,7 @@ class FOFDispatcher extends JObject
 		// Get a potential ID, we might need it later
 		$id = $this->input->get('id', null);
 		if($id == 0) {
-			$ids = $this->input->getArray('ids');
+			$ids = $this->input->get('ids', array(), 'array');
 			if(!empty($ids)) {
 				$id = array_shift($ids);
 			}

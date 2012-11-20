@@ -52,7 +52,7 @@ class FOFToolbar
 				$input = new FOFInput();
 			}
 			$config['option'] = !is_null($option) ? $option : $input->getCmd('option','com_foobar');
-			$input['option'] = $config['option'];
+			$input->set('option', $config['option']);
 			$config['input'] = $input;
 
 			$className = ucfirst(str_replace('com_', '', $config['option'])).'Toolbar';
