@@ -1,8 +1,8 @@
 <?php
 /**
- *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
- *  @license GNU General Public License version 3, or later
+ * @package    FrameworkOnFramework
+ * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 
 // Protect from unauthorized access
@@ -11,11 +11,13 @@ defined('_JEXEC') or die();
 jimport('legacy.controller.legacy');
 
 /**
- * FrameworkOnFramework controller class
- *
- * FrameworkOnFramework is a set of classes whcih extend Joomla! 1.5 and later's
- * MVC framework with features making maintaining complex software much easier,
- * without tedious repetitive copying of the same code over and over again.
+ * @package  FrameworkOnFramework.Controller
+ * 
+ * @since    1.0
+ * 
+ * FrameworkOnFramework controller class. FOF is based on the thin controller
+ * paradigm, where the controller is mainly used to set up the model state and
+ * spawn the view.
  */
 class FOFController extends JControllerLegacy
 {
@@ -67,94 +69,126 @@ class FOFController extends JControllerLegacy
 	 * relevant controller file from the component's directory or, if it doesn't
 	 * exist, creates a new controller object out of thin air.
 	 *
-	 * @param string $option Component name, e.g. com_foobar
-	 * @param string $view The view name, also used for the controller name
-	 * @param array $config Configuration parameters
-	 * @return FOFController
+	 * @param   string  $option  Component name, e.g. com_foobar
+	 * @param   string  $view    The view name, also used for the controller name
+	 * @param   array   $config  Configuration parameters
+	 * 
+	 * @return  FOFController
 	 */
 	public static function &getAnInstance($option = null, $view = null, $config = array())
 	{
 		static $instances = array();
 
-		$hash = $option.$view;
-		if(!array_key_exists($hash, $instances)) {
+		$hash = $option . $view;
+		if (!array_key_exists($hash, $instances))
+		{
 			$instances[$hash] = self::getTmpInstance($option, $view, $config);
 		}
 
 		return $instances[$hash];
 	}
 
+	/**
+	 * Gets a temporary instance of a controller object. A temporary instance is
+	 * not a Singleton and can be disposed off after use.
+	 * 
+	 * @param   string  $option  The component name, e.g. com_foobar
+	 * @param   string  $view    The view name, e.g. cpanel
+	 * @param   array   $config  Configuration parameters
+	 * 
+	 * @return  \className  A disposable class instance
+	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
-		$config['option'] = !is_null($option) ? $option : JRequest::getCmd('option','com_foobar');
-		$config['view'] = !is_null($view) ? $view : JRequest::getCmd('view','cpanel');
+		$config['option'] = !is_null($option) ? $option : JRequest::getCmd('option', 'com_foobar');
+		$config['view'] = !is_null($view) ? $view : JRequest::getCmd('view', 'cpanel');
 
 		$classType = FOFInflector::pluralize($config['view']);
-		$className = ucfirst(str_replace('com_', '', $config['option'])).'Controller'.ucfirst($classType);
-		if (!class_exists( $className )) {
+		$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller' . ucfirst($classType);
+		if (!class_exists($className))
+		{
 			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-			if($isAdmin) {
+			if ($isAdmin)
+			{
 				$basePath = JPATH_ADMINISTRATOR;
-			} elseif($isCli) {
+			}
+			elseif ($isCli)
+			{
 				$basePath = JPATH_ROOT;
-			} else {
+			}
+			else
+			{
 				$basePath = JPATH_SITE;
 			}
 
 			$searchPaths = array(
-				$basePath.'/components/'.$config['option'].'/controllers',
-				JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/controllers'
+				$basePath . '/components/' . $config['option'] . '/controllers',
+				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/controllers'
 			);
-			if(array_key_exists('searchpath', $config)) {
+			if (array_key_exists('searchpath', $config))
+			{
 				array_unshift($searchPaths, $config['searchpath']);
 			}
 
 			jimport('joomla.filesystem.path');
 			$path = JPath::find(
 				$searchPaths,
-				strtolower(FOFInflector::pluralize($config['view'])).'.php'
+				strtolower(FOFInflector::pluralize($config['view'])) . '.php'
 			);
 
-			if ($path) {
+			if ($path)
+			{
 				require_once $path;
 			}
 		}
 
-		if(!class_exists($className)) {
+		if (!class_exists($className))
+		{
 			$classType = FOFInflector::singularize($config['view']);
-			$className = ucfirst(str_replace('com_', '', $config['option'])).'Controller'.ucfirst($classType);
+			$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller' . ucfirst($classType);
 		}
 
-		if (!class_exists( $className )) {
+		if (!class_exists($className))
+		{
 			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-			if($isAdmin) {
+
+			if ($isAdmin)
+			{
 				$basePath = JPATH_ADMINISTRATOR;
-			} elseif($isCli) {
+			}
+			elseif ($isCli)
+			{
 				$basePath = JPATH_ROOT;
-			} else {
+			}
+			else
+			{
 				$basePath = JPATH_SITE;
 			}
 
 			$searchPaths = array(
-				$basePath.'/components/'.$config['option'].'/controllers',
-				JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/controllers'
+				$basePath . '/components/' . $config['option'] . '/controllers',
+				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/controllers'
 			);
-			if(array_key_exists('searchpath', $config)) {
+
+			if (array_key_exists('searchpath', $config))
+			{
 				array_unshift($searchPaths, $config['searchpath']);
 			}
 
 			jimport('joomla.filesystem.path');
 			$path = JPath::find(
 				$searchPaths,
-				strtolower(FOFInflector::singularize($config['view'])).'.php'
+				strtolower(FOFInflector::singularize($config['view'])) . '.php'
 			);
 
-			if ($path) {
+			if ($path)
+			{
 				require_once $path;
 			}
 		}
 
-		if (!class_exists( $className )) {
+		if (!class_exists($className))
+		{
 			$className = 'FOFController';
 		}
 		$instance = new $className($config);
@@ -165,7 +199,7 @@ class FOFController extends JControllerLegacy
 	/**
 	 * Public constructor of the Controller class
 	 *
-	 * @param array $config Optional configuration parameters
+	 * @param   array  $config  Optional configuration parameters
 	 */
 	public function __construct($config = array())
 	{
@@ -175,19 +209,30 @@ class FOFController extends JControllerLegacy
 		$this->config = $config;
 
 		// Get the input for this MVC triad
-		if(array_key_exists('input', $config)) {
+		if (array_key_exists('input', $config))
+		{
 			$input = $config['input'];
-		} else {
+		}
+		else
+		{
 			$input = null;
 		}
-		if(array_key_exists('input_options', $config)) {
+
+		if (array_key_exists('input_options', $config))
+		{
 			$input_options = $config['input_options'];
-		} else {
+		}
+		else
+		{
 			$input_options = array();
 		}
-		if($input instanceof FOFInput) {
+
+		if ($input instanceof FOFInput)
+		{
 			$this->input = $input;
-		} else {
+		}
+		else
+		{
 			$this->input = new FOFInput($input, $input_options);
 		}
 
@@ -197,9 +242,20 @@ class FOFController extends JControllerLegacy
 		$this->layout    = $this->input->get('layout',	null,			'cmd');
 
 		// Overrides from the config
-		if(array_key_exists('option', $config)) $this->component = $config['option'];
-		if(array_key_exists('view', $config))   $this->view      = $config['view'];
-		if(array_key_exists('layout', $config)) $this->layout    = $config['layout'];
+		if (array_key_exists('option', $config))
+		{
+			$this->component = $config['option'];
+		}
+
+		if (array_key_exists('view', $config))
+		{
+			$this->view      = $config['view'];
+		}
+
+		if (array_key_exists('layout', $config))
+		{
+			$this->layout    = $config['layout'];
+		}
 
 		$this->input->set('option', $this->component);
 
@@ -213,64 +269,99 @@ class FOFController extends JControllerLegacy
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		$basePath  = $isAdmin ? JPATH_ADMINISTRATOR : JPATH_ROOT;
 		$basePath .= '/components/'.$this->component;
-		if(array_key_exists('base_path', $config)) $basePath = $config['base_path'];
+
+		if (array_key_exists('base_path', $config))
+		{
+			$basePath = $config['base_path'];
+		}
+
 		$this->basePath = $basePath;
 
 		// Set the CSRF protection
-		if(array_key_exists('csrf_protection', $config)) {
+		if (array_key_exists('csrf_protection', $config))
+		{
 			$this->csrfProtection = $config['csrf_protection'];
 		}
 
 		// Set any model/view name overrides
-		if(array_key_exists('viewName', $config)) $this->setThisViewName($config['viewName']);
-		if(array_key_exists('modelName', $config)) $this->setThisModelName($config['modelName']);
-
-		// Caching
-		if(array_key_exists('cacheableTasks', $config)) {
-			if(is_array($config['cacheableTasks'])) $this->cacheableTasks = $config['cacheableTasks'];
+		if (array_key_exists('viewName', $config))
+		{
+			$this->setThisViewName($config['viewName']);
 		}
 
-		//Bit mask for auto routing on setRedirect
-		if(array_key_exists('autoRouting', $config)) $this->autoRouting = $config['autoRouting'];
+		if (array_key_exists('modelName', $config))
+		{
+			$this->setThisModelName($config['modelName']);
+		}
+
+		// Caching
+		if (array_key_exists('cacheableTasks', $config))
+		{
+			if (is_array($config['cacheableTasks']))
+			{
+				$this->cacheableTasks = $config['cacheableTasks'];
+			}
+		}
+
+		// Bit mask for auto routing on setRedirect
+		if (array_key_exists('autoRouting', $config))
+		{
+			$this->autoRouting = $config['autoRouting'];
+		}
 	}
 
 	/**
 	 * Executes a given controller task. The onBefore<task> and onAfter<task>
 	 * methods are called automatically if they exist.
 	 *
-	 * @param string $task
-	 * @return null|bool False on execution failure
+	 * @param   string  $task  The task to execute, e.g. "browse"
+	 * 
+	 * @return  null|bool  False on execution failure
 	 */
-	public function execute($task) {
+	public function execute($task)
+	{
 		$this->task = $task;
-		
-		$method_name = 'onBefore'.ucfirst($task);
-		if(method_exists($this, $method_name)) {
+
+		$method_name = 'onBefore' . ucfirst($task);
+		if (method_exists($this, $method_name))
+		{
 			$result = $this->$method_name();
-			if(!$result) return false;
+			if (!$result)
+			{
+				return false;
+			}
 		}
 
 		// Do not allow the display task to be directly called
 		$task = strtolower($task);
-		if (isset($this->taskMap[$task])) {
+		if (isset($this->taskMap[$task]))
+		{
 			$doTask = $this->taskMap[$task];
 		}
-		elseif (isset($this->taskMap['__default'])) {
+		elseif (isset($this->taskMap['__default']))
+		{
 			$doTask = $this->taskMap['__default'];
 		}
-		else {
+		else
+		{
 			$doTask = null;
 		}
-		if($doTask == 'display') {
+
+		if ($doTask == 'display')
+		{
 			JError::raiseError(400, 'Bad Request');
 		}
 
 		parent::execute($task);
 
-		$method_name = 'onAfter'.ucfirst($task);
-		if(method_exists($this, $method_name)) {
+		$method_name = 'onAfter' . ucfirst($task);
+		if (method_exists($this, $method_name))
+		{
 			$result = $this->$method_name();
-			if(!$result) return false;
+			if (!$result)
+			{
+				return false;
+			}
 		}
 	}
 
@@ -281,7 +372,8 @@ class FOFController extends JControllerLegacy
 	 * YOU MUST NOT USETHIS TASK DIRECTLY IN A URL. It is supposed to be
 	 * used ONLY inside your code. In the URL, use task=browse instead.
 	 *
-	 * @param bool $cachable Is this view cacheable?
+	 * @param   bool  $cachable   Is this view cacheable?
+	 * @param   bool  $urlparams  Add your safe URL parameters (see further down in the code)
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
@@ -331,8 +423,6 @@ class FOFController extends JControllerLegacy
 	/**
 	 * Implements a default browse task, i.e. read a bunch of records and send
 	 * them to the browser.
-	 *
-	 * @param bool $cachable Is this view cacheable?
 	 */
 	public function browse()
 	{
@@ -345,8 +435,6 @@ class FOFController extends JControllerLegacy
 	/**
 	 * Single record read. The id set in the request is passed to the model and
 	 * then the item layout is used to render the result.
-	 *
-	 * @param bool $cachable Is this view cacheable?
 	 */
 	public function read()
 	{
@@ -363,8 +451,6 @@ class FOFController extends JControllerLegacy
 
 	/**
 	 * Single record add. The form layout is used to present a blank page.
-	 *
-	 * @param bool $cachable Is this view cacheable?
 	 */
 	public function add()
 	{
@@ -382,8 +468,6 @@ class FOFController extends JControllerLegacy
 	/**
 	 * Single record edit. The ID set in the request is passed to the model,
 	 * then the form layout is used to edit the result.
-	 *
-	 * @param bool $cachable Is this view cacheable?
 	 */
 	public function edit()
 	{

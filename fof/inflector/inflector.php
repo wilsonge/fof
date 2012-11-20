@@ -1,24 +1,19 @@
 <?php
 /**
- *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
- *  @license GNU General Public License version 3, or later
+ * @package    FrameworkOnFramework
+ * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
+
 defined('_JEXEC') or die();
 
 /**
- * The FOFInflector is a direct copy of Koowa's KInflector class, which
- * is also licensed under the GPL v3. In its turn, it's an adaptation of the
- * Akelos PHP Inflector which is a PHP port from a Ruby on Rails project.
+ * The FOFInflector is an adaptation of the Akelos PHP Inflector which is a PHP
+ * port from a Ruby on Rails project.
  */
 
 /**
- * KInflector to pluralize and singularize English nouns.
- *
- * @author		Johan Janssens <johan@nooku.org>
- * @category	Koowa
- * @package		Koowa_Inflector
- * @static
+ * FOFInflector to pluralize and singularize English nouns.
  */
 class FOFInflector
 {

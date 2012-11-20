@@ -1,8 +1,8 @@
 <?php
 /**
- *  @package FrameworkOnFramework
- *  @copyright Copyright (c)2010-2012 Nicholas K. Dionysopoulos
- *  @license GNU General Public License version 3, or later
+ * @package    FrameworkOnFramework
+ * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license    GNU General Public License version 3 or later; see LICENSE.txt
  */
 
 defined('_JEXEC') or die();
