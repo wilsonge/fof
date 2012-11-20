@@ -817,9 +817,9 @@ class FOFModel extends JModelLegacy
 			$query = $this->buildCountQuery();
 			if($query === false) {
 				$sql = (string)$this->buildQuery(false);
-				$query = FOFQueryAbstract::getNew($this->_db)
-						->select('COUNT(*)')
-						->from("($sql) AS a");
+				$query = $this->_db->getQuery(true)
+					->select('COUNT(*)')
+					->from("($sql) AS a");
 			}
 
 			$this->_db->setQuery( (string)$query );
@@ -1013,19 +1013,9 @@ class FOFModel extends JModelLegacy
 		$tableKey = $table->getKeyName();
 		$db = $this->getDBO();
 
-		if(version_compare(JVERSION, '3.0', 'ge')) {
-			$query = FOFQueryAbstract::getNew()
-				->select('*')
-				->from($db->qn($tableName));
-		} elseif(version_compare(JVERSION, '1.6', 'ge')) {
-			$query = FOFQueryAbstract::getNew()
-				->select('*')
-				->from($db->quoteName($tableName));
-		}else {
-			$query = FOFQueryAbstract::getNew()
-				->select('*')
-				->from($db->nameQuote($tableName));
-		}
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->qn($tableName));
 
 		$where = array();
 		if(version_compare(JVERSION, '3.0', 'ge')) {
@@ -1041,36 +1031,18 @@ class FOFModel extends JModelLegacy
 				switch($fieldname) {
 					case $table->getColumnAlias('title'):
 					case $table->getColumnAlias('description'):
-						if(version_compare(JVERSION, '3.0', 'ge')) {
-							$query->where('('.$db->qn($fieldname).' LIKE '.$db->q('%'.$filterState.'%').')');
-						} elseif(version_compare(JVERSION, '1.6', 'ge')) {
-							$query->where('('.$db->quoteName($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
-						} else {
-							$query->where('('.$db->nameQuote($fieldname).' LIKE '.$db->Quote('%'.$filterState.'%').')');
-						}
+						$query->where('('.$db->qn($fieldname).' LIKE '.$db->q('%'.$filterState.'%').')');
 
 						break;
 
 					case $table->getColumnAlias('enabled'):
 						if($filterState !== '') {
-							if(version_compare(JVERSION, '3.0', 'ge')) {
-								$query->where($db->qn($fieldname).' = '.$db->q((int)$filterState));
-							} elseif(version_compare(JVERSION, '1.6', 'ge')) {
-								$query->where($db->quoteName($fieldname).' = '.$db->Quote((int)$filterState));
-							} else {
-								$query->where($db->nameQuote($fieldname).' = '.$db->Quote((int)$filterState));
-							}
+							$query->where($db->qn($fieldname).' = '.$db->q((int)$filterState));
 						}
 						break;
 
 					default:
-						if(version_compare(JVERSION, '3.0', 'ge')) {
-							$query->where('('.$db->qn($fieldname).'='.$db->q($filterState).')');
-						} elseif(version_compare(JVERSION, '1.6', 'ge')) {
-							$query->where('('.$db->quoteName($fieldname).'='.$db->Quote($filterState).')');
-						} else {
-							$query->where('('.$db->nameQuote($fieldname).'='.$db->Quote($filterState).')');
-						}
+						$query->where('('.$db->qn($fieldname).'='.$db->q($filterState).')');
 						break;
 				}
 			}
@@ -1080,13 +1052,7 @@ class FOFModel extends JModelLegacy
 			$order = $this->getState('filter_order',null,'cmd');
 			if(!in_array($order, array_keys($this->getTable()->getData()))) $order = $tableKey;
 			$dir = $this->getState('filter_order_Dir', 'ASC', 'cmd');
-			if(version_compare(JVERSION, '3.0', 'ge')) {
-				$query->order($db->qn($order).' '.$dir);
-			} elseif(version_compare(JVERSION, '1.6', 'ge')) {
-				$query->order($db->quoteName($order).' '.$dir);
-			} else {
-				$query->order($db->nameQuote($order).' '.$dir);
-			}
+			$query->order($db->qn($order).' '.$dir);
 		}
 
 		return $query;
