@@ -8,20 +8,8 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.controller');
+jimport('legacy.controller.legacy');
 
-require_once(dirname(__FILE__).'/input.php');
-
-/**
- * Guess what? JController is an interface in Joomla! 3.0. Holly smoke, Batman!
- */
-if(!class_exists('FOFWorksAroundJoomlaToGetAController')) {
-	if(interface_exists('JController')) {
-		abstract class FOFWorksAroundJoomlaToGetAController extends JControllerLegacy {}
-	} else {
-		class FOFWorksAroundJoomlaToGetAController extends JController {}
-	}
-}
 /**
  * FrameworkOnFramework controller class
  *
@@ -29,7 +17,7 @@ if(!class_exists('FOFWorksAroundJoomlaToGetAController')) {
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFController extends FOFWorksAroundJoomlaToGetAController
+class FOFController extends JControllerLegacy
 {
 	/** @var string Current Joomla! version family (15 or 16) */
 	protected $jversion = '15';

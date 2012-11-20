@@ -17,8 +17,6 @@ if(class_exists('FOFTable', false)) {
 
 jimport('joomla.database.table');
 
-require_once(dirname(__FILE__).'/input.php');
-
 /**
  * FrameworkOnFramework table class
  *
@@ -26,7 +24,7 @@ require_once(dirname(__FILE__).'/input.php');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-abstract class FOFTable_COMMONBASE extends JTable
+abstract class FOFTable extends JTable
 {
 	/**
 	 * If this is set to true, it triggers automatically plugin events for
@@ -205,6 +203,13 @@ abstract class FOFTable_COMMONBASE extends JTable
 	function setSkipChecks($skip)
 	{
 		$this->_skipChecks = (array) $skip;
+	}
+	
+	public function load( $keys=null, $reset=true )
+	{
+		$result = parent::load($keys, $reset);
+		$this->onAfterLoad($result);
+		return $result;
 	}
 
 	/**
@@ -1268,27 +1273,5 @@ abstract class FOFTable_COMMONBASE extends JTable
 			}
 		}
 		return true;
-	}
-}
-
-if(version_compare(JVERSION, '1.6.0', 'ge')) {
-	class FOFTable extends FOFTable_COMMONBASE
-	{
-		public function load( $keys=null, $reset=true )
-		{
-			$result = parent::load($keys, $reset);
-			$this->onAfterLoad($result);
-			return $result;
-		}
-	}
-} else {
-	class FOFTable extends FOFTable_COMMONBASE
-	{
-		public function load( $oid=null )
-		{
-			$result = parent::load($oid);
-			$this->onAfterLoad($result);
-			return $result;
-		}
 	}
 }

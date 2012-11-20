@@ -8,18 +8,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
-
-/**
- * Guess what? JView is an interface in Joomla! 3.0. Holly smoke, Batman!
- */
-if(!class_exists('FOFWorksAroundJoomlaToGetAView')) {
-	if(interface_exists('JModel')) {
-		abstract class FOFWorksAroundJoomlaToGetAView extends JViewLegacy {}
-	} else {
-		class FOFWorksAroundJoomlaToGetAView extends JView {}
-	}
-}
+jimport('legacy.view.legacy');
 
 /**
  * FrameworkOnFramework View class
@@ -28,7 +17,7 @@ if(!class_exists('FOFWorksAroundJoomlaToGetAView')) {
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-abstract class FOFView extends FOFWorksAroundJoomlaToGetAView
+abstract class FOFView extends JViewLegacy
 {
 	static $renderers = array();
 

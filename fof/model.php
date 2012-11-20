@@ -8,18 +8,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.model');
-
-/**
- * Guess what? JModel is an interface in Joomla! 3.0. Holly smoke, Batman!
- */
-if(!class_exists('FOFWorksAroundJoomlaToGetAModel')) {
-	if(interface_exists('JModel')) {
-		abstract class FOFWorksAroundJoomlaToGetAModel extends JModelLegacy {}
-	} else {
-		class FOFWorksAroundJoomlaToGetAModel extends JModel {}
-	}
-}
+jimport('legacy.model.legacy');
 
 /**
  * FrameworkOnFramework model class
@@ -28,7 +17,7 @@ if(!class_exists('FOFWorksAroundJoomlaToGetAModel')) {
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFModel extends FOFWorksAroundJoomlaToGetAModel
+class FOFModel extends JModelLegacy
 {
 	/**
 	 * The name of the table to use
