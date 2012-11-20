@@ -931,7 +931,14 @@ class FOFController extends JControllerLegacy
 
 	protected function createModel($name, $prefix = '', $config = array())
 	{
-		return $this->_createModel($name, $prefix, $config);
+		$result = null;
+
+		// Clean the model name
+		$modelName	 = preg_replace( '/[^A-Z0-9_]/i', '', $name );
+		$classPrefix = preg_replace( '/[^A-Z0-9_]/i', '', $prefix );
+
+		$result = FOFModel::getAnInstance($modelName, $classPrefix, $config);
+		return $result;
 	}
 
 	/**
@@ -947,22 +954,11 @@ class FOFController extends JControllerLegacy
 	 */
 	function &_createModel( $name, $prefix = '', $config = array())
 	{
-		$result = null;
-
-		// Clean the model name
-		$modelName	 = preg_replace( '/[^A-Z0-9_]/i', '', $name );
-		$classPrefix = preg_replace( '/[^A-Z0-9_]/i', '', $prefix );
-
-		$result = FOFModel::getAnInstance($modelName, $classPrefix, $config);
-		return $result;
+		JLog::add('FOFController::_createModel is deprecated. Use createModel() instead.', JLog::WARNING, 'deprecated');
+		return $this->createModel($name, $prefix, $config);
 	}
 
 	protected function createView($name, $prefix = '', $type = '', $config = array())
-	{
-		return $this->_createView($name, $prefix, $type, $config);
-	}
-
-	function &_createView( $name, $prefix = '', $type = '', $config = array() )
 	{
 		$result = null;
 
@@ -1044,7 +1040,7 @@ class FOFController extends JControllerLegacy
 			if(!class_exists($viewClass) && FOFInflector::isSingular($name)) {
 				$name = FOFInflector::pluralize($name);
 				$viewClass = $classPrefix . ucfirst($name);
-				$result = $this->_createView($name, $prefix, $type, $config);
+				$result = $this->createView($name, $prefix, $type, $config);
 			}
 
 			if(!class_exists($viewClass)) {
@@ -1081,6 +1077,13 @@ class FOFController extends JControllerLegacy
 
 		$result = new $viewClass($config);
 		return $result;
+	}
+
+	function &_createView( $name, $prefix = '', $type = '', $config = array() )
+	{
+		JLog::add('FOFController::_createView is deprecated. Use createView() instead.', JLog::WARNING, 'deprecated');
+		
+		return $this->createView($name, $prefix, $type, $config);
 	}
 
 	public function setThisViewName($viewName)
