@@ -242,6 +242,8 @@ class FOFController extends JControllerLegacy
 	 * @return null|bool False on execution failure
 	 */
 	public function execute($task) {
+		$this->task = $task;
+		
 		$method_name = 'onBefore'.ucfirst($task);
 		if(method_exists($this, $method_name)) {
 			$result = $this->$method_name();
@@ -883,10 +885,10 @@ class FOFController extends JControllerLegacy
 				$modelName = ucfirst(FOFInflector::pluralize($this->view));
 			}
 
-			$this->modelObject = $this->getModel($modelName, $prefix, array_merge(array(
-					'input'	=> $this->input
-				), $config
-			));
+			if(!array_key_exists('input', $config) || !($config['input'] instanceof FOFInput)) {
+				$config['input'] = $this->input;
+			}
+			$this->modelObject = $this->getModel($modelName, $prefix, $config);
 		}
 
 		return $this->modelObject;
@@ -915,15 +917,12 @@ class FOFController extends JControllerLegacy
 			$document = JFactory::getDocument();
 			$viewType	= $document->getType();
 
-			if(!array_key_exists('input', $config)) {
+			if(!array_key_exists('input', $config) || !($config['input'] instanceof FOFInput)) {
 				$config['input'] = $this->input;
 			}
+			$config['input']->set('base_path', $this->basePath);
 
-			$this->viewObject = $this->getView( $viewName, $viewType, $prefix, array_merge(array(
-					'input'		=> $this->input,
-					'base_path'	=> $this->basePath
-				), $config)
-			);
+			$this->viewObject = $this->getView( $viewName, $viewType, $prefix, $config);
 		}
 
 		return $this->viewObject;
