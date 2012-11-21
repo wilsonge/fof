@@ -80,6 +80,16 @@ class FOFInput extends JInput
 	}
 	
 	/**
+	 * Returns a copy of the raw data stored in the class
+	 * 
+	 * @return type
+	 */
+	public function getData()
+	{
+		return $this->data;
+	}
+	
+	/**
 	 * Old static methods are now deprecated. This magic method makes sure there
 	 * is a continuity in our approach. The downside is that it's only compatible
 	 * with PHP 5.3.0. Sorry!

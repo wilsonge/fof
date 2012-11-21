@@ -915,7 +915,7 @@ class FOFController extends JControllerLegacy
 		if(!$model->getId()) $model->setIDsFromRequest();
 		$id = $model->getId();
 
-		$data = $this->input;
+		$data = $this->input->getData();
 		$this->onBeforeApplySave($data);
 		$status = $model->save($data);
 
