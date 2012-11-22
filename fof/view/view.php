@@ -230,10 +230,29 @@ abstract class FOFView extends JViewLegacy
 	 *
 	 * @param   string  $tpl  The name of the template file to parse
 	 *
-	 * @return  mixed  A string if successful, otherwise a Error object.
+	 * @return  mixed  A string if successful, otherwise a JError object.
 	 */
 	public function display($tpl = null)
 	{
+		$result = $this->loadTemplate($tpl);
+		if ($result instanceof Exception) {
+				JError::raiseError($result->getCode(), $result->getMessage());
+				return $result;
+		}
+
+		echo $result;
+	}
+	
+	/**
+	 * Overrides the built-in loadTemplate function with an FOF-specific one.
+	 * Our overriden function uses loadAnyTemplate to provide smarter view
+	 * template loading.
+	 * 
+	 * @param   string  $tpl  The name of the template file to parse
+	 * 
+	 * @return  mixed  A string if successful, otherwise a JError object
+	 */
+	public function loadTemplate($tpl = null) {
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		$basePath = $isAdmin ? 'admin:' : 'site:';
@@ -259,7 +278,7 @@ abstract class FOFView extends JViewLegacy
 			}
 		}
 
-		echo $result;
+		return $result;
 	}
 
 	private function _parseTemplatePath($path = '')
