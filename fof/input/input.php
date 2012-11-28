@@ -26,25 +26,25 @@ class FOFInput extends JInput
 			$hash = strtoupper($source);
 			switch($hash) {
 				case 'GET':
-					$source = &$_GET;
+					$source = $_GET;
 					break;
 				case 'POST':
-					$source = &$_POST;
+					$source = $_POST;
 					break;
 				case 'FILES':
-					$source = &$_FILES;
+					$source = $_FILES;
 					break;
 				case 'COOKIE':
-					$source = &$_COOKIE;
+					$source = $_COOKIE;
 					break;
 				case 'ENV':
-					$source = &$_ENV;
+					$source = $_ENV;
 					break;
 				case 'SERVER':
-					$source = &$_SERVER;
+					$source = $_SERVER;
 					break;
 				default:
-					$source = &$_REQUEST;
+					$source = $_REQUEST;
 					$hash = 'REQUEST';
 					break;
 			}
@@ -54,6 +54,8 @@ class FOFInput extends JInput
 			} catch (Exception $exc) {
 				$source = null;
 			}
+		} else {
+			$source = $_REQUEST;
 		}
 		
 		parent::__construct($source, $options);
