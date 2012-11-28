@@ -108,6 +108,22 @@ class FOFModel extends JModelLegacy
 	 * @var bool
 	 */
 	protected $_savestate = null;
+	
+	/**
+	 * Array of form objects.
+	 *
+	 * @var    array
+	 * @since  2.0
+	 */
+	protected $_forms = array();
+	
+	/**
+	 * The data to load into a form
+	 *
+	 * @var    array
+	 * @since  2.0
+	 */
+	protected $_formData = array();	
 
 	/**
 	 * Returns a new model object. Unless overriden by the $config array, it will
@@ -1134,6 +1150,289 @@ class FOFModel extends JModelLegacy
 		}
 	}
 
+	/**
+	 * A method for getting the form from the model.
+	 *
+	 * @param   array    $data      Data for the form.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  mixed  A JForm object on success, false on failure
+	 *
+	 * @since   2.0
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		$this->_formData = array();
+		
+		$name = $this->input->getCmd('option', 'com_foobar') . '.' .
+				$this->input->getCmd('view', 'cpanels');
+		
+		$source = $this->input->getCmd('view', 'cpanels');
+		
+		$options = array(
+			'control'	=> false,
+			'load_date'	=> $loadData,
+		);
+		
+		$form = $this->loadForm($name, $source, $options);
+		
+		return $form;
+	}
+	
+	/**
+	 * Method to get a form object.
+	 *
+	 * @param   string   $name     The name of the form.
+	 * @param   string   $source   The form source. Can be XML string if file flag is set to false.
+	 * @param   array    $options  Optional array of options for the form creation.
+	 * @param   boolean  $clear    Optional argument to force load a new form.
+	 * @param   string   $xpath    An optional xpath to search for the fields.
+	 *
+	 * @return  mixed  JForm object on success, False on error.
+	 *
+	 * @see     JForm
+	 * @since   2.0
+	 */
+	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+	{
+		// Handle the optional arguments.
+		$options['control'] = JArrayHelper::getValue($options, 'control', false);
+
+		// Create a signature hash.
+		$hash = md5($source . serialize($options));
+
+		// Check if we can use a previously loaded form.
+		if (isset($this->_forms[$hash]) && !$clear)
+		{
+			return $this->_forms[$hash];
+		}
+
+		// Try to find the name and path of the form to load
+		$formFilename = $this->findFormFilename($source);
+		
+		// No form found? Quit!
+		if($formFilename === false) {
+			return false;
+		}
+		
+		// Set up the form name and path
+		$source = basename($formFilename);
+		JForm::addFormPath(dirname($formFilename));
+		
+		// Set up field paths
+		$option			= $this->input->getCmd('option', 'com_foobar');
+		$view			= $this->input->getCmd('view', 'cpanels');
+		$file_root		= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
+		$file_root	   .= '/components/' . $option;
+		$alt_file_root	= ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
+		$alt_file_root .= '/components/' . $option;
+		
+		JForm::addFieldPath($file_root . '/fields');
+		JForm::addFieldPath($file_root . '/models/fields');
+		JForm::addFieldPath($alt_file_root . '/fields');
+		JForm::addFieldPath($alt_file_root . '/models/fields');
+
+		// Get the form.
+		try
+		{
+			$form = JForm::getInstance($name, $source, $options, false, $xpath);
+
+			if (isset($options['load_data']) && $options['load_data'])
+			{
+				// Get the data for the form.
+				$data = $this->loadFormData();
+			}
+			else
+			{
+				$data = array();
+			}
+
+			// Allow for additional modification of the form, and events to be triggered.
+			// We pass the data because plugins may require it.
+			$this->preprocessForm($form, $data);
+
+			// Load the data into the form after the plugins have operated.
+			$form->bind($data);
+
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+			return false;
+		}
+
+		// Store the form for later.
+		$this->_forms[$hash] = $form;
+
+		return $form;
+	}
+	
+	/**
+	 * Guesses the best candidate for the path to use for a particular form.
+	 * 
+	 * @param   string  $source  The name of the form file to load, without the .xml extension
+	 * 
+	 * @return  string  The path and filename of the form to load
+	 * 
+	 * @since   2.0
+	 */
+	protected function findFormFilename($source)
+	{
+		// Get some useful variables
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		
+		$option			= $this->input->getCmd('option', 'com_foobar');
+		$view			= $this->input->getCmd('view', 'cpanels');
+		$template		= JFactory::getApplication()->getTemplate();
+		$file_root		= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
+		$file_root	   .= '/components/' . $option;
+		$alt_file_root	= ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
+		$alt_file_root .= '/components/' . $option;
+		$template_root	= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
+		$template_root .= '/templates/' . $template . '/html/' . $option;
+		
+		// Set up the paths to look into
+		$paths = array(
+			// In the template override
+			$template_root . '/' . $view,
+			$template_root . '/' . FOFInflector::singularize($view),
+			$template_root . '/' . FOFInflector::pluralize($view),
+			// In this side of the component
+			$file_root . '/views/' . $view . '/tmpl',
+			$file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
+			$file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
+			// In the other side of the component
+			$alt_file_root . '/views/' . $view . '/tmpl',
+			$alt_file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
+			$alt_file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
+			// In the models/forms of this side
+			$file_root . '/models/forms',
+			// In the models/forms of the other side
+			$alt_file_root . '/models/forms',
+		);
+		
+		// Set up the suffixes to look into
+		$jversion		= new JVersion();
+		$versionParts	= explode('.', $jversion->getLongVersion());
+		$majorVersion	= array_shift($versionParts);
+		$suffixes = array(
+			'.j' . str_replace('.', '', $jversion->getHelpVersion()) . '.xml',
+			'.j' . $majorVersion . '.xml',
+			'.xml',
+		);
+		unset($jversion, $versionParts, $majorVersion);
+		
+		// Look for all suffixes in all paths
+		jimport('joomla.filesystem.file');
+		$result = false;
+		foreach($paths as $path) {
+			foreach($suffixes as $suffix) {
+				$filename = $path . '/' . $source . $suffix;
+				if (JFile::exists($filename)) {
+					$result = $filename;
+					break;
+				}
+			}
+			if($result) break;
+		}
+		
+		return $result;
+	}
+
+	/**
+	 * Method to get the data that should be injected in the form.
+	 *
+	 * @return  array    The default data is an empty array.
+	 *
+	 * @since   2.0
+	 */
+	protected function loadFormData()
+	{
+		if(empty($this->_formData)) {
+			return array();
+		} else {
+			return $this->_formData;
+		}
+	}
+
+	/**
+	 * Method to allow derived classes to preprocess the form.
+	 *
+	 * @param   JForm   $form   A JForm object.
+	 * @param   mixed   $data   The data expected for the form.
+	 * @param   string  $group  The name of the plugin group to import (defaults to "content").
+	 *
+	 * @return  void
+	 *
+	 * @see     JFormField
+	 * @since   2.0
+	 * @throws  Exception if there is an error in the form event.
+	 */
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	{
+		// Import the appropriate plugin group.
+		JPluginHelper::importPlugin($group);
+
+		// Get the dispatcher.
+		$dispatcher = JEventDispatcher::getInstance();
+
+		// Trigger the form preparation event.
+		$results = $dispatcher->trigger('onContentPrepareForm', array($form, $data));
+
+		// Check for errors encountered while preparing the form.
+		if (count($results) && in_array(false, $results, true))
+		{
+			// Get the last error.
+			$error = $dispatcher->getError();
+
+			if (!($error instanceof Exception))
+			{
+				throw new Exception($error);
+			}
+		}
+	}
+
+	/**
+	 * Method to validate the form data.
+	 *
+	 * @param   JForm   $form   The form to validate against.
+	 * @param   array   $data   The data to validate.
+	 * @param   string  $group  The name of the field group to validate.
+	 *
+	 * @return  mixed  Array of filtered data if valid, false otherwise.
+	 *
+	 * @see     JFormRule
+	 * @see     JFilterInput
+	 * @since   2.0
+	 */
+	public function validateForm($form, $data, $group = null)
+	{
+		// Filter and validate the form data.
+		$data = $form->filter($data);
+		$return = $form->validate($data, $group);
+
+		// Check for an error.
+		if ($return instanceof Exception)
+		{
+			$this->setError($return->getMessage());
+			return false;
+		}
+
+		// Check the validation results.
+		if ($return === false)
+		{
+			// Get the validation messages from the form.
+			foreach ($form->getErrors() as $message)
+			{
+				$this->setError($message);
+			}
+
+			return false;
+		}
+
+		return $data;
+	}	
+	
 	/**
 	 * This method can be overriden to automatically do something with the
 	 * list results array. You are supposed to modify the list which was passed
