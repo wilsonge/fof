@@ -1156,7 +1156,7 @@ class FOFModel extends JModelLegacy
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  mixed  A JForm object on success, false on failure
+	 * @return  mixed  A FOFForm object on success, false on failure
 	 *
 	 * @since   2.0
 	 */
@@ -1193,9 +1193,9 @@ class FOFModel extends JModelLegacy
 	 * @param   boolean  $clear    Optional argument to force load a new form.
 	 * @param   string   $xpath    An optional xpath to search for the fields.
 	 *
-	 * @return  mixed  JForm object on success, False on error.
+	 * @return  mixed  FOFForm object on success, False on error.
 	 *
-	 * @see     JForm
+	 * @see     FOFForm
 	 * @since   2.0
 	 */
 	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
@@ -1222,7 +1222,7 @@ class FOFModel extends JModelLegacy
 		
 		// Set up the form name and path
 		$source = basename($formFilename,'.xml');
-		JForm::addFormPath(dirname($formFilename));
+		FOFForm::addFormPath(dirname($formFilename));
 		
 		// Set up field paths
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
@@ -1233,15 +1233,15 @@ class FOFModel extends JModelLegacy
 		$alt_file_root	= ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
 		$alt_file_root .= '/components/' . $option;
 		
-		JForm::addFieldPath($file_root . '/fields');
-		JForm::addFieldPath($file_root . '/models/fields');
-		JForm::addFieldPath($alt_file_root . '/fields');
-		JForm::addFieldPath($alt_file_root . '/models/fields');
+		FOFForm::addFieldPath($file_root . '/fields');
+		FOFForm::addFieldPath($file_root . '/models/fields');
+		FOFForm::addFieldPath($alt_file_root . '/fields');
+		FOFForm::addFieldPath($alt_file_root . '/models/fields');
 
 		// Get the form.
 		try
 		{
-			$form = JForm::getInstance($name, $source, $options, false, $xpath);
+			$form = FOFForm::getInstance($name, $source, $options, false, $xpath);
 
 			if (isset($options['load_data']) && $options['load_data'])
 			{
@@ -1364,9 +1364,9 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Method to allow derived classes to preprocess the form.
 	 *
-	 * @param   JForm   $form   A JForm object.
-	 * @param   mixed   $data   The data expected for the form.
-	 * @param   string  $group  The name of the plugin group to import (defaults to "content").
+	 * @param   FOFForm  $form   A JForm object.
+	 * @param   mixed    $data   The data expected for the form.
+	 * @param   string   $group  The name of the plugin group to import (defaults to "content").
 	 *
 	 * @return  void
 	 *
@@ -1374,7 +1374,7 @@ class FOFModel extends JModelLegacy
 	 * @since   2.0
 	 * @throws  Exception if there is an error in the form event.
 	 */
-	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	protected function preprocessForm(FOFForm $form, $data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
 		jimport('joomla.plugin.helper');
@@ -1400,11 +1400,11 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Method to validate the form data.
 	 *
-	 * @param   JForm   $form   The form to validate against.
-	 * @param   array   $data   The data to validate.
-	 * @param   string  $group  The name of the field group to validate.
+	 * @param   FOFForm  $form   The form to validate against.
+	 * @param   array    $data   The data to validate.
+	 * @param   string   $group  The name of the field group to validate.
 	 *
-	 * @return  mixed  Array of filtered data if valid, false otherwise.
+	 * @return  mixed   Array of filtered data if valid, false otherwise.
 	 *
 	 * @see     JFormRule
 	 * @see     JFilterInput

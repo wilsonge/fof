@@ -66,7 +66,7 @@ class FOFController extends JControllerLegacy
 	/** @var FOFModel A copy of the FOFModel object used in this triad */
 	private $modelObject = null;
 	
-	/** @var bool Does this tried have a JForm which will be used to render it? */
+	/** @var bool Does this tried have a FOFForm which will be used to render it? */
 	private $hasForm = false;
 
 	/**
