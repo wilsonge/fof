@@ -84,7 +84,7 @@ abstract class FOFView extends JViewLegacy
 			$this->_basePath	= $config['base_path'];
 		} else {
 			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-			$this->_basePath	= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_COMPONENT).'/'.$config['option'];
+			$this->_basePath	= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE).'/'.$config['option'];
 		}
 
 		// Set the default template search path
