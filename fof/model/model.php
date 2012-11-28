@@ -1160,14 +1160,19 @@ class FOFModel extends JModelLegacy
 	 *
 	 * @since   2.0
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getForm($data = array(), $loadData = true, $source = null)
 	{
 		$this->_formData = array();
 		
 		$name = $this->input->getCmd('option', 'com_foobar') . '.' .
 				$this->input->getCmd('view', 'cpanels');
 		
-		$source = $this->input->getCmd('view', 'cpanels');
+		if(empty($source)) {
+			$source = $this->getState('form_name', null);
+		}
+		if(empty($source)) {
+			$source = $this->input->getCmd('view', 'cpanels');
+		}
 		
 		$options = array(
 			'control'	=> false,
@@ -1216,10 +1221,11 @@ class FOFModel extends JModelLegacy
 		}
 		
 		// Set up the form name and path
-		$source = basename($formFilename);
+		$source = basename($formFilename,'.xml');
 		JForm::addFormPath(dirname($formFilename));
 		
 		// Set up field paths
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		$option			= $this->input->getCmd('option', 'com_foobar');
 		$view			= $this->input->getCmd('view', 'cpanels');
 		$file_root		= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
@@ -1371,13 +1377,12 @@ class FOFModel extends JModelLegacy
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
+		jimport('joomla.plugin.helper');
 		JPluginHelper::importPlugin($group);
 
-		// Get the dispatcher.
-		$dispatcher = JEventDispatcher::getInstance();
-
 		// Trigger the form preparation event.
-		$results = $dispatcher->trigger('onContentPrepareForm', array($form, $data));
+		$app = JFactory::getApplication();
+		$results = $app->triggerEvent('onContentPrepareForm', array($form, $data));
 
 		// Check for errors encountered while preparing the form.
 		if (count($results) && in_array(false, $results, true))
