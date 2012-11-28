@@ -151,7 +151,7 @@ class FOFModel extends JModelLegacy
 				$tmpInput = new FOFInput($config['input']);
 			}
 			$component = $tmpInput->getCmd('option',$component);
-		}
+		} 
 		$config['option'] = $component;
 
 		$needsAView = true;
@@ -250,7 +250,7 @@ class FOFModel extends JModelLegacy
 		} else {
 			$this->input = new FOFInput();
 		}
-
+		
 		// Set the $name/$_name variable
 		$component = $this->input->getCmd('option','com_foobar');
 		if(array_key_exists('option', $config)) $component = $config['option'];
@@ -1162,7 +1162,7 @@ class FOFModel extends JModelLegacy
 	 */
 	public function getForm($data = array(), $loadData = true, $source = null)
 	{
-		$this->_formData = array();
+		$this->_formData = $data;
 		
 		$name = $this->input->getCmd('option', 'com_foobar') . '.' .
 				$this->input->getCmd('view', 'cpanels');
@@ -1176,7 +1176,7 @@ class FOFModel extends JModelLegacy
 		
 		$options = array(
 			'control'	=> false,
-			'load_date'	=> $loadData,
+			'load_data'	=> $loadData,
 		);
 		
 		$form = $this->loadForm($name, $source, $options);
@@ -1282,7 +1282,7 @@ class FOFModel extends JModelLegacy
 	 * 
 	 * @since   2.0
 	 */
-	protected function findFormFilename($source)
+	public function findFormFilename($source)
 	{
 		// Get some useful variables
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
@@ -1383,7 +1383,7 @@ class FOFModel extends JModelLegacy
 		// Trigger the form preparation event.
 		$app = JFactory::getApplication();
 		$results = $app->triggerEvent('onContentPrepareForm', array($form, $data));
-
+		
 		// Check for errors encountered while preparing the form.
 		if (count($results) && in_array(false, $results, true))
 		{
