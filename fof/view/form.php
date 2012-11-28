@@ -18,10 +18,22 @@ class FOFViewForm extends FOFViewHtml
 {
 	protected function onAdd($tpl = null)
 	{
+		// Hide the main menu
 		JRequest::setVar('hidemainmenu', true);
-		$model = $this->getModel();
+		
+		// Get the model
+		$model	= $this->getModel();
+		
+		// Get the form
+		$form	= $model->getForm();
+		
+		// Load CSS and Javascript files defined in the form
+		$form->loadCSSFiles();
+		$form->loadJSFiles();
+		
+		// Assign the item and form to the view
 		$this->assign( 'item',		$model->getItem() );
-		$this->assign( 'form',		$model->getForm() );
+		$this->assign( 'form',		$form );
 		return true;
 	}
 }
