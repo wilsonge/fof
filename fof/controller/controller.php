@@ -60,9 +60,14 @@ class FOFController extends JControllerLegacy
 	 */
 	protected $autoRouting = 0;
 
+	/** @var FOFView A copy of the FOFView object used in this triad */
 	private $viewObject = null;
 
+	/** @var FOFModel A copy of the FOFModel object used in this triad */
 	private $modelObject = null;
+	
+	/** @var bool Does this tried have a JForm which will be used to render it? */
+	private $hasForm = false;
 
 	/**
 	 * Gets a static (Singleton) instance of a controller class. It loads the
@@ -379,7 +384,7 @@ class FOFController extends JControllerLegacy
 	{
 		$document = JFactory::getDocument();
 		$viewType	= $document->getType();
-
+		
 		$view = $this->getThisView();
 
 		// Get/Create the model
@@ -461,6 +466,13 @@ class FOFController extends JControllerLegacy
 		// Set the layout to form, if it's not set in the URL
 		if(is_null($this->layout)) $this->layout = 'form';
 
+		// Do I have a form?
+		$model->setState('form_name', $this->layout);
+		$form = $model->getForm($model->getItem()->getData());
+		if($form !== false) {
+			$this->hasForm = true;
+		}
+
 		// Display
 		$this->display(in_array('add', $this->cacheableTasks));
 	}
@@ -486,6 +498,13 @@ class FOFController extends JControllerLegacy
 
 		// Set the layout to form, if it's not set in the URL
 		if(is_null($this->layout)) $this->layout = 'form';
+		
+		// Do I have a form?
+		$model->setState('form_name', $this->layout);
+		$form = $model->getForm($model->getItem()->getData());
+		if($form !== false) {
+			$this->hasForm = true;
+		}
 
 		// Display
 		$this->display(in_array('edit', $this->cacheableTasks));
@@ -1000,7 +1019,10 @@ class FOFController extends JControllerLegacy
 
 			$document = JFactory::getDocument();
 			$viewType	= $document->getType();
-
+			
+			if (($viewType == 'html') && $this->hasForm) {
+				$viewType = 'form';
+			}
 			if(!array_key_exists('input', $config) || !($config['input'] instanceof FOFInput)) {
 				$config['input'] = $this->input;
 			}
