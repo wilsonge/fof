@@ -1184,7 +1184,7 @@ class FOFModel extends JModelLegacy
 			$source = $this->getState('form_name', null);
 		}
 		if(empty($source)) {
-			$source = $this->input->getCmd('view', 'cpanels');
+			$source = 'form.'.$this->input->getCmd('view', 'cpanels');
 		}
 		
 		$options = array(
