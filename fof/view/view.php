@@ -257,27 +257,30 @@ abstract class FOFView extends JViewLegacy
 
 		$basePath = $isAdmin ? 'admin:' : 'site:';
 		$basePath .= $this->config['option'].'/';
+		$altBasePath = $basePath;
 		$basePath .= $this->config['view'].'/';
-		$path = $basePath.$this->getLayout();
-
-		if($tpl){
-			$path .= '_'.$tpl;
-		}
-
-		$result = $this->loadAnyTemplate($path);
-		if ($result instanceof Exception) {
-			if($this->getLayout() != 'default') {
-				$path = $basePath.'default';
-				$result = $this->loadAnyTemplate($path, array(), false);
-				if ($result instanceof Exception) {
-					JError::raiseError($result->getCode(), $result->getMessage());
-					return $result;
-				}
-			} else {
-				return $result;
+		$altBasePath .= FOFInflector::isSingular($this->config['view']) ? FOFInflector::pluralize($this->config['view']) : FOFInflector::singularize($this->config['view']).'/';
+		
+		$paths = array(
+			$basePath.$this->getLayout().($tpl ? "_$tpl" : ''),
+			$basePath.$this->getLayout(),
+			$basePath.'default',
+			$altBasePath.$this->getLayout().($tpl ? "_$tpl" : ''),
+			$altBasePath.$this->getLayout(),
+			$altBasePath.'default',
+		);
+		
+		foreach($paths as $path) {
+			$result = $this->loadAnyTemplate($path);
+			if (!($result instanceof Exception)) {
+				break;
 			}
 		}
-
+		
+		if ($result instanceof Exception) {
+			JError::raiseError($result->getCode(), $result->getMessage());
+		}
+		
 		return $result;
 	}
 
