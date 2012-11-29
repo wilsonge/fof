@@ -105,13 +105,13 @@ class FOFInput extends JInput
 		
 		if(substr($name, 0, 3) == 'get') {
 			// Initialise arguments
-			$name = array_shift($arguments);
+			$key = array_shift($arguments);
 			$default = array_shift($arguments);
 			$input = array_shift($arguments);
 			$type = 'none';
 			$mask = 0;
 			
-			$type = strtolower(substr($name, 4));
+			$type = strtolower(substr($name, 3));
 			if($type == 'var') {
 				$type = array_shift($arguments);
 				$mask = array_shift($arguments);
@@ -126,7 +126,7 @@ class FOFInput extends JInput
 			if(!($input instanceof FOFInput) && !($input instanceof JInput)) {
 				$input = new FOFInput($input);
 			}
-			return $input->get($name, $default, $type, $mask);
+			return $input->get($key, $default, $type, $mask);
 		}
 		
 		return false;
