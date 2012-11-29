@@ -12,6 +12,9 @@ defined('_JEXEC') or die;
  */
 class FOFRenderJoomla extends FOFRenderAbstract
 {
+	/**
+	 * Public constructor. Determines the priority of this class and if it should be enabled
+	 */
 	public function __construct() {
 		$this->priority = 50;
 		$this->enabled = true;
@@ -19,10 +22,10 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 	/**
 	 * Echoes any HTML to show before the view template
-	 *
-	 * @param string $view The current view
-	 * @param string $task The current task
-	 * @param FOFInput $input The input array (request parameters)
+	 * 
+	 * @param   string  $view   The current view
+	 * @param   string  $task   The current task
+	 * @param   array   $input  The input array (request parameters)
 	 */
 	public function preRender($view, $task, $input, $config=array())
 	{
@@ -36,16 +39,24 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 	/**
 	 * Echoes any HTML to show after the view template
-	 *
-	 * @param string $view The current view
-	 * @param string $task The current task
-	 * @param array $input The input array (request parameters)
+	 * 
+	 * @param   string  $view   The current view
+	 * @param   string  $task   The current task
+	 * @param   array   $input  The input array (request parameters)
 	 */
 	public function postRender($view, $task, $input, $config=array())
 	{
 
 	}
-
+	
+	/**
+	 * Renders the submenu (link bar)
+	 * 
+	 * @param   string    $view    The active view name
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input object
+	 * @param   array     $config  Extra configuration variables for the toolbar
+	 */
 	protected function renderLinkbar($view, $task, $input, $config=array())
 	{
 		// Do not render a submenu unless we are in the the admin area
@@ -63,6 +74,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		}
 	}
 
+	/**
+	 * Renders the toolbar buttons
+	 * 
+	 * @param   string    $view    The active view name
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input object
+	 * @param   array     $config  Extra configuration variables for the toolbar
+	 */
 	protected function renderButtons($view, $task, $input, $config=array())
 	{
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
