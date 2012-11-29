@@ -467,7 +467,7 @@ class FOFController extends JControllerLegacy
 		if(is_null($this->layout)) $this->layout = 'form';
 
 		// Do I have a form?
-		$model->setState('form_name', $this->layout);
+		$model->setState('form_name', 'form.'.$this->layout);
 		$form = $model->getForm($model->getItem()->getData());
 		if($form !== false) {
 			$this->hasForm = true;
@@ -500,7 +500,7 @@ class FOFController extends JControllerLegacy
 		if(is_null($this->layout)) $this->layout = 'form';
 		
 		// Do I have a form?
-		$model->setState('form_name', $this->layout);
+		$model->setState('form_name', 'form.'.$this->layout);
 		$form = $model->getForm($model->getItem()->getData());
 		if($form !== false) {
 			$this->hasForm = true;
@@ -1079,16 +1079,20 @@ class FOFController extends JControllerLegacy
 		}
 		
 		// Guess the component name and view
-		preg_match('/(.*)View$/', $prefix, $m);
-		$component = 'com_'.strtolower($m[1]);
-		if(array_key_exists('input', $config)) {
+		if(!empty($prefix)) {
+			preg_match('/(.*)View$/', $prefix, $m);
+			$component = 'com_'.strtolower($m[1]);
+		} else {
+			$component = '';
+		}
+		if(empty($component) && array_key_exists('input', $config)) {
 			$component = $tmpInput->get('option',$component,'cmd');
 		}
 		if(array_key_exists('option', $config)) if($config['option']) $component = $config['option'];
 		$config['option'] = $component;
 
 		$view = strtolower($viewName);
-		if(array_key_exists('input', $config)) {
+		if(empty($view) && array_key_exists('input', $config)) {
 			$view = $tmpInput->get('view',$view,'cmd');
 		}
 		if(array_key_exists('view', $config)) if($config['view']) $view = $config['view'];
