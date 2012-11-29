@@ -141,17 +141,27 @@ class FOFModel extends JModelLegacy
 		$result		= false;
 
 		// Guess the component name and include path
-		preg_match('/(.*)Model$/', $prefix, $m);
-		$component = 'com_'.strtolower($m[1]);
+		if(!empty($prefix)) {
+			preg_match('/(.*)Model$/', $prefix, $m);
+			$component = 'com_'.strtolower($m[1]);
+		} else {
+			$component = '';
+		}
 
 		if(array_key_exists('input', $config)) {
-			if($config['input'] instanceof FOFInput) {
-				$tmpInput = $config['input'];
-			} else {
-				$tmpInput = new FOFInput($config['input']);
+			if(!($config['input'] instanceof FOFInput)) {
+				if(!is_array($config['input'])) {
+					$config['input'] = (array)$config['input'];
+				}
+				$config['input'] = array_merge($_REQUEST, $config['input']);
+				$config['input'] = new FOFInput($config['input']);
 			}
-			$component = $tmpInput->getCmd('option',$component);
-		} 
+		} else {
+			$config['input'] = new FOFInput();
+		}
+		if(empty($component)) {
+			$component = $config['input']->get('option', 'com_foobar');
+		}
 		$config['option'] = $component;
 
 		$needsAView = true;
@@ -159,6 +169,9 @@ class FOFModel extends JModelLegacy
 			if(!empty($config['view'])) $needsAView = false;
 		}
 		if($needsAView) $config['view'] = strtolower($type);
+		
+		$config['input']->set('option', $config['option']);
+		$config['input']->set('view', $config['view']);
 
 		if (!class_exists( $modelClass ))
 		{
