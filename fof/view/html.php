@@ -28,7 +28,7 @@ class FOFViewHtml extends FOFView
 	/**
 	 * Class constructor
 	 *
-	 * @param array $config Configuration parameters
+	 * @param   array  $config  Configuration parameters
 	 */
 	function  __construct($config = array()) {
 		parent::__construct($config);
@@ -62,9 +62,9 @@ class FOFViewHtml extends FOFView
 	/**
 	 * Displays the view
 	 *
-	 * @param string $tpl The template to use
+	 * @param   string  $tpl  The template to use
 	 *
-	 * @return bool
+	 * @return  boolean|null False if we can't render anything
 	 */
 	function  display($tpl = null)
 	{
@@ -93,7 +93,8 @@ class FOFViewHtml extends FOFView
 	}
 	
 	/**
-	 * Renders the link bar (submenu) using Joomla!'s default JSubMenuHelper::addEntry method (which doesn't work under Joomla! 3.x and the Isis template)
+	 * Renders the link bar (submenu) using Joomla!'s default
+	 * JSubMenuHelper::addEntry method
 	 */
 	private function renderLinkbar()
 	{
@@ -110,7 +111,8 @@ class FOFViewHtml extends FOFView
 	}
 	
 	/**
-	 * Runs before rendering the view template, echoing HTML to put before the view template's generated HTML
+	 * Runs before rendering the view template, echoing HTML to put before the
+	 * view template's generated HTML
 	 */
 	protected function preRender()
 	{
@@ -125,7 +127,8 @@ class FOFViewHtml extends FOFView
 	}
 	
 	/**
-	 * Runs after rendering the view template, echoing HTML to put after the view template's generated HTML
+	 * Runs after rendering the view template, echoing HTML to put after the
+	 * view template's generated HTML
 	 */
 	protected function postRender()
 	{
@@ -137,6 +140,13 @@ class FOFViewHtml extends FOFView
 		}
 	}
 
+	/**
+	 * Executes before rendering the page for the Browse task.
+	 * 
+	 * @param   string  $tpl  Subtemplate to use
+	 * 
+	 * @return  boolean  Return true to allow rendering of the page
+	 */
 	protected function onBrowse($tpl = null)
 	{
 		// When in interactive browsing mode, save the state to the session
@@ -144,6 +154,14 @@ class FOFViewHtml extends FOFView
 		return $this->onDisplay($tpl);
 	}
 
+	/**
+	 * Executes before rendering a generic page, default to actions necessary
+	 * for the Browse task.
+	 * 
+	 * @param   string  $tpl  Subtemplate to use
+	 * 
+	 * @return  boolean  Return true to allow rendering of the page
+	 */
 	protected function onDisplay($tpl = null)
 	{
 		$view = $this->input->getCmd('view','cpanel');
@@ -172,6 +190,13 @@ class FOFViewHtml extends FOFView
 		return true;
 	}
 
+	/**
+	 * Executes before rendering the page for the Add task.
+	 * 
+	 * @param   string  $tpl  Subtemplate to use
+	 * 
+	 * @return  boolean  Return true to allow rendering of the page
+	 */
 	protected function onAdd($tpl = null)
 	{
 		JRequest::setVar('hidemainmenu', true);
@@ -180,18 +205,42 @@ class FOFViewHtml extends FOFView
 		return true;
 	}
 
+	/**
+	 * Executes before rendering the page for the Edit task.
+	 * 
+	 * @param   string  $tpl  Subtemplate to use
+	 * 
+	 * @return  boolean  Return true to allow rendering of the page
+	 */
 	protected function onEdit($tpl = null)
 	{
 		// An editor is an editor, no matter if the record is new or old :p
 		return $this->onAdd();
 	}
 
+	/**
+	 * Executes before rendering the page for the Read task.
+	 * 
+	 * @param   string  $tpl  Subtemplate to use
+	 * 
+	 * @return  boolean  Return true to allow rendering of the page
+	 */
 	protected function onRead($tpl = null)
 	{
 		// All I need is to read the record
 		return $this->onAdd();
 	}
-	
+
+	/**
+	 * Determines if the current Joomla! version and your current table support
+	 * AJAX-powered drag and drop reordering. If they do, it will set up the
+	 * drag & drop reordering feature.
+	 * 
+	 * @return  boolean|array  False if not suported, a table with necessary
+	 *                         information (saveOrder: should you enabled DnD
+	 *                         reordering; orderingColumn: which column has the
+	 *                         ordering information).
+	 */
 	protected function hasAjaxOrderingSupport()
 	{
 		if(version_compare(JVERSION, '3.0', 'lt')) {
