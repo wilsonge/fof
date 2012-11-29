@@ -115,4 +115,15 @@ class FOFForm extends JForm
 			FOFTemplateUtils::addJS(trim($jsfile));
 		}
 	}
+	
+	/**
+	 * Returns a reference to the protected $data object, allowing direct
+	 * access to and manipulation of the form's data.
+	 * 
+	 * @return   JRegistry  The form's data registry
+	 */
+	public function getData()
+	{
+		return $this->data;
+	}
 }
