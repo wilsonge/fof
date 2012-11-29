@@ -54,7 +54,10 @@ class FOFInput extends JInput
 			} catch (Exception $exc) {
 				$source = null;
 			}
+		} elseif(is_array($source)) {
+			// Nothing, it's already an array
 		} else {
+			// Any other case
 			$source = $_REQUEST;
 		}
 		

@@ -88,6 +88,10 @@ class FOFDispatcher extends JObject
 			if($config['input'] instanceof FOFInput) {
 				$input = $config['input'];
 			} else {
+				if(!is_array($config['input'])) {
+					$config['input'] = (array)$config['input'];
+				}
+				$config['input'] = array_merge($_REQUEST, $config['input']);
 				$input = new FOFInput($config['input']);
 			}
 		} else {
