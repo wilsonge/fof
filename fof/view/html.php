@@ -30,7 +30,8 @@ class FOFViewHtml extends FOFView
 	 *
 	 * @param   array  $config  Configuration parameters
 	 */
-	function  __construct($config = array()) {
+	public function  __construct($config = array())
+	{
 		parent::__construct($config);
 
 		$this->config = $config;
@@ -66,7 +67,7 @@ class FOFViewHtml extends FOFView
 	 *
 	 * @return  boolean|null False if we can't render anything
 	 */
-	function  display($tpl = null)
+	public function  display($tpl = null)
 	{
 		// Get the task set in the model
 		$model = $this->getModel();
