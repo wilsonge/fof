@@ -49,4 +49,69 @@ abstract class FOFRenderAbstract
 	 * @param array $config The view configuration array
 	 */
 	abstract public function postRender($view, $task, $input, $config=array());
+	
+		/**
+	 * Renders a FOFForm and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * @param   string    $formType  The form type: edit, browse or read
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	public function renderForm(FOFForm &$form, FOFModel $model, FOFInput $input, $formType = null)
+	{
+		if(is_null($formType)) {
+			$formType = $form->getAttribute('type', 'edit');
+		} else {
+			$formType = strtolower($formType);
+		}
+		switch($formType) {
+			case 'browse':
+				return $this->renderFormBrowse($form, $model, $input);
+				break;
+			
+			case 'read':
+				return $this->renderFormRead($form, $model, $input);
+				break;
+			
+			default:
+				return $this->renderFormEdit($form, $model, $input);
+				break;
+		}
+	}
+	
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */	
+	abstract protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input);
+	
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	abstract protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input);
+
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	abstract protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input);
 }

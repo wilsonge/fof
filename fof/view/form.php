@@ -16,6 +16,77 @@ jimport('joomla.application.component.view');
 
 class FOFViewForm extends FOFViewHtml
 {
+	/** @var FOFForm The form to render */
+	protected $form;
+	
+	/**
+	 * Displays the view
+	 *
+	 * @param   string  $tpl  The template to use
+	 *
+	 * @return  boolean|null False if we can't render anything
+	 */
+	public function  display($tpl = null)
+	{
+		// Get the form
+		$this->form = $this->getModel()->getForm();
+		
+		// Get some useful information
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		
+		// Get the task set in the model
+		$model = $this->getModel();
+		$task = $model->getState('task','browse');
+
+		// Call the relevant method
+		$method_name = 'on'.ucfirst($task);
+		if(method_exists($this, $method_name)) {
+			$result = $this->$method_name($tpl);
+		} else {
+			$result = $this->onDisplay();
+		}
+
+		// Bail out if we're told not to render anything
+		if($result === false) {
+			return;
+		}
+
+		// Render the toolbar
+		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option','com_foobar'), $this->config);
+		$toolbar->perms = $this->perms;
+		$toolbar->renderToolbar($this->input->getCmd('view','cpanel'), $task, $this->input);
+
+		// Show the view
+		// -- Output HTML before the view template
+		$this->preRender();
+		
+		// -- Try to load a view template; if not exists render the form directly
+		$basePath = $isAdmin ? 'admin:' : 'site:';
+		$basePath .= $this->config['option'].'/';
+		$basePath .= $this->config['view'].'/';
+		$path = $basePath.$this->getLayout();
+		if($tpl){
+			$path .= '_'.$tpl;
+		}
+		$viewTemplate = $this->loadAnyTemplate($path);
+		
+		if($viewTemplate instanceof Exception) {
+			// No view template available, render form directly
+			$renderer = $this->getRenderer();
+			if($renderer instanceof FOFRenderAbstract) {
+				// Load CSS and Javascript files defined in the form
+				$this->form->loadCSSFiles();
+				$this->form->loadJSFiles();
+				// Get the form's HTML
+				$viewTemplate = $renderer->renderForm($this->form, $model, $this->input);
+			}
+		}
+		// -- Output the view template
+		echo $viewTemplate;
+		// -- Output HTML after the view template
+		$this->postRender();
+	}
+	
 	protected function onAdd($tpl = null)
 	{
 		// Hide the main menu
@@ -24,16 +95,9 @@ class FOFViewForm extends FOFViewHtml
 		// Get the model
 		$model	= $this->getModel();
 		
-		// Get the form
-		$form	= $model->getForm();
-		
-		// Load CSS and Javascript files defined in the form
-		$form->loadCSSFiles();
-		$form->loadJSFiles();
-		
 		// Assign the item and form to the view
 		$this->assign( 'item',		$model->getItem() );
-		$this->assign( 'form',		$form );
+		$this->assign( 'form',		$this->form );
 		return true;
 	}
 }

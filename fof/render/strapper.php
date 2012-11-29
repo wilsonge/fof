@@ -33,6 +33,12 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		if(empty($format)) $format = 'html';
 		if($format != 'html') return;
 		
+		// Wrap output in a Joomla-versioned div
+		$version = new JVersion;
+		$version = str_replace('.', '', $version->RELEASE);
+		echo "<div class=\"joomla-version-$version\">\n";
+
+		// Wrap output in an akeeba-bootstrap class div
 		echo "<div class=\"akeeba-bootstrap\">\n";
 		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
@@ -50,6 +56,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		$format = $input->getCmd('format', 'html');
 		if($format != 'html') return;
 		
+		echo "</div>\n";
 		echo "</div>\n";
 	}
 	
@@ -191,4 +198,104 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		echo implode("\n", $html);
 	}
 
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
+	{
+		
+	}
+
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
+	{
+		
+	}
+
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
+	{
+		// Get the key for this model's table
+		$key = $model->getTable()->getKeyName();
+		$keyValue = $model->getId();
+		
+		$html = '';
+		
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal">'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="option" value="'.$input->getCmd('option').'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="view" value="'.$input->getCmd('view', 'edit').'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="task" value="" />'.PHP_EOL;
+		
+		$html .= "\t".'<input type="hidden" name="'.$key.'" value="'.$keyValue.'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="'.JFactory::getSession()->getFormToken().'" value="1" />'.PHP_EOL;
+
+		foreach($form->getFieldsets() as $fieldset) {
+			$fields = $form->getFieldset($fieldset->name);
+
+			if(isset($fieldset->class)) {
+				$class = 'class="'.$fieldset->class.'"';
+			} else {
+				$class = '';
+			}
+
+			$html .= "\t".'<div id="'.$fieldset->name.'" '.$class.'>'.PHP_EOL;
+
+			if(isset($fieldset->label) && !empty($fieldset->label)) {
+				$html .= "\t\t".'<h3>'.JText::_($fieldset->label).'</h3>'.PHP_EOL;
+			}
+
+			foreach($fields as $field) {
+				$title = $field->title;
+				$required = $field->required;
+				$labelClass = $field->labelClass;
+				$description = $field->description;
+				
+				$input = $field->input;
+
+				$html .= "\t\t\t".'<div class="control-group">'.PHP_EOL;
+				$html .= "\t\t\t\t".'<label class="control-label '.$labelClass.'" for="'.$field->id.'">'.PHP_EOL;
+				$html .= "\t\t\t\t".JText::_($title).PHP_EOL;
+				if($required) {
+					$html .= ' *';
+				}
+				$html .= "\t\t\t\t".'</label>'.PHP_EOL;
+				$html .= "\t\t\t\t".'<div class="controls">'.PHP_EOL;
+				$html .= "\t\t\t\t".$input.PHP_EOL;
+				if(!empty($description)) {
+					$html .= "\t\t\t\t".'<span class="help-block">';
+					$html .= JText::_($description).'</span>'.PHP_EOL;
+				}
+				$html .= "\t\t\t\t".'</div>'.PHP_EOL;
+				$html .= "\t\t\t".'</div>'.PHP_EOL;
+			}
+
+			$html .= "\t".'</div>'.PHP_EOL;
+		}
+
+		$html .= '</form>';
+		
+		return $html;
+	}
 }

@@ -32,7 +32,13 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$format = $input->getCmd('format', 'html');
 		if(empty($format)) $format = 'html';
 		if($format != 'html') return;
+		
+		// Wrap output in a Joomla-versioned div
+		$version = new JVersion;
+		$version = str_replace('.', '', $version->RELEASE);
+		echo "<div class=\"joomla-version-$version\">\n";
 
+		// Render submenu and toolbar
 		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
 	}
@@ -46,9 +52,95 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	public function postRender($view, $task, $input, $config=array())
 	{
-
+		echo "</div>\n";
 	}
-	
+
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
+	{
+		
+	}
+
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
+	{
+		
+	}
+
+	/**
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * 
+	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * 
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
+	{
+		// Get the key for this model's table
+		$key = $model->getTable()->getKeyName();
+		$keyValue = $model->getId();
+		
+		$html = '';
+		
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="option" value="'.$input->getCmd('option').'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="view" value="'.$input->getCmd('view', 'edit').'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="task" value="" />'.PHP_EOL;
+		
+		$html .= "\t".'<input type="hidden" name="'.$key.'" value="'.$keyValue.'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="'.JFactory::getSession()->getFormToken().'" value="1" />'.PHP_EOL;
+
+		foreach($form->getFieldsets() as $fieldset) {
+			$fields = $form->getFieldset($fieldset->name);
+
+			if(isset($fieldset->class)) {
+				$class = 'class="'.$fieldset->class.'"';
+			} else {
+				$class = '';
+			}
+
+			$element = empty($fields) ? 'div' : 'fieldset';
+			$html .= "\t".'<'.$element.' id="'.$fieldset->name.'" '.$class.'>'.PHP_EOL;
+
+			if(isset($fieldset->label) && !empty($fieldset->label)) {
+				$html .= "\t\t".'<legend>'.JText::_($fieldset->label).'</legend>'.PHP_EOL;
+			}
+
+			foreach($fields as $field) {
+				$label = $field->label;
+				$input = $field->input;
+
+				$html .= "\t\t\t".$label.PHP_EOL;
+				$html .= "\t\t\t".$input.PHP_EOL;
+			}
+
+			$element = empty($fields) ? 'div' : 'fieldset';
+			$html .= "\t".'</'.$element.'>'.PHP_EOL;
+		}
+
+		$html .= '</form>';
+		
+		return $html;
+	}
+
 	/**
 	 * Renders the submenu (link bar)
 	 * 

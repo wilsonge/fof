@@ -19,4 +19,42 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 		$this->priority = 55;
 		$this->enabled = version_compare(JVERSION, '3.0', 'ge');
 	}
+	
+	/**
+	 * Echoes any HTML to show before the view template
+	 * 
+	 * @param   string  $view   The current view
+	 * @param   string  $task   The current task
+	 * @param   array   $input  The input array (request parameters)
+	 */
+	public function preRender($view, $task, $input, $config=array())
+	{
+		$format = $input->getCmd('format', 'html');
+		if(empty($format)) $format = 'html';
+		if($format != 'html') return;
+		
+		// Wrap output in a Joomla-versioned div
+		$version = new JVersion;
+		$version = str_replace('.', '', $version->RELEASE);
+		echo "<div class=\"joomla-version-$version\">\n";
+		
+		// Render the submenu and toolbar
+		$this->renderButtons($view, $task, $input, $config);
+		$this->renderLinkbar($view, $task, $input, $config);
+	}
+	
+	/**
+	 * Echoes any HTML to show after the view template
+	 * 
+	 * @param   string  $view   The current view
+	 * @param   string  $task   The current task
+	 * @param   array   $input  The input array (request parameters)
+	 */
+	public function postRender($view, $task, $input, $config=array())
+	{
+		$format = $input->getCmd('format', 'html');
+		if($format != 'html') return;
+		
+		echo "</div>\n";
+	}	
 }
