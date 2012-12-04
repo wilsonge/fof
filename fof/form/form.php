@@ -22,7 +22,7 @@ class FOFForm extends JForm
 	 *
 	 * @return  object  FOFForm instance.
 	 *
-	 * @since   11.1
+	 * @since   2.0
 	 * @throws  InvalidArgumentException if no data provided.
 	 * @throws  RuntimeException if the form could not be loaded.
 	 */
@@ -71,6 +71,8 @@ class FOFForm extends JForm
 	 * @param   mixed   $default    Optional default value to return
 	 * 
 	 * @return  mixed
+	 * 
+	 * @since 2.0
 	 */
 	public function getAttribute($attribute, $default = null)
 	{
@@ -84,6 +86,8 @@ class FOFForm extends JForm
 	
 	/**
 	 * Loads the CSS files defined in the form, based on its cssfiles attribute
+	 * 
+	 * @since 2.0
 	 */
 	public function loadCSSFiles()
 	{
@@ -101,6 +105,8 @@ class FOFForm extends JForm
 	
 	/**
 	 * Loads the Javascript files defined in the form, based on its jsfiles attribute
+	 * 
+	 * @since 2.0
 	 */
 	public function loadJSFiles()
 	{
@@ -121,9 +127,86 @@ class FOFForm extends JForm
 	 * access to and manipulation of the form's data.
 	 * 
 	 * @return   JRegistry  The form's data registry
+	 * 
+	 * @since 2.0
 	 */
 	public function getData()
 	{
 		return $this->data;
+	}
+	
+	/**
+	 * Proxy for {@link FOFFormHelper::loadFieldType()}.
+	 *
+	 * @param   string   $type  The field type.
+	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
+	 *
+	 * @return  mixed  FOFFormField object on success, false otherwise.
+	 *
+	 * @since   2.0
+	 */
+	protected function loadFieldType($type, $new = true)
+	{
+		return FOFFormHelper::loadFieldType($type, $new);
+	}
+	
+	/**
+	 * Proxy for {@link FOFFormHelper::loadRuleType()}.
+	 *
+	 * @param   string   $type  The rule type.
+	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
+	 *
+	 * @return  mixed  JFormRule object on success, false otherwise.
+	 *
+	 * @see     FOFFormHelper::loadRuleType()
+	 * @since   2.0
+	 */
+	protected function loadRuleType($type, $new = true)
+	{
+		return FOFFormHelper::loadRuleType($type, $new);
+	}
+	
+	/**
+	 * Proxy for {@link FOFFormHelper::addFieldPath()}.
+	 *
+	 * @param   mixed  $new  A path or array of paths to add.
+	 *
+	 * @return  array  The list of paths that have been added.
+	 *
+	 * @since   2.0
+	 */
+	public static function addFieldPath($new = null)
+	{
+		return FOFFormHelper::addFieldPath($new);
+	}
+
+	/**
+	 * Proxy for FOFFormHelper::addFormPath().
+	 *
+	 * @param   mixed  $new  A path or array of paths to add.
+	 *
+	 * @return  array  The list of paths that have been added.
+	 *
+	 * @see     FOFFormHelper::addFormPath()
+	 * @since   2.0
+	 */
+	public static function addFormPath($new = null)
+	{
+		return FOFFormHelper::addFormPath($new);
+	}
+
+	/**
+	 * Proxy for FOFFormHelper::addRulePath().
+	 *
+	 * @param   mixed  $new  A path or array of paths to add.
+	 *
+	 * @return  array  The list of paths that have been added.
+	 *
+	 * @see FOFFormHelper::addRulePath()
+	 * @since   2.0
+	 */
+	public static function addRulePath($new = null)
+	{
+		return FOFFormHelper::addRulePath($new);
 	}
 }
