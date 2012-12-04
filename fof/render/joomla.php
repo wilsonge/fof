@@ -80,7 +80,41 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
+		// Get the key for this model's table
+		$key = $model->getTable()->getKeyName();
+		$keyValue = $model->getId();
 		
+		$html = '';
+		
+		foreach($form->getFieldsets() as $fieldset) {
+			$fields = $form->getFieldset($fieldset->name);
+
+			if(isset($fieldset->class)) {
+				$class = 'class="'.$fieldset->class.'"';
+			} else {
+				$class = '';
+			}
+
+			$html .= "\t".'<div id="'.$fieldset->name.'" '.$class.'>'.PHP_EOL;
+
+			if(isset($fieldset->label) && !empty($fieldset->label)) {
+				$html .= "\t\t".'<h3>'.JText::_($fieldset->label).'</h3>'.PHP_EOL;
+			}
+
+			foreach($fields as $field) {
+				$label = $field->label;
+				$static = $field->static;
+
+				$html .= "<div class=\"fof-row\">";
+				$html .= "\t\t\t".$label.PHP_EOL;
+				$html .= "\t\t\t".$static.PHP_EOL;
+				$html .= "</div>";
+			}
+
+			$html .= "\t".'</div>'.PHP_EOL;
+		}
+		
+		return $html;
 	}
 
 	/**

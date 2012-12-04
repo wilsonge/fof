@@ -450,6 +450,13 @@ class FOFController extends JControllerLegacy
 		// Set the layout to item, if it's not set in the URL
 		if(is_null($this->layout)) $this->layout = 'item';
 
+		// Do I have a form?
+		$model->setState('form_name', 'form.'.$this->layout);
+		$form = $model->getForm($model->getItem()->getData());
+		if($form !== false) {
+			$this->hasForm = true;
+		}
+		
 		// Display
 		$this->display(in_array('read', $this->cacheableTasks));
 	}
