@@ -523,8 +523,10 @@ class FOFToolbar
 		if(!$using_meta)
 		{
 			$cpanel = array_search('cpanels', $views);
-			unset($views[$cpanel]);
-			array_unshift($views, 'cpanels');
+			if ($cpanel !== false) {
+				unset($views[$cpanel]);
+				array_unshift($views, 'cpanels');
+			}
 		}
 
 		return $views;
