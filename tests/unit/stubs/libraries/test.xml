@@ -3745,10 +3745,4 @@ separator=
 		<column>params</column>
 		<column>language</column>
 	</table>
-	<table name="jos_foo_bars">
-		<column>foo_bar_id</column>
-		<column>title</column>
-		<column>slug</column>
-		<column>enabled</column>
-	</table>
 </dataset>
