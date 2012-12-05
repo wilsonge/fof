@@ -16,7 +16,6 @@ if (file_exists('config.php')) {
 }
 $config = new JTestConfig;
 
-
 // Define expected Joomla constants.
 
 define('DS',			DIRECTORY_SEPARATOR);
@@ -60,6 +59,8 @@ require_once JPATH_LIBRARIES.'/import.php';
 
 // Include the Joomla session library.
 require_once JPATH_BASE.'/libraries/joomla/session/session.php';
+// Include the Joomla cms library.
+require_once JPATH_BASE.'/libraries/cms.php';
 
 // Exclude all of the tests from code coverage reports
 //PHP_CodeCoverage_Filter::getInstance()->addDirectoryToBlacklist(JPATH_BASE . '/tests');
