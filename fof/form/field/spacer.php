@@ -8,8 +8,8 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-if(!class_exists('JFormFieldHidden')) {
-	require_once JPATH_LIBRARIES.'/joomla/form/fields/hidden.php';
+if(!class_exists('JFormFieldSpacer')) {
+	require_once JPATH_LIBRARIES.'/joomla/form/fields/spacer.php';
 }
 
 /**
@@ -18,7 +18,7 @@ if(!class_exists('JFormFieldHidden')) {
  *
  * @since       2.0
  */
-class FOFFormFieldHidden extends JFormFieldHidden implements FOFFormField
+class FOFFormFieldSpacer extends JFormFieldSpacer implements FOFFormField
 {
 	protected $static;
 	
