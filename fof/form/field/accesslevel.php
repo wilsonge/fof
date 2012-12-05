@@ -65,7 +65,6 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		$class = $this->element['staticclass'] ? ' class="' . (string) $this->element['staticclass'] . '"' : $class;
 		
 		$params = $this->getOptions();
 		

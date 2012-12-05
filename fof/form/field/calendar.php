@@ -68,7 +68,6 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 		$format = $this->element['format'] ? (string) $this->element['format'] : '%Y-%m-%d';
 		
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		$class = $this->element['staticclass'] ? ' class="' . (string) $this->element['staticclass'] . '"' : $class;
 		
 		// Get some system objects.
 		$config = JFactory::getConfig();

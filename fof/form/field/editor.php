@@ -67,7 +67,6 @@ class FOFFormFieldEditor extends JFormFieldEditor implements FOFFormField
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		$class = $this->element['staticclass'] ? ' class="' . (string) $this->element['staticclass'] . '"' : $class;
 		
 		return '<div id="' . $this->id . '" ' . $class . '">' . $this->value . '</div>';
 		

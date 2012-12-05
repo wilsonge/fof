@@ -65,7 +65,6 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		$class = $this->element['staticclass'] ? ' class="' . (string) $this->element['staticclass'] . '"' : $class;
 		
 		return '<span id="' . $this->id . '" ' . $class . '">' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
@@ -80,7 +79,6 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	 */
 	public function getRepeatable() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		$class = $this->element['repeatableclass'] ? ' class="' . (string) $this->element['repeatableclass'] . '"' : $class;
 		
 		return '<span id="' . $this->id . '" ' . $class . '">' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
