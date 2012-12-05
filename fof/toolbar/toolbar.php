@@ -508,12 +508,8 @@ class FOFToolbar
 		if(!$using_meta)
 		{
 			$cpanel = array_search('cpanels', $views);
-<<<<<<< HEAD
 			if ($cpanel !== false)
 			{
-=======
-			if ($cpanel !== false) {
->>>>>>> Fixed getMyViews when there is no cpanel view in backend
 				unset($views[$cpanel]);
 				array_unshift($views, 'cpanels');
 			}
