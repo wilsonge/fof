@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldLanguage')) {
 
 /**
  * Form Field class for FOF
- * Supports a generic list of options.
+ * Available site languages
  *
  * @since       2.0
  */

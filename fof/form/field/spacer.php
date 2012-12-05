@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldSpacer')) {
 
 /**
  * Form Field class for the FOF framework
- * Supports a one line text field.
+ * Spacer used between form elements
  *
  * @since       2.0
  */

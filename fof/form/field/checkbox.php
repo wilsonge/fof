@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldCheckbox')) {
 
 /**
  * Form Field class for the FOF framework
- * Supports a one line text field.
+ * A single checkbox
  *
  * @since       2.0
  */

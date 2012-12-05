@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldHidden')) {
 
 /**
  * Form Field class for the FOF framework
- * Supports a one line text field.
+ * A hidden field
  *
  * @since       2.0
  */

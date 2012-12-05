@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldPlugins')) {
 
 /**
  * Form Field class for FOF
- * Supports a generic list of options.
+ * Plugins installed on the site
  *
  * @since       2.0
  */

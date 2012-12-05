@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldRadio')) {
 
 /**
  * Form Field class for FOF
- * Supports a generic list of options.
+ * Radio selection list
  *
  * @since       2.0
  */

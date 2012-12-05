@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldCacheHandler')) {
 
 /**
  * Form Field class for FOF
- * Supports a generic list of options.
+ * Joomla! cache handlers
  *
  * @since       2.0
  */

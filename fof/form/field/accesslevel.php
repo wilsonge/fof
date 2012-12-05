@@ -14,7 +14,7 @@ if(!class_exists('JFormFieldAccessLevel')) {
 
 /**
  * Form Field class for FOF
- * Supports a generic list of options.
+ * Joomla! access levels
  *
  * @since       2.0
  */
