@@ -8,8 +8,8 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-if(!class_exists('JFormFieldList')) {
-	require_once JPATH_LIBRARIES.'/joomla/form/fields/list.php';
+if(!class_exists('JFormFieldAccessLevel')) {
+	require_once JPATH_LIBRARIES.'/joomla/form/fields/accesslevel.php';
 }
 
 /**
@@ -18,7 +18,7 @@ if(!class_exists('JFormFieldList')) {
  *
  * @since       2.0
  */
-class FOFFormFieldList extends JFormFieldList implements FOFFormField
+class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormField
 {
 	protected $static;
 	
@@ -67,8 +67,34 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		$class = $this->element['staticclass'] ? ' class="' . (string) $this->element['staticclass'] . '"' : $class;
 		
+		$params = $this->getOptions();
+		
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		$query->select('a.id AS value, a.title AS text');
+		$query->from('#__viewlevels AS a');
+		$query->group('a.id, a.title, a.ordering');
+		$query->order('a.ordering ASC');
+		$query->order($query->qn('title') . ' ASC');
+
+		// Get the options.
+		$db->setQuery($query);
+		$options = $db->loadObjectList();
+
+		// If params is an array, push these options to the array
+		if (is_array($params))
+		{
+			$options = array_merge($params, $options);
+		}
+		// If all levels is allowed, push it into the array.
+		elseif ($params)
+		{
+			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
+		}		
+		
 		return '<span id="' . $this->id . '" ' . $class . '">' .
-			htmlspecialchars(self::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(FOFFormFieldList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -80,46 +106,5 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 	 */
 	public function getRepeatable() {
 		return $this->getStatic();
-	}
-	
-	/**
-	 * Gets the active option's label given an array of JHtml options
-	 * 
-	 * @param   mixed   $selected  The currently selected value
-	 * @param   array   $data      The JHtml options to parse
-	 * @param   string  $optKey    Key name
-	 * @param   string  $optText   Value name
-	 * 
-	 * @return  mixed   The label of the currently selected option
-	 */
-	public static function getOptionName($data, $selected = null, $optKey = 'value', $optText = 'text')
-	{
-		$ret = null;
-		
-		foreach($data as $elementKey => &$element) {
-			if (is_array($element)) {
-				$key = $optKey === null ? $elementKey : $element[$optKey];
-				$text = $element[$optText];
-			}
-			elseif (is_object($element))
-			{
-				$key = $optKey === null ? $elementKey : $element->$optKey;
-				$text = $element->$optText;
-			}
-			else
-			{
-				// This is a simple associative array
-				$key = $elementKey;
-				$text = $element;
-			}
-			
-			if(is_null($ret)) {
-				$ret = $text;
-			} elseif($selected == $key) {
-				$ret = $text;
-			}
-		}
-		
-		return $ret;
 	}
 }
