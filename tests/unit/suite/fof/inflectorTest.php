@@ -83,7 +83,8 @@ class inflectorTest extends JoomlaTestCase
 		return array( 'foo_bar' => array("foo_bar", "FooBar", 'foo_bar should be camelized to FooBar'),
 		              'foo bar' => array("foo bar", "FooBar", 'foo bar should be camelized to FooBar'),
 		              'Who\'s online' => array('Who\'s online', "WhoSOnline", '"Who\'s online" should be camelized to WhoSOnline'),
-				          'AlreadyCam' => array('AlreadyCam', "AlreadyCam", 'Already camelized word should not be modified'),
+				      'AlreadyCam' => array('AlreadyCam', "Alreadycam", 'Already camelized word AlreadyCam should be squashed to Alreadycam'),
+				      'CoWaBuNgA TEENAGE MutANt NiNjA turtles' => array('CoWaBuNgA TEENAGE MutANt NiNjA turtles', "CowabungaTeenageMutantNinjaTurtles", 'Mixed case with spaces should be converted to camel case'),
 		);
 	}
 	
