@@ -42,4 +42,87 @@ class inflectorTest extends JoomlaTestCase
 			$message
 		);
 	}
+	
+	
+	public function getTestAddWordData()
+	{
+		return array( 'pig' => array("pig", "piggies", 'the plural of pig should be piggies, and vice-versa'),
+		);
+	}
+	
+	/**
+	 * test add word function
+	 * @param string $singular
+	 * @param string $plural
+	 * @param string $message
+	 * @return void
+	 * @dataProvider getTestAddWordData
+	 */
+	public function testAddWord($singular, $plural, $message)
+	{
+		FOFInflector::addWord($singular, $plural);
+		
+		$res = FOFInflector::pluralize($singular);		
+		$this->assertEquals(
+			$res,
+			$plural,
+			$message
+		);
+		
+		$res = FOFInflector::singularize($plural);		
+		$this->assertEquals(
+			$res,
+			$singular,
+			$message
+		);
+	}
+	
+	
+	public function getTestCamelizeData()
+	{
+		return array( 'foo_bar' => array("foo_bar", "FooBar", 'foo_bar should be camelized to FooBar'),
+		              'foo bar' => array("foo bar", "FooBar", 'foo bar should be camelized to FooBar'),
+		              'Who\'s online' => array('Who\'s online', "WhoSOnline", '"Who\'s online" should be camelized to WhoSOnline'),
+				          'AlreadyCam' => array('AlreadyCam', "AlreadyCam", 'Already camelized word should not be modified'),
+		);
+	}
+	
+	/**
+	 * test Camelized function
+	 * @param string $word
+	 * @param string $message
+	 * @return void
+	 * @dataProvider getTestCamelizeData
+	 */
+	public function testCamelize($word, $expect, $message)
+	{
+		$this->assertEquals(
+				FOFInflector::camelize($word),
+				$expect,
+				$message
+		);
+	}
+	
+	public function getTestUnderscoreData()
+	{
+		return array( 'to be underscored' => array("to be underscored", "to_be_underscored", "Wrong transformation"),
+				'toBeUnderscored' => array("toBeUnderscored", "to_be_underscored", "Wrong transformation"),
+		);
+	}
+	
+	/**
+	 * test Underscore function
+	 * @param string $word
+	 * @param string $message
+	 * @return void
+	 * @dataProvider getTestUnderscoreData
+	 */
+	public function testUnderscore($word, $expect, $message)
+	{
+		$this->assertEquals(
+				FOFInflector::underscore($word),
+				$expect,
+				$message
+		);
+	}
 }
