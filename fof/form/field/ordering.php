@@ -77,7 +77,7 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 		
 		$viewObject = $this->form->getView();
 		
-		$ordering = $viewObject->lists->order == 'ordering';
+		$ordering = $viewObject->getLists()->order == 'ordering';
 		
 		if (!$viewObject->hasAjaxOrderingSupport())
 		{
