@@ -434,6 +434,23 @@ class FOFController extends JControllerLegacy
 		if($this->input->get('savestate', -999, 'int') == -999) {
 			$this->input->set('savestate', true);
 		}
+		
+		// Do I have a form?
+		$model = $this->getThisModel();
+		if(empty($this->layout))
+		{
+			$formname = 'form.default';
+		}
+		else
+		{
+			$formname = 'form.' . $this->layout;
+		}
+		$model->setState('form_name', $formname);
+		$form = $model->getForm($model->getItem()->getData());
+		if($form !== false) {
+			$this->hasForm = true;
+		}
+		
 		$this->display(in_array('browse', $this->cacheableTasks));
 	}
 
