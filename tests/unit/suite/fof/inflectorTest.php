@@ -20,7 +20,7 @@ class inflectorTest extends JoomlaTestCase
 	public function getTestPluralizeData()
 	{
 		return array( 'word' => array("word", "words", 'Should return plural'), 
-		              'words' => array("word", "words", "Should return the same as it's already a plural"),
+		              'words' => array("words", "words", "Should return the same as it's already a plural"),
 		);		
 	}
 	
