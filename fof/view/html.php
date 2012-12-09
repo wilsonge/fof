@@ -281,4 +281,17 @@ class FOFViewHtml extends FOFView
 			'orderingColumn'	=> $orderingColumn
 		);
 	}
+	
+	/**
+	 * Returns the internal list of useful variables to the benefit of
+	 * FOFFormHeader fields.
+	 * 
+	 * @return array
+	 * 
+	 * @since 2.0
+	 */
+	public function getLists()
+	{
+		return $this->lists;
+	}
 }
