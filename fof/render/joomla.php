@@ -66,7 +66,21 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
+		// @todo Get header fields
 		
+		// @todo Get filters
+		
+		// @todo Start the table output
+		
+		// @todo Render header if enabled
+		
+		// @todo Render filter row if enabled
+		
+		// @todo Loop through rows and fields, or show placeholder for no rows
+		
+		// @todo Render the pagination bar, if enabled
+		
+		// @todo End the table output
 	}
 
 	/**

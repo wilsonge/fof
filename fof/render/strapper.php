@@ -209,7 +209,27 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	 */
 	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
+		// @todo Get header fields
 		
+		// @todo Get filters
+		
+		// @todo Push the filters to the sidebar, if the filter row is enabled
+		
+		// @todo Get and output the sidebar, if present
+		
+		// @todo Render header search fields, if the header is enabled
+		
+		// @todo Render the pagination rows per page selection box, if the pagination is enabled
+
+		// @todo Start the table output
+		
+		// @todo Render the header row, if enabled
+		
+		// @todo Loop through rows and fields, or show placeholder for no rows
+		
+		// @todo Render the pagination bar, if enabled
+		
+		// @todo End the table output
 	}
 
 	/**
