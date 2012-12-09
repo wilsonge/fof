@@ -72,52 +72,42 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 		// If no custom options were defined let's figure out which ones of the
 		// defaults we shall use...
 		
+		$config = array(
+			'published'		=> 1,
+			'unpublished'	=> 1,
+			'archived'		=> 0,
+			'trashed'		=> 0,
+			'all'			=> 0,
+		);
+		
 		$stack = array();
 		
 		if($this->element['show_published'] == 'false')
 		{
-			// Do not add published
-		}
-		else
-		{
-			$stack['JPUBLISHED'] = 1;
+			$config['published'] = 0;
 		}
 		
 		if($this->element['show_unpublished'] == 'false')
 		{
-			// Do not add unpublished
-		}
-		else
-		{
-			$stack['JUNPUBLISHED'] = 1;
+			$config['unpublished'] = 0;
 		}
 		
 		if($this->element['show_archived'] == 'true')
 		{
-			$stack['JARCHIVED'] = 2;
+			$config['archived'] = 1;
 		}
 		
 		if($this->element['show_trashed'] == 'true')
 		{
-			$stack['JTRASHED'] = -2;
+			$config['trashed'] = 1;
 		}
 		
-		if (empty($stack))
+		if($this->element['show_all'] == 'true')
 		{
-			return $options;
+			$config['all'] = 1;
 		}
 		
-		$options = array();
-		
-		foreach($stack as $label => $value)
-		{
-			$options[] = JHtml::_(
-				'select.option', $value,
-				JText::alt($label, preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text'
-			);
-		}
-		
-		return $options;
+		return JHtml::_('jgrid.publishedOptions', $config);
 	}
 	
 	/**
