@@ -39,6 +39,14 @@ abstract class FOFFormHeader
 	protected $form;
 
 	/**
+	 * The label for the header field.
+	 *
+	 * @var    string
+	 * @since  2.0
+	 */
+	protected $label;
+	
+	/**
 	 * The header HTML.
 	 *
 	 * @var    string|null
@@ -128,7 +136,7 @@ abstract class FOFFormHeader
 	public function __construct(FOFForm $form = null)
 	{
 		// If there is a form passed into the constructor set the form and form control properties.
-		if ($form instanceof JForm)
+		if ($form instanceof FOFForm)
 		{
 			$this->form = $form;
 		}
@@ -154,6 +162,14 @@ abstract class FOFFormHeader
 			case 'group':
 				return $this->$name;
 				break;
+
+			case 'label':
+				if (empty($this->label))
+				{
+					$this->label = $this->getLabel();
+				}
+
+				return $this->label;
 
 			case 'value':
 				if (empty($this->value))
@@ -242,6 +258,7 @@ abstract class FOFFormHeader
 		}
 
 		// Reset the internal fields
+		$this->label		= null;
 		$this->header		= null;
 		$this->filter		= null;
 		$this->buttons		= null;
@@ -380,6 +397,39 @@ abstract class FOFFormHeader
 	protected function getFieldName($fieldName)
 	{
 		return $fieldName;
+	}
+	
+	/**
+	 * Method to get the field label.
+	 *
+	 * @return  string  The field label.
+	 *
+	 * @since   2.0
+	 */
+	protected function getLabel()
+	{
+		$title = '';
+
+		// Get the label text from the XML element, defaulting to the element name.
+		$title = $this->element['label'] ? (string) $this->element['label'] : '';
+		
+		if(empty($title))
+		{
+			$view = $this->form->getView();
+			$params = $view->getViewOptionAndName();
+			$title = $params['option'] . '_' .
+				FOFInflector::pluralize($params['view']) . '_FIELD_' .
+				(string) $this->element['name'];
+			$title = strtoupper($title);
+			$result = JText::_($title);
+			
+			if ($result === $title)
+			{
+				$title = ucfirst((string) $this->element['name']);
+			}
+		}
+
+		return $title;
 	}
 	
 	/**

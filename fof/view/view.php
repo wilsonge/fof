@@ -424,4 +424,20 @@ abstract class FOFView extends JViewLegacy
 			include_once $helper;
 		}
 	}
+	
+	/**
+	 * Returns the view's option (component name) and view name in an
+	 * associative array.
+	 * 
+	 * @return  array
+	 * 
+	 * @since   2.0
+	 */
+	public function getViewOptionAndName()
+	{
+		return array(
+			'option'	=> $this->config['option'],
+			'view'		=> $this->config['view'],
+		);
+	}
 }
