@@ -65,6 +65,16 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$empty_replacement = '';
+		if ($this->element['empty_replacement'])
+		{
+			$empty_replacement = (string) $this->element['empty_replacement'];
+		}
+		
+		if (!empty($empty_replacement) && empty($this->value))
+		{
+			$this->value = JText::_($empty_replacement);
+		}
 		
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
@@ -79,10 +89,11 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	 */
 	public function getRepeatable() {
 		// Initialise
-		$class			= '';
-		$format_string	= '';
-		$show_link		= false;
-		$link_url		= '';
+		$class				= '';
+		$format_string		= '';
+		$show_link			= false;
+		$link_url			= '';
+		$empty_replacement	= '';
 		
 		// Get field parameters
 		if ($this->element['class'])
@@ -127,7 +138,16 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 			$show_link = false;
 		}
 		
+		if ($this->element['empty_replacement'])
+		{
+			$empty_replacement = (string) $this->element['empty_replacement'];
+		}
+		
 		// Get the (optionally formatted) value
+		if (!empty($empty_replacement) && empty($this->value))
+		{
+			$this->value = JText::_($empty_replacement);
+		}
 		if (empty($format_string))
 		{
 			$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
