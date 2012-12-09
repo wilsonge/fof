@@ -18,7 +18,7 @@ if(!class_exists('JFormFieldList')) {
  *
  * @since       2.0
  */
-class FOFFormFieldList extends JFormFieldList implements FOFFormField
+class FOFFormFieldPublished extends JFormFieldList implements FOFFormField
 {
 	protected $static;
 	
