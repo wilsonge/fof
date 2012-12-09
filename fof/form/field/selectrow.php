@@ -23,6 +23,9 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 	protected $static;
 	
 	protected $repeatable;
+
+	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
+	public $rowid;
 	
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -69,20 +72,11 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 	
 	protected function getRepeatable()
 	{
-		static $counters = array();
-		
 		if (!($this->item instanceof FOFTable))
 		{
 			throw new Exception(__CLASS__.' needs a FOFTable to act upon');
 		}
 
-		// Get the counter based on the unique name of the form
-		$signature = $this->form->getName();
-		if (empty($counters[$signature]))
-		{
-			$counters[$signature] = 0;
-		}
-		
 		// Is this record checked out?
 		$checked_out = false;
 		$locked_by_field = $this->item->getColumnAlias('locked_by');
@@ -97,7 +91,6 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 		$key_id = $this->item->$key_field;
 		
 		// Get the HTML
-		$counters[$signature]++;
-		return JHTML::_('grid.id', $counters[$signature], $key_id, $checked_out);
+		return JHTML::_('grid.id', $this->rowid, $key_id, $checked_out);
 	}
 }
