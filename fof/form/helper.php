@@ -28,6 +28,21 @@ class FOFFormHelper extends JFormHelper
 	}
 	
 	/**
+	 * Method to load a form field object given a type.
+	 *
+	 * @param   string   $type  The field type.
+	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
+	 *
+	 * @return  mixed  JFormField object on success, false otherwise.
+	 *
+	 * @since   11.1
+	 */
+	public static function loadHeaderType($type, $new = true)
+	{
+		return self::loadType('header', $type, $new);
+	}
+	
+	/**
 	 * Method to load a form entity object given a type.
 	 * Each type is loaded only once and then used as a prototype for other objects of same type.
 	 * Please, use this method only with those entities which support types (forms don't support them).
@@ -79,6 +94,21 @@ class FOFFormHelper extends JFormHelper
 	public static function loadFieldClass($type)
 	{
 		return self::loadClass('field', $type);
+	}
+	
+	/**
+	 * Attempt to import the FOFFormHeader class file if it isn't already imported.
+	 * You can use this method outside of JForm for loading a field for inheritance or composition.
+	 *
+	 * @param   string  $type  Type of a field whose class should be loaded.
+	 *
+	 * @return  mixed  Class name on success or false otherwise.
+	 *
+	 * @since   11.1
+	 */
+	public static function loadHeaderClass($type)
+	{
+		return self::loadClass('header', $type);
 	}
 	
 	/**

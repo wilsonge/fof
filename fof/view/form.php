@@ -28,14 +28,17 @@ class FOFViewForm extends FOFViewHtml
 	 */
 	public function  display($tpl = null)
 	{
+		$model = $this->getModel();
+
 		// Get the form
 		$this->form = $this->getModel()->getForm();
+		$this->form->setModel($model);
+		$this->form->setView($this);
 		
 		// Get some useful information
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		
 		// Get the task set in the model
-		$model = $this->getModel();
 		$task = $model->getState('task','browse');
 
 		// Call the relevant method

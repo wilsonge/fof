@@ -70,6 +70,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		
 		// @todo Get filters
 		
+		// @todo Start the form
+		
 		// @todo Start the table output
 		
 		// @todo Render header if enabled
@@ -81,6 +83,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		// @todo Render the pagination bar, if enabled
 		
 		// @todo End the table output
+		
+		// @todo End the form
 	}
 
 	/**

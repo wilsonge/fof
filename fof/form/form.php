@@ -11,6 +11,20 @@ defined('_JEXEC') or die();
 class FOFForm extends JForm
 {
 	/**
+	 * The model attached to this view
+	 * 
+	 * @var FOFModel
+	 */
+	protected $model;
+	
+	/**
+	 * The view used to render this form
+	 * 
+	 * @var FOFView
+	 */
+	protected $view;
+	
+	/**
 	 * Method to get an instance of a form.
 	 *
 	 * @param   string  $name     The name of the form.
@@ -136,6 +150,212 @@ class FOFForm extends JForm
 	}
 	
 	/**
+	 * Attaches a FOFModel to this form
+	 * 
+	 * @param   FOFModel  $model  The model to attach to the form
+	 */
+	public function setModel(FOFModel &$model)
+	{
+		$this->model = $model;
+	}
+	
+	/**
+	 * Returns the FOFModel attached to this form
+	 * 
+	 * @return FOFModel
+	 */
+	public function &getModel()
+	{
+		return $this->model;
+	}
+	
+	/**
+	 * Attaches a FOFView to this form
+	 * 
+	 * @param   FOFView  $view  The view to attach to the form
+	 */
+	public function setView(FOFView &$view)
+	{
+		$this->view = $view;
+	}
+	
+	/**
+	 * Returns the FOFView attached to this form
+	 * 
+	 * @return FOFView
+	 */
+	public function &getView()
+	{
+		return $this->view;
+	}
+	
+	/**
+	 * Method to get a header field represented as a FOFFormHeader object.
+	 *
+	 * @param   string  $name   The name of the header field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value  The optional value to use as the default for the field.
+	 *
+	 * @return  mixed  The FOFFormHeader object for the field or boolean false on error.
+	 *
+	 * @since   2.0
+	 */
+	public function getHeader($name, $group = null, $value = null)
+	{
+		// Make sure there is a valid FOFForm XML document.
+		if (!($this->xml instanceof SimpleXMLElement))
+		{
+			return false;
+		}
+
+		// Attempt to find the field by name and group.
+		$element = $this->findHeader($name, $group);
+
+		// If the field element was not found return false.
+		if (!$element)
+		{
+			return false;
+		}
+
+		return $this->loadHeader($element, $group, $value);
+	}
+	
+	/**
+	 * Method to get a header field represented as an XML element object.
+	 *
+	 * @param   string  $name   The name of the form field.
+	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
+	 *
+	 * @return  mixed  The XML element object for the field or boolean false on error.
+	 *
+	 * @since   2.0
+	 */
+	protected function findHeader($name, $group = null)
+	{
+		$element = false;
+		$fields = array();
+
+		// Make sure there is a valid JForm XML document.
+		if (!($this->xml instanceof SimpleXMLElement))
+		{
+			return false;
+		}
+
+		// Let's get the appropriate field element based on the method arguments.
+		if ($group)
+		{
+
+			// Get the fields elements for a given group.
+			$elements = &$this->findGroup($group);
+
+			// Get all of the field elements with the correct name for the fields elements.
+			foreach ($elements as $element)
+			{
+				// If there are matching field elements add them to the fields array.
+				if ($tmp = $element->xpath('descendant::header[@name="' . $name . '"]'))
+				{
+					$fields = array_merge($fields, $tmp);
+				}
+			}
+
+			// Make sure something was found.
+			if (!$fields)
+			{
+				return false;
+			}
+
+			// Use the first correct match in the given group.
+			$groupNames = explode('.', $group);
+			foreach ($fields as &$field)
+			{
+				// Get the group names as strings for ancestor fields elements.
+				$attrs = $field->xpath('ancestor::headerfields[@name]/@name');
+				$names = array_map('strval', $attrs ? $attrs : array());
+
+				// If the field is in the exact group use it and break out of the loop.
+				if ($names == (array) $groupNames)
+				{
+					$element = &$field;
+					break;
+				}
+			}
+		}
+		else
+		{
+			// Get an array of fields with the correct name.
+			$fields = $this->xml->xpath('//header[@name="' . $name . '"]');
+
+			// Make sure something was found.
+			if (!$fields)
+			{
+				return false;
+			}
+
+			// Search through the fields for the right one.
+			foreach ($fields as &$field)
+			{
+				// If we find an ancestor fields element with a group name then it isn't what we want.
+				if ($field->xpath('ancestor::headerfields[@name]'))
+				{
+					continue;
+				}
+				// Found it!
+				else
+				{
+					$element = &$field;
+					break;
+				}
+			}
+		}
+
+		return $element;
+	}
+	
+	/**
+	 * Method to load, setup and return a FOFFormHeader object based on field data.
+	 *
+	 * @param   string  $element  The XML element object representation of the form field.
+	 * @param   string  $group    The optional dot-separated form group path on which to find the field.
+	 * @param   mixed   $value    The optional value to use as the default for the field.
+	 *
+	 * @return  mixed  The FOFFormHeader object for the field or boolean false on error.
+	 *
+	 * @since   2.0
+	 */
+	protected function loadHeader($element, $group = null, $value = null)
+	{
+		// Make sure there is a valid SimpleXMLElement.
+		if (!($element instanceof SimpleXMLElement))
+		{
+			return false;
+		}
+
+		// Get the field type.
+		$type = $element['type'] ? (string) $element['type'] : 'field';
+
+		// Load the JFormField object for the field.
+		$field = $this->loadHeaderType($type);
+
+		// If the object could not be loaded, get a text field object.
+		if ($field === false)
+		{
+			$field = $this->loadHeaderType('field');
+		}
+
+		// Setup the FOFFormHeader object.
+		$field->setForm($this);
+
+		if ($field->setup($element, $value, $group))
+		{
+			return $field;
+		}
+		else
+		{
+			return false;
+		}
+	}	
+	
+	/**
 	 * Proxy for {@link FOFFormHelper::loadFieldType()}.
 	 *
 	 * @param   string   $type  The field type.
@@ -148,6 +368,21 @@ class FOFForm extends JForm
 	protected function loadFieldType($type, $new = true)
 	{
 		return FOFFormHelper::loadFieldType($type, $new);
+	}
+	
+	/**
+	 * Proxy for {@link FOFFormHelper::loadHeaderType()}.
+	 *
+	 * @param   string   $type  The field type.
+	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
+	 *
+	 * @return  mixed  FOFFormHeader object on success, false otherwise.
+	 *
+	 * @since   2.0
+	 */
+	protected function loadHeaderType($type, $new = true)
+	{
+		return FOFFormHelper::loadHeaderType($type, $new);
 	}
 	
 	/**

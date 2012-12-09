@@ -75,9 +75,11 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 
 		$html = '';
 		
-		$ordering = $this->viewObject->lists->order == 'ordering';
+		$viewObject = $this->form->getView();
 		
-		if (!$this->viewObject->hasAjaxOrderingSupport())
+		$ordering = $viewObject->lists->order == 'ordering';
+		
+		if (!$viewObject->hasAjaxOrderingSupport())
 		{
 			// Ye olde Joomla! 2.5 method
 			$disabled = $ordering ?  '' : 'disabled="disabled"';
@@ -92,12 +94,12 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 		else
 		{
 			// The modern drag'n'drop method
-			if ($this->viewObject->perms->editstate)
+			if ($viewObject->perms->editstate)
 			{
 				$disableClassName = '';
 				$disabledLabel	  = '';
 				
-				$hasAjaxOrderingSupport = $this->viewObject->hasAjaxOrderingSupport();
+				$hasAjaxOrderingSupport = $viewObject->hasAjaxOrderingSupport();
 				
 				if (!$hasAjaxOrderingSupport['saveOrder'])
 				{

@@ -215,6 +215,10 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		
 		// @todo Push the filters to the sidebar, if the filter row is enabled
 		
+		// @todo Output the Joomla.orderTable function
+		
+		// @todo Start the form
+		
 		// @todo Get and output the sidebar, if present
 		
 		// @todo Render header search fields, if the header is enabled
@@ -230,6 +234,8 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		// @todo Render the pagination bar, if enabled
 		
 		// @todo End the table output
+		
+		// @todo End the form
 	}
 
 	/**
