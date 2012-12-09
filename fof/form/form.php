@@ -190,6 +190,121 @@ class FOFForm extends JForm
 	}
 	
 	/**
+	 * Method to get an array of FOFFormHeader objects in the headerset.
+	 *
+	 * @return  array  The array of FOFFormHeader objects in the headerset.
+	 *
+	 * @since   2.0
+	 */
+	public function getHeaderset()
+	{
+		$fields = array();
+
+		$elements = $this->findHeadersByGroup();
+
+		// If no field elements were found return empty.
+		if (empty($elements))
+		{
+			return $fields;
+		}
+
+		// Build the result array from the found field elements.
+		foreach ($elements as $element)
+		{
+			// Get the field groups for the element.
+			$attrs = $element->xpath('ancestor::headers[@name]/@name');
+			$groups = array_map('strval', $attrs ? $attrs : array());
+			$group = implode('.', $groups);
+
+			// If the field is successfully loaded add it to the result array.
+			if ($field = $this->loadHeader($element, $group))
+			{
+				$fields[$field->id] = $field;
+			}
+		}
+
+		return $fields;
+	}
+	
+	/**
+	 * Method to get an array of <header /> elements from the form XML document which are
+	 * in a control group by name.
+	 *
+	 * @param   mixed    $group   The optional dot-separated form group path on which to find the fields.
+	 *                            Null will return all fields. False will return fields not in a group.
+	 * @param   boolean  $nested  True to also include fields in nested groups that are inside of the
+	 *                            group for which to find fields.
+	 *
+	 * @return  mixed  Boolean false on error or array of SimpleXMLElement objects.
+	 *
+	 * @since   2.0
+	 */
+	protected function &findHeadersByGroup($group = null, $nested = false)
+	{
+		$false = false;
+		$fields = array();
+
+		// Make sure there is a valid JForm XML document.
+		if (!($this->xml instanceof SimpleXMLElement))
+		{
+			return $false;
+		}
+
+		// Get only fields in a specific group?
+		if ($group)
+		{
+
+			// Get the fields elements for a given group.
+			$elements = &$this->findHeader($group);
+
+			// Get all of the field elements for the fields elements.
+			foreach ($elements as $element)
+			{
+
+				// If there are field elements add them to the return result.
+				if ($tmp = $element->xpath('descendant::header'))
+				{
+
+					// If we also want fields in nested groups then just merge the arrays.
+					if ($nested)
+					{
+						$fields = array_merge($fields, $tmp);
+					}
+					// If we want to exclude nested groups then we need to check each field.
+					else
+					{
+						$groupNames = explode('.', $group);
+						foreach ($tmp as $field)
+						{
+							// Get the names of the groups that the field is in.
+							$attrs = $field->xpath('ancestor::headers[@name]/@name');
+							$names = array_map('strval', $attrs ? $attrs : array());
+
+							// If the field is in the specific group then add it to the return list.
+							if ($names == (array) $groupNames)
+							{
+								$fields = array_merge($fields, array($field));
+							}
+						}
+					}
+				}
+			}
+		}
+		elseif ($group === false)
+		{
+			// Get only field elements not in a group.
+			$fields = $this->xml->xpath('descendant::headers[not(@name)]/header | descendant::headers[not(@name)]/headerset/header ');
+		}
+		else
+		{
+			// Get an array of all the <header /> elements.
+			$fields = $this->xml->xpath('//header');
+		}
+
+		return $fields;
+	}	
+	
+	/**
 	 * Method to get a header field represented as a FOFFormHeader object.
 	 *
 	 * @param   string  $name   The name of the header field.

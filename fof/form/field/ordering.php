@@ -84,9 +84,9 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 			// Ye olde Joomla! 2.5 method
 			$disabled = $ordering ?  '' : 'disabled="disabled"';
 			$html .= '<span>';
-			$html .= $this->pagination->orderUpIcon($this->rowid, true, 'orderup', 'Move Up', $ordering);
+			$html .= $viewObject->pagination->orderUpIcon($this->rowid, true, 'orderup', 'Move Up', $ordering);
 			$html .= '</span><span>';
-			$html .= $this->pagination->orderDownIcon($this->rowid, true, 'orderup', 'Move Up', $ordering);
+			$html .= $viewObject->pagination->orderDownIcon($this->rowid, true, 'orderup', 'Move Up', $ordering);
 			$html .= '</span>';
 			$html .= '<input type="text" name="order[]" size="5" value="' . $this->value . '" ' . $disabled;
 			$html .= 'class="text_area" style="text-align: center" />';

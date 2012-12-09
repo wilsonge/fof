@@ -242,7 +242,7 @@ class FOFViewHtml extends FOFView
 	 *                         reordering; orderingColumn: which column has the
 	 *                         ordering information).
 	 */
-	protected function hasAjaxOrderingSupport()
+	public function hasAjaxOrderingSupport()
 	{
 		if(version_compare(JVERSION, '3.0', 'lt')) {
 			return false;

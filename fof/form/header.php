@@ -119,6 +119,14 @@ abstract class FOFFormHeader
 	protected $value;
 
 	/**
+	 * The intended table data width (in pixels or percent).
+	 *
+	 * @var    mixed
+	 * @since  2.0
+	 */
+	protected $tdwidth;
+
+	/**
 	 * The key of the filter value in the model state.
 	 *
 	 * @var    mixed
@@ -160,6 +168,7 @@ abstract class FOFFormHeader
 			case 'type':
 			case 'fieldname':
 			case 'group':
+			case 'tdwidth':
 				return $this->$name;
 				break;
 
@@ -274,12 +283,16 @@ abstract class FOFFormHeader
 		$id = (string) $element['id'];
 		$name = (string) $element['name'];
 		$filterSource = (string) $element['filter_source'];
+		$tdwidth = (string) $element['tdwidth'];
 
 		// Set the field description text.
 		$this->description = (string) $element['description'];
 
 		// Set the group of the field.
 		$this->group = $group;
+		
+		// Set the td width of the field.
+		$this->tdwidth = $tdwidth;
 		
 		// Set the field name and id.
 		$this->fieldname = $this->getFieldName($name);
