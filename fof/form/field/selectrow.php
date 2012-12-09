@@ -61,12 +61,12 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 		throw new Exception(__CLASS__.' cannot be used in input forms');
 	}
 	
-	protected function getStatic()
+	public function getStatic()
 	{
 		throw new Exception(__CLASS__.' cannot be used in single item display forms');
 	}
 	
-	protected function getRepeatable()
+	public function getRepeatable()
 	{
 		if (!($this->item instanceof FOFTable))
 		{
