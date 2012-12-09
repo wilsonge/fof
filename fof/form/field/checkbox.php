@@ -77,7 +77,7 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 			$checked = ' checked="checked"';
 		}
 		
-		return '<span id="' . $this->id . '" ' . $class . '">' .
+		return '<span id="' . $this->id . '" ' . $class . '>' .
 			'<input type="checkbox" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
 			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . ' />' .
 			'</span>';
@@ -103,7 +103,7 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 			$checked = ' checked="checked"';
 		}
 		
-		return '<span id="' . $this->id . '" ' . $class . '">' .
+		return '<span id="' . $this->id . '" ' . $class . '>' .
 			'<input type="checkbox" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
 			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . ' />' .
 			'</span>';

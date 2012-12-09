@@ -66,7 +66,7 @@ class FOFFormFieldTextarea extends JFormFieldTextarea implements FOFFormField
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		
-		return '<div id="' . $this->id . '" ' . $class . '">' .
+		return '<div id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(nl2br($this->value), ENT_COMPAT, 'UTF-8') .
 			'</div>';
 	}

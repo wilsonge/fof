@@ -66,7 +66,7 @@ class FOFFormFieldInteger extends JFormFieldInteger implements FOFFormField
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		
-		return '<span id="' . $this->id . '" ' . $class . '">' .
+		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}

@@ -75,10 +75,10 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 			);
 		}
 		
-		return '<span id="' . $this->id . '-group" class="fof-groupedlist-group ' . $class . '">' .
+		return '<span id="' . $this->id . '-group" class="fof-groupedlist-group ' . $class . '>' .
 			htmlspecialchars($selected['group'], ENT_COMPAT, 'UTF-8') .
 			'</span>' . 
-			'<span id="' . $this->id . '-item" class="fof-groupedlist-item ' . $class . '">' .
+			'<span id="' . $this->id . '-item" class="fof-groupedlist-item ' . $class . '>' .
 			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}

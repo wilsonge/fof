@@ -103,7 +103,7 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 				break;
 		}
 
-		return '<span id="' . $this->id . '" ' . $class . '">' .
+		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
