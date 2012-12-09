@@ -8,10 +8,6 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-if(!class_exists('JFormField')) {
-	require_once JPATH_LIBRARIES.'/joomla/form/fields/sessionhandler.php';
-}
-
 /**
  * Form Field class for FOF
  * Renders the checkbox in browse views which allows you to select rows
