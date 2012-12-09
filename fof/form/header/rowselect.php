@@ -8,6 +8,11 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
+/**
+ * Row selection checkbox
+ * 
+ * @since 2.0
+ */
 class FOFFormHeaderRowselect extends FOFFormHeader
 {
 	protected function getHeader()
