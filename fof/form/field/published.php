@@ -111,6 +111,20 @@ class FOFFormFieldPublished extends JFormFieldList implements FOFFormField
 	}
 	
 	/**
+	 * Get the rendering of this field type for static display, e.g. in a single
+	 * item view (typically a "read" task).
+	 * 
+	 * @since 2.0
+	 */
+	public function getStatic() {
+		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		
+		return '<span id="' . $this->id . '" ' . $class . '>' .
+			htmlspecialchars(self::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			'</span>';
+	}
+	
+	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 * 
