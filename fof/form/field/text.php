@@ -78,6 +78,81 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	 * @since 2.0
 	 */
 	public function getRepeatable() {
-		return $this->getStatic();
+		// Initialise
+		$class			= '';
+		$format_string	= '';
+		$show_link		= false;
+		$link_url		= '';
+		
+		// Get field parameters
+		if ($this->element['class'])
+		{
+			$class = ' class="' . (string) $this->element['class'] . '"';
+		}
+		if ($this->element['format'])
+		{
+			$format_string = (string) $this->element['format'];
+		}
+		if ($this->element['show_link'] == 'true')
+		{
+			$show_link = true;
+		}
+		if ($this->element['url'])
+		{
+			$link_url = $this->element['url'];
+		}
+		else
+		{
+			$show_link = false;
+		}
+		if ($show_link && ($this->item instanceof FOFTable))
+		{
+			// Replace [ITEM:ID] in the URL with the item's key value (usually:
+			// the auto-incrementing numeric ID)
+			$keyfield = $this->item->getKeyName();
+			$replace = $this->item->$keyfield;
+			$link_url = str_replace('[ITEM:ID]', $replace, $link_url);
+			
+			// Replace other field variables in the URL
+			$fields = $this->item->getFields();
+			foreach($fields as $fieldname)
+			{
+				$search = '[ITEM:' . strtoupper($fieldname) . ']';
+				$replace = $this->item->$fieldname;
+				$link_url = str_replace($search, $replace, $link_url);
+			}
+		}
+		else
+		{
+			$show_link = false;
+		}
+		
+		// Get the (optionally formatted) value
+		if (empty($format_string))
+		{
+			$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
+		}
+		else
+		{
+			$value = sprintf($format_string, $this->value);
+		}
+		
+		// Create the HTML
+		$html = '<span id="' . $this->id . '" ' . $class . '>';
+		
+		if ($show_link)
+		{
+			$html .= '<a href="' . $link_url . '">';
+		}
+		
+		$html .= $value;
+		
+		if ($show_link)
+		{
+			$html .= '</a>';
+		}
+		
+		$html .= '</span>';
+		return $html;
 	}	
 }
