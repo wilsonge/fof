@@ -9,7 +9,7 @@
 defined('_JEXEC') or die();
 
 /**
- * Generic field header, with drop down filters
+ * Generic field header, with drop down filters based on a SQL query
  * 
  * @since 2.0
  */

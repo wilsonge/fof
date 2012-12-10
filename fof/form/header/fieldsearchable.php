@@ -9,7 +9,7 @@
 defined('_JEXEC') or die();
 
 /**
- * Generic field header, without any filters
+ * Generic field header, with text input (search) filter
  * 
  * @since 2.0
  */
