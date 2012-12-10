@@ -218,15 +218,18 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		}
 		$html .= "\t\t\t</tbody>" . PHP_EOL;
 		
-		// @todo Render the pagination bar, if enabled
-		$pagination = $form->getModel()->getPagination();
-		$html .= "\t\t\t<tfoot>" . PHP_EOL;
-		$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
-		if (($pagination->total > 0)) {
-			$html .= $pagination->getListFooter();
+		// Render the pagination bar, if enabled
+		if($show_pagination)
+		{
+			$pagination = $form->getModel()->getPagination();
+			$html .= "\t\t\t<tfoot>" . PHP_EOL;
+			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
+			if (($pagination->total > 0)) {
+				$html .= $pagination->getListFooter();
+			}
+			$html .= "</td></tr>\n";
+			$html .= "\t\t\t</tfoot>" . PHP_EOL;
 		}
-		$html .= "</td></tr>\n";
-		$html .= "\t\t\t</tfoot>" . PHP_EOL;
 		
 		// End the table output
 		$html .= "\t\t" . '</table>' . PHP_EOL;
