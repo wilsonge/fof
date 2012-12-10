@@ -76,7 +76,7 @@ class FOFFormFieldPublished extends JFormFieldList implements FOFFormField
 			'published'		=> 1,
 			'unpublished'	=> 1,
 			'archived'		=> 0,
-			'trashed'		=> 0,
+			'trash'		=> 0,
 			'all'			=> 0,
 		);
 		
@@ -97,9 +97,9 @@ class FOFFormFieldPublished extends JFormFieldList implements FOFFormField
 			$config['archived'] = 1;
 		}
 		
-		if($this->element['show_trashed'] == 'true')
+		if($this->element['show_trash'] == 'true')
 		{
-			$config['trashed'] = 1;
+			$config['trash'] = 1;
 		}
 		
 		if($this->element['show_all'] == 'true')
