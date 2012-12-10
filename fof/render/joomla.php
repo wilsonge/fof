@@ -146,7 +146,10 @@ class FOFRenderJoomla extends FOFRenderAbstract
 					$label = $header->label;
 					$emptyOption = JHtml::_('select.option', '',JText::_('- ' . $label . ' -'));
 					array_unshift($options, $emptyOption);
-					$filter = JHtml::_('select.genericlist', $options, $header->name, null, 'value', 'text', $header->value);
+					$attribs = array(
+						'onchange'	=> 'document.adminForm.submit();'
+					);
+					$filter = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value);
 					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
 				}
 				$filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
