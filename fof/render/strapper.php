@@ -209,33 +209,332 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	 */
 	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
-		// @todo Get header fields
-		
-		// @todo Get filters
-		
-		// @todo Push the filters to the sidebar, if the filter row is enabled
-		
-		// @todo Output the Joomla.orderTable function
-		
-		// @todo Start the form
-		
-		// @todo Get and output the sidebar, if present
-		
-		// @todo Render header search fields, if the header is enabled
-		
-		// @todo Render the pagination rows per page selection box, if the pagination is enabled
+		$html = '';
 
-		// @todo Start the table output
+		// Joomla! 3.0+ support
+		if(version_compare(JVERSION, '3.0', 'ge'))
+		{
+			JHtml::_('bootstrap.tooltip');
+			JHtml::_('behavior.multiselect');
+			JHtml::_('dropdown.init');
+			JHtml::_('formbehavior.chosen', 'select');
+			$view = $form->getView();
+			$order = $view->escape($view->getLists()->order);
+			$html .= <<<ENDJS
+<script type="text/javascript">
+	Joomla.orderTable = function() {
+		table = document.getElementById("sortTable");
+		direction = document.getElementById("directionTable");
+		order = table.options[table.selectedIndex].value;
+		if (order != '$order') {
+			dirn = 'asc';
+		} else {
+			dirn = direction.options[direction.selectedIndex].value;
+		}
+		Joomla.tableOrdering(order, dirn, '');
+	}
+</script>
+
+ENDJS;
+		}
 		
-		// @todo Render the header row, if enabled
+		// Getting all header row elements
+		$headerFields = $form->getHeaderset();
+
+		// Get form parameters
+		$show_header		= $form->getAttribute('show_header', 1);
+		$show_filters		= $form->getAttribute('show_filters', 1);
+		$show_pagination	= $form->getAttribute('show_pagination', 1);
+		$norows_placeholder	= $form->getAttribute('norows_placeholder', '');
 		
-		// @todo Loop through rows and fields, or show placeholder for no rows
+		// Joomla! 3.0 sidebar support
+		if (version_compare(JVERSION, '3.0', 'gt') && $show_filters)
+		{
+			JHtmlSidebar::setAction("index.php?option=" .
+					$input->getCmd('option') . "&view=" .
+					FOFInflector::pluralize($input->getCmd('view'))
+			);
+		}
 		
-		// @todo Render the pagination bar, if enabled
+		// Pre-render the header and filter rows
+		$header_html = '';
+		$filter_html = '';
+		$sortFields = array();
 		
-		// @todo End the table output
+		if ($show_header || $show_filters)
+		{
+			foreach ($headerFields as $headerField)
+			{
+				$header		= $headerField->header;
+				$filter		= $headerField->filter;
+				$buttons	= $headerField->buttons;
+				$options	= $headerField->options;
+				$sortable	= $headerField->sortable;
+				$tdwidth	= $headerField->tdwidth;
+				
+				// Under Joomla! < 3.0 we can't have filter-only fields
+				if (version_compare(JVERSION, '3.0', 'lt') && empty($header))
+				{
+					continue;
+				}
+				
+				// If it's a sortable field, add to the list of sortable fields
+				if ($sortable)
+				{
+					$sortFields[$headerField->name] = $headerField->label;
+				}
+				
+				// Get the table data width, if set
+				if (!empty($tdwidth))
+				{
+					$tdwidth = 'width="' . $tdwidth . '"';
+				}
+				else
+				{
+					$tdwidth = '';
+				}
+				
+				$header_html .= "\t\t\t\t\t<th $tdwidth>" . PHP_EOL;
+				$header_html .= "\t\t\t\t\t\t" . $header;
+				$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
+				
+				if (version_compare(JVERSION, '3.0', 'ge'))
+				{
+					// Joomla! 3.0 or later
+					if (!empty($filter))
+					{
+						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
+						$filter_html .= "\t".'<label for="title" class="element-invisible">';
+						$filter_html .= $headerField->label;
+						$filter_html .= "</label>\n";
+						$filter_html .= "\t$filter\n";
+						$filter_html .= "</div>\n";
+						
+						if (!empty($buttons))
+						{
+							$filter_html .= '<div class="btn-group pull-left hidden-phone">' . "\n";
+							$filter_html .= "\t$buttons\n";
+							$filter_html .= '</div' . "\n";
+						}
+					}
+					elseif (!empty($options))
+					{
+						$label = $headerField->label;
+						$emptyOption = JHtml::_('select.option', '',JText::_('- ' . $label . ' -'));
+						
+						JHtmlSidebar::addFilter(
+							$emptyOption,
+							$headerField->name,
+							JHtml::_('select.options', $options, 'value', 'text', $form->getModel()->getState($headerField->name, ''), true)
+						);
+					}
+				}
+				else
+				{
+					// Joomla! 2.5
+					$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
+					if (!empty($filter))
+					{
+						$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
+						if (!empty($buttons))
+						{
+							$filter_html .= "\t\t\t\t\t\t<nobr>$buttons</nobr>" . PHP_EOL;
+						}
+					}
+					elseif (!empty($options))
+					{
+						$label = $headerField->label;
+						$emptyOption = JHtml::_('select.option', '',JText::_('- ' . $label . ' -'));
+						array_unshift($options, $emptyOption);
+						$attribs = array(
+							'onchange'	=> 'document.adminForm.submit();'
+						);
+						$filter = JHtml::_('select.genericlist', $options, $headerField->name, $attribs, 'value', 'text', $headerField->value, false, true);
+						$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
+					}
+					$filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
+				}
+			}
+		}
+				
+		// Start the form
+		$filter_order = $form->getView()->getLists()->order;
+		$filter_order_Dir = $form->getView()->getLists()->order_Dir;
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="option" value="'.$input->getCmd('option').'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="view" value="'.FOFInflector::pluralize($input->getCmd('view')).'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="task" value="' . $input->getCmd('task', 'browse') . '" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="boxchecked" value="" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="hidemainmenu" value="" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="filter_order" value="'.$filter_order.'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="filter_order_Dir" value="'.$filter_order_Dir.'" />'.PHP_EOL;
+		$html .= "\t".'<input type="hidden" name="'.JFactory::getSession()->getFormToken().'" value="1" />'.PHP_EOL;
 		
-		// @todo End the form
+		if (version_compare(JVERSION, '3.0', 'ge'))
+		{
+			// Joomla! 3.0+
+
+			// Get and output the sidebar, if present
+			$sidebar = JHtmlSidebar::render();
+			if ($show_filters && !empty($sidebar))
+			{
+				$html .= '<div id="j-sidebar-container" class="span2">' . "\n";
+				$html .= "\t$sidebar\n";
+				$html .= "</div>\n";
+				$html .= '<div id="j-main-container" class="span10">' . "\n";
+			}
+			else
+			{
+				$html .= '<div id="j-main-container">' . "\n";
+			}
+			
+			// Render header search fields, if the header is enabled
+			if ($show_header)
+			{
+				$html .= "\t" . '<div id="filter-bar" class="btn-toolbar">' . "\n";
+				$html .= "$filter_html\n";
+
+				if ($show_pagination)
+				{
+					// Render the pagination rows per page selection box, if the pagination is enabled
+					$html .= "\t" . '<div class="btn-group pull-right hidden-phone">' . "\n";
+					$html .= "\t\t" . '<label for="limit" class="element-invisible">' . JText::_('JFIELD_PLG_SEARCH_SEARCHLIMIT_DESC') . '</label>' . "\n";
+					$html .= "\t\t" . $model->getPagination()->getLimitBox() . "\n";
+					$html .= "\t" . '</div>' . "\n";
+				}
+				
+				if (!empty($sortFields))
+				{
+					// Display the field sort order
+					$asc_sel = ($view->getLists()->order_Dir == 'asc') ? 'selected="selected"' : '';
+					$desc_sel = ($view->getLists()->order_Dir == 'desc') ? 'selected="selected"' : '';
+					$html .= "\t" . '<div class="btn-group pull-right hidden-phone">' . "\n";
+					$html .= "\t\t" . '<label for="directionTable" class="element-invisible">'. JText::_('JFIELD_ORDERING_DESC') . '</label>' . "\n";
+					$html .= "\t\t" . '<select name="directionTable" id="directionTable" class="input-medium" onchange="Joomla.orderTable()">' . "\n";
+					$html .= "\t\t\t" . '<option value="">' . JText::_('JFIELD_ORDERING_DESC') . '</option>' . "\n";
+					$html .= "\t\t\t" . '<option value="asc" ' . $asc_sel . '>' . JText::_('JGLOBAL_ORDER_ASCENDING') . '</option>' . "\n";
+					$html .= "\t\t\t" . '<option value="desc" ' . $desc_sel . '>' . JText::_('JGLOBAL_ORDER_DESCENDING') . '</option>' . "\n";
+					$html .= "\t\t" . '</select>' . "\n";
+					$html .= "\t" . '</div>' . "\n\n";
+
+					// Display the sort fields
+					$html .= "\t" . '<div class="btn-group pull-right">' . "\n";
+					$html .= "\t\t" . '<label for="sortTable" class="element-invisible">' . JText::_('JGLOBAL_SORT_BY') . '</label>' . "\n";
+					$html .= "\t\t" . '<select name="sortTable" id="sortTable" class="input-medium" onchange="Joomla.orderTable()">' . "\n";
+					$html .= "\t\t\t" . '<option value="">' . JText::_('JGLOBAL_SORT_BY') . '</option>' . "\n";
+					$html .= "\t\t\t" . JHtml::_('select.options', $sortFields, 'value', 'text', $view->getLists()->order) . "\n";
+					$html .= "\t\t" . '</select>' . "\n";
+					$html .= "\t" . '</div>' . "\n";
+				}
+				
+				$html .= "\t</div>\n\n";
+				$html .= "\t". '<div class="clearfix"> </div>' ."\n\n";					
+			}
+		}
+
+		// Start the table output
+		$html .= "\t\t" . '<table class="table table-striped" id="adminList">' . PHP_EOL;
+		
+		// Open the table header region if required
+		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		{
+			$html .= "\t\t\t<thead>" . PHP_EOL;
+		}		
+		
+		// Render the header row, if enabled
+		if ($show_header)
+		{
+			$html .= "\t\t\t\t<tr>" . PHP_EOL;
+			$html .= $header_html;
+			$html .= "\t\t\t\t</tr>" . PHP_EOL;
+		}
+		
+		// Render filter row if enabled
+		if ($show_filters && version_compare(JVERSION, '3.0', 'lt'))
+		{
+			$html .= "\t\t\t\t<tr>";
+			$html .= $filter_html;
+			$html .= "\t\t\t\t</tr>";
+		}		
+		
+		// Close the table header region if required
+		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		{
+			$html .= "\t\t\t</thead>" . PHP_EOL;
+		}
+		
+		// Loop through rows and fields, or show placeholder for no rows
+		$html .= "\t\t\t<tbody>" . PHP_EOL;
+		$fields = $form->getFieldset('items');
+		$num_columns = count($fields);
+		$items = $form->getModel()->getItemList();
+		if ($count = count($items))
+		{
+			$m = 1;
+			foreach ($items as $i => $item)
+			{
+				$table_item = $form->getModel()->getTable();
+				$table_item->bind($item);
+				
+				$form->bind($item);
+				
+				$m = 1 - $m;
+				$class = 'row'.$m;
+				
+				$html .= "\t\t\t\t<tr class=\"$class\">" . PHP_EOL;
+				
+				$fields = $form->getFieldset('items');
+				foreach($fields as $field)
+				{
+					$field->rowid = $i;
+					$field->item = $table_item;
+					$class = $field->labelClass ? 'class ="' . $field->labelClass . '"' : '';
+					$html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . PHP_EOL;
+				}
+				
+				$html .= "\t\t\t\t</tr>" . PHP_EOL;
+			}
+		}
+		elseif ($norows_placeholder)
+		{
+			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
+			$html .= JText::_($norows_placeholder);
+			$html .= "</td></tr>\n";
+		}
+		$html .= "\t\t\t</tbody>" . PHP_EOL;		
+		
+		// Render the pagination bar, if enabled, on J! 2.5
+		if ($show_pagination && version_compare(JVERSION, '3.0', 'lt'))
+		{
+			$pagination = $form->getModel()->getPagination();
+			$html .= "\t\t\t<tfoot>" . PHP_EOL;
+			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
+			if (($pagination->total > 0)) {
+				$html .= $pagination->getListFooter();
+			}
+			$html .= "</td></tr>\n";
+			$html .= "\t\t\t</tfoot>" . PHP_EOL;
+		}
+		
+		// End the table output
+		$html .= "\t\t" . '</table>' . PHP_EOL;
+		
+		// Render the pagination bar, if enabled, on J! 3.0+
+		if ($show_pagination && version_compare(JVERSION, '3.0', 'ge'))
+		{
+			$html .= $model->getPagination()->getListFooter();;
+		}
+		
+		// Close the wrapper element div on Joomla! 3.0+
+		if (version_compare(JVERSION, '3.0', 'ge'))
+		{
+			$html .= "</div>\n";
+		}
+		
+		// End the form
+		$html .= '</form>' . PHP_EOL;
+		
+		return $html;
 	}
 
 	/**

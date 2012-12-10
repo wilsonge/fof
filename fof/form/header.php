@@ -133,6 +133,14 @@ abstract class FOFFormHeader
 	 * @since  2.0
 	 */
 	protected $filterSource;
+	
+	/**
+	 * Is this a sortable column?
+	 *
+	 * @var    bool
+	 * @since  2.0
+	 */
+	protected $sortable = false;
 
 	/**
 	 * Method to instantiate the form field object.
@@ -223,6 +231,15 @@ abstract class FOFFormHeader
 				}
 
 				return $this->options;
+				break;
+
+			case 'sortable':
+				if (empty($this->sortable))
+				{
+					$this->sortable = $this->getSortable();
+				}
+
+				return $this->sortable;
 				break;
 		}
 
@@ -465,6 +482,19 @@ abstract class FOFFormHeader
 		{
 			return $this->name;
 		}
+	}
+	
+	protected function getSortable()
+	{
+		$sortable = ($this->element['sortable'] != 'false');
+		if($sortable) {
+			if(empty($this->header)) {
+				$this->header = $this->getHeader();
+			}
+			$sortable = !empty($this->header);
+		}
+		
+		return $sortable;
 	}
 	
 	/**
