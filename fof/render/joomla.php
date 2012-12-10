@@ -149,7 +149,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 					$attribs = array(
 						'onchange'	=> 'document.adminForm.submit();'
 					);
-					$filter = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value);
+					$filter = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value, false, true);
 					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
 				}
 				$filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
