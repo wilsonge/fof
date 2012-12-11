@@ -17,6 +17,7 @@
 		<folder>controller</folder>
 		<folder>dispatcher</folder>
 		<folder>encrypt</folder>
+		<folder>form</folder>
 		<folder>inflector</folder>
 		<folder>input</folder>
 		<folder>model</folder>
