@@ -294,4 +294,15 @@ class FOFViewHtml extends FOFView
 	{
 		return $this->lists;
 	}
+	
+		/**
+	 * Returns a reference to the permissions object of this view
+	 * 
+	 * @return stdClass
+	 */
+	public function getPerms()
+	{
+		return $this->perms;
+	}
+
 }

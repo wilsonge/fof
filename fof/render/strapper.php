@@ -281,7 +281,7 @@ ENDJS;
 				// If it's a sortable field, add to the list of sortable fields
 				if ($sortable)
 				{
-					$sortFields[$headerField->name] = $headerField->label;
+					$sortFields[$headerField->name] = JText::_($headerField->label);
 				}
 				
 				// Get the table data width, if set
@@ -314,17 +314,16 @@ ENDJS;
 						{
 							$filter_html .= '<div class="btn-group pull-left hidden-phone">' . "\n";
 							$filter_html .= "\t$buttons\n";
-							$filter_html .= '</div' . "\n";
+							$filter_html .= '</div>' . "\n";
 						}
 					}
 					elseif (!empty($options))
 					{
 						$label = $headerField->label;
-						$emptyOption = JHtml::_('select.option', '',JText::_('- ' . $label . ' -'));
 						
 						JHtmlSidebar::addFilter(
-							$emptyOption,
-							$headerField->name,
+							'- ' . $label . ' -',
+							(string)$headerField->name,
 							JHtml::_('select.options', $options, 'value', 'text', $form->getModel()->getState($headerField->name, ''), true)
 						);
 					}
@@ -393,7 +392,7 @@ ENDJS;
 			{
 				$html .= "\t" . '<div id="filter-bar" class="btn-toolbar">' . "\n";
 				$html .= "$filter_html\n";
-
+				
 				if ($show_pagination)
 				{
 					// Render the pagination rows per page selection box, if the pagination is enabled
@@ -433,7 +432,7 @@ ENDJS;
 		}
 
 		// Start the table output
-		$html .= "\t\t" . '<table class="table table-striped" id="adminList">' . PHP_EOL;
+		$html .= "\t\t" . '<table class="table table-striped" id="itemsList">' . PHP_EOL;
 		
 		// Open the table header region if required
 		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))

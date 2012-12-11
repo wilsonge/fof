@@ -94,7 +94,7 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 		else
 		{
 			// The modern drag'n'drop method
-			if ($viewObject->perms->editstate)
+			if ($viewObject->getPerms()->editstate)
 			{
 				$disableClassName = '';
 				$disabledLabel	  = '';
