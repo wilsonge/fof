@@ -18,7 +18,7 @@ defined('_JEXEC') or die();
 
 if(!defined('FOF_INCLUDED'))
 {
-	define('FOF_INCLUDED','revBEEDF0C');
+	define('FOF_INCLUDED','##VERSION##');
 	
 	function _fof_autoloader($class_name) {
 		static $fofPath = null;
