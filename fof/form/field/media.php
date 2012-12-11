@@ -65,17 +65,57 @@ class FOFFormFieldMedia extends JFormFieldMedia implements FOFFormField
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		$width = $this->element['width'] ? ' width="' . (string) $this->element['width'] . '"' : '';
-		$height = $this->element['height'] ? ' height="' . (string) $this->element['height'] . '"' : '';
-		$align = $this->element['align'] ? ' align="' . (string) $this->element['align'] . '"' : '';
-		$rel = $this->element['rel'] ? ' rel="' . (string) $this->element['rel'] . '"' : '';
-		$alt = $this->element['alt'] ? ' alt="' . JText::_((string) $this->element['alt']) . '"' : '';
-		$title = $this->element['title'] ? ' title="' . JText::_((string) $this->element['title']) . '"' : '';
+		$imgattr = array(
+			'id' => $this->id
+		);
+
+		if ($this->element['class'])
+		{
+			$imgattr['class']		= (string) $this->element['class'];
+		}
+		if ($this->element['style'])
+		{
+			$imgattr['style']		= (string) $this->element['style'];
+		}
+		if ($this->element['width'])
+		{
+			$imgattr['width']		= (string) $this->element['width'];
+		}
+		if ($this->element['height'])
+		{
+			$imgattr['height']		= (string) $this->element['height'];
+		}
+		if ($this->element['align'])
+		{
+			$imgattr['align']		= (string) $this->element['align'];
+		}
+		if ($this->element['rel'])
+		{
+			$imgattr['rel']			= (string) $this->element['rel'];
+		}
+		if ($this->element['alt'])
+		{
+			$alt					= JText::_((string) $this->element['alt']);
+		}
+		else
+		{
+			$alt					= null;
+		}
+		if ($this->element['title'])
+		{
+			$imgattr['title']		= JText::_((string) $this->element['title']);
+		}
 		
-		return '<img id="' . $this->id . '" ' .
-				'src="' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"' .
-				$class . $width . $height . $align . $rel . $alt . $title . '/>';
+		if ($this->value && file_exists(JPATH_ROOT . '/' . $this->value))
+		{
+			$src = JURI::root() . $this->value;
+		}
+		else
+		{
+			$src = '';
+		}
+		
+		return JHtml::image($src, $alt, $imgattr);
 	}
 
 	/**
