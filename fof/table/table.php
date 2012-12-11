@@ -52,6 +52,15 @@ class FOFTable extends JTable
 	 * @var array
 	 */
 	protected $_skipChecks = array();
+	
+	/**
+	 * Does the table actually exist? We need that to avoid PHP notices on
+	 * teble-less views.
+	 * 
+	 * @var bool
+	 * @since 2.0
+	 */
+	protected $_tableExists = true;
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -165,6 +174,8 @@ class FOFTable extends JTable
 					$this->$name = null;
 				}
 			}
+		} else {
+			$this->_tableExists = false;
 		}
 
 		// If we are tracking assets, make sure an access field exists and initially set the default.
@@ -211,8 +222,15 @@ class FOFTable extends JTable
 	
 	public function load( $keys=null, $reset=true )
 	{
-		$result = parent::load($keys, $reset);
-		$this->onAfterLoad($result);
+		if (!$this->_tableExists)
+		{
+			$result = false;
+		} 
+		else
+		{
+			$result = parent::load($keys, $reset);
+			$this->onAfterLoad($result);
+		}
 		return $result;
 	}
 
@@ -698,20 +716,45 @@ class FOFTable extends JTable
 	public function getTableFields()
 	{
 		static $cache = array();
+		static $tables = array();
+		
+		// Make sure we have a list of tables in this db
+		if(empty($tables)) {
+			$tables = $this->_db->getTableList();
+		}
 
 		if(!array_key_exists($this->_tbl, $cache)) {
 			// Lookup the fields for this table only once.
 			$name	= $this->_tbl;
-			if(version_compare(JVERSION, '3.0', 'ge')) {
+			
+			$prefix = $this->_db->getPrefix();
+			if (substr($name, 0, 3) == '#__')
+			{
+				$checkName = $prefix . substr($name, 3);
+			}
+			else
+			{
+				$checkName = $name;
+			}
+			
+			if (!in_array($checkName, $tables))
+			{
+				// The table doesn't exist. Return false.
+				$cache[$this->_tbl] = false;
+			}
+			elseif (version_compare(JVERSION, '3.0', 'ge'))
+			{
 				$fields	= $this->_db->getTableColumns($name, false);
 				if (empty($fields)) {
-					return false;
+					$fields = false;
 				}
 				$cache[$this->_tbl] = $fields;
-			} else {
+			}
+			else
+			{
 				$fields	= $this->_db->getTableFields($name, false);
 				if (!isset($fields[$name])) {
-					return false;
+					$fields = false;
 				}
 				$cache[$this->_tbl] = $fields[$name];
 			}
