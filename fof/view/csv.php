@@ -61,12 +61,33 @@ class FOFViewCsv extends FOFViewHtml
 		JResponse::setHeader('Content-Description','File Transfer');
 		JResponse::setHeader('Content-Disposition','attachment; filename="'.$this->csvFilename.'"');
 
-		JError::setErrorHandling(E_ALL,'ignore');
-		if(is_null($tpl)) $tpl = 'csv';
-		$result = $this->loadTemplate($tpl);
-		JError::setErrorHandling(E_WARNING,'callback');
+		if (is_null($tpl))
+		{
+			$tpl = 'csv';
+		}
 		
-		if($result instanceof JException) {
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			JError::setErrorHandling(E_ALL,'ignore');
+		}
+		
+		$hasFailed = false;
+		try {
+			$result = $this->loadTemplate($tpl);
+		} catch	(Exception $e) {
+			$hasFailed = true;
+		}
+
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			if($result instanceof JException)
+			{
+				$hasFailed = true;
+			}
+			JError::setErrorHandling(E_WARNING,'callback');
+		}
+
+		if($hasFailed) {
 			// Default CSV behaviour in case the template isn't there!
 			if(empty($items)) return;
 			

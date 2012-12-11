@@ -354,7 +354,14 @@ class FOFController extends JControllerLegacy
 
 		if ($doTask == 'display')
 		{
-			JError::raiseError(400, 'Bad Request');
+			if(version_compare(JVERSION, '3.0', 'ge'))
+			{
+				throw new Exception('Bad Request', 400);
+			}
+			else
+			{
+				JError::raiseError(400, 'Bad Request');
+			}
 		}
 
 		parent::execute($task);
@@ -1417,7 +1424,8 @@ class FOFController extends JControllerLegacy
 
 	/**
 	 * Applies CSRF protection by means of a standard Joomla! token (nonce) check.
-	 * Raises a 403 Access Forbidden error through JError if the check fails.
+	 * Raises a 403 Access Forbidden error through JError or an exception
+	 * (depending the Joomla! version) if the check fails.
 	 */
 	protected function _csrfProtection()
 	{
@@ -1447,7 +1455,15 @@ class FOFController extends JControllerLegacy
 		}
 
 		if(!$hasToken) {
-			JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			if(version_compare(JVERSION, '3.0', 'ge'))
+			{
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			}
+			else
+			{
+				JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			}
+			
 			return false;
 		}
 	}

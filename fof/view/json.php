@@ -30,12 +30,32 @@ class FOFViewJson extends FOFViewHtml
 		$document = JFactory::getDocument();
 		$document->setMimeEncoding('application/json');
 
-		JError::setErrorHandling(E_ALL,'ignore');
-		if(is_null($tpl)) $tpl = 'json';
-		$result = $this->loadTemplate($tpl);
-		JError::setErrorHandling(E_WARNING,'callback');
+		if (is_null($tpl))
+		{
+			$tpl = 'json';
+		}
+		
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			JError::setErrorHandling(E_ALL,'ignore');
+		}
+		$hasFailed = false;
+		try {
+			$result = $this->loadTemplate($tpl);
+		} catch	(Exception $e) {
+			$hasFailed = true;
+		}
 
-		if($result instanceof JException) {
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			if($result instanceof JException)
+			{
+				$hasFailed = true;
+			}
+			JError::setErrorHandling(E_WARNING,'callback');
+		}
+
+		if($hasFailed) {
 			// Default JSON behaviour in case the template isn't there!
 			$json = json_encode($items);
 
@@ -68,12 +88,33 @@ class FOFViewJson extends FOFViewHtml
 		$document = JFactory::getDocument();
 		$document->setMimeEncoding('application/json');
 
-		JError::setErrorHandling(E_ALL,'ignore');
-		if(is_null($tpl)) $tpl = 'json';
-		$result = $this->loadTemplate($tpl);
-		JError::setErrorHandling(E_WARNING,'callback');
+		if (is_null($tpl))
+		{
+			$tpl = 'json';
+		}
+		
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			JError::setErrorHandling(E_ALL,'ignore');
+		}
+		
+		$hasFailed = false;
+		try {
+			$result = $this->loadTemplate($tpl);
+		} catch	(Exception $e) {
+			$hasFailed = true;
+		}
 
-		if($result instanceof JException) {
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			if($result instanceof JException)
+			{
+				$hasFailed = true;
+			}
+			JError::setErrorHandling(E_WARNING,'callback');
+		}
+
+		if($hasFailed) {
 			// Default JSON behaviour in case the template isn't there!
 			$json = json_encode($item);
 

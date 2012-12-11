@@ -234,10 +234,21 @@ abstract class FOFView extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			JError::setErrorHandling(E_ALL,'ignore');
+		}
+		
 		$result = $this->loadTemplate($tpl);
+
+		if (version_compare(JVERSION, '3.0', 'lt'))
+		{
+			JError::setErrorHandling(E_WARNING,'callback');
+		}
+		
 		if ($result instanceof Exception) {
-				JError::raiseError($result->getCode(), $result->getMessage());
-				return $result;
+			JError::raiseError($result->getCode(), $result->getMessage());
+			return $result;
 		}
 
 		echo $result;

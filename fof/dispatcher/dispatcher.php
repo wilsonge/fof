@@ -192,8 +192,16 @@ class FOFDispatcher extends JObject
 			if (
 				!$user->authorise('core.manage', $this->input->getCmd('option','com_foobar') )
 				&& !$user->authorise('core.admin', $this->input->getCmd('option','com_foobar'))
-			) {
-				return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			)
+			{
+				if(version_compare(JVERSION, '3.0', 'ge'))
+				{
+					throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+				}
+				else
+				{
+					return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+				}
 			}
 		} else {
 			// Perform transparent authentication for front-end requests
@@ -220,7 +228,14 @@ class FOFDispatcher extends JObject
 				exit();
 			}
 
-			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			if(version_compare(JVERSION, '3.0', 'ge'))
+			{
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			}
+			else
+			{
+				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			}
 		}
 
 		// Get and execute the controller
@@ -246,11 +261,25 @@ class FOFDispatcher extends JObject
 		$status = $controller->execute($task);
 
 		if($status === false) {
-			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			if(version_compare(JVERSION, '3.0', 'ge'))
+			{
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			}
+			else
+			{
+				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			}
 		}
 
 		if(!$this->onAfterDispatch()) {
-			return JError::raiseError(403, JText::_('JERROR_ALERTNOAUTHOR'));
+			if(version_compare(JVERSION, '3.0', 'ge'))
+			{
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			}
+			else
+			{
+				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			}
 		}
 
 		$controller->redirect();
