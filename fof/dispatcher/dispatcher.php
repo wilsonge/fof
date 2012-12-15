@@ -509,10 +509,10 @@ class FOFDispatcher extends JObject
 	 */
 	public static function isCliAdmin()
 	{
-		static $isCli = null;
+		static $isCLI = null;
 		static $isAdmin = null;
 		
-		if (is_null($isCli) && is_null($isAdmin))
+		if (is_null($isCLI) && is_null($isAdmin))
 		{
 			try {
 				if(is_null(JFactory::$application)) {
