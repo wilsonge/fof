@@ -259,11 +259,12 @@ abstract class FOFView extends JViewLegacy
 	 * Our overriden function uses loadAnyTemplate to provide smarter view
 	 * template loading.
 	 * 
-	 * @param   string  $tpl  The name of the template file to parse
+	 * @param   string   $tpl     The name of the template file to parse
+	 * @param   boolean  $strict  Should we use strict naming, i.e. force a non-empty $tpl?
 	 * 
 	 * @return  mixed  A string if successful, otherwise a JError object
 	 */
-	public function loadTemplate($tpl = null) {
+	public function loadTemplate($tpl = null, $strict = false) {
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		$basePath = $isAdmin ? 'admin:' : 'site:';
@@ -272,15 +273,29 @@ abstract class FOFView extends JViewLegacy
 		$basePath .= $this->config['view'].'/';
 		$altBasePath .= FOFInflector::isSingular($this->config['view']) ? FOFInflector::pluralize($this->config['view']) : FOFInflector::singularize($this->config['view']).'/';
 		
-		$paths = array(
-			$basePath.$this->getLayout().($tpl ? "_$tpl" : ''),
-			$basePath.$this->getLayout(),
-			$basePath.'default',
-			$altBasePath.$this->getLayout().($tpl ? "_$tpl" : ''),
-			$altBasePath.$this->getLayout(),
-			$altBasePath.'default',
-		);
-		
+		if ($strict)
+		{
+			$paths = array(
+				$basePath.$this->getLayout().($tpl ? "_$tpl" : ''),
+				$basePath.'default'.($tpl ? "_$tpl" : ''),
+				$altBasePath.$this->getLayout().($tpl ? "_$tpl" : ''),
+				$altBasePath.'default'.($tpl ? "_$tpl" : ''),
+			);
+		}
+		else
+		{
+			$paths = array(
+				$basePath.$this->getLayout().($tpl ? "_$tpl" : ''),
+				$basePath.$this->getLayout(),
+				$basePath.'default'.($tpl ? "_$tpl" : ''),
+				$basePath.'default',
+				$altBasePath.$this->getLayout().($tpl ? "_$tpl" : ''),
+				$altBasePath.$this->getLayout(),
+				$altBasePath.'default'.($tpl ? "_$tpl" : ''),
+				$altBasePath.'default',
+			);
+		}
+
 		foreach($paths as $path) {
 			$result = $this->loadAnyTemplate($path);
 			if (!($result instanceof Exception)) {

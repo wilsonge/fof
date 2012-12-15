@@ -73,7 +73,7 @@ class FOFViewCsv extends FOFViewHtml
 		
 		$hasFailed = false;
 		try {
-			$result = $this->loadTemplate($tpl);
+			$result = $this->loadTemplate($tpl, true);
 		} catch	(Exception $e) {
 			$hasFailed = true;
 		}

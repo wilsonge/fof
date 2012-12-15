@@ -41,14 +41,14 @@ class FOFViewJson extends FOFViewHtml
 		}
 		$hasFailed = false;
 		try {
-			$result = $this->loadTemplate($tpl);
+			$result = $this->loadTemplate($tpl, true);
 		} catch	(Exception $e) {
 			$hasFailed = true;
 		}
 
 		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
-			if($result instanceof JException)
+			if($result instanceof Exception)
 			{
 				$hasFailed = true;
 			}
