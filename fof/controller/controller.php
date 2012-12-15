@@ -105,97 +105,79 @@ class FOFController extends JControllerLegacy
 	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
+		// Determine the option (component name) and view
 		$config['option'] = !is_null($option) ? $option : JRequest::getCmd('option', 'com_foobar');
 		$config['view'] = !is_null($view) ? $view : JRequest::getCmd('view', 'cpanel');
 
-		$classType = FOFInflector::pluralize($config['view']);
-		$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller' . ucfirst($classType);
-		if (!class_exists($className))
+		// Get the class base name, e.g. FoobarController
+		$classBaseName = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller';
+		// Get the class name suffixes, in the order to be searched for: plural, singular, 'default'
+		$classSuffixes = array(
+			FOFInflector::pluralize($config['view']),
+			FOFInflector::singularize($config['view']),
+			'default'
+		);
+		// Initialise the base path for performance reasons
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if ($isAdmin)
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-			if ($isAdmin)
+			$basePath = JPATH_ADMINISTRATOR;
+		}
+		elseif ($isCli)
+		{
+			$basePath = JPATH_ROOT;
+		}
+		else
+		{
+			$basePath = JPATH_SITE;
+		}
+		jimport('joomla.filesystem.path');
+		// Look for the best classname match
+		foreach ($classSuffixes as $suffix)
+		{
+			$className = $classBaseName . ucfirst($suffix);
+			if (class_exists($className))
 			{
-				$basePath = JPATH_ADMINISTRATOR;
+				// The class is already loaded. We have a match!
+				break;
 			}
-			elseif ($isCli)
-			{
-				$basePath = JPATH_ROOT;
-			}
-			else
-			{
-				$basePath = JPATH_SITE;
-			}
-
+			
+			// The class is not already loaded. Try to find and load it.
 			$searchPaths = array(
 				$basePath . '/components/' . $config['option'] . '/controllers',
 				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/controllers'
 			);
+			
+			// If we have a searchpath in the configuration please search it first
 			if (array_key_exists('searchpath', $config))
 			{
 				array_unshift($searchPaths, $config['searchpath']);
 			}
 
-			jimport('joomla.filesystem.path');
+			// Try to find the path to this file
 			$path = JPath::find(
 				$searchPaths,
-				strtolower(FOFInflector::pluralize($config['view'])) . '.php'
+				strtolower($suffix) . '.php'
 			);
 
+			// The path is found. Load the file and make sure the expected class name exists.
 			if ($path)
 			{
 				require_once $path;
+				if (class_exists($className))
+				{
+					// The class was loaded successfully. We have a match!
+					break;
+				}
 			}
 		}
-
+		
 		if (!class_exists($className))
 		{
-			$classType = FOFInflector::singularize($config['view']);
-			$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller' . ucfirst($classType);
-		}
-
-		if (!class_exists($className))
-		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-			if ($isAdmin)
-			{
-				$basePath = JPATH_ADMINISTRATOR;
-			}
-			elseif ($isCli)
-			{
-				$basePath = JPATH_ROOT;
-			}
-			else
-			{
-				$basePath = JPATH_SITE;
-			}
-
-			$searchPaths = array(
-				$basePath . '/components/' . $config['option'] . '/controllers',
-				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/controllers'
-			);
-
-			if (array_key_exists('searchpath', $config))
-			{
-				array_unshift($searchPaths, $config['searchpath']);
-			}
-
-			jimport('joomla.filesystem.path');
-			$path = JPath::find(
-				$searchPaths,
-				strtolower(FOFInflector::singularize($config['view'])) . '.php'
-			);
-
-			if ($path)
-			{
-				require_once $path;
-			}
-		}
-
-		if (!class_exists($className))
-		{
+			// If no specialised class is found, instantiate the generic FOFController
 			$className = 'FOFController';
 		}
+		
 		$instance = new $className($config);
 
 		return $instance;
@@ -1084,9 +1066,9 @@ class FOFController extends JControllerLegacy
 	 * @param	string  The name of the model.
 	 * @param	string	Optional model prefix.
 	 * @param	array	Configuration array for the model. Optional.
+	 * 
 	 * @return	mixed	Model object on success; otherwise null
 	 * failure.
-	 * @since	1.5
 	 */
 	function &_createModel( $name, $prefix = '', $config = array())
 	{
@@ -1094,6 +1076,16 @@ class FOFController extends JControllerLegacy
 		return $this->createModel($name, $prefix, $config);
 	}
 
+	/**
+	 * Creates a View object instance and returns it
+	 * 
+	 * @param   string  $name    The name of the view, e.g. Items
+	 * @param   string  $prefix  The prefix of the view, e.g. FoobarView
+	 * @param   string  $type    The type of the view, usually one of Html, Raw, Json or Csv
+	 * @param   array   $config  The configuration variables to use for creating the view
+	 * 
+	 * @return  FOFView
+	 */
 	protected function createView($name, $prefix = '', $type = '', $config = array())
 	{
 		$result = null;
@@ -1136,89 +1128,99 @@ class FOFController extends JControllerLegacy
 			$config['input'] = $tmpInput;
 		}
 
-		// Build the view class name
-		$viewClass = $classPrefix . ucfirst($view);
-
-		if ( !class_exists( $viewClass ) )
+		// Get the base paths where the view class files are expected to live
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		$basePaths = array(
+			JPATH_SITE.'/components/'.$config['option'].'/views',
+			JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/views'			
+		);
+		if ($isAdmin)
 		{
-			jimport( 'joomla.filesystem.path' );
-			$thisPath = $this->paths;
-			if(JFactory::getApplication()->isSite()) {
-				$thisPath['view'] = array_merge(array(
-					JPATH_SITE.'/components/'.$config['option'].'/views',
-					JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/views'
-				),$thisPath['view']);
-			} else {
-				$thisPath['view'] = array_merge(array(
-					JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/views',
-					JPATH_SITE.'/components/'.$config['option'].'/views'
-				),$thisPath['view']);
-				$thisPath['view'][] = JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/views';
-				$thisPath['view'][] = JPATH_SITE.'/components/'.$config['option'].'/views';
-			}
+			$basePaths = array_reverse($basePaths);
+			$basePaths = array_merge($basePaths, $this->paths['view'], $basePaths);
+		}
+		else
+		{
+			$basePaths = array_merge($this->paths['view']);
+		}
 
-			$viewPath = $this->createFileName( 'view', array( 'name' => $viewName, 'type' => $viewType) );
-			$path = JPath::find(
-				$thisPath['view'],
-				$viewPath
-			);
-			if(!$path) {
-				$viewPath = $this->createFileName( 'view', array( 'name' => FOFInflector::singularize($viewName), 'type' => $viewType) );
-
-				$path = JPath::find(
-					$thisPath['view'],
-					$viewPath
-				);
-				if($path) {
-					$viewClass = $classPrefix . FOFInflector::singularize($viewName);
-				}
+		// Get the alternate (singular/plural) view name
+		$altViewName = FOFInflector::isPlural($viewName) ? FOFInflector::singularize($viewName) : FOFInflector::pluralize($viewName);
+		
+		$suffixes = array(
+			$viewName,
+			$altViewName,
+			'default'
+		);
+		jimport( 'joomla.filesystem.path' );
+		
+		foreach ($suffixes as $suffix)
+		{
+			// Build the view class name
+			$viewClass = $classPrefix . ucfirst($suffix);
+			
+			if (class_exists($viewClass))
+			{
+				// The class is already loaded
+				break;
 			}
+			
+			// The class is not loaded. Let's load it!
+			$viewPath = $this->createFileName( 'view', array( 'name' => $suffix, 'type' => $viewType) );
+			$path = JPath::find($basePaths, $viewPath);
 			if ($path) {
 				require_once $path;
 			}
-
-			if(!class_exists($viewClass) && FOFInflector::isSingular($name)) {
-				$name = FOFInflector::pluralize($name);
-				$viewClass = $classPrefix . ucfirst($name);
-				$result = $this->createView($name, $prefix, $type, $config);
+			
+			if (class_exists($viewClass))
+			{
+				// The class was loaded successfully
+				break;
 			}
+		}
+		
+		if(!class_exists($viewClass)) {
+			$viewClass = 'FOFView'.ucfirst($type);
+		}		
 
-			if(!class_exists($viewClass)) {
-				$viewClass = 'FOFView'.ucfirst($type);
+		// Setup View configuration options
+		if($isAdmin) {
+			$basePath = JPATH_ADMINISTRATOR;
+		} elseif($isCli) {
+			$basePath = JPATH_ROOT;
+		} else {
+			$basePath = JPATH_SITE;
+		}
 
-				list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-				if($isAdmin) {
-					$basePath = JPATH_ADMINISTRATOR;
-				} elseif($isCli) {
-					$basePath = JPATH_ROOT;
-				} else {
-					$basePath = JPATH_SITE;
-				}
+		if(!array_key_exists('template_path', $config)) {
+			$config['template_path'] = array(
+				$basePath.'/components/'.$config['option'].'/views/'.FOFInflector::pluralize($config['view']).'/tmpl',
+				JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/html/'.$config['option'].'/'.FOFInflector::pluralize($config['view']),
+				$basePath.'/components/'.$config['option'].'/views/'.FOFInflector::singularize($config['view']).'/tmpl',
+				JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/html/'.$config['option'].'/'.FOFInflector::singularize($config['view']),
+				$basePath.'/components/'.$config['option'].'/views/'.$config['view'].'/tmpl',
+				JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/html/'.$config['option'].'/'.$config['view'],
+			);
+		}
 
-				if(!array_key_exists('template_path', $config)) {
-					$config['template_path'] = array(
-						$basePath.'/components/'.$config['option'].'/views/'.FOFInflector::pluralize($config['view']).'/tmpl',
-						JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/html/'.$config['option'].'/'.FOFInflector::pluralize($config['view']),
-						$basePath.'/components/'.$config['option'].'/views/'.FOFInflector::singularize($config['view']).'/tmpl',
-						JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/html/'.$config['option'].'/'.FOFInflector::singularize($config['view']),
-						$basePath.'/components/'.$config['option'].'/views/'.$config['view'].'/tmpl',
-						JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/html/'.$config['option'].'/'.$config['view'],
-					);
-				}
-
-				if(!array_key_exists('helper_path', $config)) {
-					$config['helper_path'] = array(
-						$basePath.'/components/'.$config['option'].'/helpers',
-						JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/helpers'
-					);
-				}
-			}
+		if(!array_key_exists('helper_path', $config)) {
+			$config['helper_path'] = array(
+				$basePath.'/components/'.$config['option'].'/helpers',
+				JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/helpers'
+			);
 		}
 
 		$result = new $viewClass($config);
 		return $result;
 	}
 
+	/**
+	 * Deprecated function to create a View object instance
+	 * 
+	 * @see FOFController::createView
+	 * 
+	 * @deprecated since version 2.0
+	 */
 	function &_createView( $name, $prefix = '', $type = '', $config = array() )
 	{
 		JLog::add('FOFController::_createView is deprecated. Use createView() instead.', JLog::WARNING, 'deprecated');
@@ -1226,11 +1228,21 @@ class FOFController extends JControllerLegacy
 		return $this->createView($name, $prefix, $type, $config);
 	}
 
+	/**
+	 * Set the name of the view to be used by this Controller
+	 * 
+	 * @param   string  $viewName  The name of the view
+	 */
 	public function setThisViewName($viewName)
 	{
 		$this->viewName = $viewName;
 	}
 
+	/**
+	 * Set the name of the model to be used by this Controller
+	 * 
+	 * @param   string  $modelName  The name of the model
+	 */
 	public function setThisModelName($modelName)
 	{
 		$this->modelName = $modelName;

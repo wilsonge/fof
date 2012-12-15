@@ -173,6 +173,7 @@ class FOFModel extends JModelLegacy
 		$config['input']->set('option', $config['option']);
 		$config['input']->set('view', $config['view']);
 
+		// Try to load the requested model class
 		if (!class_exists( $modelClass ))
 		{
 			if(interface_exists('JModel')) {
@@ -213,10 +214,56 @@ class FOFModel extends JModelLegacy
 				require_once $path;
 			}
 		}
+		
+		// Fallback to the Default model class, e.g. FoobarModelDefault
+		if (!class_exists( $modelClass )) {
+			$modelClass = $prefix . 'Default';
+			if (!class_exists( $modelClass ))
+			{
+				if(interface_exists('JModel')) {
+					$include_paths = JModelLegacy::addIncludePath();
+				} else {
+					$include_paths = JModel::addIncludePath();
+				}
 
+				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+				if($isAdmin) {
+					$extra_paths = array(
+						JPATH_ADMINISTRATOR.'/components/'.$component.'/models',
+						JPATH_SITE.'/components/'.$component.'/models'
+					);
+				} else {
+					$extra_paths = array(
+						JPATH_SITE.'/components/'.$component.'/models',
+						JPATH_ADMINISTRATOR.'/components/'.$component.'/models'
+					);
+				}
+				$include_paths = array_merge($extra_paths,$include_paths);
+
+				// Try to load the model file
+				jimport('joomla.filesystem.path');
+				if(interface_exists('JModel')) {
+					$path = JPath::find(
+						$include_paths,
+						JModelLegacy::_createFileName( 'model', array( 'name' => 'default'))
+					);
+				} else {
+					$path = JPath::find(
+						$include_paths,
+						JModel::_createFileName( 'model', array( 'name' => 'default'))
+					);
+				}
+				if ($path)
+				{
+					require_once $path;
+				}
+			}
+		}
+
+		// Fallback to the generic FOFModel model class
 		if (!class_exists( $modelClass )) {
 			$modelClass = 'FOFModel';
-		}
+		}		
 
 		$result = new $modelClass($config);
 
