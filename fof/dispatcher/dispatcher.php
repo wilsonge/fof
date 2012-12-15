@@ -509,19 +509,25 @@ class FOFDispatcher extends JObject
 	 */
 	public static function isCliAdmin()
 	{
-		try {
-			if(is_null(JFactory::$application)) {
+		static $isCli = null;
+		static $isAdmin = null;
+		
+		if (is_null($isCli) && is_null($isAdmin))
+		{
+			try {
+				if(is_null(JFactory::$application)) {
+					$isCLI = true;
+				} else {
+					$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+				}
+			} catch(Exception $e) {
 				$isCLI = true;
-			} else {
-				$isCLI = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
 			}
-		} catch(Exception $e) {
-			$isCLI = true;
-		}
-		if($isCLI) {
-			$isAdmin = false;
-		} else {
-			$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			if($isCLI) {
+				$isAdmin = false;
+			} else {
+				$isAdmin = version_compare(JVERSION, '1.6.0', 'ge') ? (!JFactory::$application ? false : JFactory::getApplication()->isAdmin()) : JFactory::getApplication()->isAdmin();
+			}
 		}
 
 		return array($isCLI, $isAdmin);
