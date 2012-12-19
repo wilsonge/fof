@@ -88,10 +88,30 @@ class FOFTemplateUtils
 		// Get the cached file path
 		$cachedPath = JPATH_SITE . '/media/lib_fof/compiled/' . $id . '.css';
 		
-		// Get the LESS compiler and compile the file if necessary
+		// Get the LESS compiler
 		$lessCompiler = new FOFLess();
 		$lessCompiler->formatterName = 'compressed';
-		$lessCompiler->checkedCompile($localFile, $cachedPath);
+
+		// Should I add an alternative import path?
+		$altFiles = self::getAltPaths($path);
+		if (isset($altFiles['alternate']))
+		{
+			$currentLocation = realpath(dirname($localFile));
+			$normalLocation = realpath(dirname($altFiles['normal']));
+			$alternateLocation = realpath(dirname($altFiles['alternate']));
+			if ($currentLocation == $normalLocation)
+			{
+				$lessCompiler->importDir = array($alternateLocation, $currentLocation);
+			}
+			else
+			{
+				$lessCompiler->importDir = array($currentLocation, $normalLocation);
+			}
+		}
+		
+		// Compile the LESS file
+		$lessCompiler->compileFile($localFile, $cachedPath);
+		//$lessCompiler->checkedCompile($localFile, $cachedPath);
 		
 		// Add the compiled CSS to the page
 		$base_url = rtrim(JUri::base(), '/');
@@ -143,14 +163,6 @@ class FOFTemplateUtils
 	 */
 	public static function parsePath($path, $localFile = false)
 	{
-		$protoAndPath = explode('://', $path, 2);
-		if(count($protoAndPath) < 2) {
-			$protocol = 'media';
-		} else {
-			$protocol = $protoAndPath[0];
-			$path = $protoAndPath[1];
-		}
-
 		if ($localFile)
 		{
 			$url = rtrim(JPATH_ROOT, DIRECTORY_SEPARATOR) . '/';
@@ -160,32 +172,86 @@ class FOFTemplateUtils
 			$url = JURI::root();
 		}
 
+		$altPaths = self::getAltPaths($path);
+		$filePath = $altPaths['normal'];
+		if (isset($altPaths['alternate']))
+		{
+			if (file_exists(JPATH_SITE . '/' . $altPaths['alternate']))
+			{
+				$filePath = $altPaths['alternate'];
+			}
+		}
+		
+		$url .= $filePath;
+
+		return $url;
+	}
+	
+	/**
+	 * Parse a fancy path definition into a path relative to the site's root.
+	 * It returns both the normal and alternative (template media override) path.
+	 * For example, media://com_foobar/css/test.css is parsed into
+	 * array(
+	 *   'normal' => 'media/com_foobar/css/test.css',
+	 *   'alternate' => 'templates/mytemplate/media/com_foobar/css//test.css'
+	 * );
+	 *
+	 * The valid protocols are:
+	 * media://		The media directory or a media override
+	 * admin://		Path relative to administrator directory (no alternate)
+	 * site://		Path relative to site's root (no alternate)
+	 *
+	 * @param   string  $path       Fancy path
+	 * 
+	 * @return  array  Array of normal and alternate parsed path
+	 */
+	public static function getAltPaths($path)
+	{
+		static $isCli = null;
+		static $isAdmin = null;
+		
+		if(is_null($isCli) && is_null($isAdmin))
+		{
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		}
+		
+		$protoAndPath = explode('://', $path, 2);
+		if(count($protoAndPath) < 2) {
+			$protocol = 'media';
+		} else {
+			$protocol = $protoAndPath[0];
+			$path = $protoAndPath[1];
+		}
+		
+		$path = ltrim($path, '/'.DIRECTORY_SEPARATOR);
+
 		switch($protocol) {
 			case 'media':
 				// Do we have a media override in the template?
 				$pathAndParams = explode('?', $path, 2);
-				$altPath = JPATH_BASE.'/templates/'.JFactory::getApplication()->getTemplate().'/media/'.$pathAndParams[0];
-				if(file_exists($altPath)) {
-					list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-					$url .= $isAdmin ? 'administrator/' : '';
-					$url .= 'templates/'.JFactory::getApplication()->getTemplate().'/media/';
-				} else {
-					$url .= 'media/';
-				}
+				$altPath = 'templates/'.JFactory::getApplication()->getTemplate().'/media/';
+				
+				$ret = array(
+					'normal'	=> 'media/' . $pathAndParams[0],
+					'alternate'	=> ($isAdmin ? 'administrator/' : '') . $altPath . $pathAndParams[0],
+				);
 				break;
 
 			case 'admin':
-				$url .= 'administrator/';
+				$ret = array(
+					'normal'	=> 'administrator/' . $path
+				);
 				break;
 
 			default:
 			case 'site':
+				$ret = array(
+					'normal'	=> $path
+				);
 				break;
 		}
 
-		$url .= $path;
-
-		return $url;
+		return $ret;
 	}
 
 	/**
