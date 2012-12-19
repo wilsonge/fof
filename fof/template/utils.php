@@ -59,12 +59,6 @@ class FOFTemplateUtils
 		// Get the local LESS file
 		$localFile = self::parsePath($path, true);
 		
-		// No point continuing if the source file is not there
-		if (!JFile::exists($localFile))
-		{
-			return null;
-		}
-		
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
 		
@@ -81,7 +75,8 @@ class FOFTemplateUtils
 			}
 		}
 		
-		if (!$sanityCheck)
+		// No point continuing if the source file is not there or we can't write to the cache
+		if (!$sanityCheck || !JFile::exists($localFile))
 		{
 			self::addCSS($altPath);
 			return false;
@@ -95,10 +90,16 @@ class FOFTemplateUtils
 		
 		// Get the LESS compiler and compile the file if necessary
 		$lessCompiler = new FOFLess();
+		$lessCompiler->formatterName = 'compressed';
 		$lessCompiler->checkedCompile($localFile, $cachedPath);
 		
 		// Add the compiled CSS to the page
-		$url = JUri::base() . '/media/lib_fof/compiled/' . $id . '.css';
+		$base_url = rtrim(JUri::base(), '/');
+		if (substr($base_url, -14) == '/administrator')
+		{
+			$base_url = substr($base_url, 0, -14);
+		}
+		$url = $base_url . '/media/lib_fof/compiled/' . $id . '.css';
 		JFactory::getDocument()->addStyleSheet($url);
 		
 		return true;
@@ -150,7 +151,14 @@ class FOFTemplateUtils
 			$path = $protoAndPath[1];
 		}
 
-		$url = JURI::root();
+		if ($localFile)
+		{
+			$url = rtrim(JPATH_ROOT, DIRECTORY_SEPARATOR) . '/';
+		}
+		else
+		{
+			$url = JURI::root();
+		}
 
 		switch($protocol) {
 			case 'media':
@@ -175,14 +183,7 @@ class FOFTemplateUtils
 				break;
 		}
 
-		if ($localFile)
-		{
-			$url = JPATH_ROOT . '/' . $path;
-		}
-		else
-		{
-			$url .= $path;
-		}
+		$url .= $path;
 
 		return $url;
 	}
