@@ -105,15 +105,27 @@ class FOFForm extends JForm
 	 */
 	public function loadCSSFiles()
 	{
+		// Support for CSS files
 		$cssfiles = $this->getAttribute('cssfiles');
 		
-		if(empty($cssfiles)) {
-			return;
+		if (!empty($cssfiles)) {
+			$cssfiles = explode(',', $cssfiles);
+			foreach($cssfiles as $cssfile) {
+				FOFTemplateUtils::addCSS(trim($cssfile));
+			}
 		}
 		
-		$cssfiles = explode(',', $cssfiles);
-		foreach($cssfiles as $cssfile) {
-			FOFTemplateUtils::addCSS(trim($cssfile));
+		// Support for LESS files
+		$lessfiles = $this->getAttribute('lessfiles');
+		
+		if (!empty($lessfiles)) {
+			$lessfiles = explode(',', $lessfiles);
+			foreach($lessfiles as $def) {
+				$parts = explode('||', $def, 2);
+				$lessfile = $parts[0];
+				$alt = (count($parts) > 1) ? trim($parts[1]) : null;
+				FOFTemplateUtils::addLESS(trim($lessfile), $alt);
+			}
 		}
 	}
 	
