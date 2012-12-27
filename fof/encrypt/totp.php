@@ -137,7 +137,7 @@ class FOFEncryptTotp {
 	 */
     public function generateSecret() {
         $secret = "";
-        for($i = 1;  $i<= $this->$secretLength;$i++) {
+        for($i = 1;  $i<= $this->secretLength;$i++) {
             $c = rand(0,255);
             $secret .= pack("c",$c);
         }
