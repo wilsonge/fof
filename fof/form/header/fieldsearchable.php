@@ -22,6 +22,7 @@ class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
 		$maxLength = $this->element['maxlength'] ? ' maxlength="' . (int) $this->element['maxlength'] . '"' : '';
 		$filterclass = $this->element['filterclass'] ? ' class="' . (string) $this->element['filterclass'] . '"' : '';
 		$placeholder = $this->element['placeholder'] ? $this->element['placeholder'] : $this->getLabel();
+		$name = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
 		$placeholder = 'placeholder="' . JText::_($placeholder) . '"';
 
 		// Initialize JavaScript field attributes.
@@ -35,7 +36,7 @@ class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
 		}
 		
 
-		return '<input type="text" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
+		return '<input type="text" name="' . $name . '" id="' . $this->id . '"' . ' value="'
 			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"' . $filterclass . $size . $placeholder . $onchange . $maxLength . '/>';		
 	}
 	
