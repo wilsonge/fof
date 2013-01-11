@@ -73,21 +73,36 @@ class FOFViewForm extends FOFViewHtml
 		}
 		$viewTemplate = $this->loadAnyTemplate($path);
 		
+		// If there was no template file found, display the form
 		if($viewTemplate instanceof Exception) {
-			// No view template available, render form directly
-			$renderer = $this->getRenderer();
-			if($renderer instanceof FOFRenderAbstract) {
-				// Load CSS and Javascript files defined in the form
-				$this->form->loadCSSFiles();
-				$this->form->loadJSFiles();
-				// Get the form's HTML
-				$viewTemplate = $renderer->renderForm($this->form, $model, $this->input);
-			}
+			$viewTemplate = $this->getRenderedForm();
 		}
+		
 		// -- Output the view template
 		echo $viewTemplate;
 		// -- Output HTML after the view template
 		$this->postRender();
+	}
+	
+	/**
+	 * Returns the HTML rendering of the FOFForm attached to this view. Very
+	 * useful for customising a form page without having to meticulously hand-
+	 * code the entire form.
+	 * 
+	 * @return  string  The HTML of the rendered form
+	 */
+	public function getRenderedForm()
+	{
+		$html = '';
+		$renderer = $this->getRenderer();
+		if($renderer instanceof FOFRenderAbstract) {
+			// Load CSS and Javascript files defined in the form
+			$this->form->loadCSSFiles();
+			$this->form->loadJSFiles();
+			// Get the form's HTML
+			$html = $renderer->renderForm($this->form, $this->getModel(), $this->input);
+		}
+		return $html;
 	}
 	
 	protected function onAdd($tpl = null)
