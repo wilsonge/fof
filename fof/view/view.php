@@ -136,7 +136,7 @@ abstract class FOFView extends JViewLegacy
 		$throwErrorIfNotFound = true;
 
 		$jversion = new JVersion();
-		$versionParts = explode('.', $jversion->getLongVersion());
+		$versionParts = explode('.', $jversion->RELEASE);
 		$majorVersion = array_shift($versionParts);
 		$suffixes = array(
 			'.j'.str_replace('.', '', $jversion->getHelpVersion()),
