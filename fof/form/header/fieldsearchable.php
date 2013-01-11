@@ -24,6 +24,16 @@ class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
 		$placeholder = $this->element['placeholder'] ? $this->element['placeholder'] : $this->getLabel();
 		$name = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
 		$placeholder = 'placeholder="' . JText::_($placeholder) . '"';
+		
+		if($this->element['searchfieldname'])
+		{
+			$model = $this->form->getModel();
+			$searchvalue = $model->getState((string)$this->element['searchfieldname']);
+		}
+		else
+		{
+			$searchvalue = $this->value;
+		}
 
 		// Initialize JavaScript field attributes.
 		if ($this->element['onchange'])
@@ -37,7 +47,7 @@ class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
 		
 
 		return '<input type="text" name="' . $name . '" id="' . $this->id . '"' . ' value="'
-			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '"' . $filterclass . $size . $placeholder . $onchange . $maxLength . '/>';		
+			. htmlspecialchars($searchvalue, ENT_COMPAT, 'UTF-8') . '"' . $filterclass . $size . $placeholder . $onchange . $maxLength . '/>';		
 	}
 	
 	protected function getButtons() {
