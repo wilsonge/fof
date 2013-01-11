@@ -1,0 +1,31 @@
+/**
+ * Akeeba Strapper
+ * A handy distribution of namespaced jQuery, jQuery UI and Twitter
+ * Bootstrapper for use with Akeeba components.
+ *
+ * This file includes only Joomla! 3.0-specific style overrides
+ */
+
+/*
+ * Bootstrap (namespaced)
+ */
+div.akeeba-bootstrap
+{
+	// Core variables and mixins
+	@import "bootstrap/variables.less"; // Modify this for custom colors, font-sizes, etc
+	@import "bootstrap/mixins.less";
+	
+	// Components: common
+	@import "bootstrap/sprites.less";
+}
+
+// Popovers must not be namespaced
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+@import "bootstrap/popovers";
+
+/*
+ * Akeeba Strapper overrides
+ */
+@import "strapper.less";
+@import "strapper.j30.less";

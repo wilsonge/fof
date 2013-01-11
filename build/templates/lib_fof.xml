@@ -14,34 +14,25 @@
 	<packagerurl>https://www.AkeebaBackup.com</packagerurl>
 	<scriptfile>script.fof.php</scriptfile>
 	<files folder="fof">
+		<folder>controller</folder>
+		<folder>dispatcher</folder>
 		<folder>encrypt</folder>
+		<folder>form</folder>
+		<folder>inflector</folder>
+		<folder>input</folder>
+		<folder>less</folder>
+		<folder>model</folder>
+		<folder>query</folder>
+		<folder>render</folder>
+		<folder>string</folder>
+		<folder>table</folder>
+		<folder>template</folder>
+		<folder>toolbar</folder>
+		<folder>view</folder>
 
 		<file>LICENSE.txt</file>
-		<file>version.txt</file>
-		<file>index.html</file>
-		<file>controller.php</file>
-		<file>dispatcher.php</file>
 		<file>include.php</file>
-		<file>inflector.php</file>
-		<file>input.php</file>
-		<file>model.php</file>
-		<file>query.abstract.php</file>
-		<file>query.element.php</file>
-		<file>query.mysql.php</file>
-		<file>query.mysqli.php</file>
-		<file>query.sqlazure.php</file>
-		<file>query.sqlsrv.php</file>
-		<file>render.abstract.php</file>
-		<file>render.joomla.php</file>
-		<file>render.joomla3.php</file>
-		<file>render.strapper.php</file>
-		<file>string.utils.php</file>
-		<file>table.php</file>
-		<file>template.utils.php</file>
-		<file>toolbar.php</file>
-		<file>view.csv.php</file>
-		<file>view.html.php</file>
-		<file>view.json.php</file>
-		<file>view.php</file>
+		<file>index.html</file>
+		<file>version.txt</file>
 	</files>
 </extension>

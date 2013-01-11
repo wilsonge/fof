@@ -8,3 +8,4 @@ release/*.zip
 .settings/
 .project
 /fof/lib_fof.xml
+tests/unit/config.php
