@@ -322,7 +322,7 @@ ENDJS;
 						$label = $headerField->label;
 						
 						JHtmlSidebar::addFilter(
-							'- ' . $label . ' -',
+							'- ' . JText::_($label) . ' -',
 							(string)$headerField->name,
 							JHtml::_('select.options', $options, 'value', 'text', $form->getModel()->getState($headerField->name, ''), true)
 						);
@@ -343,7 +343,7 @@ ENDJS;
 					elseif (!empty($options))
 					{
 						$label = $headerField->label;
-						$emptyOption = JHtml::_('select.option', '',JText::_('- ' . $label . ' -'));
+						$emptyOption = JHtml::_('select.option', '','- ' . JText::_($label) . ' -');
 						array_unshift($options, $emptyOption);
 						$attribs = array(
 							'onchange'	=> 'document.adminForm.submit();'

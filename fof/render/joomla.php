@@ -144,7 +144,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				elseif (!empty($options))
 				{
 					$label = $header->label;
-					$emptyOption = JHtml::_('select.option', '',JText::_('- ' . $label . ' -'));
+					$emptyOption = JHtml::_('select.option', '','- ' . JText::_($label) . ' -');
 					array_unshift($options, $emptyOption);
 					$attribs = array(
 						'onchange'	=> 'document.adminForm.submit();'
