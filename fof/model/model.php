@@ -1455,6 +1455,7 @@ class FOFModel extends JModelLegacy
 		if (count($results) && in_array(false, $results, true))
 		{
 			// Get the last error.
+			$dispatcher = JDispatcher::getInstance();
 			$error = $dispatcher->getError();
 
 			if (!($error instanceof Exception))
