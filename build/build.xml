@@ -19,6 +19,7 @@
 
 	<taskdef name="zipme" classname="phingext.ZipmeTask" />
 	<taskdef name="gitversion" classname="phingext.GitVersionTask" />
+	<taskdef name="gitdate" classname="phingext.GitDateTask" />
 		
 	<!--
 	====================================================================================================
@@ -55,7 +56,9 @@
 			<equals arg1="${version}" arg2="dev" />
 			<then>
 				<gitversion workingcopy="${dirs.root}" propertyname="git.lastrevision" />
-				<property name="version" value="rev${git.lastrevision}" override="true" />
+				<gitdate workingcopy="${dirs.root}" propertyname="git.timestamp" />
+				<!--<property name="version" value="rev${git.lastrevision}" override="true" />-->
+				<property name="version" value="rev${git.lastrevision}-${git.timestamp}" override="true" />
 			</then>
 		</if>
 	</target>
