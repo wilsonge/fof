@@ -1305,6 +1305,11 @@ class FOFModel extends JModelLegacy
 		FOFForm::addFieldPath($alt_file_root . '/fields');
 		FOFForm::addFieldPath($alt_file_root . '/models/fields');
 
+		FOFForm::addHeaderPath($file_root . '/fields/header');
+		FOFForm::addHeaderPath($file_root . '/models/fields/header');
+		FOFForm::addHeaderPath($alt_file_root . '/fields/header');
+		FOFForm::addHeaderPath($alt_file_root . '/models/fields/header');
+
 		// Get the form.
 		try
 		{

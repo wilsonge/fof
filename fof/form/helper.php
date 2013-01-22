@@ -203,4 +203,16 @@ class FOFFormHelper extends JFormHelper
 			return false;
 		}
 	}
+	
+	/**
+	 * Method to add a path to the list of header include paths.
+	 *
+	 * @param   mixed  $new  A path or array of paths to add.
+	 *
+	 * @return  array  The list of paths that have been added.
+	 */
+	public static function addHeaderPath($new = null)
+	{
+		return self::addPath('header', $new);
+	}	
 }

@@ -543,6 +543,20 @@ class FOFForm extends JForm
 	}
 
 	/**
+	 * Proxy for {@link FOFFormHelper::addHeaderPath()}.
+	 *
+	 * @param   mixed  $new  A path or array of paths to add.
+	 *
+	 * @return  array  The list of paths that have been added.
+	 *
+	 * @since   2.0
+	 */
+	public static function addHeaderPath($new = null)
+	{
+		return FOFFormHelper::addHeaderPath($new);
+	}
+
+	/**
 	 * Proxy for FOFFormHelper::addFormPath().
 	 *
 	 * @param   mixed  $new  A path or array of paths to add.
