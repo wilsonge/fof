@@ -57,6 +57,19 @@ class FOFFormFieldLanguage extends JFormFieldLanguage implements FOFFormField
 		}
 	}
 	
+	protected function getOptions()
+	{
+		$options = parent::getOptions();
+		
+		$noneoption = $this->element['none'] ? $this->element['none'] : null;
+		if ($noneoption)
+		{
+			array_unshift($options, JHtml::_('select.option', '*', JText::_($noneoption)));
+		}
+
+		return $options;
+	}
+	
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
