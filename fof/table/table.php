@@ -528,7 +528,7 @@ class FOFTable extends JTable
 
 			if ($checkin){
 				// We're using the checkin and the record is used by someone else
-				if(!$this->isCheckedOut($item)) continue;
+				if($this->isCheckedOut($item)) continue;
 			}
 
 			if(!$this->onBeforeCopy($item)) continue;
