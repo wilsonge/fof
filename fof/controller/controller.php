@@ -435,7 +435,10 @@ class FOFController extends JControllerLegacy
 			$formname = 'form.' . $this->layout;
 		}
 		$model->setState('form_name', $formname);
-		$form = $model->getForm($model->getItem()->getData());
+		
+		$item = $model->getItem();
+		$formData = is_object($item) ? $item->getData() : array();
+		$form = $model->getForm($formData);
 		if($form !== false) {
 			$this->hasForm = true;
 		}
@@ -458,7 +461,10 @@ class FOFController extends JControllerLegacy
 
 		// Do I have a form?
 		$model->setState('form_name', 'form.'.$this->layout);
-		$form = $model->getForm($model->getItem()->getData());
+		
+		$item = $model->getItem();
+		$formData = is_object($item) ? $item->getData() : array();
+		$form = $model->getForm($formData);
 		if($form !== false) {
 			$this->hasForm = true;
 		}
@@ -481,7 +487,10 @@ class FOFController extends JControllerLegacy
 
 		// Do I have a form?
 		$model->setState('form_name', 'form.'.$this->layout);
-		$form = $model->getForm($model->getItem()->getData());
+		
+		$item = $model->getItem();
+		$formData = is_object($item) ? $item->getData() : array();
+		$form = $model->getForm($formData);
 		if($form !== false) {
 			$this->hasForm = true;
 		}
@@ -514,7 +523,10 @@ class FOFController extends JControllerLegacy
 		
 		// Do I have a form?
 		$model->setState('form_name', 'form.'.$this->layout);
-		$form = $model->getForm($model->getItem()->getData());
+		
+		$item = $model->getItem();
+		$formData = is_object($item) ? $item->getData() : array();
+		$form = $model->getForm($formData);
 		if($form !== false) {
 			$this->hasForm = true;
 		}
