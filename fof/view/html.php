@@ -88,9 +88,15 @@ class FOFViewHtml extends FOFView
 		$toolbar->renderToolbar($this->input->getCmd('view','cpanel'), $task, $this->input);
 
 		// Show the view
-		$this->preRender();
+		if ($this->doPreRender)
+		{
+			$this->preRender();
+		}
 		parent::display($tpl);
-		$this->postRender();
+		if ($this->doPostRender)
+		{
+			$this->postRender();
+		}
 	}
 	
 	/**

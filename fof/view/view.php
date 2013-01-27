@@ -26,6 +26,10 @@ abstract class FOFView extends JViewLegacy
 	protected $input = array();
 
 	protected $rendererObject = null;
+	
+	protected $dpPreRender = true;
+	
+	protected $doPostRender = true;
 
 	public function  __construct($config = array()) {
 		parent::__construct($config);
@@ -411,6 +415,16 @@ abstract class FOFView extends JViewLegacy
 	public static function registerRenderer(FOFRenderAbstract &$renderer)
 	{
 		self::$renderers[] = $renderer;
+	}
+	
+	public function setPreRender($value)
+	{
+		$this->doPreRender = $value;
+	}
+	
+	public function setPostRender($value)
+	{
+		$this->doPostRender = $value;
 	}
 	
 	/**
