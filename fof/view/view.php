@@ -27,7 +27,7 @@ abstract class FOFView extends JViewLegacy
 
 	protected $rendererObject = null;
 	
-	protected $dpPreRender = true;
+	protected $doPreRender = true;
 	
 	protected $doPostRender = true;
 
