@@ -78,7 +78,17 @@ class FOFTemplateUtils
 		// No point continuing if the source file is not there or we can't write to the cache
 		if (!$sanityCheck || !JFile::exists($localFile))
 		{
-			self::addCSS($altPath);
+			if (is_string($altPath))
+			{
+				self::addCSS($altPath);
+			}
+			elseif(is_array($altPath))
+			{
+				foreach($altPath as $anAltPath)
+				{
+					self::addCSS($anAltPath);
+				}
+			}
 			return false;
 		}
 
