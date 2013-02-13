@@ -11,12 +11,17 @@
  */
 div.akeeba-bootstrap
 {
-	// Core variables and mixins
-	@import "bootstrap/variables.less"; // Modify this for custom colors, font-sizes, etc
-	@import "bootstrap/mixins.less";
-	
-	// Components: common
-	@import "bootstrap/sprites.less";
+	/**
+	 * If your template already includes Bootstrap CSS styling please comment
+	 * out this line and uncomment the include below.
+     */
+	@import "bootstrap.full.less";
+
+	/**
+	 * If your template already includes Bootstrap CSS styling please uncomment
+	 * out this line and comment out the include above.
+     */
+	// @import "bootstrap.minimal.less";
 }
 
 // Popovers must not be namespaced

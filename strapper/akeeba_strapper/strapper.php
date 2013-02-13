@@ -30,6 +30,9 @@ class AkeebaStrapper {
  	/** @var array List of URLs to CSS files */
  	public static $cssURLs = array();
  	
+	/** @var array List of URLs to LESS files */
+ 	public static $lessURLs = array();
+ 	
  	/** @var array List of CSS definitions to include in the head */
  	public static $cssDefs = array();
  	
@@ -142,15 +145,20 @@ ENDSCRIPT;
  		if(!self::$_includedJQuery) {
  			self::jQuery();
  		}
- 	
-		if(version_compare(JVERSION, '3.0', 'lt')) {
-			self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
-			self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.min.css');
-		} else {
-			self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/bootstrap.j3.css');
-		}
 		
-		self::$cssURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/css/strapper.css');
+		self::$_includedBootstrap = true;
+ 	
+		$altCss = array('media://akeeba_strapper/css/strapper.css');
+		if(version_compare(JVERSION, '3.0', 'lt'))
+		{
+			array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
+			self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
+			self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j25.less', $altCss);
+		} else {
+			JHtml::_('bootstrap.framework'); // Use Joomla!'s Javascript
+			array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.j3.css');
+			self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j30.less', $altCss);
+		}
  	}
  	
  	/**
@@ -184,6 +192,17 @@ ENDSCRIPT;
  	}
  	
 	/**
+	 * Adds an arbitraty LESS file.
+	 *
+	 * @param $path string The path to the file, in the format media://path/to/file
+	 * @param $altPaths string|array The path to the alternate CSS files, in the format media://path/to/file
+	 */
+ 	public static function addLESSfile($path, $altPaths = null)
+ 	{
+ 		self::$lessURLs[] = array($path, $altPaths);
+ 	}
+ 	
+	/**
 	 * Add inline CSS
 	 *
 	 * @param $style string Raw inline CSS
@@ -212,7 +231,8 @@ ENDSCRIPT;
 		empty(AkeebaStrapper::$scriptURLs) &&
 		empty(AkeebaStrapper::$scriptDefs) &&
 		empty(AkeebaStrapper::$cssDefs) &&
-		empty(AkeebaStrapper::$cssURLs)
+		empty(AkeebaStrapper::$cssURLs) &&
+		empty(AkeebaStrapper::$lessURLs)
 	) {
 		return;
 	}
@@ -231,6 +251,7 @@ ENDSCRIPT;
 		$buffer = JResponse::getBody();
 	}
 	
+	// Include Javascript files
  	if(!empty(AkeebaStrapper::$scriptURLs)) foreach(AkeebaStrapper::$scriptURLs as $url)
  	{
 		if(AkeebaStrapper::$preloadOnOldJoomla && (basename($url) == 'bootstrap.min.js')) {
@@ -256,6 +277,7 @@ ENDSCRIPT;
 		}
  	}
  	
+	// Include Javscript snippets
  	if(!empty(AkeebaStrapper::$scriptDefs))
  	{
 		if(version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla) {
@@ -274,6 +296,60 @@ ENDSCRIPT;
 		}
  	}
 	
+	// Include LESS files
+ 	if(!empty(AkeebaStrapper::$lessURLs))
+	{
+		foreach(AkeebaStrapper::$lessURLs as $entry)
+		{
+			list($lessFile, $altFiles) = $entry;
+			
+			$url = FOFTemplateUtils::addLESS($lessFile, $altFiles, true);
+			
+			if(version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla) {
+				if(empty($url))
+				{
+					if (!is_array($altFiles) && empty($altFiles))
+					{
+						$altFiles = array($altFiles);
+					}
+					if (!empty($altFiles))
+					{
+						foreach($altFiles as $altFile)
+						{
+							$url = FOFTemplateUtils::parsePath($altFile);
+							$myscripts .= '<link type="text/css" rel="stylesheet" href="'.$url.$tag.'" />'."\n";
+						}
+					}
+				}
+				else
+				{
+					$myscripts .= '<link type="text/css" rel="stylesheet" href="'.$url.$tag.'" />'."\n";
+				}
+			} else {
+				if(empty($url))
+				{
+					if (!is_array($altFiles) && empty($altFiles))
+					{
+						$altFiles = array($altFiles);
+					}
+					if (!empty($altFiles))
+					{
+						foreach($altFiles as $altFile)
+						{
+							$url = FOFTemplateUtils::parsePath($altFile);
+							JFactory::getDocument()->addStyleSheet($url.$tag);
+						}
+					}
+				}
+				else
+				{
+					JFactory::getDocument()->addStyleSheet($url.$tag);
+				}
+			}
+		}
+	}
+ 	
+	// Include CSS files
  	if(!empty(AkeebaStrapper::$cssURLs)) foreach(AkeebaStrapper::$cssURLs as $url)
  	{
 		if(version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla) {
@@ -283,6 +359,7 @@ ENDSCRIPT;
 		}
  	}
  	
+	// Include style definitions
  	if(!empty(AkeebaStrapper::$cssDefs))
  	{
  		$myscripts .= '<style type="text/css">'."\n";
