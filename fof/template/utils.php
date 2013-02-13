@@ -42,8 +42,9 @@ class FOFTemplateUtils
 	 * written to the media/lib_fof/compiled directory of your site. If the file
 	 * cannot be written we will use the $altPath, if specified
 	 * 
-	 * @param   string  $path     A fancy path definition understood by parsePath pointing to the source LESS file
-	 * @param   string  $altPath  A fancy path definition understood by parsePath pointing to a precompiled CSS file, used when we can't write the generated file to the output directory
+	 * @param   string  $path        A fancy path definition understood by parsePath pointing to the source LESS file
+	 * @param   string  $altPath     A fancy path definition understood by parsePath pointing to a precompiled CSS file, used when we can't write the generated file to the output directory
+	 * @param   boolean $returnPath  Return the URL of the generated CSS file but do not include it. If it can't be generated, false is returned and the alt files are not included
 	 * 
 	 * @return  mixed  True = successfully included generated CSS, False = the alternate CSS file was used, null = the source file does not exist
 	 * 
@@ -51,7 +52,7 @@ class FOFTemplateUtils
 	 * 
 	 * @since 2.0
 	 */
-	public static function addLESS($path, $altPath = null)
+	public static function addLESS($path, $altPath = null, $returnPath = false)
 	{
 		// Does the cache directory exists and is writeable
 		static $sanityCheck = null;
@@ -78,17 +79,21 @@ class FOFTemplateUtils
 		// No point continuing if the source file is not there or we can't write to the cache
 		if (!$sanityCheck || !JFile::exists($localFile))
 		{
-			if (is_string($altPath))
+			if (!$returnPath)
 			{
-				self::addCSS($altPath);
-			}
-			elseif(is_array($altPath))
-			{
-				foreach($altPath as $anAltPath)
+				if (is_string($altPath))
 				{
-					self::addCSS($anAltPath);
+					self::addCSS($altPath);
+				}
+				elseif(is_array($altPath))
+				{
+					foreach($altPath as $anAltPath)
+					{
+						self::addCSS($anAltPath);
+					}
 				}
 			}
+
 			return false;
 		}
 
@@ -130,9 +135,17 @@ class FOFTemplateUtils
 			$base_url = substr($base_url, 0, -14);
 		}
 		$url = $base_url . '/media/lib_fof/compiled/' . $id . '.css';
-		JFactory::getDocument()->addStyleSheet($url);
 		
-		return true;
+		if($returnPath)
+		{
+			return $url;
+		}
+		else
+		{
+			JFactory::getDocument()->addStyleSheet($url);
+			return true;
+		}
+			
 	}
 	
 	/**
