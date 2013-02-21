@@ -3,6 +3,9 @@
  * Akeeba Strapper
  * A handy distribution of namespaced jQuery, jQuery UI and Twitter
  * Bootstrapper for use with Akeeba components.
+ * 
+ * @copyright (c) 2012-2013 Akeeba Ltd
+ * @license GNU General Public License version 2 or later
  */
  
 defined('_JEXEC') or die();
