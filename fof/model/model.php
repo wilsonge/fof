@@ -15,6 +15,9 @@ jimport('legacy.model.legacy');
  * FrameworkOnFramework is a set of classes whcih extend Joomla! 1.5 and later's
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
+ *
+ * @package  FrameworkOnFramework.Model
+ * @since    1.0
  */
 class FOFModel extends JModelLegacy
 {
@@ -129,10 +132,11 @@ class FOFModel extends JModelLegacy
 	 * Returns a new model object. Unless overriden by the $config array, it will
 	 * try to automatically populate its state from the request variables.
 	 *
-	 * @param string $type
-	 * @param string $prefix
-	 * @param array $config
-	 * @return FOFModel
+	 * @param   string  $type    Model type, e.g. 'Items'
+	 * @param   string  $prefix  Model prefix, e.g. 'FoobarModel'
+	 * @param   array   $config  Model configuration variables
+	 *
+	 * @return  FOFModel
 	 */
 	public static function &getAnInstance($type, $prefix = '', $config = array())
 	{
@@ -165,8 +169,9 @@ class FOFModel extends JModelLegacy
 		}
 		else
 		{
-			$config['input'] = new FOFInput();
+			$config['input'] = new FOFInput;
 		}
+
 		if (empty($component))
 		{
 			$component = $config['input']->get('option', 'com_foobar');
@@ -174,13 +179,19 @@ class FOFModel extends JModelLegacy
 		$config['option'] = $component;
 
 		$needsAView = true;
+
 		if (array_key_exists('view', $config))
 		{
 			if (!empty($config['view']))
+			{
 				$needsAView = false;
+			}
 		}
+
 		if ($needsAView)
+		{
 			$config['view'] = strtolower($type);
+		}
 
 		$config['input']->set('option', $config['option']);
 		$config['input']->set('view', $config['view']);
@@ -198,6 +209,7 @@ class FOFModel extends JModelLegacy
 			}
 
 			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 			if ($isAdmin)
 			{
 				$extra_paths = array(
@@ -216,6 +228,7 @@ class FOFModel extends JModelLegacy
 
 			// Try to load the model file
 			jimport('joomla.filesystem.path');
+
 			if (interface_exists('JModel'))
 			{
 				$path = JPath::find(
@@ -228,6 +241,7 @@ class FOFModel extends JModelLegacy
 						$include_paths, JModel::_createFileName('model', array('name' => $type))
 				);
 			}
+
 			if ($path)
 			{
 				require_once $path;
@@ -238,6 +252,7 @@ class FOFModel extends JModelLegacy
 		if (!class_exists($modelClass))
 		{
 			$modelClass = $prefix . 'Default';
+
 			if (!class_exists($modelClass))
 			{
 				if (interface_exists('JModel'))
@@ -250,6 +265,7 @@ class FOFModel extends JModelLegacy
 				}
 
 				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 				if ($isAdmin)
 				{
 					$extra_paths = array(
@@ -268,6 +284,7 @@ class FOFModel extends JModelLegacy
 
 				// Try to load the model file
 				jimport('joomla.filesystem.path');
+
 				if (interface_exists('JModel'))
 				{
 					$path = JPath::find(
@@ -280,6 +297,7 @@ class FOFModel extends JModelLegacy
 							$include_paths, JModel::_createFileName('model', array('name' => 'default'))
 					);
 				}
+
 				if ($path)
 				{
 					require_once $path;
@@ -288,6 +306,7 @@ class FOFModel extends JModelLegacy
 		}
 
 		// Fallback to the generic FOFModel model class
+
 		if (!class_exists($modelClass))
 		{
 			$modelClass = 'FOFModel';
@@ -301,9 +320,10 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Returns a new instance of a model, with the state reset to defaults
 	 *
-	 * @param string $type
-	 * @param string $prefix
-	 * @param array $config
+	 * @param   string  $type    Model type, e.g. 'Items'
+	 * @param   string  $prefix  Model prefix, e.g. 'FoobarModel'
+	 * @param   array   $config  Model configuration variables
+	 *
 	 * @return FOFModel
 	 */
 	public static function &getTmpInstance($type, $prefix = '', $config = array())
@@ -316,13 +336,14 @@ class FOFModel extends JModelLegacy
 			->limitstart(0)
 			->limit(0)
 			->savestate(0);
+
 		return $ret;
 	}
 
 	/**
 	 * Public class constructor
 	 *
-	 * @param type $config
+	 * @param   type  $config  The configuration array
 	 */
 	public function __construct($config = array())
 	{
@@ -342,28 +363,38 @@ class FOFModel extends JModelLegacy
 		}
 		else
 		{
-			$this->input = new FOFInput();
+			$this->input = new FOFInput;
 		}
 
 		// Set the $name/$_name variable
 		$component = $this->input->getCmd('option', 'com_foobar');
+
 		if (array_key_exists('option', $config))
+		{
 			$component = $config['option'];
+		}
+
 		$this->input->set('option', $component);
 		$name = str_replace('com_', '', strtolower($component));
+
 		if (array_key_exists('name', $config))
+		{
 			$name = $config['name'];
+		}
+
 		$this->name = $name;
 		$this->option = $component;
 
 		// Get the view name
 		$className = get_class($this);
+
 		if ($className == 'FOFModel')
 		{
 			if (array_key_exists('view', $config))
 			{
 				$view = $config['view'];
 			}
+
 			if (empty($view))
 			{
 				$view = $this->input->getCmd('view', 'cpanel');
@@ -376,6 +407,7 @@ class FOFModel extends JModelLegacy
 		}
 
 		// Assign the correct table
+
 		if (array_key_exists('table', $config))
 		{
 			$this->table = $config['table'];
@@ -388,6 +420,7 @@ class FOFModel extends JModelLegacy
 		// Get and store the pagination request variables
 		$this->populateSavesate();
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 		if ($isCLI)
 		{
 			$limit = 20;
@@ -396,6 +429,7 @@ class FOFModel extends JModelLegacy
 		else
 		{
 			$app = JFactory::getApplication();
+
 			if (method_exists($app, 'getCfg'))
 			{
 				$default_limit = $app->getCfg('list_limit');
@@ -412,6 +446,7 @@ class FOFModel extends JModelLegacy
 		$this->setState('limitstart', $limitstart);
 
 		// Get the ID or list of IDs from the request or the configuration
+
 		if (array_key_exists('cid', $config))
 		{
 			$cid = $config['cid'];
@@ -420,6 +455,7 @@ class FOFModel extends JModelLegacy
 		{
 			$cid = $this->input->get('cid', array(), 'array');
 		}
+
 		if (array_key_exists('id', $config))
 		{
 			$id = $config['id'];
@@ -443,18 +479,22 @@ class FOFModel extends JModelLegacy
 		{
 			$this->event_after_delete = $config['event_after_delete'];
 		}
+
 		if (isset($config['event_after_save']))
 		{
 			$this->event_after_save = $config['event_after_save'];
 		}
+
 		if (isset($config['event_before_delete']))
 		{
 			$this->event_before_delete = $config['event_before_delete'];
 		}
+
 		if (isset($config['event_before_save']))
 		{
 			$this->event_before_save = $config['event_before_save'];
 		}
+
 		if (isset($config['event_change_state']))
 		{
 			$this->event_change_state = $config['event_change_state'];
@@ -463,6 +503,8 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Sets the list of IDs from the request data
+	 *
+	 * @return FOFModel
 	 */
 	public function setIDsFromRequest()
 	{
@@ -492,7 +534,8 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Sets the ID and resets internal data
-	 * @param int $id The ID to use
+	 *
+	 * @param   integer  $id  The ID to use
 	 *
 	 * @return FOFModel
 	 */
@@ -501,12 +544,14 @@ class FOFModel extends JModelLegacy
 		$this->reset();
 		$this->id = (int) $id;
 		$this->id_list = array($this->id);
+
 		return $this;
 	}
 
 	/**
 	 * Returns the currently set ID
-	 * @return int
+	 *
+	 * @return  integer
 	 */
 	public function getId()
 	{
@@ -516,13 +561,16 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Sets a list of IDs for batch operations from an array and resets the model
 	 *
-	 * @return FOFModel
+	 * @param   array  $idlist  An array of item IDs to be set to the model's state
+	 *
+	 * @return  FOFModel
 	 */
 	public function setIds($idlist)
 	{
 		$this->reset();
 		$this->id_list = array();
 		$this->id = 0;
+
 		if (is_array($idlist) && !empty($idlist))
 		{
 			foreach ($idlist as $value)
@@ -531,12 +579,14 @@ class FOFModel extends JModelLegacy
 			}
 			$this->id = $this->id_list[0];
 		}
+
 		return $this;
 	}
 
 	/**
 	 * Returns the list of IDs for batch operations
-	 * @return array An array of integers
+	 *
+	 * @return  array  An array of integers
 	 */
 	public function getIds()
 	{
@@ -546,7 +596,7 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Resets the model, like it was freshly loaded
 	 *
-	 * @return FOFModel
+	 * @return  FOFModel
 	 */
 	public function reset()
 	{
@@ -566,11 +616,11 @@ class FOFModel extends JModelLegacy
 	 * record tables or record id variables. To clear these values, please use
 	 * reset().
 	 *
-	 * @return FOFModel
+	 * @return  FOFModel
 	 */
 	public function clearState()
 	{
-		$this->state = new JObject();
+		$this->state = new JObject;
 
 		return $this;
 	}
@@ -578,7 +628,7 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Clears the input array.
 	 *
-	 * @return FOFModel
+	 * @return  FOFModel
 	 */
 	public function clearInput()
 	{
@@ -590,7 +640,7 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Resets the saved state for this view
 	 *
-	 * @return FOFModel
+	 * @return  FOFModel
 	 */
 	public function resetSavedState()
 	{
@@ -603,9 +653,9 @@ class FOFModel extends JModelLegacy
 	 * Returns a single item. It uses the id set with setId, or the first ID in
 	 * the list of IDs for batch operations
 	 *
-	 * @param int|null $id Force a primary key ID to the model
+	 * @param   integer  $id  Force a primary key ID to the model. Use null to use the id from the state.
 	 *
-	 * @return FOFTable A copy of the item's JTable array
+	 * @return  FOFTable  A copy of the item's FOFTable array
 	 */
 	public function &getItem($id = null)
 	{
@@ -624,14 +674,20 @@ class FOFModel extends JModelLegacy
 			// Do we have saved data?
 			$session = JFactory::getSession();
 			$serialized = $session->get($this->getHash() . 'savedata', null);
+
 			if (!empty($serialized))
 			{
 				$data = @unserialize($serialized);
+
 				if ($data !== false)
 				{
 					$k = $table->getKeyName();
+
 					if (!array_key_exists($k, $data))
+					{
 						$data[$k] = null;
+					}
+
 					if ($data[$k] != $this->id)
 					{
 						$session->set($this->getHash() . 'savedata', null);
@@ -651,7 +707,11 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Alias for getItemList
-	 * @return array
+	 *
+	 * @param   boolean  $overrideLimits  Should I override set limits?
+	 * @param   string   $group           The group by clause
+	 *
+	 * @return  array
 	 */
 	public function &getList($overrideLimits = false, $group = '')
 	{
@@ -660,14 +720,18 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Returns a list of items
-	 * @param bool $overrideLimits When true, the limits (pagination) will be ignored
-	 * @return array
+	 *
+	 * @param   boolean  $overrideLimits  Should I override set limits?
+	 * @param   string   $group           The group by clause
+	 *
+	 * @return  array
 	 */
 	public function &getItemList($overrideLimits = false, $group = '')
 	{
 		if (empty($this->list))
 		{
 			$query = $this->buildQuery($overrideLimits);
+
 			if (!$overrideLimits)
 			{
 				$limitstart = $this->getState('limitstart');
@@ -689,14 +753,16 @@ class FOFModel extends JModelLegacy
 	 * objects, it binds the data from the first item fetched on the list to an
 	 * instance of the table object and returns that table object instead.
 	 *
-	 * @param bool $overrideLimits
-	 * @return FOFTable
+	 * @param   boolean  $overrideLimits  Should I override set limits?
+	 *
+	 * @return  FOFTable
 	 */
 	public function &getFirstItem($overrideLimits = false)
 	{
 		$table = $this->getTable($this->table);
 
 		$list = $this->getItemList($overrideLimits);
+
 		if (!empty($list))
 		{
 			$firstItem = array_shift($list);
@@ -709,8 +775,10 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Binds the data to the model and tries to save it
-	 * @param array|object $data The source data array or object
-	 * @return bool True on success
+	 *
+	 * @param   array|object  $data  The source data array or object
+	 *
+	 * @return  boolean  True on success
 	 */
 	public function save($data)
 	{
@@ -719,9 +787,12 @@ class FOFModel extends JModelLegacy
 		$table = $this->getTable($this->table);
 
 		if (is_object($data))
+		{
 			$data = clone($data);
+		}
 
 		$key = $table->getKeyName();
+
 		if (array_key_exists($key, (array) $data))
 		{
 			$aData = (array) $data;
@@ -737,13 +808,20 @@ class FOFModel extends JModelLegacy
 		if (!$table->save($data))
 		{
 			foreach ($table->getErrors() as $error)
+			{
 				if (!empty($error))
+				{
 					$this->setError($error);
 			JFactory::getSession()->set($this->getHash() . 'savedata', serialize($table->getProperties(true)));
+				}
+			}
+
 			return false;
-		} else
+		}
+		else
 		{
 			$this->id = $table->$key;
+
 			// Remove the session data
 			JFactory::getSession()->set($this->getHash() . 'savedata', null);
 		}
@@ -751,11 +829,14 @@ class FOFModel extends JModelLegacy
 		$this->onAfterSave($table);
 
 		$this->otable = $table;
+
 		return true;
 	}
 
 	/**
 	 * Copy one or more records
+	 *
+	 * @return  boolean  True on success
 	 */
 	public function copy()
 	{
@@ -765,11 +846,14 @@ class FOFModel extends JModelLegacy
 			$table = $this->getTable($this->table);
 
 			if (!$this->onBeforeCopy($table))
+			{
 				return false;
+			}
 
 			if (!$table->copy($this->id_list))
 			{
 				$this->setError($table->getError());
+
 				return false;
 			}
 			else
@@ -777,15 +861,17 @@ class FOFModel extends JModelLegacy
 				// Call our internal event
 				$this->onAfterCopy($table);
 
-				//@TODO Should we fire the content plugin?
+				// @todo Should we fire the content plugin?
 			}
 		}
+
 		return true;
 	}
 
 	/**
 	 * Returns the table object after the last save() operation
-	 * @return JTable
+	 *
+	 * @return  FOFTable
 	 */
 	public function getSavedTable()
 	{
@@ -794,21 +880,26 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Deletes one or several items
-	 * @return bool
+	 *
+	 * @return  boolean True on success
 	 */
 	public function delete()
 	{
 		if (is_array($this->id_list) && !empty($this->id_list))
 		{
 			$table = $this->getTable($this->table);
+
 			foreach ($this->id_list as $id)
 			{
 				if (!$this->onBeforeDelete($id, $table))
+				{
 					continue;
+				}
 
 				if (!$table->delete($id))
 				{
 					$this->setError($table->getError());
+
 					return false;
 				}
 				else
@@ -817,14 +908,17 @@ class FOFModel extends JModelLegacy
 				}
 			}
 		}
+
 		return true;
 	}
 
 	/**
 	 * Toggles the published state of one or several items
-	 * @param int $publish The publishing state to set (e.g. 0 is unpublished)
-	 * @param int $user The user ID performing this action
-	 * @return bool
+	 *
+	 * @param   integer  $publish  The publishing state to set (e.g. 0 is unpublished)
+	 * @param   integer  $user     The user ID performing this action
+	 *
+	 * @return  boolean True on success
 	 */
 	public function publish($publish = 1, $user = null)
 	{
@@ -838,11 +932,14 @@ class FOFModel extends JModelLegacy
 			$table = $this->getTable($this->table);
 
 			if (!$this->onBeforePublish($table))
+			{
 				return false;
+			}
 
 			if (!$table->publish($this->id_list, $publish, $user))
 			{
 				$this->setError($table->getError());
+
 				return false;
 			}
 			else
@@ -858,58 +955,80 @@ class FOFModel extends JModelLegacy
 				$result = $dispatcher->trigger($this->event_change_state, array($context, $this->id_list, $publish));
 			}
 		}
+
 		return true;
 	}
 
 	/**
 	 * Checks out the current item
-	 * @return bool
+	 *
+	 * @return  boolean
 	 */
 	public function checkout()
 	{
 		$table = $this->getTable($this->table);
 		$status = $table->checkout(JFactory::getUser()->id, $this->id);
+
 		if (!$status)
+		{
 			$this->setError($table->getError());
+		}
+
 		return $status;
 	}
 
 	/**
 	 * Checks in the current item
-	 * @return bool
+	 *
+	 * @return  boolean
 	 */
 	public function checkin()
 	{
 		$table = $this->getTable($this->table);
 		$status = $table->checkin($this->id);
+
 		if (!$status)
+		{
 			$this->setError($table->getError());
+		}
+
 		return $status;
 	}
 
 	/**
 	 * Tells you if the current item is checked out or not
-	 * @return bool
+	 *
+	 * @return  boolean
 	 */
 	public function isCheckedOut()
 	{
 		$table = $this->getTable($this->table);
 		$status = $table->isCheckedOut($this->id);
+
 		if (!$status)
+		{
 			$this->setError($table->getError());
+		}
+
 		return $status;
 	}
 
 	/**
 	 * Increments the hit counter
-	 * @return bool
+	 *
+	 * @return  boolean
 	 */
 	public function hit()
 	{
 		$table = $this->getTable($this->table);
+
 		if (!$this->onBeforeHit($table))
+		{
 			return false;
+		}
+
 		$status = $table->hit($this->id);
+
 		if (!$status)
 		{
 			$this->setError($table->getError());
@@ -918,13 +1037,16 @@ class FOFModel extends JModelLegacy
 		{
 			$this->onAfterHit($table);
 		}
+
 		return $status;
 	}
 
 	/**
 	 * Moves the current item up or down in the ordering list
-	 * @param <type> $dirn
-	 * @return bool
+	 *
+	 * @param   string  $dirn  The direction and magnitude to use (2 means move up by 2 positions, -3 means move down three positions)
+	 *
+	 * @return  boolean  True on success
 	 */
 	public function move($dirn)
 	{
@@ -932,15 +1054,24 @@ class FOFModel extends JModelLegacy
 
 		$id = $this->getId();
 		$status = $table->load($id);
+
 		if (!$status)
+		{
 			$this->setError($table->getError());
+		}
+
 		if (!$status)
+		{
 			return false;
+		}
 
 		if (!$this->onBeforeMove($table))
+		{
 			return false;
+		}
 
 		$status = $table->move($dirn);
+
 		if (!$status)
 		{
 			$this->setError($table->getError());
@@ -955,14 +1086,20 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Reorders all items in the table
-	 * @return bool
+	 *
+	 * @return  boolean
 	 */
 	public function reorder()
 	{
 		$table = $this->getTable($this->table);
+
 		if (!$this->onBeforeReorder($table))
+		{
 			return false;
+		}
+
 		$status = $table->reorder($this->getReorderWhere());
+
 		if (!$status)
 		{
 			$this->setError($table->getError());
@@ -970,17 +1107,18 @@ class FOFModel extends JModelLegacy
 		else
 		{
 			if (!$this->onAfterReorder($table))
+			{
 				return false;
+			}
 		}
+
 		return $status;
 	}
 
 	/**
 	 * Get a pagination object
 	 *
-	 * @access public
-	 * @return JPagination
-	 *
+	 * @return  JPagination
 	 */
 	public function getPagination()
 	{
@@ -1004,14 +1142,14 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Get the number of all items
 	 *
-	 * @access public
-	 * @return integer
+	 * @return  integer
 	 */
 	public function getTotal()
 	{
 		if (empty($this->total))
 		{
 			$query = $this->buildCountQuery();
+
 			if ($query === false)
 			{
 				$sql = (string) $this->buildQuery(false);
@@ -1031,10 +1169,12 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Get a filtered state variable
-	 * @param string $key
-	 * @param mixed $default
-	 * @param string $filter_type
-	 * @return mixed
+	 *
+	 * @param   string  $key          The name of the state variable
+	 * @param   mixed   $default      The default value to use
+	 * @param   string  $filter_type  Filter type
+	 *
+	 * @return  mixed  The variable's value
 	 */
 	public function getState($key = null, $default = null, $filter_type = 'raw')
 	{
@@ -1045,9 +1185,11 @@ class FOFModel extends JModelLegacy
 
 		// Get the savestate status
 		$value = parent::getState($key);
+
 		if (is_null($value))
 		{
 			$value = $this->getUserStateFromRequest($this->getHash() . $key, $key, $value, 'none', $this->_savestate);
+
 			if (is_null($value))
 			{
 				return $default;
@@ -1061,36 +1203,49 @@ class FOFModel extends JModelLegacy
 		else
 		{
 			jimport('joomla.filter.filterinput');
-			$filter = new JFilterInput();
+			$filter = new JFilterInput;
+
 			return $filter->clean($value, $filter_type);
 		}
 	}
 
+	/**
+	 * Returns a hash for this component and view, e.g. "foobar.items.", used
+	 * for determining the keys of the variables which will be placed in the
+	 * session storage.
+	 *
+	 * @return  string  The hash
+	 */
 	public function getHash()
 	{
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view = FOFInflector::pluralize($this->input->getCmd('view', 'cpanel'));
+
 		return "$option.$view.";
 	}
 
 	/**
 	 * Gets the value of a user state variable.
 	 *
-	 * @access	public
-	 * @param	string	The key of the user state variable.
-	 * @param	string	The name of the variable passed in a request.
-	 * @param	string	The default value for the variable if not found. Optional.
-	 * @param	string	Filter for the variable, for valid values see {@link JFilterInput::clean()}. Optional.
-	 * @param	bool	Should I save the variable in the user state? Default: true. Optional.
-	 * @return	The request user state.
+	 * @param   string   $key           The key of the user state variable.
+	 * @param   string   $request       The name of the variable passed in a request.
+	 * @param   string   $default       The default value for the variable if not found. Optional.
+	 * @param   string   $type          Filter for the variable, for valid values see {@link JFilterInput::clean()}. Optional.
+	 * @param   boolean  $setUserState  Should I save the variable in the user state? Default: true. Optional.
+	 *
+	 * @return  The request user state.
 	 */
 	protected function getUserStateFromRequest($key, $request, $default = null, $type = 'none', $setUserState = true)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 		if ($isCLI)
+		{
 			return $default;
+		}
 
 		$app = JFactory::getApplication();
+
 		if (method_exists($app, 'getUserState'))
 		{
 			$old_state = $app->getUserState($key);
@@ -1099,6 +1254,7 @@ class FOFModel extends JModelLegacy
 		{
 			$old_state = null;
 		}
+
 		$cur_state = (!is_null($old_state)) ? $old_state : $default;
 		$new_state = $this->input->get($request, null, $type);
 
@@ -1125,14 +1281,14 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Returns an object list
 	 *
-	 * @param	string The query
-	 * @param	int Offset
-	 * @param	int The number of records
-	 * @return	array
-	 * @access	protected
-	 * @since	1.5
+	 * @param   string   $query       The query
+	 * @param   integer  $limitstart  Offset from start
+	 * @param   integer  $limit       The number of records
+	 * @param   string   $group       The group by clause
+	 *
+	 * @return  array  Array of objects
 	 */
-	function &_getList($query, $limitstart = 0, $limit = 0, $group = '')
+	protected function &_getList($query, $limitstart = 0, $limit = 0, $group = '')
 	{
 		$this->_db->setQuery($query, $limitstart, $limit);
 		$result = $this->_db->loadObjectList($group);
@@ -1145,18 +1301,18 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Method to get a table object, load it if necessary.
 	 *
-	 * @param   string   $name     The table name. Optional.
-	 * @param   string   $prefix   The class prefix. Optional.
-	 * @param   array    $options  Configuration array for model. Optional.
+	 * @param   string  $name     The table name. Optional.
+	 * @param   string  $prefix   The class prefix. Optional.
+	 * @param   array   $options  Configuration array for model. Optional.
 	 *
 	 * @return  FOFTable  A FOFTable object
-	 * @since   11.1
 	 */
 	public function getTable($name = '', $prefix = null, $options = array())
 	{
 		if (empty($name))
 		{
 			$name = $this->table;
+
 			if (empty($name))
 			{
 				$name = FOFInflector::singularize($this->getName());
@@ -1193,13 +1349,13 @@ class FOFModel extends JModelLegacy
 	/**
 	 * Method to load and return a model object.
 	 *
-	 * @access	private
-	 * @param	string	The name of the view
-	 * @param   string  The class prefix. Optional.
-	 * @return	mixed	Model object or boolean false if failed
-	 * @since	1.5
+	 * @param   string  $name    The name of the view
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  The configuration array to pass to the table
+	 *
+	 * @return  FOFTable  Table object or boolean false if failed
 	 */
-	function &_createTable($name, $prefix = 'Table', $config = array())
+	protected function &_createTable($name, $prefix = 'Table', $config = array())
 	{
 		$result = null;
 
@@ -1207,20 +1363,22 @@ class FOFModel extends JModelLegacy
 		$name = preg_replace('/[^A-Z0-9_]/i', '', $name);
 		$prefix = preg_replace('/[^A-Z0-9_]/i', '', $prefix);
 
-		//Make sure we are returning a DBO object
+		// Make sure we are returning a DBO object
+
 		if (!array_key_exists('dbo', $config))
 		{
 			$config['dbo'] = $this->getDBO();
-			;
 		}
 
 		$instance = FOFTable::getAnInstance($name, $prefix, $config);
+
 		return $instance;
 	}
 
 	/**
 	 * Creates the WHERE part of the reorder query
-	 * @return type
+	 *
+	 * @return  string
 	 */
 	public function getReorderWhere()
 	{
@@ -1229,6 +1387,10 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Builds the SELECT query
+	 *
+	 * @param   boolean  $overrideLimits  Are we requested to override the set limits?
+	 *
+	 * @return  JDatabaseQuery
 	 */
 	public function buildQuery($overrideLimits = false)
 	{
@@ -1242,6 +1404,7 @@ class FOFModel extends JModelLegacy
 			->from($db->qn($tableName));
 
 		$where = array();
+
 		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$fields = $db->getTableColumns($tableName, true);
@@ -1251,10 +1414,12 @@ class FOFModel extends JModelLegacy
 			$fieldsArray = $db->getTableFields($tableName, true);
 			$fields = array_shift($fieldsArray);
 		}
+
 		foreach ($fields as $fieldname => $fieldtype)
 		{
 			$filterName = ($fieldname == $tableKey) ? 'id' : $fieldname;
 			$filterState = $this->getState($filterName, null);
+
 			if (!empty($filterState) || ($filterState === '0'))
 			{
 				switch ($fieldname)
@@ -1282,8 +1447,12 @@ class FOFModel extends JModelLegacy
 		if (!$overrideLimits)
 		{
 			$order = $this->getState('filter_order', null, 'cmd');
+
 			if (!in_array($order, array_keys($this->getTable()->getData())))
+			{
 				$order = $tableKey;
+			}
+
 			$dir = $this->getState('filter_order_Dir', 'ASC', 'cmd');
 			$query->order($db->qn($order) . ' ' . $dir);
 		}
@@ -1293,7 +1462,8 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Builds the count query used in getTotal()
-	 * @return type
+	 *
+	 * @return  boolean
 	 */
 	public function buildCountQuery()
 	{
@@ -1302,18 +1472,22 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Clones the model object and returns the clone
-	 * @return FOFModel
+	 *
+	 * @return  FOFModel
 	 */
 	public function &getClone()
 	{
 		$clone = clone($this);
+
 		return $clone;
 	}
 
 	/**
 	 * Magic getter; allows to use the name of model state keys as properties
-	 * @param string $name
-	 * @return mixed
+	 *
+	 * @param   string  $name  The name of the variable to get
+	 *
+	 * @return  mixed  The value of the variable
 	 */
 	public function __get($name)
 	{
@@ -1322,8 +1496,11 @@ class FOFModel extends JModelLegacy
 
 	/**
 	 * Magic setter; allows to use the name of model state keys as properties
-	 * @param string $name
-	 * @return mixed
+	 *
+	 * @param   string  $name   The name of the variable
+	 * @param   mixed   $value  The value to set the variable to
+	 *
+	 * @return  void
 	 */
 	public function __set($name, $value)
 	{
@@ -1334,14 +1511,16 @@ class FOFModel extends JModelLegacy
 	 * Magic caller; allows to use the name of model state keys as methods to
 	 * set their values.
 	 *
-	 * @param string $name
-	 * @param mixed $arguments
-	 * @return FOFModel
+	 * @param   string  $name       The name of the state variable to set
+	 * @param   mixed   $arguments  The value to set the state variable to
+	 *
+	 * @return  FOFModel  Reference to self
 	 */
 	public function __call($name, $arguments)
 	{
 		$arg1 = array_shift($arguments);
 		$this->setState($name, $arg1);
+
 		return $this;
 	}
 
@@ -1349,7 +1528,9 @@ class FOFModel extends JModelLegacy
 	 * Sets the model state auto-save status. By default the model is set up to
 	 * save its state to the session.
 	 *
-	 * @param bool $newState True to save the state, false to not save it.
+	 * @param   boolean  $newState  True to save the state, false to not save it.
+	 *
+	 * @return  FOFModel  Reference to self
 	 */
 	public function &savestate($newState)
 	{
@@ -1358,15 +1539,22 @@ class FOFModel extends JModelLegacy
 		return $this;
 	}
 
+	/**
+	 * Initialises the _savestate variable
+	 *
+	 * @return  void
+	 */
 	public function populateSavesate()
 	{
 		if (is_null($this->_savestate))
 		{
 			$savestate = $this->input->getInt('savestate', -999);
+
 			if ($savestate == -999)
 			{
 				$savestate = true;
 			}
+
 			$this->savestate($savestate);
 		}
 	}
@@ -1376,6 +1564,7 @@ class FOFModel extends JModelLegacy
 	 *
 	 * @param   array    $data      Data for the form.
 	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   boolean  $source    The name of the form. If not set we'll try the form_name state variable or fall back to default.
 	 *
 	 * @return  mixed  A FOFForm object on success, false on failure
 	 *
@@ -1385,13 +1574,14 @@ class FOFModel extends JModelLegacy
 	{
 		$this->_formData = $data;
 
-		$name = $this->input->getCmd('option', 'com_foobar') . '.' .
-			$this->input->getCmd('view', 'cpanels');
+		$name = $this->input->getCmd('option', 'com_foobar') . '.'
+			. $this->input->getCmd('view', 'cpanels');
 
 		if (empty($source))
 		{
 			$source = $this->getState('form_name', null);
 		}
+
 		if (empty($source))
 		{
 			$source = 'form.' . $this->input->getCmd('view', 'cpanels');
@@ -1430,6 +1620,7 @@ class FOFModel extends JModelLegacy
 		$hash = md5($source . serialize($options));
 
 		// Check if we can use a previously loaded form.
+
 		if (isset($this->_forms[$hash]) && !$clear)
 		{
 			return $this->_forms[$hash];
@@ -1439,6 +1630,7 @@ class FOFModel extends JModelLegacy
 		$formFilename = $this->findFormFilename($source);
 
 		// No form found? Quit!
+
 		if ($formFilename === false)
 		{
 			return false;
@@ -1450,6 +1642,7 @@ class FOFModel extends JModelLegacy
 
 		// Set up field paths
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view = $this->input->getCmd('view', 'cpanels');
 		$file_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
@@ -1492,6 +1685,7 @@ class FOFModel extends JModelLegacy
 		catch (Exception $e)
 		{
 			$this->setError($e->getMessage());
+
 			return false;
 		}
 
@@ -1546,7 +1740,7 @@ class FOFModel extends JModelLegacy
 		);
 
 		// Set up the suffixes to look into
-		$jversion = new JVersion();
+		$jversion = new JVersion;
 		$versionParts = explode('.', $jversion->RELEASE);
 		$majorVersion = array_shift($versionParts);
 		$suffixes = array(
@@ -1559,19 +1753,24 @@ class FOFModel extends JModelLegacy
 		// Look for all suffixes in all paths
 		jimport('joomla.filesystem.file');
 		$result = false;
+
 		foreach ($paths as $path)
 		{
 			foreach ($suffixes as $suffix)
 			{
 				$filename = $path . '/' . $source . $suffix;
+
 				if (JFile::exists($filename))
 				{
 					$result = $filename;
 					break;
 				}
 			}
+
 			if ($result)
+			{
 				break;
+			}
 		}
 
 		return $result;
@@ -1656,6 +1855,7 @@ class FOFModel extends JModelLegacy
 		if ($return instanceof Exception)
 		{
 			$this->setError($return->getMessage());
+
 			return false;
 		}
 
@@ -1679,7 +1879,9 @@ class FOFModel extends JModelLegacy
 	 * list results array. You are supposed to modify the list which was passed
 	 * in the parameters; DO NOT return a new array!
 	 *
-	 * @param array $resultArray An array of objects, each row representing a record
+	 * @param   array  &$resultArray  An array of objects, each row representing a record
+	 *
+	 * @return  void
 	 */
 	protected function onProcessList(&$resultArray)
 	{
@@ -1691,7 +1893,9 @@ class FOFModel extends JModelLegacy
 	 * operation. You can modify it before it's returned to the MVC triad for
 	 * further processing.
 	 *
-	 * @param JTable $record
+	 * @param   FOFTable  $record
+	 *
+	 * @return  void
 	 */
 	protected function onAfterGetItem(&$record)
 	{
@@ -1702,15 +1906,17 @@ class FOFModel extends JModelLegacy
 	 * This method runs before the $data is saved to the $table. Return false to
 	 * stop saving.
 	 *
-	 * @param array $data
-	 * @param JTable $table
-	 * @return bool
+	 * @param   array     $data   The data to save
+	 * @param   FOFTable  $table  The table to save the data to
+	 *
+	 * @return  boolean  Return false to prevent saving, true to allow it
 	 */
 	protected function onBeforeSave(&$data, &$table)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
+
 		if (!$isCLI)
 		{
 			JPluginHelper::importPlugin('content');
@@ -1722,6 +1928,7 @@ class FOFModel extends JModelLegacy
 		{
 			// Do I have a new record?
 			$key = $table->getKeyName();
+
 			if ($data instanceof FOFTable)
 			{
 				$allData = $data->getData();
@@ -1734,19 +1941,23 @@ class FOFModel extends JModelLegacy
 			{
 				$allData = $data;
 			}
+
 			$pk = (!empty($allData[$key])) ? $allData[$key] : 0;
 
 			$this->_isNewRecord = $pk <= 0;
 
 			// Bind the data
 			$table->bind($allData);
+
 			// Call the plugin
 			$name = $this->name;
 			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
+
 			if (in_array(false, $result, true))
 			{
 				// Plugin failed, return false
 				$this->setError($table->getError());
+
 				return false;
 			}
 			else
@@ -1770,27 +1981,33 @@ class FOFModel extends JModelLegacy
 		{
 			// Oops, an exception occured!
 			$this->setError($e->getMessage());
+
 			return false;
 		}
+
 		return true;
 	}
 
 	/**
 	 * This method runs after the data is saved to the $table.
 	 *
-	 * @param JTable $table
+	 * @param   FOFTable  $table
+	 *
+	 * @return  boolean
 	 */
 	protected function onAfterSave(&$table)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
+
 		if (!$isCLI)
 		{
 			JPluginHelper::importPlugin('content');
 		}
 
 		$dispatcher = JDispatcher::getInstance();
+
 		try
 		{
 			$name = $this->name;
@@ -1800,6 +2017,7 @@ class FOFModel extends JModelLegacy
 		{
 			// Oops, an exception occured!
 			$this->setError($e->getMessage());
+
 			return false;
 		}
 	}
@@ -1807,19 +2025,23 @@ class FOFModel extends JModelLegacy
 	/**
 	 * This method runs before the record with key value of $id is deleted from $table
 	 *
-	 * @param JTable $table
+	 * @param   FOFTable  $table
+	 *
+	 * @return  boolean
 	 */
 	protected function onBeforeDelete(&$id, &$table)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
+
 		if (!$isCLI)
 		{
 			JPluginHelper::importPlugin('content');
 		}
 
 		$dispatcher = JDispatcher::getInstance();
+
 		try
 		{
 			$table->load($id);
@@ -1832,6 +2054,7 @@ class FOFModel extends JModelLegacy
 			{
 				// Plugin failed, return false
 				$this->setError($table->getError());
+
 				return false;
 			}
 
@@ -1841,11 +2064,19 @@ class FOFModel extends JModelLegacy
 		{
 			// Oops, an exception occured!
 			$this->setError($e->getMessage());
+
 			return false;
 		}
 		return true;
 	}
 
+	/**
+	 * This method runs after a record with key value $id is deleted
+	 *
+	 * @param   integer  $id  The id of the record which was deleted
+	 *
+	 * @return  boolean  Return false to raise an error, true otherwise
+	 */
 	protected function onAfterDelete($id)
 	{
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
@@ -1857,6 +2088,7 @@ class FOFModel extends JModelLegacy
 		}
 
 		$dispatcher = JDispatcher::getInstance();
+
 		try
 		{
 			$name = $this->input->getCmd('view', 'cpanel');
@@ -1868,6 +2100,7 @@ class FOFModel extends JModelLegacy
 		{
 			// Oops, an exception occured!
 			$this->setError($e->getMessage());
+
 			return false;
 		}
 	}
