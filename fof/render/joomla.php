@@ -4,7 +4,6 @@
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 defined('_JEXEC') or die;
 
 /**
@@ -12,393 +11,415 @@ defined('_JEXEC') or die;
  */
 class FOFRenderJoomla extends FOFRenderAbstract
 {
-	/**
-	 * Public constructor. Determines the priority of this class and if it should be enabled
-	 */
-	public function __construct() {
-		$this->priority = 50;
-		$this->enabled = true;
-	}
 
-	/**
-	 * Echoes any HTML to show before the view template
-	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
-	 */
-	public function preRender($view, $task, $input, $config=array())
-	{
-		$format = $input->getCmd('format', 'html');
-		if(empty($format)) $format = 'html';
-		if($format != 'html') return;
+    /**
+     * Public constructor. Determines the priority of this class and if it should be enabled
+     */
+    public function __construct()
+    {
+        $this->priority = 50;
+        $this->enabled = true;
+    }
 
-		// Wrap output in a Joomla-versioned div
-		$version = new JVersion;
-		$version = str_replace('.', '', $version->RELEASE);
-		echo "<div class=\"joomla-version-$version\">\n";
+    /**
+     * Echoes any HTML to show before the view template
+     *
+     * @param   string  $view   The current view
+     * @param   string  $task   The current task
+     * @param   array   $input  The input array (request parameters)
+     */
+    public function preRender($view, $task, $input, $config = array())
+    {
+        $format = $input->getCmd('format', 'html');
+        if (empty($format))
+            $format = 'html';
+        if ($format != 'html')
+            return;
 
-		// Render submenu and toolbar
-		$this->renderButtons($view, $task, $input, $config);
-		$this->renderLinkbar($view, $task, $input, $config);
-	}
+        // Wrap output in a Joomla-versioned div
+        $version = new JVersion;
+        $version = str_replace('.', '', $version->RELEASE);
+        echo "<div class=\"joomla-version-$version\">\n";
 
-	/**
-	 * Echoes any HTML to show after the view template
-	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
-	 */
-	public function postRender($view, $task, $input, $config=array())
-	{
-		echo "</div>\n";
-	}
+        // Render submenu and toolbar
+        $this->renderButtons($view, $task, $input, $config);
+        $this->renderLinkbar($view, $task, $input, $config);
+    }
 
-	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
-	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
-	 *
-	 * @return  string    The HTML rendering of the form
-	 */
-	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
-	{
-		// Getting all header row elements
-		$headerFields = $form->getHeaderset();
+    /**
+     * Echoes any HTML to show after the view template
+     *
+     * @param   string  $view   The current view
+     * @param   string  $task   The current task
+     * @param   array   $input  The input array (request parameters)
+     */
+    public function postRender($view, $task, $input, $config = array())
+    {
+        echo "</div>\n";
+    }
 
-		// Start the form
-		$html = '';
-		$filter_order = $form->getView()->getLists()->order;
-		$filter_order_Dir = $form->getView()->getLists()->order_Dir;
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="option" value="'.$input->getCmd('option').'" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="view" value="'.FOFInflector::pluralize($input->getCmd('view')).'" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="task" value="" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="boxchecked" value="" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="hidemainmenu" value="" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="filter_order" value="'.$filter_order.'" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="filter_order_Dir" value="'.$filter_order_Dir.'" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="'.JFactory::getSession()->getFormToken().'" value="1" />'.PHP_EOL;
+    /**
+     * Renders a FOFForm for a Browse view and returns the corresponding HTML
+     *
+     * @param   FOFForm   $form      The form to render
+     * @param   FOFModel  $model     The model providing our data
+     * @param   FOFInput  $input     The input object
+     *
+     * @return  string    The HTML rendering of the form
+     */
+    protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
+    {
+        // Getting all header row elements
+        $headerFields = $form->getHeaderset();
 
-		// Start the table output
-		$html .= "\t\t" . '<table class="adminlist" id="adminList">' . PHP_EOL;
+        // Start the form
+        $html = '';
+        $filter_order = $form->getView()->getLists()->order;
+        $filter_order_Dir = $form->getView()->getLists()->order_Dir;
+        $html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
-		// Get form parameters
-		$show_header		= $form->getAttribute('show_header', 1);
-		$show_filters		= $form->getAttribute('show_filters', 1);
-		$show_pagination	= $form->getAttribute('show_pagination', 1);
-		$norows_placeholder	= $form->getAttribute('norows_placeholder', '');
+        // Start the table output
+        $html .= "\t\t" . '<table class="adminlist" id="adminList">' . PHP_EOL;
 
-		// Open the table header region if required
-		if ($show_header || $show_filters)
-		{
-			$html .= "\t\t\t<thead>" . PHP_EOL;
-		}
+        // Get form parameters
+        $show_header = $form->getAttribute('show_header', 1);
+        $show_filters = $form->getAttribute('show_filters', 1);
+        $show_pagination = $form->getAttribute('show_pagination', 1);
+        $norows_placeholder = $form->getAttribute('norows_placeholder', '');
 
-		// Pre-render the header and filter rows
-		if ($show_header || $show_filters)
-		{
-			$header_html = '';
-			$filter_html = '';
+        // Open the table header region if required
+        if ($show_header || $show_filters)
+        {
+            $html .= "\t\t\t<thead>" . PHP_EOL;
+        }
 
-			foreach ($headerFields as $header)
-			{
-				// Make sure we have a header field. Under Joomla! 2.5 we cannot
-				// render filter-only fields.
-				$tmpHeader = $header->header;
-				if (empty($tmpHeader))
-				{
-					continue;
-				}
+        // Pre-render the header and filter rows
+        if ($show_header || $show_filters)
+        {
+            $header_html = '';
+            $filter_html = '';
 
-				$tdwidth = $header->tdwidth;
-				if (!empty($tdwidth))
-				{
-					$tdwidth = 'width="' . $tdwidth . '"';
-				}
-				else
-				{
-					$tdwidth = '';
-				}
+            foreach ($headerFields as $header)
+            {
+                // Make sure we have a header field. Under Joomla! 2.5 we cannot
+                // render filter-only fields.
+                $tmpHeader = $header->header;
+                if (empty($tmpHeader))
+                {
+                    continue;
+                }
 
-				$header_html .= "\t\t\t\t\t<th $tdwidth>" . PHP_EOL;
-				$header_html .= "\t\t\t\t\t\t" . $tmpHeader;
-				$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
+                $tdwidth = $header->tdwidth;
+                if (!empty($tdwidth))
+                {
+                    $tdwidth = 'width="' . $tdwidth . '"';
+                }
+                else
+                {
+                    $tdwidth = '';
+                }
 
-				$filter = $header->filter;
-				$buttons = $header->buttons;
-				$options = $header->options;
+                $header_html .= "\t\t\t\t\t<th $tdwidth>" . PHP_EOL;
+                $header_html .= "\t\t\t\t\t\t" . $tmpHeader;
+                $header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
 
-				$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
-				if (!empty($filter))
-				{
-					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
-					if (!empty($buttons))
-					{
-						$filter_html .= "\t\t\t\t\t\t<nobr>$buttons</nobr>" . PHP_EOL;
-					}
-				}
-				elseif (!empty($options))
-				{
-					$label = $header->label;
-					$emptyOption = JHtml::_('select.option', '','- ' . JText::_($label) . ' -');
-					array_unshift($options, $emptyOption);
-					$attribs = array(
-						'onchange'	=> 'document.adminForm.submit();'
-					);
-					$filter = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value, false, true);
-					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
-				}
-				$filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
-			}
-		}
+                $filter = $header->filter;
+                $buttons = $header->buttons;
+                $options = $header->options;
 
-		// Render header if enabled
-		if ($show_header)
-		{
-			$html .= "\t\t\t\t<tr>" . PHP_EOL;
-			$html .= $header_html;
-			$html .= "\t\t\t\t</tr>" . PHP_EOL;
-		}
+                $filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
+                if (!empty($filter))
+                {
+                    $filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
+                    if (!empty($buttons))
+                    {
+                        $filter_html .= "\t\t\t\t\t\t<nobr>$buttons</nobr>" . PHP_EOL;
+                    }
+                }
+                elseif (!empty($options))
+                {
+                    $label = $header->label;
+                    $emptyOption = JHtml::_('select.option', '', '- ' . JText::_($label) . ' -');
+                    array_unshift($options, $emptyOption);
+                    $attribs = array(
+                        'onchange' => 'document.adminForm.submit();'
+                    );
+                    $filter = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value, false, true);
+                    $filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
+                }
+                $filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
+            }
+        }
 
-		// Render filter row if enabled
-		if ($show_filters)
-		{
-			$html .= "\t\t\t\t<tr>";
-			$html .= $filter_html;
-			$html .= "\t\t\t\t</tr>";
-		}
+        // Render header if enabled
+        if ($show_header)
+        {
+            $html .= "\t\t\t\t<tr>" . PHP_EOL;
+            $html .= $header_html;
+            $html .= "\t\t\t\t</tr>" . PHP_EOL;
+        }
 
-		// Close the table header region if required
-		if ($show_header || $show_filters)
-		{
-			$html .= "\t\t\t</thead>" . PHP_EOL;
-		}
+        // Render filter row if enabled
+        if ($show_filters)
+        {
+            $html .= "\t\t\t\t<tr>";
+            $html .= $filter_html;
+            $html .= "\t\t\t\t</tr>";
+        }
 
-		// Loop through rows and fields, or show placeholder for no rows
-		$html .= "\t\t\t<tbody>" . PHP_EOL;
-		$fields = $form->getFieldset('items');
-		$num_columns = count($fields);
-		$items = $form->getModel()->getItemList();
-		if ($count = count($items))
-		{
-			$m = 1;
-			foreach ($items as $i => $item)
-			{
-				$table_item = $form->getModel()->getTable();
-				$table_item->bind($item);
+        // Close the table header region if required
+        if ($show_header || $show_filters)
+        {
+            $html .= "\t\t\t</thead>" . PHP_EOL;
+        }
 
-				$form->bind($item);
+        // Loop through rows and fields, or show placeholder for no rows
+        $html .= "\t\t\t<tbody>" . PHP_EOL;
+        $fields = $form->getFieldset('items');
+        $num_columns = count($fields);
+        $items = $form->getModel()->getItemList();
+        if ($count = count($items))
+        {
+            $m = 1;
+            foreach ($items as $i => $item)
+            {
+                $table_item = $form->getModel()->getTable();
+                $table_item->bind($item);
 
-				$m = 1 - $m;
-				$class = 'row'.$m;
+                $form->bind($item);
 
-				$html .= "\t\t\t\t<tr class=\"$class\">" . PHP_EOL;
+                $m = 1 - $m;
+                $class = 'row' . $m;
 
-				$fields = $form->getFieldset('items');
-				foreach($fields as $field)
-				{
-					$field->rowid = $i;
-					$field->item = $table_item;
-					$class = $field->labelClass ? 'class ="' . $field->labelClass . '"' : '';
-					$html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . PHP_EOL;
-				}
+                $html .= "\t\t\t\t<tr class=\"$class\">" . PHP_EOL;
 
-				$html .= "\t\t\t\t</tr>" . PHP_EOL;
-			}
-		}
-		elseif($norows_placeholder)
-		{
-			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
-			$html .= JText::_($norows_placeholder);
-			$html .= "</td></tr>\n";
-		}
-		$html .= "\t\t\t</tbody>" . PHP_EOL;
+                $fields = $form->getFieldset('items');
+                foreach ($fields as $field)
+                {
+                    $field->rowid = $i;
+                    $field->item = $table_item;
+                    $class = $field->labelClass ? 'class ="' . $field->labelClass . '"' : '';
+                    $html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . PHP_EOL;
+                }
 
-		// Render the pagination bar, if enabled
-		if($show_pagination)
-		{
-			$pagination = $form->getModel()->getPagination();
-			$html .= "\t\t\t<tfoot>" . PHP_EOL;
-			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
-			if (($pagination->total > 0)) {
-				$html .= $pagination->getListFooter();
-			}
-			$html .= "</td></tr>\n";
-			$html .= "\t\t\t</tfoot>" . PHP_EOL;
-		}
+                $html .= "\t\t\t\t</tr>" . PHP_EOL;
+            }
+        }
+        elseif ($norows_placeholder)
+        {
+            $html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
+            $html .= JText::_($norows_placeholder);
+            $html .= "</td></tr>\n";
+        }
+        $html .= "\t\t\t</tbody>" . PHP_EOL;
 
-		// End the table output
-		$html .= "\t\t" . '</table>' . PHP_EOL;
+        // Render the pagination bar, if enabled
+        if ($show_pagination)
+        {
+            $pagination = $form->getModel()->getPagination();
+            $html .= "\t\t\t<tfoot>" . PHP_EOL;
+            $html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
+            if (($pagination->total > 0))
+            {
+                $html .= $pagination->getListFooter();
+            }
+            $html .= "</td></tr>\n";
+            $html .= "\t\t\t</tfoot>" . PHP_EOL;
+        }
 
-		// End the form
-		$html .= '</form>' . PHP_EOL;
+        // End the table output
+        $html .= "\t\t" . '</table>' . PHP_EOL;
 
-		return $html;
-	}
+        // End the form
+        $html .= '</form>' . PHP_EOL;
 
-	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
-	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
-	 *
-	 * @return  string    The HTML rendering of the form
-	 */
-	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
-	{
-		// Get the key for this model's table
-		$key = $model->getTable()->getKeyName();
-		$keyValue = $model->getId();
+        return $html;
+    }
 
-		$html = '';
+    /**
+     * Renders a FOFForm for a Browse view and returns the corresponding HTML
+     *
+     * @param   FOFForm   $form      The form to render
+     * @param   FOFModel  $model     The model providing our data
+     * @param   FOFInput  $input     The input object
+     *
+     * @return  string    The HTML rendering of the form
+     */
+    protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
+    {
+        // Get the key for this model's table
+        $key = $model->getTable()->getKeyName();
+        $keyValue = $model->getId();
 
-		foreach($form->getFieldsets() as $fieldset) {
-			$fields = $form->getFieldset($fieldset->name);
+        $html = '';
 
-			if(isset($fieldset->class)) {
-				$class = 'class="'.$fieldset->class.'"';
-			} else {
-				$class = '';
-			}
+        foreach ($form->getFieldsets() as $fieldset)
+        {
+            $fields = $form->getFieldset($fieldset->name);
 
-			$html .= "\t".'<div id="'.$fieldset->name.'" '.$class.'>'.PHP_EOL;
+            if (isset($fieldset->class))
+            {
+                $class = 'class="' . $fieldset->class . '"';
+            }
+            else
+            {
+                $class = '';
+            }
 
-			if(isset($fieldset->label) && !empty($fieldset->label)) {
-				$html .= "\t\t".'<h3>'.JText::_($fieldset->label).'</h3>'.PHP_EOL;
-			}
+            $html .= "\t" . '<div id="' . $fieldset->name . '" ' . $class . '>' . PHP_EOL;
 
-			foreach($fields as $field) {
-				$label = $field->label;
-				$static = $field->static;
+            if (isset($fieldset->label) && !empty($fieldset->label))
+            {
+                $html .= "\t\t" . '<h3>' . JText::_($fieldset->label) . '</h3>' . PHP_EOL;
+            }
 
-				$html .= "<div class=\"fof-row\">";
-				$html .= "\t\t\t".$label.PHP_EOL;
-				$html .= "\t\t\t".$static.PHP_EOL;
-				$html .= "</div>";
-			}
+            foreach ($fields as $field)
+            {
+                $label = $field->label;
+                $static = $field->static;
 
-			$html .= "\t".'</div>'.PHP_EOL;
-		}
+                $html .= "<div class=\"fof-row\">";
+                $html .= "\t\t\t" . $label . PHP_EOL;
+                $html .= "\t\t\t" . $static . PHP_EOL;
+                $html .= "</div>";
+            }
 
-		return $html;
-	}
+            $html .= "\t" . '</div>' . PHP_EOL;
+        }
 
-	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
-	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
-	 *
-	 * @return  string    The HTML rendering of the form
-	 */
-	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
-	{
-		// Get the key for this model's table
-		$key = $model->getTable()->getKeyName();
-		$keyValue = $model->getId();
+        return $html;
+    }
 
-		$html = '';
+    /**
+     * Renders a FOFForm for a Browse view and returns the corresponding HTML
+     *
+     * @param   FOFForm   $form      The form to render
+     * @param   FOFModel  $model     The model providing our data
+     * @param   FOFInput  $input     The input object
+     *
+     * @return  string    The HTML rendering of the form
+     */
+    protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
+    {
+        // Get the key for this model's table
+        $key = $model->getTable()->getKeyName();
+        $keyValue = $model->getId();
 
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="option" value="'.$input->getCmd('option').'" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="view" value="'.$input->getCmd('view', 'edit').'" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="task" value="" />'.PHP_EOL;
+        $html = '';
 
-		$html .= "\t".'<input type="hidden" name="'.$key.'" value="'.$keyValue.'" />'.PHP_EOL;
-		$html .= "\t".'<input type="hidden" name="'.JFactory::getSession()->getFormToken().'" value="1" />'.PHP_EOL;
+        $html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="view" value="' . $input->getCmd('view', 'edit') . '" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
 
-		foreach($form->getFieldsets() as $fieldset) {
-			$fields = $form->getFieldset($fieldset->name);
+        $html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . PHP_EOL;
+        $html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
-			if(isset($fieldset->class)) {
-				$class = 'class="'.$fieldset->class.'"';
-			} else {
-				$class = '';
-			}
+        foreach ($form->getFieldsets() as $fieldset)
+        {
+            $fields = $form->getFieldset($fieldset->name);
 
-			$element = empty($fields) ? 'div' : 'fieldset';
-			$html .= "\t".'<'.$element.' id="'.$fieldset->name.'" '.$class.'>'.PHP_EOL;
+            if (isset($fieldset->class))
+            {
+                $class = 'class="' . $fieldset->class . '"';
+            }
+            else
+            {
+                $class = '';
+            }
 
-			if(isset($fieldset->label) && !empty($fieldset->label)) {
-				$html .= "\t\t".'<legend>'.JText::_($fieldset->label).'</legend>'.PHP_EOL;
-			}
+            $element = empty($fields) ? 'div' : 'fieldset';
+            $html .= "\t" . '<' . $element . ' id="' . $fieldset->name . '" ' . $class . '>' . PHP_EOL;
 
-			foreach($fields as $field) {
-				$label = $field->label;
-				$input = $field->input;
+            if (isset($fieldset->label) && !empty($fieldset->label))
+            {
+                $html .= "\t\t" . '<legend>' . JText::_($fieldset->label) . '</legend>' . PHP_EOL;
+            }
 
-				$html .= "\t\t\t".$label.PHP_EOL;
-				$html .= "\t\t\t".$input.PHP_EOL;
-			}
+            foreach ($fields as $field)
+            {
+                $label = $field->label;
+                $input = $field->input;
 
-			$element = empty($fields) ? 'div' : 'fieldset';
-			$html .= "\t".'</'.$element.'>'.PHP_EOL;
-		}
+                $html .= "\t\t\t" . $label . PHP_EOL;
+                $html .= "\t\t\t" . $input . PHP_EOL;
+            }
 
-		$html .= '</form>';
+            $element = empty($fields) ? 'div' : 'fieldset';
+            $html .= "\t" . '</' . $element . '>' . PHP_EOL;
+        }
 
-		return $html;
-	}
+        $html .= '</form>';
 
-	/**
-	 * Renders the submenu (link bar)
-	 *
-	 * @param   string    $view    The active view name
-	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input object
-	 * @param   array     $config  Extra configuration variables for the toolbar
-	 */
-	protected function renderLinkbar($view, $task, $input, $config=array())
-	{
-		// Do not render a submenu unless we are in the the admin area
-		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option','com_foobar'), $config);
-		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
+        return $html;
+    }
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if(!$isAdmin && !$renderFrontendSubmenu) return;
+    /**
+     * Renders the submenu (link bar)
+     *
+     * @param   string    $view    The active view name
+     * @param   string    $task    The current task
+     * @param   FOFInput  $input   The input object
+     * @param   array     $config  Extra configuration variables for the toolbar
+     */
+    protected function renderLinkbar($view, $task, $input, $config = array())
+    {
+        // Do not render a submenu unless we are in the the admin area
+        $toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+        $renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
 
-		$links = $toolbar->getLinks();
-		if(!empty($links)) {
-			foreach($links as $link) {
-				JSubMenuHelper::addEntry($link['name'], $link['link'], $link['active']);
-			}
-		}
-	}
+        list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+        if (!$isAdmin && !$renderFrontendSubmenu)
+            return;
 
-	/**
-	 * Renders the toolbar buttons
-	 *
-	 * @param   string    $view    The active view name
-	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input object
-	 * @param   array     $config  Extra configuration variables for the toolbar
-	 */
-	protected function renderButtons($view, $task, $input, $config=array())
-	{
-		// Do not render buttons unless we are in the the frontend area and we are asked to do so
-		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option','com_foobar'), $config);
-		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
+        $links = $toolbar->getLinks();
+        if (!empty($links))
+        {
+            foreach ($links as $link)
+            {
+                JSubMenuHelper::addEntry($link['name'], $link['link'], $link['active']);
+            }
+        }
+    }
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if($isAdmin || !$renderFrontendButtons) return;
+    /**
+     * Renders the toolbar buttons
+     *
+     * @param   string    $view    The active view name
+     * @param   string    $task    The current task
+     * @param   FOFInput  $input   The input object
+     * @param   array     $config  Extra configuration variables for the toolbar
+     */
+    protected function renderButtons($view, $task, $input, $config = array())
+    {
+        // Do not render buttons unless we are in the the frontend area and we are asked to do so
+        $toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+        $renderFrontendButtons = $toolbar->getRenderFrontendButtons();
 
-		// Load main backend language, in order to display toolbar strings
-		// (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
-		$jlang = JFactory::getLanguage();
-		$jlang->load('joomla', JPATH_ADMINISTRATOR, null, true);
+        list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+        if ($isAdmin || !$renderFrontendButtons)
+            return;
 
-		$title = JFactory::getApplication()->get('JComponentTitle');
-		$bar = JToolBar::getInstance('toolbar');
+        // Load main backend language, in order to display toolbar strings
+        // (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
+        $jlang = JFactory::getLanguage();
+        $jlang->load('joomla', JPATH_ADMINISTRATOR, null, true);
 
-		// delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
-		$bar_content = str_replace('href="#"','', $bar->render());
+        $title = JFactory::getApplication()->get('JComponentTitle');
+        $bar = JToolBar::getInstance('toolbar');
 
-		echo '<div id="FOFHeaderHolder">' , $bar_content , $title , '<div style="clear:both"></div>', '</div>';
-	}
+        // delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
+        $bar_content = str_replace('href="#"', '', $bar->render());
+
+        echo '<div id="FOFHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';
+    }
+
 }

@@ -4,7 +4,6 @@
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
@@ -15,29 +14,29 @@ defined('_JEXEC') or die();
  */
 class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 {
-	protected function getOptions()
-	{
-		$options = array();
 
-		foreach ($this->element->children() as $option)
-		{
+    protected function getOptions()
+    {
+        $options = array();
 
-			// Only add <option /> elements.
-			if ($option->getName() != 'option')
-			{
-				continue;
-			}
+        foreach ($this->element->children() as $option)
+        {
 
-			// Create a new option object based on the <option /> element.
-			$options[] = JHtml::_(
-				'select.option', (string) $option['value'],
-				JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text',
-				((string) $option['disabled'] == 'true')
-			);
-		}
+            // Only add <option /> elements.
+            if ($option->getName() != 'option')
+            {
+                continue;
+            }
 
-		reset($options);
+            // Create a new option object based on the <option /> element.
+            $options[] = JHtml::_(
+                    'select.option', (string) $option['value'], JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text', ((string) $option['disabled'] == 'true')
+            );
+        }
 
-		return $options;
-	}
+        reset($options);
+
+        return $options;
+    }
+
 }

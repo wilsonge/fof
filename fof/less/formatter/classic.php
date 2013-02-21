@@ -4,7 +4,6 @@
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
@@ -19,98 +18,119 @@ defined('_JEXEC') or die();
  * Copyright 2012, Leaf Corcoran <leafot@gmail.com>
  * Licensed under MIT or GPLv3, see LICENSE
  */
+class FOFLessFormatterClassic
+{
 
-class FOFLessFormatterClassic {
-	public $indentChar = "  ";
+    public $indentChar = "  ";
+    public $break = "\n";
+    public $open = " {";
+    public $close = "}";
+    public $selectorSeparator = ", ";
+    public $assignSeparator = ":";
+    public $openSingle = " { ";
+    public $closeSingle = " }";
+    public $disableSingle = false;
+    public $breakSelectors = false;
+    public $compressColors = false;
 
-	public $break = "\n";
-	public $open = " {";
-	public $close = "}";
-	public $selectorSeparator = ", ";
-	public $assignSeparator = ":";
+    public function __construct()
+    {
+        $this->indentLevel = 0;
+    }
 
-	public $openSingle = " { ";
-	public $closeSingle = " }";
+    public function indentStr($n = 0)
+    {
+        return str_repeat($this->indentChar, max($this->indentLevel + $n, 0));
+    }
 
-	public $disableSingle = false;
-	public $breakSelectors = false;
+    public function property($name, $value)
+    {
+        return $name . $this->assignSeparator . $value . ";";
+    }
 
-	public $compressColors = false;
+    protected function isEmpty($block)
+    {
+        if (empty($block->lines))
+        {
+            foreach ($block->children as $child)
+            {
+                if (!$this->isEmpty($child))
+                    return false;
+            }
 
-	public function __construct() {
-		$this->indentLevel = 0;
-	}
+            return true;
+        }
+        return false;
+    }
 
-	public function indentStr($n = 0) {
-		return str_repeat($this->indentChar, max($this->indentLevel + $n, 0));
-	}
+    public function block($block)
+    {
+        if ($this->isEmpty($block))
+            return;
 
-	public function property($name, $value) {
-		return $name . $this->assignSeparator . $value . ";";
-	}
+        $inner = $pre = $this->indentStr();
 
-	protected function isEmpty($block) {
-		if (empty($block->lines)) {
-			foreach ($block->children as $child) {
-				if (!$this->isEmpty($child)) return false;
-			}
+        $isSingle = !$this->disableSingle &&
+            is_null($block->type) && count($block->lines) == 1;
 
-			return true;
-		}
-		return false;
-	}
+        if (!empty($block->selectors))
+        {
+            $this->indentLevel++;
 
-	public function block($block) {
-		if ($this->isEmpty($block)) return;
+            if ($this->breakSelectors)
+            {
+                $selectorSeparator = $this->selectorSeparator . $this->break . $pre;
+            }
+            else
+            {
+                $selectorSeparator = $this->selectorSeparator;
+            }
 
-		$inner = $pre = $this->indentStr();
+            echo $pre .
+            implode($selectorSeparator, $block->selectors);
+            if ($isSingle)
+            {
+                echo $this->openSingle;
+                $inner = "";
+            }
+            else
+            {
+                echo $this->open . $this->break;
+                $inner = $this->indentStr();
+            }
+        }
 
-		$isSingle = !$this->disableSingle &&
-			is_null($block->type) && count($block->lines) == 1;
+        if (!empty($block->lines))
+        {
+            $glue = $this->break . $inner;
+            echo $inner . implode($glue, $block->lines);
+            if (!$isSingle && !empty($block->children))
+            {
+                echo $this->break;
+            }
+        }
 
-		if (!empty($block->selectors)) {
-			$this->indentLevel++;
+        foreach ($block->children as $child)
+        {
+            $this->block($child);
+        }
 
-			if ($this->breakSelectors) {
-				$selectorSeparator = $this->selectorSeparator . $this->break . $pre;
-			} else {
-				$selectorSeparator = $this->selectorSeparator;
-			}
+        if (!empty($block->selectors))
+        {
+            if (!$isSingle && empty($block->children))
+                echo $this->break;
 
-			echo $pre .
-				implode($selectorSeparator, $block->selectors);
-			if ($isSingle) {
-				echo $this->openSingle;
-				$inner = "";
-			} else {
-				echo $this->open . $this->break;
-				$inner = $this->indentStr();
-			}
+            if ($isSingle)
+            {
+                echo $this->closeSingle . $this->break;
+            }
+            else
+            {
+                echo $pre . $this->close . $this->break;
+            }
 
-		}
+            $this->indentLevel--;
+        }
+    }
 
-		if (!empty($block->lines)) {
-			$glue = $this->break.$inner;
-			echo $inner . implode($glue, $block->lines);
-			if (!$isSingle && !empty($block->children)) {
-				echo $this->break;
-			}
-		}
-
-		foreach ($block->children as $child) {
-			$this->block($child);
-		}
-
-		if (!empty($block->selectors)) {
-			if (!$isSingle && empty($block->children)) echo $this->break;
-
-			if ($isSingle) {
-				echo $this->closeSingle . $this->break;
-			} else {
-				echo $pre . $this->close . $this->break;
-			}
-
-			$this->indentLevel--;
-		}
-	}
 }

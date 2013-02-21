@@ -4,7 +4,6 @@
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
@@ -19,120 +18,140 @@ jimport('joomla.application.component.view');
  */
 class FOFViewJson extends FOFViewHtml
 {
-	protected function onDisplay($tpl=null)
-	{
-		// Load the model
-		$model = $this->getModel();
 
-		$items = $model->getItemList();
-		$this->assignRef( 'items',		$items );
+    protected function onDisplay($tpl = null)
+    {
+        // Load the model
+        $model = $this->getModel();
 
-		$document = JFactory::getDocument();
-		$document->setMimeEncoding('application/json');
+        $items = $model->getItemList();
+        $this->assignRef('items', $items);
 
-		if (is_null($tpl))
-		{
-			$tpl = 'json';
-		}
+        $document = JFactory::getDocument();
+        $document->setMimeEncoding('application/json');
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			JError::setErrorHandling(E_ALL,'ignore');
-		}
-		$hasFailed = false;
-		try {
-			$result = $this->loadTemplate($tpl, true);
-		} catch	(Exception $e) {
-			$hasFailed = true;
-		}
+        if (is_null($tpl))
+        {
+            $tpl = 'json';
+        }
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			if($result instanceof Exception)
-			{
-				$hasFailed = true;
-			}
-			JError::setErrorHandling(E_WARNING,'callback');
-		}
+        if (version_compare(JVERSION, '3.0', 'lt'))
+        {
+            JError::setErrorHandling(E_ALL, 'ignore');
+        }
+        $hasFailed = false;
+        try
+        {
+            $result = $this->loadTemplate($tpl, true);
+        }
+        catch (Exception $e)
+        {
+            $hasFailed = true;
+        }
 
-		if($hasFailed) {
-			// Default JSON behaviour in case the template isn't there!
-			$json = json_encode($items);
+        if (version_compare(JVERSION, '3.0', 'lt'))
+        {
+            if ($result instanceof Exception)
+            {
+                $hasFailed = true;
+            }
+            JError::setErrorHandling(E_WARNING, 'callback');
+        }
 
-			// JSONP support
-			$callback = $this->input->getVar('callback', null);
-			if(!empty($callback)) {
-				echo $callback . '('.$json.')';
-			} else {
-				$defaultName = $this->input->getCmd('view', 'joomla');
-				$filename = $this->input->getCmd('basename', $defaultName);
+        if ($hasFailed)
+        {
+            // Default JSON behaviour in case the template isn't there!
+            $json = json_encode($items);
 
-				$document->setName($filename);
-				echo $json;
-			}
+            // JSONP support
+            $callback = $this->input->getVar('callback', null);
+            if (!empty($callback))
+            {
+                echo $callback . '(' . $json . ')';
+            }
+            else
+            {
+                $defaultName = $this->input->getCmd('view', 'joomla');
+                $filename = $this->input->getCmd('basename', $defaultName);
 
-			return false;
-		} else {
-			echo $result;
-			return false;
-		}
-	}
+                $document->setName($filename);
+                echo $json;
+            }
 
-	protected function onRead($tpl = null)
-	{
-		$model = $this->getModel();
+            return false;
+        }
+        else
+        {
+            echo $result;
+            return false;
+        }
+    }
 
-		$item = $model->getItem();
-		$this->assign('item', $item );
+    protected function onRead($tpl = null)
+    {
+        $model = $this->getModel();
 
-		$document = JFactory::getDocument();
-		$document->setMimeEncoding('application/json');
+        $item = $model->getItem();
+        $this->assign('item', $item);
 
-		if (is_null($tpl))
-		{
-			$tpl = 'json';
-		}
+        $document = JFactory::getDocument();
+        $document->setMimeEncoding('application/json');
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			JError::setErrorHandling(E_ALL,'ignore');
-		}
+        if (is_null($tpl))
+        {
+            $tpl = 'json';
+        }
 
-		$hasFailed = false;
-		try {
-			$result = $this->loadTemplate($tpl);
-		} catch	(Exception $e) {
-			$hasFailed = true;
-		}
+        if (version_compare(JVERSION, '3.0', 'lt'))
+        {
+            JError::setErrorHandling(E_ALL, 'ignore');
+        }
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			if($result instanceof JException)
-			{
-				$hasFailed = true;
-			}
-			JError::setErrorHandling(E_WARNING,'callback');
-		}
+        $hasFailed = false;
+        try
+        {
+            $result = $this->loadTemplate($tpl);
+        }
+        catch (Exception $e)
+        {
+            $hasFailed = true;
+        }
 
-		if($hasFailed) {
-			// Default JSON behaviour in case the template isn't there!
-			$json = json_encode($item);
+        if (version_compare(JVERSION, '3.0', 'lt'))
+        {
+            if ($result instanceof JException)
+            {
+                $hasFailed = true;
+            }
+            JError::setErrorHandling(E_WARNING, 'callback');
+        }
 
-			// JSONP support
-			$callback = $this->input->get('callback', null);
-			if(!empty($callback)) {
-				echo $callback . '('.$json.')';
-			} else {
-				$defaultName = $this->input->getCmd('view', 'joomla');
-				$filename = $this->input->getCmd('basename', $defaultName);
-				$document->setName($filename);
-				echo $json;
-			}
+        if ($hasFailed)
+        {
+            // Default JSON behaviour in case the template isn't there!
+            $json = json_encode($item);
 
-			return false;
-		} else {
-			echo $result;
-			return false;
-		}
-	}
+            // JSONP support
+            $callback = $this->input->get('callback', null);
+            if (!empty($callback))
+            {
+                echo $callback . '(' . $json . ')';
+            }
+            else
+            {
+                $defaultName = $this->input->getCmd('view', 'joomla');
+                $filename = $this->input->getCmd('basename', $defaultName);
+                $document->setName($filename);
+                echo $json;
+            }
+
+            return false;
+        }
+        else
+        {
+            echo $result;
+            return false;
+        }
+    }
+
 }
