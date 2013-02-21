@@ -15,28 +15,28 @@ defined('_JEXEC') or die();
 class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 {
 
-    protected function getOptions()
-    {
-        $options = array();
+	protected function getOptions()
+	{
+		$options = array();
 
-        foreach ($this->element->children() as $option)
-        {
+		foreach ($this->element->children() as $option)
+		{
 
-            // Only add <option /> elements.
-            if ($option->getName() != 'option')
-            {
-                continue;
-            }
+			// Only add <option /> elements.
+			if ($option->getName() != 'option')
+			{
+				continue;
+			}
 
-            // Create a new option object based on the <option /> element.
-            $options[] = JHtml::_(
-                    'select.option', (string) $option['value'], JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text', ((string) $option['disabled'] == 'true')
-            );
-        }
+			// Create a new option object based on the <option /> element.
+			$options[] = JHtml::_(
+					'select.option', (string) $option['value'], JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)), 'value', 'text', ((string) $option['disabled'] == 'true')
+			);
+		}
 
-        reset($options);
+		reset($options);
 
-        return $options;
-    }
+		return $options;
+	}
 
 }

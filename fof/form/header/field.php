@@ -15,21 +15,21 @@ defined('_JEXEC') or die();
 class FOFFormHeaderField extends FOFFormHeader
 {
 
-    protected function getHeader()
-    {
-        $sortable = ($this->element['sortable'] != 'false');
+	protected function getHeader()
+	{
+		$sortable = ($this->element['sortable'] != 'false');
 
-        $label = $this->getLabel();
+		$label = $this->getLabel();
 
-        if ($sortable)
-        {
-            $view = $this->form->getView();
-            return JHTML::_('grid.sort', $label, $this->name, $view->getLists()->order_Dir, $view->getLists()->order);
-        }
-        else
-        {
-            return JText::_($label);
-        }
-    }
+		if ($sortable)
+		{
+			$view = $this->form->getView();
+			return JHTML::_('grid.sort', $label, $this->name, $view->getLists()->order_Dir, $view->getLists()->order);
+		}
+		else
+		{
+			return JText::_($label);
+		}
+	}
 
 }

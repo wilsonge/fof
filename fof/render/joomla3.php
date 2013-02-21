@@ -12,54 +12,54 @@ defined('_JEXEC') or die;
 class FOFRenderJoomla3 extends FOFRenderStrapper
 {
 
-    /**
-     * Public constructor. Determines the priority of this class and if it should be enabled
-     */
-    public function __construct()
-    {
-        $this->priority = 55;
-        $this->enabled = version_compare(JVERSION, '3.0', 'ge');
-    }
+	/**
+	 * Public constructor. Determines the priority of this class and if it should be enabled
+	 */
+	public function __construct()
+	{
+		$this->priority = 55;
+		$this->enabled = version_compare(JVERSION, '3.0', 'ge');
+	}
 
-    /**
-     * Echoes any HTML to show before the view template
-     *
-     * @param   string  $view   The current view
-     * @param   string  $task   The current task
-     * @param   array   $input  The input array (request parameters)
-     */
-    public function preRender($view, $task, $input, $config = array())
-    {
-        $format = $input->getCmd('format', 'html');
-        if (empty($format))
-            $format = 'html';
-        if ($format != 'html')
-            return;
+	/**
+	 * Echoes any HTML to show before the view template
+	 *
+	 * @param   string  $view   The current view
+	 * @param   string  $task   The current task
+	 * @param   array   $input  The input array (request parameters)
+	 */
+	public function preRender($view, $task, $input, $config = array())
+	{
+		$format = $input->getCmd('format', 'html');
+		if (empty($format))
+			$format = 'html';
+		if ($format != 'html')
+			return;
 
-        // Wrap output in a Joomla-versioned div
-        $version = new JVersion;
-        $version = str_replace('.', '', $version->RELEASE);
-        echo "<div class=\"joomla-version-$version\">\n";
+		// Wrap output in a Joomla-versioned div
+		$version = new JVersion;
+		$version = str_replace('.', '', $version->RELEASE);
+		echo "<div class=\"joomla-version-$version\">\n";
 
-        // Render the submenu and toolbar
-        $this->renderButtons($view, $task, $input, $config);
-        $this->renderLinkbar($view, $task, $input, $config);
-    }
+		// Render the submenu and toolbar
+		$this->renderButtons($view, $task, $input, $config);
+		$this->renderLinkbar($view, $task, $input, $config);
+	}
 
-    /**
-     * Echoes any HTML to show after the view template
-     *
-     * @param   string  $view   The current view
-     * @param   string  $task   The current task
-     * @param   array   $input  The input array (request parameters)
-     */
-    public function postRender($view, $task, $input, $config = array())
-    {
-        $format = $input->getCmd('format', 'html');
-        if ($format != 'html')
-            return;
+	/**
+	 * Echoes any HTML to show after the view template
+	 *
+	 * @param   string  $view   The current view
+	 * @param   string  $task   The current task
+	 * @param   array   $input  The input array (request parameters)
+	 */
+	public function postRender($view, $task, $input, $config = array())
+	{
+		$format = $input->getCmd('format', 'html');
+		if ($format != 'html')
+			return;
 
-        echo "</div>\n";
-    }
+		echo "</div>\n";
+	}
 
 }

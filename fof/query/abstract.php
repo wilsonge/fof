@@ -17,25 +17,25 @@ defined('_JEXEC') or die();
 abstract class FOFQueryAbstract
 {
 
-    /**
-     * Returns a new database query class
-     *
-     * @return FOFQueryAbstract
-     */
-    public static function &getNew($db = null)
-    {
-        JLog::add('FOFQueryAbstract is deprecated. Use JDatabaseQuery instead.', JLog::WARNING, 'deprecated');
+	/**
+	 * Returns a new database query class
+	 *
+	 * @return FOFQueryAbstract
+	 */
+	public static function &getNew($db = null)
+	{
+		JLog::add('FOFQueryAbstract is deprecated. Use JDatabaseQuery instead.', JLog::WARNING, 'deprecated');
 
-        if (is_null($db))
-        {
-            $ret = JFactory::getDbo()->getQuery(true);
-        }
-        else
-        {
-            $ret = $db->getQuery(true);
-        }
+		if (is_null($db))
+		{
+			$ret = JFactory::getDbo()->getQuery(true);
+		}
+		else
+		{
+			$ret = $db->getQuery(true);
+		}
 
-        return $ret;
-    }
+		return $ret;
+	}
 
 }

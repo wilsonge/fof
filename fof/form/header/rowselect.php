@@ -15,11 +15,11 @@ defined('_JEXEC') or die();
 class FOFFormHeaderRowselect extends FOFFormHeader
 {
 
-    protected function getHeader()
-    {
-        return '<input type="checkbox" name="checkall-toggle" value="" title="'
-            . JText::_('JGLOBAL_CHECK_ALL')
-            . '" onclick="Joomla.checkAll(this)" />';
-    }
+	protected function getHeader()
+	{
+		return '<input type="checkbox" name="checkall-toggle" value="" title="'
+			. JText::_('JGLOBAL_CHECK_ALL')
+			. '" onclick="Joomla.checkAll(this)" />';
+	}
 
 }

@@ -15,9 +15,9 @@ defined('_JEXEC') or die();
 class FOFFormHeaderFiltersql extends FOFFormHeaderFieldsql
 {
 
-    protected function getHeader()
-    {
-        return '';
-    }
+	protected function getHeader()
+	{
+		return '';
+	}
 
 }

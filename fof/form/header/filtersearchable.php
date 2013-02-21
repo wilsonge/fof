@@ -15,9 +15,9 @@ defined('_JEXEC') or die();
 class FOFFormHeaderFiltersearchable extends FOFFormHeaderFieldsearchable
 {
 
-    protected function getHeader()
-    {
-        return '';
-    }
+	protected function getHeader()
+	{
+		return '';
+	}
 
 }
