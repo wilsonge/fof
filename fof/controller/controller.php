@@ -12,9 +12,9 @@ jimport('legacy.controller.legacy');
 
 /**
  * @package  FrameworkOnFramework.Controller
- * 
+ *
  * @since    1.0
- * 
+ *
  * FrameworkOnFramework controller class. FOF is based on the thin controller
  * paradigm, where the controller is mainly used to set up the model state and
  * spawn the view.
@@ -65,7 +65,7 @@ class FOFController extends JControllerLegacy
 
 	/** @var FOFModel A copy of the FOFModel object used in this triad */
 	private $modelObject = null;
-	
+
 	/** @var bool Does this tried have a FOFForm which will be used to render it? */
 	private $hasForm = false;
 
@@ -77,7 +77,7 @@ class FOFController extends JControllerLegacy
 	 * @param   string  $option  Component name, e.g. com_foobar
 	 * @param   string  $view    The view name, also used for the controller name
 	 * @param   array   $config  Configuration parameters
-	 * 
+	 *
 	 * @return  FOFController
 	 */
 	public static function &getAnInstance($option = null, $view = null, $config = array())
@@ -96,11 +96,11 @@ class FOFController extends JControllerLegacy
 	/**
 	 * Gets a temporary instance of a controller object. A temporary instance is
 	 * not a Singleton and can be disposed off after use.
-	 * 
+	 *
 	 * @param   string  $option  The component name, e.g. com_foobar
 	 * @param   string  $view    The view name, e.g. cpanel
 	 * @param   array   $config  Configuration parameters
-	 * 
+	 *
 	 * @return  \className  A disposable class instance
 	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
@@ -141,13 +141,13 @@ class FOFController extends JControllerLegacy
 				// The class is already loaded. We have a match!
 				break;
 			}
-			
+
 			// The class is not already loaded. Try to find and load it.
 			$searchPaths = array(
 				$basePath . '/components/' . $config['option'] . '/controllers',
 				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/controllers'
 			);
-			
+
 			// If we have a searchpath in the configuration please search it first
 			if (array_key_exists('searchpath', $config))
 			{
@@ -171,13 +171,13 @@ class FOFController extends JControllerLegacy
 				}
 			}
 		}
-		
+
 		if (!class_exists($className))
 		{
 			// If no specialised class is found, instantiate the generic FOFController
 			$className = 'FOFController';
 		}
-		
+
 		$instance = new $className($config);
 
 		return $instance;
@@ -302,7 +302,7 @@ class FOFController extends JControllerLegacy
 	 * methods are called automatically if they exist.
 	 *
 	 * @param   string  $task  The task to execute, e.g. "browse"
-	 * 
+	 *
 	 * @return  null|bool  False on execution failure
 	 */
 	public function execute($task)
@@ -373,7 +373,7 @@ class FOFController extends JControllerLegacy
 	{
 		$document = JFactory::getDocument();
 		$viewType	= $document->getType();
-		
+
 		$view = $this->getThisView();
 
 		// Get/Create the model
@@ -423,7 +423,7 @@ class FOFController extends JControllerLegacy
 		if($this->input->get('savestate', -999, 'int') == -999) {
 			$this->input->set('savestate', true);
 		}
-		
+
 		// Do I have a form?
 		$model = $this->getThisModel();
 		if(empty($this->layout))
@@ -435,14 +435,14 @@ class FOFController extends JControllerLegacy
 			$formname = 'form.' . $this->layout;
 		}
 		$model->setState('form_name', $formname);
-		
+
 		$item = $model->getItem();
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
 		if($form !== false) {
 			$this->hasForm = true;
 		}
-		
+
 		$this->display(in_array('browse', $this->cacheableTasks));
 	}
 
@@ -461,14 +461,14 @@ class FOFController extends JControllerLegacy
 
 		// Do I have a form?
 		$model->setState('form_name', 'form.'.$this->layout);
-		
+
 		$item = $model->getItem();
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
 		if($form !== false) {
 			$this->hasForm = true;
 		}
-		
+
 		// Display
 		$this->display(in_array('read', $this->cacheableTasks));
 	}
@@ -487,7 +487,7 @@ class FOFController extends JControllerLegacy
 
 		// Do I have a form?
 		$model->setState('form_name', 'form.'.$this->layout);
-		
+
 		$item = $model->getItem();
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
@@ -520,10 +520,10 @@ class FOFController extends JControllerLegacy
 
 		// Set the layout to form, if it's not set in the URL
 		if(is_null($this->layout)) $this->layout = 'form';
-		
+
 		// Do I have a form?
 		$model->setState('form_name', 'form.'.$this->layout);
-		
+
 		$item = $model->getItem();
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
@@ -1044,7 +1044,7 @@ class FOFController extends JControllerLegacy
 
 			$document = JFactory::getDocument();
 			$viewType	= $document->getType();
-			
+
 			if (($viewType == 'html') && $this->hasForm) {
 				$viewType = 'form';
 			}
@@ -1078,7 +1078,7 @@ class FOFController extends JControllerLegacy
 	 * @param	string  The name of the model.
 	 * @param	string	Optional model prefix.
 	 * @param	array	Configuration array for the model. Optional.
-	 * 
+	 *
 	 * @return	mixed	Model object on success; otherwise null
 	 * failure.
 	 */
@@ -1090,12 +1090,12 @@ class FOFController extends JControllerLegacy
 
 	/**
 	 * Creates a View object instance and returns it
-	 * 
+	 *
 	 * @param   string  $name    The name of the view, e.g. Items
 	 * @param   string  $prefix  The prefix of the view, e.g. FoobarView
 	 * @param   string  $type    The type of the view, usually one of Html, Raw, Json or Csv
 	 * @param   array   $config  The configuration variables to use for creating the view
-	 * 
+	 *
 	 * @return  FOFView
 	 */
 	protected function createView($name, $prefix = '', $type = '', $config = array())
@@ -1112,7 +1112,7 @@ class FOFController extends JControllerLegacy
 		} else {
 			$tmpInput = new FOFInput($config['input']);
 		}
-		
+
 		// Guess the component name and view
 		if(!empty($prefix)) {
 			preg_match('/(.*)View$/', $prefix, $m);
@@ -1144,7 +1144,7 @@ class FOFController extends JControllerLegacy
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		$basePaths = array(
 			JPATH_SITE.'/components/'.$config['option'].'/views',
-			JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/views'			
+			JPATH_ADMINISTRATOR.'/components/'.$config['option'].'/views'
 		);
 		if ($isAdmin)
 		{
@@ -1158,42 +1158,42 @@ class FOFController extends JControllerLegacy
 
 		// Get the alternate (singular/plural) view name
 		$altViewName = FOFInflector::isPlural($viewName) ? FOFInflector::singularize($viewName) : FOFInflector::pluralize($viewName);
-		
+
 		$suffixes = array(
 			$viewName,
 			$altViewName,
 			'default'
 		);
 		jimport( 'joomla.filesystem.path' );
-		
+
 		foreach ($suffixes as $suffix)
 		{
 			// Build the view class name
 			$viewClass = $classPrefix . ucfirst($suffix);
-			
+
 			if (class_exists($viewClass))
 			{
 				// The class is already loaded
 				break;
 			}
-			
+
 			// The class is not loaded. Let's load it!
 			$viewPath = $this->createFileName( 'view', array( 'name' => $suffix, 'type' => $viewType) );
 			$path = JPath::find($basePaths, $viewPath);
 			if ($path) {
 				require_once $path;
 			}
-			
+
 			if (class_exists($viewClass))
 			{
 				// The class was loaded successfully
 				break;
 			}
 		}
-		
+
 		if(!class_exists($viewClass)) {
 			$viewClass = 'FOFView'.ucfirst($type);
-		}		
+		}
 
 		// Setup View configuration options
 		if($isAdmin) {
@@ -1228,21 +1228,21 @@ class FOFController extends JControllerLegacy
 
 	/**
 	 * Deprecated function to create a View object instance
-	 * 
+	 *
 	 * @see FOFController::createView
-	 * 
+	 *
 	 * @deprecated since version 2.0
 	 */
 	function &_createView( $name, $prefix = '', $type = '', $config = array() )
 	{
 		JLog::add('FOFController::_createView is deprecated. Use createView() instead.', JLog::WARNING, 'deprecated');
-		
+
 		return $this->createView($name, $prefix, $type, $config);
 	}
 
 	/**
 	 * Set the name of the view to be used by this Controller
-	 * 
+	 *
 	 * @param   string  $viewName  The name of the view
 	 */
 	public function setThisViewName($viewName)
@@ -1252,7 +1252,7 @@ class FOFController extends JControllerLegacy
 
 	/**
 	 * Set the name of the model to be used by this Controller
-	 * 
+	 *
 	 * @param   string  $modelName  The name of the model
 	 */
 	public function setThisModelName($modelName)
@@ -1487,7 +1487,7 @@ class FOFController extends JControllerLegacy
 			{
 				JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 			}
-			
+
 			return false;
 		}
 	}

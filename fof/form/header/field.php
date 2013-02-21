@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Generic field header, without any filters
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderField extends FOFFormHeader
@@ -20,7 +20,7 @@ class FOFFormHeaderField extends FOFFormHeader
 		$sortable = ($this->element['sortable'] != 'false');
 
 		$label = $this->getLabel();
-		
+
 		if ($sortable)
 		{
 			$view = $this->form->getView();

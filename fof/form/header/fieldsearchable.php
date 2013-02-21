@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Generic field header, with text input (search) filter
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
@@ -24,7 +24,7 @@ class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
 		$placeholder = $this->element['placeholder'] ? $this->element['placeholder'] : $this->getLabel();
 		$name = $this->element['searchfieldname'] ? $this->element['searchfieldname'] : $this->name;
 		$placeholder = 'placeholder="' . JText::_($placeholder) . '"';
-		
+
 		if($this->element['searchfieldname'])
 		{
 			$model = $this->form->getModel();
@@ -44,30 +44,30 @@ class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
 		{
 			$onchange = ' onchange="document.adminForm.submit();"';
 		}
-		
+
 
 		return '<input type="text" name="' . $name . '" id="' . $this->id . '"' . ' value="'
-			. htmlspecialchars($searchvalue, ENT_COMPAT, 'UTF-8') . '"' . $filterclass . $size . $placeholder . $onchange . $maxLength . '/>';		
+			. htmlspecialchars($searchvalue, ENT_COMPAT, 'UTF-8') . '"' . $filterclass . $size . $placeholder . $onchange . $maxLength . '/>';
 	}
-	
+
 	protected function getButtons() {
 		$buttonclass = $this->element['buttonclass'] ? ' class="' . (string) $this->element['buttonclass'] . '"' : '';
 		$show_buttons = !($this->element['buttons'] == 'false');
-		
+
 		if(!$show_buttons)
 		{
 			return '';
 		}
-		
+
 		$html = '';
-		
+
 		$html .= '<button ' . $buttonclass . ' onclick="this.form.submit();">' . "\n";
 		$html .= "\t" . JText::_('JSEARCH_FILTER') . "\n";
 		$html .= '</button>' . "\n";
 		$html .= '<button ' . $buttonclass . ' onclick="document.adminForm.' . $this->id . '.value=\'\';this.form.submit();">' . "\n";
 		$html .= "\t" . JText::_('JSEARCH_RESET') . "\n";
 		$html .= '</button>' . "\n";
-		
+
 		return $html;
 	}
 }

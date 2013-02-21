@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldCheckbox')) {
 class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,23 +51,23 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		
+
 		$value = $this->element['value'] ? (string) $this->element['value'] : '1';
-		
+
 		if (empty($this->value))
 		{
 			$checked = (isset($this->element['checked'] )) ? ' checked="checked"' : '';
@@ -76,7 +76,7 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 		{
 			$checked = ' checked="checked"';
 		}
-		
+
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			'<input type="checkbox" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
 			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . ' />' .
@@ -86,14 +86,14 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		
+
 		$value = $this->element['value'] ? (string) $this->element['value'] : '1';
-		
+
 		if (empty($this->value))
 		{
 			$checked = (isset($this->element['checked'] )) ? ' checked="checked"' : '';
@@ -102,10 +102,10 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 		{
 			$checked = ' checked="checked"';
 		}
-		
+
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			'<input type="checkbox" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
 			. htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '"' . $class . $checked . $disabled . $onclick . ' />' .
 			'</span>';
-	}	
+	}
 }

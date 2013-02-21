@@ -25,10 +25,10 @@ class FOFDispatcher extends JObject
 
 	/** @var string The name of the default view, in case none is specified */
 	public $defaultView = 'cpanel';
-	
+
 	// Variables for FOF's transparent user authentication. You can override them
 	// in your Dispatcher's __construct() method.
-	
+
 	/** @var int The Time Step for the TOTP used in FOF's transparent user authentication */
 	protected $_fofAuth_timeStep = 6;
 	/** @var string The key for the TOTP, Base32 encoded (watch out; Base32, NOT Base64!) */
@@ -45,7 +45,7 @@ class FOFDispatcher extends JObject
 		'QueryString_Plaintext', // Plaintext, JSON-encoded username and password pair passed in the _fofauthentication query string parameter
 		'SplitQueryString_Plaintext', // Plaintext username and password in the _fofauthentication_username and _fofauthentication_username query string parameters
 	);
-	
+
 	/** @var bool Did we successfully and transparently logged in a user? */
 	private $_fofAuth_isLoggedIn = false;
 	/** @var string The calculated encryption key for the _TOTP methods, used if we have to encrypt the reply */
@@ -53,13 +53,13 @@ class FOFDispatcher extends JObject
 
 	/**
 	 * Get a static (Singleton) instance of a particular Dispatcher
-	 * 
+	 *
 	 * @staticvar array $instances Holds the array of Dispatchers FOF knows about
-	 * 
+	 *
 	 * @param string $option The component name
 	 * @param string $view The View name
 	 * @param array $config Configuration data
-	 * 
+	 *
 	 * @return FOFDispatcher
 	 */
 	public static function &getAnInstance($option = null, $view = null, $config = array())
@@ -76,11 +76,11 @@ class FOFDispatcher extends JObject
 
 	/**
 	 * Gets a temporary instance of a Dispatcher
-	 * 
+	 *
 	 * @param string $option The component name
 	 * @param string $view The View name
 	 * @param array $config Configuration data
-	 * 
+	 *
 	 * @return \className
 	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
@@ -107,7 +107,7 @@ class FOFDispatcher extends JObject
 		$className = ucfirst(str_replace('com_', '', $config['option'])).'Dispatcher';
 		if (!class_exists( $className )) {
 			list($isCli, $isAdmin) = self::isCliAdmin();
-			
+
 			if($isAdmin) {
 				$basePath = JPATH_ADMINISTRATOR;
 			} elseif($isCli) {
@@ -147,7 +147,7 @@ class FOFDispatcher extends JObject
 
 	/**
 	 * Public constructor
-	 * 
+	 *
 	 * @param array $config The configuration variables
 	 */
 	public function __construct($config = array()) {
@@ -180,7 +180,7 @@ class FOFDispatcher extends JObject
 	/**
 	 * The main code of the Dispatcher. It spawns the necessary controller and
 	 * runs it.
-	 * 
+	 *
 	 * @return null|Exception
 	 */
 	public function dispatch()
@@ -289,7 +289,7 @@ class FOFDispatcher extends JObject
 	/**
 	 * Tries to guess the controller task to execute based on the view name and
 	 * the HTTP request method.
-	 * 
+	 *
 	 * @param string $view The name of the view
 	 * @return string The best guess of the task to execute
 	 */
@@ -341,7 +341,7 @@ class FOFDispatcher extends JObject
 	/**
 	 * Executes right before the dispatcher tries to instantiate and run the
 	 * controller.
-	 * 
+	 *
 	 * @return boolean Return false to abort
 	 */
 	public function onBeforeDispatch()
@@ -351,7 +351,7 @@ class FOFDispatcher extends JObject
 
 	/**
 	 * Executes right after the dispatcher runs the controller.
-	 * 
+	 *
 	 * @return boolean Return false to abort
 	 */
 	public function onAfterDispatch()
@@ -364,10 +364,10 @@ class FOFDispatcher extends JObject
 			$parameters = array('username' => JFactory::getUser()->username);
 			$results = $app->triggerEvent('onLogoutUser', array($parameters, $options));
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Transparently authenticates a user
 	 */
@@ -375,39 +375,39 @@ class FOFDispatcher extends JObject
 	{
 		// Only run when there is no logged in user
 		if(!JFactory::getUser()->guest) return;
-		
+
 		// @todo Check the format
 		$format = $this->input->getCmd('format', 'html');
 		if(!in_array($format, $this->_fofAuth_Formats)) return;
-		
+
 		foreach($this->_fofAuth_AuthMethods as $method) {
 			// If we're already logged in, don't bother
 			if($this->_fofAuth_isLoggedIn) continue;
-			
+
 			// This will hold our authentication data array (username, password)
 			$authInfo = null;
-			
+
 			switch($method) {
 				case 'HTTPBasicAuth_TOTP':
 					if(empty($this->_fofAuth_Key)) continue;
 					if (!isset($_SERVER['PHP_AUTH_USER'])) continue;
 					if (!isset($_SERVER['PHP_AUTH_PW'])) continue;
-					
+
 					if($_SERVER['PHP_AUTH_USER'] != '_fof_auth') continue;
-					
+
 					$encryptedData = $_SERVER['PHP_AUTH_PW'];
-					
+
 					$authInfo = $this->_decryptWithTOTP($encryptedData);
 					break;
 
 				case 'QueryString_TOTP':
 					$encryptedData = $this->input->get('_fofauthentication', '');
-					
+
 					if(empty($encryptedData)) continue;
-					
+
 					$authInfo = $this->_decryptWithTOTP($encryptedData);
 					break;
-				
+
 				case 'HTTPBasicAuth_Plaintext':
 					if (!isset($_SERVER['PHP_AUTH_USER'])) continue;
 					if (!isset($_SERVER['PHP_AUTH_PW'])) continue;
@@ -416,7 +416,7 @@ class FOFDispatcher extends JObject
 						'password' => $_SERVER['PHP_AUTH_PW']
 					);
 					break;
-				
+
 				case 'QueryString_Plaintext':
 					$jsonencoded = $this->input->get('_fofauthentication', '');
 					if(empty($jsonencoded)) continue;
@@ -427,28 +427,28 @@ class FOFDispatcher extends JObject
 						$authInfo = null;
 					}
 					break;
-				
+
 				case 'SplitQueryString_Plaintext':
 					$authInfo = array(
 						'username'	=> $this->input->get('_fofauthentication_username', ''),
 						'password'	=> $this->input->get('_fofauthentication_password', ''),
 					);
-					
+
 					if (empty($authInfo['username']))
 					{
 						$authInfo = null;
 					}
-					
+
 					break;
-				
+
 				default:
 					continue;
 					break;
 			}
-			
+
 			// No point trying unless we have a username and password
 			if(!is_array($authInfo)) continue;
-			
+
 			jimport( 'joomla.user.authentication');
 			$app = JFactory::getApplication();
 			$options = array('remember' => false);
@@ -457,7 +457,7 @@ class FOFDispatcher extends JObject
 			if ($response->status == JAUTHENTICATE_STATUS_SUCCESS) {
 				JPluginHelper::importPlugin('user');
 				$results = $app->triggerEvent('onLoginUser', array((array)$response, $options));
-				
+
 				jimport('joomla.user.helper');
 				$userid = JUserHelper::getUserId($response->username);
 				$user = JFactory::getUser($userid);
@@ -465,54 +465,54 @@ class FOFDispatcher extends JObject
 				$session = JFactory::getSession();
 				$session->set('user', $user);
 				//$results = $app->triggerEvent('onLogoutUser', array($parameters, $options));
-				
+
 				$this->_fofAuth_isLoggedIn = true;
 			}
 		}
 	}
-	
+
 	private function _decryptWithTOTP($encryptedData)
 	{
 		if(empty($this->_fofAuth_Key)) {
 			$this->_fofAuth_CryptoKey = null;
 			return null;
 		}
-		
+
 		$totp = new FOFEncryptTotp($this->_fofAuth_timeStep);
 		$period = $totp->getPeriod();
 		$period--;
-		
+
 		for($i = 0; $i <= 2; $i++) {
 			$time = ($period + $i) * $this->_fofAuth_timeStep;
 			$otp = $totp->getCode($this->_fofAuth_Key, $time);
 			$this->_fofAuth_CryptoKey = hash('sha256', $this->_fofAuth_Key.$otp);
-			
+
 			$aes = new FOFEncryptAes($this->_fofAuth_CryptoKey);
 			$ret = $aes->decryptString($encryptedData);
 			$ret = rtrim($ret, "\000");
-			
+
 			$ret = json_decode($ret, true);
-			
+
 			if(!is_array($ret)) continue;
 			if(!array_key_exists('username', $ret)) continue;
 			if(!array_key_exists('password', $ret)) continue;
-			
+
 			// Successful decryption!
 			return $ret;
 		}
-		
+
 		// Obviously if we're here we could not decrypt anything. Bail out.
 		$this->_fofAuth_CryptoKey = null;
 		return null;
 	}
-	
+
 	private function _createDecryptionKey($time = null)
 	{
 		$totp = new FOFEncryptTotp($this->_fofAuth_timeStep);
 		$otp = $totp->getCode($this->_fofAuth_Key, $time);
-		
+
 		$key = hash('sha256', $this->_fofAuth_Key.$otp);
-		
+
 		return $key;
 	}
 
@@ -525,7 +525,7 @@ class FOFDispatcher extends JObject
 	{
 		static $isCLI = null;
 		static $isAdmin = null;
-		
+
 		if (is_null($isCLI) && is_null($isAdmin))
 		{
 			try {

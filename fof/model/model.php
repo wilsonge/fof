@@ -108,7 +108,7 @@ class FOFModel extends JModelLegacy
 	 * @var bool
 	 */
 	protected $_savestate = null;
-	
+
 	/**
 	 * Array of form objects.
 	 *
@@ -116,14 +116,14 @@ class FOFModel extends JModelLegacy
 	 * @since  2.0
 	 */
 	protected $_forms = array();
-	
+
 	/**
 	 * The data to load into a form
 	 *
 	 * @var    array
 	 * @since  2.0
 	 */
-	protected $_formData = array();	
+	protected $_formData = array();
 
 	/**
 	 * Returns a new model object. Unless overriden by the $config array, it will
@@ -169,7 +169,7 @@ class FOFModel extends JModelLegacy
 			if(!empty($config['view'])) $needsAView = false;
 		}
 		if($needsAView) $config['view'] = strtolower($type);
-		
+
 		$config['input']->set('option', $config['option']);
 		$config['input']->set('view', $config['view']);
 
@@ -214,7 +214,7 @@ class FOFModel extends JModelLegacy
 				require_once $path;
 			}
 		}
-		
+
 		// Fallback to the Default model class, e.g. FoobarModelDefault
 		if (!class_exists( $modelClass )) {
 			$modelClass = $prefix . 'Default';
@@ -263,7 +263,7 @@ class FOFModel extends JModelLegacy
 		// Fallback to the generic FOFModel model class
 		if (!class_exists( $modelClass )) {
 			$modelClass = 'FOFModel';
-		}		
+		}
 
 		$result = new $modelClass($config);
 
@@ -310,7 +310,7 @@ class FOFModel extends JModelLegacy
 		} else {
 			$this->input = new FOFInput();
 		}
-		
+
 		// Set the $name/$_name variable
 		$component = $this->input->getCmd('option','com_foobar');
 		if(array_key_exists('option', $config)) $component = $config['option'];
@@ -1230,27 +1230,27 @@ class FOFModel extends JModelLegacy
 	public function getForm($data = array(), $loadData = true, $source = null)
 	{
 		$this->_formData = $data;
-		
+
 		$name = $this->input->getCmd('option', 'com_foobar') . '.' .
 				$this->input->getCmd('view', 'cpanels');
-		
+
 		if(empty($source)) {
 			$source = $this->getState('form_name', null);
 		}
 		if(empty($source)) {
 			$source = 'form.'.$this->input->getCmd('view', 'cpanels');
 		}
-		
+
 		$options = array(
 			'control'	=> false,
 			'load_data'	=> $loadData,
 		);
-		
+
 		$form = $this->loadForm($name, $source, $options);
-		
+
 		return $form;
 	}
-	
+
 	/**
 	 * Method to get a form object.
 	 *
@@ -1281,16 +1281,16 @@ class FOFModel extends JModelLegacy
 
 		// Try to find the name and path of the form to load
 		$formFilename = $this->findFormFilename($source);
-		
+
 		// No form found? Quit!
 		if($formFilename === false) {
 			return false;
 		}
-		
+
 		// Set up the form name and path
 		$source = basename($formFilename,'.xml');
 		FOFForm::addFormPath(dirname($formFilename));
-		
+
 		// Set up field paths
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		$option			= $this->input->getCmd('option', 'com_foobar');
@@ -1299,7 +1299,7 @@ class FOFModel extends JModelLegacy
 		$file_root	   .= '/components/' . $option;
 		$alt_file_root	= ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
 		$alt_file_root .= '/components/' . $option;
-		
+
 		FOFForm::addFieldPath($file_root . '/fields');
 		FOFForm::addFieldPath($file_root . '/models/fields');
 		FOFForm::addFieldPath($alt_file_root . '/fields');
@@ -1344,21 +1344,21 @@ class FOFModel extends JModelLegacy
 
 		return $form;
 	}
-	
+
 	/**
 	 * Guesses the best candidate for the path to use for a particular form.
-	 * 
+	 *
 	 * @param   string  $source  The name of the form file to load, without the .xml extension
-	 * 
+	 *
 	 * @return  string  The path and filename of the form to load
-	 * 
+	 *
 	 * @since   2.0
 	 */
 	public function findFormFilename($source)
 	{
 		// Get some useful variables
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		$option			= $this->input->getCmd('option', 'com_foobar');
 		$view			= $this->input->getCmd('view', 'cpanels');
 		$template		= JFactory::getApplication()->getTemplate();
@@ -1368,7 +1368,7 @@ class FOFModel extends JModelLegacy
 		$alt_file_root .= '/components/' . $option;
 		$template_root	= ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
 		$template_root .= '/templates/' . $template . '/html/' . $option;
-		
+
 		// Set up the paths to look into
 		$paths = array(
 			// In the template override
@@ -1388,7 +1388,7 @@ class FOFModel extends JModelLegacy
 			// In the models/forms of the other side
 			$alt_file_root . '/models/forms',
 		);
-		
+
 		// Set up the suffixes to look into
 		$jversion		= new JVersion();
 		$versionParts	= explode('.', $jversion->RELEASE);
@@ -1399,7 +1399,7 @@ class FOFModel extends JModelLegacy
 			'.xml',
 		);
 		unset($jversion, $versionParts, $majorVersion);
-		
+
 		// Look for all suffixes in all paths
 		jimport('joomla.filesystem.file');
 		$result = false;
@@ -1413,7 +1413,7 @@ class FOFModel extends JModelLegacy
 			}
 			if($result) break;
 		}
-		
+
 		return $result;
 	}
 
@@ -1455,7 +1455,7 @@ class FOFModel extends JModelLegacy
 		// Trigger the form preparation event.
 		$app = JFactory::getApplication();
 		$results = $app->triggerEvent('onContentPrepareForm', array($form, $data));
-		
+
 		// Check for errors encountered while preparing the form.
 		if (count($results) && in_array(false, $results, true))
 		{
@@ -1509,8 +1509,8 @@ class FOFModel extends JModelLegacy
 		}
 
 		return $data;
-	}	
-	
+	}
+
 	/**
 	 * This method can be overriden to automatically do something with the
 	 * list results array. You are supposed to modify the list which was passed

@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Language field header
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderLanguage extends FOFFormHeaderFieldselectable
@@ -38,5 +38,5 @@ class FOFFormHeaderLanguage extends FOFFormHeaderFieldselectable
 		);
 
 		return $options;
-	}	
+	}
 }

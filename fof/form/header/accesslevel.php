@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Access level field header
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderAccesslevel extends FOFFormHeaderFieldselectable

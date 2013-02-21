@@ -98,7 +98,7 @@ class FOFViewHtml extends FOFView
 			$this->postRender();
 		}
 	}
-	
+
 	/**
 	 * Renders the link bar (submenu) using Joomla!'s default
 	 * JSubMenuHelper::addEntry method
@@ -116,7 +116,7 @@ class FOFViewHtml extends FOFView
 			}
 		}
 	}
-	
+
 	/**
 	 * Runs before rendering the view template, echoing HTML to put before the
 	 * view template's generated HTML
@@ -132,7 +132,7 @@ class FOFViewHtml extends FOFView
 			$renderer->preRender($view, $task, $this->input, $this->config);
 		}
 	}
-	
+
 	/**
 	 * Runs after rendering the view template, echoing HTML to put after the
 	 * view template's generated HTML
@@ -149,9 +149,9 @@ class FOFViewHtml extends FOFView
 
 	/**
 	 * Executes before rendering the page for the Browse task.
-	 * 
+	 *
 	 * @param   string  $tpl  Subtemplate to use
-	 * 
+	 *
 	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onBrowse($tpl = null)
@@ -164,9 +164,9 @@ class FOFViewHtml extends FOFView
 	/**
 	 * Executes before rendering a generic page, default to actions necessary
 	 * for the Browse task.
-	 * 
+	 *
 	 * @param   string  $tpl  Subtemplate to use
-	 * 
+	 *
 	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onDisplay($tpl = null)
@@ -199,9 +199,9 @@ class FOFViewHtml extends FOFView
 
 	/**
 	 * Executes before rendering the page for the Add task.
-	 * 
+	 *
 	 * @param   string  $tpl  Subtemplate to use
-	 * 
+	 *
 	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onAdd($tpl = null)
@@ -214,9 +214,9 @@ class FOFViewHtml extends FOFView
 
 	/**
 	 * Executes before rendering the page for the Edit task.
-	 * 
+	 *
 	 * @param   string  $tpl  Subtemplate to use
-	 * 
+	 *
 	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onEdit($tpl = null)
@@ -227,9 +227,9 @@ class FOFViewHtml extends FOFView
 
 	/**
 	 * Executes before rendering the page for the Read task.
-	 * 
+	 *
 	 * @param   string  $tpl  Subtemplate to use
-	 * 
+	 *
 	 * @return  boolean  Return true to allow rendering of the page
 	 */
 	protected function onRead($tpl = null)
@@ -242,7 +242,7 @@ class FOFViewHtml extends FOFView
 	 * Determines if the current Joomla! version and your current table support
 	 * AJAX-powered drag and drop reordering. If they do, it will set up the
 	 * drag & drop reordering feature.
-	 * 
+	 *
 	 * @return  boolean|array  False if not suported, a table with necessary
 	 *                         information (saveOrder: should you enabled DnD
 	 *                         reordering; orderingColumn: which column has the
@@ -253,57 +253,57 @@ class FOFViewHtml extends FOFView
 		if(version_compare(JVERSION, '3.0', 'lt')) {
 			return false;
 		}
-		
+
 		$model = $this->getModel();
-		
+
 		if(!method_exists($model, 'getTable')) {
 			return false;
 		}
-		
+
 		$table = $this->getModel()->getTable();
-		
+
 		if(!method_exists($table, 'getColumnAlias') || !method_exists($table, 'getTableFields')) {
 			return false;
 		}
-		
+
 		$orderingColumn = $table->getColumnAlias('ordering');
 		$fields = $table->getTableFields();
 		if(!array_key_exists($orderingColumn, $fields)) {
 			return false;
 		}
-		
+
 		$listOrder	= $this->escape($model->getState('filter_order', null, 'cmd'));
 		$listDirn	= $this->escape($model->getState('filter_order_Dir', 'ASC', 'cmd'));
 		$saveOrder	= $listOrder == $orderingColumn;
-		
+
 		if ($saveOrder)
 		{
 			$saveOrderingUrl = 'index.php?option='.$this->config['option'].'&view='.$this->config['view'].'&task=saveorder&format=json';
 			JHtml::_('sortablelist.sortable', 'itemsList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 		}
-		
+
 		return array(
 			'saveOrder'			=> $saveOrder,
 			'orderingColumn'	=> $orderingColumn
 		);
 	}
-	
+
 	/**
 	 * Returns the internal list of useful variables to the benefit of
 	 * FOFFormHeader fields.
-	 * 
+	 *
 	 * @return array
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getLists()
 	{
 		return $this->lists;
 	}
-	
+
 		/**
 	 * Returns a reference to the permissions object of this view
-	 * 
+	 *
 	 * @return stdClass
 	 */
 	public function getPerms()

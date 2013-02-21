@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldTimezone')) {
 class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,33 +51,33 @@ class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
-		
+
 		$selected = FOFFormFieldGroupedlist::getOptionName($this->getOptions(), $this->value);
-		
+
 		if(is_null($selected)) {
 			$selected = array(
 				'group'	=> '',
 				'item'	=> ''
 			);
 		}
-		
+
 		return '<span id="' . $this->id . '-group" class="fof-groupedlist-group ' . $class . '>' .
 			htmlspecialchars($selected['group'], ENT_COMPAT, 'UTF-8') .
-			'</span>' . 
+			'</span>' .
 			'<span id="' . $this->id . '-item" class="fof-groupedlist-item ' . $class . '>' .
 			htmlspecialchars($selected['item'], ENT_COMPAT, 'UTF-8') .
 			'</span>';
@@ -86,7 +86,7 @@ class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {

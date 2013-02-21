@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * This class is taken near verbatim (changes marked with **FOF** comment markers) from:
- * 
+ *
  * lessphp v0.3.8
  * http://leafo.net/lessphp
  *
@@ -63,7 +63,7 @@ class FOFLess {
 		jimport('joomla.filesystem.file');
 		return JFile::exists($name);
 		/** FOF - END CHANGE **/
-		
+
 	}
 
 	static public function compressList($items, $delim) {

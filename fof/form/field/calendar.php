@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldCalendar')) {
 class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,24 +51,24 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
 		// Initialize some field attributes.
 		$format = $this->element['format'] ? (string) $this->element['format'] : '%Y-%m-%d';
-		
+
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		
+
 		// Get some system objects.
 		$config = JFactory::getConfig();
 		$user = JFactory::getUser();
@@ -111,7 +111,7 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {

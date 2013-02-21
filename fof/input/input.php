@@ -16,7 +16,7 @@ class FOFInput extends JInput
 	/**
 	 * Public constructor. Overriden to allow specifying the global input array
 	 * to use as a string and instantiate from an objetc holding variables.
-	 * 
+	 *
 	 * @param array|string|object|null $source Source data; set null to use $_REQUEST
 	 * @param array $options Filter options
 	 */
@@ -60,10 +60,10 @@ class FOFInput extends JInput
 			// Any other case
 			$source = $_REQUEST;
 		}
-		
+
 		parent::__construct($source, $options);
 	}
-	
+
 	/**
 	 * Gets a value from the input data. Overriden to allow specifying a filter
 	 * mask.
@@ -83,29 +83,29 @@ class FOFInput extends JInput
 
 		return $default;
 	}
-	
+
 	/**
 	 * Returns a copy of the raw data stored in the class
-	 * 
+	 *
 	 * @return type
 	 */
 	public function getData()
 	{
 		return $this->data;
 	}
-	
+
 	/**
 	 * Old static methods are now deprecated. This magic method makes sure there
 	 * is a continuity in our approach. The downside is that it's only compatible
 	 * with PHP 5.3.0. Sorry!
-	 * 
+	 *
 	 * @param string $name Name of the method we're calling
 	 * @param array $arguments The arguments passed to the method
 	 * @return mixed
 	 */
 	public static function __callStatic($name, $arguments) {
 		JLog::add('FOFInput: static getXXX() methods are deprecated. Use the input object\'s methods instead.', JLog::WARNING, 'deprecated');
-		
+
 		if(substr($name, 0, 3) == 'get') {
 			// Initialise arguments
 			$key = array_shift($arguments);
@@ -113,7 +113,7 @@ class FOFInput extends JInput
 			$input = array_shift($arguments);
 			$type = 'none';
 			$mask = 0;
-			
+
 			$type = strtolower(substr($name, 3));
 			if($type == 'var') {
 				$type = array_shift($arguments);
@@ -125,31 +125,31 @@ class FOFInput extends JInput
 			if(is_null($mask)) {
 				$mask = 0;
 			}
-			
+
 			if(!($input instanceof FOFInput) && !($input instanceof JInput)) {
 				$input = new FOFInput($input);
 			}
 			return $input->get($key, $default, $type, $mask);
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Sets an input variable. WARNING: IT SHOULD NO LONGER BE USED!
-	 * 
+	 *
 	 * @param type $name
 	 * @param type $value
 	 * @param type $input
 	 * @param type $overwrite
 	 * @return type
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public static function setVar($name, $value = null, &$input = array(), $overwrite = true)
 	{
 		JLog::add('FOFInput::setVar() is deprecated. Use set() instead.', JLog::WARNING, 'deprecated');
-		
+
 		if(empty($input)) {
 			return JRequest::setVar($name, $value, 'default', $overwrite);
 		} elseif(is_string($input)) {
@@ -158,34 +158,34 @@ class FOFInput extends JInput
 			if(!$overwrite && array_key_exists($name, $input)) {
 				return $input[$name];
 			}
-			
+
 			$previous = array_key_exists($name, $input) ? $input[$name] : null;
-			
+
 			if(is_array($input)) {
 				$input[$name] = $value;
 			} elseif($input instanceof FOFInput) {
 				$input->set($name, $value);
 			}
-			
+
 			return $previous;
 		}
 	}
-	
+
 	public static function getString($name, $default = '', $input = array(), $mask = 0)
 	{
 		JLog::add('FOFInput::getString() is deprecated. Use get() instead.', JLog::WARNING, 'deprecated');
 		// Cast to string, in case JREQUEST_ALLOWRAW was specified for mask
 		return (string) self::getVar($name, $default, $input, 'string', $mask);
 	}
-	
+
 	/**
 	 * Custom filter implementation. Works better with arrays and allows the use
 	 * of a filter mask.
-	 * 
+	 *
 	 * @param string $var
 	 * @param int $mask
 	 * @param string $type
-	 * 
+	 *
 	 * @return mixed
 	 */
 	protected function _cleanVar($var, $mask = 0, $type = null)
@@ -197,7 +197,7 @@ class FOFInput extends JInput
 			}
 			return $temp;
 		}
-		
+
 		// If the no trim flag is not set, trim the variable
 		if (!($mask & 1) && is_string($var))
 		{

@@ -12,18 +12,18 @@ class FOFForm extends JForm
 {
 	/**
 	 * The model attached to this view
-	 * 
+	 *
 	 * @var FOFModel
 	 */
 	protected $model;
-	
+
 	/**
 	 * The view used to render this form
-	 * 
+	 *
 	 * @var FOFView
 	 */
 	protected $view;
-	
+
 	/**
 	 * Method to get an instance of a form.
 	 *
@@ -77,15 +77,15 @@ class FOFForm extends JForm
 
 		return $forms[$name];
 	}
-	
+
 	/**
 	 * Returns the value of an attribute of the form itself
-	 * 
+	 *
 	 * @param   string  $attribute  The name of the attribute
 	 * @param   mixed   $default    Optional default value to return
-	 * 
+	 *
 	 * @return  mixed
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getAttribute($attribute, $default = null)
@@ -97,27 +97,27 @@ class FOFForm extends JForm
 			return (string)$value;
 		}
 	}
-	
+
 	/**
 	 * Loads the CSS files defined in the form, based on its cssfiles attribute
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function loadCSSFiles()
 	{
 		// Support for CSS files
 		$cssfiles = $this->getAttribute('cssfiles');
-		
+
 		if (!empty($cssfiles)) {
 			$cssfiles = explode(',', $cssfiles);
 			foreach($cssfiles as $cssfile) {
 				FOFTemplateUtils::addCSS(trim($cssfile));
 			}
 		}
-		
+
 		// Support for LESS files
 		$lessfiles = $this->getAttribute('lessfiles');
-		
+
 		if (!empty($lessfiles)) {
 			$lessfiles = explode(',', $lessfiles);
 			foreach($lessfiles as $def) {
@@ -128,79 +128,79 @@ class FOFForm extends JForm
 			}
 		}
 	}
-	
+
 	/**
 	 * Loads the Javascript files defined in the form, based on its jsfiles attribute
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function loadJSFiles()
 	{
 		$jsfiles = $this->getAttribute('jsfiles');
-		
+
 		if(empty($jsfiles)) {
 			return;
 		}
-		
+
 		$jsfiles = explode(',', $jsfiles);
 		foreach($jsfiles as $jsfile) {
 			FOFTemplateUtils::addJS(trim($jsfile));
 		}
 	}
-	
+
 	/**
 	 * Returns a reference to the protected $data object, allowing direct
 	 * access to and manipulation of the form's data.
-	 * 
+	 *
 	 * @return   JRegistry  The form's data registry
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getData()
 	{
 		return $this->data;
 	}
-	
+
 	/**
 	 * Attaches a FOFModel to this form
-	 * 
+	 *
 	 * @param   FOFModel  $model  The model to attach to the form
 	 */
 	public function setModel(FOFModel &$model)
 	{
 		$this->model = $model;
 	}
-	
+
 	/**
 	 * Returns the FOFModel attached to this form
-	 * 
+	 *
 	 * @return FOFModel
 	 */
 	public function &getModel()
 	{
 		return $this->model;
 	}
-	
+
 	/**
 	 * Attaches a FOFView to this form
-	 * 
+	 *
 	 * @param   FOFView  $view  The view to attach to the form
 	 */
 	public function setView(FOFView &$view)
 	{
 		$this->view = $view;
 	}
-	
+
 	/**
 	 * Returns the FOFView attached to this form
-	 * 
+	 *
 	 * @return FOFView
 	 */
 	public function &getView()
 	{
 		return $this->view;
 	}
-	
+
 	/**
 	 * Method to get an array of FOFFormHeader objects in the headerset.
 	 *
@@ -237,7 +237,7 @@ class FOFForm extends JForm
 
 		return $fields;
 	}
-	
+
 	/**
 	 * Method to get an array of <header /> elements from the form XML document which are
 	 * in a control group by name.
@@ -314,8 +314,8 @@ class FOFForm extends JForm
 		}
 
 		return $fields;
-	}	
-	
+	}
+
 	/**
 	 * Method to get a header field represented as a FOFFormHeader object.
 	 *
@@ -346,7 +346,7 @@ class FOFForm extends JForm
 
 		return $this->loadHeader($element, $group, $value);
 	}
-	
+
 	/**
 	 * Method to get a header field represented as an XML element object.
 	 *
@@ -437,7 +437,7 @@ class FOFForm extends JForm
 
 		return $element;
 	}
-	
+
 	/**
 	 * Method to load, setup and return a FOFFormHeader object based on field data.
 	 *
@@ -480,8 +480,8 @@ class FOFForm extends JForm
 		{
 			return false;
 		}
-	}	
-	
+	}
+
 	/**
 	 * Proxy for {@link FOFFormHelper::loadFieldType()}.
 	 *
@@ -496,7 +496,7 @@ class FOFForm extends JForm
 	{
 		return FOFFormHelper::loadFieldType($type, $new);
 	}
-	
+
 	/**
 	 * Proxy for {@link FOFFormHelper::loadHeaderType()}.
 	 *
@@ -511,7 +511,7 @@ class FOFForm extends JForm
 	{
 		return FOFFormHelper::loadHeaderType($type, $new);
 	}
-	
+
 	/**
 	 * Proxy for {@link FOFFormHelper::loadRuleType()}.
 	 *
@@ -527,7 +527,7 @@ class FOFForm extends JForm
 	{
 		return FOFFormHelper::loadRuleType($type, $new);
 	}
-	
+
 	/**
 	 * Proxy for {@link FOFFormHelper::addFieldPath()}.
 	 *

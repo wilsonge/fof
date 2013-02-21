@@ -45,7 +45,7 @@ abstract class FOFFormHeader
 	 * @since  2.0
 	 */
 	protected $label;
-	
+
 	/**
 	 * The header HTML.
 	 *
@@ -53,7 +53,7 @@ abstract class FOFFormHeader
 	 * @since  2.0
 	 */
 	protected $header;
-	
+
 	/**
 	 * The filter HTML.
 	 *
@@ -101,7 +101,7 @@ abstract class FOFFormHeader
 	 * @since  2.0
 	 */
 	protected $group;
-	
+
 	/**
 	 * The form field type.
 	 *
@@ -133,7 +133,7 @@ abstract class FOFFormHeader
 	 * @since  2.0
 	 */
 	protected $filterSource;
-	
+
 	/**
 	 * Is this a sortable column?
 	 *
@@ -157,7 +157,7 @@ abstract class FOFFormHeader
 			$this->form = $form;
 		}
 	}
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -193,7 +193,7 @@ abstract class FOFFormHeader
 				{
 					$this->value = $this->getValue();
 				}
-				
+
 				return $this->value;
 				break;
 
@@ -245,7 +245,7 @@ abstract class FOFFormHeader
 
 		return null;
 	}
-	
+
 	/**
 	 * Method to attach a JForm object to the field.
 	 *
@@ -261,7 +261,7 @@ abstract class FOFFormHeader
 
 		return $this;
 	}
-	
+
 	/**
 	 * Method to attach a FOFForm object to the field.
 	 *
@@ -307,10 +307,10 @@ abstract class FOFFormHeader
 
 		// Set the group of the field.
 		$this->group = $group;
-		
+
 		// Set the td width of the field.
 		$this->tdwidth = $tdwidth;
-		
+
 		// Set the field name and id.
 		$this->fieldname = $this->getFieldName($name);
 		$this->name = $this->getName($this->fieldname);
@@ -321,8 +321,8 @@ abstract class FOFFormHeader
 		$this->value = $this->getValue();
 
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Method to get the id used for the field input tag.
 	 *
@@ -366,7 +366,7 @@ abstract class FOFFormHeader
 
 		return $id;
 	}
-	
+
 	/**
 	 * Method to get the name used for the field input tag.
 	 *
@@ -413,8 +413,8 @@ abstract class FOFFormHeader
 		}
 
 		return $name;
-	}	
-	
+	}
+
 	/**
 	 * Method to get the field name used.
 	 *
@@ -428,7 +428,7 @@ abstract class FOFFormHeader
 	{
 		return $fieldName;
 	}
-	
+
 	/**
 	 * Method to get the field label.
 	 *
@@ -442,7 +442,7 @@ abstract class FOFFormHeader
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$title = $this->element['label'] ? (string) $this->element['label'] : '';
-		
+
 		if(empty($title))
 		{
 			$view = $this->form->getView();
@@ -452,7 +452,7 @@ abstract class FOFFormHeader
 				(string) $this->element['name'];
 			$title = strtoupper($title);
 			$result = JText::_($title);
-			
+
 			if ($result === $title)
 			{
 				$title = ucfirst((string) $this->element['name']);
@@ -461,17 +461,17 @@ abstract class FOFFormHeader
 
 		return $title;
 	}
-	
+
 	/**
 	 * Get the filter value for this header field
 	 */
 	protected function getValue()
 	{
 		$model = $this->form->getModel();
-		
+
 		return $model->getState($this->filterSource);
 	}
-	
+
 	protected function getFilterSource($filterSource)
 	{
 		if ($filterSource)
@@ -483,7 +483,7 @@ abstract class FOFFormHeader
 			return $this->name;
 		}
 	}
-	
+
 	protected function getSortable()
 	{
 		$sortable = ($this->element['sortable'] != 'false');
@@ -493,54 +493,54 @@ abstract class FOFFormHeader
 			}
 			$sortable = !empty($this->header);
 		}
-		
+
 		return $sortable;
 	}
-	
+
 	/**
 	 * Returns the HTML for the header row, or null if this element should
 	 * render no header element
-	 * 
+	 *
 	 * @return  string|null  HTML code or null if nothing is to be rendered
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	protected function getHeader()
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Returns the HTML for a text filter to be rendered in the filter row,
 	 * or null if this element should render no text input filter.
-	 * 
+	 *
 	 * @return  string|null  HTML code or null if nothing is to be rendered
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	protected function getFilter()
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Returns the HTML for the buttons to be rendered in the filter row,
 	 * next to the text input filter, or null if this element should render no
 	 * text input filter buttons.
-	 * 
+	 *
 	 * @return  string|null  HTML code or null if nothing is to be rendered
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	protected function getButtons()
 	{
 		return null;
 	}
-	
+
 	/**
 	 * Returns the JHtml options for a drop-down filter. Do not include an
 	 * empty option, it is added automatically.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	protected function getOptions()

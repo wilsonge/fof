@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldEMail')) {
 class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,16 +51,16 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
@@ -71,20 +71,20 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 		{
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
-		
+
 		if (!empty($empty_replacement) && empty($this->value))
 		{
 			$this->value = JText::_($empty_replacement);
 		}
-		
+
 		$innerHtml = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-		
+
 		if($dolink)
 		{
 			$innerHtml = '<a href="mailto:' . $innerHtml . '">' .
 					$innerHtml . '</a>';
 		}
-		
+
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			$innerHtml .
 			'</span>';
@@ -93,7 +93,7 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {
@@ -102,7 +102,7 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 		$show_link			= false;
 		$link_url			= '';
 		$empty_replacement	= '';
-		
+
 		// Get field parameters
 		if ($this->element['class'])
 		{
@@ -120,35 +120,35 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 		{
 			$link_url = 'mailto:' . htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		}
-		
+
 		if ($this->element['empty_replacement'])
 		{
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
-		
+
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($this->value))
 		{
 			$this->value = JText::_($empty_replacement);
 		}
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
-		
+
 		// Create the HTML
 		$html = '<span id="' . $this->id . '" ' . $class . '>';
-		
+
 		if ($show_link)
 		{
 			$html .= '<a href="' . $link_url . '">';
 		}
-		
+
 		$html .= $value;
-		
+
 		if ($show_link)
 		{
 			$html .= '</a>';
 		}
-		
+
 		$html .= '</span>';
 		return $html;
-	}	
+	}
 }

@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldText')) {
 class FOFFormFieldText extends JFormFieldText implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,16 +51,16 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
@@ -70,12 +70,12 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		{
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
-		
+
 		if (!empty($empty_replacement) && empty($this->value))
 		{
 			$this->value = JText::_($empty_replacement);
 		}
-		
+
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
 			'</span>';
@@ -84,7 +84,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {
@@ -94,7 +94,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		$show_link			= false;
 		$link_url			= '';
 		$empty_replacement	= '';
-		
+
 		// Get field parameters
 		if ($this->element['class'])
 		{
@@ -123,7 +123,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 			$keyfield = $this->item->getKeyName();
 			$replace = $this->item->$keyfield;
 			$link_url = str_replace('[ITEM:ID]', $replace, $link_url);
-			
+
 			// Replace other field variables in the URL
 			$fields = $this->item->getFields();
 			foreach($fields as $fielddata)
@@ -138,12 +138,12 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		{
 			$show_link = false;
 		}
-		
+
 		if ($this->element['empty_replacement'])
 		{
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
-		
+
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($this->value))
 		{
@@ -157,23 +157,23 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		{
 			$value = sprintf($format_string, $this->value);
 		}
-		
+
 		// Create the HTML
 		$html = '<span id="' . $this->id . '" ' . $class . '>';
-		
+
 		if ($show_link)
 		{
 			$html .= '<a href="' . $link_url . '">';
 		}
-		
+
 		$html .= $value;
-		
+
 		if ($show_link)
 		{
 			$html .= '</a>';
 		}
-		
+
 		$html .= '</span>';
 		return $html;
-	}	
+	}
 }

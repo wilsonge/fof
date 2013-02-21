@@ -26,7 +26,7 @@ class FOFFormHelper extends JFormHelper
 	{
 		return self::loadType('field', $type, $new);
 	}
-	
+
 	/**
 	 * Method to load a form field object given a type.
 	 *
@@ -41,7 +41,7 @@ class FOFFormHelper extends JFormHelper
 	{
 		return self::loadType('header', $type, $new);
 	}
-	
+
 	/**
 	 * Method to load a form entity object given a type.
 	 * Each type is loaded only once and then used as a prototype for other objects of same type.
@@ -80,7 +80,7 @@ class FOFFormHelper extends JFormHelper
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Attempt to import the JFormField class file if it isn't already imported.
 	 * You can use this method outside of JForm for loading a field for inheritance or composition.
@@ -95,7 +95,7 @@ class FOFFormHelper extends JFormHelper
 	{
 		return self::loadClass('field', $type);
 	}
-	
+
 	/**
 	 * Attempt to import the FOFFormHeader class file if it isn't already imported.
 	 * You can use this method outside of JForm for loading a field for inheritance or composition.
@@ -110,7 +110,7 @@ class FOFFormHelper extends JFormHelper
 	{
 		return self::loadClass('header', $type);
 	}
-	
+
 	/**
 	 * Load a class for one of the form's entities of a particular type.
 	 * Currently, it makes sense to use this method for the "field" and "rule" entities
@@ -203,7 +203,7 @@ class FOFFormHelper extends JFormHelper
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Method to add a path to the list of header include paths.
 	 *
@@ -214,5 +214,5 @@ class FOFFormHelper extends JFormHelper
 	public static function addHeaderPath($new = null)
 	{
 		return self::addPath('header', $new);
-	}	
+	}
 }

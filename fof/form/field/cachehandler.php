@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldCacheHandler')) {
 class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,21 +51,21 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		
+
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
@@ -74,7 +74,7 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {

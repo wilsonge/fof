@@ -22,7 +22,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 	/**
 	 * Echoes any HTML to show before the view template
-	 * 
+	 *
 	 * @param   string  $view   The current view
 	 * @param   string  $task   The current task
 	 * @param   array   $input  The input array (request parameters)
@@ -32,7 +32,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$format = $input->getCmd('format', 'html');
 		if(empty($format)) $format = 'html';
 		if($format != 'html') return;
-		
+
 		// Wrap output in a Joomla-versioned div
 		$version = new JVersion;
 		$version = str_replace('.', '', $version->RELEASE);
@@ -45,7 +45,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 	/**
 	 * Echoes any HTML to show after the view template
-	 * 
+	 *
 	 * @param   string  $view   The current view
 	 * @param   string  $task   The current task
 	 * @param   array   $input  The input array (request parameters)
@@ -57,11 +57,11 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
-	 * 
+	 *
 	 * @param   FOFForm   $form      The form to render
 	 * @param   FOFModel  $model     The model providing our data
 	 * @param   FOFInput  $input     The input object
-	 * 
+	 *
 	 * @return  string    The HTML rendering of the form
 	 */
 	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
@@ -82,7 +82,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$html .= "\t".'<input type="hidden" name="filter_order" value="'.$filter_order.'" />'.PHP_EOL;
 		$html .= "\t".'<input type="hidden" name="filter_order_Dir" value="'.$filter_order_Dir.'" />'.PHP_EOL;
 		$html .= "\t".'<input type="hidden" name="'.JFactory::getSession()->getFormToken().'" value="1" />'.PHP_EOL;
-		
+
 		// Start the table output
 		$html .= "\t\t" . '<table class="adminlist" id="adminList">' . PHP_EOL;
 
@@ -97,13 +97,13 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		{
 			$html .= "\t\t\t<thead>" . PHP_EOL;
 		}
-		
+
 		// Pre-render the header and filter rows
 		if ($show_header || $show_filters)
 		{
 			$header_html = '';
 			$filter_html = '';
-			
+
 			foreach ($headerFields as $header)
 			{
 				// Make sure we have a header field. Under Joomla! 2.5 we cannot
@@ -113,7 +113,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				{
 					continue;
 				}
-				
+
 				$tdwidth = $header->tdwidth;
 				if (!empty($tdwidth))
 				{
@@ -123,15 +123,15 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				{
 					$tdwidth = '';
 				}
-				
+
 				$header_html .= "\t\t\t\t\t<th $tdwidth>" . PHP_EOL;
 				$header_html .= "\t\t\t\t\t\t" . $tmpHeader;
 				$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
-				
+
 				$filter = $header->filter;
 				$buttons = $header->buttons;
 				$options = $header->options;
-				
+
 				$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
 				if (!empty($filter))
 				{
@@ -155,7 +155,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				$filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
 			}
 		}
-		
+
 		// Render header if enabled
 		if ($show_header)
 		{
@@ -177,7 +177,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		{
 			$html .= "\t\t\t</thead>" . PHP_EOL;
 		}
-		
+
 		// Loop through rows and fields, or show placeholder for no rows
 		$html .= "\t\t\t<tbody>" . PHP_EOL;
 		$fields = $form->getFieldset('items');
@@ -190,14 +190,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			{
 				$table_item = $form->getModel()->getTable();
 				$table_item->bind($item);
-				
+
 				$form->bind($item);
-				
+
 				$m = 1 - $m;
 				$class = 'row'.$m;
-				
+
 				$html .= "\t\t\t\t<tr class=\"$class\">" . PHP_EOL;
-				
+
 				$fields = $form->getFieldset('items');
 				foreach($fields as $field)
 				{
@@ -206,7 +206,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 					$class = $field->labelClass ? 'class ="' . $field->labelClass . '"' : '';
 					$html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . PHP_EOL;
 				}
-				
+
 				$html .= "\t\t\t\t</tr>" . PHP_EOL;
 			}
 		}
@@ -217,7 +217,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			$html .= "</td></tr>\n";
 		}
 		$html .= "\t\t\t</tbody>" . PHP_EOL;
-		
+
 		// Render the pagination bar, if enabled
 		if($show_pagination)
 		{
@@ -230,23 +230,23 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			$html .= "</td></tr>\n";
 			$html .= "\t\t\t</tfoot>" . PHP_EOL;
 		}
-		
+
 		// End the table output
 		$html .= "\t\t" . '</table>' . PHP_EOL;
-		
+
 		// End the form
 		$html .= '</form>' . PHP_EOL;
-		
+
 		return $html;
 	}
 
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
-	 * 
+	 *
 	 * @param   FOFForm   $form      The form to render
 	 * @param   FOFModel  $model     The model providing our data
 	 * @param   FOFInput  $input     The input object
-	 * 
+	 *
 	 * @return  string    The HTML rendering of the form
 	 */
 	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
@@ -254,9 +254,9 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		// Get the key for this model's table
 		$key = $model->getTable()->getKeyName();
 		$keyValue = $model->getId();
-		
+
 		$html = '';
-		
+
 		foreach($form->getFieldsets() as $fieldset) {
 			$fields = $form->getFieldset($fieldset->name);
 
@@ -284,17 +284,17 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 			$html .= "\t".'</div>'.PHP_EOL;
 		}
-		
+
 		return $html;
 	}
 
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
-	 * 
+	 *
 	 * @param   FOFForm   $form      The form to render
 	 * @param   FOFModel  $model     The model providing our data
 	 * @param   FOFInput  $input     The input object
-	 * 
+	 *
 	 * @return  string    The HTML rendering of the form
 	 */
 	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
@@ -302,14 +302,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		// Get the key for this model's table
 		$key = $model->getTable()->getKeyName();
 		$keyValue = $model->getId();
-		
+
 		$html = '';
-		
+
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">'.PHP_EOL;
 		$html .= "\t".'<input type="hidden" name="option" value="'.$input->getCmd('option').'" />'.PHP_EOL;
 		$html .= "\t".'<input type="hidden" name="view" value="'.$input->getCmd('view', 'edit').'" />'.PHP_EOL;
 		$html .= "\t".'<input type="hidden" name="task" value="" />'.PHP_EOL;
-		
+
 		$html .= "\t".'<input type="hidden" name="'.$key.'" value="'.$keyValue.'" />'.PHP_EOL;
 		$html .= "\t".'<input type="hidden" name="'.JFactory::getSession()->getFormToken().'" value="1" />'.PHP_EOL;
 
@@ -342,13 +342,13 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		}
 
 		$html .= '</form>';
-		
+
 		return $html;
 	}
 
 	/**
 	 * Renders the submenu (link bar)
-	 * 
+	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object
@@ -373,7 +373,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 	/**
 	 * Renders the toolbar buttons
-	 * 
+	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object

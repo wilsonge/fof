@@ -26,9 +26,9 @@ abstract class FOFView extends JViewLegacy
 	protected $input = array();
 
 	protected $rendererObject = null;
-	
+
 	protected $doPreRender = true;
-	
+
 	protected $doPostRender = true;
 
 	public function  __construct($config = array()) {
@@ -242,14 +242,14 @@ abstract class FOFView extends JViewLegacy
 		{
 			JError::setErrorHandling(E_ALL,'ignore');
 		}
-		
+
 		$result = $this->loadTemplate($tpl);
 
 		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			JError::setErrorHandling(E_WARNING,'callback');
 		}
-		
+
 		if ($result instanceof Exception) {
 			JError::raiseError($result->getCode(), $result->getMessage());
 			return $result;
@@ -257,15 +257,15 @@ abstract class FOFView extends JViewLegacy
 
 		echo $result;
 	}
-	
+
 	/**
 	 * Overrides the built-in loadTemplate function with an FOF-specific one.
 	 * Our overriden function uses loadAnyTemplate to provide smarter view
 	 * template loading.
-	 * 
+	 *
 	 * @param   string   $tpl     The name of the template file to parse
 	 * @param   boolean  $strict  Should we use strict naming, i.e. force a non-empty $tpl?
-	 * 
+	 *
 	 * @return  mixed  A string if successful, otherwise a JError object
 	 */
 	public function loadTemplate($tpl = null, $strict = false) {
@@ -276,7 +276,7 @@ abstract class FOFView extends JViewLegacy
 		$altBasePath = $basePath;
 		$basePath .= $this->config['view'].'/';
 		$altBasePath .= FOFInflector::isSingular($this->config['view']) ? FOFInflector::pluralize($this->config['view']) : FOFInflector::singularize($this->config['view']).'/';
-		
+
 		if ($strict)
 		{
 			$paths = array(
@@ -306,11 +306,11 @@ abstract class FOFView extends JViewLegacy
 				break;
 			}
 		}
-		
+
 		if ($result instanceof Exception) {
 			JError::raiseError($result->getCode(), $result->getMessage());
 		}
-		
+
 		return $result;
 	}
 
@@ -377,7 +377,7 @@ abstract class FOFView extends JViewLegacy
 	protected function findRenderer()
 	{
 		jimport('joomla.filesystem.folder');
-		
+
 		// Try loading the stock renderers shipped with FOF
 		if(empty(self::$renderers) || !class_exists('FOFRenderJoomla', false)) {
 			$path = dirname(__FILE__).'/../render/';
@@ -416,17 +416,17 @@ abstract class FOFView extends JViewLegacy
 	{
 		self::$renderers[] = $renderer;
 	}
-	
+
 	public function setPreRender($value)
 	{
 		$this->doPreRender = $value;
 	}
-	
+
 	public function setPostRender($value)
 	{
 		$this->doPostRender = $value;
 	}
-	
+
 	/**
 	 * Load a helper file
 	 *
@@ -450,27 +450,27 @@ abstract class FOFView extends JViewLegacy
 			$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/components/' .
 					$this->config['option'] . '/helpers';
 			$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
-			
+
 			if($helper == false) {
 				$path = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR) . '/components/' .
 					$this->config['option'] . '/helpers';
 				$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
 			}
 		}
-		
+
 		if ($helper != false)
 		{
 			// Include the requested template filename in the local scope
 			include_once $helper;
 		}
 	}
-	
+
 	/**
 	 * Returns the view's option (component name) and view name in an
 	 * associative array.
-	 * 
+	 *
 	 * @return  array
-	 * 
+	 *
 	 * @since   2.0
 	 */
 	public function getViewOptionAndName()

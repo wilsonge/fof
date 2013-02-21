@@ -11,7 +11,7 @@ class FOFEncryptBase32 {
 
 	/**
 	 * csRFC3548
-	 * 
+	 *
 	 * The character set as defined by RFC3548
 	 * @link http://www.ietf.org/rfc/rfc3548.txt
 	 */
@@ -19,7 +19,7 @@ class FOFEncryptBase32 {
 
 	/**
 	 * str2bin
-	 * 
+	 *
 	 * Converts any ascii string to a binary string
 	 *
 	 * @param string $str The string you want to convert
@@ -29,10 +29,10 @@ class FOFEncryptBase32 {
 		$chrs = unpack('C*', $str);
 		return vsprintf(str_repeat('%08b', count($chrs)), $chrs);
 	}
-	
+
 	/**
 	 * bin2str
-	 * 
+	 *
 	 * Converts a binary string to an ascii string
 	 *
 	 * @param string $str The string of 0's and 1's you want to convert
@@ -51,10 +51,10 @@ class FOFEncryptBase32 {
 		array_unshift($chrs, 'C*');
 		return call_user_func_array('pack', $chrs);
 	}
-	
+
 	/**
 	 * fromBin
-	 * 
+	 *
 	 * Converts a correct binary string to base32
 	 *
 	 * @param string $str The string of 0's and 1's you want to convert
@@ -73,7 +73,7 @@ class FOFEncryptBase32 {
 		// We need a string divisible by 5
 		$length = strlen($str);
 		$rbits = $length & 7;
-		
+
 		if ($rbits > 0) {
 			// Excessive bits need to be padded
 			$ebits = substr($str, $length - $rbits);
@@ -88,7 +88,7 @@ class FOFEncryptBase32 {
 
 	/**
 	 * toBin
-	 * 
+	 *
 	 * Accepts a base32 string and returns an ascii binary string
 	 *
 	 * @param string $str The base32 string to convert
@@ -105,15 +105,15 @@ class FOFEncryptBase32 {
 		// Unpad if nessicary
 		$length = strlen($str);
 		$rbits = $length & 7;
-		if ($rbits > 0) 
+		if ($rbits > 0)
 			$str = substr($str, 0, $length - $rbits);
-		
+
 		return $str;
 	}
 
 	/**
 	 * fromString
-	 * 
+	 *
 	 * Convert any string to a base32 string
 	 * This should be binary safe...
 	 *
@@ -123,25 +123,25 @@ class FOFEncryptBase32 {
 	public function encode($str) {
 		return $this->fromBin($this->str2bin($str));
 	}
-	
+
 	/**
 	 * toString
-	 * 
+	 *
 	 * Convert any base32 string to a normal sctring
 	 * This should be binary safe...
-	 * 
+	 *
 	 * @param string $str The base32 string to convert
 	 * @return string The normal string
 	 */
 	public function decode($str) {
 		$str = strtoupper($str);
-		
+
 		return $this->bin2str($this->tobin($str));
 	}
-	
+
 	/**
 	 * _mapcharset
-	 * 
+	 *
 	 * Used with array_map to map the bits from a binary string
 	 * directly into a base32 character set
 	 *
@@ -153,10 +153,10 @@ class FOFEncryptBase32 {
 		$x = self::csRFC3548; // Huh!
 		return $x[bindec($str)];
 	}
-	
+
 	/**
 	 * _mapbin
-	 * 
+	 *
 	 * Used with array_map to map the characters from a base32
 	 * character set directly into a binary string
 	 *

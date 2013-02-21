@@ -17,12 +17,12 @@ defined('_JEXEC') or die();
 class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -42,7 +42,7 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -50,22 +50,22 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	protected function getInput()
 	{
 		throw new Exception(__CLASS__.' cannot be used in input forms');
 	}
-	
+
 	public function getStatic()
 	{
 		throw new Exception(__CLASS__.' cannot be used in single item display forms');
 	}
-	
+
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof FOFTable))
@@ -81,11 +81,11 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 			$locked_by = $this->item->$locked_by_field;
 			$checked_out = ($locked_by != 0);
 		}
-		
+
 		// Get the key id for this record
 		$key_field = $this->item->getKeyName();
 		$key_id = $this->item->$key_field;
-		
+
 		// Get the HTML
 		return JHTML::_('grid.id', $this->rowid, $key_id, $checked_out);
 	}

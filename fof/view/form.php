@@ -18,7 +18,7 @@ class FOFViewForm extends FOFViewHtml
 {
 	/** @var FOFForm The form to render */
 	protected $form;
-	
+
 	/**
 	 * Displays the view
 	 *
@@ -34,10 +34,10 @@ class FOFViewForm extends FOFViewHtml
 		$this->form = $this->getModel()->getForm();
 		$this->form->setModel($model);
 		$this->form->setView($this);
-		
+
 		// Get some useful information
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		
+
 		// Get the task set in the model
 		$task = $model->getState('task','browse');
 
@@ -62,7 +62,7 @@ class FOFViewForm extends FOFViewHtml
 		// Show the view
 		// -- Output HTML before the view template
 		$this->preRender();
-		
+
 		// -- Try to load a view template; if not exists render the form directly
 		$basePath = $isAdmin ? 'admin:' : 'site:';
 		$basePath .= $this->config['option'].'/';
@@ -72,23 +72,23 @@ class FOFViewForm extends FOFViewHtml
 			$path .= '_'.$tpl;
 		}
 		$viewTemplate = $this->loadAnyTemplate($path);
-		
+
 		// If there was no template file found, display the form
 		if($viewTemplate instanceof Exception) {
 			$viewTemplate = $this->getRenderedForm();
 		}
-		
+
 		// -- Output the view template
 		echo $viewTemplate;
 		// -- Output HTML after the view template
 		$this->postRender();
 	}
-	
+
 	/**
 	 * Returns the HTML rendering of the FOFForm attached to this view. Very
 	 * useful for customising a form page without having to meticulously hand-
 	 * code the entire form.
-	 * 
+	 *
 	 * @return  string  The HTML of the rendered form
 	 */
 	public function getRenderedForm()
@@ -104,15 +104,15 @@ class FOFViewForm extends FOFViewHtml
 		}
 		return $html;
 	}
-	
+
 	protected function onAdd($tpl = null)
 	{
 		// Hide the main menu
 		JRequest::setVar('hidemainmenu', true);
-		
+
 		// Get the model
 		$model	= $this->getModel();
-		
+
 		// Assign the item and form to the view
 		$this->assign( 'item',		$model->getItem() );
 		$this->assign( 'form',		$this->form );

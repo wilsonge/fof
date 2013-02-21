@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Generic filter, drop-down based on SQL query
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderFiltersql extends FOFFormHeaderFieldsql

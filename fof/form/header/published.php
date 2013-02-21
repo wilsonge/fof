@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Field header for Published (enabled) columns
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderPublished extends FOFFormHeaderFieldselectable
@@ -52,7 +52,7 @@ class FOFFormHeaderPublished extends FOFFormHeaderFieldselectable
 			$config['all'] = 1;
 		}
 
-		$options = JHtml::_('jgrid.publishedOptions', $config);	
+		$options = JHtml::_('jgrid.publishedOptions', $config);
 
 		reset($options);
 

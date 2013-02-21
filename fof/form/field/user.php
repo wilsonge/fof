@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldUser')) {
 class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,16 +51,16 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
@@ -70,7 +70,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 		$show_name		= false;
 		$show_id		= false;
 		$class			= '';
-		
+
 		// Get the field parameters
 		if ($this->element['class'])
 		{
@@ -92,10 +92,10 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 		{
 			$show_id = true;
 		}
-		
+
 		// Get the user record
 		$user = JFactory::getUser($this->value);
-		
+
 		// Render the HTML
 		$html = '<div id="' . $this->id . '" ' . $class . '>';
 		if ($show_username)
@@ -115,14 +115,14 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 			$html .= '<span class="fof-userfield-email">' . $user->email . '</span>';
 		}
 		$html .= '</div>';
-	
+
 		return $html;
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {
@@ -137,10 +137,10 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 		$avatar_method	= 'gravatar';
 		$avatar_size	= 64;
 		$class			= '';
-		
+
 		// Get the user record
 		$user = JFactory::getUser($this->value);
-		
+
 		// Get the field parameters
 		if ($this->element['class'])
 		{
@@ -212,12 +212,12 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 				$link_url = str_replace($key, $value, $link_url);
 			}
 		}
-		
+
 		// Get the avatar image, if necessary
 		if ($show_avatar)
 		{
 			$avatar_url = '';
-			
+
 			if ($avatar_method == 'plugin')
 			{
 				// Use the user plugins to get an avatar
@@ -232,7 +232,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 						}
 					}
 				}
-				
+
 				if (empty($avatar_url))
 				{
 					$show_avatar = false;
@@ -251,7 +251,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 				{
 					$scheme = JURI::getInstance()->getScheme();
 				}
-				
+
 				if($scheme == 'http')
 				{
 					$url = 'http://www.gravatar.com/avatar/' . $md5 . '.jpg?s='
@@ -267,48 +267,48 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 
 		// Generate the HTML
 		$html = '<div id="' . $this->id . '" ' . $class . '>';
-		
+
 		if ($show_avatar)
 		{
 			$html .= '<img src="' . $avatar_url . '" align="left" class="fof-usersfield-avatar" />';
 		}
-		
+
 		if ($show_link)
 		{
 			$html .= '<a href="' . $link_url . '">';
 		}
-		
+
 		if ($show_username)
 		{
 			$html .= '<span class="fof-usersfield-username">' . $user->username
 					. '</span>';
 		}
-		
+
 		if ($show_id)
 		{
 			$html .= '<span class="fof-usersfield-id">' . $user->id
 					. '</span>';
 		}
-		
+
 		if ($show_name)
 		{
 			$html .= '<span class="fof-usersfield-name">' . $user->name
 					. '</span>';
 		}
-		
+
 		if ($show_email)
 		{
 			$html .= '<span class="fof-usersfield-email">' . $user->email
 					. '</span>';
 		}
-		
+
 		if ($show_link)
 		{
 			$html .= '</a>';
 		}
-		
+
 		$html .= '</div>';
-		
+
 		return $html;
 	}
 }

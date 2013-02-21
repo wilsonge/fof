@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * This class is taken verbatim from:
- * 
+ *
  * lessphp v0.3.8
  * http://leafo.net/lessphp
  *

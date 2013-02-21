@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldAccessLevel')) {
 class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,23 +51,23 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic() {
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-		
+
 		$params = $this->getOptions();
-		
+
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
@@ -90,8 +90,8 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 		elseif ($params)
 		{
 			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
-		}		
-		
+		}
+
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(FOFFormFieldList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
@@ -100,7 +100,7 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable() {

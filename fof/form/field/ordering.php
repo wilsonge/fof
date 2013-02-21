@@ -17,12 +17,12 @@ defined('_JEXEC') or die();
 class FOFFormFieldOrdering extends JFormField implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -42,7 +42,7 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -50,22 +50,22 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	protected function getInput()
 	{
 		throw new Exception(__CLASS__.' cannot be used in input forms');
 	}
-	
+
 	public function getStatic()
 	{
 		throw new Exception(__CLASS__.' cannot be used in single item display forms');
 	}
-	
+
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof FOFTable))
@@ -74,11 +74,11 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 		}
 
 		$html = '';
-		
+
 		$viewObject = $this->form->getView();
-		
+
 		$ordering = $viewObject->getLists()->order == 'ordering';
-		
+
 		if (!$viewObject->hasAjaxOrderingSupport())
 		{
 			// Ye olde Joomla! 2.5 method
@@ -98,15 +98,15 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 			{
 				$disableClassName = '';
 				$disabledLabel	  = '';
-				
+
 				$hasAjaxOrderingSupport = $viewObject->hasAjaxOrderingSupport();
-				
+
 				if (!$hasAjaxOrderingSupport['saveOrder'])
 				{
 					$disabledLabel    = JText::_('JORDERINGDISABLED');
 					$disableClassName = 'inactive tip-top';
 				}
-				
+
 				$html .= '<span class="sortable-handler ' . $disableClassName . '" title="' . $disabledLabel . '" rel="tooltip">';
 				$html .= '<i class="icon-menu"></i>';
 				$html .= '</span>';
@@ -120,7 +120,7 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 				$html .= '</span>';
 			}
 		}
-		
+
 		return $html;
 
 	}

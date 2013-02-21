@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Generic filter, drop-down based on fixed options
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderFilterselectable extends FOFFormHeaderFieldselectable

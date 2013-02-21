@@ -21,9 +21,9 @@ if(!class_exists('JFormFieldMedia')) {
 class FOFFormFieldMedia extends JFormFieldMedia implements FOFFormField
 {
 	protected $static;
-	
+
 	protected $repeatable;
-	
+
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
 	 *
@@ -43,7 +43,7 @@ class FOFFormFieldMedia extends JFormFieldMedia implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			case 'repeatable':
 				if(empty($this->repeatable)) {
 					$this->repeatable = $this->getRepeatable();
@@ -51,16 +51,16 @@ class FOFFormFieldMedia extends JFormFieldMedia implements FOFFormField
 
 				return $this->static;
 				break;
-				
+
 			default:
 				return parent::__get($name);
 		}
 	}
-	
+
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single
 	 * item view (typically a "read" task).
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getStatic()
@@ -105,7 +105,7 @@ class FOFFormFieldMedia extends JFormFieldMedia implements FOFFormField
 		{
 			$imgattr['title']		= JText::_((string) $this->element['title']);
 		}
-		
+
 		if ($this->value && file_exists(JPATH_ROOT . '/' . $this->value))
 		{
 			$src = JURI::root() . $this->value;
@@ -114,18 +114,18 @@ class FOFFormFieldMedia extends JFormFieldMedia implements FOFFormField
 		{
 			$src = '';
 		}
-		
+
 		return JHtml::image($src, $alt, $imgattr);
 	}
 
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,
 	 * e.g. in a view listing many item (typically a "browse" task)
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	public function getRepeatable()
 	{
 		return $this->getStatic();
-	}	
+	}
 }

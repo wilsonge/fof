@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Generic filter, text box entry with optional buttons
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderFiltersearchable extends FOFFormHeaderFieldsearchable

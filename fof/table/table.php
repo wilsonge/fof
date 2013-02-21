@@ -52,11 +52,11 @@ class FOFTable extends JTable
 	 * @var array
 	 */
 	protected $_skipChecks = array();
-	
+
 	/**
 	 * Does the table actually exist? We need that to avoid PHP notices on
 	 * teble-less views.
-	 * 
+	 *
 	 * @var bool
 	 * @since 2.0
 	 */
@@ -219,13 +219,13 @@ class FOFTable extends JTable
 	{
 		$this->_skipChecks = (array) $skip;
 	}
-	
+
 	public function load( $keys=null, $reset=true )
 	{
 		if (!$this->_tableExists)
 		{
 			$result = false;
-		} 
+		}
 		else
 		{
 			$result = parent::load($keys, $reset);
@@ -717,7 +717,7 @@ class FOFTable extends JTable
 	{
 		static $cache = array();
 		static $tables = array();
-		
+
 		// Make sure we have a list of tables in this db
 		if(empty($tables)) {
 			$tables = $this->_db->getTableList();
@@ -726,7 +726,7 @@ class FOFTable extends JTable
 		if(!array_key_exists($this->_tbl, $cache)) {
 			// Lookup the fields for this table only once.
 			$name	= $this->_tbl;
-			
+
 			$prefix = $this->_db->getPrefix();
 			if (substr($name, 0, 3) == '#__')
 			{
@@ -736,7 +736,7 @@ class FOFTable extends JTable
 			{
 				$checkName = $name;
 			}
-			
+
 			if (!in_array($checkName, $tables))
 			{
 				// The table doesn't exist. Return false.
@@ -863,7 +863,7 @@ class FOFTable extends JTable
 
 		$hasCreatedOn = isset($this->$created_on) || property_exists($this, $created_on);
 		$hasCreatedBy = isset($this->$created_by) || property_exists($this, $created_by);
-		
+
 		if($hasCreatedOn && $hasCreatedBy) {
 			$hasModifiedOn = isset($this->$modified_on) || property_exists($this, $modified_on);
 			$hasModifiedBy = isset($this->$modified_by) || property_exists($this, $modified_by);

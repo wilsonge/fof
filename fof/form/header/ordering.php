@@ -10,7 +10,7 @@ defined('_JEXEC') or die();
 
 /**
  * Ordering field header
- * 
+ *
  * @since 2.0
  */
 class FOFFormHeaderOrdering extends FOFFormHeader
@@ -18,18 +18,18 @@ class FOFFormHeaderOrdering extends FOFFormHeader
 	protected function getHeader()
 	{
 		$sortable = ($this->element['sortable'] != 'false');
-		
+
 		$view = $this->form->getView();
 		$model = $this->form->getModel();
-		
+
 		$hasAjaxOrderingSupport = $view->hasAjaxOrderingSupport();
-		
+
 		if (!$sortable)
 		{
 			// Non sortable?! I'm not sure why you'd want that, but if you insist...
 			return JText::_('JGRID_HEADING_ORDERING');
 		}
-		
+
 		if (!$hasAjaxOrderingSupport)
 		{
 			// Ye olde Joomla! 2.5 method
