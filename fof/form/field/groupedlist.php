@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldGroupedList'))
  * Form Field class for FOF
  * Supports a generic list of options.
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,6 +67,8 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -93,6 +97,8 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -102,8 +108,9 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 	/**
 	 * Gets the active option's label given an array of JHtml options
 	 *
-	 * @param   mixed   $selected  The currently selected value
 	 * @param   array   $data      The JHtml options to parse
+	 * @param   mixed   $selected  The currently selected value
+	 * @param   string  $groupKey  Group name
 	 * @param   string  $optKey    Key name
 	 * @param   string  $optText   Value name
 	 *
@@ -142,6 +149,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 			}
 
 			$match = FOFFormFieldList::getOptionName($data, $selected, $optKey, $optText);
+
 			if (!is_null($match))
 			{
 				$ret = array(

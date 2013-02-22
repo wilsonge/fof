@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldEMail'))
  * Form Field class for the FOF framework
  * Supports a one line text field.
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,12 +67,15 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		$dolink = $this->element['show_link'] == 'true';
 		$empty_replacement = '';
+
 		if ($this->element['empty_replacement'])
 		{
 			$empty_replacement = (string) $this->element['empty_replacement'];
@@ -99,6 +104,8 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -154,6 +161,7 @@ class FOFFormFieldEmail extends JFormFieldEMail implements FOFFormField
 		}
 
 		$html .= '</span>';
+
 		return $html;
 	}
 

@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldCacheHandler'))
  * Form Field class for FOF
  * Joomla! cache handlers
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,6 +67,8 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -80,6 +84,8 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
