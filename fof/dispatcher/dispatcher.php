@@ -167,7 +167,7 @@ class FOFDispatcher extends JObject
 				array_unshift($searchPaths, $config['searchpath']);
 			}
 
-			jimport('joomla.filesystem.path');
+			JLoader::import('joomla.filesystem.path');
 
 			$path = JPath::find(
 					$searchPaths, 'dispatcher.php'
@@ -459,7 +459,7 @@ class FOFDispatcher extends JObject
 
 		if ($this->fofAuth_LogoutOnReturn && $this->_fofAuth_isLoggedIn)
 		{
-			jimport('joomla.user.authentication');
+			JLoader::import('joomla.user.authentication');
 			$app = JFactory::getApplication();
 			$options = array('remember'	 => false);
 			$parameters = array('username'	 => JFactory::getUser()->username);
@@ -603,7 +603,7 @@ class FOFDispatcher extends JObject
 				continue;
 			}
 
-			jimport('joomla.user.authentication');
+			JLoader::import('joomla.user.authentication');
 			$app = JFactory::getApplication();
 			$options = array('remember'		 => false);
 			$authenticate = JAuthentication::getInstance();
@@ -614,7 +614,7 @@ class FOFDispatcher extends JObject
 				JPluginHelper::importPlugin('user');
 				$results = $app->triggerEvent('onLoginUser', array((array) $response, $options));
 
-				jimport('joomla.user.helper');
+				JLoader::import('joomla.user.helper');
 				$userid = JUserHelper::getUserId($response->username);
 				$user = JFactory::getUser($userid);
 

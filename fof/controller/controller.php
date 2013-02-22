@@ -8,7 +8,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-jimport('legacy.controller.legacy');
+JLoader::import('legacy.controller.legacy');
 
 /**
  * FrameworkOnFramework controller class. FOF is based on the thin controller
@@ -136,7 +136,7 @@ class FOFController extends JControllerLegacy
 			$basePath = JPATH_SITE;
 		}
 
-		jimport('joomla.filesystem.path');
+		JLoader::import('joomla.filesystem.path');
 
 		// Look for the best classname match
 		foreach ($classSuffixes as $suffix)
@@ -1489,7 +1489,7 @@ class FOFController extends JControllerLegacy
 			$altViewName,
 			'default'
 		);
-		jimport('joomla.filesystem.path');
+		JLoader::import('joomla.filesystem.path');
 
 		foreach ($suffixes as $suffix)
 		{
@@ -1624,7 +1624,7 @@ class FOFController extends JControllerLegacy
 	 * Execute something before applySave is called. Return false to prevent
 	 * applySave from executing.
 	 *
-	 * @param   array  $data  The data upon which applySave will act
+	 * @param   array  &$data  The data upon which applySave will act
 	 *
 	 * @return  boolean  True to allow applySave to run
 	 */
