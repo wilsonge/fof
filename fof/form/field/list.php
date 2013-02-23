@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldList'))
  * Form Field class for FOF
  * Supports a generic list of options.
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldList extends JFormFieldList implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,6 +67,8 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -80,6 +84,8 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
@@ -89,8 +95,8 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 	/**
 	 * Gets the active option's label given an array of JHtml options
 	 *
-	 * @param   mixed   $selected  The currently selected value
 	 * @param   array   $data      The JHtml options to parse
+	 * @param   mixed   $selected  The currently selected value
 	 * @param   string  $optKey    Key name
 	 * @param   string  $optText   Value name
 	 *

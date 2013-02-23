@@ -11,7 +11,8 @@ defined('_JEXEC') or die();
  * Form Field class for the FOF framework
  * Media selection field. This is an alias of the "media" field type.
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldImage extends FOFFormFieldMedia
 {

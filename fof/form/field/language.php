@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldLanguage'))
  * Form Field class for FOF
  * Available site languages
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldLanguage extends JFormFieldLanguage implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -60,11 +62,19 @@ class FOFFormFieldLanguage extends JFormFieldLanguage implements FOFFormField
 		}
 	}
 
+	/**
+	 * Method to get the field options.
+	 *
+	 * @since 2.0
+	 *
+	 * @return  array  The field option objects.
+	 */
 	protected function getOptions()
 	{
 		$options = parent::getOptions();
 
 		$noneoption = $this->element['none'] ? $this->element['none'] : null;
+
 		if ($noneoption)
 		{
 			array_unshift($options, JHtml::_('select.option', '*', JText::_($noneoption)));
@@ -78,6 +88,8 @@ class FOFFormFieldLanguage extends JFormFieldLanguage implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -93,6 +105,8 @@ class FOFFormFieldLanguage extends JFormFieldLanguage implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{

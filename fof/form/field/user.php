@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldUser'))
  * Form Field class for the FOF framework
  * A user selection box / display field
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,15 +67,17 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
 		// Initialise
 		$show_username = true;
-		$show_email = false;
-		$show_name = false;
-		$show_id = false;
-		$class = '';
+		$show_email    = false;
+		$show_name     = false;
+		$show_id       = false;
+		$class         = '';
 
 		// Get the field parameters
 		if ($this->element['class'])
@@ -102,6 +106,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 
 		// Render the HTML
 		$html = '<div id="' . $this->id . '" ' . $class . '>';
+
 		if ($show_username)
 		{
 			$html .= '<span class="fof-userfield-username">' . $user->username . '</span>';
@@ -128,20 +133,22 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
 		// Initialise
 		$show_username = true;
-		$show_email = true;
-		$show_name = true;
-		$show_id = true;
-		$show_avatar = true;
-		$show_link = false;
-		$link_url = null;
+		$show_email    = true;
+		$show_name     = true;
+		$show_id       = true;
+		$show_avatar   = true;
+		$show_link     = false;
+		$link_url      = null;
 		$avatar_method = 'gravatar';
-		$avatar_size = 64;
-		$class = '';
+		$avatar_size   = 64;
+		$class         = '';
 
 		// Get the user record
 		$user = JFactory::getUser($this->value);
@@ -190,6 +197,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 		else
 		{
 			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 			if ($isAdmin)
 			{
 				// If no link is defined in the back-end, assume the user edit
@@ -212,6 +220,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 				'[USER:EMAIL]'		 => $user->email,
 				'[USER:NAME]'		 => $user->name,
 			);
+
 			foreach ($replacements as $key => $value)
 			{
 				$link_url = str_replace($key, $value, $link_url);
@@ -228,7 +237,8 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 				// Use the user plugins to get an avatar
 				JPluginHelper::importPlugin('user');
 				$dispatcher = JDispatcher::getInstance();
-				$jResponse = $dispatcher->trigger('onUserAvatar', array($user, $avatar_size));
+				$jResponse  = $dispatcher->trigger('onUserAvatar', array($user, $avatar_size));
+
 				if (!empty($jResponse))
 				{
 					foreach ($jResponse as $response)
@@ -250,6 +260,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 				// Fall back to the Gravatar method
 				$md5 = md5($user->email);
 				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 				if ($isCLI)
 				{
 					$scheme = 'http';
