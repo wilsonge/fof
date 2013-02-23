@@ -9,14 +9,20 @@ defined('_JEXEC') or die();
 /**
  * This class provides an RFC6238-compliant Time-based One Time Passwords,
  * compatible with Google Authenticator (with PassCodeLength = 6 and TimePeriod = 30).
+ *
+ * @package  FrameworkOnFramework
+ * @since    1.0
  */
 class FOFEncryptTotp
 {
 
-	private $passCodeLength = 6;
-	private $pinModulo;
-	private $secretLength = 10;
-	private $timeStep = 30;
+	private $_passCodeLength = 6;
+
+	private $_pinModulo;
+
+	private $_secretLength = 10;
+
+	private $_timeStep = 30;
 
 	/**
 	 * Initialises an RFC6238-compatible TOTP generator. Please note that this
@@ -24,16 +30,16 @@ class FOFEncryptTotp
 	 * of RFC6238. It's up to you to ensure that the same user/device does not
 	 * retry validation within the same Time Step.
 	 *
-	 * @param int $timeStep The Time Step (in seconds). Use 30 to be compatible with Google Authenticator.
-	 * @param int $passCodeLength The generated passcode length. Default: 6 digits.
-	 * @param int $secretLength The length of the secret key. Default: 10 bytes (80 bits).
+	 * @param   int  $timeStep        The Time Step (in seconds). Use 30 to be compatible with Google Authenticator.
+	 * @param   int  $passCodeLength  The generated passcode length. Default: 6 digits.
+	 * @param   int  $secretLength    The length of the secret key. Default: 10 bytes (80 bits).
 	 */
 	public function __construct($timeStep = 30, $passCodeLength = 6, $secretLength = 10)
 	{
-		$this->timeStep = $timeStep;
-		$this->passCodeLength = $passCodeLength;
-		$this->secretLength = $secretLength;
-		$this->pinModulo = pow(10, $this->passCodeLength);
+		$this->_timeStep       = $timeStep;
+		$this->_passCodeLength = $passCodeLength;
+		$this->_secretLength   = $secretLength;
+		$this->_pinModulo      = pow(10, $this->_passCodeLength);
 	}
 
 	/**
@@ -41,8 +47,9 @@ class FOFEncryptTotp
 	 * defined. If $time is skipped or set to null the current timestamp will
 	 * be used.
 	 *
-	 * @param int|null $time Timestamp
-	 * @return int The time period since the UNIX Epoch
+	 * @param   int|null  $time  Timestamp
+	 *
+	 * @return  int  The time period since the UNIX Epoch
 	 */
 	public function getPeriod($time = null)
 	{
@@ -51,7 +58,7 @@ class FOFEncryptTotp
 			$time = time();
 		}
 
-		$period = floor($time / $this->timeStep);
+		$period = floor($time / $this->_timeStep);
 
 		return $period;
 	}
@@ -60,13 +67,15 @@ class FOFEncryptTotp
 	 * Check is the given passcode $code is a valid TOTP generated using secret
 	 * key $secret
 	 *
-	 * @param string $secret The Base32-encoded secret key
-	 * @param string $code The passcode to check
+	 * @param   string  $secret  The Base32-encoded secret key
+	 * @param   string  $code    The passcode to check
+	 *
 	 * @return boolean True if the code is valid
 	 */
 	public function checkCode($secret, $code)
 	{
 		$time = $this->getPeriod();
+
 		for ($i = -1; $i <= 1; $i++)
 		{
 
@@ -83,8 +92,9 @@ class FOFEncryptTotp
 	 * Gets the TOTP passcode for a given secret key $secret and a given UNIX
 	 * timestamp $time
 	 *
-	 * @param string $secret The Base32-encoded secret key
-	 * @param int $time UNIX timestamp
+	 * @param   string  $secret  The Base32-encoded secret key
+	 * @param   int     $time    UNIX timestamp
+	 *
 	 * @return string
 	 */
 	public function getCode($secret, $time = null)
@@ -102,30 +112,34 @@ class FOFEncryptTotp
 		$offset = $offset & 0xF;
 
 		$truncatedHash = $this->hashToInt($hash, $offset) & 0x7FFFFFFF;
-		$pinValue = str_pad($truncatedHash % $this->pinModulo, $this->passCodeLength, "0", STR_PAD_LEFT);
+		$pinValue = str_pad($truncatedHash % $this->_pinModulo, $this->_passCodeLength, "0", STR_PAD_LEFT);
+
 		return $pinValue;
 	}
 
 	/**
 	 * Extracts a part of a hash as an integer
 	 *
-	 * @param type $bytes
-	 * @param type $start
+	 * @param   type  $bytes  The hash
+	 * @param   type  $start  The char to start from (0 = first char)
+	 *
 	 * @return type
 	 */
 	protected function hashToInt($bytes, $start)
 	{
 		$input = substr($bytes, $start, strlen($bytes) - $start);
 		$val2 = unpack("N", substr($input, 0, 4));
+
 		return $val2[1];
 	}
 
 	/**
 	 * Returns a QR code URL for easy setup of TOTP apps like Google Authenticator
 	 *
-	 * @param string $user
-	 * @param string $hostname
-	 * @param string $secret
+	 * @param   string  $user      User
+	 * @param   string  $hostname  Hostname
+	 * @param   string  $secret    Secret string
+	 *
 	 * @return string
 	 */
 	public function getUrl($user, $hostname, $secret)
@@ -145,14 +159,15 @@ class FOFEncryptTotp
 	public function generateSecret()
 	{
 		$secret = "";
-		for ($i = 1; $i <= $this->secretLength; $i++)
+
+		for ($i = 1; $i <= $this->_secretLength; $i++)
 		{
 			$c = rand(0, 255);
 			$secret .= pack("c", $c);
 		}
 		$base32 = new FOFEncryptBase32;
+
 		return $base32->encode($secret);
 	}
 
 }
-

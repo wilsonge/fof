@@ -9,7 +9,7 @@ defined('_JEXEC') or die();
 
 if (!class_exists('JFormFieldEditor'))
 {
-	if (!include_once(JPATH_LIBRARIES . '/joomla/form/fields/editor.php'))
+	if (!include_once JPATH_LIBRARIES . '/joomla/form/fields/editor.php')
 	{
 		require_once JPATH_LIBRARIES . '/cms/form/field/editor.php';
 	}
@@ -19,12 +19,14 @@ if (!class_exists('JFormFieldEditor'))
  * Form Field class for the FOF framework
  * An editarea field for content creation and formatted HTML display
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldEditor extends JFormFieldEditor implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -68,6 +70,8 @@ class FOFFormFieldEditor extends JFormFieldEditor implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -81,6 +85,8 @@ class FOFFormFieldEditor extends JFormFieldEditor implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{

@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldAccessLevel'))
  * Form Field class for FOF
  * Joomla! access levels
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,6 +67,8 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -106,6 +110,8 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
