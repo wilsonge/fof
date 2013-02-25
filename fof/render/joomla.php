@@ -77,18 +77,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$filter_order = $form->getView()->getLists()->order;
 		$filter_order_Dir = $form->getView()->getLists()->order_Dir;
 
-		if ($validate = $form->getAttribute('validate'))
-		{
-			JHTML::_('behavior.formvalidation');
-			$class = ' class="form-validate"';
-			$this->loadValidationScript($form);
-		}
-		else
-		{
-			$class = '';
-		}
-
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm"' . $class . '>' . PHP_EOL;
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
@@ -327,7 +316,18 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 		$html = '';
 
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+		if ($validate = $form->getAttribute('validate'))
+		{
+			JHTML::_('behavior.formvalidation');
+			$class = ' class="form-validate"';
+			$this->loadValidationScript($form);
+		}
+		else
+		{
+			$class = '';
+		}
+
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm"' . $class . '>' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $input->getCmd('view', 'edit') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
