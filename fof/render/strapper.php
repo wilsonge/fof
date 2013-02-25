@@ -65,6 +65,29 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	}
 
 	/**
+     * Loads the validation script for edit form
+     *
+     * @return void
+     */
+	protected function loadValidationScript(FOFForm &$form)
+	{
+		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
+
+		$js = <<<ENDJAVASCRIPT
+		Joomla.submitbutton = function(task)
+        {
+            if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
+                Joomla.submitform(task, document.getElementById('adminForm'));
+            } else {
+                alert('$message');
+            }
+        }
+ENDJAVASCRIPT;
+
+		JFactory::getDocument()->addScriptDeclaration($js);
+	}
+
+	/**
 	 * Renders the submenu (link bar)
 	 *
 	 * @param   string    $view    The active view name
@@ -385,7 +408,19 @@ ENDJS;
 		// Start the form
 		$filter_order = $form->getView()->getLists()->order;
 		$filter_order_Dir = $form->getView()->getLists()->order_Dir;
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+
+		if ($validate = $form->getAttribute('validate'))
+		{
+			JHTML::_('behavior.formvalidation');
+			$class = ' class="form-validate"';
+			$this->loadValidationScript($form);
+		}
+		else
+		{
+			$class = '';
+		}
+
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm"' . $class . '>' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="' . $input->getCmd('task', 'browse') . '" />' . PHP_EOL;
