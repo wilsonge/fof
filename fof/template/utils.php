@@ -125,8 +125,8 @@ class FOFTemplateUtils
 		}
 
 		// Compile the LESS file
-		$lessCompiler->compileFile($localFile, $cachedPath);
-		//$lessCompiler->checkedCompile($localFile, $cachedPath);
+		//$lessCompiler->compileFile($localFile, $cachedPath);
+		$lessCompiler->checkedCompile($localFile, $cachedPath);
 		// Add the compiled CSS to the page
 		$base_url = rtrim(JUri::base(), '/');
 		if (substr($base_url, -14) == '/administrator')
