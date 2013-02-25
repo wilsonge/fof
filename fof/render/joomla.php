@@ -314,6 +314,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$key = $model->getTable()->getKeyName();
 		$keyValue = $model->getId();
 
+		JHTML::_('behavior.tooltip');
+		
 		$html = '';
 
 		if ($validate = $form->getAttribute('validate'))
