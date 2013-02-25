@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldSpacer'))
  * Form Field class for the FOF framework
  * Spacer used between form elements
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldSpacer extends JFormFieldSpacer implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,6 +67,8 @@ class FOFFormFieldSpacer extends JFormFieldSpacer implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -76,6 +80,8 @@ class FOFFormFieldSpacer extends JFormFieldSpacer implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{

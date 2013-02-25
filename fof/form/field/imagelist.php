@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldImagelist'))
  * Form Field class for the FOF framework
  * Media selection field.
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldImagelist extends JFormFieldImageList implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,6 +67,8 @@ class FOFFormFieldImagelist extends JFormFieldImageList implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
@@ -129,6 +133,8 @@ class FOFFormFieldImagelist extends JFormFieldImageList implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{

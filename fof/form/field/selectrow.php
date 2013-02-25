@@ -11,15 +11,21 @@ defined('_JEXEC') or die();
  * Form Field class for FOF
  * Renders the checkbox in browse views which allows you to select rows
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
-	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
+	/**
+	 * A monotonically increasing number, denoting the row number in a repeatable view
+	 *
+	 * @var  integer
+	 */
 	public $rowid;
 
 	/**
@@ -58,16 +64,39 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 		}
 	}
 
+	/**
+	 * Method to get the field input markup for this field type.
+	 *
+	 * @since 2.0
+	 *
+	 * @return  string  The field input markup.
+	 */
 	protected function getInput()
 	{
 		throw new Exception(__CLASS__ . ' cannot be used in input forms');
 	}
 
+	/**
+	 * Get the rendering of this field type for static display, e.g. in a single
+	 * item view (typically a "read" task).
+	 *
+	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
+	 */
 	public function getStatic()
 	{
 		throw new Exception(__CLASS__ . ' cannot be used in single item display forms');
 	}
 
+	/**
+	 * Get the rendering of this field type for a repeatable (grid) display,
+	 * e.g. in a view listing many item (typically a "browse" task)
+	 *
+	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
+	 */
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof FOFTable))
@@ -76,17 +105,18 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 		}
 
 		// Is this record checked out?
-		$checked_out = false;
+		$checked_out     = false;
 		$locked_by_field = $this->item->getColumnAlias('locked_by');
+
 		if (property_exists($this->item, $locked_by_field))
 		{
-			$locked_by = $this->item->$locked_by_field;
+			$locked_by   = $this->item->$locked_by_field;
 			$checked_out = ($locked_by != 0);
 		}
 
 		// Get the key id for this record
 		$key_field = $this->item->getKeyName();
-		$key_id = $this->item->$key_field;
+		$key_id    = $this->item->$key_field;
 
 		// Get the HTML
 		return JHTML::_('grid.id', $this->rowid, $key_id, $checked_out);

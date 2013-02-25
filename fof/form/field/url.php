@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldUrl'))
  * Form Field class for the FOF framework
  * Supports a URL text field.
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldUrl extends JFormFieldUrl implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,12 +67,15 @@ class FOFFormFieldUrl extends JFormFieldUrl implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
-		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+		$class  = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		$dolink = $this->element['show_link'] == 'true';
 		$empty_replacement = '';
+
 		if ($this->element['empty_replacement'])
 		{
 			$empty_replacement = (string) $this->element['empty_replacement'];
@@ -99,12 +104,14 @@ class FOFFormFieldUrl extends JFormFieldUrl implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
 		// Initialise
-		$class = '';
-		$show_link = false;
+		$class             = '';
+		$show_link         = false;
 		$empty_replacement = '';
 
 		$link_url = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
@@ -147,6 +154,7 @@ class FOFFormFieldUrl extends JFormFieldUrl implements FOFFormField
 		}
 
 		$html .= '</span>';
+
 		return $html;
 	}
 

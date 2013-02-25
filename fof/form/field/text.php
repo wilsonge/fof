@@ -16,12 +16,14 @@ if (!class_exists('JFormFieldText'))
  * Form Field class for the FOF framework
  * Supports a one line text field.
  *
- * @since       2.0
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFFormFieldText extends JFormFieldText implements FOFFormField
 {
 
 	protected $static;
+
 	protected $repeatable;
 
 	/**
@@ -65,11 +67,14 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	 * item view (typically a "read" task).
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getStatic()
 	{
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 		$empty_replacement = '';
+
 		if ($this->element['empty_replacement'])
 		{
 			$empty_replacement = (string) $this->element['empty_replacement'];
@@ -90,14 +95,16 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 	 * e.g. in a view listing many item (typically a "browse" task)
 	 *
 	 * @since 2.0
+	 *
+	 * @return  string  The field HTML
 	 */
 	public function getRepeatable()
 	{
 		// Initialise
-		$class = '';
-		$format_string = '';
-		$show_link = false;
-		$link_url = '';
+		$class             = '';
+		$format_string     = '';
+		$show_link         = false;
+		$link_url          = '';
 		$empty_replacement = '';
 
 		// Get field parameters
@@ -126,17 +133,18 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 			// Replace [ITEM:ID] in the URL with the item's key value (usually:
 			// the auto-incrementing numeric ID)
 			$keyfield = $this->item->getKeyName();
-			$replace = $this->item->$keyfield;
+			$replace  = $this->item->$keyfield;
 			$link_url = str_replace('[ITEM:ID]', $replace, $link_url);
 
 			// Replace other field variables in the URL
 			$fields = $this->item->getFields();
+
 			foreach ($fields as $fielddata)
 			{
 				$fieldname = $fielddata->Field;
-				$search = '[ITEM:' . strtoupper($fieldname) . ']';
-				$replace = $this->item->$fieldname;
-				$link_url = str_replace($search, $replace, $link_url);
+				$search    = '[ITEM:' . strtoupper($fieldname) . ']';
+				$replace   = $this->item->$fieldname;
+				$link_url  = str_replace($search, $replace, $link_url);
 			}
 		}
 		else
@@ -179,6 +187,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		}
 
 		$html .= '</span>';
+
 		return $html;
 	}
 
