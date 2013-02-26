@@ -183,7 +183,7 @@ ENDSCRIPT;
 			return;
 		}
 
-		$theme = self::getPreference('jquery_load', self::$jqUItheme);
+		$theme = self::getPreference('jquery_theme', self::$jqUItheme);
 
         $url = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajqui.js');
 
