@@ -179,14 +179,19 @@ ENDSCRIPT;
         {
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
             self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
-            self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j25.less', $altCss);
+            // self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j25.less', $altCss);
         }
         else
         {
             JHtml::_('bootstrap.framework'); // Use Joomla!'s Javascript
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.j3.css');
-            self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j30.less', $altCss);
+            // self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j30.less', $altCss);
         }
+
+		foreach($altCss as $css)
+		{
+			self::$cssURLs[] = FOFTemplateUtils::parsePath($css);
+		}
     }
 
     /**
