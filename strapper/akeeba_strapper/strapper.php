@@ -129,7 +129,7 @@ class AkeebaStrapper
 			}
 		}
 
-        if ($jQueryLoad == 'ful')
+        if ($jQueryLoad == 'full')
         {
             // Joomla! 2.5 and earlier, load our own library
             self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajq.js');
