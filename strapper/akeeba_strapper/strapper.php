@@ -47,9 +47,6 @@ class AkeebaStrapper
     /** @var string A query tag to append to CSS and JS files for versioning purposes */
     public static $tag = null;
 
-    /** @var bool Should I preload my Javascript/CSS files on Joomla! 2.5 or earlier? */
-    public static $preloadOnOldJoomla = true;
-
     /**
      * Is this something running under the CLI mode?
      * @staticvar bool|null $isCli
@@ -79,6 +76,26 @@ class AkeebaStrapper
         return $isCli;
     }
 
+	public static function getPreference($key, $default = null)
+	{
+		static $config = null;
+
+		if(is_null($config))
+		{
+			// Load a configuration INI file which controls which files should be skipped
+			$iniFile = FOFTemplateUtils::parsePath('media://akeeba_strapper/strapper.ini', true);
+
+			$config = parse_ini_file($iniFile);
+		}
+
+		if (!array_key_exists($key, $config))
+		{
+			$config[$key] = $default;
+		}
+
+		return $config[$key];
+	}
+
     /**
      * Loads our namespaced jQuery, accessible through akeeba.jQuery
      */
@@ -87,19 +104,38 @@ class AkeebaStrapper
         if (self::isCli())
             return;
 
+		$jQueryLoad = self::getPreference('jquery_load', 'auto');
+		if (!in_array($jQueryLoad, array('auto', 'full', 'namespace', 'none')))
+		{
+			$jQueryLoad = 'auto';
+		}
+
         self::$_includedJQuery = true;
 
-        if (version_compare(JVERSION, '3.0', 'lt'))
+		if ($jQueryLoad == 'none')
+		{
+			return;
+		}
+		elseif ($jQueryLoad == 'auto')
+		{
+			if (version_compare(JVERSION, '3.0', 'gt'))
+			{
+				$jQueryLoad = 'namespace';
+				JHtml::_('jquery.framework');
+			}
+			else
+			{
+				$jQueryLoad = 'full';
+			}
+		}
+
+        if ($jQueryLoad == 'ful')
         {
             // Joomla! 2.5 and earlier, load our own library
             self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajq.js');
         }
         else
         {
-            if (AkeebaStrapper::isCli())
-                return;
-            // Joomla! 3.0 and later, use Joomla! code to load the library
-            JHtml::_('jquery.framework');
             $script = <<<ENDSCRIPT
 if(typeof(akeeba) == 'undefined') {
 	var akeeba = {};
@@ -140,21 +176,18 @@ ENDSCRIPT;
         }
 
         self::$_includedJQueryUI = true;
-        $theme = self::$jqUItheme;
+
+		$jQueryUILoad = self::getPreference('jqueryui_load', 1);
+		if (!$jQueryUILoad)
+		{
+			return;
+		}
+
+		$theme = self::getPreference('jquery_load', self::$jqUItheme);
 
         $url = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajqui.js');
-        if (version_compare(JVERSION, '3.0', 'lt'))
-        {
-            // Joomla! 2.5, use our magic loader
-            self::$scriptURLs[] = $url;
-        }
-        else
-        {
-            // Joomla! 3.0 and later, use Joomla!'s loader
-            if (AkeebaStrapper::isCli())
-                return;
-            JFactory::getDocument()->addScript($url);
-        }
+
+		self::$scriptURLs[] = $url;
         self::$cssURLs[] = FOFTemplateUtils::parsePath("media://akeeba_strapper/css/$theme/theme.css");
     }
 
@@ -167,30 +200,79 @@ ENDSCRIPT;
         if (self::isCli())
             return;
 
+		if (version_compare(JVERSION, '3.0', 'gt'))
+		{
+			$key = 'joomla3';
+			$default = 'lite';
+		}
+		else
+		{
+			$key = 'joomla2';
+			$default = 'full';
+		}
+		$loadBootstrap = self::getPreference('bootstrap_' . $key, $default);
+
+		if (!in_array($loadBootstrap, array('full','lite','none')))
+		{
+			if ($key == 'joomla3')
+			{
+				$loadBootstrap = 'lite';
+			}
+			else
+			{
+				$loadBootstrap = 'full';
+			}
+		}
+
+		if (($key == 'joomla3') && ($loadBootstrap == 'lite'))
+		{
+			// Use Joomla!'s Javascript
+			JHtml::_('bootstrap.framework');
+		}
+
         if (!self::$_includedJQuery)
         {
             self::jQuery();
         }
 
-        self::$_includedBootstrap = true;
+		if ($loadBootstrap == 'none')
+		{
+			return;
+		}
+
+		self::$_includedBootstrap = true;
+
+		$source = self::getPreference('bootstrap_source', 'css');
+		if (!in_array($source, array('css','less')))
+		{
+			$source = 'css';
+		}
 
         $altCss = array('media://akeeba_strapper/css/strapper.css');
-        if (version_compare(JVERSION, '3.0', 'lt'))
+        if ($loadBootstrap == 'full')
         {
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
             self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
-            // self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j25.less', $altCss);
+			if ($source == 'less')
+			{
+				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j25.less', $altCss);
+			}
         }
         else
         {
-            JHtml::_('bootstrap.framework'); // Use Joomla!'s Javascript
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.j3.css');
-            // self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j30.less', $altCss);
+			if ($source == 'less')
+			{
+				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j30.less', $altCss);
+			}
         }
 
-		foreach($altCss as $css)
+		if ($source == 'css')
 		{
-			self::$cssURLs[] = FOFTemplateUtils::parsePath($css);
+			foreach($altCss as $css)
+			{
+				self::$cssURLs[] = FOFTemplateUtils::parsePath($css);
+			}
 		}
     }
 
@@ -285,16 +367,22 @@ function AkeebaStrapperLoader()
 
     $myscripts = '';
 
-    if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+	$preload = (bool)AkeebaStrapper::getPreference('preload_joomla2', 1);
+
+    if (version_compare(JVERSION, '3.0', 'lt') && $preload)
     {
         $buffer = JResponse::getBody();
     }
+	else
+	{
+		$preload = false;
+	}
 
     // Include Javascript files
     if (!empty(AkeebaStrapper::$scriptURLs))
         foreach (AkeebaStrapper::$scriptURLs as $url)
         {
-            if (AkeebaStrapper::$preloadOnOldJoomla && (basename($url) == 'bootstrap.min.js'))
+            if ($preload && (basename($url) == 'bootstrap.min.js'))
             {
                 // Special case: check that nobody else is using bootstrap[.min].js on the page.
                 $scriptRegex = "/<script [^>]+(\/>|><\/script>)/i";
@@ -314,7 +402,7 @@ function AkeebaStrapperLoader()
                 if ($skip)
                     continue;
             }
-            if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+            if (version_compare(JVERSION, '3.0', 'lt') && $preload)
             {
                 $myscripts .= '<script type="text/javascript" src="' . $url . $tag . '"></script>' . "\n";
             }
@@ -327,7 +415,7 @@ function AkeebaStrapperLoader()
     // Include Javscript snippets
     if (!empty(AkeebaStrapper::$scriptDefs))
     {
-        if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+        if (version_compare(JVERSION, '3.0', 'lt') && $preload)
         {
             $myscripts .= '<script type="text/javascript" language="javascript">' . "\n";
         }
@@ -339,7 +427,7 @@ function AkeebaStrapperLoader()
         {
             $myscripts .= $def . "\n";
         }
-        if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+        if (version_compare(JVERSION, '3.0', 'lt') && $preload)
         {
             $myscripts .= '</script>' . "\n";
         }
@@ -358,7 +446,7 @@ function AkeebaStrapperLoader()
 
             $url = FOFTemplateUtils::addLESS($lessFile, $altFiles, true);
 
-            if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+            if (version_compare(JVERSION, '3.0', 'lt') && $preload)
             {
                 if (empty($url))
                 {
@@ -409,7 +497,7 @@ function AkeebaStrapperLoader()
     if (!empty(AkeebaStrapper::$cssURLs))
         foreach (AkeebaStrapper::$cssURLs as $url)
         {
-            if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+            if (version_compare(JVERSION, '3.0', 'lt') && $preload)
             {
                 $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
             }
@@ -425,7 +513,7 @@ function AkeebaStrapperLoader()
         $myscripts .= '<style type="text/css">' . "\n";
         foreach (AkeebaStrapper::$cssDefs as $def)
         {
-            if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+            if (version_compare(JVERSION, '3.0', 'lt') && $preload)
             {
                 $myscripts .= $def . "\n";
             }
@@ -437,7 +525,7 @@ function AkeebaStrapperLoader()
         $myscripts .= '</style>' . "\n";
     }
 
-    if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+    if (version_compare(JVERSION, '3.0', 'lt') && $preload)
     {
         $pos = strpos($buffer, "<head>");
         if ($pos > 0)
@@ -451,8 +539,9 @@ function AkeebaStrapperLoader()
 // Add our pseudo-plugin to the application event queue
 if (!AkeebaStrapper::isCli())
 {
+	$preload = (bool)AkeebaStrapper::getPreference('preload_joomla2', 1);
     $app = JFactory::getApplication();
-    if (version_compare(JVERSION, '3.0', 'lt') && AkeebaStrapper::$preloadOnOldJoomla)
+    if (version_compare(JVERSION, '3.0', 'lt') && $preload)
     {
         $app->registerEvent('onAfterRender', 'AkeebaStrapperLoader');
     }
