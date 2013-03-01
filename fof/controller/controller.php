@@ -413,9 +413,23 @@ class FOFController extends JControllerLegacy
 
 		if (JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1)
 		{
+			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
 			$cache = JFactory::getCache($option, 'view');
 
+			// Set up a cache ID based on component, view, task and user group assignment
+			$user = JFactory::getUser();
+			if ($user->guest)
+			{
+				$groups = array();
+			}
+			else
+			{
+				$groups = $user->groups;
+			}
+			$cacheId = md5(serialize(array(JCache::makeId(), $view->getName(), $this->doTask, $groups)));
+
+			// Set up safe URL parameters
 			if (is_array($urlparams))
 			{
 				$app = JFactory::getApplication();
@@ -435,10 +449,13 @@ class FOFController extends JControllerLegacy
 
 				$app->set('registeredurlparams', $registeredurlparams);
 			}
-			$cache->get($view, 'display');
+
+			// Get the cached view or cache the current view
+			$cache->get($view, 'display', $cacheId);
 		}
 		else
 		{
+			// Display without caching
 			$view->display();
 		}
 	}
