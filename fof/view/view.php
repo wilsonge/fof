@@ -326,9 +326,9 @@ abstract class FOFView extends JViewLegacy
 		{
 			$paths = array(
 				$basePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				$basePath . 'default' . ($tpl ? "_$tpl" : ''),
+				// $basePath . 'default' . ($tpl ? "_$tpl" : ''),
 				$altBasePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				$altBasePath . 'default' . ($tpl ? "_$tpl" : ''),
+				// $altBasePath . 'default' . ($tpl ? "_$tpl" : ''),
 			);
 		}
 		else
