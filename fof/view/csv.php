@@ -91,7 +91,7 @@ class FOFViewCsv extends FOFViewHtml
 
 		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
-			if (($result instanceof JException) || ($result instanceof Exception))
+			if ($result instanceof Exception)
 			{
 				$hasFailed = true;
 			}
