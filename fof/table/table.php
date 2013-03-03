@@ -76,20 +76,22 @@ class FOFTable extends JTable
 		static $instances = array();
 
 		// Guess the component name
-		if (array_key_exists('input', $config))
+		if (!array_key_exists('input', $config))
 		{
-			if ($config['input'] instanceof FOFInput)
-			{
-				$tmpInput = $config['input'];
-			}
-			else
-			{
-				$tmpInput = new FOFInput($config['input']);
-			}
-			$option = $tmpInput->getCmd('option', '');
-			$tmpInput->set('option', $option);
-			$config['input'] = $tmpInput;
+			$config['input'] = new FOFInput();
 		}
+
+		if ($config['input'] instanceof FOFInput)
+		{
+			$tmpInput = $config['input'];
+		}
+		else
+		{
+			$tmpInput = new FOFInput($config['input']);
+		}
+		$option = $tmpInput->getCmd('option', '');
+		$tmpInput->set('option', $option);
+		$config['input'] = $tmpInput;
 
 		if (!in_array($prefix, array('Table', 'JTable')))
 		{
@@ -98,15 +100,22 @@ class FOFTable extends JTable
 		}
 
 		if (array_key_exists('option', $config))
+		{
 			$option = $config['option'];
+		}
 		$config['option'] = $option;
 
 		if (!array_key_exists('view', $config))
+		{
 			$config['view'] = JRequest::getCmd('view', 'cpanel');
+		}
+
 		if (is_null($type))
 		{
 			if ($prefix == 'JTable')
+			{
 				$prefix = 'Table';
+			}
 			$type = $config['view'];
 		}
 

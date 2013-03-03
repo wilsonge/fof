@@ -107,8 +107,8 @@ class FOFController extends JControllerLegacy
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
 		// Determine the option (component name) and view
-		$config['option'] = !is_null($option) ? $option : JRequest::getCmd('option', 'com_foobar');
-		$config['view'] = !is_null($view) ? $view : JRequest::getCmd('view', 'cpanel');
+		$config['option'] = !is_null($option) ? $option : $this->input->getCmd('option', 'com_foobar');
+		$config['view'] = !is_null($view) ? $view : $this->input->getCmd('view', 'cpanel');
 
 		// Get the class base name, e.g. FoobarController
 		$classBaseName = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller';
