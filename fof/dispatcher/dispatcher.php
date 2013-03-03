@@ -292,7 +292,7 @@ class FOFDispatcher extends JObject
 		$jlang->load($this->component, $paths[1], null, true);
 
 		$canDispatch = true;
-		if($isCLI)
+		if($isCli)
 		{
 			$canDispatch = $canDispatch && $this->onBeforeDispatchCLI();
 		}
