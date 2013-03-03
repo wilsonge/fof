@@ -107,7 +107,7 @@ class FOFTable extends JTable
 
 		if (!array_key_exists('view', $config))
 		{
-			$config['view'] = JRequest::getCmd('view', 'cpanel');
+			$config['view'] = $config['input']->getCmd('view', 'cpanel');
 		}
 
 		if (is_null($type))
