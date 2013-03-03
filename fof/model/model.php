@@ -1716,6 +1716,10 @@ class FOFModel extends JModelLegacy
 		{
 			$template = JFactory::getApplication()->getTemplate();
 		}
+		else
+		{
+			$template = 'cli';
+		}
 
 		$file_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
 		$file_root .= '/components/' . $option;
