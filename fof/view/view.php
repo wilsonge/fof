@@ -201,6 +201,10 @@ abstract class FOFView extends JViewLegacy
 		{
 			$template = JFactory::getApplication()->getTemplate();
 		}
+		else
+		{
+			$template = 'cli';
+		}
 
 		$layoutTemplate = $this->getLayoutTemplate();
 
