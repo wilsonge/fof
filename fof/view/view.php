@@ -30,8 +30,6 @@ abstract class FOFView extends JViewLegacy
 	{
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		parent::__construct($config);
-
 		// Get the input
 		if (array_key_exists('input', $config))
 		{
@@ -48,6 +46,8 @@ abstract class FOFView extends JViewLegacy
 		{
 			$this->input = new FOFInput();
 		}
+
+		parent::__construct($config);
 
 		// Get the component name
 		if (array_key_exists('input', $config))
