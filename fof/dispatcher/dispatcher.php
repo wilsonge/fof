@@ -464,6 +464,7 @@ class FOFDispatcher extends JObject
 	public function onBeforeDispatchCLI()
 	{
 		JLoader::import('joomla.environment.uri');
+		JLoader::import('joomla.application.component.helper');
 
 		// Trick to create a valid url used by JURI
 		$this->_originalPhpScript = '';
