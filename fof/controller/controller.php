@@ -1537,7 +1537,7 @@ class FOFController extends JControllerLegacy
 			JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/views'
 		);
 
-		if ($isAdmin)
+		if ($isAdmin || $isCli)
 		{
 			$basePaths = array_reverse($basePaths);
 			$basePaths = array_merge($basePaths, $this->paths['view'], $basePaths);
