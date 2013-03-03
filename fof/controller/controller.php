@@ -364,7 +364,9 @@ class FOFController extends JControllerLegacy
 			}
 		}
 
-		parent::execute($task);
+		$this->doTask = $doTask;
+
+		$ret = $this->$doTask();
 
 		$method_name = 'onAfter' . ucfirst($task);
 
@@ -377,6 +379,8 @@ class FOFController extends JControllerLegacy
 				return false;
 			}
 		}
+
+		return $ret;
 	}
 
 	/**
@@ -1692,7 +1696,21 @@ class FOFController extends JControllerLegacy
 	 */
 	protected function checkACL($area)
 	{
-		return JFactory::getUser()->authorise($area, $this->component);
+		static $isAdmin = null, $isCli = null;
+
+		if (is_null($isAdmin))
+		{
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		}
+
+		if ($isCli)
+		{
+			return true;
+		}
+		else
+		{
+			return JFactory::getUser()->authorise($area, $this->component);
+		}
 	}
 
 	/**
