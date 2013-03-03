@@ -7,7 +7,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-jimport('legacy.view.legacy');
+JLoader::import('legacy.view.legacy');
 
 /**
  * FrameworkOnFramework View class
@@ -230,7 +230,7 @@ abstract class FOFView extends JViewLegacy
 		}
 
 		$filetofind = $templateParts['template'] . '.php';
-		jimport('joomla.filesystem.path');
+		JLoader::import('joomla.filesystem.path');
 		$this->_tempFilePath = JPath::find($paths, $filetofind);
 		if ($this->_tempFilePath)
 		{
@@ -436,7 +436,7 @@ abstract class FOFView extends JViewLegacy
 	 */
 	protected function findRenderer()
 	{
-		jimport('joomla.filesystem.folder');
+		JLoader::import('joomla.filesystem.folder');
 
 		// Try loading the stock renderers shipped with FOF
 		if (empty(self::$renderers) || !class_exists('FOFRenderJoomla', false))
@@ -510,7 +510,7 @@ abstract class FOFView extends JViewLegacy
 		$file = preg_replace('/[^A-Z0-9_\.-]/i', '', $hlp);
 
 		// Load the template script using the default Joomla! features
-		jimport('joomla.filesystem.path');
+		JLoader::import('joomla.filesystem.path');
 		$helper = JPath::find($this->_path['helper'], $this->_createFileName('helper', array('name' => $file)));
 
 		if ($helper == false)

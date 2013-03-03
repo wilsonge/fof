@@ -15,7 +15,7 @@ if (class_exists('FOFTable', false))
 	return;
 }
 
-jimport('joomla.database.table');
+JLoader::import('joomla.database.table');
 
 /**
  * FrameworkOnFramework table class
@@ -136,7 +136,7 @@ class FOFTable extends JTable
 					array_unshift($searchPaths, $config['tablepath']);
 				}
 
-				jimport('joomla.filesystem.path');
+				JLoader::import('joomla.filesystem.path');
 				$path = JPath::find(
 						$searchPaths, strtolower($type) . '.php'
 				);
@@ -206,7 +206,7 @@ class FOFTable extends JTable
 		// If we are tracking assets, make sure an access field exists and initially set the default.
 		if (isset($this->asset_id) || property_exists($this, 'asset_id'))
 		{
-			jimport('joomla.access.rules');
+			JLoader::import('joomla.access.rules');
 			$this->_trackAssets = true;
 		}
 
@@ -963,7 +963,7 @@ class FOFTable extends JTable
 				{
 					$this->$created_by = JFactory::getUser()->id;
 				}
-				jimport('joomla.utilities.date');
+				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
@@ -981,7 +981,7 @@ class FOFTable extends JTable
 				{
 					$this->$modified_by = JFactory::getUser()->id;
 				}
-				jimport('joomla.utilities.date');
+				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{

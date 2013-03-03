@@ -90,7 +90,7 @@ class FOFToolbar
 					array_unshift($searchPaths, $config['searchpath']);
 				}
 
-				jimport('joomla.filesystem.path');
+				JLoader::import('joomla.filesystem.path');
 				$path = JPath::find(
 						$searchPaths, 'toolbar.php'
 				);
@@ -520,8 +520,8 @@ class FOFToolbar
 		}
 		$searchPath = $basePath . '/components/' . $this->component . '/views';
 
-		jimport('joomla.filesystem.folder');
-		jimport('joomla.utilities.arrayhelper');
+		JLoader::import('joomla.filesystem.folder');
+		JLoader::import('joomla.utilities.arrayhelper');
 
 		$allFolders = JFolder::folders($searchPath);
 

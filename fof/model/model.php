@@ -7,7 +7,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-jimport('legacy.model.legacy');
+JLoader::import('legacy.model.legacy');
 
 /**
  * FrameworkOnFramework model class
@@ -227,7 +227,7 @@ class FOFModel extends JModelLegacy
 			$include_paths = array_merge($extra_paths, $include_paths);
 
 			// Try to load the model file
-			jimport('joomla.filesystem.path');
+			JLoader::import('joomla.filesystem.path');
 
 			if (interface_exists('JModel'))
 			{
@@ -283,7 +283,7 @@ class FOFModel extends JModelLegacy
 				$include_paths = array_merge($extra_paths, $include_paths);
 
 				// Try to load the model file
-				jimport('joomla.filesystem.path');
+				JLoader::import('joomla.filesystem.path');
 
 				if (interface_exists('JModel'))
 				{
@@ -1125,7 +1125,7 @@ class FOFModel extends JModelLegacy
 		if (empty($this->pagination))
 		{
 			// Import the pagination library
-			jimport('joomla.html.pagination');
+			JLoader::import('joomla.html.pagination');
 
 			// Prepare pagination values
 			$total = $this->getTotal();
@@ -1202,7 +1202,7 @@ class FOFModel extends JModelLegacy
 		}
 		else
 		{
-			jimport('joomla.filter.filterinput');
+			JLoader::import('joomla.filter.filterinput');
 			$filter = new JFilterInput;
 
 			return $filter->clean($value, $filter_type);
@@ -1756,7 +1756,7 @@ class FOFModel extends JModelLegacy
 		unset($jversion, $versionParts, $majorVersion);
 
 		// Look for all suffixes in all paths
-		jimport('joomla.filesystem.file');
+		JLoader::import('joomla.filesystem.file');
 		$result = false;
 
 		foreach ($paths as $path)
@@ -1816,7 +1816,7 @@ class FOFModel extends JModelLegacy
 	protected function preprocessForm(FOFForm $form, $data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
-		jimport('joomla.plugin.helper');
+		JLoader::import('joomla.plugin.helper');
 		JPluginHelper::importPlugin($group);
 
 		// Trigger the form preparation event.
