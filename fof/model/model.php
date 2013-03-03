@@ -1159,7 +1159,7 @@ class FOFModel extends JModelLegacy
 			}
 
 			$this->_db->setQuery((string) $query);
-			$this->_db->query();
+			$this->_db->execute();
 
 			$this->total = $this->_db->loadResult();
 		}

@@ -489,7 +489,7 @@ class FOFTable extends JTable
 		$this->$fldLockedBy = $who;
 		$this->$fldLockedOn = $time;
 
-		return $this->_db->query();
+		return $this->_db->execute();
 	}
 
 	function checkin($oid = null)
@@ -529,7 +529,7 @@ class FOFTable extends JTable
 		$this->$fldLockedBy = 0;
 		$this->$fldLockedOn = '';
 
-		return $this->_db->query();
+		return $this->_db->execute();
 	}
 
 	function isCheckedOut($with = 0, $against = null)
@@ -663,7 +663,7 @@ class FOFTable extends JTable
 		{
 			try
 			{
-				$this->_db->query();
+				$this->_db->execute();
 			}
 			catch (JDatabaseException $e)
 			{
@@ -672,7 +672,7 @@ class FOFTable extends JTable
 		}
 		else
 		{
-			if (!$this->_db->query())
+			if (!$this->_db->execute())
 			{
 				$this->setError($this->_db->getErrorMsg());
 				return false;
