@@ -269,7 +269,7 @@ class FOFDispatcher extends JObject
 				}
 			}
 		}
-		else
+		elseif (!$isCli)
 		{
 			// Perform transparent authentication for front-end requests
 			$this->transparentAuthentication();
@@ -291,7 +291,15 @@ class FOFDispatcher extends JObject
 		$jlang->load($this->component, $paths[1], 'en-GB', true);
 		$jlang->load($this->component, $paths[1], null, true);
 
-		if (!$this->onBeforeDispatch())
+		$canDispatch = true;
+		if($isCLI)
+		{
+			$canDispatch = $canDispatch && $this->onBeforeDispatchCLI();
+		}
+
+		$canDispatch = $canDispatch && $this->onBeforeDispatch();
+
+		if (!$canDispatch)
 		{
 
 			// For json, don't use normal 403 page, but a json encoded message
@@ -445,16 +453,6 @@ class FOFDispatcher extends JObject
 	 */
 	public function onBeforeDispatch()
 	{
-		list($isCLI, ) = FOFDispatcher::isCliAdmin();
-
-		if($isCLI)
-		{
-			if(!$this->onBeforeDispatchCLI())
-			{
-				return false;
-			}
-		}
-
 		return true;
 	}
 
