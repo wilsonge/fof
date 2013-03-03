@@ -32,6 +32,8 @@ class FOFViewHtml extends FOFView
 	 */
 	public function __construct($config = array())
 	{
+		list($isCli, ) = FOFDispatcher::isCliAdmin();
+
 		parent::__construct($config);
 
 		$this->config = $config;
@@ -55,15 +57,18 @@ class FOFViewHtml extends FOFView
 
 		$this->lists = new JObject();
 
-		$user = JFactory::getUser();
-		$perms = (object) array(
-				'create'	 => $user->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
-				'edit'		 => $user->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
-				'editstate'	 => $user->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
-				'delete'	 => $user->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
-		);
-		$this->assign('aclperms', $perms);
-		$this->perms = $perms;
+		if(!$isCli)
+		{
+			$user = JFactory::getUser();
+			$perms = (object) array(
+					'create'	 => $user->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
+					'edit'		 => $user->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
+					'editstate'	 => $user->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
+					'delete'	 => $user->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
+			);
+			$this->assign('aclperms', $perms);
+			$this->perms = $perms;
+		}
 	}
 
 	/**
@@ -95,9 +100,15 @@ class FOFViewHtml extends FOFView
 			return;
 		}
 
-		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
-		$toolbar->perms = $this->perms;
-		$toolbar->renderToolbar($this->input->getCmd('view', 'cpanel'), $task, $this->input);
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+
+		// Don't load the toolbar on CLI
+		if(!$isCli)
+		{
+			$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
+			$toolbar->perms = $this->perms;
+			$toolbar->renderToolbar($this->input->getCmd('view', 'cpanel'), $task, $this->input);
+		}
 
 		// Show the view
 		if ($this->doPreRender)
@@ -119,7 +130,7 @@ class FOFViewHtml extends FOFView
 	{
 		// Do not render a submenu unless we are in the the admin area
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin)
+		if (!$isAdmin || $isCli)
 			return;
 		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 		$links = $toolbar->getLinks();
@@ -208,7 +219,7 @@ class FOFViewHtml extends FOFView
 
 		//pass page params on frontend only
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin)
+		if (!$isAdmin && !$isCli)
 		{
 			$params = JFactory::getApplication()->getParams();
 			$this->assignRef('params', $params);

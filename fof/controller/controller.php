@@ -411,7 +411,8 @@ class FOFController extends JControllerLegacy
 		// Display the view
 		$conf = JFactory::getConfig();
 
-		if (JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1)
+		list($isCli, ) = FOFDispatcher::isCliAdmin();
+		if (!$isCli && JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1)
 		{
 			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
@@ -1319,6 +1320,54 @@ class FOFController extends JControllerLegacy
 	}
 
 	/**
+	 * Method to get a model object, loading it if required.
+	 *
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  object  The model.
+	 */
+	public function getModel($name = '', $prefix = '', $config = array())
+	{
+		if (empty($name))
+		{
+			$name = $this->getName();
+		}
+
+		if (empty($prefix))
+		{
+			$prefix = $this->model_prefix;
+		}
+
+		if ($model = $this->createModel($name, $prefix, $config))
+		{
+			// Task is a reserved state
+			$model->setState('task', $this->task);
+
+			list($isCLI, ) = FOFDispatcher::isCliAdmin();
+
+			// Let's get the application object and set menu information if it's available
+			if(!$isCLI)
+			{
+				$app = JFactory::getApplication();
+				$menu = $app->getMenu();
+
+				if (is_object($menu))
+				{
+					if ($item = $menu->getActive())
+					{
+						$params = $menu->getParams($item->id);
+						// Set default state data
+						$model->setState('parameters.menu', $params);
+					}
+				}
+			}
+		}
+		return $model;
+	}
+
+	/**
 	 * Returns current view object
 	 *
 	 * @param   array  $config  Configuration variables for the model
@@ -1556,14 +1605,23 @@ class FOFController extends JControllerLegacy
 
 		if (!array_key_exists('template_path', $config))
 		{
-			$config['template_path'] = array(
-				$basePath . '/components/' . $config['option'] . '/views/' . FOFInflector::pluralize($config['view']) . '/tmpl',
-				JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . FOFInflector::pluralize($config['view']),
-				$basePath . '/components/' . $config['option'] . '/views/' . FOFInflector::singularize($config['view']) . '/tmpl',
-				JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . FOFInflector::singularize($config['view']),
-				$basePath . '/components/' . $config['option'] . '/views/' . $config['view'] . '/tmpl',
-				JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . $config['view'],
-			);
+			$config['template_path'][] = $basePath . '/components/' . $config['option'] . '/views/' . FOFInflector::pluralize($config['view']) . '/tmpl';
+			if(!$isCli)
+			{
+				$config['template_path'][] = JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . FOFInflector::pluralize($config['view']);
+			}
+
+			$config['template_path'][] = $basePath . '/components/' . $config['option'] . '/views/' . FOFInflector::singularize($config['view']) . '/tmpl';
+			if(!$isCli)
+			{
+				$config['template_path'][] = JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . FOFInflector::singularize($config['view']);
+			}
+
+			$config['template_path'][] = $basePath . '/components/' . $config['option'] . '/views/' . $config['view'] . '/tmpl';
+			if(!$isCli)
+			{
+				$config['template_path'][] = JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . $config['view'];
+			}
 		}
 
 		if (!array_key_exists('helper_path', $config))

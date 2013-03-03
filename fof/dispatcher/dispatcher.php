@@ -445,6 +445,51 @@ class FOFDispatcher extends JObject
 	 */
 	public function onBeforeDispatch()
 	{
+		list($isCLI, ) = FOFDispatcher::isCliAdmin();
+
+		if($isCLI)
+		{
+			if(!$this->onBeforeDispatchCLI())
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Sets up some environment variables, so we can work as usually on CLI, too.
+	 *
+	 * @return  boolean  Return false to abort
+	 */
+	public function onBeforeDispatchCLI()
+	{
+		JLoader::import('joomla.environment.uri');
+
+		// Trick to create a valid url used by JURI
+		$this->_originalPhpScript = '';
+
+		// We have no Application Helper (there is no Application!), so I have to define these constants manually
+		$option = $this->input->get('option');
+		if($option)
+		{
+			if(!defined('JPATH_COMPONENT'))
+			{
+				define('JPATH_COMPONENT', JPATH_BASE . '/components/' . $option);
+			}
+
+			if(!defined('JPATH_COMPONENT_SITE'))
+			{
+				define('JPATH_COMPONENT_SITE', JPATH_SITE . '/components/' . $option);
+			}
+
+			if(!defined('JPATH_COMPONENT_ADMINISTRATOR'))
+			{
+				define('JPATH_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/' . $option);
+			}
+		}
+
 		return true;
 	}
 

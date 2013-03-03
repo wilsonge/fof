@@ -36,13 +36,17 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		if ($format != 'html')
 			return;
 
-		// Wrap output in a Joomla-versioned div
-		$version = new JVersion;
-		$version = str_replace('.', '', $version->RELEASE);
-		echo "<div class=\"joomla-version-$version\">\n";
+		list($isCli, ) = FOFDispatcher::isCliAdmin();
+		if(!$isCli)
+		{
+			// Wrap output in a Joomla-versioned div
+			$version = new JVersion;
+			$version = str_replace('.', '', $version->RELEASE);
+			echo "<div class=\"joomla-version-$version\">\n";
 
-		// Wrap output in an akeeba-bootstrap class div
-		echo "<div class=\"akeeba-bootstrap\">\n";
+			// Wrap output in an akeeba-bootstrap class div
+			echo "<div class=\"akeeba-bootstrap\">\n";
+		}
 		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
 	}
@@ -56,8 +60,9 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
+		list($isCli, ) = FOFDispatcher::isCliAdmin();
 		$format = $input->getCmd('format', 'html');
-		if ($format != 'html')
+		if ($format != 'html' || $isCli)
 			return;
 
 		echo "</div>\n";
@@ -97,6 +102,12 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderLinkbar($view, $task, $input, $config = array())
 	{
+		list($isCli, ) = FOFDispatcher::isCliAdmin();
+		if($isCli)
+		{
+			return;
+		}
+
 		// Do not render a submenu unless we are in the the admin area
 		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
@@ -194,6 +205,11 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderButtons($view, $task, $input, $config = array())
 	{
+		list($isCli, ) = FOFDispatcher::isCliAdmin();
+		if($isCli)
+		{
+			return;
+		}
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
 		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
@@ -697,7 +713,7 @@ ENDJS;
 		{
 			$class = '';
 		}
-		
+
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal' . $class . '">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $input->getCmd('view', 'edit') . '" />' . PHP_EOL;

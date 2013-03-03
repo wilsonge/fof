@@ -28,6 +28,8 @@ abstract class FOFView extends JViewLegacy
 
 	public function __construct($config = array())
 	{
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 		parent::__construct($config);
 
 		// Get the input
@@ -107,7 +109,6 @@ abstract class FOFView extends JViewLegacy
 		}
 		else
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 			$this->_basePath = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/' . $config['option'];
 		}
 
@@ -137,9 +138,9 @@ abstract class FOFView extends JViewLegacy
 
 		$this->config = $config;
 
-		$app = JFactory::getApplication();
-		if (isset($app))
+		if (!$isCli)
 		{
+			$app = JFactory::getApplication();
 			$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $component);
 			$fallback = JPATH_THEMES . '/' . $app->getTemplate() . '/html/' . $component . '/' . $this->getName();
 			$this->_addPath('template', $fallback);
@@ -195,7 +196,12 @@ abstract class FOFView extends JViewLegacy
 			}
 		}
 
-		$template = JFactory::getApplication()->getTemplate();
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		if(!$isCli)
+		{
+			$template = JFactory::getApplication()->getTemplate();
+		}
+
 		$layoutTemplate = $this->getLayoutTemplate();
 
 		// Parse the path
@@ -543,6 +549,41 @@ abstract class FOFView extends JViewLegacy
 			'option' => $this->config['option'],
 			'view'	 => $this->config['view'],
 		);
+	}
+
+	/**
+	 * Sets an entire array of search paths for templates or resources.
+	 *
+	 * @param   string  $type  The type of path to set, typically 'template'.
+	 * @param   mixed   $path  The new search path, or an array of search paths.  If null or false, resets to the current directory only.
+	 *
+	 * @return  void
+	 *
+	 */
+	protected function _setPath($type, $path)
+	{
+		list($isCli,) = FOFDispatcher::isCliAdmin();
+
+		// Clear out the prior search dirs
+		$this->_path[$type] = array();
+
+		// Actually add the user-specified directories
+		$this->_addPath($type, $path);
+
+		// Always add the fallback directories as last resort
+		switch (strtolower($type))
+		{
+			case 'template':
+				// Set the alternative template search dir
+				if (!$isCli)
+				{
+					$app = JFactory::getApplication();
+					$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $this->input->getCmd('option'));
+					$fallback = JPATH_THEMES . '/' . $app->getTemplate() . '/html/' . $component . '/' . $this->getName();
+					$this->_addPath('template', $fallback);
+				}
+				break;
+		}
 	}
 
 }

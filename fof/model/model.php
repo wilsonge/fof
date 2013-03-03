@@ -1710,8 +1710,13 @@ class FOFModel extends JModelLegacy
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		$option = $this->input->getCmd('option', 'com_foobar');
-		$view = $this->input->getCmd('view', 'cpanels');
-		$template = JFactory::getApplication()->getTemplate();
+		$view 	= $this->input->getCmd('view', 'cpanels');
+
+		if(!$isCli)
+		{
+			$template = JFactory::getApplication()->getTemplate();
+		}
+
 		$file_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
 		$file_root .= '/components/' . $option;
 		$alt_file_root = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
