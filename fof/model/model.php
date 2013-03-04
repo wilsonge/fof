@@ -7,8 +7,6 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-JLoader::import('legacy.model.legacy');
-
 /**
  * FrameworkOnFramework model class
  *
@@ -19,62 +17,24 @@ JLoader::import('legacy.model.legacy');
  * @package  FrameworkOnFramework.Model
  * @since    1.0
  */
-class FOFModel extends JModelLegacy
+class FOFModel extends JObject
 {
 
 	/**
-	 * The name of the table to use
-	 * @var string
+	 * Indicates if the internal state has been set
+	 *
+	 * @var    boolean
+	 * @since  12.2
 	 */
-	protected $table = null;
+	protected $__state_set = null;
 
 	/**
-	 * The table object, populated when saving data
-	 * @var FOFTable
+	 * Database Connector
+	 *
+	 * @var    object
+	 * @since  12.2
 	 */
-	protected $otable = null;
-
-	/**
-	 * Stores a list of IDs passed to the model's state
-	 * @var array
-	 */
-	protected $id_list = array();
-
-	/**
-	 * The first row ID passed to the model's state
-	 * @var int
-	 */
-	protected $id = null;
-
-	/**
-	 * The table object, populated when retrieving data
-	 * @var FOFTable
-	 */
-	protected $record = null;
-
-	/**
-	 * The list of records made available through getList
-	 * @var array
-	 */
-	protected $list = null;
-
-	/**
-	 * Pagination object
-	 * @var JPagination
-	 */
-	protected $pagination = null;
-
-	/**
-	 * Total rows based on the filters set in the model's state
-	 * @var int
-	 */
-	protected $total = 0;
-
-	/**
-	 * Input variables, passed on from the controller, in an associative array
-	 * @var array
-	 */
-	protected $input = array();
+	protected $_db;
 
 	/**
 	 * The event to trigger after deleting the data.
@@ -105,6 +65,92 @@ class FOFModel extends JModelLegacy
 	 * @var    string
 	 */
 	protected $event_change_state = 'onContentChangeState';
+
+	/**
+	 * The event to trigger when cleaning cache.
+	 *
+	 * @var      string
+	 * @since    12.2
+	 */
+	protected $event_clean_cache = null;
+
+	/**
+	 * Stores a list of IDs passed to the model's state
+	 * @var array
+	 */
+	protected $id_list = array();
+
+	/**
+	 * The first row ID passed to the model's state
+	 * @var int
+	 */
+	protected $id = null;
+
+	/**
+	 * Input variables, passed on from the controller, in an associative array
+	 * @var array
+	 */
+	protected $input = array();
+
+	/**
+	 * The list of records made available through getList
+	 * @var array
+	 */
+	protected $list = null;
+
+	/**
+	 * The model (base) name
+	 *
+	 * @var    string
+	 * @since  12.2
+	 */
+	protected $name;
+
+	/**
+	 * The URL option for the component.
+	 *
+	 * @var    string
+	 * @since  12.2
+	 */
+	protected $option = null;
+
+	/**
+	 * The table object, populated when saving data
+	 * @var FOFTable
+	 */
+	protected $otable = null;
+
+	/**
+	 * Pagination object
+	 * @var JPagination
+	 */
+	protected $pagination = null;
+
+	/**
+	 * The table object, populated when retrieving data
+	 * @var FOFTable
+	 */
+	protected $record = null;
+
+	/**
+	 * A state object
+	 *
+	 * @var    string
+	 * @since  12.2
+	 */
+	protected $state;
+
+	/**
+	 * The name of the table to use
+	 * @var string
+	 */
+	protected $table = null;
+
+	/**
+	 * Total rows based on the filters set in the model's state
+	 * @var int
+	 */
+	protected $total = 0;
 
 	/**
 	 * Should I save the model's state in the session?
@@ -199,14 +245,7 @@ class FOFModel extends JModelLegacy
 		// Try to load the requested model class
 		if (!class_exists($modelClass))
 		{
-			if (interface_exists('JModel'))
-			{
-				$include_paths = JModelLegacy::addIncludePath();
-			}
-			else
-			{
-				$include_paths = JModel::addIncludePath();
-			}
+			$include_paths = self::addIncludePath();
 
 			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
@@ -229,18 +268,9 @@ class FOFModel extends JModelLegacy
 			// Try to load the model file
 			JLoader::import('joomla.filesystem.path');
 
-			if (interface_exists('JModel'))
-			{
-				$path = JPath::find(
-						$include_paths, JModelLegacy::_createFileName('model', array('name' => $type))
-				);
-			}
-			else
-			{
-				$path = JPath::find(
-						$include_paths, JModel::_createFileName('model', array('name' => $type))
-				);
-			}
+			$path = JPath::find(
+					$include_paths, self::_createFileName('model', array('name' => $type))
+			);
 
 			if ($path)
 			{
@@ -255,14 +285,7 @@ class FOFModel extends JModelLegacy
 
 			if (!class_exists($modelClass))
 			{
-				if (interface_exists('JModel'))
-				{
-					$include_paths = JModelLegacy::addIncludePath();
-				}
-				else
-				{
-					$include_paths = JModel::addIncludePath();
-				}
+				$include_paths = self::addIncludePath();
 
 				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
@@ -285,18 +308,9 @@ class FOFModel extends JModelLegacy
 				// Try to load the model file
 				JLoader::import('joomla.filesystem.path');
 
-				if (interface_exists('JModel'))
-				{
-					$path = JPath::find(
-							$include_paths, JModelLegacy::_createFileName('model', array('name' => 'default'))
-					);
-				}
-				else
-				{
-					$path = JPath::find(
-							$include_paths, JModel::_createFileName('model', array('name' => 'default'))
-					);
-				}
+				$path = JPath::find(
+						$include_paths, self::_createFileName('model', array('name' => 'default'))
+				);
 
 				if ($path)
 				{
@@ -341,14 +355,98 @@ class FOFModel extends JModelLegacy
 	}
 
 	/**
+	 * Add a directory where FOFModel should search for models. You may
+	 * either pass a string or an array of directories.
+	 *
+	 * @param   mixed   $path    A path or array[sting] of paths to search.
+	 * @param   string  $prefix  A prefix for models.
+	 *
+	 * @return  array  An array with directory elements. If prefix is equal to '', all directories are returned.
+	 *
+	 * @since   12.2
+	 */
+	public static function addIncludePath($path = '', $prefix = '')
+	{
+		static $paths;
+
+		if (!isset($paths))
+		{
+			$paths = array();
+		}
+
+		if (!isset($paths[$prefix]))
+		{
+			$paths[$prefix] = array();
+		}
+
+		if (!isset($paths['']))
+		{
+			$paths[''] = array();
+		}
+
+		if (!empty($path))
+		{
+			jimport('joomla.filesystem.path');
+
+			if (!in_array($path, $paths[$prefix]))
+			{
+				array_unshift($paths[$prefix], JPath::clean($path));
+			}
+
+			if (!in_array($path, $paths['']))
+			{
+				array_unshift($paths[''], JPath::clean($path));
+			}
+		}
+
+		return $paths[$prefix];
+	}
+
+	/**
+	 * Adds to the stack of model table paths in LIFO order.
+	 *
+	 * @param   mixed  $path  The directory as a string or directories as an array to add.
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 */
+	public static function addTablePath($path)
+	{
+		JTable::addIncludePath($path);
+	}
+
+	/**
+	 * Create the filename for a resource
+	 *
+	 * @param   string  $type   The resource type to create the filename for.
+	 * @param   array   $parts  An associative array of filename information.
+	 *
+	 * @return  string  The filename
+	 *
+	 * @since   12.2
+	 */
+	protected static function _createFileName($type, $parts = array())
+	{
+		$filename = '';
+
+		switch ($type)
+		{
+			case 'model':
+				$filename = strtolower($parts['name']) . '.php';
+				break;
+
+		}
+		return $filename;
+	}
+
+	/**
 	 * Public class constructor
 	 *
 	 * @param   type  $config  The configuration array
 	 */
 	public function __construct($config = array())
 	{
-		parent::__construct($config);
-
 		// Get the input
 		if (array_key_exists('input', $config))
 		{
@@ -406,8 +504,38 @@ class FOFModel extends JModelLegacy
 			$view = strtolower(str_replace($eliminatePart, '', $className));
 		}
 
-		// Assign the correct table
+		// Set the model state
+		if (array_key_exists('state', $config))
+		{
+			$this->state = $config['state'];
+		}
+		else
+		{
+			$this->state = new JObject;
+		}
 
+		// Set the model dbo
+		if (array_key_exists('dbo', $config))
+		{
+			$this->_db = $config['dbo'];
+		}
+		else
+		{
+			$this->_db = JFactory::getDbo();
+		}
+
+		// Set the default view search path
+		if (array_key_exists('table_path', $config))
+		{
+			$this->addTablePath($config['table_path']);
+		}
+		else
+		{
+			$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/tables';
+			$this->addTablePath($path);
+		}
+
+		// Assign the correct table
 		if (array_key_exists('table', $config))
 		{
 			$this->table = $config['table'];
@@ -415,6 +543,12 @@ class FOFModel extends JModelLegacy
 		else
 		{
 			$this->table = FOFInflector::singularize($view);
+		}
+
+		// Set the internal state marker - used to ignore setting state from the request
+		if (!empty($config['ignore_request']))
+		{
+			$this->__state_set = true;
 		}
 
 		// Get and store the pagination request variables
@@ -446,7 +580,6 @@ class FOFModel extends JModelLegacy
 		$this->setState('limitstart', $limitstart);
 
 		// Get the ID or list of IDs from the request or the configuration
-
 		if (array_key_exists('cid', $config))
 		{
 			$cid = $config['cid'];
@@ -499,6 +632,12 @@ class FOFModel extends JModelLegacy
 		{
 			$this->event_change_state = $config['event_change_state'];
 		}
+
+		if (isset($config['event_clean_cache']))
+		{
+			$this->event_clean_cache = $config['event_clean_cache'];
+		}
+
 	}
 
 	/**
@@ -1168,6 +1307,20 @@ class FOFModel extends JModelLegacy
 	}
 
 	/**
+	 * Returns a record count for the query
+	 *
+	 * @param   string  $query  The query.
+	 *
+	 * @return  integer  Number of rows for query
+	 *
+	 * @since   12.2
+	 */
+	protected function _getListCount($query)
+	{
+		return $this->getTotal();
+	}
+
+	/**
 	 * Get a filtered state variable
 	 *
 	 * @param   string  $key          The name of the state variable
@@ -1180,11 +1333,11 @@ class FOFModel extends JModelLegacy
 	{
 		if (empty($key))
 		{
-			return parent::getState();
+			return $this->_real_getState();
 		}
 
 		// Get the savestate status
-		$value = parent::getState($key);
+		$value = $this->_real_getState($key);
 
 		if (is_null($value))
 		{
@@ -1207,6 +1360,30 @@ class FOFModel extends JModelLegacy
 
 			return $filter->clean($value, $filter_type);
 		}
+	}
+
+	/**
+	 * Method to get model state variables
+	 *
+	 * @param   string  $property  Optional parameter name
+	 * @param   mixed   $default   Optional default value
+	 *
+	 * @return  object  The property where specified, the state object where omitted
+	 *
+	 * @since   12.2
+	 */
+	protected function _real_getState($property = null, $default = null)
+	{
+		if (!$this->__state_set)
+		{
+			// Protected method to auto-populate the model state.
+			$this->populateState();
+
+			// Set the model state set flag to true.
+			$this->__state_set = true;
+		}
+
+		return $property === null ? $this->state : $this->state->get($property, $default);
 	}
 
 	/**
@@ -1557,6 +1734,22 @@ class FOFModel extends JModelLegacy
 
 			$this->savestate($savestate);
 		}
+	}
+
+	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * This method should only be called once per instantiation and is designed
+	 * to be called on the first call to the getState() method unless the model
+	 * configuration flag to ignore the request is set.
+	 *
+	 * @return  void
+	 *
+	 * @note    Calling getState in this method will result in recursion.
+	 * @since   12.2
+	 */
+	protected function populateState()
+	{
 	}
 
 	/**
@@ -2164,4 +2357,94 @@ class FOFModel extends JModelLegacy
 
 	}
 
+	/**
+	 * Method to get the database driver object
+	 *
+	 * @return  JDatabaseDriver
+	 */
+	public function getDbo()
+	{
+		return $this->_db;
+	}
+
+	/**
+	 * Method to get the model name
+	 *
+	 * The model name. By default parsed using the classname or it can be set
+	 * by passing a $config['name'] in the class constructor
+	 *
+	 * @return  string  The name of the model
+	 *
+	 * @since   12.2
+	 * @throws  Exception
+	 */
+	public function getName()
+	{
+		if (empty($this->name))
+		{
+			$r = null;
+			if (!preg_match('/Model(.*)/i', get_class($this), $r))
+			{
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_MODEL_GET_NAME'), 500);
+			}
+			$this->name = strtolower($r[1]);
+		}
+
+		return $this->name;
+	}
+
+	/**
+	 * Method to set the database driver object
+	 *
+	 * @param   JDatabaseDriver  $db  A JDatabaseDriver based object
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 */
+	public function setDbo($db)
+	{
+		$this->_db = $db;
+	}
+
+	/**
+	 * Method to set model state variables
+	 *
+	 * @param   string  $property  The name of the property.
+	 * @param   mixed   $value     The value of the property to set or null.
+	 *
+	 * @return  mixed  The previous value of the property or null if not set.
+	 *
+	 * @since   12.2
+	 */
+	public function setState($property, $value = null)
+	{
+		return $this->state->set($property, $value);
+	}
+
+	/**
+	 * Clean the cache
+	 *
+	 * @param   string   $group      The cache group
+	 * @param   integer  $client_id  The ID of the client
+	 *
+	 * @return  void
+	 *
+	 * @since   12.2
+	 */
+	protected function cleanCache($group = null, $client_id = 0)
+	{
+		$conf = JFactory::getConfig();
+		$dispatcher = JEventDispatcher::getInstance();
+
+		$options = array(
+			'defaultgroup' => ($group) ? $group : (isset($this->option) ? $this->option : JFactory::getApplication()->input->get('option')),
+			'cachebase' => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache'));
+
+		$cache = JCache::getInstance('callback', $options);
+		$cache->clean();
+
+		// Trigger the onContentCleanCache event.
+		$dispatcher->trigger($this->event_clean_cache, $options);
+	}
 }
