@@ -7,8 +7,6 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-JLoader::import('legacy.view.legacy');
-
 /**
  * FrameworkOnFramework View class
  *
@@ -16,8 +14,92 @@ JLoader::import('legacy.view.legacy');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-abstract class FOFView extends JViewLegacy
+abstract class FOFView extends JObject
 {
+	/**
+	 * The name of the view
+	 *
+	 * @var    array
+	 */
+	protected $_name = null;
+
+	/**
+	 * Registered models
+	 *
+	 * @var    array
+	 */
+	protected $_models = array();
+
+	/**
+	 * The base path of the view
+	 *
+	 * @var    string
+	 */
+	protected $_basePath = null;
+
+	/**
+	 * The default model
+	 *
+	 * @var	string
+	 */
+	protected $_defaultModel = null;
+
+	/**
+	 * Layout name
+	 *
+	 * @var    string
+	 */
+	protected $_layout = 'default';
+
+	/**
+	 * Layout extension
+	 *
+	 * @var    string
+	 */
+	protected $_layoutExt = 'php';
+
+	/**
+	 * Layout template
+	 *
+	 * @var    string
+	 */
+	protected $_layoutTemplate = '_';
+
+	/**
+	 * The set of search directories for resources (templates)
+	 *
+	 * @var array
+	 */
+	protected $_path = array('template' => array(), 'helper' => array());
+
+	/**
+	 * The name of the default template source file.
+	 *
+	 * @var string
+	 */
+	protected $_template = null;
+
+	/**
+	 * The output of the template script.
+	 *
+	 * @var string
+	 */
+	protected $_output = null;
+
+	/**
+	 * Callback for escaping.
+	 *
+	 * @var string
+	 * @deprecated 13.3
+	 */
+	protected $_escape = 'htmlspecialchars';
+
+	/**
+	 * Charset to use in escaping mechanisms; defaults to urf8 (UTF-8)
+	 *
+	 * @var string
+	 */
+	protected $_charset = 'UTF-8';
 
 	/**
 	 * The available renderer objects we can use to render views
@@ -142,6 +224,19 @@ abstract class FOFView extends JViewLegacy
 		$config['name'] = $this->_name;
 		$config['view'] = $this->_name;
 
+		// Set the charset (used by the variable escaping functions)
+		if (array_key_exists('charset', $config))
+		{
+			JLog::add('Setting a custom charset for escaping is deprecated. Override FOFView::escape() instead.', JLog::WARNING, 'deprecated');
+			$this->_charset = $config['charset'];
+		}
+
+		// User-defined escaping callback
+		if (array_key_exists('escape', $config))
+		{
+			$this->setEscape($config['escape']);
+		}
+
 		// Set a base path for use by the view
 		if (array_key_exists('base_path', $config))
 		{
@@ -176,10 +271,22 @@ abstract class FOFView extends JViewLegacy
 			$this->_setPath('helper', $this->_basePath . '/helpers');
 		}
 
+		// Set the layout
+		if (array_key_exists('layout', $config))
+		{
+			$this->setLayout($config['layout']);
+		}
+		else
+		{
+			$this->setLayout('default');
+		}
+
 		$this->config = $config;
 
 		if (!$isCli)
 		{
+			$this->baseurl = JURI::base(true);
+
 			$app = JFactory::getApplication();
 			$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $component);
 			$fallback = JPATH_THEMES . '/' . $app->getTemplate() . '/html/' . $component . '/' . $this->getName();
@@ -351,6 +458,326 @@ abstract class FOFView extends JViewLegacy
 
 		echo $result;
 	}
+
+	/**
+	 * Assigns variables to the view script via differing strategies.
+	 *
+	 * This method is overloaded; you can assign all the properties of
+	 * an object, an associative array, or a single value by name.
+	 *
+	 * You are not allowed to set variables that begin with an underscore;
+	 * these are either private properties for FOFView or private variables
+	 * within the template script itself.
+	 *
+	 * @return  boolean  True on success, false on failure.
+	 *
+	 * @deprecated  13.3 Use native PHP syntax.
+	 */
+	public function assign()
+	{
+		JLog::add(__METHOD__ . ' is deprecated. Use native PHP syntax.', JLog::WARNING, 'deprecated');
+
+		// Get the arguments; there may be 1 or 2.
+		$arg0 = @func_get_arg(0);
+		$arg1 = @func_get_arg(1);
+
+		// Assign by object
+		if (is_object($arg0))
+		{
+			// Assign public properties
+			foreach (get_object_vars($arg0) as $key => $val)
+			{
+				if (substr($key, 0, 1) != '_')
+				{
+					$this->$key = $val;
+				}
+			}
+			return true;
+		}
+
+		// Assign by associative array
+		if (is_array($arg0))
+		{
+			foreach ($arg0 as $key => $val)
+			{
+				if (substr($key, 0, 1) != '_')
+				{
+					$this->$key = $val;
+				}
+			}
+			return true;
+		}
+
+		// Assign by string name and mixed value.
+
+		// We use array_key_exists() instead of isset() because isset()
+		// fails if the value is set to null.
+		if (is_string($arg0) && substr($arg0, 0, 1) != '_' && func_num_args() > 1)
+		{
+			$this->$arg0 = $arg1;
+			return true;
+		}
+
+		// $arg0 was not object, array, or string.
+		return false;
+	}
+
+	/**
+	 * Assign variable for the view (by reference).
+	 *
+	 * You are not allowed to set variables that begin with an underscore;
+	 * these are either private properties for FOFView or private variables
+	 * within the template script itself.
+	 *
+	 * @param   string  $key   The name for the reference in the view.
+	 * @param   mixed   &$val  The referenced variable.
+	 *
+	 * @return  boolean  True on success, false on failure.
+	 *
+	 * @deprecated  13.3  Use native PHP syntax.
+	 */
+	public function assignRef($key, &$val)
+	{
+		JLog::add(__METHOD__ . ' is deprecated. Use native PHP syntax.', JLog::WARNING, 'deprecated');
+
+		if (is_string($key) && substr($key, 0, 1) != '_')
+		{
+			$this->$key = &$val;
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Escapes a value for output in a view script.
+	 *
+	 * If escaping mechanism is either htmlspecialchars or htmlentities, uses
+	 * {@link $_encoding} setting.
+	 *
+	 * @param   mixed  $var  The output to escape.
+	 *
+	 * @return  mixed  The escaped value.
+	 */
+	public function escape($var)
+	{
+		if (in_array($this->_escape, array('htmlspecialchars', 'htmlentities')))
+		{
+			return call_user_func($this->_escape, $var, ENT_COMPAT, $this->_charset);
+		}
+
+		return call_user_func($this->_escape, $var);
+	}
+
+	/**
+	 * Method to get data from a registered model or a property of the view
+	 *
+	 * @param   string  $property  The name of the method to call on the model or the property to get
+	 * @param   string  $default   The name of the model to reference or the default value [optional]
+	 *
+	 * @return  mixed  The return value of the method
+	 */
+	public function get($property, $default = null)
+	{
+		// If $model is null we use the default model
+		if (is_null($default))
+		{
+			$model = $this->_defaultModel;
+		}
+		else
+		{
+			$model = strtolower($default);
+		}
+
+		// First check to make sure the model requested exists
+		if (isset($this->_models[$model]))
+		{
+			// Model exists, let's build the method name
+			$method = 'get' . ucfirst($property);
+
+			// Does the method exist?
+			if (method_exists($this->_models[$model], $method))
+			{
+				// The method exists, let's call it and return what we get
+				$result = $this->_models[$model]->$method();
+				return $result;
+			}
+
+		}
+
+		// Degrade to JObject::get
+		$result = parent::get($property, $default);
+
+		return $result;
+	}
+
+	/**
+	 * Method to get the model object
+	 *
+	 * @param   string  $name  The name of the model (optional)
+	 *
+	 * @return  mixed  FOFModel object
+	 */
+	public function getModel($name = null)
+	{
+		if ($name === null)
+		{
+			$name = $this->_defaultModel;
+		}
+		return $this->_models[strtolower($name)];
+	}
+
+	/**
+	 * Get the layout.
+	 *
+	 * @return  string  The layout name
+	 */
+	public function getLayout()
+	{
+		return $this->_layout;
+	}
+
+	/**
+	 * Get the layout template.
+	 *
+	 * @return  string  The layout template name
+	 */
+	public function getLayoutTemplate()
+	{
+		return $this->_layoutTemplate;
+	}
+
+	/**
+	 * Method to get the view name
+	 *
+	 * The model name by default parsed using the classname, or it can be set
+	 * by passing a $config['name'] in the class constructor
+	 *
+	 * @return  string  The name of the model
+	 */
+	public function getName()
+	{
+		if (empty($this->_name))
+		{
+			$classname = get_class($this);
+			$viewpos = strpos($classname, 'View');
+
+			if ($viewpos === false)
+			{
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_VIEW_GET_NAME'), 500);
+			}
+
+			$this->_name = strtolower(substr($classname, $viewpos + 4));
+		}
+
+		return $this->_name;
+	}
+
+	/**
+	 * Method to add a model to the view.
+	 *
+	 * @param   FOFMOdel  $model    The model to add to the view.
+	 * @param   boolean   $default  Is this the default model?
+	 *
+	 * @return  object   The added model.
+	 */
+	public function setModel($model, $default = false)
+	{
+		$name = strtolower($model->getName());
+		$this->_models[$name] = $model;
+
+		if ($default)
+		{
+			$this->_defaultModel = $name;
+		}
+		return $model;
+	}
+
+	/**
+	 * Sets the layout name to use
+	 *
+	 * @param   string  $layout  The layout name or a string in format <template>:<layout file>
+	 *
+	 * @return  string  Previous value.
+	 */
+	public function setLayout($layout)
+	{
+		$previous = $this->_layout;
+		if (strpos($layout, ':') === false)
+		{
+			$this->_layout = $layout;
+		}
+		else
+		{
+			// Convert parameter to array based on :
+			$temp = explode(':', $layout);
+			$this->_layout = $temp[1];
+
+			// Set layout template
+			$this->_layoutTemplate = $temp[0];
+		}
+
+		return $previous;
+	}
+
+	/**
+	 * Allows a different extension for the layout files to be used
+	 *
+	 * @param   string  $value  The extension.
+	 *
+	 * @return  string   Previous value
+	 */
+	public function setLayoutExt($value)
+	{
+		$previous = $this->_layoutExt;
+		if ($value = preg_replace('#[^A-Za-z0-9]#', '', trim($value)))
+		{
+			$this->_layoutExt = $value;
+		}
+
+		return $previous;
+	}
+
+	/**
+	 * Sets the _escape() callback.
+	 *
+	 * @param   mixed  $spec  The callback for _escape() to use.
+	 *
+	 * @return  void
+	 *
+	 * @deprecated  2.1  Override FOFView::escape() instead.
+	 */
+	public function setEscape($spec)
+	{
+		JLog::add(__METHOD__ . ' is deprecated. Override FOFView::escape() instead.', JLog::WARNING, 'deprecated');
+
+		$this->_escape = $spec;
+	}
+
+	/**
+	 * Adds to the stack of view script paths in LIFO order.
+	 *
+	 * @param   mixed  $path  A directory path or an array of paths.
+	 *
+	 * @return  void
+	 */
+	public function addTemplatePath($path)
+	{
+		$this->_addPath('template', $path);
+	}
+
+	/**
+	 * Adds to the stack of helper script paths in LIFO order.
+	 *
+	 * @param   mixed  $path  A directory path or an array of paths.
+	 *
+	 * @return  void
+	 */
+	public function addHelperPath($path)
+	{
+		$this->_addPath('helper', $path);
+	}
+
 
 	/**
 	 * Overrides the built-in loadTemplate function with an FOF-specific one.
@@ -616,8 +1043,6 @@ abstract class FOFView extends JViewLegacy
 	 * associative array.
 	 *
 	 * @return  array
-	 *
-	 * @since   2.0
 	 */
 	public function getViewOptionAndName()
 	{
@@ -662,4 +1087,59 @@ abstract class FOFView extends JViewLegacy
 		}
 	}
 
+	/**
+	 * Adds to the search path for templates and resources.
+	 *
+	 * @param   string  $type  The type of path to add.
+	 * @param   mixed   $path  The directory or stream, or an array of either, to search.
+	 *
+	 * @return  void
+	 */
+	protected function _addPath($type, $path)
+	{
+		// Just force to array
+		settype($path, 'array');
+
+		// Loop through the path directories
+		foreach ($path as $dir)
+		{
+			// No surrounding spaces allowed!
+			$dir = trim($dir);
+
+			// Add trailing separators as needed
+			if (substr($dir, -1) != DIRECTORY_SEPARATOR)
+			{
+				// Directory
+				$dir .= DIRECTORY_SEPARATOR;
+			}
+
+			// Add to the top of the search dirs
+			array_unshift($this->_path[$type], $dir);
+		}
+	}
+
+	/**
+	 * Create the filename for a resource
+	 *
+	 * @param   string  $type   The resource type to create the filename for
+	 * @param   array   $parts  An associative array of filename information
+	 *
+	 * @return  string  The filename
+	 */
+	protected function _createFileName($type, $parts = array())
+	{
+		$filename = '';
+
+		switch ($type)
+		{
+			case 'template':
+				$filename = strtolower($parts['name']) . '.' . $this->_layoutExt;
+				break;
+
+			default:
+				$filename = strtolower($parts['name']) . '.php';
+				break;
+		}
+		return $filename;
+	}
 }
