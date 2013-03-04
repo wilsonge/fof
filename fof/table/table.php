@@ -378,7 +378,7 @@ class FOFTable extends JObject
 				throw new UnexpectedValueException(sprintf('Missing field in database: %s &#160; %s.', get_class($this), $field));
 			}
 			// Add the search tuple to the query.
-			$query->where($this->_db->quoteName($field) . ' = ' . $this->_db->quote($value));
+			$query->where($this->_db->qn($field) . ' = ' . $this->_db->q($value));
 		}
 
 		$this->_db->setQuery($query);
@@ -389,7 +389,7 @@ class FOFTable extends JObject
 		if (empty($row))
 		{
 			$result = true;
-			return $this->onAfterLoad(false);
+			return $this->onAfterLoad($result);
 		}
 
 		// Bind the object with the row and return.
@@ -706,9 +706,9 @@ class FOFTable extends JObject
 			$this->asset_id = (int) $asset->id;
 
 			$query = $this->_db->getQuery(true);
-			$query->update($this->_db->quoteName($this->_tbl));
+			$query->update($this->_db->qn($this->_tbl));
 			$query->set('asset_id = ' . (int) $this->asset_id);
-			$query->where($this->_db->quoteName($k) . ' = ' . (int) $this->$k);
+			$query->where($this->_db->qn($k) . ' = ' . (int) $this->$k);
 			$this->_db->setQuery($query);
 
 			$this->_db->execute();
@@ -789,7 +789,7 @@ class FOFTable extends JObject
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
 			$query->set('ordering = ' . (int) $row->ordering);
-			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($this->$k));
+			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
 
@@ -797,7 +797,7 @@ class FOFTable extends JObject
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
 			$query->set('ordering = ' . (int) $this->ordering);
-			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($row->$k));
+			$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
 
@@ -810,7 +810,7 @@ class FOFTable extends JObject
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
 			$query->set('ordering = ' . (int) $this->ordering);
-			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($this->$k));
+			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
 		}
@@ -863,7 +863,7 @@ class FOFTable extends JObject
 					$query = $this->_db->getQuery(true);
 					$query->update($this->_tbl);
 					$query->set('ordering = ' . ($i + 1));
-					$query->where($this->_tbl_key . ' = ' . $this->_db->quote($row->$k));
+					$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 					$this->_db->setQuery($query);
 					$this->_db->execute();
 				}
@@ -1169,7 +1169,7 @@ class FOFTable extends JObject
 		$query = $this->_db->getQuery(true);
 		$query->delete();
 		$query->from($this->_tbl);
-		$query->where($this->_tbl_key . ' = ' . $this->_db->quote($pk));
+		$query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
 		$this->_db->setQuery($query);
 
 		// Check for a database error.
@@ -1205,8 +1205,8 @@ class FOFTable extends JObject
 			// Check the row in by primary key.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->quoteName('hits') . ' = (' . $this->_db->quoteName('hits') . ' + 1)');
-			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($pk));
+			$query->set($this->_db->qn('hits') . ' = (' . $this->_db->qn('hits') . ' + 1)');
+			$query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
 
@@ -2077,7 +2077,7 @@ class FOFTable extends JObject
 		if ($orderingFilter)
 		{
 			$filterValue = $this->$orderingFilter;
-			$this->reorder($orderingFilter ? $this->_db->quoteName($orderingFilter) . ' = ' . $this->_db->Quote($filterValue) : '');
+			$this->reorder($orderingFilter ? $this->_db->qn($orderingFilter) . ' = ' . $this->_db->q($filterValue) : '');
 		}
 
 		// Set the error to empty and return true.
