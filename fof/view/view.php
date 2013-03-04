@@ -19,13 +19,53 @@ JLoader::import('legacy.view.legacy');
 abstract class FOFView extends JViewLegacy
 {
 
+	/**
+	 * The available renderer objects we can use to render views
+	 *
+	 * @var    array  Contains objects of the FOFRenderAbstract class
+	 */
 	static $renderers = array();
+
+	/**
+	 * Cache of the configuration array
+	 *
+	 * @var    array
+	 */
 	protected $config = array();
-	protected $input = array();
+
+	/**
+	 * The input object of this view
+	 *
+	 * @var    FOFInput
+	 */
+	protected $input = null;
+
+	/**
+	 * The chosen renderer object
+	 *
+	 * @var    FOFRenderAbstract
+	 */
 	protected $rendererObject = null;
+
+	/**
+	 * Should I run the pre-render step?
+	 *
+	 * @var    boolean
+	 */
 	protected $doPreRender = true;
+
+	/**
+	 * Should I run the post-render step?
+	 *
+	 * @var    boolean
+	 */
 	protected $doPostRender = true;
 
+	/**
+	 * Public constructor. Instantiates a FOFView object.
+	 *
+	 * @param   array  $config  The configuration data array
+	 */
 	public function __construct($config = array())
 	{
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
@@ -372,6 +412,15 @@ abstract class FOFView extends JViewLegacy
 		return $result;
 	}
 
+	/**
+	 * Parses a template path in the form of admin:/component/view/layout or
+	 * site:/component/view/layout to an array which can be used by
+	 * loadAnyTemplate to locate and load the view template file.
+	 *
+	 * @param   string  $path  The template path to parse
+	 *
+	 * @return  array  A hash array with the parsed path parts
+	 */
 	private function _parseTemplatePath($path = '')
 	{
 		$parts = array(
@@ -413,7 +462,8 @@ abstract class FOFView extends JViewLegacy
 
 	/**
 	 * Get the renderer object for this view
-	 * @return FOFRenderAbstract
+	 *
+	 * @return  FOFRenderAbstract
 	 */
 	public function &getRenderer()
 	{
@@ -426,7 +476,10 @@ abstract class FOFView extends JViewLegacy
 
 	/**
 	 * Sets the renderer object for this view
-	 * @param FOFRenderAbstract $renderer
+	 *
+	 * @param   FOFRenderAbstract  $renderer
+	 *
+	 * @return  void
 	 */
 	public function setRenderer(FOFRenderAbstract &$renderer)
 	{
@@ -436,7 +489,7 @@ abstract class FOFView extends JViewLegacy
 	/**
 	 * Finds a suitable renderer
 	 *
-	 * @return FOFRenderAbstract
+	 * @return  FOFRenderAbstract
 	 */
 	protected function findRenderer()
 	{
@@ -484,16 +537,37 @@ abstract class FOFView extends JViewLegacy
 		return $o;
 	}
 
+	/**
+	 * Registers a renderer object with the view
+	 *
+	 * @param   FOFRenderAbstract  $renderer
+	 *
+	 * @return  void
+	 */
 	public static function registerRenderer(FOFRenderAbstract &$renderer)
 	{
 		self::$renderers[] = $renderer;
 	}
 
+	/**
+	 * Sets the pre-render flag
+	 *
+	 * @param   boolean  $value  True to enable the pre-render step
+	 *
+	 * @return  void
+	 */
 	public function setPreRender($value)
 	{
 		$this->doPreRender = $value;
 	}
 
+	/**
+	 * Sets the post-render flag
+	 *
+	 * @param   boolean  $value  True to enable the post-render step
+	 *
+	 * @return  void
+	 */
 	public function setPostRender($value)
 	{
 		$this->doPostRender = $value;
@@ -505,8 +579,6 @@ abstract class FOFView extends JViewLegacy
 	 * @param   string  $hlp  The name of the helper source file automatically searches the helper paths and compiles as needed.
 	 *
 	 * @return  void
-	 *
-	 * @since   12.2
 	 */
 	public function loadHelper($hlp = null)
 	{
