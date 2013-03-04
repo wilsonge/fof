@@ -313,7 +313,7 @@ class FOFTable extends JObject
 
 	/**
 	 * Method to load a row from the database by primary key and bind the fields
-	 * to the JTable instance properties.
+	 * to the FOFTable instance properties.
 	 *
 	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
 	 *                           set the instance property value is used.
@@ -540,11 +540,11 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * Method to bind an associative array or object to the JTable instance.This
+	 * Method to bind an associative array or object to the FOFTable instance.This
 	 * method only binds properties that are publicly accessible and optionally
 	 * takes an array of properties to ignore when binding.
 	 *
-	 * @param   mixed  $src     An associative array or object to bind to the JTable instance.
+	 * @param   mixed  $src     An associative array or object to bind to the FOFTable instance.
 	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
 	 *
 	 * @return  boolean  True on success.
@@ -592,7 +592,7 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * Method to store a row in the database from the JTable instance properties.
+	 * Method to store a row in the database from the FOFTable instance properties.
 	 * If a primary key value is set the row with that primary key value will be
 	 * updated with the instance property values.  If no primary key value is set
 	 * a new row will be inserted into the database with the properties from the
@@ -1865,7 +1865,7 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * Add a filesystem path where JTable should search for table class files.
+	 * Add a filesystem path where FOFTable should search for table class files.
 	 * You may either pass a string or an array of paths.
 	 *
 	 * @param   mixed  $path  A filesystem path or array of filesystem paths to add.
@@ -1934,7 +1934,7 @@ class FOFTable extends JObject
 	 * The extended class can define a table and id to lookup.  If the
 	 * asset does not exist it will be created.
 	 *
-	 * @param   FOFTable  $table  A JTable object for the asset parent.
+	 * @param   FOFTable  $table  A FOFTable object for the asset parent.
 	 * @param   integer   $id     Id to look up
 	 *
 	 * @return  integer
@@ -2026,14 +2026,14 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * Method to provide a shortcut to binding, checking and storing a JTable
+	 * Method to provide a shortcut to binding, checking and storing a FOFTable
 	 * instance to the database table.  The method will check a row in once the
 	 * data has been stored and if an ordering filter is present will attempt to
 	 * reorder the table rows based on the filter.  The ordering filter is an instance
 	 * property name.  The rows that will be reordered are those whose value matches
-	 * the JTable instance for the property specified.
+	 * the FOFTable instance for the property specified.
 	 *
-	 * @param   mixed   $src             An associative array or object to bind to the JTable instance.
+	 * @param   mixed   $src             An associative array or object to bind to the FOFTable instance.
 	 * @param   string  $orderingFilter  Filter for the order updating
 	 * @param   mixed   $ignore          An optional array or space separated list of properties
 	 *                                   to ignore while binding.

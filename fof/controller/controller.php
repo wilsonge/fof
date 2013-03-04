@@ -341,7 +341,7 @@ class FOFController extends JObject
 
 		if (defined('JDEBUG') && JDEBUG)
 		{
-			JLog::addLogger(array('text_file' => 'jcontroller.log.php'), JLog::ALL, array('controller'));
+			JLog::addLogger(array('text_file' => 'fofcontroller.log.php'), JLog::ALL, array('controller'));
 		}
 
 		// Cache the config
