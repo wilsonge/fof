@@ -335,7 +335,14 @@ class FOFTable extends JObject
 		{
 			// If empty, use the value of the current key
 			$keyName = $this->_tbl_key;
-			$keyValue = $this->$keyName;
+			if (isset($this->$keyName))
+			{
+				$keyValue = $this->$keyName;
+			}
+			else
+			{
+				$keyValue = null;
+			}
 
 			// If empty primary key there's is no need to load anything
 			if (empty($keyValue))
