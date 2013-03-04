@@ -269,7 +269,7 @@ class FOFDispatcher extends JObject
 				}
 			}
 		}
-		else
+		elseif (!$isCli)
 		{
 			// Perform transparent authentication for front-end requests
 			$this->transparentAuthentication();
@@ -291,7 +291,15 @@ class FOFDispatcher extends JObject
 		$jlang->load($this->component, $paths[1], 'en-GB', true);
 		$jlang->load($this->component, $paths[1], null, true);
 
-		if (!$this->onBeforeDispatch())
+		$canDispatch = true;
+		if($isCli)
+		{
+			$canDispatch = $canDispatch && $this->onBeforeDispatchCLI();
+		}
+
+		$canDispatch = $canDispatch && $this->onBeforeDispatch();
+
+		if (!$canDispatch)
 		{
 
 			// For json, don't use normal 403 page, but a json encoded message
@@ -445,6 +453,42 @@ class FOFDispatcher extends JObject
 	 */
 	public function onBeforeDispatch()
 	{
+		return true;
+	}
+
+	/**
+	 * Sets up some environment variables, so we can work as usually on CLI, too.
+	 *
+	 * @return  boolean  Return false to abort
+	 */
+	public function onBeforeDispatchCLI()
+	{
+		JLoader::import('joomla.environment.uri');
+		JLoader::import('joomla.application.component.helper');
+
+		// Trick to create a valid url used by JURI
+		$this->_originalPhpScript = '';
+
+		// We have no Application Helper (there is no Application!), so I have to define these constants manually
+		$option = $this->input->get('option');
+		if($option)
+		{
+			if(!defined('JPATH_COMPONENT'))
+			{
+				define('JPATH_COMPONENT', JPATH_BASE . '/components/' . $option);
+			}
+
+			if(!defined('JPATH_COMPONENT_SITE'))
+			{
+				define('JPATH_COMPONENT_SITE', JPATH_SITE . '/components/' . $option);
+			}
+
+			if(!defined('JPATH_COMPONENT_ADMINISTRATOR'))
+			{
+				define('JPATH_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/' . $option);
+			}
+		}
+
 		return true;
 	}
 

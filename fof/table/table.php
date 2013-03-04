@@ -15,8 +15,6 @@ if (class_exists('FOFTable', false))
 	return;
 }
 
-jimport('joomla.database.table');
-
 /**
  * FrameworkOnFramework table class
  *
@@ -24,12 +22,62 @@ jimport('joomla.database.table');
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  */
-class FOFTable extends JTable
+class FOFTable extends JObject
 {
+	/**
+	 * Include paths for searching for FOFTable classes.
+	 *
+	 * @var    array
+	 */
+	private static $_includePaths = array();
+
+	/**
+	 * Name of the database table to model.
+	 *
+	 * @var    string
+	 */
+	protected $_tbl = '';
+
+	/**
+	 * Name of the primary key field in the table.
+	 *
+	 * @var    string
+	 */
+	protected $_tbl_key = '';
+
+	/**
+	 * JDatabaseDriver object.
+	 *
+	 * @var    JDatabaseDriver
+	 */
+	protected $_db;
+
+	/**
+	 * Should rows be tracked as ACL assets?
+	 *
+	 * @var    boolean
+	 */
+	protected $_trackAssets = false;
+
+	/**
+	 * The rules associated with this record.
+	 *
+	 * @var    JAccessRules  A JAccessRules object.
+	 */
+	protected $_rules;
+
+	/**
+	 * Indicator that the tables have been locked.
+	 *
+	 * @var    boolean
+	 */
+	protected $_locked = false;
 
 	/**
 	 * If this is set to true, it triggers automatically plugin events for
 	 * table actions
+	 *
+	 * @var    boolean
 	 */
 	protected $_trigger_events = false;
 
@@ -43,14 +91,14 @@ class FOFTable extends JTable
 	/**
 	 * If set to true, it enabled automatic checks on fields based on columns properties
 	 *
-	 * @var boolean
+	 * @var    boolean
 	 */
 	protected $_autoChecks = false;
 
 	/**
 	 * Array with fields that should be skipped by automatic checks
 	 *
-	 * @var array
+	 * @var    array
 	 */
 	protected $_skipChecks = array();
 
@@ -58,10 +106,16 @@ class FOFTable extends JTable
 	 * Does the table actually exist? We need that to avoid PHP notices on
 	 * teble-less views.
 	 *
-	 * @var bool
-	 * @since 2.0
+	 * @var    boolean
 	 */
 	protected $_tableExists = true;
+
+	/**
+	 * The input data
+	 *
+	 * @var    FOFInput
+	 */
+	protected $input = null;
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -76,20 +130,22 @@ class FOFTable extends JTable
 		static $instances = array();
 
 		// Guess the component name
-		if (array_key_exists('input', $config))
+		if (!array_key_exists('input', $config))
 		{
-			if ($config['input'] instanceof FOFInput)
-			{
-				$tmpInput = $config['input'];
-			}
-			else
-			{
-				$tmpInput = new FOFInput($config['input']);
-			}
-			$option = $tmpInput->getCmd('option', '');
-			$tmpInput->set('option', $option);
-			$config['input'] = $tmpInput;
+			$config['input'] = new FOFInput();
 		}
+
+		if ($config['input'] instanceof FOFInput)
+		{
+			$tmpInput = $config['input'];
+		}
+		else
+		{
+			$tmpInput = new FOFInput($config['input']);
+		}
+		$option = $tmpInput->getCmd('option', '');
+		$tmpInput->set('option', $option);
+		$config['input'] = $tmpInput;
 
 		if (!in_array($prefix, array('Table', 'JTable')))
 		{
@@ -98,15 +154,22 @@ class FOFTable extends JTable
 		}
 
 		if (array_key_exists('option', $config))
+		{
 			$option = $config['option'];
+		}
 		$config['option'] = $option;
 
 		if (!array_key_exists('view', $config))
-			$config['view'] = JRequest::getCmd('view', 'cpanel');
+		{
+			$config['view'] = $config['input']->getCmd('view', 'cpanel');
+		}
+
 		if (is_null($type))
 		{
 			if ($prefix == 'JTable')
+			{
 				$prefix = 'Table';
+			}
 			$type = $config['view'];
 		}
 
@@ -136,7 +199,7 @@ class FOFTable extends JTable
 					array_unshift($searchPaths, $config['tablepath']);
 				}
 
-				jimport('joomla.filesystem.path');
+				JLoader::import('joomla.filesystem.path');
 				$path = JPath::find(
 						$searchPaths, strtolower($type) . '.php'
 				);
@@ -168,6 +231,7 @@ class FOFTable extends JTable
 			}
 
 			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db']);
+			$instance->setInput($tmpInput);
 
 			if (array_key_exists('trigger_events', $config))
 			{
@@ -206,7 +270,7 @@ class FOFTable extends JTable
 		// If we are tracking assets, make sure an access field exists and initially set the default.
 		if (isset($this->asset_id) || property_exists($this, 'asset_id'))
 		{
-			jimport('joomla.access.rules');
+			JLoader::import('joomla.access.rules');
 			$this->_trackAssets = true;
 		}
 
@@ -247,17 +311,92 @@ class FOFTable extends JTable
 		$this->_skipChecks = (array) $skip;
 	}
 
+	/**
+	 * Method to load a row from the database by primary key and bind the fields
+	 * to the FOFTable instance properties.
+	 *
+	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
+	 *                           set the instance property value is used.
+	 * @param   boolean  $reset  True to reset the default values before loading the new row.
+	 *
+	 * @return  boolean  True if successful. False if row not found.
+	 *
+	 * @throws  RuntimeException
+	 * @throws  UnexpectedValueException
+	 */
 	public function load($keys = null, $reset = true)
 	{
 		if (!$this->_tableExists)
 		{
 			$result = false;
 		}
-		else
+
+		if (empty($keys))
 		{
-			$result = parent::load($keys, $reset);
-			$this->onAfterLoad($result);
+			// If empty, use the value of the current key
+			$keyName = $this->_tbl_key;
+			if (isset($this->$keyName))
+			{
+				$keyValue = $this->$keyName;
+			}
+			else
+			{
+				$keyValue = null;
+			}
+
+			// If empty primary key there's is no need to load anything
+			if (empty($keyValue))
+			{
+				$result = true;
+				return $this->onAfterLoad($result);
+			}
+
+			$keys = array($keyName => $keyValue);
 		}
+		elseif (!is_array($keys))
+		{
+			// Load by primary key.
+			$keys = array($this->_tbl_key => $keys);
+		}
+
+		if ($reset)
+		{
+			$this->reset();
+		}
+
+		// Initialise the query.
+		$query = $this->_db->getQuery(true);
+		$query->select('*');
+		$query->from($this->_tbl);
+		$fields = array_keys($this->getProperties());
+
+		foreach ($keys as $field => $value)
+		{
+			// Check that $field is in the table.
+			if (!in_array($field, $fields))
+			{
+				throw new UnexpectedValueException(sprintf('Missing field in database: %s &#160; %s.', get_class($this), $field));
+			}
+			// Add the search tuple to the query.
+			$query->where($this->_db->quoteName($field) . ' = ' . $this->_db->quote($value));
+		}
+
+		$this->_db->setQuery($query);
+
+		$row = $this->_db->loadAssoc();
+
+		// Check that we have a result.
+		if (empty($row))
+		{
+			$result = true;
+			return $this->onAfterLoad(false);
+		}
+
+		// Bind the object with the row and return.
+		$result = $this->bind($row);
+
+		$this->onAfterLoad($result);
+
 		return $result;
 	}
 
@@ -269,7 +408,9 @@ class FOFTable extends JTable
 	function check()
 	{
 		if (!$this->_autoChecks)
-			return parent::check();
+		{
+			return true;
+		}
 
 		$fields = $this->getTableFields();
 		$result = true;
@@ -405,50 +546,336 @@ class FOFTable extends JTable
 		return true;
 	}
 
-	public function bind($from, $ignore = array())
+	/**
+	 * Method to bind an associative array or object to the FOFTable instance.This
+	 * method only binds properties that are publicly accessible and optionally
+	 * takes an array of properties to ignore when binding.
+	 *
+	 * @param   mixed  $src     An associative array or object to bind to the FOFTable instance.
+	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @throws  UnexpectedValueException
+	 */	public function bind($src, $ignore = array())
 	{
-		if (!$this->onBeforeBind($from))
+		if (!$this->onBeforeBind($src))
+		{
 			return false;
-		return parent::bind($from, $ignore);
+		}
+
+		// If the source value is not an array or object return false.
+		if (!is_object($src) && !is_array($src))
+		{
+			throw new InvalidArgumentException(sprintf('%s::bind(*%s*)', get_class($this), gettype($src)));
+		}
+
+		// If the source value is an object, get its accessible properties.
+		if (is_object($src))
+		{
+			$src = get_object_vars($src);
+		}
+
+		// If the ignore value is a string, explode it over spaces.
+		if (!is_array($ignore))
+		{
+			$ignore = explode(' ', $ignore);
+		}
+
+		// Bind the source value, excluding the ignored fields.
+		foreach ($this->getProperties() as $k => $v)
+		{
+			// Only process fields not in the ignore array.
+			if (!in_array($k, $ignore))
+			{
+				if (isset($src[$k]))
+				{
+					$this->$k = $src[$k];
+				}
+			}
+		}
+
+		return true;
 	}
 
+	/**
+	 * Method to store a row in the database from the FOFTable instance properties.
+	 * If a primary key value is set the row with that primary key value will be
+	 * updated with the instance property values.  If no primary key value is set
+	 * a new row will be inserted into the database with the properties from the
+	 * FOFTable instance.
+	 *
+	 * @param   boolean  $updateNulls  True to update fields even if they are null.
+	 *
+	 * @return  boolean  True on success.
+	 */
 	public function store($updateNulls = false)
 	{
 		if (!$this->onBeforeStore($updateNulls))
-			return false;
-		$result = parent::store($updateNulls);
-		if ($result)
 		{
-			$result = $this->onAfterStore();
+			return false;
 		}
+
+		$k = $this->_tbl_key;
+		if (!empty($this->asset_id))
+		{
+			$currentAssetId = $this->asset_id;
+		}
+
+		if (0 == $this->$k)
+		{
+			$this->$k = null;
+		}
+
+		// The asset id field is managed privately by this class.
+		if ($this->_trackAssets)
+		{
+			unset($this->asset_id);
+		}
+
+		// If a primary key exists update the object, otherwise insert it.
+		if ($this->$k)
+		{
+			$this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
+		}
+		else
+		{
+			$this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
+		}
+
+		// If the table is not set to track assets return true.
+		if (!$this->_trackAssets)
+		{
+			$result = true;
+			return $this->onAfterStore();
+		}
+
+		if ($this->_locked)
+		{
+			$this->_unlock();
+		}
+
+		/*
+		 * Asset Tracking
+		 */
+
+		$parentId = $this->_getAssetParentId();
+		$name = $this->_getAssetName();
+		$title = $this->_getAssetTitle();
+
+		$asset = self::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$asset->loadByName($name);
+
+		// Re-inject the asset id.
+		$this->asset_id = $asset->id;
+
+		// Check for an error.
+		$error = $asset->getError();
+		if ($error)
+		{
+			$this->setError($error);
+			return false;
+		}
+
+		// Specify how a new or moved node asset is inserted into the tree.
+		if (empty($this->asset_id) || $asset->parent_id != $parentId)
+		{
+			$asset->setLocation($parentId, 'last-child');
+		}
+
+		// Prepare the asset to be stored.
+		$asset->parent_id = $parentId;
+		$asset->name = $name;
+		$asset->title = $title;
+
+		if ($this->_rules instanceof JAccessRules)
+		{
+			$asset->rules = (string) $this->_rules;
+		}
+
+		if (!$asset->check() || !$asset->store($updateNulls))
+		{
+			$this->setError($asset->getError());
+			return false;
+		}
+
+		// Create an asset_id or heal one that is corrupted.
+		if (empty($this->asset_id) || ($currentAssetId != $this->asset_id && !empty($this->asset_id)))
+		{
+			// Update the asset_id field in this table.
+			$this->asset_id = (int) $asset->id;
+
+			$query = $this->_db->getQuery(true);
+			$query->update($this->_db->quoteName($this->_tbl));
+			$query->set('asset_id = ' . (int) $this->asset_id);
+			$query->where($this->_db->quoteName($k) . ' = ' . (int) $this->$k);
+			$this->_db->setQuery($query);
+
+			$this->_db->execute();
+		}
+
+		$result = true;
+		$result = $this->onAfterStore();
 		return $result;
 	}
 
-	public function move($dirn, $where = '')
+	/**
+	 * Method to move a row in the ordering sequence of a group of rows defined by an SQL WHERE clause.
+	 * Negative numbers move the row up in the sequence and positive numbers move it down.
+	 *
+	 * @param   integer  $delta  The direction and magnitude to move the row in the ordering sequence.
+	 * @param   string   $where  WHERE clause to use for limiting the selection of rows to compact the
+	 *                           ordering values.
+	 *
+	 * @return  mixed    Boolean  True on success.
+	 *
+	 * @throws  UnexpectedValueException
+	 */
+	public function move($delta, $where = '')
 	{
-		if (!$this->onBeforeMove($dirn, $where))
+		if (!$this->onBeforeMove($delta, $where))
+		{
 			return false;
-		$result = parent::move($dirn, $where);
-		if ($result)
+		}
+
+		// If there is no ordering field set an error and return false.
+		if (!property_exists($this, 'ordering'))
+		{
+			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
+		}
+
+		// If the change is none, do nothing.
+		if (empty($delta))
 		{
 			$result = $this->onAfterMove();
+			return $result;
 		}
+
+		$k = $this->_tbl_key;
+		$row = null;
+		$query = $this->_db->getQuery(true);
+
+		// Select the primary key and ordering values from the table.
+		$query->select($this->_tbl_key . ', ordering');
+		$query->from($this->_tbl);
+
+		// If the movement delta is negative move the row up.
+		if ($delta < 0)
+		{
+			$query->where('ordering < ' . (int) $this->ordering);
+			$query->order('ordering DESC');
+		}
+		// If the movement delta is positive move the row down.
+		elseif ($delta > 0)
+		{
+			$query->where('ordering > ' . (int) $this->ordering);
+			$query->order('ordering ASC');
+		}
+
+		// Add the custom WHERE clause if set.
+		if ($where)
+		{
+			$query->where($where);
+		}
+
+		// Select the first row with the criteria.
+		$this->_db->setQuery($query, 0, 1);
+		$row = $this->_db->loadObject();
+
+		// If a row is found, move the item.
+		if (!empty($row))
+		{
+			// Update the ordering field for this instance to the row's ordering value.
+			$query = $this->_db->getQuery(true);
+			$query->update($this->_tbl);
+			$query->set('ordering = ' . (int) $row->ordering);
+			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($this->$k));
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+
+			// Update the ordering field for the row to this instance's ordering value.
+			$query = $this->_db->getQuery(true);
+			$query->update($this->_tbl);
+			$query->set('ordering = ' . (int) $this->ordering);
+			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($row->$k));
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+
+			// Update the instance value.
+			$this->ordering = $row->ordering;
+		}
+		else
+		{
+			// Update the ordering field for this instance.
+			$query = $this->_db->getQuery(true);
+			$query->update($this->_tbl);
+			$query->set('ordering = ' . (int) $this->ordering);
+			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($this->$k));
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+		}
+
+		$result = $this->onAfterMove();
 		return $result;
 	}
 
 	public function reorder($where = '')
 	{
 		if (!$this->onBeforeReorder($where))
-			return false;
-		$result = parent::reorder($where);
-		if ($result)
 		{
-			$result = $this->onAfterReorder();
+			return false;
 		}
+
+		// If there is no ordering field set an error and return false.
+		if (!property_exists($this, 'ordering'))
+		{
+			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
+		}
+
+		$k = $this->_tbl_key;
+
+		// Get the primary keys and ordering values for the selection.
+		$query = $this->_db->getQuery(true);
+		$query->select($this->_tbl_key . ', ordering');
+		$query->from($this->_tbl);
+		$query->where('ordering >= 0');
+		$query->order('ordering');
+
+		// Setup the extra where and ordering clause data.
+		if ($where)
+		{
+			$query->where($where);
+		}
+
+		$this->_db->setQuery($query);
+		$rows = $this->_db->loadObjectList();
+
+		// Compact the ordering values.
+		foreach ($rows as $i => $row)
+		{
+			// Make sure the ordering is a positive integer.
+			if ($row->ordering >= 0)
+			{
+				// Only update rows that are necessary.
+				if ($row->ordering != $i + 1)
+				{
+					// Update the row ordering field.
+					$query = $this->_db->getQuery(true);
+					$query->update($this->_tbl);
+					$query->set('ordering = ' . ($i + 1));
+					$query->where($this->_tbl_key . ' = ' . $this->_db->quote($row->$k));
+					$this->_db->setQuery($query);
+					$this->_db->execute();
+				}
+			}
+		}
+
+		$result = $this->onAfterReorder();
+
 		return $result;
 	}
 
-	public function checkout($who, $oid = null)
+	public function checkout($userId, $oid = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
@@ -480,16 +907,16 @@ class FOFTable extends JTable
 		$query = $this->_db->getQuery(true)
 			->update($this->_db->qn($this->_tbl))
 			->set(array(
-				$this->_db->qn($fldLockedBy) . ' = ' . (int) $who,
+				$this->_db->qn($fldLockedBy) . ' = ' . (int) $userId,
 				$this->_db->qn($fldLockedOn) . ' = ' . $this->_db->q($time)
 			))
 			->where($this->_db->qn($this->_tbl_key) . ' = ' . $this->_db->q($this->$k));
 		$this->_db->setQuery((string) $query);
 
-		$this->$fldLockedBy = $who;
+		$this->$fldLockedBy = $userId;
 		$this->$fldLockedOn = $time;
 
-		return $this->_db->query();
+		return $this->_db->execute();
 	}
 
 	function checkin($oid = null)
@@ -529,14 +956,14 @@ class FOFTable extends JTable
 		$this->$fldLockedBy = 0;
 		$this->$fldLockedOn = '';
 
-		return $this->_db->query();
+		return $this->_db->execute();
 	}
 
 	function isCheckedOut($with = 0, $against = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 
-		if (isset($this) && is_a($this, 'JTable') && is_null($against))
+		if (isset($this) && is_a($this, 'FOFTable') && is_null($against))
 		{
 			$against = $this->get($fldLockedBy);
 		}
@@ -663,7 +1090,7 @@ class FOFTable extends JTable
 		{
 			try
 			{
-				$this->_db->query();
+				$this->_db->execute();
 			}
 			catch (JDatabaseException $e)
 			{
@@ -672,7 +1099,7 @@ class FOFTable extends JTable
 		}
 		else
 		{
-			if (!$this->_db->query())
+			if (!$this->_db->execute())
 			{
 				$this->setError($this->_db->getErrorMsg());
 				return false;
@@ -697,27 +1124,103 @@ class FOFTable extends JTable
 	public function delete($oid = null)
 	{
 		if ($oid)
+		{
 			$this->load($oid);
+		}
 
 		if (!$this->onBeforeDelete($oid))
-			return false;
-		$result = parent::delete($oid);
-		if ($result)
 		{
-			$result = $this->onAfterDelete($oid);
+			return false;
 		}
+
+		$k = $this->_tbl_key;
+		$pk = (is_null($pk)) ? $this->$k : $pk;
+
+		// If no primary key is given, return false.
+		if ($pk === null)
+		{
+			throw new UnexpectedValueException('Null primary key not allowed.');
+		}
+
+		// If tracking assets, remove the asset first.
+		if ($this->_trackAssets)
+		{
+			// Get and the asset name.
+			$this->$k = $pk;
+			$name = $this->_getAssetName();
+			$asset = self::getInstance('Asset');
+
+			if ($asset->loadByName($name))
+			{
+				if (!$asset->delete())
+				{
+					$this->setError($asset->getError());
+					return false;
+				}
+			}
+			else
+			{
+				$this->setError($asset->getError());
+				return false;
+			}
+		}
+
+		// Delete the row by primary key.
+		$query = $this->_db->getQuery(true);
+		$query->delete();
+		$query->from($this->_tbl);
+		$query->where($this->_tbl_key . ' = ' . $this->_db->quote($pk));
+		$this->_db->setQuery($query);
+
+		// Check for a database error.
+		$this->_db->execute();
+
+		$result = $this->onAfterDelete($oid);
 		return $result;
 	}
 
 	public function hit($oid = null, $log = false)
 	{
 		if (!$this->onBeforeHit($oid, $log))
+		{
 			return false;
-		$result = parent::hit($oid, $log);
+		}
+
+		// If there is no hits field, just return true.
+		if (!property_exists($this, 'hits'))
+		{
+			return true;
+		}
+
+		$k = $this->_tbl_key;
+		$pk = (is_null($oid)) ? $this->$k : $oid;
+
+		// If no primary key is given, return false.
+		if ($pk === null)
+		{
+			$result = false;
+		}
+		else
+		{
+			// Check the row in by primary key.
+			$query = $this->_db->getQuery(true);
+			$query->update($this->_tbl);
+			$query->set($this->_db->quoteName('hits') . ' = (' . $this->_db->quoteName('hits') . ' + 1)');
+			$query->where($this->_tbl_key . ' = ' . $this->_db->quote($pk));
+			$this->_db->setQuery($query);
+			$this->_db->execute();
+
+			// Set table values in the object.
+			$this->hits++;
+
+			$result = true;
+		}
+
 		if ($result)
 		{
 			$result = $this->onAfterHit($oid);
 		}
+
 		return $result;
 	}
 
@@ -963,7 +1466,7 @@ class FOFTable extends JTable
 				{
 					$this->$created_by = JFactory::getUser()->id;
 				}
-				jimport('joomla.utilities.date');
+				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
@@ -981,7 +1484,7 @@ class FOFTable extends JTable
 				{
 					$this->$modified_by = JFactory::getUser()->id;
 				}
-				jimport('joomla.utilities.date');
+				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
@@ -1351,4 +1854,296 @@ class FOFTable extends JTable
 		return true;
 	}
 
+	public function setInput(FOFInput $input)
+	{
+		$this->input = $input;
+	}
+
+	/**
+	 * Get the columns from database table.
+	 *
+	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 *
+	 * @deprecated  2.1
+	 */
+	public function getFields()
+	{
+		return $this->getTableFields();
+	}
+
+	/**
+	 * Add a filesystem path where FOFTable should search for table class files.
+	 * You may either pass a string or an array of paths.
+	 *
+	 * @param   mixed  $path  A filesystem path or array of filesystem paths to add.
+	 *
+	 * @return  array  An array of filesystem paths to find FOFTable classes in.
+	 */
+	public static function addIncludePath($path = null)
+	{
+		// If the internal paths have not been initialised, do so with the base table path.
+		if (empty(self::$_includePaths))
+		{
+			self::$_includePaths = array(__DIR__);
+		}
+
+		// Convert the passed path(s) to add to an array.
+		settype($path, 'array');
+
+		// If we have new paths to add, do so.
+		if (!empty($path) && !in_array($path, self::$_includePaths))
+		{
+			// Check and add each individual new path.
+			foreach ($path as $dir)
+			{
+				// Sanitize path.
+				$dir = trim($dir);
+
+				// Add to the front of the list so that custom paths are searched first.
+				array_unshift(self::$_includePaths, $dir);
+			}
+		}
+
+		return self::$_includePaths;
+	}
+
+	/**
+	 * Method to compute the default name of the asset.
+	 * The default name is in the form table_name.id
+	 * where id is the value of the primary key of the table.
+	 *
+	 * @return  string
+	 */
+	protected function _getAssetName()
+	{
+		$k = $this->_tbl_key;
+		return $this->_tbl . '.' . (int) $this->$k;
+	}
+
+	/**
+	 * Method to return the title to use for the asset table.  In
+	 * tracking the assets a title is kept for each asset so that there is some
+	 * context available in a unified access manager.  Usually this would just
+	 * return $this->title or $this->name or whatever is being used for the
+	 * primary name of the row. If this method is not overridden, the asset name is used.
+	 *
+	 * @return  string  The string to use as the title in the asset table.
+	 */
+	protected function _getAssetTitle()
+	{
+		return $this->_getAssetName();
+	}
+
+	/**
+	 * Method to get the parent asset under which to register this one.
+	 * By default, all assets are registered to the ROOT node with ID,
+	 * which will default to 1 if none exists.
+	 * The extended class can define a table and id to lookup.  If the
+	 * asset does not exist it will be created.
+	 *
+	 * @param   FOFTable  $table  A FOFTable object for the asset parent.
+	 * @param   integer   $id     Id to look up
+	 *
+	 * @return  integer
+	 */
+	protected function _getAssetParentId($table = null, $id = null)
+	{
+		// For simple cases, parent to the asset root.
+		$assets = self::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$rootId = $assets->getRootId();
+		if (!empty($rootId))
+		{
+			return $rootId;
+		}
+
+		return 1;
+	}
+
+	/**
+	 * Method to get the database table name for the class.
+	 *
+	 * @return  string  The name of the database table being modeled.
+	 */
+	public function getTableName()
+	{
+		return $this->_tbl;
+	}
+
+	/**
+	 * Method to get the primary key field name for the table.
+	 *
+	 * @return  string  The name of the primary key for the table.
+	 */
+	public function getKeyName()
+	{
+		return $this->_tbl_key;
+	}
+
+	/**
+	 * Method to get the JDatabaseDriver object.
+	 *
+	 * @return  JDatabaseDriver  The internal database driver object.
+	 */
+	public function getDbo()
+	{
+		return $this->_db;
+	}
+
+	/**
+	 * Method to set the JDatabaseDriver object.
+	 *
+	 * @param   JDatabaseDriver  $db  A JDatabaseDriver object to be used by the table object.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	public function setDBO(JDatabaseDriver $db)
+	{
+		$this->_db = $db;
+
+		return true;
+	}
+
+	/**
+	 * Method to set rules for the record.
+	 *
+	 * @param   mixed  $input  A JAccessRules object, JSON string, or array.
+	 *
+	 * @return  void
+	 */
+	public function setRules($input)
+	{
+		if ($input instanceof JAccessRules)
+		{
+			$this->_rules = $input;
+		}
+		else
+		{
+			$this->_rules = new JAccessRules($input);
+		}
+	}
+
+	/**
+	 * Method to get the rules for the record.
+	 *
+	 * @return  JAccessRules object
+	 */
+	public function getRules()
+	{
+		return $this->_rules;
+	}
+
+	/**
+	 * Method to provide a shortcut to binding, checking and storing a FOFTable
+	 * instance to the database table.  The method will check a row in once the
+	 * data has been stored and if an ordering filter is present will attempt to
+	 * reorder the table rows based on the filter.  The ordering filter is an instance
+	 * property name.  The rows that will be reordered are those whose value matches
+	 * the FOFTable instance for the property specified.
+	 *
+	 * @param   mixed   $src             An associative array or object to bind to the FOFTable instance.
+	 * @param   string  $orderingFilter  Filter for the order updating
+	 * @param   mixed   $ignore          An optional array or space separated list of properties
+	 *                                   to ignore while binding.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	public function save($src, $orderingFilter = '', $ignore = '')
+	{
+		// Attempt to bind the source to the instance.
+		if (!$this->bind($src, $ignore))
+		{
+			return false;
+		}
+
+		// Run any sanity checks on the instance and verify that it is ready for storage.
+		if (!$this->check())
+		{
+			return false;
+		}
+
+		// Attempt to store the properties to the database table.
+		if (!$this->store())
+		{
+			return false;
+		}
+
+		// Attempt to check the row in, just in case it was checked out.
+		if (!$this->checkin())
+		{
+			return false;
+		}
+
+		// If an ordering filter is set, attempt reorder the rows in the table based on the filter and value.
+		if ($orderingFilter)
+		{
+			$filterValue = $this->$orderingFilter;
+			$this->reorder($orderingFilter ? $this->_db->quoteName($orderingFilter) . ' = ' . $this->_db->Quote($filterValue) : '');
+		}
+
+		// Set the error to empty and return true.
+		$this->setError('');
+
+		return true;
+	}
+
+	/**
+	 * Method to get the next ordering value for a group of rows defined by an SQL WHERE clause.
+	 * This is useful for placing a new item last in a group of items in the table.
+	 *
+	 * @param   string  $where  WHERE clause to use for selecting the MAX(ordering) for the table.
+	 *
+	 * @return  mixed  Boolean false an failure or the next ordering value as an integer.
+	 */
+	public function getNextOrder($where = '')
+	{
+		// If there is no ordering field set an error and return false.
+		if (!property_exists($this, 'ordering'))
+		{
+			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
+		}
+
+		// Get the largest ordering value for a given where clause.
+		$query = $this->_db->getQuery(true);
+		$query->select('MAX(ordering)');
+		$query->from($this->_tbl);
+
+		if ($where)
+		{
+			$query->where($where);
+		}
+
+		$this->_db->setQuery($query);
+		$max = (int) $this->_db->loadResult();
+
+		// Return the largest ordering value + 1.
+		return ($max + 1);
+	}
+
+	/**
+	 * Method to lock the database table for writing.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @throws  RuntimeException
+	 */
+	protected function _lock()
+	{
+		$this->_db->lockTable($this->_tbl);
+		$this->_locked = true;
+
+		return true;
+	}
+
+	/**
+	 * Method to unlock the database table for writing.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	protected function _unlock()
+	{
+		$this->_db->unlockTables();
+		$this->_locked = false;
+
+		return true;
+	}
 }

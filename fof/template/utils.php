@@ -60,8 +60,8 @@ class FOFTemplateUtils
 		// Get the local LESS file
 		$localFile = self::parsePath($path, true);
 
-		jimport('joomla.filesystem.file');
-		jimport('joomla.filesystem.folder');
+		JLoader::import('joomla.filesystem.file');
+		JLoader::import('joomla.filesystem.folder');
 
 		if (is_null($sanityCheck))
 		{
