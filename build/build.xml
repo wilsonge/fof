@@ -132,4 +132,21 @@
 		</delete>
 	</target>
 	
+	<target name="ftpdeploy" depends="git">
+		<echo>Uploading dev release</echo>
+		<ftpdeploy
+			host="${ftp.host}"
+			port="${ftp.port}"
+			username="${ftp.username}"
+			password="${ftp.password}"
+			dir="${ftp.dir}/libfof/${version}"
+			mode="${ftp.mode}"
+			passive="true"
+			level="debug">
+			<fileset dir="${dirs.release}">
+				<include name="lib_*.zip"/>
+			</fileset>			
+		</ftpdeploy>
+	</target>	
+	
 </project>

@@ -9,3 +9,4 @@ release/*.zip
 .project
 /fof/lib_fof.xml
 tests/unit/config.php
+/build/build.properties
