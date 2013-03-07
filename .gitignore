@@ -9,5 +9,8 @@ release/*.zip
 .project
 /fof/lib_fof.xml
 tests/unit/config.php
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/heads/staging
 /build/build.properties
