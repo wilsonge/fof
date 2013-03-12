@@ -797,7 +797,7 @@ abstract class FOFView extends JObject
 		$basePath .= $this->config['option'] . '/';
 		$altBasePath = $basePath;
 		$basePath .= $this->config['view'] . '/';
-		$altBasePath .= FOFInflector::isSingular($this->config['view']) ? FOFInflector::pluralize($this->config['view']) : FOFInflector::singularize($this->config['view']) . '/';
+		$altBasePath .= (FOFInflector::isSingular($this->config['view']) ? FOFInflector::pluralize($this->config['view']) : FOFInflector::singularize($this->config['view'])) . '/';
 
 		if ($strict)
 		{
