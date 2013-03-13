@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="library" version="2.5" method="upgrade">
-    <name>FoF</name>
+    <name>FOF</name>
 	<libraryname>fof</libraryname>
 	<description>Framework-on-Framework (FOF) - A rapid component development framework for Joomla!</description>
 	<creationDate>##DATE##</creationDate>
@@ -11,7 +11,8 @@
 	<license>GNU GPLv2 or later</license>
 	<version>##VERSION##</version>
 	<packager>Akeeba Ltd</packager>
-	<packagerurl>https://www.AkeebaBackup.com</packagerurl>
+	<packagerurl>https://www.AkeebaBackup.com/download.html</packagerurl>
+	
 	<files folder="fof">
 		<folder>controller</folder>
 		<folder>dispatcher</folder>
@@ -34,4 +35,8 @@
 		<file>index.html</file>
 		<file>version.txt</file>
 	</files>
+	
+	<updateservers>
+		<server type="extension" priority="1" name="FOF Updates (official releases)">http://cdn.akeebabackup.com/updates/fof.xml</server>
+	</updateservers>
 </extension>

@@ -14,3 +14,4 @@ tests/unit/config.php
 =======
 >>>>>>> refs/heads/staging
 /build/build.properties
+/build/templates/release.json
