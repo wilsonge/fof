@@ -60,12 +60,19 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	public function postRender($view, $task, $input, $config = array())
 	{
 		list($isCli,) = FOFDispatcher::isCliAdmin();
+		$format = $input->getCmd('format', 'html');
+		if (empty($format))
+			$format = 'html';
+		if ($format != 'html')
+			return;
 
 		// Closing tag only if we're not in CLI
-		if(!$isCli)
+		if($isCli)
 		{
-			echo "</div>\n";
+			return;
 		}
+
+		echo "</div>\n";
 	}
 
 	/**
