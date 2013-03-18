@@ -663,7 +663,7 @@ class FOFTable extends JObject
 		$name = $this->_getAssetName();
 		$title = $this->_getAssetTitle();
 
-		$asset = self::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$asset = Jtable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
 		$asset->loadByName($name);
 
 		// Re-inject the asset id.
@@ -1949,7 +1949,7 @@ class FOFTable extends JObject
 	protected function _getAssetParentId($table = null, $id = null)
 	{
 		// For simple cases, parent to the asset root.
-		$assets = self::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$assets = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
 		$rootId = $assets->getRootId();
 		if (!empty($rootId))
 		{
