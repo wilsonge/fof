@@ -1134,7 +1134,7 @@ class FOFTable extends JObject
 		}
 
 		$k = $this->_tbl_key;
-		$pk = (is_null($pk)) ? $this->$k : $pk;
+		$pk = (is_null($oid)) ? $this->$k : $oid;
 
 		// If no primary key is given, return false.
 		if ($pk === null)
