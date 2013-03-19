@@ -1597,7 +1597,14 @@ class FOFModel extends JObject
 			$filterName = ($fieldname == $tableKey) ? 'id' : $fieldname;
 			$filterState = $this->getState($filterName, null);
 
-			if (!empty($filterState) || ($filterState === '0'))
+			if ($filterName == $table->getColumnAlias('enabled'))
+			{
+				if ($filterState !== '')
+				{
+					$query->where($db->qn($fieldname) . ' = ' . $db->q((int) $filterState));
+				}
+			}
+			elseif (!empty($filterState) || ($filterState === '0'))
 			{
 				switch ($fieldname)
 				{
@@ -1605,13 +1612,6 @@ class FOFModel extends JObject
 					case $table->getColumnAlias('description'):
 						$query->where('(' . $db->qn($fieldname) . ' LIKE ' . $db->q('%' . $filterState . '%') . ')');
 
-						break;
-
-					case $table->getColumnAlias('enabled'):
-						if ($filterState !== '')
-						{
-							$query->where($db->qn($fieldname) . ' = ' . $db->q((int) $filterState));
-						}
 						break;
 
 					default:
