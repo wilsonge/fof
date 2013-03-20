@@ -1599,7 +1599,7 @@ class FOFModel extends JObject
 
 			if ($filterName == $table->getColumnAlias('enabled'))
 			{
-				if ($filterState !== '')
+				if (!is_null($filterState) && ($filterState !== ''))
 				{
 					$query->where($db->qn($fieldname) . ' = ' . $db->q((int) $filterState));
 				}
