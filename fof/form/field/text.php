@@ -110,7 +110,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		// Get field parameters
 		if ($this->element['class'])
 		{
-			$class .= ' ' . (string) $this->element['class'];
+			$class = (string) $this->element['class'];
 		}
 		if ($this->element['format'])
 		{
