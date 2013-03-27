@@ -45,9 +45,12 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			echo "<div class=\"joomla-version-$version\">\n";
 		}
 
-		// Render submenu and toolbar
-		$this->renderButtons($view, $task, $input, $config);
-		$this->renderLinkbar($view, $task, $input, $config);
+		// Render submenu and toolbar (only if asked to)
+		if ($input->getBool('render.toolbar', true))
+		{
+			$this->renderButtons($view, $task, $input, $config);
+			$this->renderLinkbar($view, $task, $input, $config);
+		}
 	}
 
 	/**
