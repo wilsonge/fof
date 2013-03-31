@@ -898,7 +898,9 @@ class FOFModel extends JObject
 	 */
 	public function &getFirstItem($overrideLimits = false)
 	{
-		$table = $this->getTable($this->table);
+		// we have to clone the instance, or when multiple getFirstItem calls occuer,
+		// we'll update EVERY instance created
+		$table = clone $this->getTable($this->table);
 
 		$list = $this->getItemList($overrideLimits);
 
