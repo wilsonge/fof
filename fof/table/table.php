@@ -104,7 +104,7 @@ class FOFTable extends JObject
 
 	/**
 	 * Does the table actually exist? We need that to avoid PHP notices on
-	 * teble-less views.
+	 * table-less views.
 	 *
 	 * @var    boolean
 	 */
@@ -116,6 +116,13 @@ class FOFTable extends JObject
 	 * @var    FOFInput
 	 */
 	protected $input = null;
+
+	/**
+	 * Extended query including joins with other tables
+	 *
+	 * @var    JDatabaseQuery
+	 */
+	protected $_queryJoin = null;
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -253,6 +260,14 @@ class FOFTable extends JObject
 		// Initialise the table properties.
 		if ($fields = $this->getTableFields())
 		{
+			// Do I have anything joined?
+			$j_fields = $this->getQueryJoinFields();
+
+			if($j_fields)
+			{
+				$fields = array_merge($fields, $j_fields);
+			}
+
 			foreach ($fields as $name => $v)
 			{
 				// Add the field if it is not already present.
@@ -368,6 +383,8 @@ class FOFTable extends JObject
 		$query = $this->_db->getQuery(true);
 		$query->select('*');
 		$query->from($this->_tbl);
+
+		// Joined fields are ok, since I initialized them in the constructor
 		$fields = array_keys($this->getProperties());
 
 		foreach ($keys as $field => $value)
@@ -379,6 +396,34 @@ class FOFTable extends JObject
 			}
 			// Add the search tuple to the query.
 			$query->where($this->_db->qn($field) . ' = ' . $this->_db->q($value));
+		}
+
+		// Do I have any joined table?
+		$j_query = $this->getQueryJoin();
+		if($j_query)
+		{
+			if($j_query->select && $j_query->select->getElements())
+			{
+				$query->select($j_query->select->getElements());
+			}
+
+			if($j_query->join)
+			{
+				foreach($j_query->join as $join)
+				{
+					$t = (string) $join;
+					// Guess what? Joomla doesn't provide any access to the "name" variable, so
+					// I have to work with strings... -.-
+					if(stripos($t, 'inner') !== false)
+					{
+						$query->innerJoin($join->getElements());
+					}
+					elseif(stripos($t, 'left') !== false)
+					{
+						$query->leftJoin($join->getElements());
+					}
+				}
+			}
 		}
 
 		$this->_db->setQuery($query);
@@ -445,7 +490,14 @@ class FOFTable extends JObject
 		if (!$this->onBeforeReset())
 			return false;
 		// Get the default values for the class from the table.
-		$fields = $this->getTableFields();
+		$fields   = $this->getTableFields();
+		$j_fields = $this->getQueryJoinFields();
+
+		if($j_fields)
+		{
+			$fields = array_merge($fields, $j_fields);
+		}
+
 		foreach ($fields as $k => $v)
 		{
 			// If the property is not the primary key or private, reset it.
@@ -1292,11 +1344,13 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * Get the columns from database table.
+	 * Get the columns from a database table.
 	 *
-	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 * @param   string   Table name. If null current table is used
+	 *
+	 * @return  mixed    An array of the field names, or false if an error occurs.
 	 */
-	public function getTableFields()
+	public function getTableFields($tableName = null)
 	{
 		static $cache = array();
 		static $tables = array();
@@ -1307,10 +1361,15 @@ class FOFTable extends JObject
 			$tables = $this->_db->getTableList();
 		}
 
-		if (!array_key_exists($this->_tbl, $cache))
+		if(!$tableName)
+		{
+			$tableName = $this->_tbl;
+		}
+
+		if (!array_key_exists($tableName, $cache))
 		{
 			// Lookup the fields for this table only once.
-			$name = $this->_tbl;
+			$name = $tableName;
 
 			$prefix = $this->_db->getPrefix();
 			if (substr($name, 0, 3) == '#__')
@@ -1325,7 +1384,7 @@ class FOFTable extends JObject
 			if (!in_array($checkName, $tables))
 			{
 				// The table doesn't exist. Return false.
-				$cache[$this->_tbl] = false;
+				$cache[$tableName] = false;
 			}
 			elseif (version_compare(JVERSION, '3.0', 'ge'))
 			{
@@ -1334,7 +1393,7 @@ class FOFTable extends JObject
 				{
 					$fields = false;
 				}
-				$cache[$this->_tbl] = $fields;
+				$cache[$tableName] = $fields;
 			}
 			else
 			{
@@ -1343,11 +1402,11 @@ class FOFTable extends JObject
 				{
 					$fields = false;
 				}
-				$cache[$this->_tbl] = $fields[$name];
+				$cache[$tableName] = $fields[$name];
 			}
 		}
 
-		return $cache[$this->_tbl];
+		return $cache[$tableName];
 	}
 
 	/**
@@ -1389,6 +1448,95 @@ class FOFTable extends JObject
 
 		$column = preg_replace('#[^A-Z0-9_]#i', '', $column);
 		$this->_columnAlias[$column] = $columnAlias;
+	}
+
+	/**
+	 *
+	 * @param   bool    $asReference
+	 *
+	 * @return  JDatabaseQuery Query used to join other tables
+	 */
+	public function getQueryJoin($asReference = false)
+	{
+		if($asReference)
+		{
+			return $this->_queryJoin;
+		}
+		else
+		{
+			if($this->_queryJoin)
+			{
+				return clone $this->_queryJoin;
+			}
+			else
+			{
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * Sets the query with joins to other tables
+	 *
+	 * @param   JDatabaseQuery    $query
+	 */
+	public function setQueryJoin(JDatabaseQuery $query)
+	{
+		$this->_queryJoin = $query;
+	}
+
+	/**
+	 * Extracts the fields from the join query
+	 *
+	 * @return   array    Fields contained in the join query
+	 */
+	protected function getQueryJoinFields()
+	{
+		$query = $this->getQueryJoin();
+		if(!$query)
+		{
+			return array();
+		}
+
+		// Get joined tables. Ignore FROM clause, since it should not be used (the starting point is the table "table")
+		$tables = array();
+		$joins = $query->join;
+		foreach($joins as $join)
+		{
+			$tables = array_merge($tables, $join->getElements());
+		}
+
+		// clean up table names
+		for($i = 0; $i < count($tables); $i++)
+		{
+			preg_match('#\#__.*?\s#', $tables[$i], $matches);
+			$tables[$i] = str_replace(' ', '',$matches[0]);
+		}
+
+		// get table fields
+		$fields = array();
+		foreach($tables as $table)
+		{
+			$t_fields = $this->getTableFields($table);
+
+			if($t_fields)
+			{
+				$fields = array_merge($fields, $t_fields);
+			}
+		}
+
+		// remove any fields that aren't in the joined select
+		$j_fields = $query->select;
+		if($j_fields && $j_fields->getElements())
+		{
+			$j_fields = $j_fields->getElements();
+		}
+
+		// Flip the array so I can intesect the keys
+		$j_fields = array_flip($j_fields);
+		$fields = array_intersect_key($fields, $j_fields);
+
+		return $fields;
 	}
 
 	/**
