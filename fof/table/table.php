@@ -1661,6 +1661,19 @@ class FOFTable extends JObject
 		$hasCreatedOn = isset($this->$created_on) || property_exists($this, $created_on);
 		$hasCreatedBy = isset($this->$created_by) || property_exists($this, $created_by);
 
+		// first of all, let's unset fields that aren't related to the table (ie joined fields)
+		$fields 	= $this->getTableFields();
+		$properties = $this->getProperties();
+		foreach($properties as $property => $value)
+		{
+			// 'input' property is a reserved name
+			if($property == 'input') continue;
+			if(!isset($fields[$property]))
+			{
+				unset($this->$property);
+			}
+		}
+
 		if ($hasCreatedOn && $hasCreatedBy)
 		{
 			$hasModifiedOn = isset($this->$modified_on) || property_exists($this, $modified_on);
