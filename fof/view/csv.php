@@ -18,9 +18,26 @@ JLoader::import('joomla.application.component.view');
  */
 class FOFViewCsv extends FOFViewHtml
 {
-
+	/**
+	 *  Should I produce a CSV header row.
+	 *
+	 *  @var  boolean
+	 */
 	protected $csvHeader = true;
+
+	/**
+	 * The filename of the downloaded CSV file.
+	 *
+	 * @var  string
+	 */
 	protected $csvFilename = null;
+
+	/**
+	 * The columns to include in the CSV output. If it's empty it will be ignored.
+	 *
+	 * @var  array
+	 */
+	protected $csvFields = array();
 
 	function __construct($config = array())
 	{
@@ -49,6 +66,11 @@ class FOFViewCsv extends FOFViewHtml
 			$view = $this->input->getCmd('view', 'cpanel');
 			$view = FOFInflector::pluralize($view);
 			$this->csvFilename = strtolower($view);
+		}
+
+		if (array_key_exists('csv_fields', $config))
+		{
+			$this->csvFields = $config['csv_fields'];
 		}
 	}
 
@@ -104,15 +126,29 @@ class FOFViewCsv extends FOFViewHtml
 			if (empty($items))
 				return;
 
+			$item = array_pop($items);
+			$keys = get_object_vars($item);
+			$keys = array_keys($keys);
+			$items[] = $item;
+			reset($items);
+
+			if (!empty($this->csvFields))
+			{
+				$temp = array();
+				foreach ($this->csvFields as $f)
+				{
+					if (in_array($f, $keys))
+					{
+						$temp[] = $f;
+					}
+				}
+				$keys = $temp;
+			}
+
 			if ($this->csvHeader)
 			{
-				$item = array_pop($items);
-				$keys = get_object_vars($item);
-				$items[] = $item;
-				reset($items);
-
 				$csv = array();
-				foreach ($keys as $k => $v)
+				foreach ($keys as $k)
 				{
 					$csv[] = '"' . str_replace('"', '""', $k) . '"';
 				}
@@ -122,9 +158,17 @@ class FOFViewCsv extends FOFViewHtml
 			foreach ($items as $item)
 			{
 				$csv = array();
-				$keys = get_object_vars($item);
-				foreach ($item as $k => $v)
+				$item = (array)$item;
+				foreach ($keys as $k)
 				{
+					if (!isset($item[$k]))
+					{
+						$v = '';
+					}
+					else
+					{
+						$v = $item[$k];
+					}
 					$csv[] = '"' . str_replace('"', '""', $v) . '"';
 				}
 				echo implode(",", $csv) . "\r\n";
