@@ -381,7 +381,7 @@ class FOFTable extends JObject
 
 		// Initialise the query.
 		$query = $this->_db->getQuery(true);
-		$query->select('*');
+		$query->select($this->_tbl.'.*');
 		$query->from($this->_tbl);
 
 		// Joined fields are ok, since I initialized them in the constructor
@@ -404,7 +404,7 @@ class FOFTable extends JObject
 		{
 			if($j_query->select && $j_query->select->getElements())
 			{
-				$query->select($j_query->select->getElements());
+				$query->select($this->normalizeSelectFields($j_query->select->getElements(), true));
 			}
 
 			if($j_query->join)
@@ -1526,17 +1526,75 @@ class FOFTable extends JObject
 		}
 
 		// remove any fields that aren't in the joined select
-		$j_fields = $query->select;
-		if($j_fields && $j_fields->getElements())
+		$j_select = $query->select;
+		if($j_select && $j_select->getElements())
 		{
-			$j_fields = $j_fields->getElements();
+			$j_fields = $this->normalizeSelectFields($j_select->getElements());
 		}
 
 		// Flip the array so I can intesect the keys
-		$j_fields = array_flip($j_fields);
 		$fields = array_intersect_key($fields, $j_fields);
 
+		// Now I walk again the array to change the key of columns that have an alias
+		foreach($j_fields as $column => $alias)
+		{
+			if($column != $alias)
+			{
+				$fields[$alias] = $fields[$column];
+				unset($fields[$column]);
+			}
+		}
+
 		return $fields;
+	}
+
+	/**
+	 * Normalizes the fields, returning an array with all the fields.
+	 * Ie array('foobar, foo') becomes array('foobar', 'foo')
+	 *
+	 * @param    array     $fields    Array with column fields
+	 * @param    boolean   $useAlias  Should I use the column alias or use the extended syntax?
+	 *
+	 * @return   array     Normalized array
+	 */
+	protected function normalizeSelectFields($fields, $extended = false)
+	{
+		$return = array();
+		foreach($fields as $field)
+		{
+			$t_fields = explode(',', $field);
+			foreach($t_fields as $t_field)
+			{
+				// Is there any alias for this column?
+				preg_match('#\sas\s\w+#i', $t_field, $match);
+				$alias = $match[0];
+				$alias = preg_replace('#\sas\s?#i', '', $alias);
+
+				// Grab the "standard" name
+				preg_match('#\w+(\sas)?#i', $t_field, $match);
+				$column = $match[0];
+				$column = preg_replace('#\sas\s?#i', '', $column);
+
+				// trim whitespace
+				$alias  = preg_replace('#^[\s]+|[\s]+$#', '', $alias);
+				$column = preg_replace('#^[\s]+|[\s]+$#', '', $column);
+
+				// Do I want the column name with the original name + alias?
+				if($extended && $alias)
+				{
+					$alias = $column.' AS '.$alias;
+				}
+
+				if(!$alias)
+				{
+					$alias = $column;
+				}
+
+				$return[$column] = $alias;
+			}
+		}
+
+		return $return;
 	}
 
 	/**
@@ -1602,6 +1660,19 @@ class FOFTable extends JObject
 
 		$hasCreatedOn = isset($this->$created_on) || property_exists($this, $created_on);
 		$hasCreatedBy = isset($this->$created_by) || property_exists($this, $created_by);
+
+		// first of all, let's unset fields that aren't related to the table (ie joined fields)
+		$fields 	= $this->getTableFields();
+		$properties = $this->getProperties();
+		foreach($properties as $property => $value)
+		{
+			// 'input' property is a reserved name
+			if($property == 'input') continue;
+			if(!isset($fields[$property]))
+			{
+				unset($this->$property);
+			}
+		}
 
 		if ($hasCreatedOn && $hasCreatedBy)
 		{
