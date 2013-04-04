@@ -49,6 +49,19 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		}
 		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
+
+		if (!$isCli && version_compare(JVERSION, '3.0.0', 'ge'))
+		{
+			$sidebarEntries = JHtmlSidebar::getEntries();
+			if (!empty($sidebarEntries))
+			{
+				$html = '<div id="j-sidebar-container" class="span2">' . "\n";
+				$html .= "\t" . JHtmlSidebar::render() ."\n";
+				$html .= "</div>\n";
+				$html .= '<div id="j-main-container" class="span10">' . "\n";
+				echo $html;
+			}
+		}
 	}
 
 	/**
@@ -64,6 +77,15 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		$format = $input->getCmd('format', 'html');
 		if ($format != 'html' || $isCli)
 			return;
+
+		if (!$isCli && version_compare(JVERSION, '3.0.0', 'ge'))
+		{
+			$sidebarEntries = JHtmlSidebar::getEntries();
+			if (!empty($sidebarEntries))
+			{
+				echo '</div>';
+			}
+		}
 
 		echo "</div>\n";
 		echo "</div>\n";
@@ -101,6 +123,41 @@ ENDJAVASCRIPT;
 	 * @param   array     $config  Extra configuration variables for the toolbar
 	 */
 	protected function renderLinkbar($view, $task, $input, $config = array())
+	{
+		$style = 'classic';
+
+		if(array_key_exists('linkbar_style', $config))
+		{
+			$style = $config['linkbar_style'];
+		}
+
+		if (!version_compare(JVERSION, '3.0.0', 'ge'))
+		{
+			$style = 'classic';
+		}
+
+		switch ($style)
+		{
+			case 'joomla':
+				$this->renderLinkbar_joomla($view, $task, $input);
+				break;
+
+			case 'classic':
+			default:
+				$this->renderLinkbar_classic($view, $task, $input);
+				break;
+		}
+	}
+
+	/**
+	 * Renders the submenu (link bar)
+	 *
+	 * @param   string    $view    The active view name
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input object
+	 * @param   array     $config  Extra configuration variables for the toolbar
+	 */
+	protected function renderLinkbar_classic($view, $task, $input, $config = array())
 	{
 		list($isCli, ) = FOFDispatcher::isCliAdmin();
 		if($isCli)
@@ -192,6 +249,41 @@ ENDJAVASCRIPT;
 				echo "</li>\n";
 			}
 			echo "</ul>\n";
+		}
+	}
+
+	/**
+	 * Renders the submenu (link bar) using Joomla!'s style
+	 *
+	 * @param   string    $view    The active view name
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input object
+	 * @param   array     $config  Extra configuration variables for the toolbar
+	 */
+	protected function renderLinkbar_joomla($view, $task, $input, $config = array())
+	{
+		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+
+		// On command line don't do anything
+		if($isCli)
+		{
+			return;
+		}
+
+		// Do not render a submenu unless we are in the the admin area
+		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
+
+		if (!$isAdmin && !$renderFrontendSubmenu)
+			return;
+
+		$links = $toolbar->getLinks();
+		if (!empty($links))
+		{
+			foreach ($links as $link)
+			{
+				JHtmlSidebar::addEntry($link['name'], $link['link'], $link['active']);
+			}
 		}
 	}
 
