@@ -63,11 +63,16 @@ class FOFController extends JObject
 	protected $config = array();
 
 	/**
-	 * Set to true to enable CSRF protection on selected tasks
+	 * Set to true to enable CSRF protection on selected tasks. The possible
+	 * values are:
+	 * 0	Disabled; no token checks are performed
+	 * 1	Enabled; token checks are always performed
+	 * 2	Only on HTML requests and backend; token checks are always performed in the back-end and in in the front-end only when format is not 'html'
+	 * 3	Only on back-end; token checks are performer only in the back-end
 	 *
-	 * @var    boolean
+	 * @var    integer
 	 */
-	protected $csrfProtection = true;
+	protected $csrfProtection = 2;
 
 	/**
 	 * The default view for the display method.
@@ -2472,6 +2477,45 @@ class FOFController extends JObject
 	 */
 	protected function _csrfProtection()
 	{
+		static $isCli = null, $isAdmin = null;
+
+		if (is_null($isCli))
+		{
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		}
+
+		switch ($this->csrfProtection)
+		{
+			// Never
+			case 0:
+				return true;
+				break;
+
+			// Always
+			case 1:
+				break;
+
+			// Only back-end and non-HTML format
+			case 2:
+				if ($isCli)
+				{
+					return true;
+				}
+				elseif (!$isAdmin && ($this->input->get('format', 'cmd') != 'html'))
+				{
+					return true;
+				}
+				break;
+
+			// Only back-end
+			case 3:
+				if (!$isAdmin)
+				{
+					return true;
+				}
+				break;
+		}
+
 		$hasToken = false;
 		$session = JFactory::getSession();
 
