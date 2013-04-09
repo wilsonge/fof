@@ -301,14 +301,7 @@ class FOFDispatcher extends JObject
 
 		if (!$canDispatch)
 		{
-
-			// For json, don't use normal 403 page, but a json encoded message
-
-			if ($this->input->get('format', '') == 'json')
-			{
-				echo json_encode(array('code'	 => '403', 'error'	 => $this->getError()));
-				exit();
-			}
+			JResponse::setHeader('Status', '403 Forbidden', true);
 
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
@@ -352,6 +345,8 @@ class FOFDispatcher extends JObject
 
 		if ($status === false)
 		{
+			JResponse::setHeader('Status', '403 Forbidden', true);
+
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
@@ -364,6 +359,8 @@ class FOFDispatcher extends JObject
 
 		if (!$this->onAfterDispatch())
 		{
+			JResponse::setHeader('Status', '403 Forbidden', true);
+
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
@@ -374,7 +371,21 @@ class FOFDispatcher extends JObject
 			}
 		}
 
-		$controller->redirect();
+		$format = $this->input->get('format', 'html', 'cmd');
+		if ($format == 'html')
+		{
+			// In HTML views perform a redirection
+			$controller->redirect();
+		}
+		else
+		{
+			// In non-HTML views just exit the application with the proper HTTP headers
+			if ($controller->hasRedirect())
+			{
+				$headers = JResponse::sendHeaders();
+				jexit();
+			}
+		}
 	}
 
 	/**

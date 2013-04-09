@@ -706,6 +706,8 @@ class FOFController extends JObject
 
 		if ($doTask == 'display')
 		{
+			JResponse::setHeader('Status', '400 Bad Request', true);
+
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception('Bad Request', 400);
@@ -714,6 +716,8 @@ class FOFController extends JObject
 			{
 				JError::raiseError(400, 'Bad Request');
 			}
+
+			return false;
 		}
 
 		$this->doTask = $doTask;
@@ -815,6 +819,8 @@ class FOFController extends JObject
 			// Display without caching
 			$view->display();
 		}
+
+		return true;
 	}
 
 	/**
@@ -853,6 +859,8 @@ class FOFController extends JObject
 		}
 
 		$this->display(in_array('browse', $this->cacheableTasks));
+
+		return true;
 	}
 
 	/**
@@ -888,6 +896,8 @@ class FOFController extends JObject
 
 		// Display
 		$this->display(in_array('read', $this->cacheableTasks));
+
+		return true;
 	}
 
 	/**
@@ -949,7 +959,7 @@ class FOFController extends JObject
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view);
 			$this->setRedirect($url, $model->getError(), 'error');
 
-			return;
+			return false;
 		}
 
 		// Set the layout to form, if it's not set in the URL
@@ -971,6 +981,8 @@ class FOFController extends JObject
 
 		// Display
 		$this->display(in_array('edit', $this->cacheableTasks));
+
+		return true;
 	}
 
 	/**
@@ -1014,6 +1026,8 @@ class FOFController extends JObject
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=edit&id=' . $id;
 			$this->setRedirect($url, JText::_($textkey));
 		}
+
+		return $result;
 	}
 
 	/**
@@ -1057,10 +1071,13 @@ class FOFController extends JObject
 		if (!$status)
 		{
 			$this->setRedirect($url, $model->getError(), 'error');
+			return false;
 		}
 		else
 		{
+			JResponse::setHeader('Status', '201 Created', true);
 			$this->setRedirect($url);
+			return true;
 		}
 	}
 
@@ -1102,6 +1119,8 @@ class FOFController extends JObject
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view);
 			$this->setRedirect($url, JText::_($textkey));
 		}
+
+		return $result;
 	}
 
 	/**
@@ -1131,6 +1150,8 @@ class FOFController extends JObject
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=add';
 			$this->setRedirect($url, JText::_($textkey));
 		}
+
+		return $result;
 	}
 
 	/**
@@ -1155,6 +1176,8 @@ class FOFController extends JObject
 		}
 		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view);
 		$this->setRedirect($url);
+
+		return true;
 	}
 
 	/**
@@ -1172,7 +1195,7 @@ class FOFController extends JObject
 			$this->_csrfProtection();
 		}
 
-		$this->setaccess(0);
+		return $this->setaccess(0);
 	}
 
 	/**
@@ -1190,7 +1213,7 @@ class FOFController extends JObject
 			$this->_csrfProtection();
 		}
 
-		$this->setaccess(1);
+		return $this->setaccess(1);
 	}
 
 	/**
@@ -1208,7 +1231,7 @@ class FOFController extends JObject
 			$this->_csrfProtection();
 		}
 
-		$this->setaccess(2);
+		return $this->setaccess(2);
 	}
 
 	/**
@@ -1224,7 +1247,7 @@ class FOFController extends JObject
 			$this->_csrfProtection();
 		}
 
-		$this->setstate(1);
+		return $this->setstate(1);
 	}
 
 	/**
@@ -1240,7 +1263,7 @@ class FOFController extends JObject
 			$this->_csrfProtection();
 		}
 
-		$this->setstate(0);
+		return $this->setstate(0);
 	}
 
 	/**
@@ -1283,16 +1306,6 @@ class FOFController extends JObject
 
 		$status = $model->reorder();
 
-		// Check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = $this->input->get('format', '', 'string');
-
-		if ($format == 'json')
-		{
-			echo json_encode($status);
-
-			return;
-		}
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1301,6 +1314,8 @@ class FOFController extends JObject
 		}
 		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view);
 		$this->setRedirect($url);
+
+		return $status;
 	}
 
 	/**
@@ -1328,13 +1343,6 @@ class FOFController extends JObject
 		// Check if i'm using an AJAX call, in this case there is no need to redirect
 		$format = $this->input->get('format', '', 'string');
 
-		if ($format == 'json')
-		{
-			echo json_encode($status);
-
-			return;
-		}
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1351,6 +1359,8 @@ class FOFController extends JObject
 		{
 			$this->setRedirect($url);
 		}
+
+		return $status;
 	}
 
 	/**
@@ -1375,13 +1385,6 @@ class FOFController extends JObject
 		// Check if i'm using an AJAX call, in this case there is no need to redirect
 		$format = $this->input->get('format', '', 'string');
 
-		if ($format == 'json')
-		{
-			echo json_encode($status);
-
-			return;
-		}
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1398,6 +1401,8 @@ class FOFController extends JObject
 		{
 			$this->setRedirect($url);
 		}
+
+		return $status;
 	}
 
 	/**
@@ -1422,13 +1427,6 @@ class FOFController extends JObject
 		// Check if i'm deleting using an AJAX call, in this case there is no need to redirect
 		$format = $this->input->get('format', '', 'string');
 
-		if ($format == 'json')
-		{
-			echo json_encode($status);
-
-			return;
-		}
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'input'))
@@ -1445,6 +1443,8 @@ class FOFController extends JObject
 		{
 			$this->setRedirect($url);
 		}
+
+		return $status;
 	}
 
 	/**
@@ -1461,6 +1461,16 @@ class FOFController extends JObject
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns true if there is a redirect set in the controller
+	 *
+	 * @return  boolean
+	 */
+	public function hasRedirect()
+	{
+		return !empty($this->redirect);
 	}
 
 	/**
@@ -1619,13 +1629,6 @@ class FOFController extends JObject
 		// Check if i'm using an AJAX call, in this case there is no need to redirect
 		$format = $this->input->get('format', '', 'string');
 
-		if ($format == 'json')
-		{
-			echo json_encode($status);
-
-			return;
-		}
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1642,6 +1645,8 @@ class FOFController extends JObject
 		{
 			$this->setRedirect($url);
 		}
+
+		return $status;
 	}
 
 	/**
@@ -1691,6 +1696,8 @@ class FOFController extends JObject
 		{
 			$this->setRedirect($url);
 		}
+
+		return $status;
 	}
 
 	/**
@@ -1715,6 +1722,8 @@ class FOFController extends JObject
 
 		if ($status && ($id != 0))
 		{
+			JResponse::setHeader('Status', '201 Created', true);
+
 			// Try to check-in the record if it's not a new one
 			$status = $model->checkin();
 
@@ -1730,13 +1739,6 @@ class FOFController extends JObject
 		{
 			// Check if i'm using an AJAX call, in this case there is no need to redirect
 			$format = $this->input->get('format', '', 'string');
-
-			if ($format == 'json')
-			{
-				echo json_encode($status);
-
-				return;
-			}
 
 			// Redirect on error
 			$id = $model->getId();
