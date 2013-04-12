@@ -7,10 +7,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-if (!class_exists('JFormFieldText'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/text.php';
-}
+JFormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for the FOF framework
