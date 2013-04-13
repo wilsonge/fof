@@ -289,7 +289,7 @@ class FOFTemplateUtils
 		$ext = JFile::getExt($ret['normal']);
 		if (in_array($ext, array('css', 'js')))
 		{
-			$file = JFile::stripExt($ret['normal']);
+			$file = basename(JFile::stripExt($ret['normal']));
 
 			/*
 			 * Detect if we received a file in the format name.min.ext
@@ -297,19 +297,19 @@ class FOFTemplateUtils
 			 */
 			if (strrpos($file, '.min', '-4'))
 			{
-				$position = strrpos($strip, '.min', '-4');
-				$filename = str_replace('.min', '.', $strip, $position);
+				$position = strrpos($file, '.min', '-4');
+				$filename = str_replace('.min', '.', $file, $position);
 			}
 			else
 			{
-				$filename = $strip . '-uncompressed.' . $ext;
+				$filename = $file . '-uncompressed.' . $ext;
 			}
 
 			// Clone the $ret array so we can manipulate the 'normal' path a bit
 			$temp = (array)(clone (object)$ret);
 			$normalPath = explode('/', $temp['normal']);
 			array_pop($normalPath);
-			array_shift($normalPath, $filename);
+			$normalPath[] = $filename;
 			$ret['debug'] = implode('/', $normalPath);
 		}
 
