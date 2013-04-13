@@ -286,7 +286,7 @@ class FOFTemplateUtils
 
 		// For CSS and JS files, add a debug path if the supplied file is compressed
 		JLoader::import('joomla.filesystem.file');
-		$ext = JFile::getExt($ret['normal'];
+		$ext = JFile::getExt($ret['normal']);
 		if (in_array($ext, array('css', 'js')))
 		{
 			$file = JFile::stripExt($ret['normal']);
@@ -304,9 +304,9 @@ class FOFTemplateUtils
 			{
 				$filename = $strip . '-uncompressed.' . $ext;
 			}
-			
+
 			// Clone the $ret array so we can manipulate the 'normal' path a bit
-			$temp = clone $ret;
+			$temp = (array)(clone (object)$ret);
 			$normalPath = explode('/', $temp['normal']);
 			array_pop($normalPath);
 			array_shift($normalPath, $filename);
