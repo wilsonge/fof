@@ -1,6 +1,13 @@
 # What is FOF?
 
-FOF (Framework on Framework) is a rapid application development framework for Joomla!. Unlike other frameworks it is not standalone. It extends Joomla!'s MVC instead of replacing it. This means that you don't have to relearn writing Joomla! extensions. Instead, you can start being productive from the first day you're using it. Our goal is to always support the officially supported LTS versions of Joomla! and not break backwards compatibility without a clear deprecation and migration path.
+FOF (Framework on Framework) is a rapid application development framework for Joomla!.
+Unlike other frameworks it is not standalone. It extends the Joomla! Platform
+instead of replacing it, featuring its own forked and extended version of the
+MVC classes, keeping a strong semblance to the existing Joomla! MVC API. This means
+that you don't have to relearn writing Joomla! extensions. Instead, you can start
+being productive from the first day you're using it. Our goal is to always support
+the officially supported LTS versions of Joomla! and not break backwards compatibility
+without a clear deprecation and migration path.
 
 # Free Software means collaboration
 
