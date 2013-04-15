@@ -1566,18 +1566,19 @@ class FOFTable extends JObject
 			foreach($t_fields as $t_field)
 			{
 				// Is there any alias for this column?
-				preg_match('#\sas\s\w+#i', $t_field, $match);
+				preg_match('#\sas\s`?\w+`?#i', $t_field, $match);
 				$alias = $match[0];
 				$alias = preg_replace('#\sas\s?#i', '', $alias);
 
 				// Grab the "standard" name
-				preg_match('#\w+(\sas)?#i', $t_field, $match);
-				$column = $match[0];
+				// @TODO Check this pattern since it's blind copied from forums
+				preg_match('/([\w]++)`?+(?:\s++as\s++[^,\s]++)?+\s*+($)/i', $t_field, $match);
+				$column = $match[1];
 				$column = preg_replace('#\sas\s?#i', '', $column);
 
 				// trim whitespace
-				$alias  = preg_replace('#^[\s]+|[\s]+$#', '', $alias);
-				$column = preg_replace('#^[\s]+|[\s]+$#', '', $column);
+				$alias  = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $alias);
+				$column = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $column);
 
 				// Do I want the column name with the original name + alias?
 				if($extended && $alias)
