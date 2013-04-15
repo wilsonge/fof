@@ -295,7 +295,7 @@ class FOFTemplateUtils
 			 * Detect if we received a file in the format name.min.ext
 			 * If so, strip the .min part out, otherwise append -uncompressed
 			 */
-			if (strrpos($file, '.min', '-4'))
+			if (strlen($file) > 4 && strrpos($file, '.min', '-4'))
 			{
 				$position = strrpos($file, '.min', '-4');
 				$filename = str_replace('.min', '.', $file, $position);
