@@ -169,6 +169,16 @@ class FOFViewCsv extends FOFViewHtml
 					{
 						$v = $item[$k];
 					}
+
+					if (is_array($v))
+					{
+						$v = 'Array';
+					}
+					elseif (is_object($v))
+					{
+						$v = 'Object';
+					}
+
 					$csv[] = '"' . str_replace('"', '""', $v) . '"';
 				}
 				echo implode(",", $csv) . "\r\n";
