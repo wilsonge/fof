@@ -372,6 +372,8 @@ class FOFDispatcher extends JObject
 		}
 
 		$format = $this->input->get('format', 'html', 'cmd');
+		$format = empty($format) ? 'html' : $format;
+
 		if ($format == 'html')
 		{
 			// In HTML views perform a redirection
