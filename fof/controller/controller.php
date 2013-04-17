@@ -1006,16 +1006,6 @@ class FOFController extends JObject
 
 		if ($result)
 		{
-			// Check if i'm using an AJAX call, in this case there is no need to redirect
-			$format = $this->input->get('format', '', 'string');
-
-			if ($format == 'json')
-			{
-				echo json_encode($result);
-
-				return;
-			}
-
 			$id = $this->input->get('id', 0, 'int');
 			$textkey = strtoupper($this->component) . '_LBL_' . strtoupper($this->view) . '_SAVED';
 
@@ -1049,16 +1039,6 @@ class FOFController extends JObject
 			$model->setIDsFromRequest();
 
 		$status = $model->copy();
-
-		// Check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = $this->input->get('format', '', 'string');
-
-		if ($format == 'json')
-		{
-			echo json_encode($status);
-
-			return;
-		}
 
 		// Redirect
 
@@ -1100,16 +1080,6 @@ class FOFController extends JObject
 
 		if ($result)
 		{
-			// Check if i'm using an AJAX call, in this case there is no need to redirect
-			$format = $this->input->get('format', '', 'string');
-
-			if ($format == 'json')
-			{
-				echo json_encode($result);
-
-				return;
-			}
-
 			$textkey = strtoupper($this->component) . '_LBL_' . strtoupper($this->view) . '_SAVED';
 
 			if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1340,9 +1310,6 @@ class FOFController extends JObject
 
 		$status = $model->move(1);
 
-		// Check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = $this->input->get('format', '', 'string');
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1382,9 +1349,6 @@ class FOFController extends JObject
 
 		$status = $model->move(-1);
 
-		// Check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = $this->input->get('format', '', 'string');
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1423,9 +1387,6 @@ class FOFController extends JObject
 		if (!$model->getId())
 			$model->setIDsFromRequest();
 		$status = $model->delete();
-
-		// Check if i'm deleting using an AJAX call, in this case there is no need to redirect
-		$format = $this->input->get('format', '', 'string');
 
 		// Redirect
 
@@ -1626,9 +1587,6 @@ class FOFController extends JObject
 
 		$status = $model->publish($state);
 
-		// Check if i'm using an AJAX call, in this case there is no need to redirect
-		$format = $this->input->get('format', '', 'string');
-
 		// Redirect
 
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
@@ -1737,9 +1695,6 @@ class FOFController extends JObject
 
 		if (!$status)
 		{
-			// Check if i'm using an AJAX call, in this case there is no need to redirect
-			$format = $this->input->get('format', '', 'string');
-
 			// Redirect on error
 			$id = $model->getId();
 
@@ -2503,7 +2458,7 @@ class FOFController extends JObject
 				{
 					return true;
 				}
-				elseif (!$isAdmin && ($this->input->get('format', 'cmd') != 'html'))
+				elseif (!$isAdmin && ($this->input->get('format', 'html', 'cmd') != 'html'))
 				{
 					return true;
 				}
