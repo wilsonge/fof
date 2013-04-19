@@ -98,7 +98,12 @@ class FOFAutloaderComponent
 			}
 		}
 
-		if (class_exists($original, $autoload))
+		if (!class_exists($original, $autoload))
+		{
+			return;
+		}
+
+		if ($hasEval)
 		{
 			$phpCode = "class $alias extends $original {}";
 			eval($phpCode);
@@ -196,7 +201,7 @@ class FOFAutloaderComponent
 			if ($view != 'default')
 			{
 				$defaultClass = FOFInflector::camelize($component_raw . '_controller_default');
-				$this->class_alias($defaultClass, $class_name, true);
+				$this->class_alias($defaultClass, $class_name);
 			}
 			else
 			{
@@ -214,7 +219,91 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_model($class_name)
 	{
+		static $isCli = null, $isAdmin = null;
+		if (is_null($isCli) && is_null($isAdmin))
+		{
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		}
 
+		if (strpos($class_name, 'Model') === false)
+		{
+			return;
+		}
+
+		// Change from camel cased into a lowercase array
+        $class_modified = preg_replace('/(\s)+/', '_', $class_name);
+        $class_modified = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $class_modified));
+        $parts = explode('_', $class_modified);
+
+		// We need three parts in the name
+		if (count($parts) != 3)
+		{
+			return;
+		}
+
+		// We need the second part to be "model"
+		if ($parts[1] != 'model')
+		{
+			return;
+		}
+
+		// Get the information about this class
+		$component_raw  = $parts[0];
+		$component = 'com_' . $parts[0];
+		$view = $parts[2];
+
+		// Get the alternate view and class name (opposite singular/plural name)
+		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
+		$alt_class = FOFInflector::camelize($component_raw . '_model_' . $alt_view);
+
+		// Get the proper and alternate paths and file names
+		$file = "/components/$component/models/$view.php";
+		$altFile = "/components/$component/models/$alt_view.php";
+		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
+		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+
+		// Try to find the proper class in the proper path
+		if (file_exists($path . $file))
+		{
+			@include_once $path . $file;
+		}
+
+		// Try to find the proper class in the alternate path
+		if (!class_exists($class_name) && file_exists($altPath . $file))
+		{
+			@include_once $altPath . $file;
+		}
+
+		// Try to find the alternate class in the proper path
+		if (!class_exists($alt_class) && file_exists($path . $altFile))
+		{
+			@include_once $path . $altFile;
+		}
+
+		// Try to find the alternate class in the alternate path
+		if (!class_exists($alt_class) && file_exists($altPath . $altFile))
+		{
+			@include_once $altPath . $altFile;
+		}
+
+		// If the alternate class exists just map the class to the alternate
+		if (!class_exists($class_name) && class_exists($alt_class))
+		{
+			$this->class_alias($alt_class, $class_name);
+		}
+		// No class found? Map to FOFModel
+		elseif (!class_exists($class_name))
+		{
+			if ($view != 'default')
+			{
+				$defaultClass = FOFInflector::camelize($component_raw . '_model_default');
+				$this->class_alias($defaultClass, $class_name);
+			}
+			else
+			{
+				$this->class_alias('FOFModel', $class_name, true);
+			}
+		}
 	}
 
 	/**
