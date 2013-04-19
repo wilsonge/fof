@@ -136,6 +136,15 @@ class FOFTable extends JObject
 	{
 		static $instances = array();
 
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		// Guess the component name
 		if (!array_key_exists('input', $config))
 		{
