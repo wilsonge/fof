@@ -315,7 +315,120 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_view($class_name)
 	{
+		static $isCli = null, $isAdmin = null;
+		if (is_null($isCli) && is_null($isAdmin))
+		{
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		}
 
+		if (strpos($class_name, 'View') === false)
+		{
+			return;
+		}
+
+		// Change from camel cased into a lowercase array
+        $class_modified = preg_replace('/(\s)+/', '_', $class_name);
+        $class_modified = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $class_modified));
+        $parts = explode('_', $class_modified);
+
+		// We need at least three parts in the name
+		if (count($parts) < 3)
+		{
+			return;
+		}
+
+		// We need the second part to be "view"
+		if ($parts[1] != 'view')
+		{
+			return;
+		}
+
+		// Get the information about this class
+		$component_raw  = $parts[0];
+		$component = 'com_' . $parts[0];
+		$view = $parts[2];
+		if (count($parts) > 3)
+		{
+			$format = $parts[3];
+		}
+		else
+		{
+			$input = new FOFInput();
+			$format = $input->getCmd('format', 'html', 'cmd');
+		}
+
+		// Get the alternate view and class name (opposite singular/plural name)
+		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
+		$alt_class = FOFInflector::camelize($component_raw . '_view_' . $alt_view);
+
+		// Get the proper and alternate paths and file names
+		$protoFile = "/components/$component/models/$view";
+		$protoAltFile = "/components/$component/models/$alt_view";
+		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
+		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+
+		$formats = array($format);
+		if ($format != 'html')
+		{
+			$formats[] = 'raw';
+		}
+
+		foreach ($formats as $currentFormat)
+		{
+			$file = $protoFile . '.' . $currentFormat . '.php';
+			$altFile = $protoAltFile . '.' . $currentFormat . '.php';
+
+			// Try to find the proper class in the proper path
+			if (!class_exists($class_name) && file_exists($path . $file))
+			{
+				@include_once $path . $file;
+			}
+
+			// Try to find the proper class in the alternate path
+			if (!class_exists($class_name) && file_exists($altPath . $file))
+			{
+				@include_once $altPath . $file;
+			}
+
+			// Try to find the alternate class in the proper path
+			if (!class_exists($alt_class) && file_exists($path . $altFile))
+			{
+				@include_once $path . $altFile;
+			}
+
+			// Try to find the alternate class in the alternate path
+			if (!class_exists($alt_class) && file_exists($altPath . $altFile))
+			{
+				@include_once $altPath . $altFile;
+			}
+		}
+
+		// If the alternate class exists just map the class to the alternate
+		if (!class_exists($class_name) && class_exists($alt_class))
+		{
+			$this->class_alias($alt_class, $class_name);
+		}
+		// No class found? Map to FOFModel
+		elseif (!class_exists($class_name))
+		{
+			if ($view != 'default')
+			{
+				$defaultClass = FOFInflector::camelize($component_raw . '_view_default');
+				$this->class_alias($defaultClass, $class_name);
+			}
+			else
+			{
+				if (!file_exists(self::$fofPath . '/view/' . $format . '.php'))
+				{
+					$default_class = 'FOFView';
+				}
+				else
+				{
+					$default_class = 'FOFView' . ucfirst($format);
+				}
+				$this->class_alias($defaultClass, $class_name, true);
+			}
+		}
 	}
 
 	/**
