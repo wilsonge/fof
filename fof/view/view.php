@@ -152,6 +152,15 @@ abstract class FOFView extends JObject
 	{
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		// Get the input
 		if (array_key_exists('input', $config))
 		{

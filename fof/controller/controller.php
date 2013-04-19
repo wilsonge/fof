@@ -222,6 +222,15 @@ class FOFController extends JObject
 	{
 		static $instances = array();
 
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		$hash = $option . $view;
 
 		if (!array_key_exists($hash, $instances))
@@ -244,6 +253,15 @@ class FOFController extends JObject
 	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		// Determine the option (component name) and view
 		$config['option'] = !is_null($option) ? $option : $this->input->getCmd('option', 'com_foobar');
 		$config['view'] = !is_null($view) ? $view : $this->input->getCmd('view', 'cpanel');
@@ -337,6 +355,15 @@ class FOFController extends JObject
 	 */
 	public function __construct($config = array())
 	{
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		$this->methods = array();
 		$this->message = null;
 		$this->messageType = 'message';
@@ -1727,6 +1754,15 @@ class FOFController extends JObject
 	{
 		if (!is_object($this->_modelObject))
 		{
+			// Make sure $config is an array
+			if (is_object($config))
+			{
+				$config = (array)$config;
+			} elseif (!is_array($config))
+			{
+				$config = array();
+			}
+
 			if (!empty($this->modelName))
 			{
 				$parts = FOFInflector::explode($this->modelName);
@@ -1760,6 +1796,15 @@ class FOFController extends JObject
 	 */
 	public function getModel($name = '', $prefix = '', $config = array())
 	{
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		if (empty($name))
 		{
 			$name = $this->getName();
@@ -1808,6 +1853,15 @@ class FOFController extends JObject
 	{
 		if (!is_object($this->_viewObject))
 		{
+			// Make sure $config is an array
+			if (is_object($config))
+			{
+				$config = (array)$config;
+			} elseif (!is_array($config))
+			{
+				$config = array();
+			}
+
 			$prefix = null;
 			$viewName = null;
 			$viewType = null;
@@ -1908,6 +1962,15 @@ class FOFController extends JObject
 	{
 		static $views;
 
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		if (!isset($views))
 		{
 			$views = array();
@@ -1949,6 +2012,15 @@ class FOFController extends JObject
 	 */
 	protected function createModel($name, $prefix = '', $config = array())
 	{
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		$result = null;
 
 		// Clean the model name
@@ -1988,6 +2060,15 @@ class FOFController extends JObject
 	 */
 	protected function createView($name, $prefix = '', $type = '', $config = array())
 	{
+		// Make sure $config is an array
+		if (is_object($config))
+		{
+			$config = (array)$config;
+		} elseif (!is_array($config))
+		{
+			$config = array();
+		}
+
 		$result = null;
 
 		// Clean the view name
