@@ -436,8 +436,19 @@ class FOFController extends JObject
 		}
 
 		// Get the default values for the component and view names
-		$this->component = $this->input->get('option', 'com_filter', 'cmd');
-		$this->view = $this->input->get('view', 'cpanel', 'cmd');
+		$classNameParts = FOFInflector::explode(get_class($this));
+		if (count($classNameParts) == 3)
+		{
+			$defComponent = "com_" . $classNameParts[0];
+			$defView = $classNameParts[2];
+		}
+		else
+		{
+			$defComponent = 'com_foobar';
+			$defView = 'cpanel';
+		}
+		$this->component = $this->input->get('option', $defComponent, 'cmd');
+		$this->view = $this->input->get('view', $defView, 'cmd');
 		$this->layout = $this->input->get('layout', null, 'cmd');
 
 		// Overrides from the config
