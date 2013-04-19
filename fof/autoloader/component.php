@@ -467,7 +467,7 @@ class FOFAutloaderComponent
 				{
 					$default_class = 'FOFView' . ucfirst($format);
 				}
-				$this->class_alias($defaultClass, $class_name, true);
+				$this->class_alias($default_class, $class_name, true);
 			}
 		}
 	}
