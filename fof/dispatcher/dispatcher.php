@@ -343,20 +343,6 @@ class FOFDispatcher extends JObject
 		$controller = FOFController::getTmpInstance($option, $view, $config);
 		$status = $controller->execute($task);
 
-		if ($status === false)
-		{
-			JResponse::setHeader('Status', '403 Forbidden', true);
-
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
-			else
-			{
-				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-			}
-		}
-
 		if (!$this->onAfterDispatch())
 		{
 			JResponse::setHeader('Status', '403 Forbidden', true);
@@ -377,7 +363,10 @@ class FOFDispatcher extends JObject
 		if ($format == 'html')
 		{
 			// In HTML views perform a redirection
-			$controller->redirect();
+			if ($controller->redirect())
+			{
+				return;
+			}
 		}
 		else
 		{

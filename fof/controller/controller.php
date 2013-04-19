@@ -717,7 +717,7 @@ class FOFController extends JObject
 
 			if (!$result)
 			{
-				return false;
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 			}
 		}
 
@@ -741,16 +741,7 @@ class FOFController extends JObject
 		{
 			JResponse::setHeader('Status', '400 Bad Request', true);
 
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				throw new Exception('Bad Request', 400);
-			}
-			else
-			{
-				JError::raiseError(400, 'Bad Request');
-			}
-
-			return false;
+			throw new Exception('Bad Request', 400);
 		}
 
 		$this->doTask = $doTask;
@@ -765,7 +756,7 @@ class FOFController extends JObject
 
 			if (!$result)
 			{
-				return false;
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 			}
 		}
 
@@ -1452,6 +1443,7 @@ class FOFController extends JObject
 		{
 			$app = JFactory::getApplication();
 			$app->redirect($this->redirect, $this->message, $this->messageType);
+			return true;
 		}
 
 		return false;
