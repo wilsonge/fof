@@ -371,11 +371,6 @@ class FOFController extends JObject
 		$this->redirect = null;
 		$this->taskMap = array();
 
-		if (defined('JDEBUG') && JDEBUG)
-		{
-			JLog::addLogger(array('text_file' => 'fofcontroller.log.php'), JLog::ALL, array('controller'));
-		}
-
 		// Cache the config
 		$this->config = $config;
 

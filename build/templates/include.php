@@ -14,10 +14,16 @@ if (!defined('FOF_INCLUDED'))
 {
     define('FOF_INCLUDED', '##VERSION##');
 
+	// Register a debug log
+	if (defined('JDEBUG') && JDEBUG)
+	{
+		JLog::addLogger(array('text_file' => 'fof.log.php'), JLog::ALL, array('fof'));
+	}
+
 	// Register the FOF autoloader
     require_once __DIR__ . '/autoloader/fof.php';
 	FOFAutloaderFof::init();
-	
+
 	// Register the component autoloader
     require_once __DIR__ . '/autoloader/component.php';
 	FOFAutloaderComponent::init();

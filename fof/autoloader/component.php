@@ -31,6 +31,13 @@ class FOFAutloaderComponent
 	public static $fofPath = null;
 
 	/**
+	 * An array holding component names and their FOF-ness status
+	 *
+	 * @var   array
+	 */
+	protected static $fofComponents = array();
+
+	/**
 	 * Initialise this autoloader
 	 *
 	 * @return  FOFAutloaderComponent
@@ -61,6 +68,16 @@ class FOFAutloaderComponent
 		spl_autoload_register(array($this,'autoload_fof_helper'));
 		spl_autoload_register(array($this,'autoload_fof_toolbar'));
 		spl_autoload_register(array($this,'autoload_fof_field'));
+	}
+
+	public function isFOFComponent($component)
+	{
+		if (!isset($fofComponents[$component]))
+		{
+			$fofComponents[$component] = file_exists(JPATH_ADMINISTRATOR . '/components/' . $component . '/fof.xml');
+		}
+
+		return $fofComponents[$component];
 	}
 
 	/**
@@ -123,6 +140,8 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_controller($class_name)
 	{
+		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+
 		static $isCli = null, $isAdmin = null;
 		if (is_null($isCli) && is_null($isAdmin))
 		{
@@ -155,6 +174,12 @@ class FOFAutloaderComponent
 		$component_raw  = $parts[0];
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
+
+		// Is this an FOF 2.1 or later component?
+		if (!$this->isFOFComponent($component))
+		{
+			return;
+		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
 		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
@@ -219,6 +244,8 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_model($class_name)
 	{
+		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+
 		static $isCli = null, $isAdmin = null;
 		if (is_null($isCli) && is_null($isAdmin))
 		{
@@ -251,6 +278,12 @@ class FOFAutloaderComponent
 		$component_raw  = $parts[0];
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
+
+		// Is this an FOF 2.1 or later component?
+		if (!$this->isFOFComponent($component))
+		{
+			return;
+		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
 		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
@@ -315,6 +348,8 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_view($class_name)
 	{
+		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+
 		static $isCli = null, $isAdmin = null;
 		if (is_null($isCli) && is_null($isAdmin))
 		{
@@ -355,6 +390,12 @@ class FOFAutloaderComponent
 		{
 			$input = new FOFInput();
 			$format = $input->getCmd('format', 'html', 'cmd');
+		}
+
+		// Is this an FOF 2.1 or later component?
+		if (!$this->isFOFComponent($component))
+		{
+			return;
 		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
@@ -440,6 +481,8 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_table($class_name)
 	{
+		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+
 		static $isCli = null, $isAdmin = null;
 		if (is_null($isCli) && is_null($isAdmin))
 		{
@@ -472,6 +515,12 @@ class FOFAutloaderComponent
 		$component_raw  = $parts[0];
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
+
+		// Is this an FOF 2.1 or later component?
+		if (!$this->isFOFComponent($component))
+		{
+			return;
+		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
 		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
@@ -523,6 +572,8 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_helper($class_name)
 	{
+		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+
 		static $isCli = null, $isAdmin = null;
 		if (is_null($isCli) && is_null($isAdmin))
 		{
@@ -555,6 +606,12 @@ class FOFAutloaderComponent
 		$component_raw  = $parts[0];
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
+
+		// Is this an FOF 2.1 or later component?
+		if (!$this->isFOFComponent($component))
+		{
+			return;
+		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
 		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
@@ -606,6 +663,8 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_toolbar($class_name)
 	{
+		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+
 		static $isCli = null, $isAdmin = null;
 		if (is_null($isCli) && is_null($isAdmin))
 		{
@@ -671,6 +730,8 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_field($class_name)
 	{
+		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
 
+		// @todo
 	}
 }
