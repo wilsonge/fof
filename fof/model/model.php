@@ -980,7 +980,11 @@ class FOFModel extends JObject
 				if (!empty($error))
 				{
 					$this->setError($error);
-			JFactory::getSession()->set($this->getHash() . 'savedata', serialize($table->getProperties(true)));
+					$session = JFactory::getSession();
+					$tableprops = $table->getProperties(true);
+					unset($tableprops['input']);
+					$hash = $this->getHash() . 'savedata';
+					$session->set($hash, serialize($tableprops));
 				}
 			}
 
