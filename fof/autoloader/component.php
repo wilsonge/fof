@@ -440,7 +440,78 @@ class FOFAutloaderComponent
 	 */
 	public function autoload_fof_table($class_name)
 	{
+		static $isCli = null, $isAdmin = null;
+		if (is_null($isCli) && is_null($isAdmin))
+		{
+			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+		}
 
+		if (strpos($class_name, 'Table') === false)
+		{
+			return;
+		}
+
+		// Change from camel cased into a lowercase array
+        $class_modified = preg_replace('/(\s)+/', '_', $class_name);
+        $class_modified = strtolower(preg_replace('/(?<=\\w)([A-Z])/', '_\\1', $class_modified));
+        $parts = explode('_', $class_modified);
+
+		// We need three parts in the name
+		if (count($parts) != 3)
+		{
+			return;
+		}
+
+		// We need the second part to be "model"
+		if ($parts[1] != 'table')
+		{
+			return;
+		}
+
+		// Get the information about this class
+		$component_raw  = $parts[0];
+		$component = 'com_' . $parts[0];
+		$view = $parts[2];
+
+		// Get the alternate view and class name (opposite singular/plural name)
+		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
+		$alt_class = FOFInflector::camelize($component_raw . '_table_' . $alt_view);
+
+		// Get the proper and alternate paths and file names
+		$file = "/components/$component/tables/$view.php";
+		$altFile = "/components/$component/tables/$alt_view.php";
+		$path = JPATH_ADMINISTRATOR;
+
+		// Try to find the proper class in the proper path
+		if (file_exists($path . $file))
+		{
+			@include_once $path . $file;
+		}
+
+		// Try to find the alternate class in the proper path
+		if (!class_exists($alt_class) && file_exists($path . $altFile))
+		{
+			@include_once $path . $altFile;
+		}
+
+		// If the alternate class exists just map the class to the alternate
+		if (!class_exists($class_name) && class_exists($alt_class))
+		{
+			$this->class_alias($alt_class, $class_name);
+		}
+		// No class found? Map to FOFModel
+		elseif (!class_exists($class_name))
+		{
+			if ($view != 'default')
+			{
+				$defaultClass = FOFInflector::camelize($component_raw . '_table_default');
+				$this->class_alias($defaultClass, $class_name);
+			}
+			else
+			{
+				$this->class_alias('FOFTable', $class_name, true);
+			}
+		}
 	}
 
 	/**
