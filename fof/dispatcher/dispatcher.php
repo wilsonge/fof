@@ -393,7 +393,7 @@ class FOFDispatcher extends JObject
 		$task = FOFInflector::isPlural($view) ? 'browse' : 'edit';
 
 		// Get a potential ID, we might need it later
-		$id = $this->input->get('id', null);
+		$id = $this->input->get('id', null, 'int');
 
 		if ($id == 0)
 		{
@@ -472,7 +472,7 @@ class FOFDispatcher extends JObject
 		$this->_originalPhpScript = '';
 
 		// We have no Application Helper (there is no Application!), so I have to define these constants manually
-		$option = $this->input->get('option');
+		$option = $this->input->get('option', '', 'cmd');
 		if($option)
 		{
 			if(!defined('JPATH_COMPONENT'))
@@ -577,7 +577,7 @@ class FOFDispatcher extends JObject
 					break;
 
 				case 'QueryString_TOTP':
-					$encryptedData = $this->input->get('_fofauthentication', '');
+					$encryptedData = $this->input->get('_fofauthentication', '', 'raw');
 
 					if (empty($encryptedData))
 					{
@@ -605,7 +605,7 @@ class FOFDispatcher extends JObject
 					break;
 
 				case 'QueryString_Plaintext':
-					$jsonencoded = $this->input->get('_fofauthentication', '');
+					$jsonencoded = $this->input->get('_fofauthentication', '', 'raw');
 
 					if (empty($jsonencoded))
 					{
@@ -626,8 +626,8 @@ class FOFDispatcher extends JObject
 
 				case 'SplitQueryString_Plaintext':
 					$authInfo = array(
-						'username'	 => $this->input->get('_fofauthentication_username', ''),
-						'password'	 => $this->input->get('_fofauthentication_password', ''),
+						'username'	 => $this->input->get('_fofauthentication_username', '', 'raw'),
+						'password'	 => $this->input->get('_fofauthentication_password', '', 'raw'),
 					);
 
 					if (empty($authInfo['username']))
