@@ -14,6 +14,7 @@
 	<packagerurl>https://www.AkeebaBackup.com/download.html</packagerurl>
 	
 	<files folder="fof">
+		<folder>autoloader</folder>
 		<folder>controller</folder>
 		<folder>dispatcher</folder>
 		<folder>encrypt</folder>
