@@ -262,9 +262,33 @@ class FOFController extends JObject
 			$config = array();
 		}
 
+		// Get an input object
+		if (array_key_exists('input', $config))
+		{
+			$input = $config['input'];
+		}
+		else
+		{
+			$input = null;
+		}
+
+		if (array_key_exists('input_options', $config))
+		{
+			$input_options = $config['input_options'];
+		}
+		else
+		{
+			$input_options = array();
+		}
+
+		if (!($input instanceof FOFInput))
+		{
+			$input = new FOFInput($input, $input_options);
+		}
+
 		// Determine the option (component name) and view
-		$config['option'] = !is_null($option) ? $option : $this->input->getCmd('option', 'com_foobar');
-		$config['view'] = !is_null($view) ? $view : $this->input->getCmd('view', 'cpanel');
+		$config['option'] = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
+		$config['view'] = !is_null($view) ? $view : $input->getCmd('view', 'cpanel');
 
 		// Get the class base name, e.g. FoobarController
 		$classBaseName = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller';
