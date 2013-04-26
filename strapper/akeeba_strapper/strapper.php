@@ -140,15 +140,7 @@ class AkeebaStrapper
         }
         else
         {
-            $script = <<<ENDSCRIPT
-if(typeof(akeeba) == 'undefined') {
-	var akeeba = {};
-}
-if(typeof(akeeba.jQuery) == 'undefined') {
-	akeeba.jQuery = jQuery.noConflict();
-}
-ENDSCRIPT;
-            JFactory::getDocument()->addScriptDeclaration($script);
+            self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/namespace.js');
         }
     }
 
