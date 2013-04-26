@@ -7,12 +7,11 @@ release/*.zip
 .buildpath
 .settings/
 .project
+.DS_STORE
+.idea/
 /fof/lib_fof.xml
 tests/unit/config.php
-<<<<<<< HEAD
-
-=======
->>>>>>> refs/heads/staging
+refs/heads/staging
 /build/build.properties
 /build/templates/release.json
 /tests/config.php
