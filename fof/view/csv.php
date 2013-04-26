@@ -129,7 +129,11 @@ class FOFViewCsv extends FOFViewHtml
 			JError::setErrorHandling(E_WARNING, 'callback');
 		}
 
-		if ($hasFailed)
+		if (!$hasFailed)
+		{
+			echo $result;
+		}
+		else
 		{
 			// Default CSV behaviour in case the template isn't there!
 			if (empty($items))
@@ -192,8 +196,9 @@ class FOFViewCsv extends FOFViewHtml
 				}
 				echo implode(",", $csv) . "\r\n";
 			}
-			return false;
 		}
+
+		return false;
 	}
 
 }
