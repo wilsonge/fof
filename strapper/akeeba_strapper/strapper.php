@@ -265,7 +265,7 @@ class AkeebaStrapper
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.j3.css');
 			if ($source == 'less')
 			{
-				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j30.less', $altCss);
+				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j3.less', $altCss);
 			}
         }
 
