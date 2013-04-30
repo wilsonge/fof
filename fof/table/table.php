@@ -537,6 +537,7 @@ class FOFTable extends JObject
 				->select($db->qn('master') . '.' . $db->qn($k))
 				->from($db->qn($this->_tbl) . ' AS ' . $db->qn('master'));
 			$tableNo = 0;
+
 			foreach ($joins as $table)
 			{
 				$tableNo++;
@@ -575,6 +576,7 @@ class FOFTable extends JObject
 			}
 			$msg = array();
 			$i = 0;
+
 			foreach ($joins as $table)
 			{
 				$k = $table['idalias'];
