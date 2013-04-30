@@ -239,11 +239,13 @@ class FOFTable extends JObject
 			{
 				$config['tbl'] = strtolower('#__' . $tbl_common . strtolower(FOFInflector::pluralize($type)));
 			}
+
 			if (!array_key_exists('tbl_key', $config))
 			{
 				$keyName = FOFInflector::singularize($type);
 				$config['tbl_key'] = strtolower($tbl_common . $keyName . '_id');
 			}
+
 			if (!array_key_exists('db', $config))
 			{
 				$config['db'] = JFactory::getDBO();
@@ -519,6 +521,7 @@ class FOFTable extends JObject
 				$this->$k = $v->Default;
 			}
 		}
+
 		if (!$this->onAfterReset())
 			return false;
 	}
@@ -1312,6 +1315,7 @@ class FOFTable extends JObject
 			{
 				continue;
 			}
+
 			if ($k[0] == '_')
 			{ // internal field
 				continue;
@@ -1355,6 +1359,7 @@ class FOFTable extends JObject
 			{
 				continue;
 			}
+
 			if ($k[0] == '_')
 			{ // internal field
 				continue;
