@@ -1015,7 +1015,7 @@ class FOFTable extends JObject
 			$this->$k = $oid;
 		}
 
-		if ($this->$k == NULL)
+		if ($this->$k == null)
 		{
 			return false;
 		}
@@ -1311,7 +1311,7 @@ class FOFTable extends JObject
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			if (is_array($v) or is_object($v) or $v === NULL)
+			if (is_array($v) or is_object($v) or $v === null)
 			{
 				continue;
 			}
@@ -1355,7 +1355,7 @@ class FOFTable extends JObject
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			if (is_array($v) or is_object($v) or $v === NULL)
+			if (is_array($v) or is_object($v) or $v === null)
 			{
 				continue;
 			}
