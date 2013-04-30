@@ -1042,7 +1042,6 @@ class FOFTable extends JObject
 	public function copy($cid = null)
 	{
 		JArrayHelper::toInteger($cid);
-		$user_id = (int) $user_id;
 		$k = $this->_tbl_key;
 
 		if (count($cid) < 1)
