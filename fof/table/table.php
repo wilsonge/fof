@@ -277,7 +277,7 @@ class FOFTable extends JObject
 			// Do I have anything joined?
 			$j_fields = $this->getQueryJoinFields();
 
-			if($j_fields)
+			if ($j_fields)
 			{
 				$fields = array_merge($fields, $j_fields);
 			}
@@ -415,21 +415,21 @@ class FOFTable extends JObject
 
 		// Do I have any joined table?
 		$j_query = $this->getQueryJoin();
-		if($j_query)
+		if ($j_query)
 		{
-			if($j_query->select && $j_query->select->getElements())
+			if ($j_query->select && $j_query->select->getElements())
 			{
 				$query->select($this->normalizeSelectFields($j_query->select->getElements(), true));
 			}
 
-			if($j_query->join)
+			if ($j_query->join)
 			{
 				foreach($j_query->join as $join)
 				{
 					$t = (string) $join;
 					// Guess what? Joomla doesn't provide any access to the "name" variable, so
 					// I have to work with strings... -.-
-					if(stripos($t, 'inner') !== false)
+					if (stripos($t, 'inner') !== false)
 					{
 						$query->innerJoin($join->getElements());
 					}
@@ -508,7 +508,7 @@ class FOFTable extends JObject
 		$fields   = $this->getTableFields();
 		$j_fields = $this->getQueryJoinFields();
 
-		if($j_fields)
+		if ($j_fields)
 		{
 			$fields = array_merge($fields, $j_fields);
 		}
@@ -1389,7 +1389,7 @@ class FOFTable extends JObject
 			$tables = $this->_db->getTableList();
 		}
 
-		if(!$tableName)
+		if (!$tableName)
 		{
 			$tableName = $this->_tbl;
 		}
@@ -1489,13 +1489,13 @@ class FOFTable extends JObject
 	 */
 	public function getQueryJoin($asReference = false)
 	{
-		if($asReference)
+		if ($asReference)
 		{
 			return $this->_queryJoin;
 		}
 		else
 		{
-			if($this->_queryJoin)
+			if ($this->_queryJoin)
 			{
 				return clone $this->_queryJoin;
 			}
@@ -1524,7 +1524,7 @@ class FOFTable extends JObject
 	protected function getQueryJoinFields()
 	{
 		$query = $this->getQueryJoin();
-		if(!$query)
+		if (!$query)
 		{
 			return array();
 		}
@@ -1550,7 +1550,7 @@ class FOFTable extends JObject
 		{
 			$t_fields = $this->getTableFields($table);
 
-			if($t_fields)
+			if ($t_fields)
 			{
 				$fields = array_merge($fields, $t_fields);
 			}
@@ -1558,7 +1558,7 @@ class FOFTable extends JObject
 
 		// remove any fields that aren't in the joined select
 		$j_select = $query->select;
-		if($j_select && $j_select->getElements())
+		if ($j_select && $j_select->getElements())
 		{
 			$j_fields = $this->normalizeSelectFields($j_select->getElements());
 		}
@@ -1569,7 +1569,7 @@ class FOFTable extends JObject
 		// Now I walk again the array to change the key of columns that have an alias
 		foreach($j_fields as $column => $alias)
 		{
-			if($column != $alias)
+			if ($column != $alias)
 			{
 				$fields[$alias] = $fields[$column];
 				unset($fields[$column]);
@@ -1612,12 +1612,12 @@ class FOFTable extends JObject
 				$column = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $column);
 
 				// Do I want the column name with the original name + alias?
-				if($extended && $alias)
+				if ($extended && $alias)
 				{
 					$alias = $column.' AS '.$alias;
 				}
 
-				if(!$alias)
+				if (!$alias)
 				{
 					$alias = $column;
 				}
@@ -1699,8 +1699,8 @@ class FOFTable extends JObject
 		foreach($properties as $property => $value)
 		{
 			// 'input' property is a reserved name
-			if($property == 'input') continue;
-			if(!isset($fields[$property]))
+			if ($property == 'input') continue;
+			if (!isset($fields[$property]))
 			{
 				unset($this->$property);
 			}
