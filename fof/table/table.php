@@ -127,9 +127,9 @@ class FOFTable extends JObject
 	/**
 	 * Returns a static object instance of a particular table type
 	 *
-	 * @param string $type   The table name
-	 * @param string $prefix The prefix of the table class
-	 * @param array  $config Optional configuration variables
+	 * @param   string  $type    The table name
+	 * @param   string  $prefix  The prefix of the table class
+	 * @param   array   $config  Optional configuration variables
 	 *
 	 * @return FOFTable
 	 */
@@ -150,7 +150,7 @@ class FOFTable extends JObject
 		// Guess the component name
 		if (!array_key_exists('input', $config))
 		{
-			$config['input'] = new FOFInput();
+			$config['input'] = new FOFInput;
 		}
 
 		if ($config['input'] instanceof FOFInput)
@@ -270,6 +270,13 @@ class FOFTable extends JObject
 		return $instances[$tableClass];
 	}
 
+	/**
+	 * Class Constructor.
+	 *
+	 * @param   string           $table  Name of the database table to model.
+	 * @param   string           $key    Name of the primary key field in the table.
+	 * @param   JDatabaseDriver  &$db    Database driver
+	 */
 	function __construct($table, $key, &$db)
 	{
 		$this->_tbl     = $table;
@@ -318,7 +325,7 @@ class FOFTable extends JObject
 	/**
 	 * Sets the events trigger switch state
 	 *
-	 * @param bool $newState
+	 * @param   bool  $newState
 	 */
 	public function setTriggerEvents($newState = false)
 	{
@@ -338,7 +345,9 @@ class FOFTable extends JObject
 	/**
 	 * Sets fields to be skipped from automatic checks.
 	 *
-	 * @param array/string    $skip    Fields to be skipped by automatic checks
+	 * @param   array/string  $skip  Fields to be skipped by automatic checks
+	 *
+	 * @return void
 	 */
 	function setSkipChecks($skip)
 	{
@@ -415,12 +424,14 @@ class FOFTable extends JObject
 			{
 				throw new UnexpectedValueException(sprintf('Missing field in database: %s &#160; %s.', get_class($this), $field));
 			}
+
 			// Add the search tuple to the query.
 			$query->where($this->_db->qn($field) . ' = ' . $this->_db->q($value));
 		}
 
 		// Do I have any joined table?
 		$j_query = $this->getQueryJoin();
+
 		if ($j_query)
 		{
 			if ($j_query->select && $j_query->select->getElements())
@@ -433,6 +444,7 @@ class FOFTable extends JObject
 				foreach ($j_query->join as $join)
 				{
 					$t = (string) $join;
+
 					// Guess what? Joomla doesn't provide any access to the "name" variable, so
 					// I have to work with strings... -.-
 					if (stripos($t, 'inner') !== false)
@@ -510,7 +522,10 @@ class FOFTable extends JObject
 	public function reset()
 	{
 		if (!$this->onBeforeReset())
+		{
 			return false;
+		}
+
 		// Get the default values for the class from the table.
 		$fields   = $this->getTableFields();
 		$j_fields = $this->getQueryJoinFields();
@@ -530,7 +545,9 @@ class FOFTable extends JObject
 		}
 
 		if (!$this->onAfterReset())
+		{
 			return false;
+		}
 	}
 
 	/**
@@ -556,9 +573,11 @@ class FOFTable extends JObject
 			foreach ($joins as $table)
 			{
 				$tableNo++;
-				$query->select(array(
-					'COUNT(DISTINCT ' . $db->qn('t' . $tableNo) . '.' . $db->qn($table['idfield']) . ') AS ' . $db->qn($table['idalias'])
-				));
+				$query->select(
+					array(
+						'COUNT(DISTINCT ' . $db->qn('t' . $tableNo) . '.' . $db->qn($table['idfield']) . ') AS ' . $db->qn($table['idalias'])
+					)
+				);
 				$query->join('LEFT', $db->qn($table['name']) .
 					' AS ' . $db->qn('t' . $tableNo) .
 					' ON ' . $db->qn('t' . $tableNo) . '.' . $db->qn($table['joinfield']) .
@@ -856,6 +875,7 @@ class FOFTable extends JObject
 			$query->where('ordering < ' . (int) $this->ordering);
 			$query->order('ordering DESC');
 		}
+
 		// If the movement delta is positive move the row down.
 		elseif ($delta > 0)
 		{
@@ -1001,10 +1021,12 @@ class FOFTable extends JObject
 
 		$query = $this->_db->getQuery(true)
 			->update($this->_db->qn($this->_tbl))
-			->set(array(
-				$this->_db->qn($fldLockedBy) . ' = ' . (int) $userId,
-				$this->_db->qn($fldLockedOn) . ' = ' . $this->_db->q($time)
-			))
+			->set(
+				array(
+					$this->_db->qn($fldLockedBy) . ' = ' . (int) $userId,
+					$this->_db->qn($fldLockedOn) . ' = ' . $this->_db->q($time)
+				)
+			)
 			->where($this->_db->qn($this->_tbl_key) . ' = ' . $this->_db->q($this->$k));
 		$this->_db->setQuery((string) $query);
 
@@ -1346,7 +1368,8 @@ class FOFTable extends JObject
 			}
 
 			if ($k[0] == '_')
-			{ // internal field
+			{
+				// Internal field
 				continue;
 			}
 
@@ -1368,7 +1391,8 @@ class FOFTable extends JObject
 		foreach (get_object_vars($this) as $k => $v)
 		{
 			if (($k[0] == '_') || ($k[0] == '*'))
-			{ // internal field
+			{
+				// Internal field
 				continue;
 			}
 
@@ -1393,7 +1417,8 @@ class FOFTable extends JObject
 			}
 
 			if ($k[0] == '_')
-			{ // internal field
+			{
+				// Internal field
 				continue;
 			}
 
@@ -1561,6 +1586,7 @@ class FOFTable extends JObject
 	protected function getQueryJoinFields()
 	{
 		$query = $this->getQueryJoin();
+
 		if (!$query)
 		{
 			return array();
@@ -1569,20 +1595,22 @@ class FOFTable extends JObject
 		// Get joined tables. Ignore FROM clause, since it should not be used (the starting point is the table "table")
 		$tables = array();
 		$joins  = $query->join;
+
 		foreach ($joins as $join)
 		{
 			$tables = array_merge($tables, $join->getElements());
 		}
 
-		// clean up table names
+		// Clean up table names
 		for ($i = 0; $i < count($tables); $i++)
 		{
 			preg_match('#\#__.*?\s#', $tables[$i], $matches);
 			$tables[$i] = str_replace(' ', '', $matches[0]);
 		}
 
-		// get table fields
+		// Get table fields
 		$fields = array();
+
 		foreach ($tables as $table)
 		{
 			$t_fields = $this->getTableFields($table);
@@ -1593,8 +1621,9 @@ class FOFTable extends JObject
 			}
 		}
 
-		// remove any fields that aren't in the joined select
+		// Remove any fields that aren't in the joined select
 		$j_select = $query->select;
+
 		if ($j_select && $j_select->getElements())
 		{
 			$j_fields = $this->normalizeSelectFields($j_select->getElements());
@@ -1628,9 +1657,11 @@ class FOFTable extends JObject
 	protected function normalizeSelectFields($fields, $extended = false)
 	{
 		$return = array();
+
 		foreach ($fields as $field)
 		{
 			$t_fields = explode(',', $field);
+
 			foreach ($t_fields as $t_field)
 			{
 				// Is there any alias for this column?
@@ -1644,7 +1675,7 @@ class FOFTable extends JObject
 				$column = $match[1];
 				$column = preg_replace('#\sas\s?#i', '', $column);
 
-				// trim whitespace
+				// Trim whitespace
 				$alias  = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $alias);
 				$column = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $column);
 
