@@ -161,6 +161,7 @@ class FOFTable extends JObject
 		{
 			$tmpInput = new FOFInput($config['input']);
 		}
+
 		$option = $tmpInput->getCmd('option', '');
 		$tmpInput->set('option', $option);
 		$config['input'] = $tmpInput;
@@ -175,6 +176,7 @@ class FOFTable extends JObject
 		{
 			$option = $config['option'];
 		}
+
 		$config['option'] = $option;
 
 		if (!array_key_exists('view', $config))
@@ -188,6 +190,7 @@ class FOFTable extends JObject
 			{
 				$prefix = 'Table';
 			}
+
 			$type = $config['view'];
 		}
 
@@ -587,6 +590,7 @@ class FOFTable extends JObject
 					return false;
 				}
 			}
+
 			$msg = array();
 			$i   = 0;
 
@@ -598,6 +602,7 @@ class FOFTable extends JObject
 				{
 					$msg[] = JText::_($table['label']);
 				}
+
 				$i++;
 			}
 
@@ -1214,6 +1219,7 @@ class FOFTable extends JObject
 				}
 			}
 		}
+
 		$this->setError('');
 
 		return true;
@@ -1343,8 +1349,10 @@ class FOFTable extends JObject
 			{ // internal field
 				continue;
 			}
+
 			$csv[] = '"' . str_replace('"', '""', $v) . '"';
 		}
+
 		$csv = implode($separator, $csv);
 
 		return $csv;
@@ -1363,6 +1371,7 @@ class FOFTable extends JObject
 			{ // internal field
 				continue;
 			}
+
 			$ret[$k] = $v;
 		}
 
@@ -1387,8 +1396,10 @@ class FOFTable extends JObject
 			{ // internal field
 				continue;
 			}
+
 			$csv[] = '"' . str_replace('"', '\"', $k) . '"';
 		}
+
 		$csv = implode($separator, $csv);
 
 		return $csv;
@@ -1446,6 +1457,7 @@ class FOFTable extends JObject
 				{
 					$fields = false;
 				}
+
 				$cache[$tableName] = $fields;
 			}
 			else
@@ -1456,6 +1468,7 @@ class FOFTable extends JObject
 				{
 					$fields = false;
 				}
+
 				$cache[$tableName] = $fields[$name];
 			}
 		}
@@ -1482,6 +1495,7 @@ class FOFTable extends JObject
 		{
 			$return = $column;
 		}
+
 		$return = preg_replace('#[^A-Z0-9_]#i', '', $return);
 
 		return $return;
@@ -1818,6 +1832,7 @@ class FOFTable extends JObject
 				$db->setQuery($query);
 				$existingItems = $db->loadAssocList();
 			}
+
 			$this->$slug = $newSlug;
 		}
 
