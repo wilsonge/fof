@@ -197,6 +197,7 @@ class FOFTable extends JObject
 			if (!class_exists($tableClass))
 			{
 				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+
 				if (!$isAdmin)
 				{
 					$basePath = JPATH_SITE;
@@ -210,6 +211,7 @@ class FOFTable extends JObject
 					$basePath . '/components/' . $config['option'] . '/tables',
 					JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/tables'
 				);
+
 				if (array_key_exists('tablepath', $config))
 				{
 					array_unshift($searchPaths, $config['tablepath']);
@@ -232,6 +234,7 @@ class FOFTable extends JObject
 			}
 
 			$tbl_common = str_replace('com_', '', $config['option']) . '_';
+
 			if (!array_key_exists('tbl', $config))
 			{
 				$config['tbl'] = strtolower('#__' . $tbl_common . strtolower(FOFInflector::pluralize($type)));
@@ -359,6 +362,7 @@ class FOFTable extends JObject
 		{
 			// If empty, use the value of the current key
 			$keyName = $this->_tbl_key;
+
 			if (isset($this->$keyName))
 			{
 				$keyValue = $this->$keyName;
@@ -525,6 +529,7 @@ class FOFTable extends JObject
 	public function canDelete($oid = null, $joins = null)
 	{
 		$k = $this->_tbl_key;
+
 		if ($oid)
 		{
 			$this->$k = intval($oid);
@@ -580,6 +585,7 @@ class FOFTable extends JObject
 			foreach ($joins as $table)
 			{
 				$k = $table['idalias'];
+
 				if ($obj->$k > 0)
 				{
 					$msg[] = JText::_($table['label']);
@@ -680,6 +686,7 @@ class FOFTable extends JObject
 		}
 
 		$k = $this->_tbl_key;
+
 		if (!empty($this->asset_id))
 		{
 			$currentAssetId = $this->asset_id;
@@ -734,6 +741,7 @@ class FOFTable extends JObject
 
 		// Check for an error.
 		$error = $asset->getError();
+
 		if ($error)
 		{
 			$this->setError($error);
@@ -952,12 +960,14 @@ class FOFTable extends JObject
 		}
 
 		$k = $this->_tbl_key;
+
 		if ($oid !== null)
 		{
 			$this->$k = $oid;
 		}
 
 		$date = JFactory::getDate();
+
 		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$time = $date->toSql();
@@ -1134,6 +1144,7 @@ class FOFTable extends JObject
 			->set($this->_db->qn($enabledName) . ' = ' . (int) $publish);
 
 		$checkin = in_array($locked_byName, array_keys($this->getProperties()));
+
 		if ($checkin)
 		{
 			$query->where(
@@ -1148,6 +1159,7 @@ class FOFTable extends JObject
 		$query->where('(' . $cids . ')');
 
 		$this->_db->setQuery((string) $query);
+
 		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			try
@@ -1173,6 +1185,7 @@ class FOFTable extends JObject
 			if ($this->_db->getAffectedRows() == 1)
 			{
 				$this->checkin($cid[0]);
+
 				if ($this->$k == $cid[0])
 				{
 					$this->published = $publish;
@@ -1382,6 +1395,7 @@ class FOFTable extends JObject
 			$name = $tableName;
 
 			$prefix = $this->_db->getPrefix();
+
 			if (substr($name, 0, 3) == '#__')
 			{
 				$checkName = $prefix . substr($name, 3);
@@ -1399,6 +1413,7 @@ class FOFTable extends JObject
 			elseif (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				$fields = $this->_db->getTableColumns($name, false);
+
 				if (empty($fields))
 				{
 					$fields = false;
@@ -1408,6 +1423,7 @@ class FOFTable extends JObject
 			else
 			{
 				$fields = $this->_db->getTableFields($name, false);
+
 				if (!isset($fields[$name]))
 				{
 					$fields = false;
@@ -1689,15 +1705,18 @@ class FOFTable extends JObject
 		{
 			$hasModifiedOn = isset($this->$modified_on) || property_exists($this, $modified_on);
 			$hasModifiedBy = isset($this->$modified_by) || property_exists($this, $modified_by);
+
 			if (empty($this->$created_by) || ($this->$created_on == '0000-00-00 00:00:00') || empty($this->$created_on))
 			{
 				$uid = JFactory::getUser()->id;
+
 				if ($uid)
 				{
 					$this->$created_by = JFactory::getUser()->id;
 				}
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
+
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
 					$this->$created_on = $date->toSql();
@@ -1710,12 +1729,14 @@ class FOFTable extends JObject
 			elseif ($hasModifiedOn && $hasModifiedBy)
 			{
 				$uid = JFactory::getUser()->id;
+
 				if ($uid)
 				{
 					$this->$modified_by = JFactory::getUser()->id;
 				}
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
+
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
 					$this->$modified_on = $date->toSql();
@@ -1730,6 +1751,7 @@ class FOFTable extends JObject
 		// Do we have a set of title and slug fields?
 		$hasTitle = isset($this->$title) || property_exists($this, $title);
 		$hasSlug = isset($this->$slug) || property_exists($this, $slug);
+
 		if ($hasTitle && $hasSlug)
 		{
 			if (empty($this->$slug))
@@ -2181,6 +2203,7 @@ class FOFTable extends JObject
 		// For simple cases, parent to the asset root.
 		$assets = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
 		$rootId = $assets->getRootId();
+
 		if (!empty($rootId))
 		{
 			return $rootId;
