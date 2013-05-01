@@ -854,23 +854,31 @@ ENDJS;
 
 				$input = $field->input;
 
-				$html .= "\t\t\t" . '<div class="control-group">' . PHP_EOL;
-				$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
-				$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
-				if ($required)
+				if (!is_null($title))
 				{
-					$html .= ' *';
+
+					$html .= "\t\t\t" . '<div class="control-group">' . PHP_EOL;
+					$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+					$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
+					if ($required)
+					{
+						$html .= ' *';
+					}
+					$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
+					$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
+					$html .= "\t\t\t\t" . $input . PHP_EOL;
+					if (!empty($description))
+					{
+						$html .= "\t\t\t\t" . '<span class="help-block">';
+						$html .= JText::_($description) . '</span>' . PHP_EOL;
+					}
+					$html .= "\t\t\t\t" . '</div>' . PHP_EOL;
+					$html .= "\t\t\t" . '</div>' . PHP_EOL;
 				}
-				$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
-				$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
-				$html .= "\t\t\t\t" . $input . PHP_EOL;
-				if (!empty($description))
+				else
 				{
-					$html .= "\t\t\t\t" . '<span class="help-block">';
-					$html .= JText::_($description) . '</span>' . PHP_EOL;
+					$html .= "\t\t\t\t" . $input . PHP_EOL;
 				}
-				$html .= "\t\t\t\t" . '</div>' . PHP_EOL;
-				$html .= "\t\t\t" . '</div>' . PHP_EOL;
 			}
 
 			$html .= "\t" . '</div>' . PHP_EOL;

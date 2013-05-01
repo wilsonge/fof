@@ -383,7 +383,10 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				$label = $field->label;
 				$input = $field->input;
 
-				$html .= "\t\t\t" . $label . PHP_EOL;
+				if (!is_null($title))
+				{
+					$html .= "\t\t\t" . $label . PHP_EOL;
+				}
 				$html .= "\t\t\t" . $input . PHP_EOL;
 			}
 
