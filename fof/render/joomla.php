@@ -338,15 +338,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 		$html = '';
 
-		if ($validate = $form->getAttribute('validate'))
+		$validate = $form->getAttribute('validate');
+		$class = '';
+
+		if (!empty($validate))
 		{
 			JHTML::_('behavior.formvalidation');
 			$class = ' class="form-validate"';
 			$this->loadValidationScript($form);
-		}
-		else
-		{
-			$class = '';
 		}
 
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm"' . $class . '>' . PHP_EOL;
