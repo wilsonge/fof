@@ -1807,6 +1807,22 @@ class FOFModel extends JObject
 	}
 
 	/**
+	 * Applies view access level filtering for the specified user. Useful to
+	 * filter a front-end items listing.
+	 *
+	 * @param   integer  $userID  The user ID to use. Skip it to use the currently logged in user.
+	 *
+	 * @return  FOFModel  Reference to self
+	 */
+	public function applyAccessFiltering($userID = null)
+	{
+		$user = JFactory::getUser($userID);
+		$this->setState('access', $user->getAuthorisedViewLevels());
+
+		return $this;
+	}
+
+	/**
 	 * A method for getting the form from the model.
 	 *
 	 * @param   array    $data      Data for the form.
