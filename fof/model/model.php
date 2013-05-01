@@ -1657,7 +1657,19 @@ class FOFModel extends JObject
 						break;
 
 					default:
-						$query->where('(' . $db->qn($fieldname) . '=' . $db->q($filterState) . ')');
+						if (is_array($filterState))
+						{
+							$tmp = array();
+							foreach ($filterState as $k => $v)
+							{
+								$tmp[] = $db->q($v);
+							}
+							$query->where('(' . $db->qn($fieldname) . ' IN(' . implode(',', $tmp) . '))');
+						}
+						else
+						{
+							$query->where('(' . $db->qn($fieldname) . '=' . $db->q($filterState) . ')');
+						}
 						break;
 				}
 			}
