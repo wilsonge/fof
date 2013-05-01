@@ -2098,6 +2098,11 @@ class FOFController extends JObject
 		$classPrefix = preg_replace('/[^A-Z0-9_]/i', '', $prefix);
 		$viewType = preg_replace('/[^A-Z0-9_]/i', '', $type);
 
+		if (!isset($config['input']))
+		{
+			$config['input'] = $this->input;
+		}
+
 		if (($config['input'] instanceof FOFInput))
 		{
 			$tmpInput = $config['input'];
