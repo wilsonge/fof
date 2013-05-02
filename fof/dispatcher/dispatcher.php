@@ -209,13 +209,13 @@ class FOFDispatcher extends JObject
 			$this->input = JRequest::get('default', 3);
 		}
 
+		// Load the component's fof.xml configuration file
+		$configProvider = new FOFConfigProvider;
+		$this->defaultView = $configProvider->get($this->component . '.dispatcher.default_view', $this->defaultView);
+
 		// Get the default values for the component and view names
 		$this->component = $this->input->getCmd('option', 'com_foobar');
 		$this->view = $this->input->getCmd('view', $this->defaultView);
-
-		// Load the component's fof.xml configuration file
-		$configProvider = new FOFConfigProvider;
-		$this->defaultView = $configProvider->get($this->component . '.dispatcher.default_view', 'cpanel');
 
 		if (empty($this->view))
 		{
