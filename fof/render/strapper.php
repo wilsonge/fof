@@ -817,7 +817,19 @@ ENDJS;
 			$class = '';
 		}
 
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" class="form-horizontal' . $class . '">' . PHP_EOL;
+		// Check form enctype. Use enctype="multipart/form-data" to upload binary files in your form.
+		$template_form_enctype = $form->getAttribute('enctype');
+
+		if (!empty($template_form_enctype))
+		{
+			$enctype = ' enctype="' . $form->getAttribute('enctype') . '" ';
+		}
+		else
+		{
+			$enctype = '';
+		}
+
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm"' . $enctype . ' class="form-horizontal' . $class . '">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $input->getCmd('view', 'edit') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
