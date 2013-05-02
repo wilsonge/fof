@@ -338,15 +338,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 		$html = '';
 
-		if ($validate = $form->getAttribute('validate'))
+		$validate = $form->getAttribute('validate');
+		$class = '';
+
+		if (!empty($validate))
 		{
 			JHTML::_('behavior.formvalidation');
 			$class = ' class="form-validate"';
 			$this->loadValidationScript($form);
-		}
-		else
-		{
-			$class = '';
 		}
 
 		// Check form enctype. Use enctype="multipart/form-data" to upload binary files in your form.
