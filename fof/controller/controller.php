@@ -348,6 +348,15 @@ class FOFController extends JObject
 			{
 				array_unshift($searchPaths, $config['searchpath']);
 			}
+			else
+			{
+				$configProvider = new FOFConfigProvider;
+				$searchPath = $configProvider->get($config['option'] . '.views.' . FOFInflector::singularize($config['view']) . '.config.searchpath', null);
+				if ($searchPath)
+				{
+					array_unshift($searchPaths, $searchPath);
+				}
+			}
 
 			// Try to find the path to this file
 			$path = JPath::find(
@@ -495,6 +504,7 @@ class FOFController extends JObject
 		{
 			$this->layout = $config['layout'];
 		}
+		$this->layout = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.layout', $this->layout);
 
 		$this->input->set('option', $this->component);
 
@@ -513,17 +523,19 @@ class FOFController extends JObject
 		{
 			$basePath = $config['base_path'];
 		}
+		$basePath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.base_path', $basePath);
 
 		$this->basePath = $basePath;
 
 		// If the default task is set, register it as such
+		$defaultTask = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.default_task', 'display');
 		if (array_key_exists('default_task', $config))
 		{
 			$this->registerDefaultTask($config['default_task']);
 		}
 		else
 		{
-			$this->registerDefaultTask('display');
+			$this->registerDefaultTask($defaultTask);
 		}
 
 		// Set the models prefix
@@ -537,6 +549,7 @@ class FOFController extends JObject
 			else
 			{
 				$this->model_prefix = $this->name . 'Model';
+				$this->model_prefix = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.model_prefix', $this->model_prefix);
 			}
 		}
 
@@ -548,7 +561,8 @@ class FOFController extends JObject
 		}
 		else
 		{
-			$this->addModelPath($this->basePath . '/models', $this->model_prefix);
+			$modelPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.model_path', $this->basePath . '/models');
+			$this->addModelPath($modelPath, $this->model_prefix);
 		}
 
 		// Set the default view search path
@@ -559,7 +573,8 @@ class FOFController extends JObject
 		}
 		else
 		{
-			$this->setPath('view', $this->basePath . '/views');
+			$viewPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.view_path', $this->basePath . '/views');
+			$this->setPath('view', $viewPath);
 		}
 
 		// Set the default view.
@@ -567,9 +582,13 @@ class FOFController extends JObject
 		{
 			$this->default_view = $config['default_view'];
 		}
-		elseif (empty($this->default_view))
+		else
 		{
-			$this->default_view = $this->getName();
+			if (empty($this->default_view))
+			{
+				$this->default_view = $this->getName();
+			}
+			$this->default_view = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.default_view', $this->default_view);
 		}
 
 		// Set the CSRF protection
@@ -577,16 +596,33 @@ class FOFController extends JObject
 		{
 			$this->csrfProtection = $config['csrf_protection'];
 		}
+		$this->csrfProtection = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.csrf_protection', $this->csrfProtection);
 
 		// Set any model/view name overrides
 		if (array_key_exists('viewName', $config))
 		{
 			$this->setThisViewName($config['viewName']);
 		}
+		else
+		{
+			$overrideViewName = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.viewName', null);
+			if ($overrideViewName)
+			{
+				$this->setThisViewName($overrideViewName);
+			}
+		}
 
 		if (array_key_exists('modelName', $config))
 		{
 			$this->setThisModelName($config['modelName']);
+		}
+		else
+		{
+			$overrideModelName = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.modelName', null);
+			if ($overrideModelName)
+			{
+				$this->setThisModelName($overrideModelName);
+			}
 		}
 
 		// Caching
@@ -597,8 +633,27 @@ class FOFController extends JObject
 				$this->cacheableTasks = $config['cacheableTasks'];
 			}
 		}
+		else
+		{
+			$cacheableTasks = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.cacheableTasks', null);
+			if ($cacheableTasks)
+			{
+				$cacheableTasks = explode(',', $cacheableTasks);
+				if (count($cacheableTasks))
+				{
+					$temp = array();
+					foreach ($cacheableTasks as $t)
+					{
+						$temp[] = trim($t);
+					}
+					$temp = array_unique($temp);
+					$this->cacheableTasks = $temp;
+				}
+			}
+		}
 
 		// Bit mask for auto routing on setRedirect
+		$this->autoRouting = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.autoRouting', $this->autoRouting);
 		if (array_key_exists('autoRouting', $config))
 		{
 			$this->autoRouting = $config['autoRouting'];
@@ -2277,12 +2332,24 @@ class FOFController extends JObject
 			}
 		}
 
+		$extraTemplatePath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.template_path', null);
+		if ($extraTemplatePath)
+		{
+			$config['template_path'][] = $extraTemplatePath;
+		}
+
 		if (!array_key_exists('helper_path', $config))
 		{
 			$config['helper_path'] = array(
 				$basePath . '/components/' . $config['option'] . '/helpers',
 				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/helpers'
 			);
+		}
+
+		$extraHelperPath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.helper_path', null);
+		if ($extraHelperPath)
+		{
+			$config['helper_path'][] = $extraHelperPath;
 		}
 
 		$result = new $viewClass($config);
