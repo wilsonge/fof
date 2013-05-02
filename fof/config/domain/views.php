@@ -10,6 +10,14 @@ defined('FOF_INCLUDED') or die();
 
 class FOFConfigDomainViews implements FOFConfigDomainInterface
 {
+	/**
+	 * Parse the XML data, adding them to the $ret array
+	 *
+	 * @param   SimpleXMLElement  $xml  The XML data of the component's configuration area
+	 * @param   array             $ret  The parsed data, in the form of a hash array
+	 *
+	 * @return  void
+	 */
 	public function parseDomain(SimpleXMLElement $xml, array &$ret)
 	{
 		// Initialise
@@ -51,9 +59,30 @@ class FOFConfigDomainViews implements FOFConfigDomainInterface
 					$ret['views'][$key]['taskmap'][$k] = (string)$map;
 				}
 			}
+
+			// Parse controller configuration
+			$ret['views'][$key]['config'] = array();
+			$optionData = $aView->xpath('config/option');
+			if (!empty($optionData))
+			{
+				foreach($optionData as $option)
+				{
+					$k = (string)$option['name'];
+					$ret['views'][$key]['config'][$k] = (string)$option;
+				}
+			}
 		}
 	}
 
+	/**
+	 * Return a configuration variable
+	 *
+	 * @param   string  $configuration  Configuration variables (hashed array)
+	 * @param   string  $var            The variable we want to fetch
+	 * @param   mixed   $default        Default value
+	 *
+	 * @return  mixed  The variable's value
+	 */
 	public function get(&$configuration, $var, $default)
 	{
 		$parts = explode('.', $var);
@@ -74,6 +103,16 @@ class FOFConfigDomainViews implements FOFConfigDomainInterface
 		return $ret;
 	}
 
+	/**
+	 * Internal function to return the task map for a view
+	 *
+	 * @param   string  $view           The view for which we will be fetching a task map
+	 * @param   array   $configuration  The configuration parameters hash array
+	 * @param   array   $params         Extra options (not used)
+	 * @param   array   $default        Default task map; empty array if not provided
+	 *
+	 * @return  array  The task map as a hash array in the format task => method
+	 */
 	protected function getTaskmap($view, &$configuration, $params, $default = array())
 	{
 		$taskmap = array();
@@ -96,6 +135,17 @@ class FOFConfigDomainViews implements FOFConfigDomainInterface
 		return $taskmap;
 	}
 
+	/**
+	 * Internal method to return the ACL mapping (privilege required to access
+	 * a specific task) for the given view's tasks
+	 *
+	 * @param   string  $view           The view for which we will be fetching a task map
+	 * @param   array   $configuration  The configuration parameters hash array
+	 * @param   array   $params         Extra options; key 0 defines the task we want to fetch
+	 * @param   string  $default        Default ACL option; empty (no ACL check) if not defined
+	 *
+	 * @return  string  The privilege required to access this view
+	 */
 	protected function getAcl($view, &$configuration, $params, $default = '')
 	{
 		$aclmap = array();
@@ -123,5 +173,39 @@ class FOFConfigDomainViews implements FOFConfigDomainInterface
 		}
 
 		return $acl;
+	}
+
+	/**
+	 * Internal method to return the a configuration option for the view. These
+	 * are equivalent to $config array options passed to the Controller
+	 *
+	 * @param   string  $view           The view for which we will be fetching a task map
+	 * @param   array   $configuration  The configuration parameters hash array
+	 * @param   array   $params         Extra options; key 0 defines the option variable we want to fetch
+	 * @param   mixed   $default        Default option; null if not defined
+	 *
+	 * @return  string  The setting for the requested option
+	 */
+	protected function getOption($view, &$configuration, $params, $default = null)
+	{
+		$ret = $default;
+
+		if (isset($configuration['views']['*'])
+			&& isset($configuration['views']['*']['config'])
+			&& isset($configuration['views']['*']['config'][$params[0]])
+		)
+		{
+			$ret = $configuration['views']['*']['config'][$params[0]];
+		}
+
+		if (isset($configuration['views'][$view])
+			&& isset($configuration['views'][$view]['config'])
+			&& isset($configuration['views'][$view]['config'][$params[0]])
+		)
+		{
+			$ret = $configuration['views'][$view]['config'][$params[0]];
+		}
+
+		return $ret;
 	}
 }
