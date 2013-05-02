@@ -175,6 +175,13 @@ class FOFModel extends JObject
 	protected $_formData = array();
 
 	/**
+	 * An instance of FOFConfigProvider to provision configuration overrides
+	 *
+	 * @var    FOFConfigProvider
+	 */
+	protected $configProvider = null;
+
+	/**
 	 * Returns a new model object. Unless overriden by the $config array, it will
 	 * try to automatically populate its state from the request variables.
 	 *
@@ -491,6 +498,9 @@ class FOFModel extends JObject
 			$this->input = new FOFInput;
 		}
 
+		// Load the configuration provider
+		$this->configProvider = new FOFConfigProvider;
+
 		// Set the $name/$_name variable
 		$component = $this->input->getCmd('option', 'com_foobar');
 
@@ -559,6 +569,7 @@ class FOFModel extends JObject
 		else
 		{
 			$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/tables';
+			$path = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table_path', $path);
 			$this->addTablePath($path);
 		}
 
@@ -569,11 +580,15 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->table = FOFInflector::singularize($view);
+			$table = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table', FOFInflector::singularize($view));
+			$this->table = $table;
 		}
 
 		// Set the internal state marker - used to ignore setting state from the request
-		if (!empty($config['ignore_request']))
+		if (
+			!empty($config['ignore_request']) ||
+			!is_null($this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.ignore_request', null))
+		)
 		{
 			$this->__state_set = true;
 		}
@@ -611,6 +626,10 @@ class FOFModel extends JObject
 		{
 			$cid = $config['cid'];
 		}
+		elseif ($cid = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.cid', null))
+		{
+			$cid = explode(',', $cid);
+		}
 		else
 		{
 			$cid = $this->input->get('cid', array(), 'array');
@@ -619,6 +638,11 @@ class FOFModel extends JObject
 		if (array_key_exists('id', $config))
 		{
 			$id = $config['id'];
+		}
+		elseif ($id = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.id', null))
+		{
+			$id = explode(',', $id);
+			$id = array_shift($id);
 		}
 		else
 		{
@@ -635,34 +659,67 @@ class FOFModel extends JObject
 		}
 
 		// Populate the event names from the $config array
+
+		$configKey = $this->option . '.views.' . FOFInflector::singularize($view) . '.config.';
+
 		if (isset($config['event_after_delete']))
 		{
 			$this->event_after_delete = $config['event_after_delete'];
+		}
+		else
+		{
+			$this->event_after_delete = $this->configProvider->get($configKey . 'event_after_delete',
+				$this->event_after_delete);
 		}
 
 		if (isset($config['event_after_save']))
 		{
 			$this->event_after_save = $config['event_after_save'];
 		}
+		else
+		{
+			$this->event_after_save = $this->configProvider->get($configKey . 'event_after_save',
+				$this->event_after_save);
+		}
 
 		if (isset($config['event_before_delete']))
 		{
 			$this->event_before_delete = $config['event_before_delete'];
+		}
+		else
+		{
+			$this->event_before_delete = $this->configProvider->get($configKey . 'event_before_delete',
+				$this->event_before_delete);
 		}
 
 		if (isset($config['event_before_save']))
 		{
 			$this->event_before_save = $config['event_before_save'];
 		}
+		else
+		{
+			$this->event_before_save = $this->configProvider->get($configKey . 'event_before_save',
+				$this->event_before_save);
+		}
 
 		if (isset($config['event_change_state']))
 		{
 			$this->event_change_state = $config['event_change_state'];
 		}
+		else
+		{
+			$this->event_change_state = $this->configProvider->get($configKey . 'event_change_state',
+				$this->event_change_state);
+		}
 
 		if (isset($config['event_clean_cache']))
 		{
 			$this->event_clean_cache = $config['event_clean_cache'];
+		}
+		else
+		{
+			$this->event_clean_cache = $this->configProvider->get($configKey . 'event_clean_cache',
+				$this->event_clean_cache);
 		}
 
 	}
