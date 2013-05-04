@@ -360,7 +360,25 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			$enctype = '';
 		}
 
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm"' . $enctype . $class . '>' . PHP_EOL;
+		// Check form name. Use name="yourformname" to modify the name of your form.
+		$formname = $form->getAttribute('name');
+
+		if (empty($formname))
+		{
+			$formname = 'adminForm';
+		}
+
+		// Check form ID. Use id="yourformname" to modify the id of your form.
+		$formid = $form->getAttribute('name');
+
+		if (empty($formname))
+		{
+			$formid = 'adminForm';
+		}
+
+		$html .= '<form action="index.php" method="post" name="' . $formname .
+			'" id="' . $formid . '"' . $enctype . ' class="' . $class .
+			'">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $input->getCmd('view', 'edit') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
