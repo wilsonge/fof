@@ -2527,14 +2527,16 @@ class FOFController extends JObject
 
 		if ($isAdmin)
 		{
-			$privilege = $this->configProvider->get($this->component . '.views.' .
-				FOFInflector::singularize($this->view) . '.acl.browse', 'core.manage');
-			return $this->checkACL($privilege);
+			$defaultPrivilege = 'core.manage';
 		}
 		else
 		{
-			return true;
+			$defaultPrivilege = '';
 		}
+
+		$privilege = $this->configProvider->get($this->component . '.views.' .
+				FOFInflector::singularize($this->view) . '.acl.browse', $defaultPrivilege);
+		return $this->checkACL($privilege);
 	}
 
 	/**
