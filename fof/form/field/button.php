@@ -74,6 +74,7 @@ class FOFFormFieldButton extends FOFFormFieldText implements FOFFormField
 		$text = $this->element['text'];
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 		$icon = $this->element['icon'] ? (string) $this->element['icon'] : '';
+		$onclick = $this->element['onclick'] ? 'onclick="' . (string) $this->element['onclick'] . '"' : '';
 
 		$this->value = JText::_($text);
 
@@ -82,7 +83,8 @@ class FOFFormFieldButton extends FOFFormFieldText implements FOFFormField
 			$icon = '<span class="icon ' . $icon . '"></span>';
 		}
 
-		return '<button id="' . $this->id . '" class="btn ' . $class . '">' .
+		return '<button id="' . $this->id . '" class="btn ' . $class . '" ' .
+			$onclick .'>' .
 			$icon .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
 			'</button>';
