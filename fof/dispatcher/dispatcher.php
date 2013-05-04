@@ -413,7 +413,7 @@ class FOFDispatcher extends JObject
 
 		// Check the request method
 
-		if (!array_key_exists('REQUEST_METHOD', $_SERVER))
+		if (!isset($_SERVER['REQUEST_METHOD']))
 		{
 			$_SERVER['REQUEST_METHOD'] = 'GET';
 		}
@@ -424,8 +424,7 @@ class FOFDispatcher extends JObject
 		{
 			case 'POST':
 			case 'PUT':
-				if ($id != 0)
-					$task = 'save';
+				$task = 'save';
 				break;
 
 			case 'DELETE':
