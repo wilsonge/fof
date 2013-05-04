@@ -2423,6 +2423,10 @@ class FOFController extends JObject
 		{
 			return true;
 		}
+		elseif (in_array(strtolower($area), array('false','0','no','403')))
+		{
+			return false;
+		}
 		elseif (empty($area))
 		{
 			return true;
