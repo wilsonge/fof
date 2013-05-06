@@ -811,14 +811,22 @@ class FOFController extends JObject
 
 		$method_name = 'onBefore' . ucfirst($task);
 
-		if (method_exists($this, $method_name))
+		if (!method_exists($this, $method_name))
+		{
+			$result = $this->onBeforeGenericTask($task);
+		}
+		elseif (method_exists($this, $method_name))
 		{
 			$result = $this->$method_name();
+		}
+		else
+		{
+			$result = true;
+		}
 
-			if (!$result)
-			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
+		if (!$result)
+		{
+			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}
 
 		// Do not allow the display task to be directly called
@@ -2435,6 +2443,13 @@ class FOFController extends JObject
 		{
 			return JFactory::getUser()->authorise($area, $this->component);
 		}
+	}
+
+	protected function onBeforeGenericTask($task)
+	{
+		$privilege = $this->configProvider->get($this->component . '.views.' .
+			FOFInflector::singularize($this->view) . '.acl.' . $task, '');
+		return $this->checkACL($privilege);
 	}
 
 	/**
