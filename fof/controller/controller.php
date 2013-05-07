@@ -354,7 +354,8 @@ class FOFController extends JObject
 				$searchPath = $configProvider->get($config['option'] . '.views.' . FOFInflector::singularize($config['view']) . '.config.searchpath', null);
 				if ($searchPath)
 				{
-					array_unshift($searchPaths, $searchPath);
+					array_unshift($searchPaths, JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/' . $searchPath);
+					array_unshift($searchPaths, $basePath . '/components/' . $config['option'] . '/' . $searchPath);
 				}
 			}
 
@@ -523,7 +524,11 @@ class FOFController extends JObject
 		{
 			$basePath = $config['base_path'];
 		}
-		$basePath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.base_path', $basePath);
+		$altBasePath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.base_path', null);
+		if (!is_null($altBasePath))
+		{
+			$basePath = JPATH_SITE . '/' . $altBasePath;
+		}
 
 		$this->basePath = $basePath;
 
@@ -561,7 +566,12 @@ class FOFController extends JObject
 		}
 		else
 		{
-			$modelPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.model_path', $this->basePath . '/models');
+			$modelPath = $this->basePath . '/models';
+			$altModelPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.model_path', null);
+			if (!is_null($altModelPath))
+			{
+				$modelPath = $this->basePath . '/' . $altModelPath;
+			}
 			$this->addModelPath($modelPath, $this->model_prefix);
 		}
 
@@ -573,7 +583,12 @@ class FOFController extends JObject
 		}
 		else
 		{
-			$viewPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.view_path', $this->basePath . '/views');
+			$viewPath = $this->basePath . '/views';
+			$altViewPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.view_path', null);
+			if (!is_null($altViewPath))
+			{
+				$viewPath = $this->basePath . '/' . $altViewPath;
+			}
 			$this->setPath('view', $viewPath);
 		}
 
@@ -2343,7 +2358,7 @@ class FOFController extends JObject
 		$extraTemplatePath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.template_path', null);
 		if ($extraTemplatePath)
 		{
-			$config['template_path'][] = $extraTemplatePath;
+			array_unshift($config['template_path'], $basePath . '/components/' . $config['option'] . '/' . $extraTemplatePath);
 		}
 
 		if (!array_key_exists('helper_path', $config))
@@ -2357,7 +2372,7 @@ class FOFController extends JObject
 		$extraHelperPath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.helper_path', null);
 		if ($extraHelperPath)
 		{
-			$config['helper_path'][] = $extraHelperPath;
+			$config['helper_path'][] = $basePath . '/components/' . $config['option'] . '/' . $extraHelperPath;
 		}
 
 		$result = new $viewClass($config);
