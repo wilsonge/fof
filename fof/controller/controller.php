@@ -74,7 +74,7 @@ class FOFController extends JObject
 	 * values are:
 	 * 0	Disabled; no token checks are performed
 	 * 1	Enabled; token checks are always performed
-	 * 2	Only on HTML requests and backend; token checks are always performed in the back-end and in in the front-end only when format is not 'html'
+	 * 2	Only on HTML requests and backend; token checks are always performed in the back-end and in the front-end only when format is 'html'
 	 * 3	Only on back-end; token checks are performer only in the back-end
 	 *
 	 * @var    integer
@@ -2720,7 +2720,7 @@ class FOFController extends JObject
 			case 1:
 				break;
 
-			// Only back-end and non-HTML format
+			// Only back-end and HTML format
 			case 2:
 				if ($isCli)
 				{
