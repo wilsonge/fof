@@ -1343,27 +1343,14 @@ if (!defined('FOF_INCLUDED')) {
 
       <variablelist>
         <varlistentry>
-          <term>searchpath</term>
+          <term>autoRouting</term>
 
           <listitem>
-            <para>The path where Controller classes will be searched for. By
-            default it's the <filename>controllers</filename> directory inside
-            your component's directory.</para>
-
-            <para>In $config: Specify the absolute path.</para>
-
-            <para>In fof.xml: Specify a path relative to the component's root
-            directory. </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>layout</term>
-
-          <listitem>
-            <para>The default layout to use for this view. This is normally
-            determined automatically based on the task currently being
-            executed.</para>
+            <para>A bit mask which defines the automatic URL routing of
+            redirections. A value of 1 means that front-end redirections will
+            be put through Joomla!’s JRoute::_(). A value of 2 means that
+            back-end redirections will be put through Joomla!’s JRoute::_().
+            You can combine multiple values by adding them together.</para>
           </listitem>
         </varlistentry>
 
@@ -1381,53 +1368,22 @@ if (!defined('FOF_INCLUDED')) {
         </varlistentry>
 
         <varlistentry>
-          <term>default_task</term>
+          <term>cacheableTasks</term>
 
           <listitem>
-            <para>The task to execute if none is defined. The default value is
-            <option>display</option>.</para>
+            <para>A comma separated list of tasks which support Joomla!’s
+            caching.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>model_prefix</term>
+          <term>cid</term>
 
           <listitem>
-            <para>The naming prefix for the Model to be loaded by the
-            Controller. The default option is
-            <code><replaceable>Componentname</replaceable>Model</code> where
-            <replaceable>Componentname</replaceable> is the name of the
-            component without the com_ prefix.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>model_path</term>
-
-          <listitem>
-            <para>The path where the Controller will be looking for Model
-            class files. By default it's the <filename>models</filename>
-            directory of the component's directory.</para>
-
-            <para>In $config: Specify an absolute path.</para>
-
-            <para>In fof.xml: Specify a path relative to the component's
-            directory. </para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>view_path</term>
-
-          <listitem>
-            <para>The path where the Controller will be looking for View class
-            files. By default it's the <filename>views</filename> directory
-            inside your component's directory.</para>
-
-            <para>In $config: Specify an absolute path.</para>
-
-            <para>In fof.xml: Specify a path relative to the component's
-            directory.</para>
+            <para>Define a comma separated list of item IDs to limit the view
+            on. Normally this is empty. Only use when you want to limit a view
+            to very specific items. Only valid in the
+            <filename>fof.xml</filename> file.</para>
           </listitem>
         </varlistentry>
 
@@ -1462,11 +1418,138 @@ if (!defined('FOF_INCLUDED')) {
         </varlistentry>
 
         <varlistentry>
-          <term>viewName</term>
+          <term>default_task</term>
 
           <listitem>
-            <para>The name of the View class to load. Automatically defined
-            based on the component and view names.</para>
+            <para>The task to execute if none is defined. The default value is
+            <option>display</option>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>event_after_delete</term>
+
+          <listitem>
+            <para>The content plugin event to trigger after deleting the data.
+            Default: onContentAfterDelete</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>event_after_save</term>
+
+          <listitem>
+            <para>The content plugin event to trigger after saving the data.
+            Default: onContentAfterSave</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>event_before_delete</term>
+
+          <listitem>
+            <para>The content plugin event to trigger before deleting the
+            data. Default: onContentBeforeDelete</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>event_before_save</term>
+
+          <listitem>
+            <para>The content plugin event to trigger before saving the data.
+            Default: onContentBeforeSave</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>event_change_state</term>
+
+          <listitem>
+            <para>The content plugin event to trigger after changing the
+            published state of the data. Default: onContentChangeState</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>event_clean_cache</term>
+
+          <listitem>
+            <para>The content plugin event to trigger when cleaning cache.
+            There is no default value.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>helper_path</term>
+
+          <listitem>
+            <para>The path where the View will be looking for helper classes.
+            By default it's the <filename>helpers</filename> directory inside
+            your component's directory.</para>
+
+            <para>In $config: Specify an absolute path.</para>
+
+            <para>In fof.xml: Specify a path relative to the component's
+            directory.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>id</term>
+
+          <listitem>
+            <para>Define an item ID to limit the view on. Normally this is
+            empty. Only use when you want to limit a view to one single item.
+            Only valid in the <filename>fof.xml</filename> file.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>ignore_request</term>
+
+          <listitem>
+            <para>Set to 1 to prevent the Model's populateState() method from
+            running. By default the method is empty and does nothing, as the
+            Model is supposed to be decoupled from the request information,
+            having the Controller push state variables to it.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>layout</term>
+
+          <listitem>
+            <para>The default layout to use for this view. This is normally
+            determined automatically based on the task currently being
+            executed.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>model_path</term>
+
+          <listitem>
+            <para>The path where the Controller will be looking for Model
+            class files. By default it's the <filename>models</filename>
+            directory of the component's directory.</para>
+
+            <para>In $config: Specify an absolute path.</para>
+
+            <para>In fof.xml: Specify a path relative to the component's
+            directory.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>model_prefix</term>
+
+          <listitem>
+            <para>The naming prefix for the Model to be loaded by the
+            Controller. The default option is
+            <code><replaceable>Componentname</replaceable>Model</code> where
+            <replaceable>Componentname</replaceable> is the name of the
+            component without the com_ prefix.</para>
           </listitem>
         </varlistentry>
 
@@ -1480,23 +1563,64 @@ if (!defined('FOF_INCLUDED')) {
         </varlistentry>
 
         <varlistentry>
-          <term>cacheableTasks</term>
+          <term>searchpath</term>
 
           <listitem>
-            <para>A comma separated list of tasks which support Joomla!’s
-            caching.</para>
+            <para>The path where Controller classes will be searched for. By
+            default it's the <filename>controllers</filename> directory inside
+            your component's directory.</para>
+
+            <para>In $config: Specify the absolute path.</para>
+
+            <para>In fof.xml: Specify a path relative to the component's root
+            directory.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term>autoRouting</term>
+          <term>table_path</term>
 
           <listitem>
-            <para>A bit mask which defines the automatic URL routing of
-            redirections. A value of 1 means that front-end redirections will
-            be put through Joomla!’s JRoute::_(). A value of 2 means that
-            back-end redirections will be put through Joomla!’s JRoute::_().
-            You can combine multiple values by adding them together.</para>
+            <para>The path where the Model will be looking for table classes.
+            By default it's the <filename>tables</filename> directory inside
+            your component's directory.</para>
+
+            <para>In $config: Specify an absolute path.</para>
+
+            <para>In fof.xml: Specify a path relative to the component's
+            directory.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>table</term>
+
+          <listitem>
+            <para>Set the name of the table class the Model will use. Please
+            note that the the component name is added to this name
+            automatically. For example, given a component com_example and a
+            table setting of <option>foobar</option> the actual table class
+            which will be used will be <code>ExampleTableFoobar</code>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>tbl</term>
+
+          <listitem>
+            <para>The name of the database table to use in the table class of
+            this view. It is in the format of
+            <database>#__tablename</database>, e.g. #__example_items</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>tbl_key</term>
+
+          <listitem>
+            <para>The name of the key field of the database table to use in
+            the table class of this view. It is in the format of
+            component_view_id, e.g. example_item_id.</para>
           </listitem>
         </varlistentry>
 
@@ -1517,17 +1641,26 @@ if (!defined('FOF_INCLUDED')) {
         </varlistentry>
 
         <varlistentry>
-          <term>helper_path</term>
+          <term>view_path</term>
 
           <listitem>
-            <para>The path where the View will be looking for helper classes.
-            By default it's the <filename>helpers</filename> directory inside
-            your component's directory.</para>
+            <para>The path where the Controller will be looking for View class
+            files. By default it's the <filename>views</filename> directory
+            inside your component's directory.</para>
 
             <para>In $config: Specify an absolute path.</para>
 
             <para>In fof.xml: Specify a path relative to the component's
             directory.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>viewName</term>
+
+          <listitem>
+            <para>The name of the View class to load. Automatically defined
+            based on the component and view names.</para>
           </listitem>
         </varlistentry>
       </variablelist>
