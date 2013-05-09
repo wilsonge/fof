@@ -644,30 +644,295 @@ if (!defined('FOF_INCLUDED')) {
 
         <bridgehead>What FOFDispatcher does</bridgehead>
 
-        <para/>
+        <para>FOFDispatcher's main concern is routing your component. It takes
+        a look at the input data and decides which Controller to instantiate
+        and, if there is no task, figure out which task you meant to use. Even
+        though it's commonly used with the request data, it can also operate
+        on arbitrary input data passed to it through the
+        <varname>$config['input']</varname> variable. This variable can be a
+        simple hash array (array of key/value pairs) or a FOFInput object. In
+        any case it will be converted to a FOFInput object and passed on to
+        the other classes (Controller, Model, Table, View) <emphasis>by
+        reference</emphasis> so that they all operate on the same set of
+        data.</para>
 
         <bridgehead>Convention over Configuration</bridgehead>
 
-        <para/>
+        <para>The first thing you should know about is the naming convention
+        used. All Dispatchers are named after the component (without the com_
+        prefix) and the word Dispatcher. For example, com_foobar's dispatcher
+        is called FoobarDispatcher. If you do not provide a specialised
+        dispatcher class, FOF will provide you with an automatically generated
+        one.</para>
+
+        <para>You should be aware how the view (therefore the Controller) to
+        be used is selected when there is no view parameter defined in the
+        input data. FOF will use the <varname>defaultView</varname> variable
+        which, by default, contains the value <option>cpanel</option>. If you
+        have defined a <parameter>default_view</parameter> parameter in
+        <filename>fof.xml</filename> it will use that value instead.</para>
+
+        <para>Another thing you should know is how the task is selected when
+        you don't specify one. Following the RESTful conventions, the task is
+        chosen based on the view name and HTTP verb used in the request. The
+        following possibilities are:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>a DELETE request calls the delete task, deleting a
+            record.</para>
+          </listitem>
+
+          <listitem>
+            <para>a POST or PUT request will issue the save task, saving or
+            creating a record. Due to the poor support of the PUT HTTP verb in
+            PHP we chose to map it to POST. If a new record is created, FOF
+            will by default return a 201 Created HTTP header, whereas when a
+            record is updated it will return a 200 OK HTTP header.</para>
+          </listitem>
+
+          <listitem>
+            <para>a GET request to a plural view (e.g. items) results in the
+            browse task being called</para>
+          </listitem>
+
+          <listitem>
+            <para>a GET request to a singular view (e.g item) in the back-end
+            results in the edit task being called, as long as you have a
+            non-empty, non-zero input variable called id.</para>
+          </listitem>
+
+          <listitem>
+            <para>a GET request to a singular view (e.g item) in the front-end
+            results in the read task being called, as long as you have a
+            non-empty, non-zero input variable called id.</para>
+          </listitem>
+
+          <listitem>
+            <para>a GET request to a singular view (e.g item) in the front-end
+            results in the add task being called, as long as you have an empty
+            or zero input variable called id or if you skip it
+            entirely.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Though technically not part of the Dispatcher, the view class to
+        be instantiated is also defined by the format input parameter. If none
+        is defined, <option>html</option> is assumed, creating an instance of
+        FOFViewHtml. FOF automatically supports two more formats you should
+        know about, <option>json</option> and <option>csv</option>.</para>
 
         <bridgehead>Specialising FOFDispatcher</bridgehead>
 
-        <para/>
+        <para>Create a file named <filename>dispatcher.php</filename> in your
+        component's base directory. There is a different dispatcher for the
+        front- and back-end section of your component.</para>
+
+        <para>See the methods below for more information about what you can
+        do.</para>
 
         <bridgehead>FOFDispatcher methods you should know about</bridgehead>
 
-        <para/>
+        <para><synopsis>public static function &amp;getTmpInstance($option = null, $view = null, $config = array())</synopsis></para>
+
+        <para>Return an instance of a dispatcher object. The parameters
+        are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>$option</term>
+
+            <listitem>
+              <para>Required. The name of the component, e.g.
+              com_example.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>$view</term>
+
+            <listitem>
+              <para>Optional. Which view to instantiate. Use null to let the
+              Dispatcher decide.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>$config</term>
+
+            <listitem>
+              <para>Optional. The array of configuration variables, discussed
+              in the next chapter of this documentation.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para><synopsis>public function onBeforeDispatch()</synopsis></para>
+
+        <para>Runs before the dispatcher routes anything. Return true to allow
+        the dispatcher to run. Return false to have the dispatcher raise an
+        exception with code 403, usually resulting in a 403 Forbidden HTTP
+        header being emitted.</para>
+
+        <synopsis>public function onBeforeDispatchCLI()</synopsis>
+
+        <para>Runs before the dispatcher routes anything when running under
+        the CLI. Return true to allow the dispatcher to run. Return false to
+        have the dispatcher raise an exception with code 403, usually
+        resulting in a 403 Forbidden HTTP header being emitted.</para>
+
+        <synopsis>public function onAfterDispatch()</synopsis>
+
+        <para>Runs after the dispatcher routes everything and before returning
+        control to the caller. Return true to allow the dispatcher to complete
+        running. Return false to have the dispatcher raise an exception with
+        code 403, usually resulting in a 403 Forbidden HTTP header being
+        emitted.</para>
+
+        <para><synopsis>public static function isCliAdmin()</synopsis></para>
+
+        <para>Returns an array with two boolean values. The first one is true
+        if the component is running under CLI mode. The second one is true if
+        the component is running under the Joomla! administrator. This is used
+        throughout FOF to determine whether the component is running inside
+        the Joomla! front-end, back-end or a CLI app.</para>
 
         <section>
           <title>Calling a Dispatcher from anywhere (a.k.a. HMVC)</title>
 
-          <para/>
+          <para>You can call a dispatcher from anywhere in Joomla! and let it
+          run the component, rendering itself. This is useful in master/detail
+          views, creating modules rendering a component's view, plugins
+          injecting a component's view to an article... The possibilities are
+          endless.</para>
+
+          <para>The main concept is that you need to instantiate the
+          Dispatcher with the data you need and tell it to Dispatch itself.
+          Typically, this can be accomplished like this:</para>
+
+          <programlisting>$config = array(
+  'input' =&gt; array(
+    'option' =&gt; 'com_example',
+    'view' =&gt; 'items',
+    'layout' =&gt; 'funky',
+    'limit' =&gt; 10,
+    'limitstart' =&gt; 42,
+  )
+);
+FOFDispatcher::getTmpInstance('com_example', 'items', $config)-&gt;dispatch();</programlisting>
+
+          <para>Do note that it's always a good idea to put the last line
+          inside a try/catch block, unless you really want to let a possible
+          exception bubble up to the application.</para>
         </section>
 
         <section>
           <title>Web services</title>
 
-          <para/>
+          <para>FOF is currently offering web services, but it's not entirely
+          RESTful (it lacks hypermedia support). Based on what you have
+          already learned you probably realised that you can use the HTTP
+          verb, and the view and format input variables to address everything
+          through web services. For example, something like
+          http://www.example.com/index.php?option=com_example&amp;view=items&amp;format=json
+          would return a nice JSON-encoded (and paginated) list of records in
+          the #__example_items table. Without writing any code. Not bad,
+          huh?</para>
+
+          <para>This is all fine and dandy, but what about the need to
+          authenticate the user before accessing data? Let's say that we have
+          a doctor's website with an FOF-based component handling his
+          appointments. We don't want everyone to see all patients'
+          information but we'd definitely want the doctor to do so and each
+          patient to have access to her own appointments. We can easily build
+          that feature in our component using the Model's post-processing
+          feature (more on that later), but in the end of the day we need to
+          have a logged in user to figure out who can see what.</para>
+
+          <para>Joomla! has a bad habit, like all web apps: it normally needs
+          cookies to know if you're logged in or not. This isn't a very good
+          idea. In order to pull your appointments you'd need at least three
+          HTTP requests: one to get the login form (and the all-necessary form
+          token), one to login (and get your session cookie) and one to pull
+          the information. Never mind it's not a RESTful approach, this is an
+          utter hassle to begin with! There has to be a better way. And there
+          is.</para>
+
+          <para>FOF supports five different transparent authentication
+          methods:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>HTTP Basic Authentication using a username and password
+              pair in plain text (a bad idea unless you're using HTTPS)</para>
+            </listitem>
+
+            <listitem>
+              <para>Plaintext, JSON-encoded username and password pair passed
+              in the _fofauthentication query string parameter (a bad idea
+              unless you're using HTTPS)</para>
+            </listitem>
+
+            <listitem>
+              <para>Plaintext username and password in the
+              _fofauthentication_username and _fofauthentication_username
+              query string parameters (a bad idea unless you're using
+              HTTPS)</para>
+            </listitem>
+
+            <listitem>
+              <para>Encrypted information protected with a TOTP passed in the
+              _fofauthentication query string parameter</para>
+            </listitem>
+
+            <listitem>
+              <para>HTTP Basic Authentication using encrypted information
+              protected with a TOTP (the username must be "_fof_auth")</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>FIrst, what does "transparent" mean? Once the Dispatcher sees
+          any of this data and as long as the corresponding authentication
+          method is enabled it will try to log you in. If it succeeds, Joomla!
+          now knows you are logged in without sending you a cookie. The
+          Dispatcher will then happily route your component and just before it
+          returns it will log you out. You are being logged in and out of the
+          Joomla! site transparently, without the remote end having to know
+          that the web service is implemented using Joomla! and without having
+          to mess around with cookies. You're welcome!</para>
+
+          <para>Now, you might be wondering, what the heck is a TOTP and why
+          is it a good thing to have? TOTP stands for Time-based One Time
+          Password. It's the same stuff Google uses in its two-step
+          authentication. Both parties (the component and the remote client)
+          know a secret key. With this key and the current date a time a
+          unique six digit password is created, called a TOTP. This is used,
+          together with some admittedly weakly implemented AES-128
+          cryptography, to encrypt your username and password. FOFDispatcher
+          will decode it using the TOTP it generates itself. Therefore even
+          though a symmetrical encryption algorithm is used, the encryption
+          key is not exchanged between the two parties during the request. The
+          actual secret key can be made known to the remote client through a
+          secure channel – just think about how Google had you set up Google
+          Authenticator on your phone.</para>
+
+          <para>I know what you're thinking. Replay attacks. What if an
+          attacker sits between the FOF component and the remote client? The
+          truth is that they can't accomplish much, for two reasons. First
+          it's the ephemeral nature of a TOTP. It is only valid for a limited
+          amount of time, 6 seconds by default. The attacker needs to be
+          really darn fast – not that it's hard in the age of the WiFi
+          Pineapple. I know, I know, 6 seconds is plenty for a fast attacker
+          to get back the data we fetched. How do we protect it? If you use
+          the encrypted authentication method all of your data is
+          automatically encrypted using the same key. Without the key, the
+          data is garbled. This is enough to deter simple attacks but of
+          course won't hold up a lot against a determined and resourceful
+          opponent. Use HTTPS instead. This kind of encryption implemented in
+          FOF is designed as a poor man's substitute for proper encryption,
+          not a drop-in replacement.</para>
+
+          <para>@TODO Example of encrypted authentication</para>
         </section>
       </section>
 
