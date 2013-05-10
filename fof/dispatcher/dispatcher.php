@@ -217,7 +217,18 @@ class FOFDispatcher extends JObject
 		$this->defaultView = $configProvider->get($this->component . '.dispatcher.default_view', $this->defaultView);
 
 		// Get the default values for the view name
-		$this->view = $this->input->getCmd('view', $this->defaultView);
+		$this->view = $this->input->getCmd('view', null);
+
+		if (empty($this->view))
+		{
+			// Do we have a task formatted as controller.task?
+			$task = $this->input->getCmd('task', '');
+			if (!empty($task) && (strstr($task, '.') !== false))
+			{
+				list($this->view, $task) = explode('.', $task, 2);
+				$this->input->set('task', $task);
+			}
+		}
 
 		if (empty($this->view))
 		{

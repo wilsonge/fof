@@ -74,7 +74,7 @@ class FOFController extends JObject
 	 * values are:
 	 * 0	Disabled; no token checks are performed
 	 * 1	Enabled; token checks are always performed
-	 * 2	Only on HTML requests and backend; token checks are always performed in the back-end and in in the front-end only when format is not 'html'
+	 * 2	Only on HTML requests and backend; token checks are always performed in the back-end and in the front-end only when format is 'html'
 	 * 3	Only on back-end; token checks are performer only in the back-end
 	 *
 	 * @var    integer
@@ -354,7 +354,8 @@ class FOFController extends JObject
 				$searchPath = $configProvider->get($config['option'] . '.views.' . FOFInflector::singularize($config['view']) . '.config.searchpath', null);
 				if ($searchPath)
 				{
-					array_unshift($searchPaths, $searchPath);
+					array_unshift($searchPaths, JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/' . $searchPath);
+					array_unshift($searchPaths, $basePath . '/components/' . $config['option'] . '/' . $searchPath);
 				}
 			}
 
@@ -523,7 +524,11 @@ class FOFController extends JObject
 		{
 			$basePath = $config['base_path'];
 		}
-		$basePath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.base_path', $basePath);
+		$altBasePath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.base_path', null);
+		if (!is_null($altBasePath))
+		{
+			$basePath = JPATH_SITE . '/' . $altBasePath;
+		}
 
 		$this->basePath = $basePath;
 
@@ -561,7 +566,12 @@ class FOFController extends JObject
 		}
 		else
 		{
-			$modelPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.model_path', $this->basePath . '/models');
+			$modelPath = $this->basePath . '/models';
+			$altModelPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.model_path', null);
+			if (!is_null($altModelPath))
+			{
+				$modelPath = $this->basePath . '/' . $altModelPath;
+			}
 			$this->addModelPath($modelPath, $this->model_prefix);
 		}
 
@@ -573,7 +583,12 @@ class FOFController extends JObject
 		}
 		else
 		{
-			$viewPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.view_path', $this->basePath . '/views');
+			$viewPath = $this->basePath . '/views';
+			$altViewPath = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.view_path', null);
+			if (!is_null($altViewPath))
+			{
+				$viewPath = $this->basePath . '/' . $altViewPath;
+			}
 			$this->setPath('view', $viewPath);
 		}
 
@@ -811,14 +826,22 @@ class FOFController extends JObject
 
 		$method_name = 'onBefore' . ucfirst($task);
 
-		if (method_exists($this, $method_name))
+		if (!method_exists($this, $method_name))
+		{
+			$result = $this->onBeforeGenericTask($task);
+		}
+		elseif (method_exists($this, $method_name))
 		{
 			$result = $this->$method_name();
+		}
+		else
+		{
+			$result = true;
+		}
 
-			if (!$result)
-			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
+		if (!$result)
+		{
+			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}
 
 		// Do not allow the display task to be directly called
@@ -2335,7 +2358,7 @@ class FOFController extends JObject
 		$extraTemplatePath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.template_path', null);
 		if ($extraTemplatePath)
 		{
-			$config['template_path'][] = $extraTemplatePath;
+			array_unshift($config['template_path'], $basePath . '/components/' . $config['option'] . '/' . $extraTemplatePath);
 		}
 
 		if (!array_key_exists('helper_path', $config))
@@ -2349,7 +2372,7 @@ class FOFController extends JObject
 		$extraHelperPath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.helper_path', null);
 		if ($extraHelperPath)
 		{
-			$config['helper_path'][] = $extraHelperPath;
+			$config['helper_path'][] = $basePath . '/components/' . $config['option'] . '/' . $extraHelperPath;
 		}
 
 		$result = new $viewClass($config);
@@ -2435,6 +2458,13 @@ class FOFController extends JObject
 		{
 			return JFactory::getUser()->authorise($area, $this->component);
 		}
+	}
+
+	protected function onBeforeGenericTask($task)
+	{
+		$privilege = $this->configProvider->get($this->component . '.views.' .
+			FOFInflector::singularize($this->view) . '.acl.' . $task, '');
+		return $this->checkACL($privilege);
 	}
 
 	/**
@@ -2690,7 +2720,7 @@ class FOFController extends JObject
 			case 1:
 				break;
 
-			// Only back-end and non-HTML format
+			// Only back-end and HTML format
 			case 2:
 				if ($isCli)
 				{

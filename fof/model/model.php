@@ -569,7 +569,12 @@ class FOFModel extends JObject
 		else
 		{
 			$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/tables';
-			$path = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table_path', $path);
+			$altPath = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table_path', null);
+			if ($altPath)
+			{
+				$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/' . $altPath;
+			}
+
 			$this->addTablePath($path);
 		}
 

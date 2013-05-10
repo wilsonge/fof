@@ -197,6 +197,9 @@ class FOFTable extends JObject
 		$type       = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
 		$tableClass = $prefix . ucfirst($type);
 
+		$configProvider = new FOFConfigProvider;
+		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
+
 		if (!array_key_exists($tableClass, $instances))
 		{
 			if (!class_exists($tableClass))
@@ -222,6 +225,12 @@ class FOFTable extends JObject
 					array_unshift($searchPaths, $config['tablepath']);
 				}
 
+				$altPath = $configProvider->get($configProviderKey . 'table_path', null);
+				if ($altPath)
+				{
+					array_unshift($searchPaths, JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $altPath);
+				}
+
 				JLoader::import('joomla.filesystem.path');
 				$path = JPath::find(
 					$searchPaths, strtolower($type) . '.php'
@@ -245,10 +254,22 @@ class FOFTable extends JObject
 				$config['tbl'] = strtolower('#__' . $tbl_common . strtolower(FOFInflector::pluralize($type)));
 			}
 
+			$altTbl = $configProvider->get($configProviderKey . 'tbl', null);
+			if ($altTbl)
+			{
+				$config['tbl'] = $altTbl;
+			}
+
 			if (!array_key_exists('tbl_key', $config))
 			{
 				$keyName           = FOFInflector::singularize($type);
 				$config['tbl_key'] = strtolower($tbl_common . $keyName . '_id');
+			}
+
+			$altTblKey = $configProvider->get($configProviderKey . 'tbl_key', null);
+			if ($altTblKey)
+			{
+				$config['tbl_key'] = $altTblKey;
 			}
 
 			if (!array_key_exists('db', $config))

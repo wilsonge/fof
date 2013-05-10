@@ -459,9 +459,12 @@ ENDJS;
 					$tdwidth = '';
 				}
 
-				$header_html .= "\t\t\t\t\t<th $tdwidth>" . PHP_EOL;
-				$header_html .= "\t\t\t\t\t\t" . $header;
-				$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
+				if(!empty($header))
+				{
+					$header_html .= "\t\t\t\t\t<th $tdwidth>" . PHP_EOL;
+					$header_html .= "\t\t\t\t\t\t" . $header;
+					$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
+				}
 
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
