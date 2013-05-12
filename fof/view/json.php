@@ -26,6 +26,16 @@ class FOFViewJson extends FOFViewHtml
 	 */
 	public $useHypermedia = false;
 
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+
+		if (isset($config['use_hypermedia']))
+		{
+			$this->useHypermedia = (bool)$config['use_hypermedia'];
+		}
+	}
+
 	protected function onDisplay($tpl = null)
 	{
 		// Load the model
@@ -35,7 +45,14 @@ class FOFViewJson extends FOFViewHtml
 		$this->assignRef('items', $items);
 
 		$document = JFactory::getDocument();
-		$document->setMimeEncoding('application/json');
+		if ($this->useHypermedia)
+		{
+			$document->setMimeEncoding('application/hal+json');
+		}
+		else
+		{
+			$document->setMimeEncoding('application/json');
+		}
 
 		if (is_null($tpl))
 		{
@@ -114,7 +131,14 @@ class FOFViewJson extends FOFViewHtml
 		$this->assign('item', $item);
 
 		$document = JFactory::getDocument();
-		$document->setMimeEncoding('application/json');
+		if ($this->useHypermedia)
+		{
+			$document->setMimeEncoding('application/hal+json');
+		}
+		else
+		{
+			$document->setMimeEncoding('application/json');
+		}
 
 		if (is_null($tpl))
 		{

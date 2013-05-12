@@ -2391,6 +2391,12 @@ class FOFController extends JObject
 			$config['helper_path'][] = $basePath . '/components/' . $config['option'] . '/' . $extraHelperPath;
 		}
 
+		// Set the use_hypermedia flag in $config if it's not already set
+		if (!isset($config['use_hypermedia']))
+		{
+			$config['use_hypermedia'] = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.use_hypermedia', $config['use_hypermedia']);
+		}
+
 		$result = new $viewClass($config);
 
 		return $result;
