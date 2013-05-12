@@ -1839,8 +1839,12 @@ class FOFController extends JObject
 		$id = $model->getId();
 
 		$data = $this->input->getData();
-		$this->onBeforeApplySave($data);
-		$status = $model->save($data);
+        $status = $this->onBeforeApplySave($data);
+        // close #20 ?
+        if ($status)
+        {
+            $status = $model->save($data);
+        }
 
 		if ($status && ($id != 0))
 		{
