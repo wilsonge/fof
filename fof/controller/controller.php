@@ -1839,7 +1839,10 @@ class FOFController extends JObject
 		$id = $model->getId();
 
 		$data = $this->input->getData();
-		$this->onBeforeApplySave($data);
+		if (!$this->onBeforeApplySave($data))
+		{
+			return false;
+		}
 		$status = $model->save($data);
 
 		if ($status && ($id != 0))
@@ -2499,7 +2502,7 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeApplySave(&$data)
 	{
-		return $data;
+		return true;
 	}
 
 	/**
