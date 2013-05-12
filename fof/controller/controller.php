@@ -2397,7 +2397,7 @@ class FOFController extends JObject
 		// Set the use_hypermedia flag in $config if it's not already set
 		if (!isset($config['use_hypermedia']))
 		{
-			$config['use_hypermedia'] = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.use_hypermedia', $config['use_hypermedia']);
+			$config['use_hypermedia'] = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.use_hypermedia', false);
 		}
 
 		$result = new $viewClass($config);
