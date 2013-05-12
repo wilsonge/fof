@@ -3,7 +3,7 @@ nbproject/
 fof/include.php
 fof/version.txt
 strapper/version.txt
-release/*
+release/*.zip
 .buildpath
 .settings/
 .project
@@ -13,8 +13,7 @@ release/*
 tests/unit/config.php
 refs/heads/staging
 /build/build.properties
-/build/templates/release.json
+/build/templates/release*.json
 /tests/config.php
 
-/documentation/fof-developers-guide.xml~
-/documentation/guide.xml~
+/documentation/*.xml~

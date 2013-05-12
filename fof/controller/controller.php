@@ -359,10 +359,26 @@ class FOFController extends JObject
 				}
 			}
 
-			// Try to find the path to this file
-			$path = JPath::find(
-					$searchPaths, strtolower($suffix) . '.php'
-			);
+			// Try to find the path to this file. First try to find the
+			// format-specific controller file, e.g. foobar.json.php for
+			// format=json, then the regular one-size-fits-all controller
+
+			$format = $input->getCmd('format', 'html');
+			$path = null;
+
+			if (!empty($format))
+			{
+				$path = JPath::find(
+					$searchPaths, strtolower($suffix) . '.' . strtolower($format) . '.php'
+				);
+			}
+
+			if (!$path)
+			{
+				$path = JPath::find(
+						$searchPaths, strtolower($suffix) . '.php'
+				);
+			}
 
 			// The path is found. Load the file and make sure the expected class name exists.
 
