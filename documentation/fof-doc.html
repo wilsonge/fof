@@ -1,0 +1,1030 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>FOF Developer's Guide</title><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="book" title="FOF Developer's Guide"><div class="titlepage"><div><div><h1 class="title"><a name="idp21280"></a>FOF Developer's Guide</h1></div><div><div class="author"><h3 class="author"><span class="firstname">Nicholas</span> <span class="surname">Dionysopoulos</span>, <span class="lineage">K.</span></h3><div class="affiliation"><span class="orgname">Akeeba Ltd<br></span></div></div></div><div><div class="legalnotice" title="Legal Notice"><a name="idp11088"></a><p>Permission is granted to copy, distribute and/or modify this
+      document under the terms of the GNU Free Documentation License, Version
+      1.3 or any later version published by the Free Software Foundation; with
+      no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+      copy of the license can be found on-line at <a class="ulink" href="http://www.gnu.org/licenses/fdl.html" target="_top">http://www.gnu.org/licenses/fdl.html</a>.</p></div></div><div><p class="pubdate">May 2013</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="chapter"><a href="#idp2880">1. Introduction</a></span></dt><dd><dl><dt><span class="section"><a href="#idp18608">What is FOF?</a></span></dt><dt><span class="section"><a href="#idp25696">Free Software means collaboration</a></span></dt><dt><span class="section"><a href="#idp32640">Preface to this documentation</a></span></dt><dt><span class="section"><a href="#idp40496">Key features</a></span></dt><dt><span class="section"><a href="#idp40624">Getting started with FOF</a></span></dt><dd><dl><dt><span class="section"><a href="#idp53728">Download and install FOF</a></span></dt><dt><span class="section"><a href="#idp57472">Using it in your extension</a></span></dt><dt><span class="section"><a href="#idp60496">Installing FOF with your component</a></span></dt><dt><span class="section"><a href="#idp65600">Sample applications</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="#idp69040">2. The big picture</a></span></dt><dd><dl><dt><span class="section"><a href="#idp69680">Overview of a component</a></span></dt><dt><span class="section"><a href="#idp69936">Diving into the FOF classes</a></span></dt><dd><dl><dt><span class="section"><a href="#idp86048">FOFDispatcher</a></span></dt><dt><span class="section"><a href="#idp86176">FOFController</a></span></dt><dt><span class="section"><a href="#idp136352">FOFModel</a></span></dt><dt><span class="section"><a href="#idp139712">FOFTable</a></span></dt><dt><span class="section"><a href="#idp143072">FOFView</a></span></dt><dt><span class="section"><a href="#idp143328">FOFToolbar</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="#idp155776">3. XML Forms</a></span></dt><dd><dl><dt><span class="section"><a href="#idp156832">The different form types</a></span></dt><dd><dl><dt><span class="section"><a href="#idp157888">Browse forms</a></span></dt><dt><span class="section"><a href="#idp158912">Read forms</a></span></dt><dt><span class="section"><a href="#idp159936">Edit forms</a></span></dt></dl></dd><dt><span class="section"><a href="#idp160960">Header field types reference</a></span></dt><dd><dl><dt><span class="section"><a href="#idp162176">accesslevel</a></span></dt><dt><span class="section"><a href="#idp163200">field</a></span></dt><dt><span class="section"><a href="#idp164224">fieldsearchable</a></span></dt><dt><span class="section"><a href="#idp165248">fieldselectable</a></span></dt><dt><span class="section"><a href="#idp166272">fieldsql</a></span></dt><dt><span class="section"><a href="#idp167296">filtersearchable</a></span></dt><dt><span class="section"><a href="#idp168320">filterselectable</a></span></dt><dt><span class="section"><a href="#idp169344">filtersql</a></span></dt><dt><span class="section"><a href="#idp170368">language</a></span></dt><dt><span class="section"><a href="#idp171392">ordering</a></span></dt><dt><span class="section"><a href="#idp172416">published</a></span></dt><dt><span class="section"><a href="#idp173440">rowselect</a></span></dt></dl></dd><dt><span class="section"><a href="#idp161216">Form field types reference</a></span></dt><dd><dl><dt><span class="section"><a href="#idp175904">accesslevel</a></span></dt><dt><span class="section"><a href="#idp176928">button</a></span></dt><dt><span class="section"><a href="#idp177952">cachehandler</a></span></dt><dt><span class="section"><a href="#idp178976">calendar</a></span></dt><dt><span class="section"><a href="#idp180000">captcha</a></span></dt><dt><span class="section"><a href="#idp181024">checkbox</a></span></dt><dt><span class="section"><a href="#idp182048">editor</a></span></dt><dt><span class="section"><a href="#idp183072">email</a></span></dt><dt><span class="section"><a href="#idp184096">groupedlist</a></span></dt><dt><span class="section"><a href="#idp185120">hidden</a></span></dt><dt><span class="section"><a href="#idp186144">image</a></span></dt><dt><span class="section"><a href="#idp187168">imagelist</a></span></dt><dt><span class="section"><a href="#idp188192">integer</a></span></dt><dt><span class="section"><a href="#idp189216">language</a></span></dt><dt><span class="section"><a href="#idp190240">list</a></span></dt><dt><span class="section"><a href="#idp191264">media</a></span></dt><dt><span class="section"><a href="#idp192288">model</a></span></dt><dt><span class="section"><a href="#idp193312">ordering</a></span></dt><dt><span class="section"><a href="#idp194336">password</a></span></dt><dt><span class="section"><a href="#idp195360">plugins</a></span></dt><dt><span class="section"><a href="#idp196384">published</a></span></dt><dt><span class="section"><a href="#idp197408">radio</a></span></dt><dt><span class="section"><a href="#idp198432">selectrow</a></span></dt><dt><span class="section"><a href="#idp199456">sessionhandler</a></span></dt><dt><span class="section"><a href="#idp200480">spacer</a></span></dt><dt><span class="section"><a href="#idp201504">sql</a></span></dt><dt><span class="section"><a href="#idp202528">tel</a></span></dt><dt><span class="section"><a href="#idp203552">text</a></span></dt><dt><span class="section"><a href="#idp204576">textarea</a></span></dt><dt><span class="section"><a href="#idp205600">timezone</a></span></dt><dt><span class="section"><a href="#idp206624">url</a></span></dt><dt><span class="section"><a href="#idp207648">user</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="#idp208800">4. Configuring the MVC and associated classes</a></span></dt><dd><dl><dt><span class="section"><a href="#idp212208">What is the <code class="code">$config</code> array?</a></span></dt><dt><span class="section"><a href="#idp214896">What&#8217;s the deal with the <code class="filename">fof.xml</code>
+      file?</a></span></dt><dd><dl><dt><span class="section"><a href="#idp219632">A sample <code class="filename">fof.xml</code> file</a></span></dt><dt><span class="section"><a href="#idp223872">Dispatcher settings</a></span></dt><dt><span class="section"><a href="#idp229152">View settings</a></span></dt></dl></dd><dt><span class="section"><a href="#idp247632">The configuration settings</a></span></dt></dl></dd><dt><span class="appendix"><a href="#gnu-fdl">A. GNU Free Documentation License</a></span></dt></dl></div><div class="chapter" title="Chapter 1. Introduction"><div class="titlepage"><div><div><h2 class="title"><a name="idp2880"></a>Chapter 1. Introduction</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#idp18608">What is FOF?</a></span></dt><dt><span class="section"><a href="#idp25696">Free Software means collaboration</a></span></dt><dt><span class="section"><a href="#idp32640">Preface to this documentation</a></span></dt><dt><span class="section"><a href="#idp40496">Key features</a></span></dt><dt><span class="section"><a href="#idp40624">Getting started with FOF</a></span></dt><dd><dl><dt><span class="section"><a href="#idp53728">Download and install FOF</a></span></dt><dt><span class="section"><a href="#idp57472">Using it in your extension</a></span></dt><dt><span class="section"><a href="#idp60496">Installing FOF with your component</a></span></dt><dt><span class="section"><a href="#idp65600">Sample applications</a></span></dt></dl></dd></dl></div><div class="section" title="What is FOF?"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp18608"></a>What is FOF?</h2></div></div></div><p><span class="productname">FOF</span> (Framework on Framework) is a rapid
+      application development framework for <span class="trademark">Joomla!</span>&#8482;.
+      Unlike other frameworks it is not standalone. It extends the
+      <span class="trademark">Joomla!</span>&#8482; Platform instead of replacing it,
+      featuring its own forked and extended version of the MVC classes,
+      keeping a strong semblance to the existing
+      <span class="trademark">Joomla!</span>&#8482; MVC API. This means that you don't have
+      to relearn writing <span class="trademark">Joomla!</span>&#8482; extensions. Instead,
+      you can start being productive from the first day you're using it. Our
+      goal is to always support the officially supported LTS versions of
+      <span class="trademark">Joomla!</span>&#8482; and not break backwards compatibility
+      without a clear deprecation and migration path.</p><p><span class="productname">FOF</span> is currently used by Akeeba
+      products such as <span class="productname">Akeeba Backup</span>,
+      <span class="productname">Admin Tools</span>, <span class="productname">Akeeba
+      Subscriptions</span>, <span class="productname">Akeeba Ticket
+      System</span> and <span class="productname">Akeeba DocImport</span>
+      components.</p></div><div class="section" title="Free Software means collaboration"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp25696"></a>Free Software means collaboration</h2></div></div></div><p>The reason of existence of <acronym class="acronym">FOSS</acronym> (Free and Open
+      Source Software) is collaboration between developers.
+      <span class="productname">FOF</span> is no exception; it exists because and
+      for the community of <span class="trademark">Joomla!</span>&#8482; developers. It is
+      provided free of charge and with all of the freedoms of the GPL for you
+      to benefit. And in true Free Software spirit, the community aspect is
+      very strong. Participating is easy and fun.</p><p>If you want to discuss <span class="productname">FOF</span> there is
+      <a class="ulink" href="https://groups.google.com/forum/?hl=en&amp;fromgroups#!forum/frameworkonframework" target="_top">a
+      Google Groups mailing list</a>. This is a peer discussion group where
+      developers working with <span class="productname">FOF</span> can freely
+      discuss.</p><p>If you have a feature proposal or have found a bug, but you're not
+      sure how to code it yourself, please report it on the list.</p><p>If you have a patch feel free to fork <a class="ulink" href="https://github.com/akeeba/fof" target="_top">this project on GitHub</a>
+      (you only need a free account to do that) and send a pull request.
+      Please remember to describe what you intended to achieve to help me
+      review your code faster.</p><p>If you've found a cool hack (in the benign sense of the word, not
+      the malicious one...), something missing from the documentation or have
+      a tip which can help other developers feel free to edit the Wiki. We're
+      all grown-ups and professionals, I believe there is no need of policing
+      the wiki edits. If you're unsure about whether a wiki edit is
+      appropriate, please ask on the list.</p></div><div class="section" title="Preface to this documentation"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp32640"></a>Preface to this documentation</h2></div></div></div><p><span class="productname">FOF</span> is a rapid application development
+      framework for the Joomla! CMS. Instead of trying to completely replace
+      <span class="trademark">Joomla!</span>&#8482;&#8217;s own API (formerly known as the
+      <span class="trademark">Joomla!</span>&#8482; Platform) it builds upon it and extends
+      it both in scope and features. In the end of the day it enables
+      agony-free extension development for the Joomla! CMS.</p><p>In order to exploit the time-saving capabilities of the
+      <span class="productname">FOF</span> framework to the maximum you need to
+      understand how it's organized, the conventions used and how its
+      different pieces work together. This documentation attempts to provide
+      you with this knowledge.</p><p>As with every piece of documentation we had to answer two big
+      questions: where do we start and how do we structure the content. The
+      first question was easy to answer. Having given the presentation of the
+      <span class="productname">FOF</span> framework countless times we have
+      developed an intuitive grasp of how to start presenting it: from the
+      abstract to the concrete.</p><p>The second question was harder to answer. Do we write a dry
+      reference to the framework or more of a story-telling documentation
+      which builds up its reader&#8217;s knowledge? Since we are all developers we
+      can read the code (and DocBlocks), meaning that the first option is
+      redundant. Therefore we decided to go for the second option.</p><p>As a result this documentation does not attempt to be a complete
+      reference, a development gospel, the one and only source of information
+      on <span class="productname">FOF</span>. On the contrary, this documentation
+      aims to be the beginning of your journey, much like a travel guide. What
+      matters the most is the journey itself, writing your own extensions
+      based on <span class="productname">FOF</span>. As you go on writing software
+      you will be full of questions. Most of them you&#8217;ll answer yourself. Some
+      of them will be already answered in the wiki. A few of them you&#8217;ll have
+      to ask on the mailing list. In the end of the day you will be richer in
+      knowledge. If you do dig up a golden nugget of knowledge, please do
+      consider writing a wiki page. This way we&#8217;ll all be richer and enjoy our
+      coding trip even more.</p><p>Have fun and code on!</p></div><div class="section" title="Key features"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp40496"></a>Key features</h2></div></div></div><p>Some of the key features / highlights of FOF:</p><p><span class="bold"><strong>Convention over configuration, Rails
+      style</strong></span>. Instead of having to painstakingly code every single
+      bit of your component, it's sufficient to use our naming conventions,
+      inspired by Ruby on Rails conventions. For example, if you have
+      com_example, the foobar view will read from the #__example_foobars table
+      which has a unique key named example_foobar_id. The default
+      implementation of controllers, models, tables and views will also cater
+      for the majority of use cases, minimising the code you'll need to
+      write.</p><p><span class="bold"><strong>HMVC today, without relearning component
+      development</strong></span>. There's a lot of talk about the need to
+      re-engineer the MVC classes in Joomla! to support HMVC. What if we could
+      give you HMVC support using the existing MVC classes, today, without
+      having to relearn how to write components? Yes, it's possible with FOF.
+      It has been possible since September 2011, actually. And for those who
+      mumble their words and spread FUD, yes, it IS HMVC by any definition.
+      The very existence of the FOFDispatcher class proves the point.</p><p><span class="bold"><strong>Easy reuse of view template files without
+      ugly include()</strong></span>. More often than not you want to reuse view
+      template files across views. The "traditional" way was by using
+      include() or require() statements. This meant, however, that template
+      overrides ceased working. Not any more! Using FOFView's
+      loadAnyTemplate() you can load any view template file from the front- or
+      back-end of your component or any other component, automatically
+      respecting template overrides.</p><p><span class="bold"><strong>Automatic language loading and easy
+      overrides</strong></span>. Are you sick and tired of having to load your
+      component's language files manually? Do you end up with a lot of
+      untranslated strings when your translators don't catch up with your new
+      features? Yes, that sucks. It's easy to overcome. FOF will automatically
+      handle language loading for you.</p><p><span class="bold"><strong>Media files override (works like template
+      overrides)</strong></span>. So far you knew that you can override Joomla!'s
+      view template files using template overrides. But what about CSS or
+      Javascript files? This usually required the users to "hack core", i.e.
+      modify your views' PHP files, ending up in an unmaintainable,
+      non-upgradeable and potentially insecure solution. Not any more! Using
+      FOF's FOFTemplateUtils::addCSS and FOFTemplateUtils::addJS you can load
+      your CSS and JS files directly from the view template file. Even better?
+      You can use the equivalent of template overrides to let your users and
+      template designers override them with their own implementations. They
+      just have to create the directory
+      templates/your_template/media/com_example to override the files normally
+      found in media/com_example. So easy!</p><p><span class="bold"><strong>Automatic JSON and CSV views with no extra
+      code (also useful for web services)</strong></span>. Why struggle to provide
+      a remote API for your component? FOF makes the data of each view
+      accessible as JSON feeds opening a new world of possibilities for
+      Joomla! components (reuse data in mobile apps, Metro-style Windows 8
+      tiles, browser extensions, mash-up web applications, ...). The automatic
+      CSV views work on the same principle but output data in CSV format,
+      suitable for painlessly data importing to spreadsheets for further
+      processing. Oh, did we mention that we already have an almost RESTful
+      web services implementation?</p><p><span class="bold"><strong>No code view templates</strong></span>. Don't you
+      hate it that you have to write a different view template (in PHP and
+      HTML) for each Joomla! version and, worse, each template out there?
+      Don't you hate it having to teach non-developers how to not screw up
+      your component with every update you publish? We feel your pain. That's
+      why FOF supports the use of XML files as view templates, rendering them
+      automatically to HTML. Not just forms; everything, including browse
+      (multiple items) and single item views. Even better, you get to choose
+      if you want to use traditional PHP/HTML view templates, XML view
+      templates or a combination of both, even in the same view!</p><p><span class="bold"><strong>No code routing, ACL and overall application
+      configuration</strong></span>. Since FOF 2.1 you can define your
+      application's routing, access control integration and overall
+      configuration without routing any code, just by using a simple to
+      understand XML file. It's now easier than ever to have Joomla!
+      extensions with truly minimal (or no) PHP code.</p></div><div class="section" title="Getting started with FOF"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp40624"></a>Getting started with FOF</h2></div></div></div><div class="section" title="Download and install FOF"><div class="titlepage"><div><div><h3 class="title"><a name="idp53728"></a>Download and install FOF</h3></div></div></div><p>You can download FOF as an installable Joomla! library package
+        from <a class="ulink" href="https://www.akeebabackup.com/download/fof.html" target="_top">our
+        repository</a>. You can install it like any other extension under
+        Joomla! 2.x and later.</p><h4><a name="idp55472"></a>Using the latest development version</h4><p>You can clone a read-only copy of the Git repository of FOF in
+        your local machine. Make sure you symlink or copy the fof directory to
+        your dev site's libraries/fof directory. Alternatively, we publish dev
+        releases in the <a class="ulink" href="https://www.akeebabackup.com/download/fof-dev.html" target="_top">dev
+        release repository</a>. These are installable packages but please
+        note that they may be out of date compared to the Git HEAD. Dev
+        releases are not published automatically and may be several revisions
+        behind the current Git master branch.</p></div><div class="section" title="Using it in your extension"><div class="titlepage"><div><div><h3 class="title"><a name="idp57472"></a>Using it in your extension</h3></div></div></div><p>The recommended method for including FOF in your component,
+        module or plugin is using this short code snippet right after your
+        defined('_JEXEC') or die() statement (Joomla! 2.x and later):</p><pre class="programlisting">if (!defined('FOF_INCLUDED')) {
+    include_once JPATH_LIBRARIES . '/fof/include.php';
+}</pre><p>Alternatively, you can use the one-liner:</p><pre class="programlisting">require_once JPATH_LIBRARIES . '/fof/include.php';</pre><p>From that point onwards you can use FOF in your
+        extension.</p></div><div class="section" title="Installing FOF with your component"><div class="titlepage"><div><div><h3 class="title"><a name="idp60496"></a>Installing FOF with your component</h3></div></div></div><p>Unfortunately, Joomla! doesn't allow us to version checking
+        before installing a library package. This means that it's your
+        responsibility to check that there is no newer version of FOF
+        installed in the user's site before attempting to install FOF with
+        your extension. In the following paragraphs we are going to
+        demonstrate one way to do that for Joomla! 2.x / 3.x component
+        packages.</p><p>Include a directory called fof in your installation package. The
+        directory should contain the files of the installation package's fof
+        directory. Then, in your script.mycomponent.php file add the following
+        method:</p><pre class="programlisting">/**
+ * Check if FoF is already installed and install if not
+ *
+ * @param   object  $parent  class calling this method
+ *
+ * @return  array            Array with performed actions summary
+ */
+private function _installFOF($parent)
+{
+    $src = $parent-&gt;getParent()-&gt;getPath('source');
+
+    // Load dependencies
+    JLoader::import('joomla.filesystem.file');
+    JLoader::import('joomla.utilities.date');
+    $source = $src . '/fof';
+
+    if (!defined('JPATH_LIBRARIES'))
+    {
+        $target = JPATH_ROOT . '/libraries/fof';
+    }
+    else
+    {
+        $target = JPATH_LIBRARIES . '/fof';
+    }
+    $haveToInstallFOF = false;
+
+    if (!is_dir($target))
+    {
+        $haveToInstallFOF = true;
+    }
+    else
+    {
+        $fofVersion = array();
+
+        if (file_exists($target . '/version.txt'))
+        {
+            $rawData = JFile::read($target . '/version.txt');
+            $info    = explode("\n", $rawData);
+            $fofVersion['installed'] = array(
+                'version'   =&gt; trim($info[0]),
+                'date'      =&gt; new JDate(trim($info[1]))
+            );
+        }
+        else
+        {
+            $fofVersion['installed'] = array(
+                'version'   =&gt; '0.0',
+                'date'      =&gt; new JDate('2011-01-01')
+            );
+        }
+
+        $rawData = JFile::read($source . '/version.txt');
+        $info    = explode("\n", $rawData);
+        $fofVersion['package'] = array(
+            'version'   =&gt; trim($info[0]),
+            'date'      =&gt; new JDate(trim($info[1]))
+        );
+
+        $haveToInstallFOF = $fofVersion['package']['date']-&gt;toUNIX() &gt; $fofVersion['installed']['date']-&gt;toUNIX();
+    }
+
+    $installedFOF = false;
+
+    if ($haveToInstallFOF)
+    {
+        $versionSource = 'package';
+        $installer = new JInstaller;
+        $installedFOF = $installer-&gt;install($source);
+    }
+    else
+    {
+        $versionSource = 'installed';
+    }
+
+    if (!isset($fofVersion))
+    {
+        $fofVersion = array();
+
+        if (file_exists($target . '/version.txt'))
+        {
+            $rawData = JFile::read($target . '/version.txt');
+            $info    = explode("\n", $rawData);
+            $fofVersion['installed'] = array(
+                'version'   =&gt; trim($info[0]),
+                'date'      =&gt; new JDate(trim($info[1]))
+            );
+        }
+        else
+        {
+            $fofVersion['installed'] = array(
+                'version'   =&gt; '0.0',
+                'date'      =&gt; new JDate('2011-01-01')
+            );
+        }
+
+        $rawData = JFile::read($source . '/version.txt');
+        $info    = explode("\n", $rawData);
+        $fofVersion['package'] = array(
+            'version'   =&gt; trim($info[0]),
+            'date'      =&gt; new JDate(trim($info[1]))
+        );
+        $versionSource = 'installed';
+    }
+
+    if (!($fofVersion[$versionSource]['date'] instanceof JDate))
+    {
+        $fofVersion[$versionSource]['date'] = new JDate;
+    }
+
+    return array(
+        'required'  =&gt; $haveToInstallFOF,
+        'installed' =&gt; $installedFOF,
+        'version'   =&gt; $fofVersion[$versionSource]['version'],
+        'date'      =&gt; $fofVersion[$versionSource]['date']-&gt;format('Y-m-d'),
+    );
+}</pre><p>You need to call it from inside your postflight() method. For
+        example:</p><pre class="programlisting">/**
+ * Method to run after an install/update/uninstall method
+ *
+ * @param   object  $type    type of change (install, update or discover_install)
+ * @param   object  $parent  class calling this method
+ *
+ * @return void
+ */
+function postflight($type, $parent)
+{
+        $fofInstallationStatus = $this-&gt;_installFOF($parent);
+}</pre><div class="important" title="Important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3><p>Due to a bug/feature in Joomla! 1.6 and later, your
+          component's manifest file must start with a letter before L,
+          otherwise Joomla! will assume that lib_fof.xml is your extension's
+          XML manifest and install FOF instead of your extension. We suggest
+          using the com_yourComponentName.xml convention, e.g. com_todo.xml.
+          There is a patch pending in Joomla!'s tracker for this issue,
+          hopefully it will be accepted sometime soon.</p></div></div><div class="section" title="Sample applications"><div class="titlepage"><div><div><h3 class="title"><a name="idp65600"></a>Sample applications</h3></div></div></div><p>FOF comes with two sample applications which are used to
+        demonstrate its features, <a class="ulink" href="https://github.com/akeeba/todo-fof-example" target="_top">To-Do</a>
+        and <a class="ulink" href="https://github.com/akeeba/contactus" target="_top">Contact
+        Us</a>. These were conceived and developed in different points of
+        FOF's development. As a result they are always in a state of flux and
+        will definitely not expose all of FOF's features.</p><p>Another good way to learn some FOF tricks is by reading the
+        source code of existing FOF-based components. Just remember that we
+        are all real world developers and sometimes our code is anything but
+        kosher ;)</p></div></div></div><div class="chapter" title="Chapter 2. The big picture"><div class="titlepage"><div><div><h2 class="title"><a name="idp69040"></a>Chapter 2. The big picture</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#idp69680">Overview of a component</a></span></dt><dt><span class="section"><a href="#idp69936">Diving into the FOF classes</a></span></dt><dd><dl><dt><span class="section"><a href="#idp86048">FOFDispatcher</a></span></dt><dt><span class="section"><a href="#idp86176">FOFController</a></span></dt><dt><span class="section"><a href="#idp136352">FOFModel</a></span></dt><dt><span class="section"><a href="#idp139712">FOFTable</a></span></dt><dt><span class="section"><a href="#idp143072">FOFView</a></span></dt><dt><span class="section"><a href="#idp143328">FOFToolbar</a></span></dt></dl></dd></dl></div><div class="section" title="Overview of a component"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp69680"></a>Overview of a component</h2></div></div></div><p>FOF is an MVC framework in heart and soul. It tries to stick as
+      close as possible to the MVC conventions put forward by the Joomla! CMS
+      since Joomla! 1.5, cutting down on unnecessary code duplication. The
+      main premise is that your code will be DRY &#8211; not as the opposite of
+      &#8220;wet&#8221;, but as in Don&#8217;t Repeat Yourself. Simply put: if you ever find
+      yourself trying to copy code from a base class and paste it into a
+      specialized class, you are doing it wrong.</p><p>In order to achieve this code isolation, FOF uses a very flexible
+      structure for your components. A component's structure looks like
+      this:</p><div class="screenshot"><span style="color: red">&lt;title&gt;The structure of an FOF-based component&lt;/title&gt;</span><div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="531"><tr><td><img src="images/component-structure.png" width="531"></td></tr></table></div></div><p>The Dispatcher is the entry point of your component. Some people
+      would call this a "front Controller" and this is actually what it is.
+      It's different than what we typically call a Controller in the sense
+      that the Dispatcher is the only part of your component which is supposed
+      to interface the underlying application (e.g. the Joomla! CMS) and gets
+      to decide which Controller and task to execute based on the input data
+      (usually this is the request data). No matter if you call it an entry
+      point, front controller, dispatcher or Clint Eastwood its job is to
+      figure out what needs to run and run it. We simply chose the name
+      "Dispatcher" because, like all conventions, we had to call it something.
+      So, basically, the Dispatcher will take a look at the input data, figure
+      out which Controller and task to run, create an instance of it, push it
+      the data and tell it to run the task. The Controller is expected to
+      return the rendered data or a redirection which the Dispatcher will
+      dully pass back to its caller.</p><p>Oh, wait, what is a Controller anyway?! Right below the Dispatcher
+      you will see a bunch of stuff grouped as a "triad". The "triad" is
+      commonly called "view" (with a lowercase v). Each triad does something
+      different in your component. For example, one triad may allow you to
+      handle clients, another triad allow you to handle orders and so on. Your
+      component can have one or more triads. A triad usually contains a
+      Controller, a Model and a View, hence the name ("triad" literally means
+      "a bunch of three things"). The only mandatory member is the Controller.
+      A triad may be reusing the Model and View from another triad &#8211; which is
+      another reason why DRY code rocks&#8211; or it may even be view-less. So, a
+      triad may actually be a bunch of one, two or three things, as long as it
+      includes a Controller. Just to stop you from being confused or thinking
+      about oriental organised crime and generally make your life easier we
+      decided to call these "views" (with a lowercase v) instead of "triads".
+      See? Now it is so much better.</p><p>FOF views follow the "fat Model - thin Controller" paradigm. This
+      means that the Controller is a generally minimalist piece of code and
+      the Model is what gets to do all the work. Knowing this very important
+      bit of information, let's take a look at the innards of a view.</p><p>In the very beginning we have the Controller. The Controller has
+      one or more tasks. Each task is an action of your component, like
+      showing a list of records, showing a single record, publish a record,
+      delete a record and so on. With a small difference. The Controller's
+      tasks do not perform the actual work. They simply spawn an instance of
+      the Model and push it the necessary data it needs. This is called
+      "setting the state" of the Model. In most cases the Controller will also
+      call a Model's method which does something. It's extremely important to
+      note that the Controller will work with <span class="emphasis"><em>any</em></span> Model
+      that implements that method and that the Model is oblivious to the
+      Controller. Then the Controller will create an instance of the View
+      class, pass it the instance of the Model and tell it to go render
+      itself. It will take the output of the View and pass it back to the
+      Dispatcher.</p><p>Which brings us to the Model. The Model is the workhorse of the
+      view. It implements the business logic. All FOF Models are passive
+      Models which means that they are oblivious to the presence of the
+      Controller and View. Actually, they are completely oblivious to the fact
+      that they are part of a triad. That's right, Models can be used
+      standalone, outside the context of the view or component they are
+      designed to live in. The Model's methods will act upon the state
+      variables which have already been set (typically, by the Controller) and
+      will only modify the state variables or return the output directly.
+      Models must never have to deal with input data directly or talk to
+      specific Controllers and/or Views. Models are decoupled from everything,
+      that's where their power lies.</p><p>Just a small interlude here. Right below the Model we see a small
+      thing called a "Table". This is a strange beast. It's one part data
+      adapter, one part model and one part controller, but nothing quite like
+      any of this. The Table is used to create an object representing a single
+      record. It is typically used to check the validity of a record before
+      saving it to the database and post-process a record when reading it from
+      the database (e.g. unserialise a field which contains serialised or JSON
+      data).</p><p>The final piece of our view is the View class itself. It will ask
+      the Model for the raw data and transform it into a suitable
+      representation. Typically this means getting the raw records from the
+      Model and create the HTML output, but that's not the only use for a
+      View. A View could just as well render the data as a JSON stream, a CSV
+      file, or even produce a graphic, audio or video file. It's what
+      transforms the raw data into something useful, i.e. it's your
+      presentation layer. Most often it will do so by loading view templates
+      which are .php files which transform raw data to a suitable
+      representation. If you are using the XML forms feature of FOF, the View
+      will ask the Model to return the form definition and ask FOF's renderer
+      to render this to HTML instead. Even though the actual rendering is
+      delegated to the Renderer (not depicted above), it's still the View
+      that's responsible for the final leg of the rendered data: passing it
+      back to its caller. Yes, the View will actually neither output its data
+      directly to the browser, nor talk to the underlying application. It
+      returns the raw data back to its caller, which is almost always the
+      Controller. Again, we have to stress that the View is oblivious to both
+      the Controller and the Model being used. A properly written View is
+      fully decoupled from everything else and will work with any data
+      provider object implementing the same interface as a Model object and a
+      caller which is supposed to capture its output for further
+      consumption.</p><div class="important" title="Important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3><p>All classes comprising a view are fully decoupled. None is aware
+        of the internal workings of another object in the same or a different
+        view. This allows you to exchange objects at will, promoting code
+        reuse. Even though it sounds like a lot of work it's actually less
+        work and pays dividends the more features you get to add to your
+        components.</p></div><p>There's another bit mentioned below the triad, the Toolbar. The
+      Toolbar is something which conceptually belongs to the component and
+      only has to do with views being rendered as HTML. It's what renders the
+      title in the back-end, the actions toolbar in the front- or back-end and
+      the navigation links / menu in the back-end. In case you missed the
+      subtle reference: FOFToolbar allows you to render an actions toolbar
+      even in the front-end of your component, something that's not possible
+      with plain old Joomla!. You will simply need to add some CSS to do
+      it.</p><p>Finally we mention the Helpers. The Helpers are pure static
+      classes implementing every bit of functionality that's neither OOP, nor
+      can it be categorised in any other object already mentioned. For
+      example, methods to render drop-down selection lists. In so many words,
+      "Helper" is a polite way of saying "non-OOP cruft we'd rather not talk
+      about". Keep your Helpers to a minimum as they're a royal pain in the
+      rear to test.</p><p>Please do keep in mind that this is just a generic overview of how
+      an FOF-based component works. The real power comes from the fact that
+      you don't need to know the internal workings of FOF to use it, you don't
+      need to copy and paste code from it (woe is the developer who does that)
+      and quite possibly you don't even need to write any code. At all. It's
+      all discussed later on.</p></div><div class="section" title="Diving into the FOF classes"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp69936"></a>Diving into the FOF classes</h2></div></div></div><p>As it was casually mentioned in the previous section, the real
+      power of FOF comes from the fact that it doesn't require you to write
+      much or any code. All you have to do is to follow some conventions and
+      understand what are the default actions carried out by FOF. This
+      sections attempts to explain it all, one class at a time.</p><div class="section" title="FOFDispatcher"><div class="titlepage"><div><div><h3 class="title"><a name="idp86048"></a>FOFDispatcher</h3></div></div></div><h4><a name="idp87328"></a>Instantiating and using the Dispatcher</h4><p>Following Joomla conventions, at the root of both the front- and
+        back-end of an extension is the entry point for that end of the
+        extension, named following the extension&#8217;s name.</p><p>For example, for com_foobar, we would create foobar.php in the
+        root of each end. These files are not dispatchers, but they are the
+        points in the extension that include the FOF library, and create an
+        instance of FOF's dispatcher.</p><p>FOF is included with:</p><pre class="programlisting">// Load FOF
+include_once JPATH_LIBRARIES . '/fof/include.php';
+if (!defined('FOF_INCLUDED')) {
+    JError::raiseError('500', 'FOF is not installed');
+}</pre><p>Creating an instance of FOF's dispatcher for com_foobar would be
+        done with:</p><pre class="programlisting">FOFDispatcher::getTmpInstance('com_foobar')-&gt;dispatch();</pre><h4><a name="idp90640"></a>What FOFDispatcher does</h4><p>FOFDispatcher's main concern is routing your component. It takes
+        a look at the input data and decides which Controller to instantiate
+        and, if there is no task, figure out which task you meant to use. Even
+        though it's commonly used with the request data, it can also operate
+        on arbitrary input data passed to it through the
+        <code class="varname">$config['input']</code> variable. This variable can be a
+        simple hash array (array of key/value pairs) or a FOFInput object. In
+        any case it will be converted to a FOFInput object and passed on to
+        the other classes (Controller, Model, Table, View) <span class="emphasis"><em>by
+        reference</em></span> so that they all operate on the same set of
+        data.</p><h4><a name="idp92816"></a>Convention over Configuration</h4><p>The first thing you should know about is the naming convention
+        used. All Dispatchers are named after the component (without the com_
+        prefix) and the word Dispatcher. For example, com_foobar's dispatcher
+        is called FoobarDispatcher. If you do not provide a specialised
+        dispatcher class, FOF will provide you with an automatically generated
+        one.</p><p>You should be aware how the view (therefore the Controller) to
+        be used is selected when there is no view parameter defined in the
+        input data. FOF will use the <code class="varname">defaultView</code> variable
+        which, by default, contains the value <code class="option">cpanel</code>. If you
+        have defined a <em class="parameter"><code>default_view</code></em> parameter in
+        <code class="filename">fof.xml</code> it will use that value instead.</p><p>Another thing you should know is how the task is selected when
+        you don't specify one. Following the RESTful conventions, the task is
+        chosen based on the view name and HTTP verb used in the request. The
+        following possibilities are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>a DELETE request calls the delete task, deleting a
+            record.</p></li><li class="listitem"><p>a POST or PUT request will issue the save task, saving or
+            creating a record. Due to the poor support of the PUT HTTP verb in
+            PHP we chose to map it to POST. If a new record is created, FOF
+            will by default return a 201 Created HTTP header, whereas when a
+            record is updated it will return a 200 OK HTTP header.</p></li><li class="listitem"><p>a GET request to a plural view (e.g. items) results in the
+            browse task being called</p></li><li class="listitem"><p>a GET request to a singular view (e.g item) in the back-end
+            results in the edit task being called, as long as you have a
+            non-empty, non-zero input variable called id.</p></li><li class="listitem"><p>a GET request to a singular view (e.g item) in the front-end
+            results in the read task being called, as long as you have a
+            non-empty, non-zero input variable called id.</p></li><li class="listitem"><p>a GET request to a singular view (e.g item) in the front-end
+            results in the add task being called, as long as you have an empty
+            or zero input variable called id or if you skip it
+            entirely.</p></li></ul></div><p>Though technically not part of the Dispatcher, the view class to
+        be instantiated is also defined by the format input parameter. If none
+        is defined, <code class="option">html</code> is assumed, creating an instance of
+        FOFViewHtml. FOF automatically supports two more formats you should
+        know about, <code class="option">json</code> and <code class="option">csv</code>.</p><h4><a name="idp104576"></a>Specialising FOFDispatcher</h4><p>Create a file named <code class="filename">dispatcher.php</code> in your
+        component's base directory. There is a different dispatcher for the
+        front- and back-end section of your component.</p><p>See the methods below for more information about what you can
+        do.</p><h4><a name="idp106256"></a>FOFDispatcher methods you should know about</h4><pre class="synopsis">public static function &amp;getTmpInstance($option = null, $view = null, $config = array())</pre><p>Return an instance of a dispatcher object. The parameters
+        are:</p><div class="variablelist"><dl><dt><span class="term">$option</span></dt><dd><p>Required. The name of the component, e.g.
+              com_example.</p></dd><dt><span class="term">$view</span></dt><dd><p>Optional. Which view to instantiate. Use null to let the
+              Dispatcher decide.</p></dd><dt><span class="term">$config</span></dt><dd><p>Optional. The array of configuration variables, discussed
+              in the next chapter of this documentation.</p></dd></dl></div><pre class="synopsis">public function onBeforeDispatch()</pre><p>Runs before the dispatcher routes anything. Return true to allow
+        the dispatcher to run. Return false to have the dispatcher raise an
+        exception with code 403, usually resulting in a 403 Forbidden HTTP
+        header being emitted.</p><pre class="synopsis">public function onBeforeDispatchCLI()</pre><p>Runs before the dispatcher routes anything when running under
+        the CLI. Return true to allow the dispatcher to run. Return false to
+        have the dispatcher raise an exception with code 403, usually
+        resulting in a 403 Forbidden HTTP header being emitted.</p><pre class="synopsis">public function onAfterDispatch()</pre><p>Runs after the dispatcher routes everything and before returning
+        control to the caller. Return true to allow the dispatcher to complete
+        running. Return false to have the dispatcher raise an exception with
+        code 403, usually resulting in a 403 Forbidden HTTP header being
+        emitted.</p><pre class="synopsis">public static function isCliAdmin()</pre><p>Returns an array with two boolean values. The first one is true
+        if the component is running under CLI mode. The second one is true if
+        the component is running under the Joomla! administrator. This is used
+        throughout FOF to determine whether the component is running inside
+        the Joomla! front-end, back-end or a CLI app.</p><div class="section" title="Calling a Dispatcher from anywhere (a.k.a. HMVC)"><div class="titlepage"><div><div><h4 class="title"><a name="idp117552"></a>Calling a Dispatcher from anywhere (a.k.a. HMVC)</h4></div></div></div><p>You can call a dispatcher from anywhere in Joomla! and let it
+          run the component, rendering itself. This is useful in master/detail
+          views, creating modules rendering a component's view, plugins
+          injecting a component's view to an article... The possibilities are
+          endless.</p><p>The main concept is that you need to instantiate the
+          Dispatcher with the data you need and tell it to Dispatch itself.
+          Typically, this can be accomplished like this:</p><pre class="programlisting">$config = array(
+  'input' =&gt; array(
+    'option' =&gt; 'com_example',
+    'view' =&gt; 'items',
+    'layout' =&gt; 'funky',
+    'limit' =&gt; 10,
+    'limitstart' =&gt; 42,
+  )
+);
+FOFDispatcher::getTmpInstance('com_example', 'items', $config)-&gt;dispatch();</pre><p>Do note that it's always a good idea to put the last line
+          inside a try/catch block, unless you really want to let a possible
+          exception bubble up to the application.</p></div><div class="section" title="Web services"><div class="titlepage"><div><div><h4 class="title"><a name="idp120848"></a>Web services</h4></div></div></div><p>FOF is currently offering web services, but it's not entirely
+          RESTful (it lacks hypermedia support). Based on what you have
+          already learned you probably realised that you can use the HTTP
+          verb, and the view and format input variables to address everything
+          through web services. For example, something like
+          http://www.example.com/index.php?option=com_example&amp;view=items&amp;format=json
+          would return a nice JSON-encoded (and paginated) list of records in
+          the #__example_items table. Without writing any code. Not bad,
+          huh?</p><p>This is all fine and dandy, but what about the need to
+          authenticate the user before accessing data? Let's say that we have
+          a doctor's website with an FOF-based component handling his
+          appointments. We don't want everyone to see all patients'
+          information but we'd definitely want the doctor to do so and each
+          patient to have access to her own appointments. We can easily build
+          that feature in our component using the Model's post-processing
+          feature (more on that later), but in the end of the day we need to
+          have a logged in user to figure out who can see what.</p><p>Joomla! has a bad habit, like all web apps: it normally needs
+          cookies to know if you're logged in or not. This isn't a very good
+          idea. In order to pull your appointments you'd need at least three
+          HTTP requests: one to get the login form (and the all-necessary form
+          token), one to login (and get your session cookie) and one to pull
+          the information. Never mind it's not a RESTful approach, this is an
+          utter hassle to begin with! There has to be a better way. And there
+          is.</p><p>FOF supports five different transparent authentication
+          methods:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>HTTP Basic Authentication using a username and password
+              pair in plain text (a bad idea unless you're using HTTPS)</p></li><li class="listitem"><p>Plaintext, JSON-encoded username and password pair passed
+              in the _fofauthentication query string parameter (a bad idea
+              unless you're using HTTPS)</p></li><li class="listitem"><p>Plaintext username and password in the
+              _fofauthentication_username and _fofauthentication_username
+              query string parameters (a bad idea unless you're using
+              HTTPS)</p></li><li class="listitem"><p>Encrypted information protected with a TOTP passed in the
+              _fofauthentication query string parameter</p></li><li class="listitem"><p>HTTP Basic Authentication using encrypted information
+              protected with a TOTP (the username must be "_fof_auth")</p></li></ul></div><p>FIrst, what does "transparent" mean? Once the Dispatcher sees
+          any of this data and as long as the corresponding authentication
+          method is enabled it will try to log you in. If it succeeds, Joomla!
+          now knows you are logged in without sending you a cookie. The
+          Dispatcher will then happily route your component and just before it
+          returns it will log you out. You are being logged in and out of the
+          Joomla! site transparently, without the remote end having to know
+          that the web service is implemented using Joomla! and without having
+          to mess around with cookies. You're welcome!</p><p>Now, you might be wondering, what the heck is a TOTP and why
+          is it a good thing to have? TOTP stands for Time-based One Time
+          Password. It's the same stuff Google uses in its two-step
+          authentication. Both parties (the component and the remote client)
+          know a secret key. With this key and the current date a time a
+          unique six digit password is created, called a TOTP. This is used,
+          together with some admittedly weakly implemented AES-128
+          cryptography, to encrypt your username and password. FOFDispatcher
+          will decode it using the TOTP it generates itself. Therefore even
+          though a symmetrical encryption algorithm is used, the encryption
+          key is not exchanged between the two parties during the request. The
+          actual secret key can be made known to the remote client through a
+          secure channel &#8211; just think about how Google had you set up Google
+          Authenticator on your phone.</p><p>I know what you're thinking. Replay attacks. What if an
+          attacker sits between the FOF component and the remote client? The
+          truth is that they can't accomplish much, for two reasons. First
+          it's the ephemeral nature of a TOTP. It is only valid for a limited
+          amount of time, 6 seconds by default. The attacker needs to be
+          really darn fast &#8211; not that it's hard in the age of the WiFi
+          Pineapple. I know, I know, 6 seconds is plenty for a fast attacker
+          to get back the data we fetched. How do we protect it? If you use
+          the encrypted authentication method all of your data is
+          automatically encrypted using the same key. Without the key, the
+          data is garbled. This is enough to deter simple attacks but of
+          course won't hold up a lot against a determined and resourceful
+          opponent. Use HTTPS instead. This kind of encryption implemented in
+          FOF is designed as a poor man's substitute for proper encryption,
+          not a drop-in replacement.</p><p>@TODO Example of encrypted authentication</p></div></div><div class="section" title="FOFController"><div class="titlepage"><div><div><h3 class="title"><a name="idp86176"></a>FOFController</h3></div></div></div><h4><a name="idp133792"></a>What FOFController does</h4><p></p><h4><a name="idp134432"></a>Convention over Configuration</h4><p></p><h4><a name="idp135072"></a>Specialising FOFController</h4><p></p><h4><a name="idp135712"></a>FOFController methods you should know about</h4><p></p></div><div class="section" title="FOFModel"><div class="titlepage"><div><div><h3 class="title"><a name="idp136352"></a>FOFModel</h3></div></div></div><h4><a name="idp137152"></a>What FOFModel does</h4><p></p><h4><a name="idp137792"></a>Convention over Configuration</h4><p></p><h4><a name="idp138432"></a>Specialising FOFModel</h4><p></p><h4><a name="idp139072"></a>FOFModel methods you should know about</h4><p></p></div><div class="section" title="FOFTable"><div class="titlepage"><div><div><h3 class="title"><a name="idp139712"></a>FOFTable</h3></div></div></div><h4><a name="idp140512"></a>What FOFTable does</h4><p></p><h4><a name="idp141152"></a>Convention over Configuration</h4><p></p><h4><a name="idp141792"></a>Specialising FOFTable</h4><p></p><h4><a name="idp142432"></a>FOFTable methods you should know about</h4><p></p></div><div class="section" title="FOFView"><div class="titlepage"><div><div><h3 class="title"><a name="idp143072"></a>FOFView</h3></div></div></div><h4><a name="idp144032"></a>What FOFView does</h4><p></p><h4><a name="idp144672"></a>Convention over Configuration</h4><p></p><h4><a name="idp145312"></a>Specialising FOFView</h4><p></p><h4><a name="idp145952"></a>FOFView methods you should know about</h4><p></p><div class="section" title="FOFView subclasses"><div class="titlepage"><div><div><h4 class="title"><a name="idp146592"></a>FOFView subclasses</h4></div></div></div><p></p></div><div class="section" title="View templates"><div class="titlepage"><div><div><h4 class="title"><a name="idp147616"></a>View templates</h4></div></div></div><h5><a name="idp148416"></a>Naming of view template files</h5><p></p><h5><a name="idp149056"></a>Including media files</h5><p></p><h5><a name="idp149696"></a>Reusing view templates</h5><p></p></div><div class="section" title="Template overrides"><div class="titlepage"><div><div><h4 class="title"><a name="idp150336"></a>Template overrides</h4></div></div></div><h5><a name="idp151136"></a>Overriding view templates</h5><p></p><h5><a name="idp151776"></a>Overriding media files</h5><p></p></div></div><div class="section" title="FOFToolbar"><div class="titlepage"><div><div><h3 class="title"><a name="idp143328"></a>FOFToolbar</h3></div></div></div><h4><a name="idp153088"></a>What FOFToolbar does</h4><p></p><h4><a name="idp153728"></a>Convention over Configuration</h4><p></p><h4><a name="idp154368"></a>Specialising FOFToolbar</h4><p></p><h4><a name="idp155008"></a>FOFToolbar methods you should know about</h4><p></p></div></div></div><div class="chapter" title="Chapter 3. XML Forms"><div class="titlepage"><div><div><h2 class="title"><a name="idp155776"></a>Chapter 3. XML Forms</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#idp156832">The different form types</a></span></dt><dd><dl><dt><span class="section"><a href="#idp157888">Browse forms</a></span></dt><dt><span class="section"><a href="#idp158912">Read forms</a></span></dt><dt><span class="section"><a href="#idp159936">Edit forms</a></span></dt></dl></dd><dt><span class="section"><a href="#idp160960">Header field types reference</a></span></dt><dd><dl><dt><span class="section"><a href="#idp162176">accesslevel</a></span></dt><dt><span class="section"><a href="#idp163200">field</a></span></dt><dt><span class="section"><a href="#idp164224">fieldsearchable</a></span></dt><dt><span class="section"><a href="#idp165248">fieldselectable</a></span></dt><dt><span class="section"><a href="#idp166272">fieldsql</a></span></dt><dt><span class="section"><a href="#idp167296">filtersearchable</a></span></dt><dt><span class="section"><a href="#idp168320">filterselectable</a></span></dt><dt><span class="section"><a href="#idp169344">filtersql</a></span></dt><dt><span class="section"><a href="#idp170368">language</a></span></dt><dt><span class="section"><a href="#idp171392">ordering</a></span></dt><dt><span class="section"><a href="#idp172416">published</a></span></dt><dt><span class="section"><a href="#idp173440">rowselect</a></span></dt></dl></dd><dt><span class="section"><a href="#idp161216">Form field types reference</a></span></dt><dd><dl><dt><span class="section"><a href="#idp175904">accesslevel</a></span></dt><dt><span class="section"><a href="#idp176928">button</a></span></dt><dt><span class="section"><a href="#idp177952">cachehandler</a></span></dt><dt><span class="section"><a href="#idp178976">calendar</a></span></dt><dt><span class="section"><a href="#idp180000">captcha</a></span></dt><dt><span class="section"><a href="#idp181024">checkbox</a></span></dt><dt><span class="section"><a href="#idp182048">editor</a></span></dt><dt><span class="section"><a href="#idp183072">email</a></span></dt><dt><span class="section"><a href="#idp184096">groupedlist</a></span></dt><dt><span class="section"><a href="#idp185120">hidden</a></span></dt><dt><span class="section"><a href="#idp186144">image</a></span></dt><dt><span class="section"><a href="#idp187168">imagelist</a></span></dt><dt><span class="section"><a href="#idp188192">integer</a></span></dt><dt><span class="section"><a href="#idp189216">language</a></span></dt><dt><span class="section"><a href="#idp190240">list</a></span></dt><dt><span class="section"><a href="#idp191264">media</a></span></dt><dt><span class="section"><a href="#idp192288">model</a></span></dt><dt><span class="section"><a href="#idp193312">ordering</a></span></dt><dt><span class="section"><a href="#idp194336">password</a></span></dt><dt><span class="section"><a href="#idp195360">plugins</a></span></dt><dt><span class="section"><a href="#idp196384">published</a></span></dt><dt><span class="section"><a href="#idp197408">radio</a></span></dt><dt><span class="section"><a href="#idp198432">selectrow</a></span></dt><dt><span class="section"><a href="#idp199456">sessionhandler</a></span></dt><dt><span class="section"><a href="#idp200480">spacer</a></span></dt><dt><span class="section"><a href="#idp201504">sql</a></span></dt><dt><span class="section"><a href="#idp202528">tel</a></span></dt><dt><span class="section"><a href="#idp203552">text</a></span></dt><dt><span class="section"><a href="#idp204576">textarea</a></span></dt><dt><span class="section"><a href="#idp205600">timezone</a></span></dt><dt><span class="section"><a href="#idp206624">url</a></span></dt><dt><span class="section"><a href="#idp207648">user</a></span></dt></dl></dd></dl></div><p></p><div class="section" title="The different form types"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp156832"></a>The different form types</h2></div></div></div><p></p><div class="section" title="Browse forms"><div class="titlepage"><div><div><h3 class="title"><a name="idp157888"></a>Browse forms</h3></div></div></div><p></p></div><div class="section" title="Read forms"><div class="titlepage"><div><div><h3 class="title"><a name="idp158912"></a>Read forms</h3></div></div></div><p></p></div><div class="section" title="Edit forms"><div class="titlepage"><div><div><h3 class="title"><a name="idp159936"></a>Edit forms</h3></div></div></div><p></p></div></div><div class="section" title="Header field types reference"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp160960"></a>Header field types reference</h2></div></div></div><p></p><div class="section" title="accesslevel"><div class="titlepage"><div><div><h3 class="title"><a name="idp162176"></a>accesslevel</h3></div></div></div><p></p></div><div class="section" title="field"><div class="titlepage"><div><div><h3 class="title"><a name="idp163200"></a>field</h3></div></div></div><p></p></div><div class="section" title="fieldsearchable"><div class="titlepage"><div><div><h3 class="title"><a name="idp164224"></a>fieldsearchable</h3></div></div></div><p></p></div><div class="section" title="fieldselectable"><div class="titlepage"><div><div><h3 class="title"><a name="idp165248"></a>fieldselectable</h3></div></div></div><p></p></div><div class="section" title="fieldsql"><div class="titlepage"><div><div><h3 class="title"><a name="idp166272"></a>fieldsql</h3></div></div></div><p></p></div><div class="section" title="filtersearchable"><div class="titlepage"><div><div><h3 class="title"><a name="idp167296"></a>filtersearchable</h3></div></div></div><p></p></div><div class="section" title="filterselectable"><div class="titlepage"><div><div><h3 class="title"><a name="idp168320"></a>filterselectable</h3></div></div></div><p></p></div><div class="section" title="filtersql"><div class="titlepage"><div><div><h3 class="title"><a name="idp169344"></a>filtersql</h3></div></div></div><p></p></div><div class="section" title="language"><div class="titlepage"><div><div><h3 class="title"><a name="idp170368"></a>language</h3></div></div></div><p></p></div><div class="section" title="ordering"><div class="titlepage"><div><div><h3 class="title"><a name="idp171392"></a>ordering</h3></div></div></div><p></p></div><div class="section" title="published"><div class="titlepage"><div><div><h3 class="title"><a name="idp172416"></a>published</h3></div></div></div><p></p></div><div class="section" title="rowselect"><div class="titlepage"><div><div><h3 class="title"><a name="idp173440"></a>rowselect</h3></div></div></div><p></p></div></div><div class="section" title="Form field types reference"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp161216"></a>Form field types reference</h2></div></div></div><p></p><div class="section" title="accesslevel"><div class="titlepage"><div><div><h3 class="title"><a name="idp175904"></a>accesslevel</h3></div></div></div><p></p></div><div class="section" title="button"><div class="titlepage"><div><div><h3 class="title"><a name="idp176928"></a>button</h3></div></div></div><p></p></div><div class="section" title="cachehandler"><div class="titlepage"><div><div><h3 class="title"><a name="idp177952"></a>cachehandler</h3></div></div></div><p></p></div><div class="section" title="calendar"><div class="titlepage"><div><div><h3 class="title"><a name="idp178976"></a>calendar</h3></div></div></div><p></p></div><div class="section" title="captcha"><div class="titlepage"><div><div><h3 class="title"><a name="idp180000"></a>captcha</h3></div></div></div><p></p></div><div class="section" title="checkbox"><div class="titlepage"><div><div><h3 class="title"><a name="idp181024"></a>checkbox</h3></div></div></div><p></p></div><div class="section" title="editor"><div class="titlepage"><div><div><h3 class="title"><a name="idp182048"></a>editor</h3></div></div></div><p></p></div><div class="section" title="email"><div class="titlepage"><div><div><h3 class="title"><a name="idp183072"></a>email</h3></div></div></div><p></p></div><div class="section" title="groupedlist"><div class="titlepage"><div><div><h3 class="title"><a name="idp184096"></a>groupedlist</h3></div></div></div><p></p></div><div class="section" title="hidden"><div class="titlepage"><div><div><h3 class="title"><a name="idp185120"></a>hidden</h3></div></div></div><p></p></div><div class="section" title="image"><div class="titlepage"><div><div><h3 class="title"><a name="idp186144"></a>image</h3></div></div></div><p></p></div><div class="section" title="imagelist"><div class="titlepage"><div><div><h3 class="title"><a name="idp187168"></a>imagelist</h3></div></div></div><p></p></div><div class="section" title="integer"><div class="titlepage"><div><div><h3 class="title"><a name="idp188192"></a>integer</h3></div></div></div><p></p></div><div class="section" title="language"><div class="titlepage"><div><div><h3 class="title"><a name="idp189216"></a>language</h3></div></div></div><p></p></div><div class="section" title="list"><div class="titlepage"><div><div><h3 class="title"><a name="idp190240"></a>list</h3></div></div></div><p></p></div><div class="section" title="media"><div class="titlepage"><div><div><h3 class="title"><a name="idp191264"></a>media</h3></div></div></div><p></p></div><div class="section" title="model"><div class="titlepage"><div><div><h3 class="title"><a name="idp192288"></a>model</h3></div></div></div><p></p></div><div class="section" title="ordering"><div class="titlepage"><div><div><h3 class="title"><a name="idp193312"></a>ordering</h3></div></div></div><p></p></div><div class="section" title="password"><div class="titlepage"><div><div><h3 class="title"><a name="idp194336"></a>password</h3></div></div></div><p></p></div><div class="section" title="plugins"><div class="titlepage"><div><div><h3 class="title"><a name="idp195360"></a>plugins</h3></div></div></div><p></p></div><div class="section" title="published"><div class="titlepage"><div><div><h3 class="title"><a name="idp196384"></a>published</h3></div></div></div><p></p></div><div class="section" title="radio"><div class="titlepage"><div><div><h3 class="title"><a name="idp197408"></a>radio</h3></div></div></div><p></p></div><div class="section" title="selectrow"><div class="titlepage"><div><div><h3 class="title"><a name="idp198432"></a>selectrow</h3></div></div></div><p></p></div><div class="section" title="sessionhandler"><div class="titlepage"><div><div><h3 class="title"><a name="idp199456"></a>sessionhandler</h3></div></div></div><p></p></div><div class="section" title="spacer"><div class="titlepage"><div><div><h3 class="title"><a name="idp200480"></a>spacer</h3></div></div></div><p></p></div><div class="section" title="sql"><div class="titlepage"><div><div><h3 class="title"><a name="idp201504"></a>sql</h3></div></div></div><p></p></div><div class="section" title="tel"><div class="titlepage"><div><div><h3 class="title"><a name="idp202528"></a>tel</h3></div></div></div><p></p></div><div class="section" title="text"><div class="titlepage"><div><div><h3 class="title"><a name="idp203552"></a>text</h3></div></div></div><p></p></div><div class="section" title="textarea"><div class="titlepage"><div><div><h3 class="title"><a name="idp204576"></a>textarea</h3></div></div></div><p></p></div><div class="section" title="timezone"><div class="titlepage"><div><div><h3 class="title"><a name="idp205600"></a>timezone</h3></div></div></div><p></p></div><div class="section" title="url"><div class="titlepage"><div><div><h3 class="title"><a name="idp206624"></a>url</h3></div></div></div><p></p></div><div class="section" title="user"><div class="titlepage"><div><div><h3 class="title"><a name="idp207648"></a>user</h3></div></div></div><p></p></div></div></div><div class="chapter" title="Chapter 4. Configuring the MVC and associated classes"><div class="titlepage"><div><div><h2 class="title"><a name="idp208800"></a>Chapter 4. Configuring the MVC and associated classes</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#idp212208">What is the <code class="code">$config</code> array?</a></span></dt><dt><span class="section"><a href="#idp214896">What&#8217;s the deal with the <code class="filename">fof.xml</code>
+      file?</a></span></dt><dd><dl><dt><span class="section"><a href="#idp219632">A sample <code class="filename">fof.xml</code> file</a></span></dt><dt><span class="section"><a href="#idp223872">Dispatcher settings</a></span></dt><dt><span class="section"><a href="#idp229152">View settings</a></span></dt></dl></dd><dt><span class="section"><a href="#idp247632">The configuration settings</a></span></dt></dl></div><p>All MVC and associated classes in FOF (Dispatcher, Controller,
+    Model, View, Table, Toolbar) come with a default behavior, for example
+    where to look for model files, how to handle request data and so on. While
+    this is fine most of the times &#8211;as long as you follow FOF&#8217;s conventions&#8211;
+    this is not always desirable.</p><p>For example, if you are building a CCK (something like K2) you may
+    want to look for view templates in a non-standard directory in order to
+    support alternative &#8220;themes&#8221;. Or, maybe, if you're building a contact
+    component you only want to expose the add view to your front-end users so
+    that they can file a contact request but not view other people's contact
+    requests. You get the idea.</p><p>The traditional approach to development prescribes overriding
+    classes, even to the extent of copying and pasting code. If you've ever
+    attended one of my presentations you've probably figured that I consider
+    copying and pasting code a mortal sin. You may have also figured that,
+    like all developers, I am lazy and dislike writing lots of code.
+    Naturally, FOF being a RAD tool it provides an elegant solution to this
+    problem. The <code class="code">$config</code> array and its sibling, the
+    <code class="filename">fof.xml</code> file.</p><div class="section" title="What is the $config array?"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp212208"></a>What is the <code class="code">$config</code> array?</h2></div></div></div><p>You may have observed that FOF&#8217;s MVC classes can be passed an
+      optional array parameter <code class="code">$config</code>. This is a hash array with
+      configuration options. It is being passed from the Dispatcher to the
+      Controller and from there to the Model, View and Table classes.
+      Essentially, this is your view (MVC triad) configuration. Setting its
+      options allows you to modify FOF&#8217;s internal workings without writing
+      code.</p><p>The various possible settings are explained in &#8220;The configuration
+      settings&#8221; section below.</p></div><div class="section" title="What&#8217;s the deal with the fof.xml file?"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp214896"></a>What&#8217;s the deal with the <code class="filename">fof.xml</code>
+      file?</h2></div></div></div><p>The <code class="code">$config</code> array is a great idea but has a major
+      drawback: you have to create one or several <code class="filename">.php</code>
+      files with specialized classes to use it. Remember the FOF promise about
+      not having to write code unless absolutely necessary? Yep, this doesn&#8217;t
+      stick very well with that promise. So the <code class="filename">fof.xml</code>
+      file was born in FOF 2.1.</p><p>The <code class="filename">fof.xml</code> file is a simple XML file placed
+      inside your component's <span class="bold"><strong>back-end</strong></span>
+      directory, e.g. <code class="filename">administrator/com_example/fof.xml</code>.
+      It contains configuration overrides for the front-end, back-end and CLI
+      parts of your FOF component.</p><div class="section" title="A sample fof.xml file"><div class="titlepage"><div><div><h3 class="title"><a name="idp219632"></a>A sample <code class="filename">fof.xml</code> file</h3></div></div></div><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;fof&gt;
+	&lt;!-- Component back-end options --&gt;
+	&lt;backend&gt;
+		&lt;!-- Dispatcher options --&gt;
+		&lt;dispatcher&gt;
+			&lt;option name="default_view"&gt;items&lt;/option&gt;
+		&lt;/dispatcher&gt;
+	&lt;/backend&gt;
+	
+	&lt;!-- Component front-end options --&gt;
+	&lt;frontend&gt;
+		&lt;!-- Dispatcher options --&gt;
+		&lt;dispatcher&gt;
+			&lt;option name="default_view"&gt;item&lt;/option&gt;
+		&lt;/dispatcher&gt;
+		&lt;!-- Options common for all views --&gt;
+		&lt;view name="*"&gt;
+			&lt;!-- Per-task ACL settings. The star task sets the default ACL privileges for all tasks. --&gt;
+			&lt;acl&gt;
+				&lt;task name="*"&gt;false&lt;/task&gt;
+			&lt;/acl&gt;
+		&lt;/view&gt;
+		&lt;view name="item"&gt;
+			&lt;!-- Task mapping --&gt;
+			&lt;taskmap&gt;
+				&lt;task name="list"&gt;browse&lt;/task&gt;
+			&lt;/taskmap&gt;
+			&lt;!-- Per-task ACL settings. An empty string removes ACL checks. --&gt;
+			&lt;acl&gt;
+				&lt;!-- Everyone, including guests, can access dosomething --&gt;
+				&lt;task name="dosomething"&gt;&lt;/task&gt;
+				&lt;!-- Only people with the core.manage privilege can access the somethingelse task --&gt;
+				&lt;task name="somethingelse"&gt;core.manage&lt;/task&gt;
+			&lt;/acl&gt;
+		&lt;/view&gt;
+	&lt;/frontend&gt;
+&lt;/fof&gt;
+</pre><p>The <code class="filename">fof.xml</code> file has an
+        <code class="code">&lt;fof&gt;</code> root element. Inside it you can have zero or
+        one tags called <code class="code">&lt;frontend&gt;</code>,
+        <code class="code">&lt;backend&gt;</code> and <code class="code">&lt;cli&gt;</code> which
+        configure FOF for front-end, back-end and CLI access respectively.
+        Please note that the CLI is a special case: it will mix both the
+        back-end and CLI settings to derive the final configuration. In the
+        other two cases (front- or back-end access) only the configuration for
+        this specific mode of access will be used.</p></div><div class="section" title="Dispatcher settings"><div class="titlepage"><div><div><h3 class="title"><a name="idp223872"></a>Dispatcher settings</h3></div></div></div><p>You can configure the way the Dispatcher works using the
+        <code class="code">&lt;dispatcher&gt;</code> tag. Inside it you can have one or
+        more <code class="code">&lt;option&gt;</code> tags. The name attribute defines the
+        name of the configuration variable to set, while the tag's content
+        defines the value of this configuration variable.</p><p>The available variables are:</p><div class="variablelist"><dl><dt><span class="term">default_view</span></dt><dd><p>Defines the default view to show if none is defined in the
+              input data. By default this is <code class="option">cpanel</code>. In the
+              example above we set it to items in the back-end and item in the
+              front-end.</p></dd></dl></div></div><div class="section" title="View settings"><div class="titlepage"><div><div><h3 class="title"><a name="idp229152"></a>View settings</h3></div></div></div><p>There are several options that are applied per view. In the
+        context of the <code class="filename">fof.xml</code> file, a &#8220;view&#8221; actually
+        refers to an MVC triad, not just the View part of the triad. In so
+        many words, the options affect the Controller, Model and View used to
+        render this particular component view. You define the view the options
+        apply to using the <code class="code">name</code> attribute of the view tag.</p><p>The settings of each view are isolated from the settings of
+        every other view, with one notable exception: the star view, i.e.
+        <code class="code">name="*"</code>. This is a placeholder view that defines the
+        default settings. These settings are applied to all views. If you also
+        have a view tag for a view, the default settings (from the star view)
+        and the settings for the particular view are merged together. This
+        applies to all settings described below.</p><div class="section" title="Task map settings"><div class="titlepage"><div><div><h4 class="title"><a name="idp232656"></a>Task map settings</h4></div></div></div><p>The task map settings allow you to map specific tasks to
+          specific Controller methods. Other frameworks would call this the
+          &#8220;routing&#8221; feature. It works the same way as adding running
+          <code class="code">registerTask</code> in your specialized Controller
+          class.</p><p>The task map is enclosed inside a single
+          <code class="code">&lt;taskmap&gt;</code> tag. You can have exactly zero or one
+          <code class="code">&lt;taskmap&gt;</code> tags inside each view tag.</p><p>Inside the <code class="code">&lt;taskmap&gt;</code> tag you can have one
+          or more <code class="code">&lt;task&gt;</code> tags. The <code class="code">name</code>
+          attribute defines the name of the task to map, whereas the content
+          of the tag defines the controller&#8217;s method which will be called for
+          this task.</p></div><div class="section" title="ACL settings"><div class="titlepage"><div><div><h4 class="title"><a name="idp237296"></a>ACL settings</h4></div></div></div><p>The ACL settings can be used to override or fine-tune the
+          access control for each task of the particular view. Even though FOF
+          comes with default ACL mappings for its basic tasks, these are not
+          always sufficient or appropriate for all situations. Normally this
+          is achieved by overriding the
+          <code class="code">onBefore<em class="replaceable"><code>Taskname</code></em></code> methods in
+          the Controller, e.g. <code class="code">onBeforeSave</code> to set up the ACL
+          checks for the save task. You can use the ACL mappings in the
+          <code class="filename">fof.xml</code> instead of such checks. You can even
+          use the ACL mapping in <code class="filename">fof.xml</code> for custom tasks
+          for which no
+          <code class="code">onBefore<em class="replaceable"><code>Taskname</code></em></code> method
+          exists.</p><p>The ACL settings are enclosed inside a single
+          <code class="code">&lt;acl&gt;</code> tag. You can have exactly zero or one
+          <code class="code">&lt;acl&gt;</code> tags inside each view tag.</p><p>Inside the <code class="code">&lt;acl&gt;</code> tag you can have one or
+          more <code class="code">&lt;task&gt;</code> tags. The name attribute defines the
+          name of the task to apply the access control, whereas the content of
+          the tag defines the Joomla! ACL privilege required to access this
+          task. You can use any core ACL privilege or any custom ACL privilege
+          defined in your component's <code class="filename">access.xml</code> file. If
+          you leave the content blank then no ACL check is performed (the task
+          is always accessible by all users). If you use the special value
+          false then the ACL privilege is always going to fail, i.e. the task
+          will not be accessible by any user.</p></div><div class="section" title="Option settings"><div class="titlepage"><div><div><h4 class="title"><a name="idp244944"></a>Option settings</h4></div></div></div><p>The <code class="code">&lt;option&gt;</code> tag can be used to set up a
+          setting of this View. It is equivalent to passing a value in the
+          <code class="code">$config</code> array. The <code class="code">name</code> attribute defines
+          the name of the configuration setting you want to modify. The
+          content of the tag is the value of this setting.</p></div></div></div><div class="section" title="The configuration settings"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp247632"></a>The configuration settings</h2></div></div></div><p>The following settings can be used either in the
+      <code class="code">$config</code> array passed to a Dispatcher, Controller, Model or
+      View class or in the <code class="filename">fof.xml</code> file&#8217;s
+      <code class="code">&lt;option&gt;</code> tags inside the <code class="code">&lt;view&gt;</code>
+      tags.</p><div class="variablelist"><dl><dt><span class="term">autoRouting</span></dt><dd><p>A bit mask which defines the automatic URL routing of
+            redirections. A value of 1 means that front-end redirections will
+            be put through Joomla!&#8217;s JRoute::_(). A value of 2 means that
+            back-end redirections will be put through Joomla!&#8217;s JRoute::_().
+            You can combine multiple values by adding them together.</p></dd><dt><span class="term">base_path</span></dt><dd><p>The base path of the component.</p><p>In $config: Specify the absolute path.</p><p>In fof.xml: Specify a path relative to the site&#8217;s
+            root.</p></dd><dt><span class="term">cacheableTasks</span></dt><dd><p>A comma separated list of tasks which support Joomla!&#8217;s
+            caching.</p></dd><dt><span class="term">cid</span></dt><dd><p>Define a comma separated list of item IDs to limit the view
+            on. Normally this is empty. Only use when you want to limit a view
+            to very specific items. Only valid in the
+            <code class="filename">fof.xml</code> file.</p></dd><dt><span class="term">csrf_protection</span></dt><dd><p>Should we be doing a token check for the tasks of this view?
+            The possible values are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>0 - no token checks are performed</p></li><li class="listitem"><p>1 - token checks are always performed</p></li><li class="listitem"><p>2 - token checks are always performed in the back-end
+                and in in the front-end, but only when the request format is
+                'html' (default setting)</p></li><li class="listitem"><p>3 - token checks are performer only in the
+                back-end</p></li></ul></div></dd><dt><span class="term">default_task</span></dt><dd><p>The task to execute if none is defined. The default value is
+            <code class="option">display</code>.</p></dd><dt><span class="term">event_after_delete</span></dt><dd><p>The content plugin event to trigger after deleting the data.
+            Default: onContentAfterDelete</p></dd><dt><span class="term">event_after_save</span></dt><dd><p>The content plugin event to trigger after saving the data.
+            Default: onContentAfterSave</p></dd><dt><span class="term">event_before_delete</span></dt><dd><p>The content plugin event to trigger before deleting the
+            data. Default: onContentBeforeDelete</p></dd><dt><span class="term">event_before_save</span></dt><dd><p>The content plugin event to trigger before saving the data.
+            Default: onContentBeforeSave</p></dd><dt><span class="term">event_change_state</span></dt><dd><p>The content plugin event to trigger after changing the
+            published state of the data. Default: onContentChangeState</p></dd><dt><span class="term">event_clean_cache</span></dt><dd><p>The content plugin event to trigger when cleaning cache.
+            There is no default value.</p></dd><dt><span class="term">helper_path</span></dt><dd><p>The path where the View will be looking for helper classes.
+            By default it's the <code class="filename">helpers</code> directory inside
+            your component's directory.</p><p>In $config: Specify an absolute path.</p><p>In fof.xml: Specify a path relative to the component's
+            directory.</p></dd><dt><span class="term">id</span></dt><dd><p>Define an item ID to limit the view on. Normally this is
+            empty. Only use when you want to limit a view to one single item.
+            Only valid in the <code class="filename">fof.xml</code> file.</p></dd><dt><span class="term">ignore_request</span></dt><dd><p>Set to 1 to prevent the Model's populateState() method from
+            running. By default the method is empty and does nothing, as the
+            Model is supposed to be decoupled from the request information,
+            having the Controller push state variables to it.</p></dd><dt><span class="term">layout</span></dt><dd><p>The default layout to use for this view. This is normally
+            determined automatically based on the task currently being
+            executed.</p></dd><dt><span class="term">model_path</span></dt><dd><p>The path where the Controller will be looking for Model
+            class files. By default it's the <code class="filename">models</code>
+            directory of the component's directory.</p><p>In $config: Specify an absolute path.</p><p>In fof.xml: Specify a path relative to the component's
+            directory.</p></dd><dt><span class="term">model_prefix</span></dt><dd><p>The naming prefix for the Model to be loaded by the
+            Controller. The default option is
+            <code class="code"><em class="replaceable"><code>Componentname</code></em>Model</code> where
+            <em class="replaceable"><code>Componentname</code></em> is the name of the
+            component without the com_ prefix.</p></dd><dt><span class="term">modelName</span></dt><dd><p>The name of the Model class to load. Automatically defined
+            based on the component and view names.</p></dd><dt><span class="term">searchpath</span></dt><dd><p>The path where Controller classes will be searched for. By
+            default it's the <code class="filename">controllers</code> directory inside
+            your component's directory.</p><p>In $config: Specify the absolute path.</p><p>In fof.xml: Specify a path relative to the component's root
+            directory.</p></dd><dt><span class="term">table_path</span></dt><dd><p>The path where the Model will be looking for table classes.
+            By default it's the <code class="filename">tables</code> directory inside
+            your component's directory.</p><p>In $config: Specify an absolute path.</p><p>In fof.xml: Specify a path relative to the component's
+            directory.</p></dd><dt><span class="term">table</span></dt><dd><p>Set the name of the table class the Model will use. Please
+            note that the the component name is added to this name
+            automatically. For example, given a component com_example and a
+            table setting of <code class="option">foobar</code> the actual table class
+            which will be used will be <code class="code">ExampleTableFoobar</code>.</p></dd><dt><span class="term">tbl</span></dt><dd><p>The name of the database table to use in the table class of
+            this view. It is in the format of
+            <span class="database">#__tablename</span>, e.g. #__example_items</p></dd><dt><span class="term">tbl_key</span></dt><dd><p>The name of the key field of the database table to use in
+            the table class of this view. It is in the format of
+            component_view_id, e.g. example_item_id.</p></dd><dt><span class="term">template_path</span></dt><dd><p>The path where the View will be looking for view template
+            (.php) or form (.xml) files. By default it's the
+            <code class="filename">tmpl</code> directory inside the current view's
+            directory.</p><p>In $config: Specify an absolute path.</p><p>In fof.xml: Specify a path relative to the component's
+            directory.</p></dd><dt><span class="term">view_path</span></dt><dd><p>The path where the Controller will be looking for View class
+            files. By default it's the <code class="filename">views</code> directory
+            inside your component's directory.</p><p>In $config: Specify an absolute path.</p><p>In fof.xml: Specify a path relative to the component's
+            directory.</p></dd><dt><span class="term">viewName</span></dt><dd><p>The name of the View class to load. Automatically defined
+            based on the component and view names.</p></dd></dl></div></div></div><div class="appendix" title="Appendix A. GNU Free Documentation License"><div class="titlepage"><div><div><h2 class="title"><a name="gnu-fdl"></a>Appendix A. GNU Free Documentation License</h2></div></div></div><p>Copyright (C) 2000, 2001, 2002 Free Software Foundation,
+    <abbr class="abbrev">Inc.</abbr> 51 Franklin <abbr class="abbrev">St</abbr> , Fifth Floor,
+    Boston, <abbr class="abbrev">MA</abbr> 02110-1301 <abbr class="abbrev">USA</abbr> . Everyone is permitted to copy and
+    distribute verbatim copies of this license document, but changing it is
+    not allowed.</p><h2><a name="idp318912"></a>0. PREAMBLE</h2><p>The purpose of this License is to make a manual, textbook, or other
+    functional and useful document "free" in the sense of freedom: to assure
+    everyone the effective freedom to copy and redistribute it, with or
+    without modifying it, either commercially or noncommercially. Secondarily,
+    this License preserves for the author and publisher a way to get credit
+    for their work, while not being considered responsible for modifications
+    made by others.</p><p>This License is a kind of "copyleft", which means that derivative
+    works of the document must themselves be free in the same sense. It
+    complements the GNU General Public License, which is a copyleft license
+    designed for free software.</p><p>We have designed this License in order to use it for manuals for
+    free software, because free software needs free documentation: a free
+    program should come with manuals providing the same freedoms that the
+    software does. But this License is not limited to software manuals; it can
+    be used for any textual work, regardless of subject matter or whether it
+    is published as a printed book. We recommend this License principally for
+    works whose purpose is instruction or reference.</p><h2><a name="idp321888"></a>1. APPLICABILITY AND DEFINITIONS</h2><p>This License applies to any manual or other work, in any medium,
+    that contains a notice placed by the copyright holder saying it can be
+    distributed under the terms of this License. Such a notice grants a
+    world-wide, royalty-free license, unlimited in duration, to use that work
+    under the conditions stated herein. The "Document", below, refers to any
+    such manual or work. Any member of the public is a licensee, and is
+    addressed as "you". You accept the license if you copy, modify or
+    distribute the work in a way requiring permission under copyright
+    law.</p><p>A "Modified Version" of the Document means any work containing the
+    Document or a portion of it, either copied verbatim, or with modifications
+    and/or translated into another language.</p><p>A "Secondary Section" is a named appendix or a front-matter section
+    of the Document that deals exclusively with the relationship of the
+    publishers or authors of the Document to the Document's overall subject
+    (or to related matters) and contains nothing that could fall directly
+    within that overall subject. (Thus, if the Document is in part a textbook
+    of mathematics, a Secondary Section may not explain any mathematics.) The
+    relationship could be a matter of historical connection with the subject
+    or with related matters, or of legal, commercial, philosophical, ethical
+    or political position regarding them.</p><p>The "Invariant Sections" are certain Secondary Sections whose titles
+    are designated, as being those of Invariant Sections, in the notice that
+    says that the Document is released under this License. If a section does
+    not fit the above definition of Secondary then it is not allowed to be
+    designated as Invariant. The Document may contain zero Invariant Sections.
+    If the Document does not identify any Invariant Sections then there are
+    none.</p><p>The "Cover Texts" are certain short passages of text that are
+    listed, as Front-Cover Texts or Back-Cover Texts, in the notice that says
+    that the Document is released under this License. A Front-Cover Text may
+    be at most 5 words, and a Back-Cover Text may be at most 25 words.</p><p>A "Transparent" copy of the Document means a machine-readable copy,
+    represented in a format whose specification is available to the general
+    public, that is suitable for revising the document straightforwardly with
+    generic text editors or (for images composed of pixels) generic paint
+    programs or (for drawings) some widely available drawing editor, and that
+    is suitable for input to text formatters or for automatic translation to a
+    variety of formats suitable for input to text formatters. A copy made in
+    an otherwise Transparent file format whose markup, or absence of markup,
+    has been arranged to thwart or discourage subsequent modification by
+    readers is not Transparent. An image format is not Transparent if used for
+    any substantial amount of text. A copy that is not "Transparent" is called
+    "Opaque".</p><p>Examples of suitable formats for Transparent copies include plain
+    ASCII without markup, Texinfo input format, LaTeX input format, SGML or
+    XML using a publicly available DTD, and standard-conforming simple HTML,
+    PostScript or PDF designed for human modification. Examples of transparent
+    image formats include PNG, XCF and JPG. Opaque formats include proprietary
+    formats that can be read and edited only by proprietary word processors,
+    SGML or XML for which the DTD and/or processing tools are not generally
+    available, and the machine-generated HTML, PostScript or PDF produced by
+    some word processors for output purposes only.</p><p>The "Title Page" means, for a printed book, the title page itself,
+    plus such following pages as are needed to hold, legibly, the material
+    this License requires to appear in the title page. For works in formats
+    which do not have any title page as such, "Title Page" means the text near
+    the most prominent appearance of the work's title, preceding the beginning
+    of the body of the text.</p><p>A section "Entitled XYZ" means a named subunit of the Document whose
+    title either is precisely XYZ or contains XYZ in parentheses following
+    text that translates XYZ in another language. (Here XYZ stands for a
+    specific section name mentioned below, such as "Acknowledgements",
+    "Dedications", "Endorsements", or "History".) To "Preserve the Title" of
+    such a section when you modify the Document means that it remains a
+    section "Entitled XYZ" according to this definition.</p><p>The Document may include Warranty Disclaimers next to the notice
+    which states that this License applies to the Document. These Warranty
+    Disclaimers are considered to be included by reference in this License,
+    but only as regards disclaiming warranties: any other implication that
+    these Warranty Disclaimers may have is void and has no effect on the
+    meaning of this License.</p><h2><a name="idp331680"></a>2. VERBATIM COPYING</h2><p>You may copy and distribute the Document in any medium, either
+    commercially or noncommercially, provided that this License, the copyright
+    notices, and the license notice saying this License applies to the
+    Document are reproduced in all copies, and that you add no other
+    conditions whatsoever to those of this License. You may not use technical
+    measures to obstruct or control the reading or further copying of the
+    copies you make or distribute. However, you may accept compensation in
+    exchange for copies. If you distribute a large enough number of copies you
+    must also follow the conditions in section 3.</p><p>You may also lend copies, under the same conditions stated above,
+    and you may publicly display copies.</p><h2><a name="idp334064"></a>3. COPYING IN QUANTITY</h2><p>If you publish printed copies (or copies in media that commonly have
+    printed covers) of the Document, numbering more than 100, and the
+    Document's license notice requires Cover Texts, you must enclose the
+    copies in covers that carry, clearly and legibly, all these Cover Texts:
+    Front-Cover Texts on the front cover, and Back-Cover Texts on the back
+    cover. Both covers must also clearly and legibly identify you as the
+    publisher of these copies. The front cover must present the full title
+    with all words of the title equally prominent and visible. You may add
+    other material on the covers in addition. Copying with changes limited to
+    the covers, as long as they preserve the title of the Document and satisfy
+    these conditions, can be treated as verbatim copying in other
+    respects.</p><p>If the required texts for either cover are too voluminous to fit
+    legibly, you should put the first ones listed (as many as fit reasonably)
+    on the actual cover, and continue the rest onto adjacent pages.</p><p>If you publish or distribute Opaque copies of the Document numbering
+    more than 100, you must either include a machine-readable Transparent copy
+    along with each Opaque copy, or state in or with each Opaque copy a
+    computer-network location from which the general network-using public has
+    access to download using public-standard network protocols a complete
+    Transparent copy of the Document, free of added material. If you use the
+    latter option, you must take reasonably prudent steps, when you begin
+    distribution of Opaque copies in quantity, to ensure that this Transparent
+    copy will remain thus accessible at the stated location until at least one
+    year after the last time you distribute an Opaque copy (directly or
+    through your agents or retailers) of that edition to the public.</p><p>It is requested, but not required, that you contact the authors of
+    the Document well before redistributing any large number of copies, to
+    give them a chance to provide you with an updated version of the
+    Document.</p><h2><a name="idp338320"></a>4. MODIFICATIONS</h2><p>You may copy and distribute a Modified Version of the Document under
+    the conditions of sections 2 and 3 above, provided that you release the
+    Modified Version under precisely this License, with the Modified Version
+    filling the role of the Document, thus licensing distribution and
+    modification of the Modified Version to whoever possesses a copy of it. In
+    addition, you must do these things in the Modified Version:</p><div class="orderedlist"><ol class="orderedlist" type="A"><li class="listitem">Use in the Title Page (and on the covers, if any) a title
+        distinct from that of the Document, and from those of previous
+        versions (which should, if there were any, be listed in the History
+        section of the Document). You may use the same title as a previous
+        version if the original publisher of that version gives
+        permission.</li><li class="listitem">List on the Title Page, as authors, one or more persons or
+        entities responsible for authorship of the modifications in the
+        Modified Version, together with at least five of the principal authors
+        of the Document (all of its principal authors, if it has fewer than
+        five), unless they release you from this requirement.</li><li class="listitem">State on the Title page the name of the publisher of the
+        Modified Version, as the publisher.</li><li class="listitem">Preserve all the copyright notices of the Document.</li><li class="listitem">Add an appropriate copyright notice for your modifications
+        adjacent to the other copyright notices.</li><li class="listitem">Include, immediately after the copyright notices, a license
+        notice giving the public permission to use the Modified Version under
+        the terms of this License, in the form shown in the Addendum
+        below.</li><li class="listitem">Preserve in that license notice the full lists of Invariant
+        Sections and required Cover Texts given in the Document's license
+        notice.</li><li class="listitem">Include an unaltered copy of this License.</li><li class="listitem">Preserve the section Entitled "History", Preserve its Title,
+        and add to it an item stating at least the title, year, new authors,
+        and publisher of the Modified Version as given on the Title Page. If
+        there is no section Entitled "History" in the Document, create one
+        stating the title, year, authors, and publisher of the Document as
+        given on its Title Page, then add an item describing the Modified
+        Version as stated in the previous sentence.</li><li class="listitem">Preserve the network location, if any, given in the Document
+        for public access to a Transparent copy of the Document, and likewise
+        the network locations given in the Document for previous versions it
+        was based on. These may be placed in the "History" section. You may
+        omit a network location for a work that was published at least four
+        years before the Document itself, or if the original publisher of the
+        version it refers to gives permission.</li><li class="listitem">For any section Entitled "Acknowledgements" or "Dedications",
+        Preserve the Title of the section, and preserve in the section all the
+        substance and tone of each of the contributor acknowledgements and/or
+        dedications given therein.</li><li class="listitem">Preserve all the Invariant Sections of the Document,
+        unaltered in their text and in their titles. Section numbers or the
+        equivalent are not considered part of the section titles.</li><li class="listitem">Delete any section Entitled "Endorsements". Such a section
+        may not be included in the Modified Version.</li><li class="listitem">Do not retitle any existing section to be Entitled
+        "Endorsements" or to conflict in title with any Invariant
+        Section.</li><li class="listitem">Preserve any Warranty Disclaimers.</li></ol></div><p>If the Modified Version includes new front-matter sections or
+    appendices that qualify as Secondary Sections and contain no material
+    copied from the Document, you may at your option designate some or all of
+    these sections as invariant. To do this, add their titles to the list of
+    Invariant Sections in the Modified Version's license notice. These titles
+    must be distinct from any other section titles.</p><p>You may add a section Entitled "Endorsements", provided it contains
+    nothing but endorsements of your Modified Version by various parties--for
+    example, statements of peer review or that the text has been approved by
+    an organization as the authoritative definition of a standard.</p><p>You may add a passage of up to five words as a Front-Cover Text, and
+    a passage of up to 25 words as a Back-Cover Text, to the end of the list
+    of Cover Texts in the Modified Version. Only one passage of Front-Cover
+    Text and one of Back-Cover Text may be added by (or through arrangements
+    made by) any one entity. If the Document already includes a cover text for
+    the same cover, previously added by you or by arrangement made by the same
+    entity you are acting on behalf of, you may not add another; but you may
+    replace the old one, on explicit permission from the previous publisher
+    that added the old one.</p><p>The author(s) and publisher(s) of the Document do not by this
+    License give permission to use their names for publicity for or to assert
+    or imply endorsement of any Modified Version.</p><h2><a name="idp375232"></a>5. COMBINING DOCUMENTS</h2><p>You may combine the Document with other documents released under
+    this License, under the terms defined in section 4 above for modified
+    versions, provided that you include in the combination all of the
+    Invariant Sections of all of the original documents, unmodified, and list
+    them all as Invariant Sections of your combined work in its license
+    notice, and that you preserve all their Warranty Disclaimers.</p><p>The combined work need only contain one copy of this License, and
+    multiple identical Invariant Sections may be replaced with a single copy.
+    If there are multiple Invariant Sections with the same name but different
+    contents, make the title of each such section unique by adding at the end
+    of it, in parentheses, the name of the original author or publisher of
+    that section if known, or else a unique number. Make the same adjustment
+    to the section titles in the list of Invariant Sections in the license
+    notice of the combined work.</p><p>In the combination, you must combine any sections Entitled "History"
+    in the various original documents, forming one section Entitled "History";
+    likewise combine any sections Entitled "Acknowledgements", and any
+    sections Entitled "Dedications". You must delete all sections Entitled
+    "Endorsements".</p><h2><a name="idp378400"></a>6. COLLECTIONS OF DOCUMENTS</h2><p>You may make a collection consisting of the Document and other
+    documents released under this License, and replace the individual copies
+    of this License in the various documents with a single copy that is
+    included in the collection, provided that you follow the rules of this
+    License for verbatim copying of each of the documents in all other
+    respects.</p><p>You may extract a single document from such a collection, and
+    distribute it individually under this License, provided you insert a copy
+    of this License into the extracted document, and follow this License in
+    all other respects regarding verbatim copying of that document.</p><h2><a name="idp380688"></a>7. AGGREGATION WITH INDEPENDENT
+    WORKS</h2><p>A compilation of the Document or its derivatives with other separate
+    and independent documents or works, in or on a volume of a storage or
+    distribution medium, is called an "aggregate" if the copyright resulting
+    from the compilation is not used to limit the legal rights of the
+    compilation's users beyond what the individual works permit. When the
+    Document is included in an aggregate, this License does not apply to the
+    other works in the aggregate which are not themselves derivative works of
+    the Document.</p><p>If the Cover Text requirement of section 3 is applicable to these
+    copies of the Document, then if the Document is less than one half of the
+    entire aggregate, the Document's Cover Texts may be placed on covers that
+    bracket the Document within the aggregate, or the electronic equivalent of
+    covers if the Document is in electronic form. Otherwise they must appear
+    on printed covers that bracket the whole aggregate.</p><h2><a name="idp383152"></a>8. TRANSLATION</h2><p>Translation is considered a kind of modification, so you may
+    distribute translations of the Document under the terms of section 4.
+    Replacing Invariant Sections with translations requires special permission
+    from their copyright holders, but you may include translations of some or
+    all Invariant Sections in addition to the original versions of these
+    Invariant Sections. You may include a translation of this License, and all
+    the license notices in the Document, and any Warranty Disclaimers,
+    provided that you also include the original English version of this
+    License and the original versions of those notices and disclaimers. In
+    case of a disagreement between the translation and the original version of
+    this License or a notice or disclaimer, the original version will
+    prevail.</p><p>If a section in the Document is Entitled "Acknowledgements",
+    "Dedications", or "History", the requirement (section 4) to Preserve its
+    Title (section 1) will typically require changing the actual title.</p><h2><a name="idp385680"></a>9. TERMINATION</h2><p>You may not copy, modify, sublicense, or distribute the Document
+    except as expressly provided for under this License. Any other attempt to
+    copy, modify, sublicense or distribute the Document is void, and will
+    automatically terminate your rights under this License. However, parties
+    who have received copies, or rights, from you under this License will not
+    have their licenses terminated so long as such parties remain in full
+    compliance.</p><h2><a name="idp387136"></a>10. FUTURE REVISIONS OF THIS
+    LICENSE</h2><p>The Free Software Foundation may publish new, revised versions of
+    the GNU Free Documentation License from time to time. Such new versions
+    will be similar in spirit to the present version, but may differ in detail
+    to address new problems or concerns. See <a class="ulink" href="http://www.gnu.org/copyleft/" target="_top">
+    http://www.gnu.org/copyleft/</a> .</p><p>Each version of the License is given a distinguishing version
+    number. If the Document specifies that a particular numbered version of
+    this License "or any later version" applies to it, you have the option of
+    following the terms and conditions either of that specified version or of
+    any later version that has been published (not as a draft) by the Free
+    Software Foundation. If the Document does not specify a version number of
+    this License, you may choose any version ever published (not as a draft)
+    by the Free Software Foundation.</p><h2><a name="idp389600"></a>ADDENDUM: How to use this License for your
+    documents</h2><p>To use this License in a document you have written, include a copy
+    of the License in the document and put the following copyright and license
+    notices just after the title page:</p><div class="blockquote"><blockquote class="blockquote"><p>Copyright (C) YEAR YOUR NAME.</p><p>Permission is granted to copy, distribute and/or modify this
+      document under the terms of the GNU Free Documentation License, Version
+      1.2 or any later version published by the Free Software Foundation; with
+      no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+      copy of the license is included in the section entitled "GNU Free
+      Documentation License".</p></blockquote></div><p>If you have Invariant Sections, Front-Cover Texts and Back-Cover
+    Texts, replace the "with...Texts." line with this:</p><div class="blockquote"><blockquote class="blockquote"><p>with the Invariant Sections being LIST THEIR TITLES, with the
+      Front-Cover Texts being LIST, and with the Back-Cover Texts being
+      LIST.</p></blockquote></div><p>If you have Invariant Sections without Cover Texts, or some other
+    combination of the three, merge those two alternatives to suit the
+    situation.</p><p>If your document contains nontrivial examples of program code, we
+    recommend releasing these examples in parallel under your choice of free
+    software license, such as the GNU General Public License, to permit their
+    use in free software.</p></div></div></body></html>
