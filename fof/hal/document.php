@@ -138,7 +138,7 @@ class FOFHalDocument
 	/**
 	 * Returns the collection of links of this document
 	 */
-	public function getLinks($rel)
+	public function getLinks($rel = null)
 	{
 		return $this->_links->getLinks($rel);
 	}
@@ -166,11 +166,26 @@ class FOFHalDocument
 		}
 	}
 
+	/**
+	 * Return the data attached to this document
+	 *
+	 * @return   array|stdClass
+	 */
 	public function getData()
 	{
 		return $this->_data;
 	}
 
+	/**
+	 * Instantiate and call a suitable renderer class to render this document
+	 * into the specified format.
+	 *
+	 * @param   string  $format  The format to render the document into, e.g. 'json'
+	 *
+	 * @return  string  The rendered document
+	 *
+	 * @throws  Exception  If the format is unknown, i.e. there is no suitable renderer
+	 */
 	public function render($format = 'json')
 	{
 		$class_name = 'FOFHalRender' . ucfirst($format);

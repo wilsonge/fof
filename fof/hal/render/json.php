@@ -29,6 +29,13 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 		$this->_document = $document;
 	}
 
+	/**
+	 * Render a HAL document in JSON format
+	 *
+	 * @param   array  $options  Rendering options. You can currently only set json_options (json_encode options)
+	 *
+	 * @return  string  The JSON representation of the HAL document
+	 */
 	public function render($options = array())
 	{
 		if (isset($options['data_key']))
@@ -49,7 +56,7 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 
 		// Add links
 		$collection = $this->_document->getLinks();
-		$serialiseThis->_links = array();
+		$serialiseThis->_links = new stdClass();
 		foreach ($collection as $rel => $links)
 		{
 			if (!is_array($links))
@@ -61,7 +68,7 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 				$serialiseThis->_links->$rel = array();
 				foreach ($links as $link)
 				{
-					$serialiseThis->_links->$rel[] = $this->_getLink($link);
+					array_push($serialiseThis->_links->$rel, $this->_getLink($link));
 				}
 			}
 		}
@@ -70,7 +77,7 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 		$collection = $this->_document->getEmbedded();
 		if (!empty($collection))
 		{
-			$serialiseThis->_embedded->$rel = array();
+			$serialiseThis->_embedded->$rel = new stdClass();
 			foreach ($collection as $rel => $embeddeddocs)
 			{
 				if (!is_array($embeddeddocs))
@@ -81,12 +88,13 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 				foreach ($embeddeddocs as $embedded)
 				{
 					$renderer = new FOFHalRenderJson($embedded);
-					$serialiseThis->_embedded->$rel[] = $renderer->render($options);
+					array_push($serialiseThis->_embedded->$rel, $renderer->render($options));
 				}
 			}
 		}
 
 		// Add data
+		$data = $this->_document->getData();
 		if (is_object($data))
 		{
 			$data = (array)$data;
@@ -106,6 +114,14 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 		return json_encode($serialiseThis, $jsonOptions);
 	}
 
+	/**
+	 * Converts a FOFHalLink object into a stdClass object which will be used
+	 * for JSON serialisation
+	 *
+	 * @param   FOFHalLink  $link  The link you want converted
+	 *
+	 * @return  stdClass  The converted link object
+	 */
 	protected function _getLink(FOFHalLink $link)
 	{
 		$ret = array(

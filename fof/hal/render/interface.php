@@ -7,7 +7,15 @@
  */
 defined('_JEXEC') or die();
 
+/**
+ * Interface for HAL document renderers
+ */
 interface FOFHalRenderInterface
 {
+	/**
+	 * Render a HAL document into a representation suitable for consumption.
+	 *
+	 * @param   array  $options  Renderer-specific options
+	 */
 	public function render($options = array());
 }
