@@ -46,20 +46,6 @@ class FOFTable extends JObject
 	protected $_tbl_key = '';
 
 	/**
-	 * Name of the component which this table is part of
-	 * 
-	 * @var    string
-	 */
-	public $_component = '';
-
-	/**
-	 * Name of the type that we're storing in this table
-	 * 
-	 * @var    string
-	 */
-	public $_type = '';
-
-	/**
 	 * JDatabaseDriver object.
 	 *
 	 * @var    JDatabaseDriver
@@ -123,6 +109,15 @@ class FOFTable extends JObject
 	 * @var    boolean
 	 */
 	protected $_tableExists = true;
+
+	/**
+	 * The asset key for items in this table. It's usually something in the
+	 * com_example.viewname format. They asset name will be this key appended
+	 * with the item's ID, e.g. com_example.viewname.123
+	 *
+	 * @var type
+	 */
+	protected $_assetKey = '';
 
 	/**
 	 * The input data
@@ -294,8 +289,11 @@ class FOFTable extends JObject
 
 			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db']);
 			$instance->setInput($tmpInput);
-			$instance->_component = $component;
-			$instance->_type = strtolower(FOFInflector::singularize($type));
+
+			// Determine and set the asset key for this table
+			$assetKey = 'com_' . $component . '.' . strtolower(FOFInflector::singularize($type));
+			$assetKey = $configProvider->get($configProviderKey . 'asset_key', $assetKey);
+			$instance->setAssetKey($assetKey);
 
 			if (array_key_exists('trigger_events', $config))
 			{
@@ -2307,7 +2305,7 @@ class FOFTable extends JObject
 	{
 		$k = $this->_tbl_key;
 
-		return 'com_' . $this->_component . '.' . $this->_type . '.'  . (int) $this->$k;
+		return $this->_assetKey . '.'  . (int) $this->$k;
 	}
 
 	/**
@@ -2348,6 +2346,17 @@ class FOFTable extends JObject
 		}
 
 		return 1;
+	}
+
+	/**
+	 * This method sets the asset key for the items of this table. Obviously, it
+	 * is only meant to be used when you have a table with an asset field.
+	 *
+	 * @param type $assetKey
+	 */
+	public function setAssetKey($assetKey)
+	{
+		$this->_assetKey = $assetKey;
 	}
 
 	/**
@@ -2425,7 +2434,7 @@ class FOFTable extends JObject
 
 	/**
 	 * Method to check if the record is treated as an ACL asset
-	 * 
+	 *
 	 * @return  boolean [description]
 	 */
 	public function isAssetsTracked()
