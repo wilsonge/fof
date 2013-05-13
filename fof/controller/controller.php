@@ -2508,7 +2508,7 @@ class FOFController extends JObject
 
 					// Fallback on edit.own.
 					// First test if the permission is available.
-					if ($user->authorise('core.edit.own', $this->component . '.' . $resource . '.' . $recordId))
+					if (JFactory::getUser()->authorise('core.edit.own', $this->component . '.' . $resource . '.' . $recordId))
 					{
 						$table = $this->getThisModel()->getTable();
 						
