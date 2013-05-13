@@ -2397,6 +2397,16 @@ class FOFTable extends JObject
 	}
 
 	/**
+	 * Method to check if the record is treated as an ACL asset
+	 * 
+	 * @return  boolean [description]
+	 */
+	public function isAssetsTracked()
+	{
+		return $this->_trackAssets;
+	}
+
+	/**
 	 * Method to provide a shortcut to binding, checking and storing a FOFTable
 	 * instance to the database table.  The method will check a row in once the
 	 * data has been stored and if an ordering filter is present will attempt to

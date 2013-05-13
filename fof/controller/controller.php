@@ -2472,7 +2472,68 @@ class FOFController extends JObject
 		}
 		else
 		{
-			return JFactory::getUser()->authorise($area, $this->component);
+			// Check if we're dealing with ids
+			$ids = null;
+
+			// First, check if there is an asset for this record
+			$table = $this->getThisModel()->getTable();
+
+			if ($table && $table->isAssetsTracked())
+			{
+				$ids = $this->getThisModel()->getId() ? $this->getThisModel()->getId() : null;
+			}
+
+			// Generic or Asset tracking
+			if (empty($ids))
+			{
+				return JFactory::getUser()->authorise($area, $this->component);
+			}
+			else 
+			{
+				if (!is_array($ids))
+				{
+					$ids = array($ids);
+				}
+
+				$resource = FOFInflector::singularize($this->view);
+
+				foreach ($ids as $id) 
+				{
+					$asset = $this->component . '.' . $resource . '.' . $id;
+
+					// Dedicated permission found, check it!
+					if (JFactory::getUser()->authorise($area, $asset) ) {
+						return true;
+					}
+
+					// Fallback on edit.own.
+					// First test if the permission is available.
+					if ($user->authorise('core.edit.own', $this->component . '.' . $resource . '.' . $recordId))
+					{
+						$table = $this->getThisModel()->getTable();
+						
+						if ($table && isset($table->created_by))
+						{
+							// Now test the owner is the user.
+							$owner_id = (int) $table->created_by;
+
+							// If the owner matches 'me' then do the test.
+							if ($owner_id == JFactory::getUser()->id)
+							{
+								return true;
+							}
+							else
+							{
+								return false;
+							}
+						} 
+						else 
+						{
+							return false;
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -2480,6 +2541,7 @@ class FOFController extends JObject
 	{
 		$privilege = $this->configProvider->get($this->component . '.views.' .
 			FOFInflector::singularize($this->view) . '.acl.' . $task, '');
+
 		return $this->checkACL($privilege);
 	}
 
@@ -2563,6 +2625,7 @@ class FOFController extends JObject
 	{
 		$privilege = $this->configProvider->get($this->component . '.views.' .
 			FOFInflector::singularize($this->view) . '.acl.apply', 'core.edit');
+
 		return $this->checkACL($privilege);
 	}
 
@@ -2610,6 +2673,8 @@ class FOFController extends JObject
 	{
 		$privilege = $this->configProvider->get($this->component . '.views.' .
 			FOFInflector::singularize($this->view) . '.acl.edit', 'core.edit');
+
+		// Else go with the generic one
 		return $this->checkACL($privilege);
 	}
 
@@ -2670,6 +2735,7 @@ class FOFController extends JObject
 	{
 		$privilege = $this->configProvider->get($this->component . '.views.' .
 			FOFInflector::singularize($this->view) . '.acl.save', 'core.edit');
+
 		return $this->checkACL($privilege);
 	}
 
@@ -2682,6 +2748,7 @@ class FOFController extends JObject
 	{
 		$privilege = $this->configProvider->get($this->component . '.views.' .
 			FOFInflector::singularize($this->view) . '.acl.savenew', 'core.edit');
+
 		return $this->checkACL($privilege);
 	}
 
