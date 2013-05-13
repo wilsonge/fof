@@ -46,6 +46,20 @@ class FOFTable extends JObject
 	protected $_tbl_key = '';
 
 	/**
+	 * Name of the component which this table is part of
+	 * 
+	 * @var    string
+	 */
+	public $_component = '';
+
+	/**
+	 * Name of the type that we're storing in this table
+	 * 
+	 * @var    string
+	 */
+	public $_type = '';
+
+	/**
 	 * JDatabaseDriver object.
 	 *
 	 * @var    JDatabaseDriver
@@ -247,7 +261,8 @@ class FOFTable extends JObject
 				$tableClass = 'FOFTable';
 			}
 
-			$tbl_common = str_replace('com_', '', $config['option']) . '_';
+			$component = str_replace('com_', '', $config['option']);
+			$tbl_common = $component. '_';
 
 			if (!array_key_exists('tbl', $config))
 			{
@@ -279,6 +294,8 @@ class FOFTable extends JObject
 
 			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db']);
 			$instance->setInput($tmpInput);
+			$instance->_component = $component;
+			$instance->_type = strtolower(FOFInflector::singularize($type));
 
 			if (array_key_exists('trigger_events', $config))
 			{
@@ -716,6 +733,16 @@ class FOFTable extends JObject
 				{
 					$this->$k = $src[$k];
 				}
+			}
+		}
+
+		// Set rules for assets enabled tables
+		if ($this->_trackAssets)
+		{
+			// Bind the rules.
+			if (isset($src['rules']) && is_array($src['rules']))
+			{
+				$this->setRules($src['rules']);
 			}
 		}
 
@@ -2280,7 +2307,7 @@ class FOFTable extends JObject
 	{
 		$k = $this->_tbl_key;
 
-		return $this->_tbl . '.' . (int) $this->$k;
+		return 'com_' . $this->_component . '.' . $this->_type . '.'  . (int) $this->$k;
 	}
 
 	/**
