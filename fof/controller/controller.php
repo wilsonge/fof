@@ -1839,7 +1839,10 @@ class FOFController extends JObject
 		$id = $model->getId();
 
 		$data = $this->input->getData();
-		$this->onBeforeApplySave($data);
+		if (!$this->onBeforeApplySave($data))
+		{
+			return false;
+		}
 		$status = $model->save($data);
 
 		if ($status && ($id != 0))
@@ -2391,6 +2394,12 @@ class FOFController extends JObject
 			$config['helper_path'][] = $basePath . '/components/' . $config['option'] . '/' . $extraHelperPath;
 		}
 
+		// Set the use_hypermedia flag in $config if it's not already set
+		if (!isset($config['use_hypermedia']))
+		{
+			$config['use_hypermedia'] = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.use_hypermedia', false);
+		}
+
 		$result = new $viewClass($config);
 
 		return $result;
@@ -2555,7 +2564,7 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeApplySave(&$data)
 	{
-		return $data;
+		return true;
 	}
 
 	/**

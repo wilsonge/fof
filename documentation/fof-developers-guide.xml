@@ -1906,6 +1906,15 @@ FOFDispatcher::getTmpInstance('com_example', 'items', $config)-&gt;dispatch();</
         </varlistentry>
 
         <varlistentry>
+          <term>use_hypermedia</term>
+
+          <listitem>
+            <para>Should we provide a document with HAL hypermedia when the
+            request is served through web services?</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>view_path</term>
 
           <listitem>
