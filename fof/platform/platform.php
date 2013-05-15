@@ -241,12 +241,44 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
+	 * @param   string  $view       The name of the view you're looking a
+	 *                              template for
+	 * @param   string  $layout     The layout name to load, e.g. 'default'
+	 * @param   string  $tpl        The sub-template name to load (null by default)
+	 * @param   boolean $strict     If true, only the specified layout will be
+	 *                              searched for. Otherwise we'll fall back to
+	 *                              the 'default' layout if the specified layout
+	 *                              is not found.
 	 *
 	 * @return  array
 	 */
-	public function getViewTemplateDirs($component)
+	public function getViewTemplatePaths($component, $view, $layout = 'default', $tpl = null, $strict = false)
 	{
 		return array();
+	}
+
+	/**
+	 * Get application-specific suffixes to use with template paths. This allows
+	 * you to look for view template overrides based on the application version.
+	 *
+	 * @return  array  A plain array of suffixes to try in template names
+	 */
+	public function getTemplateSuffixes()
+	{
+		return array();
+	}
+
+	/**
+	 * Return the absolute path to the application's template overrides
+	 * directory for a specific component. We will use it to look for template
+	 * files instead of the regular component directorues. If the application
+	 * does not have such a thing as template overrides return an empty string.
+	 *
+	 * @return  string  The path to the template overrides directory
+	 */
+	public function getTemplateOverridePath($component)
+	{
+		return '';
 	}
 
 	/**
