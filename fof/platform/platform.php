@@ -152,7 +152,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 						$o = new $class_name;
 
 						// If it's not enabled, skip it
-						if (!$o->isEnabled)
+						if (!$o->isEnabled())
 						{
 							continue;
 						}
