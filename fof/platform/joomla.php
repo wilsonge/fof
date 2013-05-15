@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
  *
  * @since 2.1
  */
-class FOFPlatformJoomla implements FOFPlatform
+class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 {
 	/**
 	 * Is this platform enabled?
