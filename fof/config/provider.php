@@ -104,9 +104,12 @@ class FOFConfigProvider
 		// Initialise the return array
 		$ret = array();
 
+		// Get the folders of the component
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
 		// Check that the path exists
 		JLoader::import('joomla.filesystem.folder');
-		$path = JPATH_ADMINISTRATOR . '/components/' . $component;
+		$path = $componentPaths['admin'];
 		$path = JPath::check($path);
 		if (!JFolder::exists($path))
 		{

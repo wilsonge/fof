@@ -307,23 +307,10 @@ class FOFController extends JObject
 			'default'
 		);
 
-		// Initialise the base path for performance reasons
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		if ($isAdmin)
-		{
-			$basePath = JPATH_ADMINISTRATOR;
-		}
-		elseif ($isCli)
-		{
-			$basePath = JPATH_ROOT;
-		}
-		else
-		{
-			$basePath = JPATH_SITE;
-		}
-
 		JLoader::import('joomla.filesystem.path');
+
+		// Get the path names for the component
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 		// Look for the best classname match
 		foreach ($classSuffixes as $suffix)
@@ -338,8 +325,8 @@ class FOFController extends JObject
 
 			// The class is not already loaded. Try to find and load it.
 			$searchPaths = array(
-				$basePath . '/components/' . $config['option'] . '/controllers',
-				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/controllers'
+				$componentPaths['main'] . '/controllers',
+				$componentPaths['admin'] . '/controllers'
 			);
 
 			// If we have a searchpath in the configuration please search it first
@@ -354,8 +341,8 @@ class FOFController extends JObject
 				$searchPath = $configProvider->get($config['option'] . '.views.' . FOFInflector::singularize($config['view']) . '.config.searchpath', null);
 				if ($searchPath)
 				{
-					array_unshift($searchPaths, JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/' . $searchPath);
-					array_unshift($searchPaths, $basePath . '/components/' . $config['option'] . '/' . $searchPath);
+					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $searchPath);
+					array_unshift($searchPaths, $componentPaths['main'] . '/' . $searchPath);
 				}
 			}
 
@@ -532,9 +519,8 @@ class FOFController extends JObject
 		$this->name = $this->bareComponent;
 
 		// Set the basePath variable
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		$basePath = $isAdmin ? JPATH_ADMINISTRATOR : JPATH_ROOT;
-		$basePath .= '/components/' . $this->component;
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->component);
+		$basePath = $componentPaths['main'];
 
 		if (array_key_exists('base_path', $config))
 		{
@@ -2280,22 +2266,16 @@ class FOFController extends JObject
 			$config['input'] = $tmpInput;
 		}
 
+		// Get the component directories
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
+
 		// Get the base paths where the view class files are expected to live
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		$basePaths = array(
-			JPATH_SITE . '/components/' . $config['option'] . '/views',
-			JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/views'
+			$componentPaths['main'],
+			$componentPaths['alt']
 		);
-
-		if ($isAdmin || $isCli)
-		{
-			$basePaths = array_reverse($basePaths);
-			$basePaths = array_merge($basePaths, $this->paths['view'], $basePaths);
-		}
-		else
-		{
-			$basePaths = array_merge($this->paths['view']);
-		}
+		$basePaths = array_merge($this->paths['view']);
 
 		// Get the alternate (singular/plural) view name
 		$altViewName = FOFInflector::isPlural($viewName) ? FOFInflector::singularize($viewName) : FOFInflector::pluralize($viewName);
@@ -2339,59 +2319,47 @@ class FOFController extends JObject
 			$viewClass = 'FOFView' . ucfirst($type);
 		}
 
+		$templateOverridePath = FOFPlatform::getInstance()->getTemplateOverridePath($config['option']);
 		// Setup View configuration options
-		if ($isAdmin)
-		{
-			$basePath = JPATH_ADMINISTRATOR;
-		}
-		elseif ($isCli)
-		{
-			$basePath = JPATH_ROOT;
-		}
-		else
-		{
-			$basePath = JPATH_SITE;
-		}
-
 		if (!array_key_exists('template_path', $config))
 		{
-			$config['template_path'][] = $basePath . '/components/' . $config['option'] . '/views/' . FOFInflector::pluralize($config['view']) . '/tmpl';
-			if(!$isCli)
+			$config['template_path'][] = $componentPaths['main'] . '/views/' . FOFInflector::pluralize($config['view']) . '/tmpl';
+			if($templateOverridePath)
 			{
-				$config['template_path'][] = JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . FOFInflector::pluralize($config['view']);
+				$config['template_path'][] = $templateOverridePath . '/' . FOFInflector::pluralize($config['view']);
 			}
 
-			$config['template_path'][] = $basePath . '/components/' . $config['option'] . '/views/' . FOFInflector::singularize($config['view']) . '/tmpl';
-			if(!$isCli)
+			$config['template_path'][] = $componentPaths['main'] . '/views/' . FOFInflector::singularize($config['view']) . '/tmpl';
+			if($templateOverridePath)
 			{
-				$config['template_path'][] = JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . FOFInflector::singularize($config['view']);
+				$config['template_path'][] = $templateOverridePath . '/' . FOFInflector::singularize($config['view']);
 			}
 
-			$config['template_path'][] = $basePath . '/components/' . $config['option'] . '/views/' . $config['view'] . '/tmpl';
-			if(!$isCli)
+			$config['template_path'][] = $componentPaths['main'] . '/views/' . $config['view'] . '/tmpl';
+			if($templateOverridePath)
 			{
-				$config['template_path'][] = JPATH_BASE . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/' . $config['option'] . '/' . $config['view'];
+				$config['template_path'][] = $templateOverridePath . '/' . $config['view'];
 			}
 		}
 
 		$extraTemplatePath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.template_path', null);
 		if ($extraTemplatePath)
 		{
-			array_unshift($config['template_path'], $basePath . '/components/' . $config['option'] . '/' . $extraTemplatePath);
+			array_unshift($config['template_path'], $componentPaths['main'] . '/' . $extraTemplatePath);
 		}
 
 		if (!array_key_exists('helper_path', $config))
 		{
 			$config['helper_path'] = array(
-				$basePath . '/components/' . $config['option'] . '/helpers',
-				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/helpers'
+				$componentPaths['main'] . '/helpers',
+				$componentPaths['admin'] . '/helpers'
 			);
 		}
 
 		$extraHelperPath = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.helper_path', null);
 		if ($extraHelperPath)
 		{
-			$config['helper_path'][] = $basePath . '/components/' . $config['option'] . '/' . $extraHelperPath;
+			$config['helper_path'][] = $componentPaths['main'] . '/' . $extraHelperPath;
 		}
 
 		// Set the use_hypermedia flag in $config if it's not already set
@@ -2497,7 +2465,7 @@ class FOFController extends JObject
 			{
 				return JFactory::getUser()->authorise($area, $this->component);
 			}
-			else 
+			else
 			{
 				if (!is_array($ids))
 				{
@@ -2506,7 +2474,7 @@ class FOFController extends JObject
 
 				$resource = FOFInflector::singularize($this->view);
 
-				foreach ($ids as $id) 
+				foreach ($ids as $id)
 				{
 					$asset = $this->component . '.' . $resource . '.' . $id;
 
@@ -2520,7 +2488,7 @@ class FOFController extends JObject
 					if (JFactory::getUser()->authorise('core.edit.own', $this->component . '.' . $resource . '.' . $recordId))
 					{
 						$table = $this->getThisModel()->getTable();
-						
+
 						if ($table && isset($table->created_by))
 						{
 							// Now test the owner is the user.
@@ -2535,8 +2503,8 @@ class FOFController extends JObject
 							{
 								return false;
 							}
-						} 
-						else 
+						}
+						else
 						{
 							return false;
 						}

@@ -322,14 +322,7 @@ abstract class FOFView extends JObject
 		// Automatically check for a Joomla! version specific override
 		$throwErrorIfNotFound = true;
 
-		$jversion = new JVersion();
-		$versionParts = explode('.', $jversion->RELEASE);
-		$majorVersion = array_shift($versionParts);
-		$suffixes = array(
-			'.j' . str_replace('.', '', $jversion->getHelpVersion()),
-			'.j' . $majorVersion,
-		);
-		unset($jversion, $versionParts, $majorVersion);
+		$suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
 
 		foreach ($suffixes as $suffix)
 		{
@@ -352,27 +345,19 @@ abstract class FOFView extends JObject
 			}
 		}
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if(!$isCli)
-		{
-			$template = JFactory::getApplication()->getTemplate();
-		}
-		else
-		{
-			$template = 'cli';
-		}
-
 		$layoutTemplate = $this->getLayoutTemplate();
 
 		// Parse the path
 		$templateParts = $this->_parseTemplatePath($path);
 
+		// Get the paths
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($templateParts['component']);
+		$templatePath = FOFPlatform::getInstance()->getTemplateOverridePath($templateParts['component']);
+
 		// Get the default paths
 		$paths = array();
-		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/templates/' .
-			$template . '/html/' . $templateParts['component'] . '/' . $templateParts['view'];
-		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/components/' .
-			$templateParts['component'] . '/views/' . $templateParts['view'] . '/tmpl';
+		$paths[] = $templatePath . '/' . $templateParts['view'];
+		$paths[] = ($templateParts['admin'] ? $componentPaths['admin'] : $componentPaths['site']) . '/views/' . $templateParts['view'] . '/tmpl';
 		if (isset($this->_path) || property_exists($this, '_path'))
 		{
 			$paths = array_merge($paths, $this->_path['template']);
@@ -1027,15 +1012,13 @@ abstract class FOFView extends JObject
 
 		if ($helper == false)
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-			$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/components/' .
-				$this->config['option'] . '/helpers';
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->config['option']);
+			$path = $componentPaths['main'] . '/helpers';
 			$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
 
 			if ($helper == false)
 			{
-				$path = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR) . '/components/' .
-					$this->config['option'] . '/helpers';
+				$path = $path = $componentPaths['alt'] . '/helpers';
 				$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
 			}
 		}

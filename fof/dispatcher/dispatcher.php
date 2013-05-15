@@ -140,26 +140,13 @@ class FOFDispatcher extends JObject
 
 		if (!class_exists($className))
 		{
-			list($isCli, $isAdmin) = self::isCliAdmin();
-
-			if ($isAdmin)
-			{
-				$basePath = JPATH_ADMINISTRATOR;
-			}
-			elseif ($isCli)
-			{
-				$basePath = JPATH_ROOT;
-			}
-			else
-			{
-				$basePath = JPATH_SITE;
-			}
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 			$searchPaths = array(
-				$basePath . '/components/' . $config['option'],
-				$basePath . '/components/' . $config['option'] . '/dispatchers',
-				JPATH_ADMINISTRATOR . '/components/' . $config['option'],
-				JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/dispatchers'
+				$componentPaths['main'],
+				$componentPaths['main'] . '/dispatchers',
+				$componentPaths['admin'],
+				$componentPaths['admin'] . '/dispatchers'
 			);
 
 			if (array_key_exists('searchpath', $config))
@@ -491,19 +478,21 @@ class FOFDispatcher extends JObject
 		$option = $this->input->get('option', '', 'cmd');
 		if($option)
 		{
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
+
 			if(!defined('JPATH_COMPONENT'))
 			{
-				define('JPATH_COMPONENT', JPATH_BASE . '/components/' . $option);
+				define('JPATH_COMPONENT', $componentPaths['main']);
 			}
 
 			if(!defined('JPATH_COMPONENT_SITE'))
 			{
-				define('JPATH_COMPONENT_SITE', JPATH_SITE . '/components/' . $option);
+				define('JPATH_COMPONENT_SITE', $componentPaths['site']);
 			}
 
 			if(!defined('JPATH_COMPONENT_ADMINISTRATOR'))
 			{
-				define('JPATH_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/' . $option);
+				define('JPATH_COMPONENT_ADMINISTRATOR', $componentPaths['admin']);
 			}
 		}
 

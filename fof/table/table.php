@@ -213,20 +213,11 @@ class FOFTable extends JObject
 		{
 			if (!class_exists($tableClass))
 			{
-				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-				if (!$isAdmin)
-				{
-					$basePath = JPATH_SITE;
-				}
-				else
-				{
-					$basePath = JPATH_ADMINISTRATOR;
-				}
+				$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 				$searchPaths = array(
-					$basePath . '/components/' . $config['option'] . '/tables',
-					JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/tables'
+					$componentPaths['main'] . '/tables',
+					$componentPaths['admin'] . '/tables'
 				);
 
 				if (array_key_exists('tablepath', $config))
@@ -237,7 +228,7 @@ class FOFTable extends JObject
 				$altPath = $configProvider->get($configProviderKey . 'table_path', null);
 				if ($altPath)
 				{
-					array_unshift($searchPaths, JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $altPath);
+					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $altPath);
 				}
 
 				JLoader::import('joomla.filesystem.path');

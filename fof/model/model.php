@@ -258,27 +258,19 @@ class FOFModel extends JObject
 		$config['input']->set('option', $config['option']);
 		$config['input']->set('view', $config['view']);
 
+		// Get the component directories
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
 		// Try to load the requested model class
 		if (!class_exists($modelClass))
 		{
 			$include_paths = self::addIncludePath();
 
-			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+			$extra_paths = array(
+				$componentPaths['main'] . '/models',
+				$componentPaths['alt'] . '/models'
+			);
 
-			if ($isAdmin)
-			{
-				$extra_paths = array(
-					JPATH_ADMINISTRATOR . '/components/' . $component . '/models',
-					JPATH_SITE . '/components/' . $component . '/models'
-				);
-			}
-			else
-			{
-				$extra_paths = array(
-					JPATH_SITE . '/components/' . $component . '/models',
-					JPATH_ADMINISTRATOR . '/components/' . $component . '/models'
-				);
-			}
 			$include_paths = array_merge($extra_paths, $include_paths);
 
 			// Try to load the model file
@@ -303,22 +295,11 @@ class FOFModel extends JObject
 			{
 				$include_paths = self::addIncludePath();
 
-				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+				$extra_paths = array(
+					$componentPaths['main'] . '/models',
+					$componentPaths['alt'] . '/models'
+				);
 
-				if ($isAdmin)
-				{
-					$extra_paths = array(
-						JPATH_ADMINISTRATOR . '/components/' . $component . '/models',
-						JPATH_SITE . '/components/' . $component . '/models'
-					);
-				}
-				else
-				{
-					$extra_paths = array(
-						JPATH_SITE . '/components/' . $component . '/models',
-						JPATH_ADMINISTRATOR . '/components/' . $component . '/models'
-					);
-				}
 				$include_paths = array_merge($extra_paths, $include_paths);
 
 				// Try to load the model file
@@ -568,11 +549,13 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/tables';
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->option);
+
+			$path = $componentPaths['admin'] . '/tables';
 			$altPath = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table_path', null);
 			if ($altPath)
 			{
-				$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/' . $altPath;
+				$path = $componentPaths['main'] . '/' . $altPath;
 			}
 
 			$this->addTablePath($path);
@@ -1966,14 +1949,12 @@ class FOFModel extends JObject
 		FOFForm::addFormPath(dirname($formFilename));
 
 		// Set up field paths
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		$option = $this->input->getCmd('option', 'com_foobar');
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
 		$view = $this->input->getCmd('view', 'cpanels');
-		$file_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
-		$file_root .= '/components/' . $option;
-		$alt_file_root = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
-		$alt_file_root .= '/components/' . $option;
+		$file_root = $componentPaths['main'];
+		$alt_file_root = $componentPaths['alt'];
 
 		FOFForm::addFieldPath($file_root . '/fields');
 		FOFForm::addFieldPath($file_root . '/models/fields');
@@ -2046,12 +2027,10 @@ class FOFModel extends JObject
 			$template = 'cli';
 		}
 
-		$file_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
-		$file_root .= '/components/' . $option;
-		$alt_file_root = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
-		$alt_file_root .= '/components/' . $option;
-		$template_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
-		$template_root .= '/templates/' . $template . '/html/' . $option;
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
+		$file_root = $componentPaths['main'];
+		$alt_file_root = $componentPaths['alt'];
+		$template_root = FOFPlatform::getInstance()->getTemplateOverridePath($option);
 
 		// Set up the paths to look into
 		$paths = array(
@@ -2074,15 +2053,16 @@ class FOFModel extends JObject
 		);
 
 		// Set up the suffixes to look into
-		$jversion = new JVersion;
-		$versionParts = explode('.', $jversion->RELEASE);
-		$majorVersion = array_shift($versionParts);
-		$suffixes = array(
-			'.j' . str_replace('.', '', $jversion->getHelpVersion()) . '.xml',
-			'.j' . $majorVersion . '.xml',
-			'.xml',
-		);
-		unset($jversion, $versionParts, $majorVersion);
+		$suffixes = array();
+		$temp_suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
+		if (!empty($temp_suffixes))
+		{
+			foreach ($temp_suffixes as $suffix)
+			{
+				$suffixes[] = $suffix . '.xml';
+			}
+		}
+		$suffixes[] = '.xml';
 
 		// Look for all suffixes in all paths
 		JLoader::import('joomla.filesystem.file');
