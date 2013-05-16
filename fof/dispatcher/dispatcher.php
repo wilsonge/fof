@@ -252,32 +252,19 @@ class FOFDispatcher extends JObject
 	 */
 	public function dispatch()
 	{
-		// Timezone fix; avoids errors printed out by PHP 5.3.3+
-		list($isCli, $isAdmin) = self::isCliAdmin();
-
-		if ($isAdmin)
+		if (!FOFPlatform::getInstance()->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))
 		{
-			// Master access check for the back-end, Joomla! 1.6 style.
-			$user = JFactory::getUser();
-
-			if (!$user->authorise('core.manage', $this->input->getCmd('option', 'com_foobar'))
-				&& !$user->authorise('core.admin', $this->input->getCmd('option', 'com_foobar')))
+			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
-				if (version_compare(JVERSION, '3.0', 'ge'))
-				{
-					throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-				}
-				else
-				{
-					return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-				}
+				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			}
+			else
+			{
+				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 			}
 		}
-		elseif (!$isCli)
-		{
-			// Perform transparent authentication for front-end requests
-			$this->transparentAuthentication();
-		}
+
+		$this->transparentAuthentication();
 
 		// Merge English and local translations
 		FOFPlatform::getInstance()->loadTranslations($this->component);

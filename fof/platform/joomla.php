@@ -293,14 +293,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 			if (!$user->authorise('core.manage', $component)
 				&& !$user->authorise('core.admin', $component))
 			{
-				if (version_compare(JVERSION, '3.0', 'ge'))
-				{
-					throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-				}
-				else
-				{
-					return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-				}
+				return false;
 			}
 		}
 
