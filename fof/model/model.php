@@ -258,27 +258,19 @@ class FOFModel extends JObject
 		$config['input']->set('option', $config['option']);
 		$config['input']->set('view', $config['view']);
 
+		// Get the component directories
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
 		// Try to load the requested model class
 		if (!class_exists($modelClass))
 		{
 			$include_paths = self::addIncludePath();
 
-			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+			$extra_paths = array(
+				$componentPaths['main'] . '/models',
+				$componentPaths['alt'] . '/models'
+			);
 
-			if ($isAdmin)
-			{
-				$extra_paths = array(
-					JPATH_ADMINISTRATOR . '/components/' . $component . '/models',
-					JPATH_SITE . '/components/' . $component . '/models'
-				);
-			}
-			else
-			{
-				$extra_paths = array(
-					JPATH_SITE . '/components/' . $component . '/models',
-					JPATH_ADMINISTRATOR . '/components/' . $component . '/models'
-				);
-			}
 			$include_paths = array_merge($extra_paths, $include_paths);
 
 			// Try to load the model file
@@ -303,22 +295,11 @@ class FOFModel extends JObject
 			{
 				$include_paths = self::addIncludePath();
 
-				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+				$extra_paths = array(
+					$componentPaths['main'] . '/models',
+					$componentPaths['alt'] . '/models'
+				);
 
-				if ($isAdmin)
-				{
-					$extra_paths = array(
-						JPATH_ADMINISTRATOR . '/components/' . $component . '/models',
-						JPATH_SITE . '/components/' . $component . '/models'
-					);
-				}
-				else
-				{
-					$extra_paths = array(
-						JPATH_SITE . '/components/' . $component . '/models',
-						JPATH_ADMINISTRATOR . '/components/' . $component . '/models'
-					);
-				}
 				$include_paths = array_merge($extra_paths, $include_paths);
 
 				// Try to load the model file
@@ -568,11 +549,13 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/tables';
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->option);
+
+			$path = $componentPaths['admin'] . '/tables';
 			$altPath = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table_path', null);
 			if ($altPath)
 			{
-				$path = JPATH_ADMINISTRATOR . '/components/' . $this->option . '/' . $altPath;
+				$path = $componentPaths['main'] . '/' . $altPath;
 			}
 
 			$this->addTablePath($path);
@@ -600,9 +583,8 @@ class FOFModel extends JObject
 
 		// Get and store the pagination request variables
 		$this->populateSavesate();
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		if ($isCLI)
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			$limit = 20;
 			$limitstart = 0;
@@ -1182,11 +1164,10 @@ class FOFModel extends JObject
 				$this->onAfterPublish($table);
 
 				// Call the plugin events
-				$dispatcher = JDispatcher::getInstance();
-				JPluginHelper::importPlugin('content');
+				FOFPlatform::getInstance()->importPlugin('content');
 				$name = $this->input->getCmd('view', 'cpanel');
 				$context = $this->option . '.' . $name;
-				$result = $dispatcher->trigger($this->event_change_state, array($context, $this->id_list, $publish));
+				$result = FOFPlatform::getInstance()->runPlugins($this->event_change_state, array($context, $this->id_list, $publish));
 			}
 		}
 
@@ -1509,45 +1490,7 @@ class FOFModel extends JObject
 	 */
 	protected function getUserStateFromRequest($key, $request, $default = null, $type = 'none', $setUserState = true)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		if ($isCLI)
-		{
-			return $default;
-		}
-
-		$app = JFactory::getApplication();
-
-		if (method_exists($app, 'getUserState'))
-		{
-			$old_state = $app->getUserState($key);
-		}
-		else
-		{
-			$old_state = null;
-		}
-
-		$cur_state = (!is_null($old_state)) ? $old_state : $default;
-		$new_state = $this->input->get($request, null, $type);
-
-		// Save the new value only if it was set in this request
-		if ($setUserState)
-		{
-			if ($new_state !== null)
-			{
-				$app->setUserState($key, $new_state);
-			}
-			else
-			{
-				$new_state = $cur_state;
-			}
-		}
-		elseif (is_null($new_state))
-		{
-			$new_state = $cur_state;
-		}
-
-		return $new_state;
+		return FOFPlatform::getInstance()->getUserStateFromRequest($key, $request, $this->input, $default, $type, $setUserState);
 	}
 
 	/**
@@ -1966,14 +1909,12 @@ class FOFModel extends JObject
 		FOFForm::addFormPath(dirname($formFilename));
 
 		// Set up field paths
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		$option = $this->input->getCmd('option', 'com_foobar');
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
 		$view = $this->input->getCmd('view', 'cpanels');
-		$file_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
-		$file_root .= '/components/' . $option;
-		$alt_file_root = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
-		$alt_file_root .= '/components/' . $option;
+		$file_root = $componentPaths['main'];
+		$alt_file_root = $componentPaths['alt'];
 
 		FOFForm::addFieldPath($file_root . '/fields');
 		FOFForm::addFieldPath($file_root . '/models/fields');
@@ -2031,27 +1972,13 @@ class FOFModel extends JObject
 	 */
 	public function findFormFilename($source)
 	{
-		// Get some useful variables
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view 	= $this->input->getCmd('view', 'cpanels');
 
-		if(!$isCli)
-		{
-			$template = JFactory::getApplication()->getTemplate();
-		}
-		else
-		{
-			$template = 'cli';
-		}
-
-		$file_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
-		$file_root .= '/components/' . $option;
-		$alt_file_root = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR);
-		$alt_file_root .= '/components/' . $option;
-		$template_root = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
-		$template_root .= '/templates/' . $template . '/html/' . $option;
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
+		$file_root = $componentPaths['main'];
+		$alt_file_root = $componentPaths['alt'];
+		$template_root = FOFPlatform::getInstance()->getTemplateOverridePath($option);
 
 		// Set up the paths to look into
 		$paths = array(
@@ -2074,15 +2001,16 @@ class FOFModel extends JObject
 		);
 
 		// Set up the suffixes to look into
-		$jversion = new JVersion;
-		$versionParts = explode('.', $jversion->RELEASE);
-		$majorVersion = array_shift($versionParts);
-		$suffixes = array(
-			'.j' . str_replace('.', '', $jversion->getHelpVersion()) . '.xml',
-			'.j' . $majorVersion . '.xml',
-			'.xml',
-		);
-		unset($jversion, $versionParts, $majorVersion);
+		$suffixes = array();
+		$temp_suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
+		if (!empty($temp_suffixes))
+		{
+			foreach ($temp_suffixes as $suffix)
+			{
+				$suffixes[] = $suffix . '.xml';
+			}
+		}
+		$suffixes[] = '.xml';
 
 		// Look for all suffixes in all paths
 		JLoader::import('joomla.filesystem.file');
@@ -2146,11 +2074,10 @@ class FOFModel extends JObject
 	{
 		// Import the appropriate plugin group.
 		JLoader::import('joomla.plugin.helper');
-		JPluginHelper::importPlugin($group);
+		FOFPlatform::getInstance()->importPlugin($group);
 
 		// Trigger the form preparation event.
-		$app = JFactory::getApplication();
-		$results = $app->triggerEvent('onContentPrepareForm', array($form, $data));
+		$results = FOFPlatform::getInstance()->runPlugins('onContentPrepareForm', array($form, $data));
 
 		// Check for errors encountered while preparing the form.
 		if (count($results) && in_array(false, $results, true))
@@ -2247,16 +2174,9 @@ class FOFModel extends JObject
 	 */
 	protected function onBeforeSave(&$data, &$table)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
@@ -2285,7 +2205,7 @@ class FOFModel extends JObject
 
 			// Call the plugin
 			$name = $this->name;
-			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
+			$result = FOFPlatform::getInstance()->runPlugins($this->event_before_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
 
 			if (in_array(false, $result, true))
 			{
@@ -2331,21 +2251,14 @@ class FOFModel extends JObject
 	 */
 	protected function onAfterSave(&$table)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
 			$name = $this->name;
-			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
+			FOFPlatform::getInstance()->runPlugins($this->event_after_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
 		}
 		catch (Exception $e)
 		{
@@ -2365,16 +2278,9 @@ class FOFModel extends JObject
 	 */
 	protected function onBeforeDelete(&$id, &$table)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
@@ -2382,7 +2288,7 @@ class FOFModel extends JObject
 
 			$name = $this->input->getCmd('view', 'cpanel');
 			$context = $this->option . '.' . $name;
-			$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
+			$result = FOFPlatform::getInstance()->runPlugins($this->event_before_delete, array($context, $table));
 
 			if (in_array(false, $result, true))
 			{
@@ -2413,21 +2319,14 @@ class FOFModel extends JObject
 	 */
 	protected function onAfterDelete($id)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
 			$name = $this->input->getCmd('view', 'cpanel');
 			$context = $this->option . '.' . $name;
-			$result = $dispatcher->trigger($this->event_after_delete, array($context, $this->_recordForDeletion));
+			$result = FOFPlatform::getInstance()->runPlugins($this->event_after_delete, array($context, $this->_recordForDeletion));
 			unset($this->_recordForDeletion);
 		}
 		catch (Exception $e)
@@ -2567,7 +2466,6 @@ class FOFModel extends JObject
 	protected function cleanCache($group = null, $client_id = 0)
 	{
 		$conf = JFactory::getConfig();
-		$dispatcher = JEventDispatcher::getInstance();
 
 		$options = array(
 			'defaultgroup' => ($group) ? $group : (isset($this->option) ? $this->option : JFactory::getApplication()->input->get('option')),
@@ -2577,6 +2475,6 @@ class FOFModel extends JObject
 		$cache->clean();
 
 		// Trigger the onContentCleanCache event.
-		$dispatcher->trigger($this->event_clean_cache, $options);
+		FOFPlatform::getInstance()->runPlugins($this->event_clean_cache, $options);
 	}
 }

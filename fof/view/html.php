@@ -32,8 +32,6 @@ class FOFViewHtml extends FOFView
 	 */
 	public function __construct($config = array())
 	{
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-
 		// Make sure $config is an array
 		if (is_object($config))
 		{
@@ -66,14 +64,14 @@ class FOFViewHtml extends FOFView
 
 		$this->lists = new JObject();
 
-		if(!$isCli)
+		if(!FOFPlatform::getInstance()->isCli())
 		{
-			$user = JFactory::getUser();
+			$platform = FOFPlatform::getInstance();
 			$perms = (object) array(
-					'create'	 => $user->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
-					'edit'		 => $user->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
-					'editstate'	 => $user->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
-					'delete'	 => $user->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
+					'create'	 => $platform->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
+					'edit'		 => $platform->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
+					'editstate'	 => $platform->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
+					'delete'	 => $platform->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
 			);
 			$this->assign('aclperms', $perms);
 			$this->perms = $perms;
@@ -109,10 +107,8 @@ class FOFViewHtml extends FOFView
 			return;
 		}
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Don't load the toolbar on CLI
-		if(!$isCli)
+		if(!FOFPlatform::getInstance()->isCli())
 		{
 			$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 			$toolbar->perms = $this->perms;
@@ -138,9 +134,11 @@ class FOFViewHtml extends FOFView
 	private function renderLinkbar()
 	{
 		// Do not render a submenu unless we are in the the admin area
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin || $isCli)
+		if (!FOFPlatform::getInstance()->isBackend() || FOFPlatform::getInstance()->isCli())
+		{
 			return;
+		}
+
 		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 		$links = $toolbar->getLinks();
 		if (!empty($links))
@@ -227,8 +225,7 @@ class FOFViewHtml extends FOFView
 		$this->assignRef('lists', $this->lists);
 
 		//pass page params on frontend only
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin && !$isCli)
+		if (FOFPlatform::getInstance()->isFrontend())
 		{
 			$params = JFactory::getApplication()->getParams();
 			$this->assignRef('params', $params);
