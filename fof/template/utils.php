@@ -262,11 +262,10 @@ class FOFTemplateUtils
 			case 'media':
 				// Do we have a media override in the template?
 				$pathAndParams = explode('?', $path, 2);
-				$altPath = 'templates/' . JFactory::getApplication()->getTemplate() . '/media/';
 
 				$ret = array(
 					'normal'	 => 'media/' . $pathAndParams[0],
-					'alternate'	 => ($isAdmin ? 'administrator/' : '') . $altPath . $pathAndParams[0],
+					'alternate'	 => FOFPlatform::getInstance()->getTemplateOverridePath($pathAndParams[0], false),
 				);
 				break;
 

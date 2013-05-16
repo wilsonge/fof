@@ -216,15 +216,26 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 * files instead of the regular component directorues. If the application
 	 * does not have such a thing as template overrides return an empty string.
 	 *
+	 * @param   string   $component  The name of the component for which to fetch the overrides
+	 * @param   boolean  $absolute   Should I return an absolute or relative path?
+	 *
 	 * @return  string  The path to the template overrides directory
 	 */
-	public function getTemplateOverridePath($component)
+	public function getTemplateOverridePath($component, $absolute = true)
 	{
 		list($isCli, $isAdmin) = $this->isCliAdmin();
 		if(!$isCli)
 		{
-			$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/' .
-				JFactory::getApplication()->getTemplate() . '/' .
+			if ($absolute)
+			{
+				$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/';
+			}
+			else
+			{
+				$path = $isAdmin ? 'administrator/' : '';
+			}
+
+			$path .= JFactory::getApplication()->getTemplate() . '/' .
 				'html/' . $component;
 		}
 		else
