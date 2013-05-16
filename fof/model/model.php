@@ -619,7 +619,7 @@ class FOFModel extends JObject
 		}
 
 		// Get and store the pagination request variables
-		$this->populateSavesate();
+		$this->populateSavestate();
 
 		if (FOFPlatform::getInstance()->isCli())
 		{
@@ -1806,7 +1806,7 @@ class FOFModel extends JObject
 	 *
 	 * @return  void
 	 */
-	public function populateSavesate()
+	public function populateSavestate()
 	{
 		if (is_null($this->_savestate))
 		{
