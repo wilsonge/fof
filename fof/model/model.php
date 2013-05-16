@@ -182,6 +182,20 @@ class FOFModel extends JObject
 	protected $configProvider = null;
 
 	/**
+	 * FOFModelDispatcherBehavior for dealing with extra behaviors
+	 *
+	 * @var    FOFModelDispatcherBehavior
+	 */
+	protected $modelDispatcher = null;
+
+	/**
+	 *	Default behaviors to apply to the model
+	 * 
+	 * @var  	array
+	 */
+	protected $default_behaviors = array('filters');
+
+	/**
 	 * Returns a new model object. Unless overriden by the $config array, it will
 	 * try to automatically populate its state from the request variables.
 	 *
@@ -326,6 +340,26 @@ class FOFModel extends JObject
 		$result = new $modelClass($config);
 
 		return $result;
+	}
+
+	/**
+	 * Adds a behavior to the model
+	 * 
+	 * @param  	string 	$name   The name of the behavior
+	 * @param 	array  	$config Optional Behavior configuration
+	 */
+	public function addBehavior($name, $config = array())
+	{
+
+		$behaviorClass = 'FOFModelBehavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass) && $this->modelDispatcher) 
+		{
+			$behavior = new $behaviorClass($this->modelDispatcher, $config);
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -481,6 +515,9 @@ class FOFModel extends JObject
 
 		// Load the configuration provider
 		$this->configProvider = new FOFConfigProvider;
+
+		// Load the behavior dispatcher
+		$this->modelDispatcher = new FOFModelDispatcherBehavior;
 
 		// Set the $name/$_name variable
 		$component = $this->input->getCmd('option', 'com_foobar');
@@ -707,6 +744,25 @@ class FOFModel extends JObject
 		{
 			$this->event_clean_cache = $this->configProvider->get($configKey . 'event_clean_cache',
 				$this->event_clean_cache);
+		}
+
+		if (isset($config['behaviors']))
+		{
+			$behaviors = (array) $config['behaviors'];
+			foreach ($behaviors as $behavior)
+			{
+				$this->addBehavior($behavior);
+			}
+		}
+		else
+		{
+			$behaviors = $this->configProvider->get($configKey . 'behaviors',
+				$this->default_behaviors);
+
+			foreach ($behaviors as $behavior)
+			{
+				$this->addBehavior($behavior);
+			}
 		}
 
 	}
@@ -1623,62 +1679,12 @@ class FOFModel extends JObject
 		$tableKey = $table->getKeyName();
 		$db = $this->getDBO();
 
-		$query = $db->getQuery(true)
-			->select('*')
-			->from($db->qn($tableName));
+		$query = $db->getQuery(true);
 
-		$where = array();
-
-		if (version_compare(JVERSION, '3.0', 'ge'))
-		{
-			$fields = $db->getTableColumns($tableName, true);
-		}
-		else
-		{
-			$fieldsArray = $db->getTableFields($tableName, true);
-			$fields = array_shift($fieldsArray);
-		}
-
-		foreach ($fields as $fieldname => $fieldtype)
-		{
-			$filterName = ($fieldname == $tableKey) ? 'id' : $fieldname;
-			$filterState = $this->getState($filterName, null);
-
-			if ($filterName == $table->getColumnAlias('enabled'))
-			{
-				if (!is_null($filterState) && ($filterState !== ''))
-				{
-					$query->where($db->qn($fieldname) . ' = ' . $db->q((int) $filterState));
-				}
-			}
-			elseif (!empty($filterState) || ($filterState === '0'))
-			{
-				switch ($fieldname)
-				{
-					case $table->getColumnAlias('title'):
-					case $table->getColumnAlias('description'):
-						$query->where('(' . $db->qn($fieldname) . ' LIKE ' . $db->q('%' . $filterState . '%') . ')');
-
-						break;
-
-					default:
-						if (is_array($filterState))
-						{
-							$tmp = array();
-							foreach ($filterState as $k => $v)
-							{
-								$tmp[] = $db->q($v);
-							}
-							$query->where('(' . $db->qn($fieldname) . ' IN(' . implode(',', $tmp) . '))');
-						}
-						else
-						{
-							$query->where('(' . $db->qn($fieldname) . '=' . $db->q($filterState) . ')');
-						}
-						break;
-				}
-			}
-		}
+		// Call the behaviors
+		$this->modelDispatcher->trigger('onBeforeBuildQuery', array(&$this, &$query));
+			
+		$query->select('*')->from($db->qn($tableName));
 
 		if (!$overrideLimits)
 		{
@@ -1693,7 +1699,27 @@ class FOFModel extends JObject
 			$query->order($db->qn($order) . ' ' . $dir);
 		}
 
+		// Call the behaviors
+		$this->modelDispatcher->trigger('onAfterBuildQuery', array(&$this, &$query));
+
 		return $query;
+	}
+
+	public function getTableFields()
+	{
+		$tableName = $this->getTable()->getTableName();
+
+		if (version_compare(JVERSION, '3.0', 'ge'))
+		{
+			$fields = $this->getDbo()->getTableColumns($tableName, true);
+		}
+		else
+		{
+			$fieldsArray = $this->getDbo()->getTableFields($tableName, true);
+			$fields = array_shift($fieldsArray);
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -2203,6 +2229,15 @@ class FOFModel extends JObject
 			// Bind the data
 			$table->bind($allData);
 
+			// Call the behaviors
+			$result = $this->modelDispatcher->trigger('onBeforeSave', array(&$this, &$data));
+
+			if (in_array(false, $result, true))
+			{
+				// Behavior failed, return false
+				return false;
+			}
+
 			// Call the plugin
 			$name = $this->name;
 			$result = FOFPlatform::getInstance()->runPlugins($this->event_before_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
@@ -2257,6 +2292,15 @@ class FOFModel extends JObject
 
 		try
 		{
+			// Call the behaviors
+			$result = $this->modelDispatcher->trigger('onAfterSave', array(&$this));
+
+			if (in_array(false, $result, true))
+			{
+				// Behavior failed, return false
+				return false;
+			}
+
 			$name = $this->name;
 			FOFPlatform::getInstance()->runPlugins($this->event_after_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
 		}
@@ -2285,6 +2329,15 @@ class FOFModel extends JObject
 		try
 		{
 			$table->load($id);
+
+			// Call the behaviors
+			$result = $this->modelDispatcher->trigger('onBeforeDelete', array(&$this));
+
+			if (in_array(false, $result, true))
+			{
+				// Behavior failed, return false
+				return false;
+			}
 
 			$name = $this->input->getCmd('view', 'cpanel');
 			$context = $this->option . '.' . $name;
@@ -2319,8 +2372,18 @@ class FOFModel extends JObject
 	 */
 	protected function onAfterDelete($id)
 	{
-		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 		FOFPlatform::getInstance()->importPlugin('content');
+
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onAfterDelete', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
+		$dispatcher = JDispatcher::getInstance();
 
 		try
 		{
@@ -2340,52 +2403,142 @@ class FOFModel extends JObject
 
 	protected function onBeforeCopy(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onBeforeCopy', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		return true;
 	}
 
 	protected function onAfterCopy(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onAfterCopy', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		return true;
 	}
 
 	protected function onBeforePublish(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onBeforePublish', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		return true;
 	}
 
 	protected function onAfterPublish(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onAfterPublish', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		return true;
 	}
 
 	protected function onBeforeHit(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onBeforeHit', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		return true;
 	}
 
 	protected function onAfterHit(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onAfterHit', array(&$this));
 
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
+		return true;
 	}
 
 	protected function onBeforeMove(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onBeforeMove', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		return true;
 	}
 
 	protected function onAfterMove(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onAfterMove', array(&$this));
 
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
+		return true;
 	}
 
 	protected function onBeforeReorder(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onBeforeReorder', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		return true;
 	}
 
 	protected function onAfterReorder(&$table)
 	{
+		// Call the behaviors
+		$result = $this->modelDispatcher->trigger('onAfterReorder', array(&$this));
 
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
