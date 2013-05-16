@@ -49,6 +49,8 @@ class FOFConfigProvider
 			$order = array('frontend');
 		}
 
+		$order[] = 'common';
+
 		$order = array_reverse($order);
 		self::$configurations[$component] = array();
 		foreach ($order as $area)

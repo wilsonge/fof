@@ -291,6 +291,9 @@ class FOFTable extends JObject
 				$instance->setTriggerEvents($config['trigger_events']);
 			}
 
+			$configProviderFieldmapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
+			$this->_columnAlias = $configProvider->get($configProviderFieldmapKey, array());
+
 			$instances[$tableClass] = $instance;
 		}
 
