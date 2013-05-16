@@ -74,7 +74,8 @@ class FOFAutloaderComponent
 	{
 		if (!isset($fofComponents[$component]))
 		{
-			$fofComponents[$component] = file_exists(JPATH_ADMINISTRATOR . '/components/' . $component . '/fof.xml');
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+			$fofComponents[$component] = file_exists($componentPaths['admin'] . '/fof.xml');
 		}
 
 		return $fofComponents[$component];
@@ -185,11 +186,14 @@ class FOFAutloaderComponent
 		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
 		$alt_class = FOFInflector::camelize($component_raw . '_controller_' . $alt_view);
 
+		// Get the component's paths
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
 		// Get the proper and alternate paths and file names
-		$file = "/components/$component/controllers/$view.php";
-		$altFile = "/components/$component/controllers/$alt_view.php";
-		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
-		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+		$file = "/controllers/$view.php";
+		$altFile = "/controllers/$alt_view.php";
+		$path = $componentPaths['main'];
+		$altPath = $componentPaths['alt'];
 
 		// Try to find the proper class in the proper path
 		if (file_exists($path . $file))
@@ -290,10 +294,12 @@ class FOFAutloaderComponent
 		$alt_class = FOFInflector::camelize($component_raw . '_model_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$file = "/components/$component/models/$view.php";
-		$altFile = "/components/$component/models/$alt_view.php";
-		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
-		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
+		$file = "/models/$view.php";
+		$altFile = "/models/$alt_view.php";
+		$path = $componentPaths['main'];
+		$altPath = $componentPaths['alt'];
 
 		// Try to find the proper class in the proper path
 		if (file_exists($path . $file))
@@ -403,10 +409,12 @@ class FOFAutloaderComponent
 		$alt_class = FOFInflector::camelize($component_raw . '_view_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$protoFile = "/components/$component/models/$view";
-		$protoAltFile = "/components/$component/models/$alt_view";
-		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
-		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
+		$protoFile = "/models/$view";
+		$protoAltFile = "/models/$alt_view";
+		$path = $componentPaths['main'];
+		$altPath = $componentPaths['alt'];
 
 		$formats = array($format);
 		if ($format != 'html')
@@ -527,9 +535,11 @@ class FOFAutloaderComponent
 		$alt_class = FOFInflector::camelize($component_raw . '_table_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$file = "/components/$component/tables/$view.php";
-		$altFile = "/components/$component/tables/$alt_view.php";
-		$path = JPATH_ADMINISTRATOR;
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
+		$file = "/tables/$view.php";
+		$altFile = "/tables/$alt_view.php";
+		$path = $componentPaths['admin'];
 
 		// Try to find the proper class in the proper path
 		if (file_exists($path . $file))
@@ -618,10 +628,12 @@ class FOFAutloaderComponent
 		$alt_class = FOFInflector::camelize($component_raw . '_helper_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$file = "/components/$component/helpers/$view.php";
-		$altFile = "/components/$component/helpers/$alt_view.php";
-		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
-		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
+		$file = "/helpers/$view.php";
+		$altFile = "/helpers/$alt_view.php";
+		$path = $componentPaths['main'];
+		$altPath = $componentPaths['alt'];
 
 		// Try to find the proper class in the proper path
 		if (file_exists($path . $file))

@@ -111,6 +111,15 @@ class FOFTable extends JObject
 	protected $_tableExists = true;
 
 	/**
+	 * The asset key for items in this table. It's usually something in the
+	 * com_example.viewname format. They asset name will be this key appended
+	 * with the item's ID, e.g. com_example.viewname.123
+	 *
+	 * @var type
+	 */
+	protected $_assetKey = '';
+
+	/**
 	 * The input data
 	 *
 	 * @var    FOFInput
@@ -198,26 +207,17 @@ class FOFTable extends JObject
 		$tableClass = $prefix . ucfirst($type);
 
 		$configProvider = new FOFConfigProvider;
-		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
+		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.option.';
 
 		if (!array_key_exists($tableClass, $instances))
 		{
 			if (!class_exists($tableClass))
 			{
-				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-				if (!$isAdmin)
-				{
-					$basePath = JPATH_SITE;
-				}
-				else
-				{
-					$basePath = JPATH_ADMINISTRATOR;
-				}
+				$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 				$searchPaths = array(
-					$basePath . '/components/' . $config['option'] . '/tables',
-					JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/tables'
+					$componentPaths['main'] . '/tables',
+					$componentPaths['admin'] . '/tables'
 				);
 
 				if (array_key_exists('tablepath', $config))
@@ -228,7 +228,7 @@ class FOFTable extends JObject
 				$altPath = $configProvider->get($configProviderKey . 'table_path', null);
 				if ($altPath)
 				{
-					array_unshift($searchPaths, JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $altPath);
+					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $altPath);
 				}
 
 				JLoader::import('joomla.filesystem.path');
@@ -247,7 +247,8 @@ class FOFTable extends JObject
 				$tableClass = 'FOFTable';
 			}
 
-			$tbl_common = str_replace('com_', '', $config['option']) . '_';
+			$component = str_replace('com_', '', $config['option']);
+			$tbl_common = $component. '_';
 
 			if (!array_key_exists('tbl', $config))
 			{
@@ -280,10 +281,18 @@ class FOFTable extends JObject
 			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db']);
 			$instance->setInput($tmpInput);
 
+			// Determine and set the asset key for this table
+			$assetKey = 'com_' . $component . '.' . strtolower(FOFInflector::singularize($type));
+			$assetKey = $configProvider->get($configProviderKey . 'asset_key', $assetKey);
+			$instance->setAssetKey($assetKey);
+
 			if (array_key_exists('trigger_events', $config))
 			{
 				$instance->setTriggerEvents($config['trigger_events']);
 			}
+
+			$configProviderFieldmapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
+			$instance->_columnAlias = $configProvider->get($configProviderFieldmapKey, array());
 
 			$instances[$tableClass] = $instance;
 		}
@@ -716,6 +725,16 @@ class FOFTable extends JObject
 				{
 					$this->$k = $src[$k];
 				}
+			}
+		}
+
+		// Set rules for assets enabled tables
+		if ($this->_trackAssets)
+		{
+			// Bind the rules.
+			if (isset($src['rules']) && is_array($src['rules']))
+			{
+				$this->setRules($src['rules']);
 			}
 		}
 
@@ -1741,8 +1760,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeBind' . ucfirst($name), array(&$this, &$from));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeBind' . ucfirst($name), array(&$this, &$from));
 
 			if (in_array(false, $result, true))
 			{
@@ -1763,8 +1781,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$dispatcher->trigger('onAfterLoad' . ucfirst($name), array(&$this, &$result));
+			FOFPlatform::getInstance()->runPlugins('onAfterLoad' . ucfirst($name), array(&$this, &$result));
 		}
 	}
 
@@ -1892,8 +1909,7 @@ class FOFTable extends JObject
 		if ($this->_trigger_events)
 		{
 			$name       = FOFInflector::pluralize($this->getKeyName());
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeStore' . ucfirst($name), array(&$this, $updateNulls));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeStore' . ucfirst($name), array(&$this, $updateNulls));
 
 			if (in_array(false, $result, true))
 			{
@@ -1914,8 +1930,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterStore' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterStore' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -1936,8 +1951,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeMove' . ucfirst($name), array(&$this, $updateNulls));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeMove' . ucfirst($name), array(&$this, $updateNulls));
 
 			if (in_array(false, $result, true))
 			{
@@ -1958,8 +1972,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterMove' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterMove' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -1980,8 +1993,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeReorder' . ucfirst($name), array(&$this, $where));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeReorder' . ucfirst($name), array(&$this, $where));
 
 			if (in_array(false, $result, true))
 			{
@@ -2002,8 +2014,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterReorder' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterReorder' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -2024,8 +2035,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeDelete' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeDelete' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2046,8 +2056,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterDelete' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterDelete' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2068,8 +2077,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeHit' . ucfirst($name), array(&$this, $oid, $log));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeHit' . ucfirst($name), array(&$this, $oid, $log));
 
 			if (in_array(false, $result, true))
 			{
@@ -2090,8 +2098,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterHit' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterHit' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2112,8 +2119,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeCopy' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeCopy' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2134,8 +2140,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterCopy' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterCopy' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2156,8 +2161,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforePublish' . ucfirst($name), array(&$this, &$cid, $publish));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforePublish' . ucfirst($name), array(&$this, &$cid, $publish));
 
 			if (in_array(false, $result, true))
 			{
@@ -2178,8 +2182,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterReset' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterReset' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -2200,8 +2203,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeReset' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeReset' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -2280,7 +2282,7 @@ class FOFTable extends JObject
 	{
 		$k = $this->_tbl_key;
 
-		return $this->_tbl . '.' . (int) $this->$k;
+		return $this->_assetKey . '.'  . (int) $this->$k;
 	}
 
 	/**
@@ -2321,6 +2323,17 @@ class FOFTable extends JObject
 		}
 
 		return 1;
+	}
+
+	/**
+	 * This method sets the asset key for the items of this table. Obviously, it
+	 * is only meant to be used when you have a table with an asset field.
+	 *
+	 * @param type $assetKey
+	 */
+	public function setAssetKey($assetKey)
+	{
+		$this->_assetKey = $assetKey;
 	}
 
 	/**
@@ -2394,6 +2407,16 @@ class FOFTable extends JObject
 	public function getRules()
 	{
 		return $this->_rules;
+	}
+
+	/**
+	 * Method to check if the record is treated as an ACL asset
+	 *
+	 * @return  boolean [description]
+	 */
+	public function isAssetsTracked()
+	{
+		return $this->_trackAssets;
 	}
 
 	/**

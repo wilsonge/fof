@@ -20,10 +20,12 @@
 		<folder>dispatcher</folder>
 		<folder>encrypt</folder>
 		<folder>form</folder>
+		<folder>hal</folder>
 		<folder>inflector</folder>
 		<folder>input</folder>
 		<folder>less</folder>
 		<folder>model</folder>
+		<folder>platform</folder>
 		<folder>query</folder>
 		<folder>render</folder>
 		<folder>string</folder>
