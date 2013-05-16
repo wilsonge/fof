@@ -182,6 +182,20 @@ class FOFModel extends JObject
 	protected $configProvider = null;
 
 	/**
+	 * FOFMOdelBehaviorDispatcher for dealing with extra behaviors
+	 *
+	 * @var    FOFMOdelBehaviorDispatcher
+	 */
+	protected $modelDispatcher = null;
+
+	/**
+	 *	Default behaviors to apply to the model
+	 * 
+	 * @var  	array
+	 */
+	protected $default_behaviors = array();
+
+	/**
 	 * Returns a new model object. Unless overriden by the $config array, it will
 	 * try to automatically populate its state from the request variables.
 	 *
@@ -348,6 +362,26 @@ class FOFModel extends JObject
 	}
 
 	/**
+	 * Adds a behavior to the model
+	 * 
+	 * @param  	string 	$name   The name of the behavior
+	 * @param 	array  	$config Optional Behavior configuration
+	 */
+	public function addBehavior($name, $config = array())
+	{
+
+		$behaviorClass = 'FOFModelBehavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass)) 
+		{
+			$behavior = new $behaviorClass($this->modelDispatcher, $config);
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns a new instance of a model, with the state reset to defaults
 	 *
 	 * @param   string  $type    Model type, e.g. 'Items'
@@ -500,6 +534,9 @@ class FOFModel extends JObject
 
 		// Load the configuration provider
 		$this->configProvider = new FOFConfigProvider;
+
+		// Load the behavior dispatcher
+		$this->modelDispatcher = new FOFMOdelBehaviorDispatcher;
 
 		// Set the $name/$_name variable
 		$component = $this->input->getCmd('option', 'com_foobar');
@@ -725,6 +762,25 @@ class FOFModel extends JObject
 		{
 			$this->event_clean_cache = $this->configProvider->get($configKey . 'event_clean_cache',
 				$this->event_clean_cache);
+		}
+
+		if (isset($config['behaviors']))
+		{
+			$behaviors = (array) $config['behaviors'];
+			foreach ($behaviors as $behavior)
+			{
+				$this->addBehavior($behavior);
+			}
+		}
+		else
+		{
+			$behaviors = $this->configProvider->get($configKey . 'behaviors',
+				$this->default_behaviors);
+
+			foreach ($behaviors as $behavior)
+			{
+				$this->addBehavior($behavior);
+			}
 		}
 
 	}
@@ -2282,6 +2338,15 @@ class FOFModel extends JObject
 
 			// Bind the data
 			$table->bind($allData);
+
+			// Call the behaviors
+			$result = $this->modelDispatcher->trigger($this->event_before_save, array(&$this));
+
+			if (in_array(false, $result, true))
+			{
+				// Behavior failed, return false
+				return false;
+			}
 
 			// Call the plugin
 			$name = $this->name;
