@@ -1492,45 +1492,7 @@ class FOFModel extends JObject
 	 */
 	protected function getUserStateFromRequest($key, $request, $default = null, $type = 'none', $setUserState = true)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		if ($isCLI)
-		{
-			return $default;
-		}
-
-		$app = JFactory::getApplication();
-
-		if (method_exists($app, 'getUserState'))
-		{
-			$old_state = $app->getUserState($key);
-		}
-		else
-		{
-			$old_state = null;
-		}
-
-		$cur_state = (!is_null($old_state)) ? $old_state : $default;
-		$new_state = $this->input->get($request, null, $type);
-
-		// Save the new value only if it was set in this request
-		if ($setUserState)
-		{
-			if ($new_state !== null)
-			{
-				$app->setUserState($key, $new_state);
-			}
-			else
-			{
-				$new_state = $cur_state;
-			}
-		}
-		elseif (is_null($new_state))
-		{
-			$new_state = $cur_state;
-		}
-
-		return $new_state;
+		return FOFPlatform::getInstance()->getUserStateFromRequest($key, $request, $this->input, $default, $type, $setUserState);
 	}
 
 	/**
