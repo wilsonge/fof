@@ -17,3 +17,6 @@ refs/heads/staging
 /tests/config.php
 
 /documentation/*.xml~
+
+antconfig.txt
+build.xml
