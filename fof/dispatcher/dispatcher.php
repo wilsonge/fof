@@ -270,7 +270,7 @@ class FOFDispatcher extends JObject
 		FOFPlatform::getInstance()->loadTranslations($this->component);
 
 		$canDispatch = true;
-		if($isCli)
+		if(FOFPlatform::getInstance()->isCli())
 		{
 			$canDispatch = $canDispatch && $this->onBeforeDispatchCLI();
 		}
@@ -406,15 +406,13 @@ class FOFDispatcher extends JObject
 
 			case 'GET':
 			default:
-				list($isCli, $isAdmin) = self::isCliAdmin();
-
 				// If it's an edit without an ID or ID=0, it's really an add
 				if (($task == 'edit') && ($id == 0))
 				{
 					$task = 'add';
 				}
 				// If it's an edit in the frontend, it's really a read
-				elseif (($task == 'edit') && !$isCli && !$isAdmin)
+				elseif (($task == 'edit') && FOFPlatform::getInstance()->isFrontend())
 				{
 					$task = 'read';
 				}
@@ -736,30 +734,8 @@ class FOFDispatcher extends JObject
 
 		if (is_null($isCLI) && is_null($isAdmin))
 		{
-			try
-			{
-				if (is_null(JFactory::$application))
-				{
-					$isCLI = true;
-				}
-				else
-				{
-					$isCLI = JFactory::getApplication() instanceof JException;
-				}
-			}
-			catch (Exception $e)
-			{
-				$isCLI = true;
-			}
-
-			if ($isCLI)
-			{
-				$isAdmin = false;
-			}
-			else
-			{
-				$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
-			}
+			$isCLI = FOFPlatform::getInstance()->isCli();
+			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
 		return array($isCLI, $isAdmin);

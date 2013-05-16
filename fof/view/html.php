@@ -107,10 +107,8 @@ class FOFViewHtml extends FOFView
 			return;
 		}
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Don't load the toolbar on CLI
-		if(!$isCli)
+		if(!FOFPlatform::getInstance()->isCli())
 		{
 			$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 			$toolbar->perms = $this->perms;
@@ -136,9 +134,11 @@ class FOFViewHtml extends FOFView
 	private function renderLinkbar()
 	{
 		// Do not render a submenu unless we are in the the admin area
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin || $isCli)
+		if (!FOFPlatform::getInstance()->isBackend() || FOFPlatform::getInstance()->isCli())
+		{
 			return;
+		}
+
 		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 		$links = $toolbar->getLinks();
 		if (!empty($links))
@@ -225,8 +225,7 @@ class FOFViewHtml extends FOFView
 		$this->assignRef('lists', $this->lists);
 
 		//pass page params on frontend only
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin && !$isCli)
+		if (FOFPlatform::getInstance()->isFrontend())
 		{
 			$params = JFactory::getApplication()->getParams();
 			$this->assignRef('params', $params);

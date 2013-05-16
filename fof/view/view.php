@@ -150,8 +150,6 @@ abstract class FOFView extends JObject
 	 */
 	public function __construct($config = array())
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Make sure $config is an array
 		if (is_object($config))
 		{
@@ -233,6 +231,9 @@ abstract class FOFView extends JObject
 		$config['name'] = $this->_name;
 		$config['view'] = $this->_name;
 
+		// Get the component directories
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
+
 		// Set the charset (used by the variable escaping functions)
 		if (array_key_exists('charset', $config))
 		{
@@ -253,7 +254,7 @@ abstract class FOFView extends JObject
 		}
 		else
 		{
-			$this->_basePath = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/' . $config['option'];
+			$this->_basePath = $componentPaths['main'];
 		}
 
 		// Set the default template search path
@@ -292,7 +293,7 @@ abstract class FOFView extends JObject
 
 		$this->config = $config;
 
-		if (!$isCli)
+		if (!FOFPlatform::getInstance()->isCli())
 		{
 			$this->baseurl = JURI::base(true);
 
@@ -785,8 +786,6 @@ abstract class FOFView extends JObject
 	 */
 	public function loadTemplate($tpl = null, $strict = false)
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		$paths = FOFPlatform::getInstance()->getViewTemplatePaths($config['option'], $config['view'], $this->getLayout(), $tpl, $strict);
 
 		foreach ($paths as $path)
@@ -1028,8 +1027,6 @@ abstract class FOFView extends JObject
 	 */
 	protected function _setPath($type, $path)
 	{
-		list($isCli,) = FOFDispatcher::isCliAdmin();
-
 		// Clear out the prior search dirs
 		$this->_path[$type] = array();
 
@@ -1041,7 +1038,7 @@ abstract class FOFView extends JObject
 		{
 			case 'template':
 				// Set the alternative template search dir
-				if (!$isCli)
+				if (!FOFPlatform::getInstance()->isCli())
 				{
 					$app = JFactory::getApplication();
 					$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $this->input->getCmd('option'));

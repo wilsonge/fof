@@ -144,8 +144,6 @@ class FOFToolbar
 		$this->input->set('option', $this->component);
 
 		// Get default permissions (can be overriden by the view)
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		$platform = FOFPlatform::getInstance();
 		$perms = (object) array(
 				'manage'	 => $platform->authorise('core.manage', $this->input->getCmd('option', 'com_foobar')),
@@ -162,7 +160,7 @@ class FOFToolbar
 			$this->renderFrontendSubmenu = $config['renderFrontendSubmenu'];
 
 		//if not in the administrative area, load the JToolbarHelper
-		if (!$isAdmin)
+		if (!FOFPlatform::getInstance()->isBackend())
 		{
 			//pretty ugly require...
 			require_once(JPATH_ROOT . '/administrator/includes/toolbar.php');
@@ -237,15 +235,12 @@ class FOFToolbar
 	 */
 	public function onCpanelsBrowse()
 	{
-		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		if ($isAdmin || $this->renderFrontendSubmenu)
+		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$option = $this->input->getCmd('option', 'com_foobar');
@@ -260,14 +255,13 @@ class FOFToolbar
 	public function onBrowse()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		if ($isAdmin || $this->renderFrontendSubmenu)
+		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		// Set toolbar title
@@ -322,14 +316,13 @@ class FOFToolbar
 	public function onRead()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		if ($isAdmin || $this->renderFrontendSubmenu)
+		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$option = $this->input->getCmd('option', 'com_foobar');
@@ -346,8 +339,7 @@ class FOFToolbar
 	public function onAdd()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$option = $this->input->getCmd('option', 'com_foobar');
@@ -367,8 +359,7 @@ class FOFToolbar
 	public function onEdit()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$this->onAdd();

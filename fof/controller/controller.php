@@ -919,8 +919,7 @@ class FOFController extends JObject
 		// Display the view
 		$conf = JFactory::getConfig();
 
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-		if (!$isCli && JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1)
+		if (!FOFPlatform::getInstance()->isCli() && JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1)
 		{
 			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
@@ -1678,7 +1677,7 @@ class FOFController extends JObject
 		// Do the logic only if we're parsing a raw url (index.php?foo=bar&etc=etc)
 		if (strpos($url, 'index.php') === 0)
 		{
-			list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
+			$isAdmin = FOFPlatform::getInstance()->isBackend();
 			$auto = false;
 
 			if (($this->autoRouting == 2 || $this->autoRouting == 3) && $isAdmin)
@@ -1945,10 +1944,8 @@ class FOFController extends JObject
 			// Task is a reserved state
 			$model->setState('task', $this->task);
 
-			list($isCLI, ) = FOFDispatcher::isCliAdmin();
-
 			// Let's get the application object and set menu information if it's available
-			if(!$isCLI)
+			if(!FOFPlatform::getInstance()->isCli())
 			{
 				$app = JFactory::getApplication();
 				$menu = $app->getMenu();
@@ -2269,7 +2266,6 @@ class FOFController extends JObject
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 		// Get the base paths where the view class files are expected to live
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 		$basePaths = array(
 			$componentPaths['main'],
 			$componentPaths['alt']
@@ -2427,18 +2423,7 @@ class FOFController extends JObject
 	 */
 	protected function checkACL($area)
 	{
-		static $isAdmin = null, $isCli = null;
-
-		if (is_null($isAdmin))
-		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		}
-
-		if ($isCli)
-		{
-			return true;
-		}
-		elseif (in_array(strtolower($area), array('false','0','no','403')))
+		if (in_array(strtolower($area), array('false','0','no','403')))
 		{
 			return false;
 		}
@@ -2612,16 +2597,7 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeBrowse()
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		if ($isAdmin)
-		{
-			$defaultPrivilege = 'core.manage';
-		}
-		else
-		{
-			$defaultPrivilege = '';
-		}
+		$defaultPrivilege = '';
 
 		$privilege = $this->configProvider->get($this->component . '.views.' .
 				FOFInflector::singularize($this->view) . '.acl.browse', $defaultPrivilege);
@@ -2765,7 +2741,8 @@ class FOFController extends JObject
 
 		if (is_null($isCli))
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			$isCli = FOFPlatform::getInstance()->isCli();
+			$iAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
 		switch ($this->csrfProtection)

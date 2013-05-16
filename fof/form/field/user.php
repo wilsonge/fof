@@ -196,9 +196,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 		}
 		else
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-			if ($isAdmin)
+			if (FOFPlatform::getInstance()->isBackend())
 			{
 				// If no link is defined in the back-end, assume the user edit
 				// link in the User Manager component
@@ -258,9 +256,8 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 			{
 				// Fall back to the Gravatar method
 				$md5 = md5($user->email);
-				list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-				if ($isCLI)
+				if (FOFPlatform::getInstance()->isCli())
 				{
 					$scheme = 'http';
 				}

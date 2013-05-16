@@ -36,8 +36,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		if ($format != 'html')
 			return;
 
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-		if(!$isCli)
+		if(!FOFPlatform::getInstance()->isCli())
 		{
 			// Wrap output in a Joomla-versioned div
 			$version = new JVersion;
@@ -50,7 +49,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		$this->renderButtons($view, $task, $input, $config);
 		$this->renderLinkbar($view, $task, $input, $config);
 
-		if (!$isCli && version_compare(JVERSION, '3.0.0', 'ge'))
+		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
 		{
 			$sidebarEntries = JHtmlSidebar::getEntries();
 			if (!empty($sidebarEntries))
@@ -73,12 +72,11 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
 		$format = $input->getCmd('format', 'html');
-		if ($format != 'html' || $isCli)
+		if ($format != 'html' || FOFPlatform::getInstance()->isCli())
 			return;
 
-		if (!$isCli && version_compare(JVERSION, '3.0.0', 'ge'))
+		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
 		{
 			$sidebarEntries = JHtmlSidebar::getEntries();
 			if (!empty($sidebarEntries))
@@ -159,8 +157,7 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderLinkbar_classic($view, $task, $input, $config = array())
 	{
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-		if($isCli)
+		if(FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -169,8 +166,7 @@ ENDJAVASCRIPT;
 		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin && !$renderFrontendSubmenu)
+		if (!FOFPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
 			return;
 
 		$links = $toolbar->getLinks();
@@ -262,10 +258,8 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderLinkbar_joomla($view, $task, $input, $config = array())
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// On command line don't do anything
-		if($isCli)
+		if(FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -274,7 +268,7 @@ ENDJAVASCRIPT;
 		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
 
-		if (!$isAdmin && !$renderFrontendSubmenu)
+		if (!FOFPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
 			return;
 
 		$links = $toolbar->getLinks();
@@ -297,8 +291,7 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderButtons($view, $task, $input, $config = array())
 	{
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-		if($isCli)
+		if(FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -306,9 +299,10 @@ ENDJAVASCRIPT;
 		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if ($isAdmin || !$renderFrontendButtons)
+		if (FOFPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
+		{
 			return;
+		}
 
 		$bar = JToolBar::getInstance('toolbar');
 		$items = $bar->getItems();
@@ -368,12 +362,6 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
-		static $isCli = null, $isAdmin = null;
-		if (is_null($isCli))
-		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		}
-
 		$html = '';
 
 		// Joomla! 3.0+ support
@@ -531,7 +519,7 @@ ENDJS;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="' . $input->getCmd('task', 'browse') . '" />' . PHP_EOL;
 		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
-		if (version_compare(JVERSION, '3.0', 'ge') && !$isAdmin && !$isCli)
+		if (version_compare(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
 		{
 			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
 		}

@@ -583,9 +583,8 @@ class FOFModel extends JObject
 
 		// Get and store the pagination request variables
 		$this->populateSavesate();
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		if ($isCLI)
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			$limit = 20;
 			$limitstart = 0;
@@ -2175,8 +2174,6 @@ class FOFModel extends JObject
 	 */
 	protected function onBeforeSave(&$data, &$table)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
 		FOFPlatform::getInstance()->importPlugin('content');
@@ -2254,8 +2251,6 @@ class FOFModel extends JObject
 	 */
 	protected function onAfterSave(&$table)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
 		FOFPlatform::getInstance()->importPlugin('content');
@@ -2283,8 +2278,6 @@ class FOFModel extends JObject
 	 */
 	protected function onBeforeDelete(&$id, &$table)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
 		FOFPlatform::getInstance()->importPlugin('content');
@@ -2326,8 +2319,6 @@ class FOFModel extends JObject
 	 */
 	protected function onAfterDelete($id)
 	{
-		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 		FOFPlatform::getInstance()->importPlugin('content');
 

@@ -412,6 +412,11 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 */
 	public function authorise($action, $assetname)
 	{
+		if ($this->isCli())
+		{
+			return true;
+		}
+		
 		return JFactory::getUser()->authorise($action, $assetname);
 	}
 

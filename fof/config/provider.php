@@ -36,18 +36,11 @@ class FOFConfigProvider
 			return;
 		}
 
-		static $isCli, $isAdmin;
-
-		if (is_null($isCli))
-		{
-			list ($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		}
-
-		if ($isCli)
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			$order = array('cli', 'backend');
 		}
-		elseif ($isAdmin)
+		elseif (FOFPlatform::getInstance()->isBackend())
 		{
 			$order = array('backend');
 		}

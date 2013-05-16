@@ -236,14 +236,6 @@ class FOFTemplateUtils
 	 */
 	public static function getAltPaths($path)
 	{
-		static $isCli = null;
-		static $isAdmin = null;
-
-		if (is_null($isCli) && is_null($isAdmin))
-		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		}
-
 		$protoAndPath = explode('://', $path, 2);
 		if (count($protoAndPath) < 2)
 		{
