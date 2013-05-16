@@ -1757,8 +1757,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeBind' . ucfirst($name), array(&$this, &$from));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeBind' . ucfirst($name), array(&$this, &$from));
 
 			if (in_array(false, $result, true))
 			{
@@ -1779,8 +1778,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$dispatcher->trigger('onAfterLoad' . ucfirst($name), array(&$this, &$result));
+			FOFPlatform::getInstance()->runPlugins('onAfterLoad' . ucfirst($name), array(&$this, &$result));
 		}
 	}
 
@@ -1908,8 +1906,7 @@ class FOFTable extends JObject
 		if ($this->_trigger_events)
 		{
 			$name       = FOFInflector::pluralize($this->getKeyName());
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeStore' . ucfirst($name), array(&$this, $updateNulls));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeStore' . ucfirst($name), array(&$this, $updateNulls));
 
 			if (in_array(false, $result, true))
 			{
@@ -1930,8 +1927,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterStore' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterStore' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -1952,8 +1948,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeMove' . ucfirst($name), array(&$this, $updateNulls));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeMove' . ucfirst($name), array(&$this, $updateNulls));
 
 			if (in_array(false, $result, true))
 			{
@@ -1974,8 +1969,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterMove' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterMove' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -1996,8 +1990,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeReorder' . ucfirst($name), array(&$this, $where));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeReorder' . ucfirst($name), array(&$this, $where));
 
 			if (in_array(false, $result, true))
 			{
@@ -2018,8 +2011,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterReorder' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterReorder' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -2040,8 +2032,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeDelete' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeDelete' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2062,8 +2053,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterDelete' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterDelete' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2084,8 +2074,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeHit' . ucfirst($name), array(&$this, $oid, $log));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeHit' . ucfirst($name), array(&$this, $oid, $log));
 
 			if (in_array(false, $result, true))
 			{
@@ -2106,8 +2095,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterHit' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterHit' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2128,8 +2116,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeCopy' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeCopy' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2150,8 +2137,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterCopy' . ucfirst($name), array(&$this, $oid));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterCopy' . ucfirst($name), array(&$this, $oid));
 
 			if (in_array(false, $result, true))
 			{
@@ -2172,8 +2158,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforePublish' . ucfirst($name), array(&$this, &$cid, $publish));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforePublish' . ucfirst($name), array(&$this, &$cid, $publish));
 
 			if (in_array(false, $result, true))
 			{
@@ -2194,8 +2179,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onAfterReset' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterReset' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{
@@ -2216,8 +2200,7 @@ class FOFTable extends JObject
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
 
-			$dispatcher = JDispatcher::getInstance();
-			$result     = $dispatcher->trigger('onBeforeReset' . ucfirst($name), array(&$this));
+			$result     = FOFPlatform::getInstance()->runPlugins('onBeforeReset' . ucfirst($name), array(&$this));
 
 			if (in_array(false, $result, true))
 			{

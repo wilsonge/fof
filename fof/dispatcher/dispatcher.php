@@ -629,15 +629,14 @@ class FOFDispatcher extends JObject
 			}
 
 			JLoader::import('joomla.user.authentication');
-			$app = JFactory::getApplication();
 			$options = array('remember'		 => false);
 			$authenticate = JAuthentication::getInstance();
 			$response = $authenticate->authenticate($authInfo, $options);
 
 			if ($response->status == JAUTHENTICATE_STATUS_SUCCESS)
 			{
-				JPluginHelper::importPlugin('user');
-				$results = $app->triggerEvent('onLoginUser', array((array) $response, $options));
+				FOFPlatform::getInstance()->importPlugin('user');
+				$results = FOFPlatform::getInstance()->runPlugins('onLoginUser', array((array) $response, $options));
 
 				JLoader::import('joomla.user.helper');
 				$userid = JUserHelper::getUserId($response->username);
@@ -645,8 +644,6 @@ class FOFDispatcher extends JObject
 
 				$session = JFactory::getSession();
 				$session->set('user', $user);
-
-				// $results = $app->triggerEvent('onLogoutUser', array($parameters, $options));
 
 				$this->_fofAuth_isLoggedIn = true;
 			}

@@ -369,7 +369,10 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 */
 	public function importPlugin($type)
 	{
-		JPluginHelper::importPlugin($type);
+		if (!$this->isCli())
+		{
+			JPluginHelper::importPlugin($type);
+		}
 	}
 
 	/**
@@ -385,9 +388,16 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 */
 	public function runPlugins($event, $data)
 	{
-		$dispatcher = JDispatcher::getInstance();
+		if (!$this->isCli())
+		{
+			$dispatcher = JDispatcher::getInstance();
 
-		return $dispatcher->trigger($event, $data);
+			return $dispatcher->trigger($event, $data);
+		}
+		else
+		{
+			return array();
+		}
 	}
 
 	/**

@@ -1165,11 +1165,10 @@ class FOFModel extends JObject
 				$this->onAfterPublish($table);
 
 				// Call the plugin events
-				$dispatcher = JDispatcher::getInstance();
-				JPluginHelper::importPlugin('content');
+				FOFPlatform::getInstance()->importPlugin('content');
 				$name = $this->input->getCmd('view', 'cpanel');
 				$context = $this->option . '.' . $name;
-				$result = $dispatcher->trigger($this->event_change_state, array($context, $this->id_list, $publish));
+				$result = FOFPlatform::getInstance()->runPlugins($this->event_change_state, array($context, $this->id_list, $publish));
 			}
 		}
 
@@ -2076,11 +2075,10 @@ class FOFModel extends JObject
 	{
 		// Import the appropriate plugin group.
 		JLoader::import('joomla.plugin.helper');
-		JPluginHelper::importPlugin($group);
+		FOFPlatform::getInstance()->importPlugin($group);
 
 		// Trigger the form preparation event.
-		$app = JFactory::getApplication();
-		$results = $app->triggerEvent('onContentPrepareForm', array($form, $data));
+		$results = FOFPlatform::getInstance()->runPlugins('onContentPrepareForm', array($form, $data));
 
 		// Check for errors encountered while preparing the form.
 		if (count($results) && in_array(false, $results, true))
@@ -2181,12 +2179,7 @@ class FOFModel extends JObject
 
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
@@ -2215,7 +2208,7 @@ class FOFModel extends JObject
 
 			// Call the plugin
 			$name = $this->name;
-			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
+			$result = FOFPlatform::getInstance()->runPlugins($this->event_before_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
 
 			if (in_array(false, $result, true))
 			{
@@ -2265,17 +2258,12 @@ class FOFModel extends JObject
 
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
 			$name = $this->name;
-			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
+			FOFPlatform::getInstance()->runPlugins($this->event_after_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
 		}
 		catch (Exception $e)
 		{
@@ -2299,12 +2287,7 @@ class FOFModel extends JObject
 
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
 
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
@@ -2312,7 +2295,7 @@ class FOFModel extends JObject
 
 			$name = $this->input->getCmd('view', 'cpanel');
 			$context = $this->option . '.' . $name;
-			$result = $dispatcher->trigger($this->event_before_delete, array($context, $table));
+			$result = FOFPlatform::getInstance()->runPlugins($this->event_before_delete, array($context, $table));
 
 			if (in_array(false, $result, true))
 			{
@@ -2346,18 +2329,13 @@ class FOFModel extends JObject
 		list($isCLI, $isAdmin) = FOFDispatcher::isCliAdmin();
 
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
-		if (!$isCLI)
-		{
-			JPluginHelper::importPlugin('content');
-		}
-
-		$dispatcher = JDispatcher::getInstance();
+		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
 		{
 			$name = $this->input->getCmd('view', 'cpanel');
 			$context = $this->option . '.' . $name;
-			$result = $dispatcher->trigger($this->event_after_delete, array($context, $this->_recordForDeletion));
+			$result = FOFPlatform::getInstance()->runPlugins($this->event_after_delete, array($context, $this->_recordForDeletion));
 			unset($this->_recordForDeletion);
 		}
 		catch (Exception $e)
@@ -2497,7 +2475,6 @@ class FOFModel extends JObject
 	protected function cleanCache($group = null, $client_id = 0)
 	{
 		$conf = JFactory::getConfig();
-		$dispatcher = JEventDispatcher::getInstance();
 
 		$options = array(
 			'defaultgroup' => ($group) ? $group : (isset($this->option) ? $this->option : JFactory::getApplication()->input->get('option')),
@@ -2507,6 +2484,6 @@ class FOFModel extends JObject
 		$cache->clean();
 
 		// Trigger the onContentCleanCache event.
-		$dispatcher->trigger($this->event_clean_cache, $options);
+		FOFPlatform::getInstance()->runPlugins($this->event_clean_cache, $options);
 	}
 }

@@ -235,9 +235,8 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 			if ($avatar_method == 'plugin')
 			{
 				// Use the user plugins to get an avatar
-				JPluginHelper::importPlugin('user');
-				$dispatcher = JDispatcher::getInstance();
-				$jResponse  = $dispatcher->trigger('onUserAvatar', array($user, $avatar_size));
+				FOFPlatform::getInstance()->importPlugin('user');
+				$jResponse = FOFPlatform::getInstance()->runPlugins('onUserAvatar', array($user, $avatar_size));
 
 				if (!empty($jResponse))
 				{
