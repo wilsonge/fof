@@ -21,7 +21,7 @@ class FOFViewCsv extends FOFViewHtml
 	/**
 	 *  Should I produce a CSV header row.
 	 *
-	 *  @var  boolean
+	 * @var  boolean
 	 */
 	protected $csvHeader = true;
 
@@ -39,13 +39,19 @@ class FOFViewCsv extends FOFViewHtml
 	 */
 	protected $csvFields = array();
 
+	/**
+	* Public constructor. Instantiates a FOFViewCsv object.
+	*
+	* @param   array  $config  The configuration data array
+	*/
 	function __construct($config = array())
 	{
 		// Make sure $config is an array
 		if (is_object($config))
 		{
-			$config = (array)$config;
-		} elseif (!is_array($config))
+			$config = (array) $config;
+		}
+		elseif (!is_array($config))
 		{
 			$config = array();
 		}
@@ -72,8 +78,8 @@ class FOFViewCsv extends FOFViewHtml
 
 		if (empty($this->csvFilename))
 		{
-			$view = $this->input->getCmd('view', 'cpanel');
-			$view = FOFInflector::pluralize($view);
+			$view              = $this->input->getCmd('view', 'cpanel');
+			$view              = FOFInflector::pluralize($view);
 			$this->csvFilename = strtolower($view);
 		}
 
@@ -83,6 +89,13 @@ class FOFViewCsv extends FOFViewHtml
 		}
 	}
 
+	/**
+	* Executes before rendering a generic page, default to actions necessary for the Browse task.
+	*
+	* @param   string  $tpl  Subtemplate to use
+	*
+	* @return  boolean  Return true to allow rendering of the page
+	*/
 	protected function onDisplay($tpl = null)
 	{
 		// Load the model
@@ -111,9 +124,11 @@ class FOFViewCsv extends FOFViewHtml
 		}
 
 		$hasFailed = false;
+
 		try
 		{
 			$result = $this->loadTemplate($tpl, true);
+
 			if ($result instanceof Exception)
 			{
 				$hasFailed = true;
@@ -130,6 +145,7 @@ class FOFViewCsv extends FOFViewHtml
 			{
 				$hasFailed = true;
 			}
+
 			JError::setErrorHandling(E_WARNING, 'callback');
 		}
 
@@ -143,15 +159,16 @@ class FOFViewCsv extends FOFViewHtml
 			if (empty($items))
 				return;
 
-			$item = array_pop($items);
-			$keys = get_object_vars($item);
-			$keys = array_keys($keys);
+			$item    = array_pop($items);
+			$keys    = get_object_vars($item);
+			$keys    = array_keys($keys);
 			$items[] = $item;
 			reset($items);
 
 			if (!empty($this->csvFields))
 			{
 				$temp = array();
+
 				foreach ($this->csvFields as $f)
 				{
 					if (in_array($f, $keys))
@@ -159,23 +176,27 @@ class FOFViewCsv extends FOFViewHtml
 						$temp[] = $f;
 					}
 				}
+
 				$keys = $temp;
 			}
 
 			if ($this->csvHeader)
 			{
 				$csv = array();
+
 				foreach ($keys as $k)
 				{
 					$csv[] = '"' . str_replace('"', '""', $k) . '"';
 				}
+
 				echo implode(",", $csv) . "\r\n";
 			}
 
 			foreach ($items as $item)
 			{
-				$csv = array();
-				$item = (array)$item;
+				$csv  = array();
+				$item = (array) $item;
+
 				foreach ($keys as $k)
 				{
 					if (!isset($item[$k]))
@@ -198,11 +219,11 @@ class FOFViewCsv extends FOFViewHtml
 
 					$csv[] = '"' . str_replace('"', '""', $v) . '"';
 				}
+
 				echo implode(",", $csv) . "\r\n";
 			}
 		}
 
 		return false;
 	}
-
 }
