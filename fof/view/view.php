@@ -787,34 +787,7 @@ abstract class FOFView extends JObject
 	{
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		$basePath = $isAdmin ? 'admin:' : 'site:';
-		$basePath .= $this->config['option'] . '/';
-		$altBasePath = $basePath;
-		$basePath .= $this->config['view'] . '/';
-		$altBasePath .= (FOFInflector::isSingular($this->config['view']) ? FOFInflector::pluralize($this->config['view']) : FOFInflector::singularize($this->config['view'])) . '/';
-
-		if ($strict)
-		{
-			$paths = array(
-				$basePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				// $basePath . 'default' . ($tpl ? "_$tpl" : ''),
-				$altBasePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				// $altBasePath . 'default' . ($tpl ? "_$tpl" : ''),
-			);
-		}
-		else
-		{
-			$paths = array(
-				$basePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				$basePath . $this->getLayout(),
-				$basePath . 'default' . ($tpl ? "_$tpl" : ''),
-				$basePath . 'default',
-				$altBasePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				$altBasePath . $this->getLayout(),
-				$altBasePath . 'default' . ($tpl ? "_$tpl" : ''),
-				$altBasePath . 'default',
-			);
-		}
+		$paths = FOFPlatform::getInstance()->getViewTemplatePaths($config['option'], $config['view'], $this->getLayout(), $tpl, $strict);
 
 		foreach ($paths as $path)
 		{
