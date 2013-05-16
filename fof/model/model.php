@@ -2012,20 +2012,8 @@ class FOFModel extends JObject
 	 */
 	public function findFormFilename($source)
 	{
-		// Get some useful variables
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view 	= $this->input->getCmd('view', 'cpanels');
-
-		if(!$isCli)
-		{
-			$template = JFactory::getApplication()->getTemplate();
-		}
-		else
-		{
-			$template = 'cli';
-		}
 
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
 		$file_root = $componentPaths['main'];
