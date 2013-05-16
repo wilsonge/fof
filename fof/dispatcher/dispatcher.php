@@ -294,7 +294,7 @@ class FOFDispatcher extends JObject
 		// Get and execute the controller
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view = $this->input->getCmd('view', $this->defaultView);
-		$task = $this->input->getCmd('task', '');
+		$task = $this->input->getCmd('task', null);
 
 		if (empty($task))
 		{
@@ -368,6 +368,7 @@ class FOFDispatcher extends JObject
 	protected function getTask($view)
 	{
 		// Get a default task based on plural/singular view
+		$request_task = $this->input->getCmd('task', null);
 		$task = FOFInflector::isPlural($view) ? 'browse' : 'edit';
 
 		// Get a potential ID, we might need it later
@@ -396,7 +397,10 @@ class FOFDispatcher extends JObject
 		{
 			case 'POST':
 			case 'PUT':
-				$task = 'save';
+				if (!is_null($id))
+				{
+					$task = 'save';
+				}
 				break;
 
 			case 'DELETE':
