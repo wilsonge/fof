@@ -182,9 +182,9 @@ class FOFModel extends JObject
 	protected $configProvider = null;
 
 	/**
-	 * FOFMOdelBehaviorDispatcher for dealing with extra behaviors
+	 * FOFModelDispatcherBehavior for dealing with extra behaviors
 	 *
-	 * @var    FOFMOdelBehaviorDispatcher
+	 * @var    FOFModelDispatcherBehavior
 	 */
 	protected $modelDispatcher = null;
 
@@ -517,7 +517,7 @@ class FOFModel extends JObject
 		$this->configProvider = new FOFConfigProvider;
 
 		// Load the behavior dispatcher
-		$this->modelDispatcher = new FOFModelBehaviorDispatcher;
+		$this->modelDispatcher = new FOFModelDispatcherBehavior;
 
 		// Set the $name/$_name variable
 		$component = $this->input->getCmd('option', 'com_foobar');

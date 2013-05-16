@@ -13,7 +13,7 @@ defined('_JEXEC') or die();
  * @package  FrameworkOnFramework.Model
  * @since    2.2
  */
-class FOFModelBehaviorDispatcher extends JDispatcher
+class FOFModelDispatcherBehavior extends JDispatcher
 {
 	
 }
