@@ -26,42 +26,18 @@ class FOFModelBehaviorFilters extends FOFModelBehavior
 
 		foreach ($fields as $fieldname => $fieldtype)
 		{
-			$filterName = ($fieldname == $tableKey) ? 'id' : $fieldname;
+			$field = new stdClass();
+			$field->name = $fieldname;
+			$field->type = $fieldtype;
+			
+			$filterName = ($field->name == $tableKey) ? 'id' : $field->name;
 			$filterState = $model->getState($filterName, null);
 
-			if ($filterName == $table->getColumnAlias('enabled'))
-			{
-				if (!is_null($filterState) && ($filterState !== ''))
-				{
-					$query->where($db->qn($fieldname) . ' = ' . $db->q((int) $filterState));
-				}
-			}
-			elseif (!empty($filterState) || ($filterState === '0'))
-			{
-				switch ($fieldname)
-				{
-					case $table->getColumnAlias('title'):
-					case $table->getColumnAlias('description'):
-						$query->where('(' . $db->qn($fieldname) . ' LIKE ' . $db->q('%' . $filterState . '%') . ')');
+			$field = FOFModelField::getField($field, array('dbo' => $db));
 
-						break;
-
-					default:
-						if (is_array($filterState))
-						{
-							$tmp = array();
-							foreach ($filterState as $k => $v)
-							{
-								$tmp[] = $db->q($v);
-							}
-							$query->where('(' . $db->qn($fieldname) . ' IN(' . implode(',', $tmp) . '))');
-						}
-						else
-						{
-							$query->where('(' . $db->qn($fieldname) . '=' . $db->q($filterState) . ')');
-						}
-						break;
-				}
+			if ($sql = $field->partial($filterState, 10))
+			{
+				$query->where($sql);
 			}
 		}
 	}

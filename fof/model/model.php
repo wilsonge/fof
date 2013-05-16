@@ -353,7 +353,7 @@ class FOFModel extends JObject
 
 		$behaviorClass = 'FOFModelBehavior' . ucfirst(strtolower($name));
 
-		if (class_exists($behaviorClass)) 
+		if (class_exists($behaviorClass) && $this->modelDispatcher) 
 		{
 			$behavior = new $behaviorClass($this->modelDispatcher, $config);
 			return true;
