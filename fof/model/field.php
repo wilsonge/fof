@@ -57,6 +57,33 @@ abstract class FOFModelField
 		return ($value === $this->null_value) || empty($value);
 	}
 
+	public function getDefaultSearchMethod()
+	{
+		return 'exact';
+	}
+
+	public function getSearchMethods()
+	{
+		$ignore = array('isEmpty', 'getField', 'getFieldType', '__construct', 'getDefaultSearchMethod', 'getSearchMethods');
+
+		$class = new ReflectionClass(__CLASS__);
+		$methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
+
+		$tmp = array();
+		foreach ($methods as $method) 
+		{
+			$tmp[] = $method->name;
+		}
+		$methods = $tmp;
+
+		if ($methods = array_diff($methods, $ignore))
+		{
+			return $methods;
+		}
+
+		return array();
+	}
+
 	public function exact($value)
 	{
 		if ($this->isEmpty($value))

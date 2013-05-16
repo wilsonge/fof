@@ -22,6 +22,11 @@ class FOFModelFieldText extends FOFModelField
 		$this->null_value = '';
 	}
 
+	public function getDefaultSearchMethod()
+	{
+		return 'partial';
+	}
+
 	public function partial($value)
 	{
 		if ($this->isEmpty($value))

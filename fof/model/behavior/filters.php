@@ -35,7 +35,43 @@ class FOFModelBehaviorFilters extends FOFModelBehavior
 
 			$field = FOFModelField::getField($field, array('dbo' => $db));
 
-			if ($sql = $field->partial($filterState, 10))
+			if (is_array($filterState) || is_object($filterState))
+			{
+				$options = new JRegistry($filterState);
+			} else 
+			{
+				$options = new JRegistry();
+				$options->set('value', $filterState);
+			}
+
+			$methods = $field->getSearchMethods();
+			$method = $options->get('method', $field->getDefaultSearchMethod());
+
+			if (!in_array($method, $methods))
+			{
+				$method = 'exact';
+			}
+
+			switch ($method)
+			{
+				case 'between':
+				case 'outside':
+					$sql = $field->$method($options->get('from', null), $options->get('to'));
+					break;
+
+				case 'interval':
+					$sql = $field->$method($options->get('value', null), $options->get('interval'));
+					break;
+
+				case 'exact':
+				case 'partial':
+				case 'search':
+				default:
+					$sql = $field->$method($options->get('value', null));
+					break;
+			}
+
+			if ($sql)
 			{
 				$query->where($sql);
 			}

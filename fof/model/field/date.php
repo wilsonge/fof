@@ -15,6 +15,11 @@ defined('_JEXEC') or die();
  */
 class FOFModelFieldDate extends FOFModelFieldText
 {
+	public function getDefaultSearchMethod()
+	{
+		return 'exact';
+	}
+
 	/**
 	 * Interval date search
 	 * 	
