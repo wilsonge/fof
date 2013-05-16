@@ -36,8 +36,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		if ($format != 'html')
 			return;
 
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-		if(!$isCli)
+		if(!FOFPlatform::getInstance()->isCli())
 		{
 			// Wrap output in a Joomla-versioned div
 			$version = new JVersion;
@@ -62,7 +61,6 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
-		list($isCli,) = FOFDispatcher::isCliAdmin();
 		$format = $input->getCmd('format', 'html');
 		if (empty($format))
 			$format = 'html';
@@ -70,7 +68,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			return;
 
 		// Closing tag only if we're not in CLI
-		if($isCli)
+		if(FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -461,10 +459,8 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderLinkbar($view, $task, $input, $config = array())
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// On command line don't do anything
-		if($isCli)
+		if(FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -474,7 +470,7 @@ ENDJAVASCRIPT;
 		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
 
 
-		if (!$isAdmin && !$renderFrontendSubmenu)
+		if (!FOFPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
 			return;
 
 		$links = $toolbar->getLinks();
@@ -497,10 +493,8 @@ ENDJAVASCRIPT;
 	 */
 	protected function renderButtons($view, $task, $input, $config = array())
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// On command line don't do anything
-		if($isCli)
+		if(FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -510,13 +504,14 @@ ENDJAVASCRIPT;
 		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
 
 
-		if ($isAdmin || !$renderFrontendButtons)
+		if (FOFPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
+		{
 			return;
+		}
 
 		// Load main backend language, in order to display toolbar strings
 		// (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
-		$jlang = JFactory::getLanguage();
-		$jlang->load('joomla', JPATH_ADMINISTRATOR, null, true);
+		FOFPlatform::getInstance()->loadTranslations('joomla');
 
 		$title = JFactory::getApplication()->get('JComponentTitle');
 		$bar = JToolBar::getInstance('toolbar');

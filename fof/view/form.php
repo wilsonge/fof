@@ -34,9 +34,6 @@ class FOFViewForm extends FOFViewHtml
 		$this->form->setModel($model);
 		$this->form->setView($this);
 
-		// Get some useful information
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Get the task set in the model
 		$task = $model->getState('task', 'browse');
 
@@ -67,7 +64,7 @@ class FOFViewForm extends FOFViewHtml
 		$this->preRender();
 
 		// -- Try to load a view template; if not exists render the form directly
-		$basePath = $isAdmin ? 'admin:' : 'site:';
+		$basePath = FOFPlatform::getInstance()->isBackend() ? 'admin:' : 'site:';
 		$basePath .= $this->config['option'] . '/';
 		$basePath .= $this->config['view'] . '/';
 		$path = $basePath . $this->getLayout();

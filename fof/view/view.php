@@ -150,8 +150,6 @@ abstract class FOFView extends JObject
 	 */
 	public function __construct($config = array())
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
 		// Make sure $config is an array
 		if (is_object($config))
 		{
@@ -233,6 +231,9 @@ abstract class FOFView extends JObject
 		$config['name'] = $this->_name;
 		$config['view'] = $this->_name;
 
+		// Get the component directories
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
+
 		// Set the charset (used by the variable escaping functions)
 		if (array_key_exists('charset', $config))
 		{
@@ -253,7 +254,7 @@ abstract class FOFView extends JObject
 		}
 		else
 		{
-			$this->_basePath = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/' . $config['option'];
+			$this->_basePath = $componentPaths['main'];
 		}
 
 		// Set the default template search path
@@ -292,7 +293,7 @@ abstract class FOFView extends JObject
 
 		$this->config = $config;
 
-		if (!$isCli)
+		if (!FOFPlatform::getInstance()->isCli())
 		{
 			$this->baseurl = JURI::base(true);
 
@@ -322,14 +323,7 @@ abstract class FOFView extends JObject
 		// Automatically check for a Joomla! version specific override
 		$throwErrorIfNotFound = true;
 
-		$jversion = new JVersion();
-		$versionParts = explode('.', $jversion->RELEASE);
-		$majorVersion = array_shift($versionParts);
-		$suffixes = array(
-			'.j' . str_replace('.', '', $jversion->getHelpVersion()),
-			'.j' . $majorVersion,
-		);
-		unset($jversion, $versionParts, $majorVersion);
+		$suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
 
 		foreach ($suffixes as $suffix)
 		{
@@ -352,27 +346,19 @@ abstract class FOFView extends JObject
 			}
 		}
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if(!$isCli)
-		{
-			$template = JFactory::getApplication()->getTemplate();
-		}
-		else
-		{
-			$template = 'cli';
-		}
-
 		$layoutTemplate = $this->getLayoutTemplate();
 
 		// Parse the path
 		$templateParts = $this->_parseTemplatePath($path);
 
+		// Get the paths
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($templateParts['component']);
+		$templatePath = FOFPlatform::getInstance()->getTemplateOverridePath($templateParts['component']);
+
 		// Get the default paths
 		$paths = array();
-		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/templates/' .
-			$template . '/html/' . $templateParts['component'] . '/' . $templateParts['view'];
-		$paths[] = ($templateParts['admin'] ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/components/' .
-			$templateParts['component'] . '/views/' . $templateParts['view'] . '/tmpl';
+		$paths[] = $templatePath . '/' . $templateParts['view'];
+		$paths[] = ($templateParts['admin'] ? $componentPaths['admin'] : $componentPaths['site']) . '/views/' . $templateParts['view'] . '/tmpl';
 		if (isset($this->_path) || property_exists($this, '_path'))
 		{
 			$paths = array_merge($paths, $this->_path['template']);
@@ -800,36 +786,7 @@ abstract class FOFView extends JObject
 	 */
 	public function loadTemplate($tpl = null, $strict = false)
 	{
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		$basePath = $isAdmin ? 'admin:' : 'site:';
-		$basePath .= $this->config['option'] . '/';
-		$altBasePath = $basePath;
-		$basePath .= $this->config['view'] . '/';
-		$altBasePath .= (FOFInflector::isSingular($this->config['view']) ? FOFInflector::pluralize($this->config['view']) : FOFInflector::singularize($this->config['view'])) . '/';
-
-		if ($strict)
-		{
-			$paths = array(
-				$basePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				// $basePath . 'default' . ($tpl ? "_$tpl" : ''),
-				$altBasePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				// $altBasePath . 'default' . ($tpl ? "_$tpl" : ''),
-			);
-		}
-		else
-		{
-			$paths = array(
-				$basePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				$basePath . $this->getLayout(),
-				$basePath . 'default' . ($tpl ? "_$tpl" : ''),
-				$basePath . 'default',
-				$altBasePath . $this->getLayout() . ($tpl ? "_$tpl" : ''),
-				$altBasePath . $this->getLayout(),
-				$altBasePath . 'default' . ($tpl ? "_$tpl" : ''),
-				$altBasePath . 'default',
-			);
-		}
+		$paths = FOFPlatform::getInstance()->getViewTemplatePaths($config['option'], $config['view'], $this->getLayout(), $tpl, $strict);
 
 		foreach ($paths as $path)
 		{
@@ -1027,15 +984,13 @@ abstract class FOFView extends JObject
 
 		if ($helper == false)
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-			$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/components/' .
-				$this->config['option'] . '/helpers';
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->config['option']);
+			$path = $componentPaths['main'] . '/helpers';
 			$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
 
 			if ($helper == false)
 			{
-				$path = ($isAdmin ? JPATH_SITE : JPATH_ADMINISTRATOR) . '/components/' .
-					$this->config['option'] . '/helpers';
+				$path = $path = $componentPaths['alt'] . '/helpers';
 				$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
 			}
 		}
@@ -1072,8 +1027,6 @@ abstract class FOFView extends JObject
 	 */
 	protected function _setPath($type, $path)
 	{
-		list($isCli,) = FOFDispatcher::isCliAdmin();
-
 		// Clear out the prior search dirs
 		$this->_path[$type] = array();
 
@@ -1085,7 +1038,7 @@ abstract class FOFView extends JObject
 		{
 			case 'template':
 				// Set the alternative template search dir
-				if (!$isCli)
+				if (!FOFPlatform::getInstance()->isCli())
 				{
 					$app = JFactory::getApplication();
 					$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $this->input->getCmd('option'));
