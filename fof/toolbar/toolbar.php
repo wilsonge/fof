@@ -171,9 +171,7 @@ class FOFToolbar
 			if ($this->renderFrontendButtons)
 			{
 				// Load back-end toolbar language files in front-end
-				$jlang = JFactory::getLanguage();
-				$jlang->load('', JPATH_ADMINISTRATOR, 'en-GB', true);
-				$jlang->load('', JPATH_ADMINISTRATOR, null, true);
+				FOFPlatform::getInstance()->loadTranslations('');
 
 				// Load the core Javascript
 				JHtml::_('behavior.framework', true);

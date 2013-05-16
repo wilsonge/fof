@@ -258,11 +258,20 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 */
 	public function loadTranslations($component)
 	{
+		if ($this->isBackend())
+		{
+			$paths = array(JPATH_ROOT, JPATH_ADMINISTRATOR);
+		}
+		else
+		{
+			$paths = array(JPATH_ADMINISTRATOR, JPATH_ROOT);
+		}
+
 		$jlang = JFactory::getLanguage();
-		$jlang->load($this->component, $paths[0], 'en-GB', true);
-		$jlang->load($this->component, $paths[0], null, true);
-		$jlang->load($this->component, $paths[1], 'en-GB', true);
-		$jlang->load($this->component, $paths[1], null, true);
+		$jlang->load($component, $paths[0], 'en-GB', true);
+		$jlang->load($component, $paths[0], null, true);
+		$jlang->load($component, $paths[1], 'en-GB', true);
+		$jlang->load($component, $paths[1], null, true);
 	}
 
 	/**

@@ -515,8 +515,7 @@ ENDJAVASCRIPT;
 
 		// Load main backend language, in order to display toolbar strings
 		// (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
-		$jlang = JFactory::getLanguage();
-		$jlang->load('joomla', JPATH_ADMINISTRATOR, null, true);
+		FOFPlatform::getInstance()->loadTranslations('joomla');
 
 		$title = JFactory::getApplication()->get('JComponentTitle');
 		$bar = JToolBar::getInstance('toolbar');

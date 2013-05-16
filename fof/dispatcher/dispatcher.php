@@ -280,20 +280,7 @@ class FOFDispatcher extends JObject
 		}
 
 		// Merge English and local translations
-		if ($isAdmin)
-		{
-			$paths = array(JPATH_ROOT, JPATH_ADMINISTRATOR);
-		}
-		else
-		{
-			$paths = array(JPATH_ADMINISTRATOR, JPATH_ROOT);
-		}
-
-		$jlang = JFactory::getLanguage();
-		$jlang->load($this->component, $paths[0], 'en-GB', true);
-		$jlang->load($this->component, $paths[0], null, true);
-		$jlang->load($this->component, $paths[1], 'en-GB', true);
-		$jlang->load($this->component, $paths[1], null, true);
+		FOFPlatform::getInstance()->loadTranslations($this->component);
 
 		$canDispatch = true;
 		if($isCli)
