@@ -36,8 +36,7 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 		if ($format != 'html')
 			return;
 
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-		if(!$isCli)
+		if(!FOFPlatform::getInstance()->isCli())
 		{
 			// Wrap output in a Joomla-versioned div
 			$version = new JVersion;
@@ -59,9 +58,8 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
 		$format = $input->getCmd('format', 'html');
-		if ($format != 'html' || $isCli)
+		if ($format != 'html' || FOFPlatform::getInstance()->isCli())
 			return;
 
 		echo "</div>\n";

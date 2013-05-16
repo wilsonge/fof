@@ -36,18 +36,11 @@ class FOFConfigProvider
 			return;
 		}
 
-		static $isCli, $isAdmin;
-
-		if (is_null($isCli))
-		{
-			list ($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		}
-
-		if ($isCli)
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			$order = array('cli', 'backend');
 		}
-		elseif ($isAdmin)
+		elseif (FOFPlatform::getInstance()->isBackend())
 		{
 			$order = array('backend');
 		}
@@ -104,9 +97,12 @@ class FOFConfigProvider
 		// Initialise the return array
 		$ret = array();
 
+		// Get the folders of the component
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+
 		// Check that the path exists
 		JLoader::import('joomla.filesystem.folder');
-		$path = JPATH_ADMINISTRATOR . '/components/' . $component;
+		$path = $componentPaths['admin'];
 		$path = JPath::check($path);
 		if (!JFolder::exists($path))
 		{

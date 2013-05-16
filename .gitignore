@@ -18,5 +18,5 @@ refs/heads/staging
 
 /documentation/*.xml~
 
-antconfig.txt
 build.xml
+antconfig.txt

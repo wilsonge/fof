@@ -74,25 +74,13 @@ class FOFToolbar
 			$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Toolbar';
 			if (!class_exists($className))
 			{
-				list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-				if ($isAdmin)
-				{
-					$basePath = JPATH_ADMINISTRATOR;
-				}
-				elseif ($isCli)
-				{
-					$basePath = JPATH_ROOT;
-				}
-				else
-				{
-					$basePath = JPATH_SITE;
-				}
+				$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 				$searchPaths = array(
-					$basePath . '/components/' . $config['option'],
-					$basePath . '/components/' . $config['option'] . '/toolbars',
-					JPATH_ADMINISTRATOR . '/components/' . $config['option'],
-					JPATH_ADMINISTRATOR . '/components/' . $config['option'] . '/toolbars'
+					$componentPaths['main'],
+					$componentPaths['main'] . '/toolbars',
+					$componentPaths['alt'],
+					$componentPaths['alt'] . '/toolbars'
 				);
 				if (array_key_exists('searchpath', $config))
 				{
@@ -156,15 +144,13 @@ class FOFToolbar
 		$this->input->set('option', $this->component);
 
 		// Get default permissions (can be overriden by the view)
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		$user = JFactory::getUser();
+		$platform = FOFPlatform::getInstance();
 		$perms = (object) array(
-				'manage'	 => $user->authorise('core.manage', $this->input->getCmd('option', 'com_foobar')),
-				'create'	 => $user->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
-				'edit'		 => $user->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
-				'editstate'	 => $user->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
-				'delete'	 => $user->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
+				'manage'	 => $platform->authorise('core.manage', $this->input->getCmd('option', 'com_foobar')),
+				'create'	 => $platform->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
+				'edit'		 => $platform->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
+				'editstate'	 => $platform->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
+				'delete'	 => $platform->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
 		);
 
 		// Save front-end toolbar and submenu rendering flags if present in the config
@@ -174,7 +160,7 @@ class FOFToolbar
 			$this->renderFrontendSubmenu = $config['renderFrontendSubmenu'];
 
 		//if not in the administrative area, load the JToolbarHelper
-		if (!$isAdmin)
+		if (!FOFPlatform::getInstance()->isBackend())
 		{
 			//pretty ugly require...
 			require_once(JPATH_ROOT . '/administrator/includes/toolbar.php');
@@ -183,9 +169,7 @@ class FOFToolbar
 			if ($this->renderFrontendButtons)
 			{
 				// Load back-end toolbar language files in front-end
-				$jlang = JFactory::getLanguage();
-				$jlang->load('', JPATH_ADMINISTRATOR, 'en-GB', true);
-				$jlang->load('', JPATH_ADMINISTRATOR, null, true);
+				FOFPlatform::getInstance()->loadTranslations('');
 
 				// Load the core Javascript
 				JHtml::_('behavior.framework', true);
@@ -251,15 +235,12 @@ class FOFToolbar
 	 */
 	public function onCpanelsBrowse()
 	{
-		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-
-		if ($isAdmin || $this->renderFrontendSubmenu)
+		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$option = $this->input->getCmd('option', 'com_foobar');
@@ -274,14 +255,13 @@ class FOFToolbar
 	public function onBrowse()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		if ($isAdmin || $this->renderFrontendSubmenu)
+		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		// Set toolbar title
@@ -336,14 +316,13 @@ class FOFToolbar
 	public function onRead()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		if ($isAdmin || $this->renderFrontendSubmenu)
+		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$option = $this->input->getCmd('option', 'com_foobar');
@@ -360,8 +339,7 @@ class FOFToolbar
 	public function onAdd()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$option = $this->input->getCmd('option', 'com_foobar');
@@ -381,8 +359,7 @@ class FOFToolbar
 	public function onEdit()
 	{
 		//on frontend, buttons must be added specifically
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if (!$isAdmin && !$this->renderFrontendButtons)
+		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 			return;
 
 		$this->onAdd();
@@ -523,20 +500,8 @@ class FOFToolbar
 		$t_views = array();
 		$using_meta = false;
 
-		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
-		if ($isAdmin)
-		{
-			$basePath = JPATH_ADMINISTRATOR;
-		}
-		elseif ($isCli)
-		{
-			$basePath = JPATH_ROOT;
-		}
-		else
-		{
-			$basePath = JPATH_SITE;
-		}
-		$searchPath = $basePath . '/components/' . $this->component . '/views';
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->component);
+		$searchPath = $componentPaths['main'] . '/views';
 
 		JLoader::import('joomla.filesystem.folder');
 		JLoader::import('joomla.utilities.arrayhelper');

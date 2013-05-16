@@ -25,6 +25,7 @@
 		<folder>input</folder>
 		<folder>less</folder>
 		<folder>model</folder>
+		<folder>platform</folder>
 		<folder>query</folder>
 		<folder>render</folder>
 		<folder>string</folder>
