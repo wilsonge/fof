@@ -786,7 +786,7 @@ abstract class FOFView extends JObject
 	 */
 	public function loadTemplate($tpl = null, $strict = false)
 	{
-		$paths = FOFPlatform::getInstance()->getViewTemplatePaths($config['option'], $config['view'], $this->getLayout(), $tpl, $strict);
+		$paths = FOFPlatform::getInstance()->getViewTemplatePaths($this->input->getCmd('option',''), $this->input->getCmd('view',''), $this->getLayout(), $tpl, $strict);
 
 		foreach ($paths as $path)
 		{
