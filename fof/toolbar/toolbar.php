@@ -146,13 +146,13 @@ class FOFToolbar
 		// Get default permissions (can be overriden by the view)
 		list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
 
-		$user = JFactory::getUser();
+		$platform = FOFPlatform::getInstance();
 		$perms = (object) array(
-				'manage'	 => $user->authorise('core.manage', $this->input->getCmd('option', 'com_foobar')),
-				'create'	 => $user->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
-				'edit'		 => $user->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
-				'editstate'	 => $user->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
-				'delete'	 => $user->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
+				'manage'	 => $platform->authorise('core.manage', $this->input->getCmd('option', 'com_foobar')),
+				'create'	 => $platform->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
+				'edit'		 => $platform->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
+				'editstate'	 => $platform->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
+				'delete'	 => $platform->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
 		);
 
 		// Save front-end toolbar and submenu rendering flags if present in the config

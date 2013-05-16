@@ -753,8 +753,7 @@ class FOFController extends JObject
 	 *
 	 * @return  boolean  True if authorised
 	 *
-	 * @since   12.2
-	 * @deprecated  13.3  Use JAccess instead.
+	 * @deprecated  2.0  Use JAccess instead.
 	 */
 	public function authorise($task)
 	{
@@ -2463,7 +2462,7 @@ class FOFController extends JObject
 			// Generic or Asset tracking
 			if (empty($ids))
 			{
-				return JFactory::getUser()->authorise($area, $this->component);
+				return FOFPlatform::getInstance()->authorise($area, $this->component);
 			}
 			else
 			{
@@ -2479,13 +2478,13 @@ class FOFController extends JObject
 					$asset = $this->component . '.' . $resource . '.' . $id;
 
 					// Dedicated permission found, check it!
-					if (JFactory::getUser()->authorise($area, $asset) ) {
+					if (FOFPlatform::getInstance()->authorise($area, $asset) ) {
 						return true;
 					}
 
 					// Fallback on edit.own.
 					// First test if the permission is available.
-					if (JFactory::getUser()->authorise('core.edit.own', $this->component . '.' . $resource . '.' . $recordId))
+					if (FOFPlatform::getInstance()->authorise('core.edit.own', $this->component . '.' . $resource . '.' . $recordId))
 					{
 						$table = $this->getThisModel()->getTable();
 

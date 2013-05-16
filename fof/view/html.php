@@ -32,8 +32,6 @@ class FOFViewHtml extends FOFView
 	 */
 	public function __construct($config = array())
 	{
-		list($isCli, ) = FOFDispatcher::isCliAdmin();
-
 		// Make sure $config is an array
 		if (is_object($config))
 		{
@@ -66,14 +64,14 @@ class FOFViewHtml extends FOFView
 
 		$this->lists = new JObject();
 
-		if(!$isCli)
+		if(!FOFPlatform::getInstance()->isCli())
 		{
-			$user = JFactory::getUser();
+			$platform = FOFPlatform::getInstance();
 			$perms = (object) array(
-					'create'	 => $user->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
-					'edit'		 => $user->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
-					'editstate'	 => $user->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
-					'delete'	 => $user->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
+					'create'	 => $platform->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
+					'edit'		 => $platform->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
+					'editstate'	 => $platform->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
+					'delete'	 => $platform->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
 			);
 			$this->assign('aclperms', $perms);
 			$this->perms = $perms;
