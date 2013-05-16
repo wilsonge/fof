@@ -292,7 +292,7 @@ class FOFTable extends JObject
 			}
 
 			$configProviderFieldmapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
-			$this->_columnAlias = $configProvider->get($configProviderFieldmapKey, array());
+			$instance->_columnAlias = $configProvider->get($configProviderFieldmapKey, array());
 
 			$instances[$tableClass] = $instance;
 		}

@@ -105,12 +105,11 @@ class FOFConfigDomainTables implements FOFConfigDomainInterface
 
 		$map = $default;
 
-		if (isset($fieldmap['*']))
+		if (empty($params[0]))
 		{
-			$map = $fieldmap['*'];
+			$map = $fieldmap;
 		}
-
-		if (isset($fieldmap[$params[0]]))
+		elseif (isset($fieldmap[$params[0]]))
 		{
 			$map = $fieldmap[$params[0]];
 		}
