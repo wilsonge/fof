@@ -137,6 +137,7 @@ class AkeebaStrapper
         {
             // Joomla! 2.5 and earlier, load our own library
             self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajq.js');
+            self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akjqmigrate.js');
         }
         else
         {
