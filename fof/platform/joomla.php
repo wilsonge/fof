@@ -235,7 +235,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 				$path = $isAdmin ? 'administrator/' : '';
 			}
 
-			$path .= JFactory::getApplication()->getTemplate() . '/' .
+			$path .= 'templates/' . JFactory::getApplication()->getTemplate() . '/' .
 				'html/' . $component;
 		}
 		else
@@ -416,7 +416,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 		{
 			return true;
 		}
-		
+
 		return JFactory::getUser()->authorise($action, $assetname);
 	}
 
