@@ -113,6 +113,7 @@ class FOFConfigProvider
 
 		// Read the filename if it exists
 		$filename = $path . '/fof.xml';
+		JLoader::import('joomla.filesystem.file');
 		if (!JFile::exists($filename))
 		{
 			return $ret;

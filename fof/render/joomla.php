@@ -369,7 +369,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		// Check form ID. Use id="yourformname" to modify the id of your form.
 		$formid = $form->getAttribute('name');
 
-		if (empty($formname))
+		if (empty($formid))
 		{
 			$formid = 'adminForm';
 		}

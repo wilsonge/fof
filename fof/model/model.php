@@ -190,7 +190,7 @@ class FOFModel extends JObject
 
 	/**
 	 *	Default behaviors to apply to the model
-	 * 
+	 *
 	 * @var  	array
 	 */
 	protected $default_behaviors = array('filters');
@@ -270,7 +270,9 @@ class FOFModel extends JObject
 		}
 
 		$config['input']->set('option', $config['option']);
-		$config['input']->set('view', $config['view']);
+		// This line would always cause the passed by reference, hence shared,
+		// instance of FOFInput to have a view set to plural. Um, no, don't!
+		//$config['input']->set('view', $config['view']);
 
 		// Get the component directories
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
@@ -344,7 +346,7 @@ class FOFModel extends JObject
 
 	/**
 	 * Adds a behavior to the model
-	 * 
+	 *
 	 * @param  	string 	$name   The name of the behavior
 	 * @param 	array  	$config Optional Behavior configuration
 	 */
@@ -353,7 +355,7 @@ class FOFModel extends JObject
 
 		$behaviorClass = 'FOFModelBehavior' . ucfirst(strtolower($name));
 
-		if (class_exists($behaviorClass) && $this->modelDispatcher) 
+		if (class_exists($behaviorClass) && $this->modelDispatcher)
 		{
 			$behavior = new $behaviorClass($this->modelDispatcher, $config);
 			return true;
@@ -619,7 +621,7 @@ class FOFModel extends JObject
 		}
 
 		// Get and store the pagination request variables
-		$this->populateSavesate();
+		$this->populateSavestate();
 
 		if (FOFPlatform::getInstance()->isCli())
 		{
@@ -1683,7 +1685,7 @@ class FOFModel extends JObject
 
 		// Call the behaviors
 		$this->modelDispatcher->trigger('onBeforeBuildQuery', array(&$this, &$query));
-			
+
 		$query->select('*')->from($db->qn($tableName));
 
 		if (!$overrideLimits)
@@ -1806,7 +1808,7 @@ class FOFModel extends JObject
 	 *
 	 * @return  void
 	 */
-	public function populateSavesate()
+	public function populateSavestate()
 	{
 		if (is_null($this->_savestate))
 		{
