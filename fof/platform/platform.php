@@ -211,7 +211,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 			$this->isEnabled = false;
 		}
 
-		return $isEnabled;
+		return $this->isEnabled;
 	}
 
 	/**
