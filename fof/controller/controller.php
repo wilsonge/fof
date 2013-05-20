@@ -926,7 +926,7 @@ class FOFController extends JObject
 			$cache = JFactory::getCache($option, 'view');
 
 			// Set up a cache ID based on component, view, task and user group assignment
-			$user = JFactory::getUser();
+			$user = FOFPlatform::getInstance()->getUser();
 			if ($user->guest)
 			{
 				$groups = array();
@@ -2479,7 +2479,7 @@ class FOFController extends JObject
 							$owner_id = (int) $table->created_by;
 
 							// If the owner matches 'me' then do the test.
-							if ($owner_id == JFactory::getUser()->id)
+							if ($owner_id == FOFPlatform::getInstance()->getUser()->id)
 							{
 								return true;
 							}

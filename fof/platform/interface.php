@@ -191,6 +191,16 @@ interface FOFPlatformInterface
 	 */
 	public function authorise($action, $assetname);
 
+	/**
+	 * Return a user object.
+	 *
+	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
+	 *                        the object for the currently logged in user.
+	 *
+	 * @return  JUser  The JUser object for the specified user
+	 */
+	public function getUser($id = null);
+
 
 	// ---
 	// The following methods are tentatively included until a better decoupling

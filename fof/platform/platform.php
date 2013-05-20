@@ -313,6 +313,8 @@ abstract class FOFPlatform implements FOFPlatformInterface
 		return true;
 	}
 
+	public abstract function getUser($id = null);
+
 	/**
 	 * This method will try retrieving a variable from the request (input) data.
 	 *

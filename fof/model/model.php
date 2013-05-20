@@ -1200,7 +1200,7 @@ class FOFModel extends JObject
 		{
 			if (empty($user))
 			{
-				$oUser = JFactory::getUser();
+				$oUser = FOFPlatform::getInstance()->getUser();
 				$user = $oUser->id;
 			}
 			$table = $this->getTable($this->table);
@@ -1240,7 +1240,7 @@ class FOFModel extends JObject
 	public function checkout()
 	{
 		$table = $this->getTable($this->table);
-		$status = $table->checkout(JFactory::getUser()->id, $this->id);
+		$status = $table->checkout(FOFPlatform::getInstance()->getUser()->id, $this->id);
 
 		if (!$status)
 		{
@@ -1849,7 +1849,7 @@ class FOFModel extends JObject
 	 */
 	public function applyAccessFiltering($userID = null)
 	{
-		$user = JFactory::getUser($userID);
+		$user = FOFPlatform::getInstance()->getUser($userID);
 		$this->setState('access', $user->getAuthorisedViewLevels());
 
 		return $this;

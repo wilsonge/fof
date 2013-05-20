@@ -489,7 +489,7 @@ class FOFDispatcher extends JObject
 			JLoader::import('joomla.user.authentication');
 			$app = JFactory::getApplication();
 			$options = array('remember'	 => false);
-			$parameters = array('username'	 => JFactory::getUser()->username);
+			$parameters = array('username'	 => FOFPlatform::getInstance()->getUser()->username);
 			$results = $app->triggerEvent('onLogoutUser', array($parameters, $options));
 		}
 
@@ -505,7 +505,7 @@ class FOFDispatcher extends JObject
 	{
 		// Only run when there is no logged in user
 
-		if (!JFactory::getUser()->guest)
+		if (!FOFPlatform::getInstance()->getUser()->guest)
 		{
 			return;
 		}
@@ -642,7 +642,7 @@ class FOFDispatcher extends JObject
 
 				JLoader::import('joomla.user.helper');
 				$userid = JUserHelper::getUserId($response->username);
-				$user = JFactory::getUser($userid);
+				$user = FOFPlatform::getInstance()->getUser($userid);
 
 				$session = JFactory::getSession();
 				$session->set('user', $user);

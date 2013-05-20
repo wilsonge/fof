@@ -310,6 +310,21 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	}
 
 	/**
+	 * Return a user object.
+	 *
+	 * @see FOFPlatformInterface::getUser()
+	 *
+	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
+	 *                        the object for the currently logged in user.
+	 *
+	 * @return  JUser  The JUser object for the specified user
+	 */
+	public function getUser($id = null)
+	{
+		return JFactory::getUser($id);
+	}
+
+	/**
 	 * This method will try retrieving a variable from the request (input) data.
 	 *
 	 * @see FOFPlatformInterface::getUserStateFromRequest()

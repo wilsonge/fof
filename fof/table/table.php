@@ -1821,11 +1821,11 @@ class FOFTable extends JObject
 
 			if (empty($this->$created_by) || ($this->$created_on == '0000-00-00 00:00:00') || empty($this->$created_on))
 			{
-				$uid = JFactory::getUser()->id;
+				$uid = FOFPlatform::getInstance()->getUser()->id;
 
 				if ($uid)
 				{
-					$this->$created_by = JFactory::getUser()->id;
+					$this->$created_by = FOFPlatform::getInstance()->getUser()->id;
 				}
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
@@ -1841,11 +1841,11 @@ class FOFTable extends JObject
 			}
 			elseif ($hasModifiedOn && $hasModifiedBy)
 			{
-				$uid = JFactory::getUser()->id;
+				$uid = FOFPlatform::getInstance()->getUser()->id;
 
 				if ($uid)
 				{
-					$this->$modified_by = JFactory::getUser()->id;
+					$this->$modified_by = FOFPlatform::getInstance()->getUser()->id;
 				}
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
