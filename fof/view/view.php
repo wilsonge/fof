@@ -1038,7 +1038,7 @@ abstract class FOFView extends JObject
 				// Set the alternative template search dir
 				if (!FOFPlatform::getInstance()->isCli())
 				{
-					$fallback = FOFPlatform::getInstance()->getTemplateOverridePath($component) . '/' . $this->getName();
+					$fallback = FOFPlatform::getInstance()->getTemplateOverridePath($this->option) . '/' . $this->getName();
 					$this->_addPath('template', $fallback);
 				}
 				break;
