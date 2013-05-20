@@ -297,9 +297,7 @@ abstract class FOFView extends JObject
 		{
 			$this->baseurl = JURI::base(true);
 
-			$app = JFactory::getApplication();
-			$component = preg_replace('/[^A-Z0-9_\.-]/i', '', $component);
-			$fallback = JPATH_THEMES . '/' . $app->getTemplate() . '/html/' . $component . '/' . $this->getName();
+			$fallback = FOFPlatform::getInstance()->getTemplateOverridePath($component) . '/' . $this->getName();
 			$this->_addPath('template', $fallback);
 		}
 	}
