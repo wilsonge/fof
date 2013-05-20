@@ -228,11 +228,11 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 		{
 			if ($absolute)
 			{
-				$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/';
+				$path = JPATH_THEMES . '/';
 			}
 			else
 			{
-				$path = $isAdmin ? 'administrator/' : '';
+				$path = $isAdmin ? 'administrator/templates/' : 'templates/';
 			}
 
 			if (substr($component, 0, 7) == 'media:/')
@@ -244,7 +244,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 				$directory = 'html/' . $component;
 			}
 
-			$path .= 'templates/' . JFactory::getApplication()->getTemplate() .
+			$path .= JFactory::getApplication()->getTemplate() .
 				'/' . $directory;
 		}
 		else
