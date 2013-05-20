@@ -901,8 +901,15 @@ class FOFController extends JObject
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		$document = JFactory::getDocument();
-		$viewType = $document->getType();
+		$document = FOFPlatform::getInstance()->getDocument();
+		if ($document instanceof JDocument)
+		{
+			$viewType = $document->getType();
+		}
+		else
+		{
+			$viewType = $this->input->getCmd('format', 'html');
+		}
 
 		$view = $this->getThisView();
 
@@ -2000,8 +2007,15 @@ class FOFController extends JObject
 				$viewName = ucfirst($this->view);
 			}
 
-			$document = JFactory::getDocument();
-			$viewType = $document->getType();
+			$document = FOFPlatform::getInstance()->getDocument();
+			if ($document instanceof JDocument)
+			{
+				$viewType = $document->getType();
+			}
+			else
+			{
+				$viewType = $this->input->getCmd('format', 'html');
+			}
 
 			if (($viewType == 'html') && $this->_hasForm)
 			{

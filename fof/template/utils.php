@@ -19,8 +19,15 @@ class FOFTemplateUtils
 	 */
 	public static function addCSS($path)
 	{
-		$url = self::parsePath($path);
-		JFactory::getDocument()->addStyleSheet($url);
+		$document = FOFPlatform::getInstance()->getDocument();
+		if ($document instanceof JDocument)
+		{
+			if (method_exists($document, 'addStyleSheet'))
+			{
+				$url = self::parsePath($path);
+				$document->addStyleSheet($url);
+			}
+		}
 	}
 
 	/**
@@ -32,8 +39,15 @@ class FOFTemplateUtils
 	 */
 	public static function addJS($path)
 	{
-		$url = self::parsePath($path);
-		JFactory::getDocument()->addScript($url);
+		$document = FOFPlatform::getInstance()->getDocument();
+		if ($document instanceof JDocument)
+		{
+			if (method_exists($document, 'addScript'))
+			{
+				$url = self::parsePath($path);
+				$document->addScript($url);
+			}
+		}
 	}
 
 	/**
@@ -140,7 +154,14 @@ class FOFTemplateUtils
 		}
 		else
 		{
-			JFactory::getDocument()->addStyleSheet($url);
+			$document = FOFPlatform::getInstance()->getDocument();
+			if ($document instanceof JDocument)
+			{
+				if (method_exists($document, 'addStyleSheet'))
+				{
+					$document->addStyleSheet($url);
+				}
+			}
 			return true;
 		}
 	}
@@ -317,15 +338,38 @@ class FOFTemplateUtils
 	 */
 	public static function loadPosition($position, $style = -2)
 	{
+		$document = FOFPlatform::getInstance()->getDocument();
+
+		if (!($document instanceof JDocument))
+		{
+			return '';
+		}
+
+		if (!method_exists($document, 'loadRenderer'))
+		{
+			return '';
+		}
+
 		$document = JFactory::getDocument();
-		$renderer = $document->loadRenderer('module');
+
+		try
+		{
+			$renderer = $document->loadRenderer('module');
+		}
+		catch (Exception $exc)
+		{
+			return '';
+		}
+
 		$params = array('style' => $style);
 
 		$contents = '';
+
 		foreach (JModuleHelper::getModules($position) as $mod)
 		{
 			$contents .= $renderer->render($mod, $params);
 		}
+
 		return $contents;
 	}
 

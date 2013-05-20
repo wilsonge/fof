@@ -44,14 +44,17 @@ class FOFViewJson extends FOFViewHtml
 		$items = $model->getItemList();
 		$this->assignRef('items', $items);
 
-		$document = JFactory::getDocument();
-		if ($this->useHypermedia)
+		$document = FOFPlatform::getInstance()->getDocument();
+		if ($document instanceof JDocument)
 		{
-			$document->setMimeEncoding('application/hal+json');
-		}
-		else
-		{
-			$document->setMimeEncoding('application/json');
+			if ($this->useHypermedia)
+			{
+				$document->setMimeEncoding('application/hal+json');
+			}
+			else
+			{
+				$document->setMimeEncoding('application/json');
+			}
 		}
 
 		if (is_null($tpl))
@@ -130,14 +133,17 @@ class FOFViewJson extends FOFViewHtml
 		$item = $model->getItem();
 		$this->assign('item', $item);
 
-		$document = JFactory::getDocument();
-		if ($this->useHypermedia)
+		$document = FOFPlatform::getInstance()->getDocument();
+		if ($document instanceof JDocument)
 		{
-			$document->setMimeEncoding('application/hal+json');
-		}
-		else
-		{
-			$document->setMimeEncoding('application/json');
+			if ($this->useHypermedia)
+			{
+				$document->setMimeEncoding('application/hal+json');
+			}
+			else
+			{
+				$document->setMimeEncoding('application/json');
+			}
 		}
 
 		if (is_null($tpl))

@@ -446,7 +446,11 @@ class FOFRenderJoomla extends FOFRenderAbstract
         }
 ENDJAVASCRIPT;
 
-		JFactory::getDocument()->addScriptDeclaration($js);
+		$document = FOFPlatform::getInstance()->getDocument();
+		if ($document instanceof JDocument)
+		{
+			$document->addScriptDeclaration($js);
+		}
 	}
 
 	/**

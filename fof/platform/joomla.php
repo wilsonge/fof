@@ -325,6 +325,32 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	}
 
 	/**
+	 * Returns the JDocument object which handles this component's response.
+	 *
+	 * @see FOFPlatformInterface::getDocument()
+	 *
+	 * @return  JDocument
+	 */
+	public function getDocument()
+	{
+		$document = null;
+
+		if (!$this->isCli())
+		{
+			try
+			{
+				$document = JFactory::getDocument();
+			}
+			catch (Exception $exc)
+			{
+				$document = null;
+			}
+		}
+
+		return $document;
+	}
+
+	/**
 	 * This method will try retrieving a variable from the request (input) data.
 	 *
 	 * @see FOFPlatformInterface::getUserStateFromRequest()

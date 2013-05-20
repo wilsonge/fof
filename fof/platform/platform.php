@@ -313,7 +313,26 @@ abstract class FOFPlatform implements FOFPlatformInterface
 		return true;
 	}
 
+	/**
+	 * Returns the JUser object for the current user
+	 *
+	 * @see FOFPlatformInterface::getUser()
+	 *
+	 * @return  JDocument
+	 */
 	public abstract function getUser($id = null);
+
+	/**
+	 * Returns the JDocument object which handles this component's response.
+	 *
+	 * @see FOFPlatformInterface::getDocument()
+	 *
+	 * @return  JDocument
+	 */
+	public function getDocument()
+	{
+		return null;
+	}
 
 	/**
 	 * This method will try retrieving a variable from the request (input) data.
