@@ -191,6 +191,27 @@ interface FOFPlatformInterface
 	 */
 	public function authorise($action, $assetname);
 
+	/**
+	 * Returns a user object.
+	 *
+	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
+	 *                        the object for the currently logged in user.
+	 *
+	 * @return  JUser  The JUser object for the specified user
+	 */
+	public function getUser($id = null);
+
+	/**
+	 * Returns the JDocument object which handles this component's response. You
+	 * may also return null and FOF will a. try to figure out the output type by
+	 * examining the "format" input parameter (or fall back to "html") and b.
+	 * FOF will not attempt to load CSS and Javascript files (as it doesn't make
+	 * sense if there's no JDocument to handle them).
+	 *
+	 * @return  JDocument
+	 */
+	public function getDocument();
+
 
 	// ---
 	// The following methods are tentatively included until a better decoupling

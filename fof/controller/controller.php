@@ -901,8 +901,15 @@ class FOFController extends JObject
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
-		$document = JFactory::getDocument();
-		$viewType = $document->getType();
+		$document = FOFPlatform::getInstance()->getDocument();
+		if ($document instanceof JDocument)
+		{
+			$viewType = $document->getType();
+		}
+		else
+		{
+			$viewType = $this->input->getCmd('format', 'html');
+		}
 
 		$view = $this->getThisView();
 
@@ -926,7 +933,7 @@ class FOFController extends JObject
 			$cache = JFactory::getCache($option, 'view');
 
 			// Set up a cache ID based on component, view, task and user group assignment
-			$user = JFactory::getUser();
+			$user = FOFPlatform::getInstance()->getUser();
 			if ($user->guest)
 			{
 				$groups = array();
@@ -2000,8 +2007,15 @@ class FOFController extends JObject
 				$viewName = ucfirst($this->view);
 			}
 
-			$document = JFactory::getDocument();
-			$viewType = $document->getType();
+			$document = FOFPlatform::getInstance()->getDocument();
+			if ($document instanceof JDocument)
+			{
+				$viewType = $document->getType();
+			}
+			else
+			{
+				$viewType = $this->input->getCmd('format', 'html');
+			}
 
 			if (($viewType == 'html') && $this->_hasForm)
 			{
@@ -2479,7 +2493,7 @@ class FOFController extends JObject
 							$owner_id = (int) $table->created_by;
 
 							// If the owner matches 'me' then do the test.
-							if ($owner_id == JFactory::getUser()->id)
+							if ($owner_id == FOFPlatform::getInstance()->getUser()->id)
 							{
 								return true;
 							}

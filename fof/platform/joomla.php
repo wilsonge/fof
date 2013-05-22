@@ -228,11 +228,11 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 		{
 			if ($absolute)
 			{
-				$path = ($isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE) . '/';
+				$path = JPATH_THEMES . '/';
 			}
 			else
 			{
-				$path = $isAdmin ? 'administrator/' : '';
+				$path = $isAdmin ? 'administrator/templates/' : 'templates/';
 			}
 
 			if (substr($component, 0, 7) == 'media:/')
@@ -244,7 +244,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 				$directory = 'html/' . $component;
 			}
 
-			$path .= 'templates/' . JFactory::getApplication()->getTemplate() .
+			$path .= JFactory::getApplication()->getTemplate() .
 				'/' . $directory;
 		}
 		else
@@ -307,6 +307,47 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 		}
 
 		return true;
+	}
+
+	/**
+	 * Return a user object.
+	 *
+	 * @see FOFPlatformInterface::getUser()
+	 *
+	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
+	 *                        the object for the currently logged in user.
+	 *
+	 * @return  JUser  The JUser object for the specified user
+	 */
+	public function getUser($id = null)
+	{
+		return JFactory::getUser($id);
+	}
+
+	/**
+	 * Returns the JDocument object which handles this component's response.
+	 *
+	 * @see FOFPlatformInterface::getDocument()
+	 *
+	 * @return  JDocument
+	 */
+	public function getDocument()
+	{
+		$document = null;
+
+		if (!$this->isCli())
+		{
+			try
+			{
+				$document = JFactory::getDocument();
+			}
+			catch (Exception $exc)
+			{
+				$document = null;
+			}
+		}
+
+		return $document;
 	}
 
 	/**

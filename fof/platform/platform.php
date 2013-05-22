@@ -211,7 +211,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 			$this->isEnabled = false;
 		}
 
-		return $isEnabled;
+		return $this->isEnabled;
 	}
 
 	/**
@@ -311,6 +311,30 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	public function authorizeAdmin($component)
 	{
 		return true;
+	}
+
+	/**
+	 * Returns the JUser object for the current user
+	 *
+	 * @see FOFPlatformInterface::getUser()
+	 *
+	 * @return  JDocument
+	 */
+	public function getUser($id = null)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the JDocument object which handles this component's response.
+	 *
+	 * @see FOFPlatformInterface::getDocument()
+	 *
+	 * @return  JDocument
+	 */
+	public function getDocument()
+	{
+		return null;
 	}
 
 	/**
