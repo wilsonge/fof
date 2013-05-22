@@ -320,7 +320,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  JDocument
 	 */
-	public abstract function getUser($id = null);
+	public function getUser($id = null)
+	{
+		return null;
+	}
 
 	/**
 	 * Returns the JDocument object which handles this component's response.
