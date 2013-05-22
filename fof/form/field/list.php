@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldList'))
  */
 class FOFFormFieldList extends JFormFieldList implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -98,6 +97,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 		{
 			$show_link = true;
 		}
+
 		if ($this->element['url'])
 		{
 			$link_url = $this->element['url'];
@@ -138,7 +138,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 			$html .= '<a href="' . $link_url . '">';
 		}
 
-		$html .= htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8');
+		$html .= htmlspecialchars(self::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8');
 
 		if ($show_link)
 		{
@@ -195,5 +195,4 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 
 		return $ret;
 	}
-
 }
