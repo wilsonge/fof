@@ -13,7 +13,7 @@ without a clear deprecation and migration path.
 
 The reason of existence of FOSS (Free and Open Source Software) is collaboration between developers. FoF is no exception; it exists because of and for the community of Joomla! developers. It is provided free of charge and with all of the freedoms of the GPL for you to benefit. And in true Free Software spirit, the community aspect is very strong. Participating is easy and fun.
 
-If you want to discuss FoF there is [a Google Groups mailing list](https://groups.google.com/forum/?hl=en&fromgroups#!forum/frameworkonframework). This is a peer discussion group where developers working with FoF can freely discuss.
+If you want to discuss FoF, there is [a Google Groups mailing list](https://groups.google.com/forum/?hl=en&fromgroups#!forum/frameworkonframework). This is a peer discussion group where developers working with FoF can freely discuss.
 
 If you have a feature proposal or have found a bug, but you're not sure how to code it yourself, please report it on the list.
 
