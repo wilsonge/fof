@@ -133,13 +133,13 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 		foreach ($this->element->children() as $stateoption)
 		{
 			// Only add <option /> elements.
-			if ($option->getName() != 'state')
+			if ($stateoption->getName() != 'state')
 			{
 				continue;
 			}
 
-			$key = (string) $option['key'];
-			$value = (string) $option;
+			$key = (string) $stateoption['key'];
+			$value = (string) $stateoption;
 
 			$model->setState($key, $value);
 		}
