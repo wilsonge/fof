@@ -210,6 +210,7 @@ class FOFDispatcher extends JObject
 		{
 			// Do we have a task formatted as controller.task?
 			$task = $this->input->getCmd('task', '');
+
 			if (!empty($task) && (strstr($task, '.') !== false))
 			{
 				list($this->view, $task) = explode('.', $task, 2);
@@ -270,7 +271,8 @@ class FOFDispatcher extends JObject
 		FOFPlatform::getInstance()->loadTranslations($this->component);
 
 		$canDispatch = true;
-		if(FOFPlatform::getInstance()->isCli())
+
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			$canDispatch = $canDispatch && $this->onBeforeDispatchCLI();
 		}
@@ -405,7 +407,9 @@ class FOFDispatcher extends JObject
 
 			case 'DELETE':
 				if ($id != 0)
+				{
 					$task = 'delete';
+				}
 				break;
 
 			case 'GET':
@@ -452,21 +456,22 @@ class FOFDispatcher extends JObject
 
 		// We have no Application Helper (there is no Application!), so I have to define these constants manually
 		$option = $this->input->get('option', '', 'cmd');
-		if($option)
+
+		if ($option)
 		{
 			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
 
-			if(!defined('JPATH_COMPONENT'))
+			if (!defined('JPATH_COMPONENT'))
 			{
 				define('JPATH_COMPONENT', $componentPaths['main']);
 			}
 
-			if(!defined('JPATH_COMPONENT_SITE'))
+			if (!defined('JPATH_COMPONENT_SITE'))
 			{
 				define('JPATH_COMPONENT_SITE', $componentPaths['site']);
 			}
 
-			if(!defined('JPATH_COMPONENT_ADMINISTRATOR'))
+			if (!defined('JPATH_COMPONENT_ADMINISTRATOR'))
 			{
 				define('JPATH_COMPONENT_ADMINISTRATOR', $componentPaths['admin']);
 			}
@@ -523,7 +528,9 @@ class FOFDispatcher extends JObject
 			// If we're already logged in, don't bother
 
 			if ($this->_fofAuth_isLoggedIn)
+			{
 				continue;
+			}
 
 			// This will hold our authentication data array (username, password)
 			$authInfo = null;
