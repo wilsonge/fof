@@ -42,14 +42,14 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @var  array
 	 */
-	static protected $paths = array();
+	protected static $paths = array();
 
 	/**
 	 * The platform class instance which will be returned by getInstance
 	 *
 	 * @var  FOFPlatformInterface
 	 */
-	static protected $instance = null;
+	protected static $instance = null;
 
 	/**
 	 * Register a path where platform files will be looked for. These take
@@ -59,7 +59,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  void
 	 */
-	static public function registerPlatformPath($path)
+	public static function registerPlatformPath($path)
 	{
 		if (!in_array($path, self::$paths))
 		{
@@ -75,7 +75,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  void
 	 */
-	static public function unregisterPlatformPath($path)
+	public static function unregisterPlatformPath($path)
 	{
 		$pos = array_search($path, self::$paths);
 
@@ -93,7 +93,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  void
 	 */
-	static public function forceInstance(FOFPlatformInterface $instance)
+	public static function forceInstance(FOFPlatformInterface $instance)
 	{
 		self::$instance = $instance;
 	}
@@ -103,7 +103,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  FOFPlatformInterface
 	 */
-	static public function getInstance()
+	public static function getInstance()
 	{
 		if (!is_object(self::$instance))
 		{

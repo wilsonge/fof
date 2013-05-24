@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
  * FrameworkOnFramework model behavior class
  *
  * @package  FrameworkOnFramework.Model
- * @since    2.2
+ * @since    2.1
  */
 class FOFModelFieldDate extends FOFModelFieldText
 {
@@ -22,11 +22,11 @@ class FOFModelFieldDate extends FOFModelFieldText
 
 	/**
 	 * Interval date search
-	 * 	
+	 *
 	 * @param  string  				$value    The value to search
 	 * @param  string|array|object  $interval The interval. Can be (+1 MONTH or array('value' => 1, 'unit' => 'MONTH', 'sign' => '+'))
 	 * @param  boolean 				$include  If the borders should be included
-	 * 
+	 *
 	 * @return string           	the sql string
 	 */
 	public function interval($value, $interval, $include = true)
@@ -41,7 +41,8 @@ class FOFModelFieldDate extends FOFModelFieldText
 		if ($interval['sign'] == '+')
 		{
 			$function = 'DATE_ADD';
-		} else 
+		}
+		else
 		{
 			$function = 'DATE_SUB';
 		}
@@ -52,7 +53,7 @@ class FOFModelFieldDate extends FOFModelFieldText
 		{
 			$extra = '=';
 		}
-		
+
 		$sql = '(' . $this->_db->qn($this->name) . ' >' . $extra . ' ' . $function;
 		$sql .= '(' . $this->_db->quote($value) . ', INTERVAL ' . $interval['value'] . ' ' . $interval['unit']  . '))';
 
@@ -73,16 +74,18 @@ class FOFModelFieldDate extends FOFModelFieldText
 					'unit' => $inteval[1],
 					'value' => $value,
 					'sign' => $sign
-				);	
-			} else 
+				);
+			}
+			else
 			{
 				$interval = array(
 					'unit' => 'MONTH',
 					'value' => 1,
 					'sign' => '+'
-				);	
+				);
 			}
-		} else 
+		}
+		else
 		{
 			$interval = (array) $inteval;
 		}

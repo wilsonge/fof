@@ -318,7 +318,7 @@ class FOFTemplateUtils
 			}
 
 			// Clone the $ret array so we can manipulate the 'normal' path a bit
-			$temp = (array)(clone (object)$ret);
+			$temp = (array) (clone (object) $ret);
 			$normalPath = explode('/', $temp['normal']);
 			array_pop($normalPath);
 			$normalPath[] = $filename;

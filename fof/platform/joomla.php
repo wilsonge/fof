@@ -30,7 +30,8 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 			$this->isEnabled = true;
 
 			// Make sure _JEXEC is defined
-			if (!defined('_JEXEC')) {
+			if (!defined('_JEXEC'))
+			{
 				$this->isEnabled = false;
 			}
 

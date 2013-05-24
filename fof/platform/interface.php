@@ -212,7 +212,6 @@ interface FOFPlatformInterface
 	 */
 	public function getDocument();
 
-
 	// ---
 	// The following methods are tentatively included until a better decoupling
 	// from the Joomla! CMS is implemented in FOF.

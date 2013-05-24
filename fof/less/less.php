@@ -21,9 +21,9 @@ defined('_JEXEC') or die();
 class FOFLess
 {
 
-	static public $VERSION = "v0.3.8";
-	static protected $TRUE = array("keyword", "true");
-	static protected $FALSE = array("keyword", "false");
+	public static $VERSION = "v0.3.8";
+	protected static $TRUE = array("keyword", "true");
+	protected static $FALSE = array("keyword", "false");
 	protected $libFunctions = array();
 	protected $registeredVars = array();
 	protected $preserveComments = false;
@@ -37,8 +37,8 @@ class FOFLess
 	// so we know how to create error messages
 	protected $sourceParser = null;
 	protected $sourceLoc = null;
-	static public $defaultValue = array("keyword", "");
-	static protected $nextImportId = 0; // uniquely identify imports
+	public static $defaultValue = array("keyword", "");
+	protected static $nextImportId = 0; // uniquely identify imports
 
 	// attempts to find the path of an import url, returns null for css files
 
@@ -64,7 +64,7 @@ class FOFLess
 		/** FOF - END CHANGE * */
 	}
 
-	static public function compressList($items, $delim)
+	public static function compressList($items, $delim)
 	{
 		if (!isset($items[1]) && isset($items[0]))
 			return $items[0];
@@ -72,7 +72,7 @@ class FOFLess
 			return array('list', $delim, $items);
 	}
 
-	static public function preg_quote($what)
+	public static function preg_quote($what)
 	{
 		return preg_quote($what, '/');
 	}
@@ -677,7 +677,8 @@ class FOFLess
 				elseif (isset($a[2]))
 				{
 					$value = $a[2];
-				} else
+				}
+				else
 					$value = null;
 
 				$value = $this->reduce($value);
@@ -1339,7 +1340,8 @@ class FOFLess
 			while (count($hsl) < 4)
 				$hsl[] = 0;
 			return $this->toRGB($hsl);
-		} elseif ($fname == 'rgb' || $fname == 'rgba')
+		}
+		elseif ($fname == 'rgb' || $fname == 'rgba')
 		{
 			$components = array();
 			$i = 1;
@@ -1367,7 +1369,8 @@ class FOFLess
 					{
 						$components[] = floatval($c[1]);
 					}
-				} else
+				}
+				else
 					break;
 
 				$i++;
@@ -2133,7 +2136,7 @@ class FOFLess
 		return $less->cachedCompile($in, $force);
 	}
 
-	static protected $cssColors = array(
+	protected static $cssColors = array(
 		'aliceblue'				 => '240,248,255',
 		'antiquewhite'			 => '250,235,215',
 		'aqua'					 => '0,255,255',

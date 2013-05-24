@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
  * FrameworkOnFramework model behavior class
  *
  * @package  FrameworkOnFramework.Model
- * @since    2.2
+ * @since    2.1
  */
 class FOFModelBehaviorFilters extends FOFModelBehavior
 {
@@ -26,10 +26,10 @@ class FOFModelBehaviorFilters extends FOFModelBehavior
 
 		foreach ($fields as $fieldname => $fieldtype)
 		{
-			$field = new stdClass();
+			$field = new stdClass;
 			$field->name = $fieldname;
 			$field->type = $fieldtype;
-			
+
 			$filterName = ($field->name == $tableKey) ? 'id' : $field->name;
 			$filterState = $model->getState($filterName, null);
 
@@ -38,9 +38,10 @@ class FOFModelBehaviorFilters extends FOFModelBehavior
 			if (is_array($filterState) || is_object($filterState))
 			{
 				$options = new JRegistry($filterState);
-			} else 
+			}
+			else
 			{
-				$options = new JRegistry();
+				$options = new JRegistry;
 				$options->set('value', $filterState);
 			}
 

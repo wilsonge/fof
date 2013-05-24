@@ -308,7 +308,7 @@ class FOFTable extends JObject
 	 * @param   string           $key    Name of the primary key field in the table.
 	 * @param   JDatabaseDriver  &$db    Database driver
 	 */
-	function __construct($table, $key, &$db)
+	public function __construct($table, $key, &$db)
 	{
 		$this->_tbl     = $table;
 		$this->_tbl_key = $key;
@@ -380,7 +380,7 @@ class FOFTable extends JObject
 	 *
 	 * @return void
 	 */
-	function setSkipChecks($skip)
+	public function setSkipChecks($skip)
 	{
 		$this->_skipChecks = (array) $skip;
 	}
@@ -515,7 +515,7 @@ class FOFTable extends JObject
 	 *
 	 * @return boolean
 	 */
-	function check()
+	public function check()
 	{
 		if (!$this->_autoChecks)
 		{
@@ -1077,7 +1077,7 @@ class FOFTable extends JObject
 		return $this->_db->execute();
 	}
 
-	function checkin($oid = null)
+	public function checkin($oid = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
@@ -1118,7 +1118,7 @@ class FOFTable extends JObject
 		return $this->_db->execute();
 	}
 
-	function isCheckedOut($with = 0, $against = null)
+	public function isCheckedOut($with = 0, $against = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 
@@ -1201,7 +1201,7 @@ class FOFTable extends JObject
 		return true;
 	}
 
-	function publish($cid = null, $publish = 1, $user_id = 0)
+	public function publish($cid = null, $publish = 1, $user_id = 0)
 	{
 		JArrayHelper::toInteger($cid);
 		$user_id = (int) $user_id;
@@ -1397,7 +1397,7 @@ class FOFTable extends JObject
 	/**
 	 * Export item list to CSV
 	 */
-	function toCSV($separator = ',')
+	public function toCSV($separator = ',')
 	{
 		$csv = array();
 
@@ -1425,7 +1425,7 @@ class FOFTable extends JObject
 	/**
 	 * Exports the table in array format
 	 */
-	function getData()
+	public function getData()
 	{
 		$ret = array();
 
@@ -1446,7 +1446,7 @@ class FOFTable extends JObject
 	/**
 	 * Get the header for exporting item list to CSV
 	 */
-	function getCSVHeader($separator = ',')
+	public function getCSVHeader($separator = ',')
 	{
 		$csv = array();
 

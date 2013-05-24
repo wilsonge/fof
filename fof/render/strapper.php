@@ -90,23 +90,25 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	}
 
 	/**
-     * Loads the validation script for edit form
-     *
-     * @return void
-     */
+	 * Loads the validation script for edit form
+	 *
+	 * @return void
+	 */
 	protected function loadValidationScript(FOFForm &$form)
 	{
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
 		$js = <<<ENDJAVASCRIPT
 		Joomla.submitbutton = function(task)
-        {
-            if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-                Joomla.submitform(task, document.getElementById('adminForm'));
-            } else {
-                alert('$message');
-            }
-        }
+ function(task){
+			if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
+			{
+				Joomla.submitform(task, document.getElementById('adminForm'));
+			}
+			else {
+				alert('$message');
+			}
+		}
 ENDJAVASCRIPT;
 
 		$document = FOFPlatform::getInstance()->getDocument();
@@ -383,9 +385,11 @@ ENDJAVASCRIPT;
 		table = document.getElementById("sortTable");
 		direction = document.getElementById("directionTable");
 		order = table.options[table.selectedIndex].value;
-		if (order != '$order') {
+		if (order != '$order')
+		{
 			dirn = 'asc';
-		} else {
+		}
+		else {
 			dirn = direction.options[direction.selectedIndex].value;
 		}
 		Joomla.tableOrdering(order, dirn, '');
