@@ -11,6 +11,9 @@ defined('FOF_INCLUDED') or die();
 /**
  * Reads and parses the fof.xml file in the back-end of a FOF-powered component,
  * provisioning the data to the rest of the FOF framework
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.1
  */
 class FOFConfigProvider
 {
@@ -19,7 +22,7 @@ class FOFConfigProvider
 	 *
 	 * @var array
 	 */
-	static $configurations = array();
+	public static $configurations = array();
 
 	/**
 	 * Parses the configuration of the specified component
@@ -53,6 +56,7 @@ class FOFConfigProvider
 
 		$order = array_reverse($order);
 		self::$configurations[$component] = array();
+
 		foreach ($order as $area)
 		{
 			$config = $this->parseComponentArea($component, $area);
@@ -60,6 +64,16 @@ class FOFConfigProvider
 		}
 	}
 
+	/**
+	 * Returns the value of a variable. Variables use a dot notation, e.g.
+	 * view.option.whatever where the first part is the domain, the rest of the
+	 * parts specify the path to the variable.
+	 *
+	 * @param   string  $variable  The variable name
+	 * @param   mixed   $default   The default value, or null if not specified
+	 *
+	 * @return  mixed  The value of the variable
+	 */
 	public function get($variable, $default = null)
 	{
 		static $domains = null;
@@ -83,6 +97,7 @@ class FOFConfigProvider
 
 		$class = 'FOFConfigDomain' . ucfirst($domain);
 		$o = new $class;
+
 		return $o->get(self::$configurations[$component], $var, $default);
 	}
 
@@ -106,6 +121,7 @@ class FOFConfigProvider
 		JLoader::import('joomla.filesystem.folder');
 		$path = $componentPaths['admin'];
 		$path = JPath::check($path);
+
 		if (!JFolder::exists($path))
 		{
 			return $ret;
@@ -114,6 +130,7 @@ class FOFConfigProvider
 		// Read the filename if it exists
 		$filename = $path . '/fof.xml';
 		JLoader::import('joomla.filesystem.file');
+
 		if (!JFile::exists($filename))
 		{
 			return $ret;
@@ -122,6 +139,7 @@ class FOFConfigProvider
 
 		// Load the XML data in a SimpleXMLElement object
 		$xml = simplexml_load_string($data);
+
 		if (!($xml instanceof SimpleXMLElement))
 		{
 			return $ret;
@@ -129,6 +147,7 @@ class FOFConfigProvider
 
 		// Get this area's data
 		$areaData = $xml->xpath('//' . $area);
+
 		if (empty($areaData))
 		{
 			return $ret;
@@ -137,9 +156,11 @@ class FOFConfigProvider
 
 		// Parse individual configuration domains
 		$domains = $this->getDomains();
+
 		foreach ($domains as $dom)
 		{
 			$class = 'FOFConfigDomain' . ucfirst($dom);
+
 			if (class_exists($class, true))
 			{
 				$o = new $class;
@@ -164,11 +185,13 @@ class FOFConfigProvider
 		{
 			JLoader::import('joomla.filesystem.folder');
 			$files = JFolder::files(__DIR__ . '/domain', '.php');
+
 			if (!empty($files))
 			{
 				foreach ($files as $file)
 				{
 					$domain = basename($file, '.php');
+
 					if ($domain == 'interface')
 					{
 						continue;
@@ -201,37 +224,38 @@ class FOFConfigProvider
 			return $ret;
 		}
 
-		foreach($viewData as $aView)
+		foreach ($viewData as $aView)
 		{
-			$key = (string)$aView['name'];
+			$key = (string) $aView['name'];
 
 			// Parse ACL options
 			$ret[$key]['acl'] = array();
 			$aclData = $aView->xpath('acl/task');
+
 			if (!empty($aclData))
 			{
-				foreach($aclData as $acl)
+				foreach ($aclData as $acl)
 				{
-					$k = (string)$acl['name'];
-					$ret[$key]['acl'][$k] = (string)$acl;
+					$k = (string) $acl['name'];
+					$ret[$key]['acl'][$k] = (string) $acl;
 				}
 			}
 
 			// Parse taskmap
 			$ret[$key]['taskmap'] = array();
 			$taskmapData = $aView->xpath('taskmap/task');
+
 			if (!empty($taskmapData))
 			{
-				foreach($taskmapData as $map)
+				foreach ($taskmapData as $map)
 				{
-					$k = (string)$map['name'];
-					$ret[$key]['taskmap'][$k] = (string)$map;
+					$k = (string) $map['name'];
+					$ret[$key]['taskmap'][$k] = (string) $map;
 				}
 			}
 		}
 
 		return $ret;
 	}
-
 
 }
