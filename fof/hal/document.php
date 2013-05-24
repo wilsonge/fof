@@ -1,15 +1,18 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @subpackage hal
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  hal
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die();
 
 /**
  * Implementation of the Hypertext Application Language document in PHP. It can
  * be used to provide hypermedia in a web service context.
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.1
  */
 class FOFHalDocument
 {
@@ -51,15 +54,22 @@ class FOFHalDocument
 	public function __construct($data = null)
 	{
 		$this->_data = $data;
-		$this->_links = new FOFHalLinks();
+		$this->_links = new FOFHalLinks;
 	}
 
 	/**
 	 * Add a link to the document
 	 *
+	 * @param   string      $rel        The relation of the link to the document.
+	 *                                  See RFC 5988 http://tools.ietf.org/html/rfc5988#section-6.2.2 A document MUST always have
+	 *                                  a "self" link.
+	 * @param   FOFHalLink  $link       The actual link object
+	 * @param   boolean     $overwrite  When false and a link of $rel relation exists, an array of links is created. Otherwise the
+	 *                                  existing link is overwriten with the new one
+	 *
 	 * @see FOFHalLinks::addLink
 	 *
-	 * @return  boolean
+	 * @return  boolean  True if the link was added to the collection
 	 */
 	public function addLink($rel, FOFHalLink $link, $overwrite = true)
 	{
@@ -68,6 +78,12 @@ class FOFHalDocument
 
 	/**
 	 * Add links to the document
+	 *
+	 * @param   string   $rel        The relation of the link to the document. See RFC 5988
+	 * @param   array    $links      An array of FOFHalLink objects
+	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array of
+	 *                               links is created. Otherwise the existing link is overwriten
+	 *                               with the new one
 	 *
 	 * @see FOFHalLinks::addLinks
 	 *
@@ -83,12 +99,14 @@ class FOFHalDocument
 	 *
 	 * @param   stdClass  $data       The data to add
 	 * @param   boolean   $overwrite  Should I overwrite existing data?
+	 *
+	 * @return  void
 	 */
 	public function addData($data, $overwrite = true)
 	{
 		if (is_array($data))
 		{
-			$data = (object)$data;
+			$data = (object) $data;
 		}
 
 		if ($overwrite)
@@ -137,6 +155,10 @@ class FOFHalDocument
 
 	/**
 	 * Returns the collection of links of this document
+	 *
+	 * @param   string  $rel  The relation of the links to fetch. Skip to get all links.
+	 *
+	 * @return  array
 	 */
 	public function getLinks($rel = null)
 	{
@@ -197,8 +219,10 @@ class FOFHalDocument
 
 		$renderer = new $class_name($this);
 
-		return $renderer->render(array(
-			'data_key'		=> $this->_dataKey
-		));
+		return $renderer->render(
+			array(
+				'data_key'		=> $this->_dataKey
+			)
+		);
 	}
 }
