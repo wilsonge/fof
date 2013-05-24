@@ -106,7 +106,7 @@ abstract class FOFView extends JObject
 	 *
 	 * @var    array  Contains objects of the FOFRenderAbstract class
 	 */
-	static $renderers = array();
+	public static $renderers = array();
 
 	/**
 	 * Cache of the configuration array
@@ -153,8 +153,9 @@ abstract class FOFView extends JObject
 		// Make sure $config is an array
 		if (is_object($config))
 		{
-			$config = (array)$config;
-		} elseif (!is_array($config))
+			$config = (array) $config;
+		}
+		elseif (!is_array($config))
 		{
 			$config = array();
 		}

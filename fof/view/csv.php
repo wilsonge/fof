@@ -44,7 +44,7 @@ class FOFViewCsv extends FOFViewHtml
 	*
 	* @param   array  $config  The configuration data array
 	*/
-	function __construct($config = array())
+	public function __construct($config = array())
 	{
 		// Make sure $config is an array
 		if (is_object($config))

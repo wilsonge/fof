@@ -1,12 +1,18 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @subpackage hal
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  hal
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die();
 
+/**
+ * Implements the HAL over JSON renderer
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.1
+ */
 class FOFHalRenderJson implements FOFHalRenderInterface
 {
 	/**
@@ -16,7 +22,6 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 	 */
 	private $_dataKey = '_list';
 
-
 	/**
 	 * The document to render
 	 *
@@ -24,6 +29,11 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 	 */
 	protected $_document;
 
+	/**
+	 * Public constructor
+	 *
+	 * @param   FOFHalDocument  &$document  The document to render
+	 */
 	public function __construct(&$document)
 	{
 		$this->_document = $document;
@@ -52,11 +62,12 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 			$jsonOptions = 0;
 		}
 
-		$serialiseThis = new stdClass();
+		$serialiseThis = new stdClass;
 
 		// Add links
 		$collection = $this->_document->getLinks();
-		$serialiseThis->_links = new stdClass();
+		$serialiseThis->_links = new stdClass;
+
 		foreach ($collection as $rel => $links)
 		{
 			if (!is_array($links))
@@ -66,6 +77,7 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 			else
 			{
 				$serialiseThis->_links->$rel = array();
+
 				foreach ($links as $link)
 				{
 					array_push($serialiseThis->_links->$rel, $this->_getLink($link));
@@ -74,10 +86,13 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 		}
 
 		// Add embedded documents
+
 		$collection = $this->_document->getEmbedded();
+
 		if (!empty($collection))
 		{
-			$serialiseThis->_embedded->$rel = new stdClass();
+			$serialiseThis->_embedded->$rel = new stdClass;
+
 			foreach ($collection as $rel => $embeddeddocs)
 			{
 				if (!is_array($embeddeddocs))
@@ -95,12 +110,14 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 
 		// Add data
 		$data = $this->_document->getData();
+
 		if (is_object($data))
 		{
-			$data = (array)$data;
+			$data = (array) $data;
+
 			if (!empty($data))
 			{
-				foreach($data as $k => $v)
+				foreach ($data as $k => $v)
 				{
 					$serialiseThis->$k = $v;
 				}
@@ -148,6 +165,6 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 			$ret['title'] = $link->title;
 		}
 
-		return (object)$ret;
+		return (object) $ret;
 	}
 }

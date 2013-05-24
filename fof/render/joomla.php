@@ -427,23 +427,25 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-     * Loads the validation script for edit form
-     *
-     * @return void
-     */
+	 * Loads the validation script for edit form
+	 *
+	 * @return void
+	 */
 	protected function loadValidationScript(FOFForm &$form)
 	{
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
 		$js = <<<ENDJAVASCRIPT
 		Joomla.submitbutton = function(task)
-        {
-            if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm'))) {
-                Joomla.submitform(task, document.getElementById('adminForm'));
-            } else {
-                alert('$message');
-            }
-        }
+ function(task){
+			if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
+			{
+				Joomla.submitform(task, document.getElementById('adminForm'));
+			}
+			else {
+				alert('$message');
+			}
+		}
 ENDJAVASCRIPT;
 
 		$document = FOFPlatform::getInstance()->getDocument();
@@ -472,7 +474,6 @@ ENDJAVASCRIPT;
 		// Do not render a submenu unless we are in the the admin area
 		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
-
 
 		if (!FOFPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
 			return;

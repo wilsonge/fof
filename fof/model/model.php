@@ -210,8 +210,9 @@ class FOFModel extends JObject
 		// Make sure $config is an array
 		if (is_object($config))
 		{
-			$config = (array)$config;
-		} elseif (!is_array($config))
+			$config = (array) $config;
+		}
+		elseif (!is_array($config))
 		{
 			$config = array();
 		}
@@ -378,8 +379,9 @@ class FOFModel extends JObject
 		// Make sure $config is an array
 		if (is_object($config))
 		{
-			$config = (array)$config;
-		} elseif (!is_array($config))
+			$config = (array) $config;
+		}
+		elseif (!is_array($config))
 		{
 			$config = array();
 		}
@@ -492,8 +494,9 @@ class FOFModel extends JObject
 		// Make sure $config is an array
 		if (is_object($config))
 		{
-			$config = (array)$config;
-		} elseif (!is_array($config))
+			$config = (array) $config;
+		}
+		elseif (!is_array($config))
 		{
 			$config = array();
 		}
@@ -1633,8 +1636,9 @@ class FOFModel extends JObject
 		// Make sure $config is an array
 		if (is_object($config))
 		{
-			$config = (array)$config;
-		} elseif (!is_array($config))
+			$config = (array) $config;
+		}
+		elseif (!is_array($config))
 		{
 			$config = array();
 		}

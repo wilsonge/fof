@@ -124,6 +124,7 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 		// Get the model object
 		$config = array('savestate' => 0);
 		$model = FOFModel::getTmpInstance($mName, $mPrefix, $config);
+
 		if ($applyAccess)
 		{
 			$model->applyAccessFiltering();

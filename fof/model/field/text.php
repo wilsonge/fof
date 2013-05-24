@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
  * FrameworkOnFramework model behavior class
  *
  * @package  FrameworkOnFramework.Model
- * @since    2.2
+ * @since    2.1
  */
 class FOFModelFieldText extends FOFModelField
 {
@@ -33,7 +33,7 @@ class FOFModelFieldText extends FOFModelField
 		{
 			return '';
 		}
-		
+
 		return '(' . $this->_db->qn($this->name) . ' LIKE ' . $this->_db->quote('%' . $value . '%') . ')';
 	}
 
@@ -43,7 +43,7 @@ class FOFModelFieldText extends FOFModelField
 		{
 			return '';
 		}
-		
+
 		return '(' . $this->_db->qn($this->name) . ' LIKE ' . $this->_db->quote( $value ) . ')';
 	}
 

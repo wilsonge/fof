@@ -32,7 +32,7 @@ class FOFViewJson extends FOFViewHtml
 
 		if (isset($config['use_hypermedia']))
 		{
-			$this->useHypermedia = (bool)$config['use_hypermedia'];
+			$this->useHypermedia = (bool) $config['use_hypermedia'];
 		}
 	}
 
@@ -233,9 +233,8 @@ class FOFViewJson extends FOFViewHtml
 			$document = new FOFHalDocument($data);
 		}
 
-
 		// Create a self link
-		$uri = (string)(JUri::getInstance());
+		$uri = (string) (JUri::getInstance());
 		$uri = $this->_removeURIBase($uri);
 		$uri = JRoute::_($uri);
 		$document->addLink('self', new FOFHalLink($uri));
@@ -254,7 +253,7 @@ class FOFViewJson extends FOFViewHtml
 				// The "first" link
 				$uri = clone $protoUri;
 				$uri->setVar('limitstart', 0);
-				$uri = JRoute::_((string)$uri);
+				$uri = JRoute::_((string) $uri);
 
 				$document->addLink('first', new FOFHalLink($uri));
 
@@ -265,7 +264,7 @@ class FOFViewJson extends FOFViewHtml
 					$limitstart = ($prevPage - 1) * $pagination->limit;
 					$uri = clone $protoUri;
 					$uri->setVar('limitstart', $limitstart);
-					$uri = JRoute::_((string)$uri);
+					$uri = JRoute::_((string) $uri);
 
 					$document->addLink('prev', new FOFHalLink($uri));
 				}
@@ -277,7 +276,7 @@ class FOFViewJson extends FOFViewHtml
 					$limitstart = ($nextPage - 1) * $pagination->limit;
 					$uri = clone $protoUri;
 					$uri->setVar('limitstart', $limitstart);
-					$uri = JRoute::_((string)$uri);
+					$uri = JRoute::_((string) $uri);
 
 					$document->addLink('next', new FOFHalLink($uri));
 				}
@@ -287,7 +286,7 @@ class FOFViewJson extends FOFViewHtml
 				$limitstart = ($lastPage - 1) * $pagination->limit;
 				$uri = clone $protoUri;
 				$uri->setVar('limitstart', $limitstart);
-				$uri = JRoute::_((string)$uri);
+				$uri = JRoute::_((string) $uri);
 
 				$document->addLink('last', new FOFHalLink($uri));
 			}

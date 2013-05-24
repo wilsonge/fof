@@ -24,8 +24,9 @@ class FOFViewHtml extends FOFViewRaw
 		// Make sure $config is an array
 		if (is_object($config))
 		{
-			$config = (array)$config;
-		} elseif (!is_array($config))
+			$config = (array) $config;
+		}
+		elseif (!is_array($config))
 		{
 			$config = array();
 		}

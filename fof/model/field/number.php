@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
  * FrameworkOnFramework model behavior class
  *
  * @package  FrameworkOnFramework.Model
- * @since    2.2
+ * @since    2.1
  */
 class FOFModelFieldNumber extends FOFModelField
 {
@@ -26,9 +26,9 @@ class FOFModelFieldNumber extends FOFModelField
 		{
 			return '';
 		}
-		
+
 		$extra = '';
-		
+
 		if ($include)
 		{
 			$extra = '=';
@@ -46,9 +46,9 @@ class FOFModelFieldNumber extends FOFModelField
 		{
 			return '';
 		}
-		
+
 		$extra = '';
-		
+
 		if ($include)
 		{
 			$extra = '=';
@@ -66,12 +66,12 @@ class FOFModelFieldNumber extends FOFModelField
 		{
 			return '';
 		}
-		
+
 		$from = $value - $interval;
 		$to = $value + $interval;
 
 		$extra = '';
-		
+
 		if ($include)
 		{
 			$extra = '=';

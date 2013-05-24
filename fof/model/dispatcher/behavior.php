@@ -11,9 +11,9 @@ defined('_JEXEC') or die();
  * FrameworkOnFramework model behavior dispatcher class
  *
  * @package  FrameworkOnFramework.Model
- * @since    2.2
+ * @since    2.1
  */
 class FOFModelDispatcherBehavior extends JDispatcher
 {
-	
+
 }

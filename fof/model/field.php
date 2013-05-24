@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
  * FrameworkOnFramework model behavior class
  *
  * @package  FrameworkOnFramework.Model
- * @since    2.2
+ * @since    2.1
  */
 abstract class FOFModelField
 {
@@ -19,32 +19,32 @@ abstract class FOFModelField
 
 	/**
 	 * The column name of the table field
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $name = '';
 
 	/**
 	 * The column type of the table field
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $type = '';
 
 	/**
 	 * The null value for this type
-	 * 
+	 *
 	 * @var  mixed
 	 */
 	public $null_value = null;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param 	JDatabaseDriver	$db 	The database object
-	 * @param 	object 		 	$field 	The field informations as taken from the db
+	 *
+	 * @param   JDatabaseDriver  $db     The database object
+	 * @param   object           $field  The field informations as taken from the db
 	 */
-	public function __construct($db, $field) 
+	public function __construct($db, $field)
 	{
 		$this->_db = $db;
 
@@ -70,7 +70,7 @@ abstract class FOFModelField
 		$methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
 
 		$tmp = array();
-		foreach ($methods as $method) 
+		foreach ($methods as $method)
 		{
 			$tmp[] = $method->name;
 		}
@@ -90,7 +90,7 @@ abstract class FOFModelField
 		{
 			return '';
 		}
-		
+
 		return $this->search($value, '=');
 	}
 
@@ -114,10 +114,10 @@ abstract class FOFModelField
 
 	/**
 	 * Creates a field Object based on the field column type
-	 * 
+	 *
 	 * @param  	object 	$field 	The field informations
 	 * @param  	array  	$config The field configuration (like the db object to use)
-	 * 
+	 *
 	 * @return 	FOFModelField	The Field object
 	 */
 	public static function getField($field, $config = array())
@@ -133,7 +133,8 @@ abstract class FOFModelField
 			if (isset($config['dbo']))
 			{
 				$db = $config['dbo'];
-			} else 
+			}
+			else
 			{
 				$db = JFactory::getDBO();
 			}
@@ -148,9 +149,9 @@ abstract class FOFModelField
 
 	/**
 	 * Get the classname based on the field Type
-	 * 
+	 *
 	 * @param  	string 	$type 	The type of the field
-	 * 
+	 *
 	 * @return  string 	the class suffix
 	 */
 	public static function getFieldType($type)
