@@ -17,8 +17,8 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	 */
 	public function __construct()
 	{
-		$this->priority = 55;
-		$this->enabled = version_compare(JVERSION, '3.0', 'ge');
+		$this->priority	 = 55;
+		$this->enabled	 = version_compare(JVERSION, '3.0', 'ge');
 	}
 
 	/**
@@ -30,13 +30,19 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	 */
 	public function preRender($view, $task, $input, $config = array())
 	{
-		$format = $input->getCmd('format', 'html');
-		if (empty($format))
-			$format = 'html';
-		if ($format != 'html')
-			return;
+		$format	 = $input->getCmd('format', 'html');
 
-		if(!FOFPlatform::getInstance()->isCli())
+		if (empty($format))
+		{
+			$format	 = 'html';
+		}
+
+		if ($format != 'html')
+		{
+			return;
+		}
+
+		if (!FOFPlatform::getInstance()->isCli())
 		{
 			// Wrap output in a Joomla-versioned div
 			$version = new JVersion;
@@ -59,8 +65,11 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	public function postRender($view, $task, $input, $config = array())
 	{
 		$format = $input->getCmd('format', 'html');
+
 		if ($format != 'html' || FOFPlatform::getInstance()->isCli())
+		{
 			return;
+		}
 
 		echo "</div>\n";
 	}

@@ -17,8 +17,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	public function __construct()
 	{
-		$this->priority = 50;
-		$this->enabled = true;
+		$this->priority	 = 50;
+		$this->enabled	 = true;
 	}
 
 	/**
@@ -30,13 +30,13 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	public function preRender($view, $task, $input, $config = array())
 	{
-		$format = $input->getCmd('format', 'html');
+		$format	 = $input->getCmd('format', 'html');
 		if (empty($format))
-			$format = 'html';
+			$format	 = 'html';
 		if ($format != 'html')
 			return;
 
-		if(!FOFPlatform::getInstance()->isCli())
+		if (!FOFPlatform::getInstance()->isCli())
 		{
 			// Wrap output in a Joomla-versioned div
 			$version = new JVersion;
@@ -61,14 +61,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
-		$format = $input->getCmd('format', 'html');
+		$format	 = $input->getCmd('format', 'html');
 		if (empty($format))
-			$format = 'html';
+			$format	 = 'html';
 		if ($format != 'html')
 			return;
 
 		// Closing tag only if we're not in CLI
-		if(FOFPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -91,9 +91,9 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$headerFields = $form->getHeaderset();
 
 		// Start the form
-		$html = '';
-		$filter_order = $form->getView()->getLists()->order;
-		$filter_order_Dir = $form->getView()->getLists()->order_Dir;
+		$html				 = '';
+		$filter_order		 = $form->getView()->getLists()->order;
+		$filter_order_Dir	 = $form->getView()->getLists()->order_Dir;
 
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
@@ -109,10 +109,10 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$html .= "\t\t" . '<table class="adminlist" id="adminList">' . PHP_EOL;
 
 		// Get form parameters
-		$show_header = $form->getAttribute('show_header', 1);
-		$show_filters = $form->getAttribute('show_filters', 1);
-		$show_pagination = $form->getAttribute('show_pagination', 1);
-		$norows_placeholder = $form->getAttribute('norows_placeholder', '');
+		$show_header		 = $form->getAttribute('show_header', 1);
+		$show_filters		 = $form->getAttribute('show_filters', 1);
+		$show_pagination	 = $form->getAttribute('show_pagination', 1);
+		$norows_placeholder	 = $form->getAttribute('norows_placeholder', '');
 
 		// Open the table header region if required
 		if ($show_header || $show_filters)
@@ -131,12 +131,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				// Make sure we have a header field. Under Joomla! 2.5 we cannot
 				// render filter-only fields.
 				$tmpHeader = $header->header;
+
 				if (empty($tmpHeader))
 				{
 					continue;
 				}
 
 				$tdwidth = $header->tdwidth;
+
 				if (!empty($tdwidth))
 				{
 					$tdwidth = 'width="' . $tdwidth . '"';
@@ -150,11 +152,12 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				$header_html .= "\t\t\t\t\t\t" . $tmpHeader;
 				$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
 
-				$filter = $header->filter;
+				$filter	 = $header->filter;
 				$buttons = $header->buttons;
 				$options = $header->options;
 
 				$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
+
 				if (!empty($filter))
 				{
 					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
@@ -165,13 +168,13 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				}
 				elseif (!empty($options))
 				{
-					$label = $header->label;
+					$label		 = $header->label;
 					$emptyOption = JHtml::_('select.option', '', '- ' . JText::_($label) . ' -');
 					array_unshift($options, $emptyOption);
-					$attribs = array(
-						'onchange'	 => 'document.adminForm.submit();'
+					$attribs	 = array(
+						'onchange' => 'document.adminForm.submit();'
 					);
-					$filter = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value, false, true);
+					$filter		 = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value, false, true);
 					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
 				}
 				$filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
@@ -202,12 +205,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 		// Loop through rows and fields, or show placeholder for no rows
 		$html .= "\t\t\t<tbody>" . PHP_EOL;
-		$fields = $form->getFieldset('items');
+		$fields		 = $form->getFieldset('items');
 		$num_columns = count($fields);
-		$items = $form->getModel()->getItemList();
+		$items		 = $form->getModel()->getItemList();
+
 		if ($count = count($items))
 		{
 			$m = 1;
+
 			foreach ($items as $i => $item)
 			{
 				$table_item = $form->getModel()->getTable();
@@ -215,17 +220,17 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 				$form->bind($item);
 
-				$m = 1 - $m;
-				$class = 'row' . $m;
+				$m		 = 1 - $m;
+				$class	 = 'row' . $m;
 
 				$html .= "\t\t\t\t<tr class=\"$class\">" . PHP_EOL;
 
 				$fields = $form->getFieldset('items');
 				foreach ($fields as $field)
 				{
-					$field->rowid = $i;
-					$field->item = $table_item;
-					$class = $field->labelClass ? 'class ="' . $field->labelClass . '"' : '';
+					$field->rowid	 = $i;
+					$field->item	 = $table_item;
+					$class			 = $field->labelClass ? 'class ="' . $field->labelClass . '"' : '';
 					$html .= "\t\t\t\t\t<td $class>" . $field->getRepeatable() . '</td>' . PHP_EOL;
 				}
 
@@ -275,8 +280,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
 		// Get the key for this model's table
-		$key = $model->getTable()->getKeyName();
-		$keyValue = $model->getId();
+		$key		 = $model->getTable()->getKeyName();
+		$keyValue	 = $model->getId();
 
 		$html = '';
 
@@ -302,8 +307,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 			foreach ($fields as $field)
 			{
-				$label = $field->label;
-				$static = $field->static;
+				$label	 = $field->label;
+				$static	 = $field->static;
 
 				$html .= "<div class=\"fof-row\">";
 				$html .= "\t\t\t" . $label . PHP_EOL;
@@ -329,15 +334,15 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
 		// Get the key for this model's table
-		$key = $model->getTable()->getKeyName();
-		$keyValue = $model->getId();
+		$key		 = $model->getTable()->getKeyName();
+		$keyValue	 = $model->getId();
 
 		JHTML::_('behavior.tooltip');
 
 		$html = '';
 
-		$validate = $form->getAttribute('validate');
-		$class = '';
+		$validate	 = $form->getAttribute('validate');
+		$class		 = '';
 
 		if (!empty($validate))
 		{
@@ -407,8 +412,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 			foreach ($fields as $field)
 			{
-				$label = $field->label;
-				$input = $field->input;
+				$label	 = $field->label;
+				$input	 = $field->input;
 
 				if (!is_null($label))
 				{
@@ -449,6 +454,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 ENDJAVASCRIPT;
 
 		$document = FOFPlatform::getInstance()->getDocument();
+
 		if ($document instanceof JDocument)
 		{
 			$document->addScriptDeclaration($js);
@@ -466,19 +472,23 @@ ENDJAVASCRIPT;
 	protected function renderLinkbar($view, $task, $input, $config = array())
 	{
 		// On command line don't do anything
-		if(FOFPlatform::getInstance()->isCli())
+
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
 
 		// Do not render a submenu unless we are in the the admin area
-		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
-		$renderFrontendSubmenu = $toolbar->getRenderFrontendSubmenu();
+		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+		$renderFrontendSubmenu	 = $toolbar->getRenderFrontendSubmenu();
 
 		if (!FOFPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
+		{
 			return;
+		}
 
 		$links = $toolbar->getLinks();
+
 		if (!empty($links))
 		{
 			foreach ($links as $link)
@@ -499,14 +509,14 @@ ENDJAVASCRIPT;
 	protected function renderButtons($view, $task, $input, $config = array())
 	{
 		// On command line don't do anything
-		if(FOFPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
 
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
-		$toolbar = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
-		$renderFrontendButtons = $toolbar->getRenderFrontendButtons();
+		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+		$renderFrontendButtons	 = $toolbar->getRenderFrontendButtons();
 
 
 		if (FOFPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
@@ -518,12 +528,13 @@ ENDJAVASCRIPT;
 		// (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
 		FOFPlatform::getInstance()->loadTranslations('joomla');
 
-		$title = JFactory::getApplication()->get('JComponentTitle');
-		$bar = JToolBar::getInstance('toolbar');
+		$title	 = JFactory::getApplication()->get('JComponentTitle');
+		$bar	 = JToolBar::getInstance('toolbar');
 
 		// delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
 		$bar_content = str_replace('href="#"', '', $bar->render());
 
 		echo '<div id="FOFHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';
 	}
+
 }

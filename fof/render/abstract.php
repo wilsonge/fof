@@ -11,7 +11,6 @@ defined('_JEXEC') or die;
  */
 abstract class FOFRenderAbstract
 {
-
 	/** @var int Priority of this renderer. Higher means more important */
 	protected $priority = 50;
 
