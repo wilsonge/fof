@@ -17,7 +17,8 @@ defined('_JEXEC') or die();
  * and provides the static interface to get the appropriate Platform object for
  * use in the rest of the framework.
  *
- * @since 2.1
+ * @package  FrameworkOnFramework
+ * @since    2.1
  */
 interface FOFPlatformInterface
 {
@@ -77,16 +78,16 @@ interface FOFPlatformInterface
 	 * The list of paths returned is a prioritised list. If a file is
 	 * found in the first path the other paths will not be scanned.
 	 *
-	 * @param   string  $component  The name of the component. For Joomla! this
-	 *                              is something like "com_example"
-	 * @param   string  $view       The name of the view you're looking a
-	 *                              template for
-	 * @param   string  $layout     The layout name to load, e.g. 'default'
-	 * @param   string  $tpl        The sub-template name to load (null by default)
-	 * @param   boolean $strict     If true, only the specified layout will be
-	 *                              searched for. Otherwise we'll fall back to
-	 *                              the 'default' layout if the specified layout
-	 *                              is not found.
+	 * @param   string   $component  The name of the component. For Joomla! this
+	 *                               is something like "com_example"
+	 * @param   string   $view       The name of the view you're looking a
+	 *                               template for
+	 * @param   string   $layout     The layout name to load, e.g. 'default'
+	 * @param   string   $tpl        The sub-template name to load (null by default)
+	 * @param   boolean  $strict     If true, only the specified layout will be
+	 *                               searched for. Otherwise we'll fall back to
+	 *                               the 'default' layout if the specified layout
+	 *                               is not found.
 	 *
 	 * @return  array
 	 */
@@ -211,11 +212,6 @@ interface FOFPlatformInterface
 	 * @return  JDocument
 	 */
 	public function getDocument();
-
-	// ---
-	// The following methods are tentatively included until a better decoupling
-	// from the Joomla! CMS is implemented in FOF.
-	// ---
 
 	/**
 	 * Is this the administrative section of the component?

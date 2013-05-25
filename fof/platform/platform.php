@@ -17,7 +17,8 @@ defined('_JEXEC') or die();
  * and provides the static interface to get the appropriate Platform object for
  * use in the rest of the framework.
  *
- * @since 2.1
+ * @package  FrameworkOnFramework
+ * @since    2.1
  */
 abstract class FOFPlatform implements FOFPlatformInterface
 {
@@ -71,7 +72,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Unregister a path where platform files will be looked for.
 	 *
-	 * @param  string  $path  The path to remove
+	 * @param   string  $path  The path to remove
 	 *
 	 * @return  void
 	 */
@@ -109,6 +110,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 		{
 			// Get the paths to look into
 			$paths = array(__DIR__);
+
 			if (is_array(self::$paths))
 			{
 				$paths = array_merge(array(__DIR__), self::$paths);
@@ -117,10 +119,12 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
 			// Loop all paths
 			JLoader::import('joomla.filesystem.folder');
+
 			foreach ($paths as $path)
 			{
 				// Get the .php files containing platform classes
 				$files = JFolder::files($path, '[a-z0-9]\.php$', false, true, array('interface.php', 'platform.php'));
+
 				if (!empty($files))
 				{
 					foreach ($files as $file)
@@ -130,6 +134,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 						$class_name = 'FOFPlatform' . ucfirst($base_name);
 
 						// Load the file if the class doesn't exist
+
 						if (!class_exists($class_name))
 						{
 							@include_once $file;
@@ -137,6 +142,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
 						// If the class still doesn't exist this file didn't
 						// actually contain a platform class; skip it
+
 						if (!class_exists($class_name))
 						{
 							continue;
@@ -184,7 +190,6 @@ abstract class FOFPlatform implements FOFPlatformInterface
 		return self::$instance;
 	}
 
-
 	/**
 	 * Returns the ordering of the platform class.
 	 *
@@ -217,10 +222,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Returns the base (root) directories for a given component.
 	 *
-	 * @see FOFPlatformInterface::getComponentBaseDirs()
-	 *
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
+	 *
+	 * @see FOFPlatformInterface::getComponentBaseDirs()
 	 *
 	 * @return  array  A hash array with keys main, alt, site and admin.
 	 */
@@ -237,18 +242,18 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Return a list of the view template directories for this component.
 	 *
-	 * @see FOFPlatformInterface::getViewTemplateDirs()
+	 * @param   string   $component  The name of the component. For Joomla! this
+	 *                               is something like "com_example"
+	 * @param   string   $view       The name of the view you're looking a
+	 *                               template for
+	 * @param   string   $layout     The layout name to load, e.g. 'default'
+	 * @param   string   $tpl        The sub-template name to load (null by default)
+	 * @param   boolean  $strict     If true, only the specified layout will be
+	 *                               searched for. Otherwise we'll fall back to
+	 *                               the 'default' layout if the specified layout
+	 *                               is not found.
 	 *
-	 * @param   string  $component  The name of the component. For Joomla! this
-	 *                              is something like "com_example"
-	 * @param   string  $view       The name of the view you're looking a
-	 *                              template for
-	 * @param   string  $layout     The layout name to load, e.g. 'default'
-	 * @param   string  $tpl        The sub-template name to load (null by default)
-	 * @param   boolean $strict     If true, only the specified layout will be
-	 *                              searched for. Otherwise we'll fall back to
-	 *                              the 'default' layout if the specified layout
-	 *                              is not found.
+	 * @see FOFPlatformInterface::getViewTemplateDirs()
 	 *
 	 * @return  array
 	 */
@@ -287,10 +292,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Load the translation files for a given component.
 	 *
-	 * @see FOFPlatformInterface::loadTranslations()
-	 *
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
+	 *
+	 * @see FOFPlatformInterface::loadTranslations()
 	 *
 	 * @return  void
 	 */
@@ -302,9 +307,9 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Authorise access to the component in the back-end.
 	 *
-	 * @see FOFPlatformInterface::authorizeAdmin()
-	 *
 	 * @param   string  $component  The name of the component.
+	 *
+	 * @see FOFPlatformInterface::authorizeAdmin()
 	 *
 	 * @return  boolean  True to allow loading the component, false to halt loading
 	 */
@@ -315,6 +320,8 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
 	/**
 	 * Returns the JUser object for the current user
+	 *
+	 * @param   $id  integer  The ID of the user to fetch
 	 *
 	 * @see FOFPlatformInterface::getUser()
 	 *
@@ -340,14 +347,14 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * This method will try retrieving a variable from the request (input) data.
 	 *
-	 * @see FOFPlatformInterface::getUserStateFromRequest()
-	 *
 	 * @param   string    $key           The user state key for the variable
 	 * @param   string    $request       The request variable name for the variable
 	 * @param   FOFInput  $input         The FOFInput object with the request (input) data
 	 * @param   mixed     $default       The default value. Default: null
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
+	 *
+	 * @see FOFPlatformInterface::getUserStateFromRequest()
 	 *
 	 * @return  mixed  The value of the variable
 	 */
@@ -360,9 +367,9 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 * Load plugins of a specific type. Obviously this seems to only be required
 	 * in the Joomla! CMS.
 	 *
-	 * @see FOFPlatformInterface::importPlugin()
-	 *
 	 * @param   string  $type  The type of the plugins to be loaded
+	 *
+	 * @see FOFPlatformInterface::importPlugin()
 	 *
 	 * @return void
 	 */
@@ -375,10 +382,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 * Execute plugins (system-level triggers) and fetch back an array with
 	 * their return values.
 	 *
-	 * @see FOFPlatformInterface::runPlugins()
-	 *
 	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
 	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
+	 *
+	 * @see FOFPlatformInterface::runPlugins()
 	 *
 	 * @return  array  A simple array containing the resutls of the plugins triggered
 	 */
@@ -390,10 +397,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Perform an ACL check.
 	 *
-	 * @see FOFPlatformInterface::authorise()
-	 *
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
+	 *
+	 * @see FOFPlatformInterface::authorise()
 	 *
 	 * @return  boolean  True if the user is allowed this action
 	 */

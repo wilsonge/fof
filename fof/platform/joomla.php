@@ -12,7 +12,8 @@ defined('_JEXEC') or die();
  *
  * This implements the platform class for Joomla! 2.5 or later
  *
- * @since 2.1
+ * @package  FrameworkOnFramework
+ * @since    2.1
  */
 class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 {
@@ -114,10 +115,10 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Returns the base (root) directories for a given component.
 	 *
-	 * @see FOFPlatformInterface::getComponentBaseDirs()
-	 *
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
+	 *
+	 * @see FOFPlatformInterface::getComponentBaseDirs()
 	 *
 	 * @return  array  A hash array with keys main, alt, site and admin.
 	 */
@@ -145,15 +146,17 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Return a list of the view template paths for this component.
 	 *
-	 * @see FOFPlatformInterface::getViewTemplateDirs()
+	 * @param   string   $component  The name of the component. For Joomla! this
+	 *                               is something like "com_example"
+	 * @param   string   $view       The name of the view you're looking a
+	 *                               template for
+	 * @param   string   $layout     The layout name to load, e.g. 'default'
+	 * @param   string   $tpl        The sub-template name to load (null by default)
+	 * @param   boolean  $strict     If true, only the specified layout will be searched for.
+	 *                               Otherwise we'll fall back to the 'default' layout if the
+	 *                               specified layout is not found.
 	 *
-	 * @param   string  $component  The name of the component. For Joomla! this
-	 *                              is something like "com_example"
-	 * @param   string  $view       The name of the view you're looking a
-	 *                              template for
-	 * @param   string  $layout     The layout name to load, e.g. 'default'
-	 * @param   string  $tpl        The sub-template name to load (null by default)
-	 * @param   boolean $strict     If true, only the specified layout will be searched for. Otherwise we'll fall back to the 'default' layout if the specified layout is not found.
+	 * @see FOFPlatformInterface::getViewTemplateDirs()
 	 *
 	 * @return  array
 	 */
@@ -200,7 +203,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 */
 	public function getTemplateSuffixes()
 	{
-		$jversion = new JVersion();
+		$jversion = new JVersion;
 		$versionParts = explode('.', $jversion->RELEASE);
 		$majorVersion = array_shift($versionParts);
 		$suffixes = array(
@@ -225,7 +228,8 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	public function getTemplateOverridePath($component, $absolute = true)
 	{
 		list($isCli, $isAdmin) = $this->isCliAdmin();
-		if(!$isCli)
+
+		if (!$isCli)
 		{
 			if ($absolute)
 			{
@@ -259,10 +263,10 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Load the translation files for a given component.
 	 *
-	 * @see FOFPlatformInterface::loadTranslations()
-	 *
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
+	 *
+	 * @see FOFPlatformInterface::loadTranslations()
 	 *
 	 * @return  void
 	 */
@@ -287,9 +291,9 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Authorise access to the component in the back-end.
 	 *
-	 * @see FOFPlatformInterface::authorizeAdmin()
-	 *
 	 * @param   string  $component  The name of the component.
+	 *
+	 * @see FOFPlatformInterface::authorizeAdmin()
 	 *
 	 * @return  boolean  True to allow loading the component, false to halt loading
 	 */
@@ -313,10 +317,10 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Return a user object.
 	 *
-	 * @see FOFPlatformInterface::getUser()
-	 *
 	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
 	 *                        the object for the currently logged in user.
+	 *
+	 * @see FOFPlatformInterface::getUser()
 	 *
 	 * @return  JUser  The JUser object for the specified user
 	 */
@@ -354,14 +358,14 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * This method will try retrieving a variable from the request (input) data.
 	 *
-	 * @see FOFPlatformInterface::getUserStateFromRequest()
-	 *
 	 * @param   string    $key           The user state key for the variable
 	 * @param   string    $request       The request variable name for the variable
 	 * @param   FOFInput  $input         The FOFInput object with the request (input) data
 	 * @param   mixed     $default       The default value. Default: null
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
+	 *
+	 * @see FOFPlatformInterface::getUserStateFromRequest()
 	 *
 	 * @return  mixed  The value of the variable
 	 */
@@ -371,7 +375,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 
 		if ($isCLI)
 		{
-			return $input->get($request, $default, $type);;
+			return $input->get($request, $default, $type);
 		}
 
 		$app = JFactory::getApplication();
@@ -412,9 +416,9 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 * Load plugins of a specific type. Obviously this seems to only be required
 	 * in the Joomla! CMS.
 	 *
-	 * @see FOFPlatformInterface::importPlugin()
-	 *
 	 * @param   string  $type  The type of the plugins to be loaded
+	 *
+	 * @see FOFPlatformInterface::importPlugin()
 	 *
 	 * @return void
 	 */
@@ -430,10 +434,10 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 * Execute plugins (system-level triggers) and fetch back an array with
 	 * their return values.
 	 *
-	 * @see FOFPlatformInterface::runPlugins()
-	 *
 	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
 	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
+	 *
+	 * @see FOFPlatformInterface::runPlugins()
 	 *
 	 * @return  array  A simple array containing the resutls of the plugins triggered
 	 */
@@ -454,10 +458,10 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Perform an ACL check.
 	 *
-	 * @see FOFPlatformInterface::authorise()
-	 *
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
+	 *
+	 * @see FOFPlatformInterface::authorise()
 	 *
 	 * @return  boolean  True if the user is allowed this action
 	 */
