@@ -271,9 +271,6 @@ class FOFModel extends JObject
 		}
 
 		$config['input']->set('option', $config['option']);
-		// This line would always cause the passed by reference, hence shared,
-		// instance of FOFInput to have a view set to plural. Um, no, don't!
-		//$config['input']->set('view', $config['view']);
 
 		// Get the component directories
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
@@ -348,8 +345,10 @@ class FOFModel extends JObject
 	/**
 	 * Adds a behavior to the model
 	 *
-	 * @param  	string 	$name   The name of the behavior
-	 * @param 	array  	$config Optional Behavior configuration
+	 * @param   string  $name    The name of the behavior
+	 * @param   array   $config  Optional Behavior configuration
+	 *
+	 * @return  boolean
 	 */
 	public function addBehavior($name, $config = array())
 	{
@@ -359,6 +358,7 @@ class FOFModel extends JObject
 		if (class_exists($behaviorClass) && $this->modelDispatcher)
 		{
 			$behavior = new $behaviorClass($this->modelDispatcher, $config);
+
 			return true;
 		}
 
@@ -595,6 +595,7 @@ class FOFModel extends JObject
 
 			$path = $componentPaths['admin'] . '/tables';
 			$altPath = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table_path', null);
+
 			if ($altPath)
 			{
 				$path = $componentPaths['main'] . '/' . $altPath;
@@ -610,15 +611,21 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$table = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.table', FOFInflector::singularize($view));
+			$table = $this->configProvider->get(
+				$this->option . '.views.' . FOFInflector::singularize($this->name) .
+				'.config.table', FOFInflector::singularize($view)
+			);
 			$this->table = $table;
 		}
 
 		// Set the internal state marker - used to ignore setting state from the request
-		if (
-			!empty($config['ignore_request']) ||
-			!is_null($this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.ignore_request', null))
-		)
+
+		if (!empty($config['ignore_request']) || !is_null(
+				$this->configProvider->get(
+					$this->option . '.views.' . FOFInflector::singularize($this->name) .
+					'.config.ignore_request', null
+				)
+		))
 		{
 			$this->__state_set = true;
 		}
@@ -651,11 +658,15 @@ class FOFModel extends JObject
 		$this->setState('limitstart', $limitstart);
 
 		// Get the ID or list of IDs from the request or the configuration
+
 		if (array_key_exists('cid', $config))
 		{
 			$cid = $config['cid'];
 		}
-		elseif ($cid = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.cid', null))
+		elseif ($cid = $this->configProvider->get(
+				$this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.cid', null
+			)
+		)
 		{
 			$cid = explode(',', $cid);
 		}
@@ -668,7 +679,10 @@ class FOFModel extends JObject
 		{
 			$id = $config['id'];
 		}
-		elseif ($id = $this->configProvider->get($this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.id', null))
+		elseif ($id = $this->configProvider->get(
+				$this->option . '.views.' . FOFInflector::singularize($this->name) . '.config.id', null
+			)
+		)
 		{
 			$id = explode(',', $id);
 			$id = array_shift($id);
@@ -697,8 +711,10 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->event_after_delete = $this->configProvider->get($configKey . 'event_after_delete',
-				$this->event_after_delete);
+			$this->event_after_delete = $this->configProvider->get(
+				$configKey . 'event_after_delete',
+				$this->event_after_delete
+			);
 		}
 
 		if (isset($config['event_after_save']))
@@ -707,8 +723,10 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->event_after_save = $this->configProvider->get($configKey . 'event_after_save',
-				$this->event_after_save);
+			$this->event_after_save = $this->configProvider->get(
+				$configKey . 'event_after_save',
+				$this->event_after_save
+			);
 		}
 
 		if (isset($config['event_before_delete']))
@@ -717,8 +735,10 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->event_before_delete = $this->configProvider->get($configKey . 'event_before_delete',
-				$this->event_before_delete);
+			$this->event_before_delete = $this->configProvider->get(
+				$configKey . 'event_before_delete',
+				$this->event_before_delete
+			);
 		}
 
 		if (isset($config['event_before_save']))
@@ -727,8 +747,10 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->event_before_save = $this->configProvider->get($configKey . 'event_before_save',
-				$this->event_before_save);
+			$this->event_before_save = $this->configProvider->get(
+				$configKey . 'event_before_save',
+				$this->event_before_save
+			);
 		}
 
 		if (isset($config['event_change_state']))
@@ -737,8 +759,10 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->event_change_state = $this->configProvider->get($configKey . 'event_change_state',
-				$this->event_change_state);
+			$this->event_change_state = $this->configProvider->get(
+				$configKey . 'event_change_state',
+				$this->event_change_state
+			);
 		}
 
 		if (isset($config['event_clean_cache']))
@@ -747,13 +771,16 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->event_clean_cache = $this->configProvider->get($configKey . 'event_clean_cache',
-				$this->event_clean_cache);
+			$this->event_clean_cache = $this->configProvider->get(
+				$configKey . 'event_clean_cache',
+				$this->event_clean_cache
+			);
 		}
 
 		if (isset($config['behaviors']))
 		{
 			$behaviors = (array) $config['behaviors'];
+
 			foreach ($behaviors as $behavior)
 			{
 				$this->addBehavior($behavior);
@@ -761,8 +788,10 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$behaviors = $this->configProvider->get($configKey . 'behaviors',
-				$this->default_behaviors);
+			$behaviors = $this->configProvider->get(
+				$configKey . 'behaviors',
+				$this->default_behaviors
+			);
 
 			foreach ($behaviors as $behavior)
 			{
@@ -1030,8 +1059,10 @@ class FOFModel extends JObject
 	 */
 	public function &getFirstItem($overrideLimits = false)
 	{
-		// we have to clone the instance, or when multiple getFirstItem calls occuer,
-		// we'll update EVERY instance created
+		/**
+		 * We have to clone the instance, or when multiple getFirstItem calls occur,
+		 * we'll update EVERY instance created
+		 */
 		$table = clone $this->getTable($this->table);
 
 		$list = $this->getItemList($overrideLimits);
@@ -1711,6 +1742,11 @@ class FOFModel extends JObject
 		return $query;
 	}
 
+	/**
+	 * Returns a list of the fields of the table associated with this model
+	 *
+	 * @return  array
+	 */
 	public function getTableFields()
 	{
 		$tableName = $this->getTable()->getTableName();
@@ -2035,6 +2071,7 @@ class FOFModel extends JObject
 		// Set up the suffixes to look into
 		$suffixes = array();
 		$temp_suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
+
 		if (!empty($temp_suffixes))
 		{
 			foreach ($temp_suffixes as $suffix)
@@ -2186,7 +2223,7 @@ class FOFModel extends JObject
 	 * operation. You can modify it before it's returned to the MVC triad for
 	 * further processing.
 	 *
-	 * @param   FOFTable  $record
+	 * @param   FOFTable  &$record  The table instance we fetched
 	 *
 	 * @return  void
 	 */
@@ -2199,8 +2236,8 @@ class FOFModel extends JObject
 	 * This method runs before the $data is saved to the $table. Return false to
 	 * stop saving.
 	 *
-	 * @param   array     $data   The data to save
-	 * @param   FOFTable  $table  The table to save the data to
+	 * @param   array     &$data   The data to save
+	 * @param   FOFTable  &$table  The table to save the data to
 	 *
 	 * @return  boolean  Return false to prevent saving, true to allow it
 	 */
@@ -2286,7 +2323,7 @@ class FOFModel extends JObject
 	/**
 	 * This method runs after the data is saved to the $table.
 	 *
-	 * @param   FOFTable  $table
+	 * @param   FOFTable  &$table  The table which was saved
 	 *
 	 * @return  boolean
 	 */
@@ -2322,7 +2359,8 @@ class FOFModel extends JObject
 	/**
 	 * This method runs before the record with key value of $id is deleted from $table
 	 *
-	 * @param   FOFTable  $table
+	 * @param   integer   &$id     The ID of the record being deleted
+	 * @param   FOFTable  &$table  The table instance used to delete the record
 	 *
 	 * @return  boolean
 	 */
@@ -2407,6 +2445,13 @@ class FOFModel extends JObject
 		}
 	}
 
+	/**
+	 * This method runs before a record is copied
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record being copied
+	 *
+	 * @return  boolean  True to allow the copy
+	 */
 	protected function onBeforeCopy(&$table)
 	{
 		// Call the behaviors
@@ -2421,6 +2466,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs after a record has been copied
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record which was copied
+	 *
+	 * @return  boolean  True to allow the copy
+	 */
 	protected function onAfterCopy(&$table)
 	{
 		// Call the behaviors
@@ -2435,6 +2487,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs before a record is published
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record being published
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onBeforePublish(&$table)
 	{
 		// Call the behaviors
@@ -2449,6 +2508,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs after a record has been published
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record which was published
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onAfterPublish(&$table)
 	{
 		// Call the behaviors
@@ -2463,6 +2529,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs before a record is hit
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record being hit
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onBeforeHit(&$table)
 	{
 		// Call the behaviors
@@ -2477,6 +2550,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs after a record has been hit
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record which was hit
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onAfterHit(&$table)
 	{
 		// Call the behaviors
@@ -2491,6 +2571,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs before a record is moved
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record being moved
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onBeforeMove(&$table)
 	{
 		// Call the behaviors
@@ -2505,6 +2592,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs after a record has been moved
+	 *
+	 * @param   FOFTable  &$table  The table instance of the record which was moved
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onAfterMove(&$table)
 	{
 		// Call the behaviors
@@ -2519,6 +2613,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs before a table is reordered
+	 *
+	 * @param   FOFTable  &$table  The table instance being reordered
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onBeforeReorder(&$table)
 	{
 		// Call the behaviors
@@ -2533,6 +2634,13 @@ class FOFModel extends JObject
 		return true;
 	}
 
+	/**
+	 * This method runs after a table is reordered
+	 *
+	 * @param   FOFTable  &$table  The table instance which was reordered
+	 *
+	 * @return  boolean  True to allow the operation
+	 */
 	protected function onAfterReorder(&$table)
 	{
 		// Call the behaviors
@@ -2565,7 +2673,6 @@ class FOFModel extends JObject
 	 *
 	 * @return  string  The name of the model
 	 *
-	 * @since   12.2
 	 * @throws  Exception
 	 */
 	public function getName()
@@ -2573,6 +2680,7 @@ class FOFModel extends JObject
 		if (empty($this->name))
 		{
 			$r = null;
+
 			if (!preg_match('/Model(.*)/i', get_class($this), $r))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_MODEL_GET_NAME'), 500);
@@ -2589,8 +2697,6 @@ class FOFModel extends JObject
 	 * @param   JDatabaseDriver  $db  A JDatabaseDriver based object
 	 *
 	 * @return  void
-	 *
-	 * @since   12.2
 	 */
 	public function setDbo($db)
 	{
@@ -2604,8 +2710,6 @@ class FOFModel extends JObject
 	 * @param   mixed   $value     The value of the property to set or null.
 	 *
 	 * @return  mixed  The previous value of the property or null if not set.
-	 *
-	 * @since   12.2
 	 */
 	public function setState($property, $value = null)
 	{
@@ -2619,8 +2723,6 @@ class FOFModel extends JObject
 	 * @param   integer  $client_id  The ID of the client
 	 *
 	 * @return  void
-	 *
-	 * @since   12.2
 	 */
 	protected function cleanCache($group = null, $client_id = 0)
 	{

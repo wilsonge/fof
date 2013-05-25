@@ -15,6 +15,11 @@ defined('_JEXEC') or die();
  */
 class FOFModelFieldDate extends FOFModelFieldText
 {
+	/**
+	 * Returns the default search method for this field.
+	 *
+	 * @return  string
+	 */
 	public function getDefaultSearchMethod()
 	{
 		return 'exact';
@@ -23,11 +28,11 @@ class FOFModelFieldDate extends FOFModelFieldText
 	/**
 	 * Interval date search
 	 *
-	 * @param  string  				$value    The value to search
-	 * @param  string|array|object  $interval The interval. Can be (+1 MONTH or array('value' => 1, 'unit' => 'MONTH', 'sign' => '+'))
-	 * @param  boolean 				$include  If the borders should be included
+	 * @param   string               $value     The value to search
+	 * @param   string|array|object  $interval  The interval. Can be (+1 MONTH or array('value' => 1, 'unit' => 'MONTH', 'sign' => '+'))
+	 * @param   boolean              $include   If the borders should be included
 	 *
-	 * @return string           	the sql string
+	 * @return  string  the sql string
 	 */
 	public function interval($value, $interval, $include = true)
 	{
@@ -55,11 +60,19 @@ class FOFModelFieldDate extends FOFModelFieldText
 		}
 
 		$sql = '(' . $this->_db->qn($this->name) . ' >' . $extra . ' ' . $function;
-		$sql .= '(' . $this->_db->quote($value) . ', INTERVAL ' . $interval['value'] . ' ' . $interval['unit']  . '))';
+		$sql .= '(' . $this->_db->quote($value) . ', INTERVAL ' . $interval['value'] . ' ' . $interval['unit'] . '))';
 
 		return $sql;
 	}
 
+	/**
+	 * Parses an interval –which may be given as a string, array or object– into
+	 * a standardised hash array that can then be used bu the interval() method.
+	 *
+	 * @param   string|array|obbject  $inteval  The interval expression to parse
+	 *
+	 * @return  array  The parsed, hash array form of the interval
+	 */
 	protected function getInterval($inteval)
 	{
 		if (is_string($inteval))

@@ -15,6 +15,15 @@ defined('_JEXEC') or die();
  */
 class FOFModelBehaviorFilters extends FOFModelBehavior
 {
+	/**
+	 * This event runs after we have built the query used to fetch a record
+	 * list in a model. It is used to apply automatic query filters.
+	 *
+	 * @param   FOFModel        &$model  The model which calls this event
+	 * @param   JDatabaseQuery  &$query  The model which calls this event
+	 *
+	 * @return  void
+	 */
 	public function onAfterBuildQuery(&$model, &$query)
 	{
 		$table = $model->getTable();
