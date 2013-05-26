@@ -105,6 +105,7 @@ class FOFViewCsv extends FOFViewHtml
 		$this->assignRef('items', $items);
 
 		$document = FOFPlatform::getInstance()->getDocument();
+
 		if ($document instanceof JDocument)
 		{
 			$document->setMimeEncoding('text/csv');
@@ -159,8 +160,11 @@ class FOFViewCsv extends FOFViewHtml
 		else
 		{
 			// Default CSV behaviour in case the template isn't there!
+
 			if (empty($items))
+			{
 				return;
+			}
 
 			$item    = array_pop($items);
 			$keys    = get_object_vars($item);

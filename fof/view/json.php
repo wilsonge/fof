@@ -26,6 +26,11 @@ class FOFViewJson extends FOFViewHtml
 	 */
 	public $useHypermedia = false;
 
+	/**
+	 * Public constructor
+	 *
+	 * @param   array  $config  The component's configuration array
+	 */
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
@@ -36,6 +41,13 @@ class FOFViewJson extends FOFViewHtml
 		}
 	}
 
+	/**
+	 * The event which runs when we are displaying the record list JSON view
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 *
+	 * @return  boolean  True to allow display of the view
+	 */
 	protected function onDisplay($tpl = null)
 	{
 		// Load the model
@@ -45,6 +57,7 @@ class FOFViewJson extends FOFViewHtml
 		$this->assignRef('items', $items);
 
 		$document = FOFPlatform::getInstance()->getDocument();
+
 		if ($document instanceof JDocument)
 		{
 			if ($this->useHypermedia)
@@ -67,9 +80,11 @@ class FOFViewJson extends FOFViewHtml
 			JError::setErrorHandling(E_ALL, 'ignore');
 		}
 		$hasFailed = false;
+
 		try
 		{
 			$result = $this->loadTemplate($tpl, true);
+
 			if ($result instanceof Exception)
 			{
 				$hasFailed = true;
@@ -104,6 +119,7 @@ class FOFViewJson extends FOFViewHtml
 
 			// JSONP support
 			$callback = $this->input->getVar('callback', null);
+
 			if (!empty($callback))
 			{
 				echo $callback . '(' . $json . ')';
@@ -122,10 +138,18 @@ class FOFViewJson extends FOFViewHtml
 		else
 		{
 			echo $result;
+
 			return false;
 		}
 	}
 
+	/**
+	 * The event which runs when we are displaying a single item JSON view
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 *
+	 * @return  boolean  True to allow display of the view
+	 */
 	protected function onRead($tpl = null)
 	{
 		$model = $this->getModel();
@@ -134,6 +158,7 @@ class FOFViewJson extends FOFViewHtml
 		$this->assign('item', $item);
 
 		$document = FOFPlatform::getInstance()->getDocument();
+
 		if ($document instanceof JDocument)
 		{
 			if ($this->useHypermedia)
@@ -157,6 +182,7 @@ class FOFViewJson extends FOFViewHtml
 		}
 
 		$hasFailed = false;
+
 		try
 		{
 			$result = $this->loadTemplate($tpl, true);
@@ -178,6 +204,7 @@ class FOFViewJson extends FOFViewHtml
 		if ($hasFailed)
 		{
 			// Default JSON behaviour in case the template isn't there!
+
 			if ($this->useHypermedia)
 			{
 				$haldocument = $this->_createDocumentWithHypermedia($item, $model);
@@ -190,6 +217,7 @@ class FOFViewJson extends FOFViewHtml
 
 			// JSONP support
 			$callback = $this->input->get('callback', null);
+
 			if (!empty($callback))
 			{
 				echo $callback . '(' . $json . ')';
@@ -207,13 +235,23 @@ class FOFViewJson extends FOFViewHtml
 		else
 		{
 			echo $result;
+
 			return false;
 		}
 	}
 
+	/**
+	 * Creates a FOFHalDocument using the provided data
+	 *
+	 * @param   array     $data   The data to put in the document
+	 * @param   FOFModel  $model  The model of this view
+	 *
+	 * @return  FOFHalDocument  A HAL-enabled document
+	 */
 	protected function _createDocumentWithHypermedia($data, $model = null)
 	{
 		// Create a new HAL document
+
 		if (is_array($data))
 		{
 			$count = count($data);
@@ -240,6 +278,7 @@ class FOFViewJson extends FOFViewHtml
 		$document->addLink('self', new FOFHalLink($uri));
 
 		// Create relative links in a record list context
+
 		if (is_array($data) && ($model instanceof FOFModel))
 		{
 			$pagination = $model->getPagination();
@@ -258,6 +297,7 @@ class FOFViewJson extends FOFViewHtml
 				$document->addLink('first', new FOFHalLink($uri));
 
 				// Do we need a "prev" link?
+
 				if ($pagination->get('pages.current') > 1)
 				{
 					$prevPage = $pagination->get('pages.current') - 1;
@@ -270,6 +310,7 @@ class FOFViewJson extends FOFViewHtml
 				}
 
 				// Do we need a "next" link?
+
 				if ($pagination->get('pages.current') < $pagination->get('pages.total'))
 				{
 					$nextPage = $pagination->get('pages.current') + 1;
@@ -295,13 +336,20 @@ class FOFViewJson extends FOFViewHtml
 		return $document;
 	}
 
+	/**
+	 * Convert an absolute URI to a relative one
+	 *
+	 * @param   string  $uri  The URI to convert
+	 *
+	 * @return  string  The relative URL
+	 */
 	protected function _removeURIBase($uri)
 	{
 		static $root = null, $rootlen = 0;
 
 		if (is_null($root))
 		{
-			$root = rtrim(JURI::base(),'/');
+			$root = rtrim(JURI::base(), '/');
 			$rootlen = strlen($root);
 		}
 
@@ -313,6 +361,12 @@ class FOFViewJson extends FOFViewHtml
 		return ltrim($uri, '/');
 	}
 
+	/**
+	 * Returns a JUri instance with a prototype URI used as the base for the
+	 * other URIs created by the JSON renderer
+	 *
+	 * @return  JUri  The prototype JUri instance
+	 */
 	protected function _getPrototypeURIForPagination()
 	{
 		$protoUri = new JUri('index.php');

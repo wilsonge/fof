@@ -43,6 +43,7 @@ class FOFViewForm extends FOFViewHtml
 
 		// Call the relevant method
 		$method_name = 'on' . ucfirst($task);
+
 		if (method_exists($this, $method_name))
 		{
 			$result = $this->$method_name($tpl);
@@ -53,6 +54,7 @@ class FOFViewForm extends FOFViewHtml
 		}
 
 		// Bail out if we're told not to render anything
+
 		if ($result === false)
 		{
 			return;
@@ -72,6 +74,7 @@ class FOFViewForm extends FOFViewHtml
 		$basePath .= $this->config['option'] . '/';
 		$basePath .= $this->config['view'] . '/';
 		$path = $basePath . $this->getLayout();
+
 		if ($tpl)
 		{
 			$path .= '_' . $tpl;
@@ -86,6 +89,7 @@ class FOFViewForm extends FOFViewHtml
 
 		// -- Output the view template
 		echo $viewTemplate;
+
 		// -- Output HTML after the view template
 		$this->postRender();
 	}
@@ -101,17 +105,26 @@ class FOFViewForm extends FOFViewHtml
 	{
 		$html = '';
 		$renderer = $this->getRenderer();
+
 		if ($renderer instanceof FOFRenderAbstract)
 		{
 			// Load CSS and Javascript files defined in the form
 			$this->form->loadCSSFiles();
 			$this->form->loadJSFiles();
+
 			// Get the form's HTML
 			$html = $renderer->renderForm($this->form, $this->getModel(), $this->input);
 		}
 		return $html;
 	}
 
+	/**
+	 * The event which runs when we are displaying the Add page
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 *
+	 * @return  boolean  True to allow display of the view
+	 */
 	protected function onAdd($tpl = null)
 	{
 		// Hide the main menu
@@ -123,6 +136,7 @@ class FOFViewForm extends FOFViewHtml
 		// Assign the item and form to the view
 		$this->assign('item', $model->getItem());
 		$this->assign('form', $this->form);
+
 		return true;
 	}
 

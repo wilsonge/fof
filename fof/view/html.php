@@ -53,12 +53,12 @@ class FOFViewHtml extends FOFViewRaw
 		}
 		else
 		{
-			$this->input = new FOFInput();
+			$this->input = new FOFInput;
 		}
 
-		$this->lists = new JObject();
+		$this->lists = new JObject;
 
-		if(!FOFPlatform::getInstance()->isCli())
+		if (!FOFPlatform::getInstance()->isCli())
 		{
 			$platform = FOFPlatform::getInstance();
 			$perms = (object) array(
@@ -75,10 +75,13 @@ class FOFViewHtml extends FOFViewRaw
 	/**
 	 * Renders the link bar (submenu) using Joomla!'s default
 	 * JSubMenuHelper::addEntry method
+	 *
+	 * @return void
 	 */
 	protected function renderLinkbar()
 	{
 		// Do not render a submenu unless we are in the the admin area
+
 		if (!FOFPlatform::getInstance()->isBackend() || FOFPlatform::getInstance()->isCli())
 		{
 			return;
@@ -86,6 +89,7 @@ class FOFViewHtml extends FOFViewRaw
 
 		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 		$links = $toolbar->getLinks();
+
 		if (!empty($links))
 		{
 			foreach ($links as $link)
@@ -98,6 +102,8 @@ class FOFViewHtml extends FOFViewRaw
 	/**
 	 * Runs before rendering the view template, echoing HTML to put before the
 	 * view template's generated HTML
+	 *
+	 * @return void
 	 */
 	protected function preRender()
 	{
@@ -105,7 +111,8 @@ class FOFViewHtml extends FOFViewRaw
 		$task = $this->getModel()->getState('task', 'browse');
 
 		// Don't load the toolbar on CLI
-		if(!FOFPlatform::getInstance()->isCli())
+
+		if (!FOFPlatform::getInstance()->isCli())
 		{
 			$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 			$toolbar->perms = $this->perms;
@@ -113,6 +120,7 @@ class FOFViewHtml extends FOFViewRaw
 		}
 
 		$renderer = $this->getRenderer();
+
 		if (!($renderer instanceof FOFRenderAbstract))
 		{
 			$this->renderLinkbar();
@@ -126,6 +134,8 @@ class FOFViewHtml extends FOFViewRaw
 	/**
 	 * Runs after rendering the view template, echoing HTML to put after the
 	 * view template's generated HTML
+	 *
+	 * @return  void
 	 */
 	protected function postRender()
 	{
@@ -133,6 +143,7 @@ class FOFViewHtml extends FOFViewRaw
 		$task = $this->getModel()->getState('task', 'browse');
 
 		$renderer = $this->getRenderer();
+
 		if ($renderer instanceof FOFRenderAbstract)
 		{
 			$renderer->postRender($view, $task, $this->input, $this->config);

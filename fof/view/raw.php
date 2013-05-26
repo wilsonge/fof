@@ -57,12 +57,12 @@ class FOFViewRaw extends FOFView
 		}
 		else
 		{
-			$this->input = new FOFInput();
+			$this->input = new FOFInput;
 		}
 
-		$this->lists = new JObject();
+		$this->lists = new JObject;
 
-		if(!FOFPlatform::getInstance()->isCli())
+		if (!FOFPlatform::getInstance()->isCli())
 		{
 			$platform = FOFPlatform::getInstance();
 			$perms = (object) array(
@@ -91,6 +91,7 @@ class FOFViewRaw extends FOFView
 
 		// Call the relevant method
 		$method_name = 'on' . ucfirst($task);
+
 		if (method_exists($this, $method_name))
 		{
 			$result = $this->$method_name($tpl);
@@ -110,7 +111,9 @@ class FOFViewRaw extends FOFView
 		{
 			$this->preRender();
 		}
+
 		parent::display($tpl);
+
 		if ($this->doPostRender)
 		{
 			$this->postRender();
@@ -149,6 +152,7 @@ class FOFViewRaw extends FOFView
 	{
 		// When in interactive browsing mode, save the state to the session
 		$this->getModel()->savestate(1);
+
 		return $this->onDisplay($tpl);
 	}
 
@@ -163,8 +167,11 @@ class FOFViewRaw extends FOFView
 	protected function onDisplay($tpl = null)
 	{
 		$view = $this->input->getCmd('view', 'cpanel');
+
 		if (in_array($view, array('cpanel', 'cpanels')))
+		{
 			return;
+		}
 
 		// Load the model
 		$model = $this->getModel();
@@ -178,7 +185,7 @@ class FOFViewRaw extends FOFView
 		$this->assign('pagination', $model->getPagination());
 		$this->assignRef('lists', $this->lists);
 
-		//pass page params on frontend only
+		// Pass page params on frontend only
 		if (FOFPlatform::getInstance()->isFrontend())
 		{
 			$params = JFactory::getApplication()->getParams();
@@ -200,6 +207,7 @@ class FOFViewRaw extends FOFView
 		JRequest::setVar('hidemainmenu', true);
 		$model = $this->getModel();
 		$this->assign('item', $model->getItem());
+
 		return true;
 	}
 
@@ -213,6 +221,7 @@ class FOFViewRaw extends FOFView
 	protected function onEdit($tpl = null)
 	{
 		// An editor is an editor, no matter if the record is new or old :p
+
 		return $this->onAdd();
 	}
 
@@ -226,6 +235,7 @@ class FOFViewRaw extends FOFView
 	protected function onRead($tpl = null)
 	{
 		// All I need is to read the record
+
 		return $this->onAdd();
 	}
 
@@ -262,6 +272,7 @@ class FOFViewRaw extends FOFView
 
 		$orderingColumn = $table->getColumnAlias('ordering');
 		$fields = $table->getTableFields();
+
 		if (!array_key_exists($orderingColumn, $fields))
 		{
 			return false;
