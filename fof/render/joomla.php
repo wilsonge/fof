@@ -8,6 +8,9 @@ defined('_JEXEC') or die;
 
 /**
  * Default Joomla! 1.5, 1.7, 2.5 view renderer class
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFRenderJoomla extends FOFRenderAbstract
 {
@@ -24,17 +27,26 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Echoes any HTML to show before the view template
 	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	public function preRender($view, $task, $input, $config = array())
 	{
 		$format	 = $input->getCmd('format', 'html');
+
 		if (empty($format))
+		{
 			$format	 = 'html';
+		}
+
 		if ($format != 'html')
+		{
 			return;
+		}
 
 		if (!FOFPlatform::getInstance()->isCli())
 		{
@@ -55,17 +67,26 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Echoes any HTML to show after the view template
 	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
 		$format	 = $input->getCmd('format', 'html');
+
 		if (empty($format))
+		{
 			$format	 = 'html';
+		}
+
 		if ($format != 'html')
+		{
 			return;
+		}
 
 		// Closing tag only if we're not in CLI
 		if (FOFPlatform::getInstance()->isCli())
@@ -79,9 +100,9 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -161,6 +182,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				if (!empty($filter))
 				{
 					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
+
 					if (!empty($buttons))
 					{
 						$filter_html .= "\t\t\t\t\t\t<nobr>$buttons</nobr>" . PHP_EOL;
@@ -226,6 +248,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				$html .= "\t\t\t\t<tr class=\"$class\">" . PHP_EOL;
 
 				$fields = $form->getFieldset('items');
+
 				foreach ($fields as $field)
 				{
 					$field->rowid	 = $i;
@@ -246,11 +269,13 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$html .= "\t\t\t</tbody>" . PHP_EOL;
 
 		// Render the pagination bar, if enabled
+
 		if ($show_pagination)
 		{
 			$pagination = $form->getModel()->getPagination();
 			$html .= "\t\t\t<tfoot>" . PHP_EOL;
 			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
+
 			if (($pagination->total > 0))
 			{
 				$html .= $pagination->getListFooter();
@@ -271,9 +296,9 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -325,9 +350,9 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -432,9 +457,11 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Loads the validation script for edit form
+	 * Loads the validation script for an edit form
 	 *
-	 * @return void
+	 * @param   FOFForm  &$form  The form we are rendering
+	 *
+	 * @return  void
 	 */
 	protected function loadValidationScript(FOFForm &$form)
 	{
@@ -468,6 +495,8 @@ ENDJAVASCRIPT;
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
+	 *
+	 * @return  void
 	 */
 	protected function renderLinkbar($view, $task, $input, $config = array())
 	{
@@ -505,10 +534,13 @@ ENDJAVASCRIPT;
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
+	 *
+	 * @return  void
 	 */
 	protected function renderButtons($view, $task, $input, $config = array())
 	{
 		// On command line don't do anything
+
 		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
@@ -517,7 +549,6 @@ ENDJAVASCRIPT;
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
 		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendButtons	 = $toolbar->getRenderFrontendButtons();
-
 
 		if (FOFPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
 		{
@@ -531,7 +562,7 @@ ENDJAVASCRIPT;
 		$title	 = JFactory::getApplication()->get('JComponentTitle');
 		$bar	 = JToolBar::getInstance('toolbar');
 
-		// delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
+		// Delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
 		$bar_content = str_replace('href="#"', '', $bar->render());
 
 		echo '<div id="FOFHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';

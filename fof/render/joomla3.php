@@ -8,6 +8,9 @@ defined('_JEXEC') or die;
 
 /**
  * Joomla! 3 view renderer class
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFRenderJoomla3 extends FOFRenderStrapper
 {
@@ -24,9 +27,12 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	/**
 	 * Echoes any HTML to show before the view template
 	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	public function preRender($view, $task, $input, $config = array())
 	{
@@ -58,9 +64,12 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	/**
 	 * Echoes any HTML to show after the view template
 	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{

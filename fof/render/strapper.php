@@ -8,6 +8,9 @@ defined('_JEXEC') or die;
 
 /**
  * Akeeba Strapper view renderer class.
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFRenderStrapper extends FOFRenderAbstract
 {
@@ -24,9 +27,12 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	/**
 	 * Echoes any HTML to show before the view template
 	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	public function preRender($view, $task, $input, $config = array())
 	{
@@ -73,9 +79,12 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	/**
 	 * Echoes any HTML to show after the view template
 	 *
-	 * @param   string  $view   The current view
-	 * @param   string  $task   The current task
-	 * @param   array   $input  The input array (request parameters)
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
@@ -101,9 +110,11 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	}
 
 	/**
-	 * Loads the validation script for edit form
+	 * Loads the validation script for an edit form
 	 *
-	 * @return void
+	 * @param   FOFForm  &$form  The form we are rendering
+	 *
+	 * @return  void
 	 */
 	protected function loadValidationScript(FOFForm &$form)
 	{
@@ -137,6 +148,8 @@ ENDJAVASCRIPT;
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
+	 *
+	 * @return  void
 	 */
 	protected function renderLinkbar($view, $task, $input, $config = array())
 	{
@@ -166,12 +179,15 @@ ENDJAVASCRIPT;
 	}
 
 	/**
-	 * Renders the submenu (link bar)
+	 * Renders the submenu (link bar) in FOF's classic style, using a Bootstrapped
+	 * tab bar.
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
+	 *
+	 * @return  void
 	 */
 	protected function renderLinkbar_classic($view, $task, $input, $config = array())
 	{
@@ -208,11 +224,16 @@ ENDJAVASCRIPT;
 				{
 					echo "<li";
 					$class = 'dropdown';
+
 					if ($link['active'])
+					{
 						$class .= ' active';
+					}
+
 					echo ' class="' . $class . '">';
 
 					echo '<a class="dropdown-toggle" data-toggle="dropdown" href="#">';
+
 					if ($link['icon'])
 					{
 						echo "<i class=\"icon icon-" . $link['icon'] . "\"></i>";
@@ -286,12 +307,16 @@ ENDJAVASCRIPT;
 	}
 
 	/**
-	 * Renders the submenu (link bar) using Joomla!'s style
+	 * Renders the submenu (link bar) using Joomla!'s style. On Joomla! 2.5 this
+	 * is a list of bar separated links, on Joomla! 3 it's a sidebar at the
+	 * left-hand side of the page.
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
+	 *
+	 * @return  void
 	 */
 	protected function renderLinkbar_joomla($view, $task, $input, $config = array())
 	{
@@ -328,6 +353,8 @@ ENDJAVASCRIPT;
 	 * @param   string    $task    The current task
 	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
+	 *
+	 * @return  void
 	 */
 	protected function renderButtons($view, $task, $input, $config = array())
 	{
@@ -398,9 +425,9 @@ ENDJAVASCRIPT;
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -529,7 +556,14 @@ ENDJS;
 						$label = $headerField->label;
 
 						JHtmlSidebar::addFilter(
-							'- ' . JText::_($label) . ' -', (string) $headerField->name, JHtml::_('select.options', $options, 'value', 'text', $form->getModel()->getState($headerField->name, ''), true)
+							'- ' . JText::_($label) . ' -', (string) $headerField->name,
+							JHtml::_(
+								'select.options',
+								$options,
+								'value',
+								'text',
+								$form->getModel()->getState($headerField->name, ''), true
+							)
 						);
 					}
 				}
@@ -541,6 +575,7 @@ ENDJS;
 					if (!empty($filter))
 					{
 						$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
+
 						if (!empty($buttons))
 						{
 							$filter_html .= "\t\t\t\t\t\t<nobr>$buttons</nobr>" . PHP_EOL;
@@ -750,7 +785,6 @@ ENDJS;
 		if ($show_pagination && version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$html .= $model->getPagination()->getListFooter();
-			;
 		}
 
 		// Close the wrapper element div on Joomla! 3.0+
@@ -769,9 +803,9 @@ ENDJS;
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -856,9 +890,9 @@ ENDJS;
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */

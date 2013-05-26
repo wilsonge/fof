@@ -7,7 +7,12 @@
 defined('_JEXEC') or die;
 
 /**
- * ABstract view renderer class
+ * Abstract view renderer class. The renderer is what turns XML view templates
+ * into actual HTML code, renders the submenu links and potentially wraps the
+ * HTML output in a div with a component-specific ID.
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 abstract class FOFRenderAbstract
 {
@@ -33,26 +38,31 @@ abstract class FOFRenderAbstract
 	/**
 	 * Echoes any HTML to show before the view template
 	 *
-	 * @param string $view The current view
-	 * @param string $task The current task
-	 * @param array $input The input array (request parameters)
-	 * @param array $config The view configuration array
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	abstract public function preRender($view, $task, $input, $config = array());
 
 	/**
 	 * Echoes any HTML to show after the view template
 	 *
-	 * @param string $view The current view
-	 * @param string $task The current task
-	 * @param array $config The view configuration array
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
 	 */
 	abstract public function postRender($view, $task, $input, $config = array());
 
 	/**
 	 * Renders a FOFForm and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
+	 * @param   FOFForm   &$form     The form to render
 	 * @param   FOFModel  $model     The model providing our data
 	 * @param   FOFInput  $input     The input object
 	 * @param   string    $formType  The form type: edit, browse or read
@@ -88,9 +98,9 @@ abstract class FOFRenderAbstract
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -99,9 +109,9 @@ abstract class FOFRenderAbstract
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -110,9 +120,9 @@ abstract class FOFRenderAbstract
 	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   $form      The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
