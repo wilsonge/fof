@@ -229,6 +229,7 @@ class FOFTable extends JObject
 				}
 
 				$altPath = $configProvider->get($configProviderKey . 'table_path', null);
+
 				if ($altPath)
 				{
 					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $altPath);
@@ -251,7 +252,7 @@ class FOFTable extends JObject
 			}
 
 			$component = str_replace('com_', '', $config['option']);
-			$tbl_common = $component. '_';
+			$tbl_common = $component . '_';
 
 			if (!array_key_exists('tbl', $config))
 			{
@@ -259,6 +260,7 @@ class FOFTable extends JObject
 			}
 
 			$altTbl = $configProvider->get($configProviderKey . 'tbl', null);
+
 			if ($altTbl)
 			{
 				$config['tbl'] = $altTbl;
@@ -271,6 +273,7 @@ class FOFTable extends JObject
 			}
 
 			$altTblKey = $configProvider->get($configProviderKey . 'tbl_key', null);
+
 			if ($altTblKey)
 			{
 				$config['tbl_key'] = $altTblKey;
@@ -318,6 +321,7 @@ class FOFTable extends JObject
 		$this->_db      = $db;
 
 		// Initialise the table properties.
+
 		if ($fields = $this->getTableFields())
 		{
 			// Do I have anything joined?
@@ -343,6 +347,7 @@ class FOFTable extends JObject
 		}
 
 		// If we are tracking assets, make sure an access field exists and initially set the default.
+
 		if (isset($this->asset_id) || property_exists($this, 'asset_id'))
 		{
 			JLoader::import('joomla.access.rules');
@@ -350,6 +355,7 @@ class FOFTable extends JObject
 		}
 
 		// If the acess property exists, set the default.
+
 		if (isset($this->access) || property_exists($this, 'access'))
 		{
 			$this->access = (int) JFactory::getConfig()->get('access');
@@ -359,7 +365,9 @@ class FOFTable extends JObject
 	/**
 	 * Sets the events trigger switch state
 	 *
-	 * @param   bool  $newState
+	 * @param   boolean  $newState  The new state of the switch (what else could it be?)
+	 *
+	 * @return  void
 	 */
 	public function setTriggerEvents($newState = false)
 	{
@@ -369,7 +377,7 @@ class FOFTable extends JObject
 	/**
 	 * Gets the events trigger switch state
 	 *
-	 * @return bool
+	 * @return  boolean
 	 */
 	public function getTriggerEvents()
 	{
@@ -423,6 +431,7 @@ class FOFTable extends JObject
 			}
 
 			// If empty primary key there's is no need to load anything
+
 			if (empty($keyValue))
 			{
 				$result = true;
@@ -454,6 +463,7 @@ class FOFTable extends JObject
 		foreach ($keys as $field => $value)
 		{
 			// Check that $field is in the table.
+
 			if (!in_array($field, $fields))
 			{
 				throw new UnexpectedValueException(sprintf('Missing field in database: %s &#160; %s.', get_class($this), $field));
@@ -479,8 +489,8 @@ class FOFTable extends JObject
 				{
 					$t = (string) $join;
 
-					// Guess what? Joomla doesn't provide any access to the "name" variable, so
-					// I have to work with strings... -.-
+					// Joomla doesn't provide any access to the "name" variable, so I have to work with strings...
+
 					if (stripos($t, 'inner') !== false)
 					{
 						$query->innerJoin($join->getElements());
@@ -530,13 +540,17 @@ class FOFTable extends JObject
 
 		foreach ($fields as $field)
 		{
-			//primary key, better skip that
+			// Primary key, better skip that
+
 			if ($field->Field == $this->_tbl_key)
+			{
 				continue;
+			}
 
 			$fieldName = $field->Field;
 
-			//field is not nullable but it's null, set error
+			// Field is not nullable but it's null, set error
+
 			if ($field->Null == 'NO' && $this->$fieldName == '' && !in_array($fieldName, $this->_skipChecks))
 			{
 				$text = str_replace('#__', 'COM_', $this->getTableName()) . '_ERR_' . $fieldName;
@@ -552,6 +566,8 @@ class FOFTable extends JObject
 	 * Method to reset class properties to the defaults set in the class
 	 * definition. It will ignore the primary key as well as any private class
 	 * properties.
+	 *
+	 * @return void
 	 */
 	public function reset()
 	{
@@ -572,6 +588,7 @@ class FOFTable extends JObject
 		foreach ($fields as $k => $v)
 		{
 			// If the property is not the primary key or private, reset it.
+
 			if ($k != $this->_tbl_key && (strpos($k, '_') !== 0))
 			{
 				$this->$k = $v->Default;
@@ -586,6 +603,11 @@ class FOFTable extends JObject
 
 	/**
 	 * Generic check for whether dependancies exist for this object in the db schema
+	 *
+	 * @param   integer  $oid    The primary key of the record to delete
+	 * @param   array    $joins  Any joins to foreign table, used to determine if dependent records exist
+	 *
+	 * @return  boolean  True if the record can be deleted
 	 */
 	public function canDelete($oid = null, $joins = null)
 	{
@@ -723,6 +745,7 @@ class FOFTable extends JObject
 		foreach ($this->getProperties() as $k => $v)
 		{
 			// Only process fields not in the ignore array.
+
 			if (!in_array($k, $ignore))
 			{
 				if (isset($src[$k]))
@@ -733,9 +756,11 @@ class FOFTable extends JObject
 		}
 
 		// Set rules for assets enabled tables
+
 		if ($this->_trackAssets)
 		{
 			// Bind the rules.
+
 			if (isset($src['rules']) && is_array($src['rules']))
 			{
 				$this->setRules($src['rules']);
@@ -776,12 +801,14 @@ class FOFTable extends JObject
 		}
 
 		// The asset id field is managed privately by this class.
+
 		if ($this->_trackAssets)
 		{
 			unset($this->asset_id);
 		}
 
 		// If a primary key exists update the object, otherwise insert it.
+
 		if ($this->$k)
 		{
 			$this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
@@ -792,6 +819,7 @@ class FOFTable extends JObject
 		}
 
 		// If the table is not set to track assets return true.
+
 		if (!$this->_trackAssets)
 		{
 			$result = true;
@@ -829,6 +857,7 @@ class FOFTable extends JObject
 		}
 
 		// Specify how a new or moved node asset is inserted into the tree.
+
 		if (empty($this->asset_id) || $asset->parent_id != $parentId)
 		{
 			$asset->setLocation($parentId, 'last-child');
@@ -852,6 +881,7 @@ class FOFTable extends JObject
 		}
 
 		// Create an asset_id or heal one that is corrupted.
+
 		if (empty($this->asset_id) || ($currentAssetId != $this->asset_id && !empty($this->asset_id)))
 		{
 			// Update the asset_id field in this table.
@@ -914,6 +944,7 @@ class FOFTable extends JObject
 		$query->from($this->_tbl);
 
 		// If the movement delta is negative move the row up.
+
 		if ($delta < 0)
 		{
 			$query->where('ordering < ' . (int) $this->ordering);
@@ -921,6 +952,7 @@ class FOFTable extends JObject
 		}
 
 		// If the movement delta is positive move the row down.
+
 		elseif ($delta > 0)
 		{
 			$query->where('ordering > ' . (int) $this->ordering);
@@ -928,6 +960,7 @@ class FOFTable extends JObject
 		}
 
 		// Add the custom WHERE clause if set.
+
 		if ($where)
 		{
 			$query->where($where);
@@ -938,6 +971,7 @@ class FOFTable extends JObject
 		$row = $this->_db->loadObject();
 
 		// If a row is found, move the item.
+
 		if (!empty($row))
 		{
 			// Update the ordering field for this instance to the row's ordering value.
@@ -975,6 +1009,13 @@ class FOFTable extends JObject
 		return $result;
 	}
 
+	/**
+	 * Change the ordering of the records of the table
+	 *
+	 * @param   string  $where  The WHERE clause of the SQL used to fetch the order
+	 *
+	 * @return  boolean  True is successful
+	 */
 	public function reorder($where = '')
 	{
 		if (!$this->onBeforeReorder($where))
@@ -983,7 +1024,10 @@ class FOFTable extends JObject
 		}
 
 		// If there is no ordering field set an error and return false.
-		if (!property_exists($this, 'ordering'))
+
+		$property_name = $this->getColumnAlias('ordering');
+
+		if (!property_exists($this, $property_name))
 		{
 			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
 		}
@@ -992,12 +1036,13 @@ class FOFTable extends JObject
 
 		// Get the primary keys and ordering values for the selection.
 		$query = $this->_db->getQuery(true);
-		$query->select($this->_tbl_key . ', ordering');
+		$query->select($this->_tbl_key . ', ' . $this->_db->qn($property_name));
 		$query->from($this->_tbl);
-		$query->where('ordering >= 0');
-		$query->order('ordering');
+		$query->where($this->_db->qn($property_name) . ' >= 0');
+		$query->order($this->_db->qn($property_name));
 
 		// Setup the extra where and ordering clause data.
+
 		if ($where)
 		{
 			$query->where($where);
@@ -1007,18 +1052,21 @@ class FOFTable extends JObject
 		$rows = $this->_db->loadObjectList();
 
 		// Compact the ordering values.
+
 		foreach ($rows as $i => $row)
 		{
 			// Make sure the ordering is a positive integer.
+
 			if ($row->ordering >= 0)
 			{
 				// Only update rows that are necessary.
+
 				if ($row->ordering != $i + 1)
 				{
 					// Update the row ordering field.
 					$query = $this->_db->getQuery(true);
 					$query->update($this->_tbl);
-					$query->set('ordering = ' . ($i + 1));
+					$query->set($this->_db->qn($property_name) . ' = ' . ($i + 1));
 					$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 					$this->_db->setQuery($query);
 					$this->_db->execute();
@@ -1031,16 +1079,21 @@ class FOFTable extends JObject
 		return $result;
 	}
 
+	/**
+	 * Check out (lock) a record
+	 *
+	 * @param   integer  $userId  The locking user's ID
+	 * @param   integer  $oid     The primary key value of the record to lock
+	 *
+	 * @return  boolean  True on success
+	 */
 	public function checkout($userId, $oid = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
 
-		if (!(
-			in_array($fldLockedBy, array_keys($this->getProperties())) ||
-				in_array($fldLockedOn, array_keys($this->getProperties()))
-		)
-		)
+		if (!(in_array($fldLockedBy, array_keys($this->getProperties()))
+			|| in_array($fldLockedOn, array_keys($this->getProperties()))))
 		{
 			return true;
 		}
@@ -1080,16 +1133,20 @@ class FOFTable extends JObject
 		return $this->_db->execute();
 	}
 
+	/**
+	 * Check in (unlock) a record
+	 *
+	 * @param   integer  $oid  The primary key value of the record to unlock
+	 *
+	 * @return  boolean  True on success
+	 */
 	public function checkin($oid = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
 
-		if (!(
-			in_array($fldLockedBy, array_keys($this->getProperties())) ||
-				in_array($fldLockedOn, array_keys($this->getProperties()))
-		)
-		)
+		if (!(in_array($fldLockedBy, array_keys($this->getProperties()))
+			|| in_array($fldLockedOn, array_keys($this->getProperties()))))
 		{
 			return true;
 		}
@@ -1108,10 +1165,12 @@ class FOFTable extends JObject
 
 		$query = $this->_db->getQuery(true)
 			->update($this->_db->qn($this->_tbl))
-			->set(array(
-				$this->_db->qn($fldLockedBy) . ' = 0',
-				$this->_db->qn($fldLockedOn) . ' = ' . $this->_db->q($this->_db->getNullDate())
-			))
+			->set(
+				array(
+					$this->_db->qn($fldLockedBy) . ' = 0',
+					$this->_db->qn($fldLockedOn) . ' = ' . $this->_db->q($this->_db->getNullDate())
+				)
+			)
 			->where($this->_db->qn($this->_tbl_key) . ' = ' . $this->_db->q($this->$k));
 		$this->_db->setQuery((string) $query);
 
@@ -1121,6 +1180,15 @@ class FOFTable extends JObject
 		return $this->_db->execute();
 	}
 
+	/**
+	 * Is a record locked?
+	 *
+	 * @param   integer  $with     The userid to preform the match with. If an item is checked
+	 *                             out by this user the function will return false.
+	 * @param   integer  $against  Junk inherited from JTable; ignore
+	 *
+	 * @return  boolean  True if the record is locked by another user
+	 */
 	public function isCheckedOut($with = 0, $against = null)
 	{
 		$fldLockedBy = $this->getColumnAlias('locked_by');
@@ -1130,7 +1198,8 @@ class FOFTable extends JObject
 			$against = $this->get($fldLockedBy);
 		}
 
-		//item is not checked out, or being checked out by the same user
+		// Item is not checked out, or being checked out by the same user
+
 		if (!$against || $against == $with)
 		{
 			return false;
@@ -1141,6 +1210,13 @@ class FOFTable extends JObject
 		return $session->exists($against);
 	}
 
+	/**
+	 * Copy (duplicate) one or more records
+	 *
+	 * @param   integer|array  $cid  The primary key value (or values) or the record(s) to copy
+	 *
+	 * @return  boolean  True on success
+	 */
 	public function copy($cid = null)
 	{
 		JArrayHelper::toInteger($cid);
@@ -1171,20 +1247,28 @@ class FOFTable extends JObject
 		foreach ($cid as $item)
 		{
 			// Prevent load with id = 0
+
 			if (!$item)
+			{
 				continue;
+			}
 
 			$this->load($item);
 
 			if ($checkin)
 			{
 				// We're using the checkin and the record is used by someone else
+
 				if ($this->isCheckedOut($item))
+				{
 					continue;
+				}
 			}
 
 			if (!$this->onBeforeCopy($item))
+			{
 				continue;
+			}
 
 			$this->$k           = null;
 			$this->$created_by  = null;
@@ -1204,6 +1288,15 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * Publish or unpublish records
+	 *
+	 * @param   integer|array  $cid      The primary key value(s) of the item(s) to publish/unpublish
+	 * @param   integer        $publish  1 to publish an item, 0 to unpublish
+	 * @param   integer        $user_id  The user ID of the user (un)publishing the item.
+	 *
+	 * @return  boolean  True on success, false on failure (e.g. record is locked)
+	 */
 	public function publish($cid = null, $publish = 1, $user_id = 0)
 	{
 		JArrayHelper::toInteger($cid);
@@ -1226,7 +1319,9 @@ class FOFTable extends JObject
 		}
 
 		if (!$this->onBeforePublish($cid, $publish))
+		{
 			return false;
+		}
 
 		$enabledName   = $this->getColumnAlias('enabled');
 		$locked_byName = $this->getColumnAlias('locked_by');
@@ -1291,6 +1386,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * Delete a record
+	 *
+	 * @param   integer  $oid  The primary key value of the item to delete
+	 *
+	 * @return  boolean  True on success
+	 */
 	public function delete($oid = null)
 	{
 		if ($oid)
@@ -1307,12 +1409,14 @@ class FOFTable extends JObject
 		$pk = (is_null($oid)) ? $this->$k : $oid;
 
 		// If no primary key is given, return false.
+
 		if ($pk === null)
 		{
 			throw new UnexpectedValueException('Null primary key not allowed.');
 		}
 
 		// If tracking assets, remove the asset first.
+
 		if ($this->_trackAssets)
 		{
 			// Get and the asset name.
@@ -1352,6 +1456,14 @@ class FOFTable extends JObject
 		return $result;
 	}
 
+	/**
+	 * Register a hit on a record
+	 *
+	 * @param   integer  $oid  The primary key value of the record
+	 * @param   boolean  $log  Should I log the hit?
+	 *
+	 * @return  boolean  True on success
+	 */
 	public function hit($oid = null, $log = false)
 	{
 		if (!$this->onBeforeHit($oid, $log))
@@ -1360,6 +1472,7 @@ class FOFTable extends JObject
 		}
 
 		// If there is no hits field, just return true.
+
 		if (!property_exists($this, 'hits'))
 		{
 			return true;
@@ -1369,6 +1482,7 @@ class FOFTable extends JObject
 		$pk = (is_null($oid)) ? $this->$k : $oid;
 
 		// If no primary key is given, return false.
+
 		if ($pk === null)
 		{
 			$result = false;
@@ -1398,7 +1512,11 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * Export item list to CSV
+	 * Export the item as a CSV line
+	 *
+	 * @param   string  $separator  CSV separator. Tip: use "\t" to get a TSV file instead.
+	 *
+	 * @return  string  The CSV line
 	 */
 	public function toCSV($separator = ',')
 	{
@@ -1427,6 +1545,8 @@ class FOFTable extends JObject
 
 	/**
 	 * Exports the table in array format
+	 *
+	 * @return  array
 	 */
 	public function getData()
 	{
@@ -1448,6 +1568,10 @@ class FOFTable extends JObject
 
 	/**
 	 * Get the header for exporting item list to CSV
+	 *
+	 * @param   string  $separator  CSV separator. Tip: use "\t" to get a TSV file instead.
+	 *
+	 * @return  string  The CSV file's header
 	 */
 	public function getCSVHeader($separator = ',')
 	{
@@ -1477,9 +1601,9 @@ class FOFTable extends JObject
 	/**
 	 * Get the columns from a database table.
 	 *
-	 * @param   string   Table name. If null current table is used
+	 * @param   string  $tableName  Table name. If null current table is used
 	 *
-	 * @return  mixed    An array of the field names, or false if an error occurs.
+	 * @return  mixed  An array of the field names, or false if an error occurs.
 	 */
 	public function getTableFields($tableName = null)
 	{
@@ -1487,6 +1611,7 @@ class FOFTable extends JObject
 		static $tables = array();
 
 		// Make sure we have a list of tables in this db
+
 		if (empty($tables))
 		{
 			$tables = $this->_db->getTableList();
@@ -1577,7 +1702,6 @@ class FOFTable extends JObject
 	 * @param   string  $columnAlias  The real column name (ie foo_ordering)
 	 *
 	 * @return  void
-	 *
 	 */
 	public function setColumnAlias($column, $columnAlias)
 	{
@@ -1588,10 +1712,11 @@ class FOFTable extends JObject
 	}
 
 	/**
+	 * Get a JOIN query, used to join other tables
 	 *
-	 * @param   bool    $asReference
+	 * @param   boolean  $asReference  Return an object reference instead of a copy
 	 *
-	 * @return  JDatabaseQuery Query used to join other tables
+	 * @return  JDatabaseQuery  Query used to join other tables
 	 */
 	public function getQueryJoin($asReference = false)
 	{
@@ -1615,7 +1740,9 @@ class FOFTable extends JObject
 	/**
 	 * Sets the query with joins to other tables
 	 *
-	 * @param   JDatabaseQuery    $query
+	 * @param   JDatabaseQuery  $query  The JOIN query to use
+	 *
+	 * @return  void
 	 */
 	public function setQueryJoin(JDatabaseQuery $query)
 	{
@@ -1646,6 +1773,7 @@ class FOFTable extends JObject
 		}
 
 		// Clean up table names
+
 		for ($i = 0; $i < count($tables); $i++)
 		{
 			preg_match('#\#__.*?\s#', $tables[$i], $matches);
@@ -1677,6 +1805,7 @@ class FOFTable extends JObject
 		$fields = array_intersect_key($fields, $j_fields);
 
 		// Now I walk again the array to change the key of columns that have an alias
+
 		foreach ($j_fields as $column => $alias)
 		{
 			if ($column != $alias)
@@ -1693,10 +1822,10 @@ class FOFTable extends JObject
 	 * Normalizes the fields, returning an array with all the fields.
 	 * Ie array('foobar, foo') becomes array('foobar', 'foo')
 	 *
-	 * @param    array     $fields    Array with column fields
-	 * @param    boolean   $useAlias  Should I use the column alias or use the extended syntax?
+	 * @param   array    $fields    Array with column fields
+	 * @param   boolean  $useAlias  Should I use the column alias or use the extended syntax?
 	 *
-	 * @return   array     Normalized array
+	 * @return  array  Normalized array
 	 */
 	protected function normalizeSelectFields($fields, $extended = false)
 	{
@@ -1724,6 +1853,7 @@ class FOFTable extends JObject
 				$column = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $column);
 
 				// Do I want the column name with the original name + alias?
+
 				if ($extended && $alias)
 				{
 					$alias = $column . ' AS ' . $alias;
@@ -1742,6 +1872,8 @@ class FOFTable extends JObject
 	}
 
 	/**
+	 * The event which runs before binding data to the table
+	 *
 	 * NOTE TO 3RD PARTY DEVELOPERS:
 	 *
 	 * When you override the following methods in your child classes,
@@ -1757,6 +1889,10 @@ class FOFTable extends JObject
 	 * Do not do it the other way around, e.g. return $your_result && parent::onAfterStore()
 	 * Due to  PHP short-circuit boolean evaluation the parent::onAfterStore()
 	 * will not be called if $your_result is false.
+	 *
+	 * @param   object|array  &$from  The data to bind
+	 *
+	 * @return  boolean  True on success
 	 */
 	protected function onBeforeBind(&$from)
 	{
@@ -1779,6 +1915,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs after loading a record from the database
+	 *
+	 * @param   boolean  &$result  Did the load succeeded?
+	 *
+	 * @return  void
+	 */
 	protected function onAfterLoad(&$result)
 	{
 		if ($this->_trigger_events)
@@ -1789,6 +1932,13 @@ class FOFTable extends JObject
 		}
 	}
 
+	/**
+	 * The event which runs before storing (saving) data to the database
+	 *
+	 * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
+	 *
+	 * @return  boolean  True to allow saving
+	 */
 	protected function onBeforeStore($updateNulls)
 	{
 		// Do we have a "Created" set of fields?
@@ -1804,13 +1954,19 @@ class FOFTable extends JObject
 		$hasCreatedOn = isset($this->$created_on) || property_exists($this, $created_on);
 		$hasCreatedBy = isset($this->$created_by) || property_exists($this, $created_by);
 
-		// first of all, let's unset fields that aren't related to the table (ie joined fields)
+		// First of all, let's unset fields that aren't related to the table (ie joined fields)
 		$fields     = $this->getTableFields();
 		$properties = $this->getProperties();
+
 		foreach ($properties as $property => $value)
 		{
 			// 'input' property is a reserved name
-			if ($property == 'input') continue;
+
+			if ($property == 'input')
+			{
+				continue;
+			}
+
 			if (!isset($fields[$property]))
 			{
 				unset($this->$property);
@@ -1893,6 +2049,7 @@ class FOFTable extends JObject
 
 			$count   = 0;
 			$newSlug = $this->$slug;
+
 			while (!empty($existingItems))
 			{
 				$count++;
@@ -1928,6 +2085,11 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs after storing (saving) data to the database
+	 *
+	 * @return  boolean  True to allow saving without an error
+	 */
 	protected function onAfterStore()
 	{
 		if ($this->_trigger_events)
@@ -1949,6 +2111,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs before moving a record
+	 *
+	 * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
+	 *
+	 * @return  boolean  True to allow moving
+	 */
 	protected function onBeforeMove($updateNulls)
 	{
 		if ($this->_trigger_events)
@@ -1970,6 +2139,11 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs after moving a record
+	 *
+	 * @return  boolean  True to allow moving without an error
+	 */
 	protected function onAfterMove()
 	{
 		if ($this->_trigger_events)
@@ -1991,6 +2165,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs before reordering a table
+	 *
+	 * @param   string  $where  The WHERE clause of the SQL query to run on reordering (record filter)
+	 *
+	 * @return  boolean  True to allow reordering
+	 */
 	protected function onBeforeReorder($where = '')
 	{
 		if ($this->_trigger_events)
@@ -2012,6 +2193,11 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs after reordering a table
+	 *
+	 * @return  boolean  True to allow the reordering to complete without an error
+	 */
 	protected function onAfterReorder()
 	{
 		if ($this->_trigger_events)
@@ -2033,6 +2219,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs before deleting a record
+	 *
+	 * @param   integer  $oid  The PK value of the record to delete
+	 *
+	 * @return  boolean  True to allow the deletion
+	 */
 	protected function onBeforeDelete($oid)
 	{
 		if ($this->_trigger_events)
@@ -2054,6 +2247,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs after deleting a record
+	 *
+	 * @param   integer  $oid  The PK value of the record which was deleted
+	 *
+	 * @return  boolean  True to allow the deletion without errors
+	 */
 	protected function onAfterDelete($oid)
 	{
 		if ($this->_trigger_events)
@@ -2075,6 +2275,14 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs before hitting a record
+	 *
+	 * @param   integer  $oid  The PK value of the record to hit
+	 * @param   boolean  $log  Should we log the hit?
+	 *
+	 * @return  boolean  True to allow the hit
+	 */
 	protected function onBeforeHit($oid, $log)
 	{
 		if ($this->_trigger_events)
@@ -2096,6 +2304,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs after hitting a record
+	 *
+	 * @param   integer  $oid  The PK value of the record which was hit
+	 *
+	 * @return  boolean  True to allow the hitting without errors
+	 */
 	protected function onAfterHit($oid)
 	{
 		if ($this->_trigger_events)
@@ -2117,6 +2332,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The even which runs before copying a record
+	 *
+	 * @param   integer  $oid  The PK value of the record being copied
+	 *
+	 * @return  boolean  True to allow the copy to take place
+	 */
 	protected function onBeforeCopy($oid)
 	{
 		if ($this->_trigger_events)
@@ -2138,6 +2360,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The even which runs after copying a record
+	 *
+	 * @param   integer  $oid  The PK value of the record which was copied (not the new one)
+	 *
+	 * @return  boolean  True to allow the copy without errors
+	 */
 	protected function onAfterCopy($oid)
 	{
 		if ($this->_trigger_events)
@@ -2159,6 +2388,14 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The event which runs before a record is (un)published
+	 *
+	 * @param   integer|array  &$cid     The PK IDs of the records being (un)published
+	 * @param   integer        $publish  1 to publish, 0 to unpublish
+	 *
+	 * @return  boolean  True to allow the (un)publish to proceed
+	 */
 	protected function onBeforePublish(&$cid, $publish)
 	{
 		if ($this->_trigger_events)
@@ -2180,6 +2417,11 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The even which runs after the object is reset to its default values.
+	 *
+	 * @return  boolean  True to allow the reset to complete without errors
+	 */
 	protected function onAfterReset()
 	{
 		if ($this->_trigger_events)
@@ -2201,6 +2443,11 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * The even which runs before the object is reset to its default values.
+	 *
+	 * @return  boolean  True to allow the reset to complete
+	 */
 	protected function onBeforeReset()
 	{
 		if ($this->_trigger_events)
@@ -2222,6 +2469,13 @@ class FOFTable extends JObject
 		return true;
 	}
 
+	/**
+	 * Replace the input object of this table with the provided FOFInput object
+	 *
+	 * @param   FOFInput  $input  The new input object
+	 *
+	 * @return  void
+	 */
 	public function setInput(FOFInput $input)
 	{
 		$this->input = $input;
@@ -2286,7 +2540,7 @@ class FOFTable extends JObject
 	{
 		$k = $this->_tbl_key;
 
-		return $this->_assetKey . '.'  . (int) $this->$k;
+		return $this->_assetKey . '.' . (int) $this->$k;
 	}
 
 	/**
@@ -2333,7 +2587,9 @@ class FOFTable extends JObject
 	 * This method sets the asset key for the items of this table. Obviously, it
 	 * is only meant to be used when you have a table with an asset field.
 	 *
-	 * @param type $assetKey
+	 * @param   string  $assetKey  The name of the asset key to use
+	 *
+	 * @return  void
 	 */
 	public function setAssetKey($assetKey)
 	{
