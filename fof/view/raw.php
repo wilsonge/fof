@@ -8,7 +8,11 @@
 defined('_JEXEC') or die();
 
 /**
- * FrameworkOnFramework Raw View class
+ * FrameworkOnFramework raw output class. It works like an HTML view, but the
+ * output is bare HTML.
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.1
  */
 class FOFViewRaw extends FOFView
 {

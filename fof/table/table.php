@@ -7,20 +7,23 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-// Normally this shouldn't be required. Some PHP versions, however, seem to
-// require this. Why? No idea whatsoever. If I remove it, FOF crashes on some
-// hosts. Same PHP version on another host and no problem occurs. Any takers?
+/**
+ * Normally this shouldn't be required. Some PHP versions, however, seem to
+ * require this. Why? No idea whatsoever. If I remove it, FOF crashes on some
+ * hosts. Same PHP version on another host and no problem occurs. Any takers?
+ */
 if (class_exists('FOFTable', false))
 {
 	return;
 }
 
 /**
- * FrameworkOnFramework table class
+ * FrameworkOnFramework Table class. The Table is one part controller, one part
+ * model and one part data adapter. It's supposed to handle operations for single
+ * records.
  *
- * FrameworkOnFramework is a set of classes which extend Joomla! 1.5 and later's
- * MVC framework with features making maintaining complex software much easier,
- * without tedious repetitive copying of the same code over and over again.
+ * @package  FrameworkOnFramework
+ * @since    1.0
  */
 class FOFTable extends JObject
 {

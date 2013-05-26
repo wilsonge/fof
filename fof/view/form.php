@@ -10,7 +10,11 @@ defined('_JEXEC') or die();
 JLoader::import('joomla.application.component.view');
 
 /**
- * FrameworkOnFramework HTML Form Edit class
+ * FrameworkOnFramework Form class. It preferrably renders an XML view template
+ * instead of a traditional PHP-based view template.
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFViewForm extends FOFViewHtml
 {

@@ -10,11 +10,11 @@ defined('_JEXEC') or die();
 JLoader::import('joomla.application.component.view');
 
 /**
- * FrameworkOnFramework JSON View class
+ * FrameworkOnFramework JSON View class. Renders the data as a JSON object or
+ * array. It can optionally output HAL links as well.
  *
- * FrameworkOnFramework is a set of classes whcih extend Joomla! 1.5 and later's
- * MVC framework with features making maintaining complex software much easier,
- * without tedious repetitive copying of the same code over and over again.
+ * @package  FrameworkOnFramework
+ * @since    2.0
  */
 class FOFViewJson extends FOFViewHtml
 {

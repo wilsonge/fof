@@ -10,11 +10,11 @@ defined('_JEXEC') or die();
 JLoader::import('joomla.application.component.view');
 
 /**
- * FrameworkOnFramework CSV View class
+ * FrameworkOnFramework CSV View class. Automatically renders the data in CSV
+ * format.
  *
- * FrameworkOnFramework is a set of classes whcih extend Joomla! 1.5 and later's
- * MVC framework with features making maintaining complex software much easier,
- * without tedious repetitive copying of the same code over and over again.
+ * @package  FrameworkOnFramework
+ * @since    1.0
  */
 class FOFViewCsv extends FOFViewHtml
 {

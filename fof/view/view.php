@@ -8,11 +8,13 @@
 defined('_JEXEC') or die();
 
 /**
- * FrameworkOnFramework View class
+ * FrameworkOnFramework View class. The View is the MVC component which gets the
+ * raw data from a Model and renders it in a way that makes sense. The usual
+ * rendering is HTML, but you can also output JSON, CSV, XML, or even media
+ * (images, videos, ...) and documents (Word, PDF, Excel...).
  *
- * FrameworkOnFramework is a set of classes which extend Joomla! 1.5 and later's
- * MVC framework with features making maintaining complex software much easier,
- * without tedious repetitive copying of the same code over and over again.
+ * @package  FrameworkOnFramework
+ * @since    1.0
  */
 abstract class FOFView extends JObject
 {

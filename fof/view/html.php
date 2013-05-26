@@ -10,7 +10,11 @@ defined('_JEXEC') or die();
 JLoader::import('joomla.application.component.view');
 
 /**
- * FrameworkOnFramework HTML List View class
+ * FrameworkOnFramework HTML output class. Together with PHP-based view tempalates
+ * it will render your data into an HTML representation.
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.1
  */
 class FOFViewHtml extends FOFViewRaw
 {

@@ -8,13 +8,14 @@
 defined('_JEXEC') or die();
 
 /**
- * FrameworkOnFramework model class
+ * FrameworkOnFramework Model class. The Model is the worhorse. It performs all
+ * of the business logic based on its state and then returns the raw (processed)
+ * data to the caller, or modifies its own state. It's important to note that
+ * the model doesn't get data directly from the request (this is the
+ * Controller's business) and that it doesn't output anything (that the View's
+ * business).
  *
- * FrameworkOnFramework is a set of classes whcih extend Joomla! 1.5 and later's
- * MVC framework with features making maintaining complex software much easier,
- * without tedious repetitive copying of the same code over and over again.
- *
- * @package  FrameworkOnFramework.Model
+ * @package  FrameworkOnFramework
  * @since    1.0
  */
 class FOFModel extends JObject

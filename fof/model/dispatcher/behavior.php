@@ -12,7 +12,7 @@ JLoader::import('legacy.dispatcher.dispatcher');
 /**
  * FrameworkOnFramework model behavior dispatcher class
  *
- * @package  FrameworkOnFramework.Model
+ * @package  FrameworkOnFramework
  * @since    2.1
  */
 class FOFModelDispatcherBehavior extends JDispatcher

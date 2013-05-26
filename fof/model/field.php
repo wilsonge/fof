@@ -11,7 +11,7 @@ defined('_JEXEC') or die();
 /**
  * FrameworkOnFramework model behavior class
  *
- * @package  FrameworkOnFramework.Model
+ * @package  FrameworkOnFramework
  * @since    2.1
  */
 abstract class FOFModelField
