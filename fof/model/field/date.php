@@ -69,13 +69,13 @@ class FOFModelFieldDate extends FOFModelFieldText
 	 * Parses an interval –which may be given as a string, array or object– into
 	 * a standardised hash array that can then be used bu the interval() method.
 	 *
-	 * @param   string|array|obbject  $inteval  The interval expression to parse
+	 * @param   string|array|object  $interval  The interval expression to parse
 	 *
 	 * @return  array  The parsed, hash array form of the interval
 	 */
-	protected function getInterval($inteval)
+	protected function getInterval($interval)
 	{
-		if (is_string($inteval))
+		if (is_string($interval))
 		{
 			if (strlen($interval) > 2)
 			{
@@ -84,7 +84,7 @@ class FOFModelFieldDate extends FOFModelFieldText
 				$value = (int) substr($interval[0], 1);
 
 				$interval = array(
-					'unit' => $inteval[1],
+					'unit' => $interval[1],
 					'value' => $value,
 					'sign' => $sign
 				);
@@ -100,7 +100,7 @@ class FOFModelFieldDate extends FOFModelFieldText
 		}
 		else
 		{
-			$interval = (array) $inteval;
+			$interval = (array) $interval;
 		}
 
 		return $interval;
