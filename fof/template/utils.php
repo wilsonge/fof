@@ -7,6 +7,12 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
+/**
+ * A utility class to load view templates, media files and modules.
+ *
+ * @package  FrameworkOnFramework
+ * @since    1.0
+ */
 class FOFTemplateUtils
 {
 
@@ -16,10 +22,13 @@ class FOFTemplateUtils
 	 * @param   string  $path  A fancy path definition understood by parsePath
 	 *
 	 * @see FOFTemplateUtils::parsePath
+	 *
+	 * @return  void
 	 */
 	public static function addCSS($path)
 	{
 		$document = FOFPlatform::getInstance()->getDocument();
+
 		if ($document instanceof JDocument)
 		{
 			if (method_exists($document, 'addStyleSheet'))
@@ -36,10 +45,13 @@ class FOFTemplateUtils
 	 * @param   string  $path  A fancy path definition understood by parsePath
 	 *
 	 * @see FOFTemplateUtils::parsePath
+	 *
+	 * @return  void
 	 */
 	public static function addJS($path)
 	{
 		$document = FOFPlatform::getInstance()->getDocument();
+
 		if ($document instanceof JDocument)
 		{
 			if (method_exists($document, 'addScript'))
@@ -56,15 +68,17 @@ class FOFTemplateUtils
 	 * written to the media/lib_fof/compiled directory of your site. If the file
 	 * cannot be written we will use the $altPath, if specified
 	 *
-	 * @param   string  $path        A fancy path definition understood by parsePath pointing to the source LESS file
-	 * @param   string  $altPath     A fancy path definition understood by parsePath pointing to a precompiled CSS file, used when we can't write the generated file to the output directory
-	 * @param   boolean $returnPath  Return the URL of the generated CSS file but do not include it. If it can't be generated, false is returned and the alt files are not included
-	 *
-	 * @return  mixed  True = successfully included generated CSS, False = the alternate CSS file was used, null = the source file does not exist
+	 * @param   string   $path        A fancy path definition understood by parsePath pointing to the source LESS file
+	 * @param   string   $altPath     A fancy path definition understood by parsePath pointing to a precompiled CSS file,
+	 *                                used when we can't write the generated file to the output directory
+	 * @param   boolean  $returnPath  Return the URL of the generated CSS file but do not include it. If it can't be
+	 *                                generated, false is returned and the alt files are not included
 	 *
 	 * @see FOFTemplateUtils::parsePath
 	 *
 	 * @since 2.0
+	 *
+	 * @return  mixed  True = successfully included generated CSS, False = the alternate CSS file was used, null = the source file does not exist
 	 */
 	public static function addLESS($path, $altPath = null, $returnPath = false)
 	{
@@ -90,6 +104,7 @@ class FOFTemplateUtils
 		}
 
 		// No point continuing if the source file is not there or we can't write to the cache
+
 		if (!$sanityCheck || !is_file($localFile))
 		{
 			if (!$returnPath)
@@ -117,16 +132,18 @@ class FOFTemplateUtils
 		$cachedPath = JPATH_SITE . '/media/lib_fof/compiled/' . $id . '.css';
 
 		// Get the LESS compiler
-		$lessCompiler = new FOFLess();
+		$lessCompiler = new FOFLess;
 		$lessCompiler->formatterName = 'compressed';
 
 		// Should I add an alternative import path?
 		$altFiles = self::getAltPaths($path);
+
 		if (isset($altFiles['alternate']))
 		{
 			$currentLocation = realpath(dirname($localFile));
 			$normalLocation = realpath(dirname($altFiles['normal']));
 			$alternateLocation = realpath(dirname($altFiles['alternate']));
+
 			if ($currentLocation == $normalLocation)
 			{
 				$lessCompiler->importDir = array($alternateLocation, $currentLocation);
@@ -138,14 +155,16 @@ class FOFTemplateUtils
 		}
 
 		// Compile the LESS file
-		//$lessCompiler->compileFile($localFile, $cachedPath);
 		$lessCompiler->checkedCompile($localFile, $cachedPath);
+
 		// Add the compiled CSS to the page
 		$base_url = rtrim(JUri::base(), '/');
+
 		if (substr($base_url, -14) == '/administrator')
 		{
 			$base_url = substr($base_url, 0, -14);
 		}
+
 		$url = $base_url . '/media/lib_fof/compiled/' . $id . '.css';
 
 		if ($returnPath)
@@ -155,6 +174,7 @@ class FOFTemplateUtils
 		else
 		{
 			$document = FOFPlatform::getInstance()->getDocument();
+
 			if ($document instanceof JDocument)
 			{
 				if (method_exists($document, 'addStyleSheet'))
@@ -197,8 +217,8 @@ class FOFTemplateUtils
 	 * admin://		Path relative to administrator directory (no overrides)
 	 * site://		Path relative to site's root (no overrides)
 	 *
-	 * @param   string  $path       Fancy path
-	 * @param   boolean $localFile  When true, it returns the local path, not the URL
+	 * @param   string   $path       Fancy path
+	 * @param   boolean  $localFile  When true, it returns the local path, not the URL
 	 *
 	 * @return  string  Parsed path
 	 */
@@ -251,13 +271,14 @@ class FOFTemplateUtils
 	 * admin://		Path relative to administrator directory (no alternate)
 	 * site://		Path relative to site's root (no alternate)
 	 *
-	 * @param   string  $path       Fancy path
+	 * @param   string  $path  Fancy path
 	 *
 	 * @return  array  Array of normal and alternate parsed path
 	 */
 	public static function getAltPaths($path)
 	{
 		$protoAndPath = explode('://', $path, 2);
+
 		if (count($protoAndPath) < 2)
 		{
 			$protocol = 'media';
@@ -299,6 +320,7 @@ class FOFTemplateUtils
 		// For CSS and JS files, add a debug path if the supplied file is compressed
 		JLoader::import('joomla.filesystem.file');
 		$ext = JFile::getExt($ret['normal']);
+
 		if (in_array($ext, array('css', 'js')))
 		{
 			$file = basename(JFile::stripExt($ret['normal']));
@@ -307,6 +329,7 @@ class FOFTemplateUtils
 			 * Detect if we received a file in the format name.min.ext
 			 * If so, strip the .min part out, otherwise append -uncompressed
 			 */
+
 			if (strlen($file) > 4 && strrpos($file, '.min', '-4'))
 			{
 				$position = strrpos($file, '.min', '-4');
@@ -331,10 +354,10 @@ class FOFTemplateUtils
 	/**
 	 * Returns the contents of a module position
 	 *
-	 * @param string $position The position name, e.g. "position-1"
-	 * @param int $style Rendering style; please refer to Joomla!'s code for more information
+	 * @param   string  $position  The position name, e.g. "position-1"
+	 * @param   int     $style     Rendering style; please refer to Joomla!'s code for more information
 	 *
-	 * @return string The contents of the module position
+	 * @return  string  The contents of the module position
 	 */
 	public static function loadPosition($position, $style = -2)
 	{
@@ -395,19 +418,21 @@ class FOFTemplateUtils
 	 * Result:
 	 * http://fobar.com/index.php?option=com_foo&view=categories&layout=tree
 	 *
-	 * @param string $route    The parameters string
-	 * @return string          The human readable, complete url
+	 * @param   string  $route  The parameters string
+	 *
+	 * @return  string  The human readable, complete url
 	 */
 	public static function route($route = '')
 	{
 		$route = trim($route);
 
 		// Special cases
+
 		if ($route == 'index.php' || $route == 'index.php?')
 		{
 			$result = $route;
 		}
-		else if (substr($route, 0, 1) == '&')
+		elseif (substr($route, 0, 1) == '&')
 		{
 			$url = JURI::getInstance();
 			$vars = array();
@@ -435,15 +460,18 @@ class FOFTemplateUtils
 			$result = array();
 
 			// Check to see if there is component information in the route if not add it
+
 			if (!isset($parts['option']) && isset($props['option']))
 			{
 				$result[] = 'option=' . $props['option'];
 			}
 
 			// Add the layout information to the route only if it's not 'default'
+
 			if (!isset($parts['view']) && isset($props['view']))
 			{
 				$result[] = 'view=' . $props['view'];
+
 				if (!isset($parts['layout']) && isset($props['layout']))
 				{
 					$result[] = 'layout=' . $props['layout'];
@@ -451,12 +479,14 @@ class FOFTemplateUtils
 			}
 
 			// Add the format information to the URL only if it's not 'html'
+
 			if (!isset($parts['format']) && isset($props['format']) && $props['format'] != 'html')
 			{
 				$result[] = 'format=' . $props['format'];
 			}
 
 			// Reconstruct the route
+
 			if (!empty($route))
 			{
 				$result[] = $route;
