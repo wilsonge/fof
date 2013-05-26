@@ -671,13 +671,18 @@ abstract class FOFView extends JObject
 	 * Method to add a model to the view.
 	 *
 	 * @param   FOFMOdel  $model    The model to add to the view.
-	 * @param   boolean   $default  Is this the default model?
+     * @param   boolean   $default  Is this the default model?
+     * @param   String    $name     optional index name to store the model
 	 *
 	 * @return  object   The added model.
 	 */
-	public function setModel($model, $default = false)
-	{
-		$name = strtolower($model->getName());
+    public function setModel($model, $default = false, $name = null)
+    {
+        if (is_null($name)) {
+            $name = $model->getName();
+        }
+        $name = strtolower($name);
+
 		$this->_models[$name] = $model;
 
 		if ($default)
