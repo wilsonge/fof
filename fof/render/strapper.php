@@ -122,7 +122,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 
 		$js = <<<ENDJAVASCRIPT
 		Joomla.submitbutton = function(task)
- function(task){
+		{
 			if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
 			{
 				Joomla.submitform(task, document.getElementById('adminForm'));
