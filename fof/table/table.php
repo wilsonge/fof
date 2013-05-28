@@ -1839,7 +1839,7 @@ class FOFTable extends JObject
 			{
 				// Is there any alias for this column?
 				preg_match('#\sas\s`?\w+`?#i', $t_field, $match);
-				$alias = $match[0];
+				$alias = empty($match) ? '' : $match[0];
 				$alias = preg_replace('#\sas\s?#i', '', $alias);
 
 				// Grab the "standard" name
