@@ -72,7 +72,7 @@ class FOFTemplateUtils
 			if (method_exists($document, 'addScript'))
 			{
 				$url = self::parsePath($path);
-				$document->addScript($url);
+				$document->addScript($url, "text/javascript", $defer, $async);
 			}
 		}
 	}
