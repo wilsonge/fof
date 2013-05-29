@@ -304,10 +304,6 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
-		// Get the key for this model's table
-		$key		 = $model->getTable()->getKeyName();
-		$keyValue	 = $model->getId();
-
 		$html = $this->renderFormRaw($form, $model, $input, 'read');
 
 		return $html;
