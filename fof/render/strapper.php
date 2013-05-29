@@ -815,7 +815,7 @@ ENDJS;
 		$key		 = $model->getTable()->getKeyName();
 		$keyValue	 = $model->getId();
 
-		$html = parent::renderFormRaw($form, $model, $input, 'read');
+		$html = $this->renderFormRaw($form, $model, $input, 'read');
 
 		return $html;
 	}
@@ -885,8 +885,99 @@ ENDJS;
 		$html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
-		$html .= parent::renderFormRaw($form, $model, $input, 'edit');
+		$html .= $this->renderFormRaw($form, $model, $input, 'edit');
 		$html .= '</form>';
+
+		return $html;
+	}
+
+	/**
+	 * Renders a raw FOFForm and returns the corresponding HTML
+	 *
+	 * @param   FOFForm   &$form  	The form to render
+	 * @param   FOFModel  $model  	The model providing our data
+	 * @param   FOFInput  $input  	The input object
+	 * @param   string	  $formType The form type e.g. 'edit' or 'read'
+	 *
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormRaw(FOFForm &$form, FOFModel $model, FOFInput $input, $formType)
+	{
+		$html = '';
+
+		foreach ($form->getFieldsets() as $fieldset)
+		{
+			$fields = $form->getFieldset($fieldset->name);
+
+			if (isset($fieldset->class))
+			{
+				$class = 'class="' . $fieldset->class . '"';
+			}
+			else
+			{
+				$class = '';
+			}
+
+			$html .= "\t" . '<div id="' . $fieldset->name . '" ' . $class . '>' . PHP_EOL;
+
+			if (isset($fieldset->label) && !empty($fieldset->label))
+			{
+				$html .= "\t\t" . '<h3>' . JText::_($fieldset->label) . '</h3>' . PHP_EOL;
+			}
+
+			foreach ($fields as $field)
+			{
+				$title		 = $field->title;
+				$required	 = $field->required;
+				$labelClass	 = $field->labelClass;
+				$description = $field->description;
+
+				if ($formType == 'read')
+				{
+					$input = $field->static;
+				}
+				else if ($formType == 'edit')
+				{
+					$input = $field->input;
+				}
+
+				if (empty($title))
+				{
+					$html .= "\t\t\t" . $input . PHP_EOL;
+
+					if (!empty($description) && $formType == 'edit')
+					{
+						$html .= "\t\t\t\t" . '<span class="help-block">';
+						$html .= JText::_($description) . '</span>' . PHP_EOL;
+					}
+				}
+				else
+				{
+					$html .= "\t\t\t" . '<div class="control-group">' . PHP_EOL;
+					$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+					$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
+
+					if ($required)
+					{
+						$html .= ' *';
+					}
+					$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
+					$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
+					$html .= "\t\t\t\t" . $input . PHP_EOL;
+
+					if (!empty($description))
+					{
+						$html .= "\t\t\t\t" . '<span class="help-block">';
+						$html .= JText::_($description) . '</span>' . PHP_EOL;
+					}
+
+					$html .= "\t\t\t\t" . '</div>' . PHP_EOL;
+					$html .= "\t\t\t" . '</div>' . PHP_EOL;
+				}
+			}
+
+			$html .= "\t" . '</div>' . PHP_EOL;
+		}
 
 		return $html;
 	}
