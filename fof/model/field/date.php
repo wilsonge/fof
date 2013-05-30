@@ -59,8 +59,8 @@ class FOFModelFieldDate extends FOFModelFieldText
 			$extra = '=';
 		}
 
-		$sql = '(' . $this->_db->qn($this->name) . ' >' . $extra . ' ' . $function;
-		$sql .= '(' . $this->_db->quote($value) . ', INTERVAL ' . $interval['value'] . ' ' . $interval['unit'] . '))';
+		$sql = '(' . $this->getFieldName() . ' >' . $extra . ' ' . $function;
+		$sql .= '(' . $this->getFieldName() . ', INTERVAL ' . $interval['value'] . ' ' . $interval['unit'] . '))';
 
 		return $sql;
 	}

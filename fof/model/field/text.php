@@ -52,7 +52,7 @@ class FOFModelFieldText extends FOFModelField
 			return '';
 		}
 
-		return '(' . $this->_db->qn($this->name) . ' LIKE ' . $this->_db->quote('%' . $value . '%') . ')';
+		return '(' . $this->getFieldName() . ' LIKE ' . $this->_db->quote('%' . $value . '%') . ')';
 	}
 
 	/**
@@ -69,7 +69,7 @@ class FOFModelFieldText extends FOFModelField
 			return '';
 		}
 
-		return '(' . $this->_db->qn($this->name) . ' LIKE ' . $this->_db->quote($value) . ')';
+		return '(' . $this->getFieldName() . ' LIKE ' . $this->_db->quote($value) . ')';
 	}
 
 	/**
