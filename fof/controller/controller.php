@@ -2630,7 +2630,7 @@ class FOFController extends JObject
 
 					// Fallback on edit.own. First test if the permission is available.
 
-					if (FOFPlatform::getInstance()->authorise('core.edit.own', $this->component . '.' . $resource . '.' . $recordId))
+					if (FOFPlatform::getInstance()->authorise('core.edit.own', $asset))
 					{
 						$table = $this->getThisModel()->getTable();
 
