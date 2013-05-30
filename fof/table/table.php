@@ -210,7 +210,7 @@ class FOFTable extends JObject
 		$tableClass = $prefix . ucfirst($type);
 
 		$configProvider = new FOFConfigProvider;
-		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.option.';
+		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
 
 		if (!array_key_exists($tableClass, $instances))
 		{
