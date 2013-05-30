@@ -148,6 +148,12 @@ class FOFModel extends JObject
 	protected $table = null;
 
 	/**
+	 * The alias of the table to use (default: none)
+	 * @var string
+	 */
+	protected $table_alias = false;
+
+	/**
 	 * Total rows based on the filters set in the model's state
 	 * @var int
 	 */
@@ -617,6 +623,20 @@ class FOFModel extends JObject
 				'.config.table', FOFInflector::singularize($view)
 			);
 			$this->table = $table;
+		}
+
+		// Assign the correct table alias
+		if (array_key_exists('table_alias', $config))
+		{
+			$this->table_alias = $config['table_alias'];
+		}
+		else
+		{
+			$table_alias = $this->configProvider->get(
+				$this->option . '.views.' . FOFInflector::singularize($this->name) .
+				'.config.table_alias', false
+			);
+			$this->table_alias = $table_alias;
 		}
 
 		// Set the internal state marker - used to ignore setting state from the request
@@ -1722,7 +1742,17 @@ class FOFModel extends JObject
 		// Call the behaviors
 		$this->modelDispatcher->trigger('onBeforeBuildQuery', array(&$this, &$query));
 
-		$query->select('*')->from($db->qn($tableName));
+		$alias = $this->getTableAlias();
+
+		if ($alias)
+		{
+			$alias = ' AS ' . $db->qn($alias);
+		} else 
+		{
+			$alias = '';
+		}
+
+		$query->select('*')->from($db->qn($tableName) . $alias) ;
 
 		if (!$overrideLimits)
 		{
@@ -1733,8 +1763,14 @@ class FOFModel extends JObject
 				$order = $tableKey;
 			}
 
+			$order = $db->qn($order);
+			if ($alias) 
+			{
+				$order = $db->qn($this->getTableAlias()) . '.' . $order;
+			}
+
 			$dir = $this->getState('filter_order_Dir', 'ASC', 'cmd');
-			$query->order($db->qn($order) . ' ' . $dir);
+			$query->order($order . ' ' . $dir);
 		}
 
 		// Call the behaviors
@@ -1763,6 +1799,16 @@ class FOFModel extends JObject
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * Get the alias set for this model's table
+	 * 
+	 * @return  string 	The table alias
+	 */
+	public function getTableAlias()
+	{
+		return $this->table_alias;
 	}
 
 	/**
