@@ -110,15 +110,6 @@ class FOFViewHtml extends FOFViewRaw
 		$view = $this->input->getCmd('view', 'cpanel');
 		$task = $this->getModel()->getState('task', 'browse');
 
-		// Don't load the toolbar on CLI
-
-		if (!FOFPlatform::getInstance()->isCli())
-		{
-			$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
-			$toolbar->perms = $this->perms;
-			$toolbar->renderToolbar($view, $task, $this->input);
-		}
-
 		$renderer = $this->getRenderer();
 
 		if (!($renderer instanceof FOFRenderAbstract))
