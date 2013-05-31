@@ -1422,7 +1422,7 @@ class FOFTable extends JObject
 			// Get and the asset name.
 			$this->$k = $pk;
 			$name     = $this->_getAssetName();
-            $asset    = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+			$asset    = self::getInstance('Asset');
 
 			if ($asset->loadByName($name))
 			{
