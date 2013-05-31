@@ -328,11 +328,12 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 		$html = '';
 
-		$validate	 = $form->getAttribute('validate');
+		$validate	 = strtolower($form->getAttribute('validate'));
 		$class		 = '';
 
-		if (!empty($validate))
+		if (in_array($validate, array('true', 'yes', '1', 'on')))
 		{
+			JHTML::_('behavior.framework', true);
 			JHTML::_('behavior.formvalidation');
 			$class = ' class="form-validate"';
 			$this->loadValidationScript($form);

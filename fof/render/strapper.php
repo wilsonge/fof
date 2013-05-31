@@ -833,8 +833,11 @@ ENDJS;
 
 		$html = '';
 
-		if ($validate = $form->getAttribute('validate'))
+		$validate	 = strtolower($form->getAttribute('validate'));
+
+		if (in_array($validate, array('true', 'yes', '1', 'on')))
 		{
+			JHTML::_('behavior.framework', true);
 			JHTML::_('behavior.formvalidation');
 			$class = ' form-validate';
 			$this->loadValidationScript($form);
