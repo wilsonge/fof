@@ -48,7 +48,7 @@ abstract class FOFStringUtils
 	}
 
 	/**
-	 * Convert common norhern European languages' letters into plain ASCII. This
+	 * Convert common northern European languages' letters into plain ASCII. This
 	 * is a rudimentary transliteration.
 	 *
 	 * @param   string  $value  The value to convert to ASCII
