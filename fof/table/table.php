@@ -2924,10 +2924,8 @@ class FOFTable extends JObject
 	protected function checkContentType()
 	{
 		$contentType = new JTableContenttype($this->_db);
-		
-		$component = $this->input->get('option');
-		$view = FOFInflector::singularize($this->input->get('view'));
-		$alias = $component . '.' . $view;
+
+		$alias = $this->getContentType();
 
 		// Fetch the extension name
 		$component = JComponentHelper::getComponent($component);
@@ -3023,5 +3021,19 @@ class FOFTable extends JObject
 		}
 
 		return "null";
+	}
+
+	/**
+	 * Get the content type for ucm
+	 * 
+	 * @return string The content type alias
+	 */
+	public function getContentType()
+	{
+		$component = $this->input->get('option');
+		$view = FOFInflector::singularize($this->input->get('view'));
+		$alias = $component . '.' . $view;
+
+		return $alias;
 	}
 }
