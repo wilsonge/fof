@@ -12,6 +12,63 @@
  */
 class FOFDispatcherTest extends PHPUnit_Framework_TestCase
 {
+	public function testOnBeforeDispatch()
+	{
+		$dispatcher = FOFDispatcher::getTmpInstance();
+
+		$this->assertTrue($dispatcher->onBeforeDispatch(), 'onBeforeDispatch should return TRUE');
+	}
+
+	public function testOnBeforeDispatchCli()
+	{
+		$dispatcher = FOFDispatcher::getTmpInstance();
+
+		$this->assertTrue($dispatcher->onBeforeDispatchCLI(), 'onBeforeDispatchCLI should return TRUE');
+	}
+
+	public function getTestGetTask()
+	{
+		$message = 'Incorrect task';
+
+		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , false, 'GET' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'GET'  	 , 'add'   , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'POST'	 , 'save'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'POST'	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'PUT' 	 , 'save'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'PUT' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'DELETE' , 'delete'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'DELETE' , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'GET' 	 , 'browse', $message);
+		$data[] = array(new FOFInput(array())           , 'foobars', true,  'GET' 	 , 'browse', $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'POST'	 , 'save'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobars', true,  'POST'	 , 'browse', $message);
+
+		return $data;
+	}
+
+	/**
+	 * @dataProvider getTestGetTask
+	 * @TODO Test when I'm frontend. It's a tough one since we have to mock a mock O_o
+	 */
+	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
+	{
+		$_SERVER['REQUEST_METHOD'] = $method;
+		$dispatcher = FOFDispatcher::getTmpInstance();
+		$reflection = new ReflectionClass($dispatcher);
+
+		$property = $reflection->getProperty('input');
+		$property->setAccessible(true);
+
+		$method  = $reflection->getMethod('getTask');
+		$method->setAccessible(true);
+
+		$property->setValue($dispatcher, $input);
+		$task = $method->invokeArgs($dispatcher, array($view));
+		$this->assertEquals($expected, $task, $message);
+	}
+
 	public function test_createDecryptionKey()
 	{
 		$dispatcher = FOFDispatcher::getTmpInstance();
@@ -28,8 +85,10 @@ class FOFDispatcherTest extends PHPUnit_Framework_TestCase
 		$method->setAccessible(true);
 
 		// Let's call the method I want to test
-		$key = $method->invokeArgs($dispatcher, array($base32));
+		$key = $method->invokeArgs($dispatcher, array(1370123514));
 
-		$this->assertEquals('c96cdbff0d9ff340e35ecf826bab15893a4fb956c238420660de169dc84139e5', $key);
+		$this->assertEquals('86b618ea6f2793ad6df388fe47f8883b8a5ac3fd57ac477de77cdce578339737',
+							$key,
+							'Decryption key is not the expected one');
 	}
 }
