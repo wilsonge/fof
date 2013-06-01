@@ -740,12 +740,12 @@ class FOFDispatcher extends JObject
 	 */
 	public static function isCliAdmin()
 	{
-		static $isCLI = null;
+		static $isCLI   = null;
 		static $isAdmin = null;
 
 		if (is_null($isCLI) && is_null($isAdmin))
 		{
-			$isCLI = FOFPlatform::getInstance()->isCli();
+			$isCLI   = FOFPlatform::getInstance()->isCli();
 			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 

@@ -62,6 +62,8 @@ JError::setErrorHandling(E_WARNING, 'message');
 // Bootstrap the CMS libraries.
 require_once JPATH_LIBRARIES . '/cms.php';
 
+jimport('joomla.application.input');
+
 // Register the core Joomla test classes.
 //JLoader::registerPrefix('Test', __DIR__ . '/core');
 
