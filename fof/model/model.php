@@ -1764,7 +1764,8 @@ class FOFModel extends JObject
 			}
 
 			$order = $db->qn($order);
-			if ($alias) 
+			
+			if ($alias)
 			{
 				$order = $db->qn($this->getTableAlias()) . '.' . $order;
 			}
@@ -1804,6 +1805,7 @@ class FOFModel extends JObject
 	/**
 	 * Get the alias set for this model's table
 	 * 
+	 *
 	 * @return  string 	The table alias
 	 */
 	public function getTableAlias()

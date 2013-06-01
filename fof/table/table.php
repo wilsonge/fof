@@ -210,7 +210,7 @@ class FOFTable extends JObject
 		$tableClass = $prefix . ucfirst($type);
 
 		$configProvider = new FOFConfigProvider;
-		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.option.';
+		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
 
 		if (!array_key_exists($tableClass, $instances))
 		{
@@ -840,7 +840,7 @@ class FOFTable extends JObject
 		$name     = $this->_getAssetName();
 		$title    = $this->_getAssetTitle();
 
-		$asset = Jtable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$asset = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
 		$asset->loadByName($name);
 
 		// Re-inject the asset id.
@@ -1422,7 +1422,9 @@ class FOFTable extends JObject
 			// Get and the asset name.
 			$this->$k = $pk;
 			$name     = $this->_getAssetName();
-			$asset    = self::getInstance('Asset');
+
+			// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a FOFTable
+			$asset    = JTable::getInstance('Asset');
 
 			if ($asset->loadByName($name))
 			{
