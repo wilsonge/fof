@@ -63,6 +63,20 @@ class FOFTable extends JObject
 	protected $_trackAssets = false;
 
 	/**
+	 * Does the resource support joomla tags?
+	 *
+	 * @var    boolean
+	 */
+	protected $_has_tags = false;
+
+	/**
+	 * Tag helper
+	 * 
+	 * @var    JHelperTags
+	 */
+	protected $_tagsHelper = null;
+
+	/**
 	 * The rules associated with this record.
 	 *
 	 * @var    JAccessRules  A JAccessRules object.
@@ -297,6 +311,17 @@ class FOFTable extends JObject
 				$instance->setTriggerEvents($config['trigger_events']);
 			}
 
+			if (array_key_exists('has_tags', $config))
+			{
+				$instance->setHasTags($config['has_tags']);
+			}
+
+			$altHasTags = $configProvider->get($configProviderKey . 'has_tags', null);
+			if ($altHasTags)
+			{
+				$instance->setHasTags($altHasTags);
+			}
+
 			$configProviderFieldmapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
 			$aliases = $configProvider->get($configProviderFieldmapKey, $instance->_columnAlias);
 			$instance->_columnAlias = array_merge($instance->_columnAlias, $aliases);
@@ -382,6 +407,38 @@ class FOFTable extends JObject
 	public function getTriggerEvents()
 	{
 		return $this->_trigger_events;
+	}
+
+	/**
+	 * Gets the has tags switch state
+	 *
+	 * @return bool
+	 */
+	public function hasTags()
+	{
+		return $this->_has_tags;
+	}
+
+	/**
+	 * Sets the has tags switch state
+	 *
+	 * @param   bool  $newState
+	 */
+	public function setHasTags($newState = false)
+	{
+		$this->_has_tags = false;
+		
+		// Tags are available only in 3.1+
+		if (version_compare(JVERSION, '3.1', 'ge'))
+		{	
+			$this->_has_tags = $newState ? true : false;
+
+			if ($this->_has_tags && !$this->_tagsHelper)
+			{
+				$this->_tagsHelper = new JHelperTags();
+				$this->_tagsHelper->typeAlias = $this->_assetKey;
+			}
+		}
 	}
 
 	/**
@@ -756,7 +813,6 @@ class FOFTable extends JObject
 		}
 
 		// Set rules for assets enabled tables
-
 		if ($this->_trackAssets)
 		{
 			// Bind the rules.
@@ -765,6 +821,14 @@ class FOFTable extends JObject
 			{
 				$this->setRules($src['rules']);
 			}
+		}
+
+		// Bind tags
+		if ($this->_has_tags && isset($src['tags']))
+		{
+			$this->metadata = array();
+			$this->metadata['tags'] = $src['tags'];
+			$this->metadata = json_encode($this->metadata);
 		}
 
 		return true;
@@ -783,6 +847,11 @@ class FOFTable extends JObject
 	 */
 	public function store($updateNulls = false)
 	{
+		if ($this->_has_tags)
+		{
+			$metadata = $this->metadata;
+		}
+
 		if (!$this->onBeforeStore($updateNulls))
 		{
 			return false;
@@ -801,14 +870,23 @@ class FOFTable extends JObject
 		}
 
 		// The asset id field is managed privately by this class.
-
 		if ($this->_trackAssets)
 		{
 			unset($this->asset_id);
 		}
 
-		// If a primary key exists update the object, otherwise insert it.
+		// Manage tags, if present
+		if ($this->_has_tags)
+		{
+			// TODO: JHelperTags sucks, it guesses that tags are stored in 
+			// the metadata property. Not our case, therefore we need to add it
+			// in a fake object
+			$tagsTable = clone($this);
+			$tagsTable->metadata = $metadata;
+			$this->_tagsHelper->preStoreProcess($tagsTable);	
+		}
 
+		// If a primary key exists update the object, otherwise insert it.
 		if ($this->$k)
 		{
 			$this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
@@ -818,8 +896,21 @@ class FOFTable extends JObject
 			$this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
 		}
 
-		// If the table is not set to track assets return true.
+		// Now the real tags storing process
+		if ($this->_has_tags)
+		{
+			// TODO: This little guy here fails because JHelperTags
+			// need a JTable object to work, while our is FOFTable
+			// Need probably to write our own FOFHelperTags
+			// Thank you com_tags
+			if (!$this->_tagsHelper->postStoreProcess($tagsTable))
+			{
+				$this->setError('Error storing tags');
+				return false;
+			}
+		}
 
+		// If the table is not set to track assets return true.
 		if (!$this->_trackAssets)
 		{
 			$result = true;
@@ -857,7 +948,6 @@ class FOFTable extends JObject
 		}
 
 		// Specify how a new or moved node asset is inserted into the tree.
-
 		if (empty($this->asset_id) || $asset->parent_id != $parentId)
 		{
 			$asset->setLocation($parentId, 'last-child');
@@ -881,7 +971,6 @@ class FOFTable extends JObject
 		}
 
 		// Create an asset_id or heal one that is corrupted.
-
 		if (empty($this->asset_id) || ($currentAssetId != $this->asset_id && !empty($this->asset_id)))
 		{
 			// Update the asset_id field in this table.
@@ -1438,6 +1527,17 @@ class FOFTable extends JObject
 			else
 			{
 				$this->setError($asset->getError());
+
+				return false;
+			}
+		}
+
+		// If this resource has tags, delete the tags first
+		if ($this->_has_tags)
+		{
+			if (!$this->_tagsHelper->deleteTagData($this, $pk))
+			{
+				$this->setError('Error deleting Tags');
 
 				return false;
 			}
