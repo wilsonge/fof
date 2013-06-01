@@ -2034,6 +2034,7 @@ class FOFController extends JObject
 			{
 				$config['input'] = $this->input;
 			}
+
 			$this->_modelObject = $this->getModel($modelName, $prefix, $config);
 		}
 
