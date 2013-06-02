@@ -52,6 +52,11 @@ if (!defined('_JDEFINES')) {
         require_once JPATH_BASE . '/includes/defines.php';
 }
 
+if (!defined('JPATH_TESTS'))
+{
+	define('JPATH_TESTS', dirname(__FILE__));
+}
+
 // Import the platform in legacy mode.
 require_once JPATH_LIBRARIES . '/import.php';
 

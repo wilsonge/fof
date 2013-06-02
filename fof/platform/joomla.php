@@ -78,7 +78,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 */
 	protected function isCliAdmin()
 	{
-		static $isCLI = null;
+		static $isCLI   = null;
 		static $isAdmin = null;
 
 		if (is_null($isCLI) && is_null($isAdmin))

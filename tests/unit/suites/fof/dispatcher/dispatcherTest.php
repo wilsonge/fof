@@ -7,10 +7,10 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-/**
- * Test class for FOFInflector
- */
-class FOFDispatcherTest extends PHPUnit_Framework_TestCase
+// I rember that there was a way to autoload the base test, but I can't remember how :(
+require_once JPATH_TESTS.'/FofTestCase.php';
+
+class FOFDispatcherTest extends FofTestCase
 {
 	public function testOnBeforeDispatch()
 	{
@@ -30,8 +30,9 @@ class FOFDispatcherTest extends PHPUnit_Framework_TestCase
 	{
 		$message = 'Incorrect task';
 
-		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'edit'  , $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'read'  , $message);
+		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , false,  'GET' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'read'  , $message);
 		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , false, 'GET' 	 , 'edit'  , $message);
 		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'GET'  	 , 'add'   , $message);
 		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'POST'	 , 'save'  , $message);
@@ -50,10 +51,16 @@ class FOFDispatcherTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider getTestGetTask
-	 * @TODO Test when I'm frontend. It's a tough one since we have to mock a mock O_o
 	 */
 	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
 	{
+		$mockPlatform = $this->getMock('FOFPlatformJoomla');
+		$mockPlatform->expects($this->any())
+					 ->method('isFrontend')
+					 ->will($this->returnValue($frontend));
+
+		FOFPlatform::forceInstance($mockPlatform);
+
 		$_SERVER['REQUEST_METHOD'] = $method;
 		$dispatcher = FOFDispatcher::getTmpInstance();
 		$reflection = new ReflectionClass($dispatcher);
