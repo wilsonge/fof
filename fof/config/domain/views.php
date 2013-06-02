@@ -29,7 +29,7 @@ class FOFConfigDomainViews implements FOFConfigDomainInterface
 		// Initialise
 		$ret['views'] = array();
 
-		// Parse the dispatcher configuration
+		// Parse view configuration
 		$viewData = $xml->xpath('view');
 
 		// Sanity check

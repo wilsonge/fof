@@ -29,7 +29,7 @@ class FOFConfigDomainTables implements FOFConfigDomainInterface
 		// Initialise
 		$ret['tables'] = array();
 
-		// Parse the dispatcher configuration
+		// Parse table configuration
 		$tableData = $xml->xpath('table');
 
 		// Sanity check
@@ -42,7 +42,7 @@ class FOFConfigDomainTables implements FOFConfigDomainInterface
 		{
 			$key = (string) $aTable['name'];
 
-			// Parse ACL options
+			$ret['tables'][$key]['tablealias'] = $aTable->xpath('tablealias');
 			$ret['tables'][$key]['fields'] = array();
 			$fieldData = $aTable->xpath('field');
 
@@ -94,7 +94,7 @@ class FOFConfigDomainTables implements FOFConfigDomainInterface
 	 * @param   array   $params          Extra options; key 0 defines the table we want to fetch
 	 * @param   string  $default         Default magic field mapping; empty if not defined
 	 *
-	 * @return  string  The privilege required to access this view
+	 * @return  array   Field map
 	 */
 	protected function getField($table, &$configuration, $params, $default = '')
 	{
@@ -122,5 +122,37 @@ class FOFConfigDomainTables implements FOFConfigDomainInterface
 		}
 
 		return $map;
+	}
+
+	/**
+	 * Internal method to get table alias
+	 *
+	 * @param   string  $table           The table for which we will be fetching table alias
+	 * @param   array   &$configuration  The configuration parameters hash array
+	 * @param   array   $params          Extra options; key 0 defines the table we want to fetch
+	 * @param   string  $default         Default table alias
+	 *
+	 * @return  string  Table alias
+	 */
+	protected function getTablealias($table, &$configuration, $params, $default = '')
+	{
+		$tablealias = $default;
+		if (
+			isset($configuration['tables']['*']) && isset($configuration['tables']['*']['tablealias']) &&
+			isset($configuration['tables']['*']['tablealias'][0])
+			)
+		{
+			$tablealias = (string) $configuration['tables']['*']['tablealias'][0];
+		}
+
+		if (
+			isset($configuration['tables'][$table]) && isset($configuration['tables'][$table]['tablealias']) &&
+			isset($configuration['tables'][$table]['tablealias'][0])
+			)
+		{
+			$tablealias = (string) $configuration['tables'][$table]['tablealias'][0];
+		}
+
+		return $tablealias;
 	}
 }
