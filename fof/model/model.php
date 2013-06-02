@@ -2061,13 +2061,14 @@ class FOFModel extends JObject
 	/**
 	 * Guesses the best candidate for the path to use for a particular form.
 	 *
-	 * @param   string  $source  The name of the form file to load, without the .xml extension
+	 * @param   string  $source  The name of the form file to load, without the .xml extension.
+	 * @param   array   $paths   The paths to look into. You can declare this to override the default FOF paths.
 	 *
-	 * @return  string  The path and filename of the form to load
+	 * @return  mixed  A string if the path and filename of the form to load is found, false otherwise.
 	 *
 	 * @since   2.0
 	 */
-	public function findFormFilename($source)
+	public function findFormFilename($source, $paths = array())
 	{
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view 	= $this->input->getCmd('view', 'cpanels');
@@ -2077,25 +2078,28 @@ class FOFModel extends JObject
 		$alt_file_root = $componentPaths['alt'];
 		$template_root = FOFPlatform::getInstance()->getTemplateOverridePath($option);
 
-		// Set up the paths to look into
-		$paths = array(
-			// In the template override
-			$template_root . '/' . $view,
-			$template_root . '/' . FOFInflector::singularize($view),
-			$template_root . '/' . FOFInflector::pluralize($view),
-			// In this side of the component
-			$file_root . '/views/' . $view . '/tmpl',
-			$file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
-			$file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
-			// In the other side of the component
-			$alt_file_root . '/views/' . $view . '/tmpl',
-			$alt_file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
-			$alt_file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
-			// In the models/forms of this side
-			$file_root . '/models/forms',
-			// In the models/forms of the other side
-			$alt_file_root . '/models/forms',
-		);
+		if (empty($paths))
+		{
+			// Set up the paths to look into
+			$paths = array(
+				// In the template override
+				$template_root . '/' . $view,
+				$template_root . '/' . FOFInflector::singularize($view),
+				$template_root . '/' . FOFInflector::pluralize($view),
+				// In this side of the component
+				$file_root . '/views/' . $view . '/tmpl',
+				$file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
+				$file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
+				// In the other side of the component
+				$alt_file_root . '/views/' . $view . '/tmpl',
+				$alt_file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
+				$alt_file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
+				// In the models/forms of this side
+				$file_root . '/models/forms',
+				// In the models/forms of the other side
+				$alt_file_root . '/models/forms',
+			);
+		}
 
 		// Set up the suffixes to look into
 		$suffixes = array();
