@@ -148,12 +148,6 @@ class FOFModel extends JObject
 	protected $table = null;
 
 	/**
-	 * The alias of the table to use (default: none)
-	 * @var string
-	 */
-	protected $table_alias = false;
-
-	/**
 	 * Total rows based on the filters set in the model's state
 	 * @var int
 	 */
@@ -623,20 +617,6 @@ class FOFModel extends JObject
 				'.config.table', FOFInflector::singularize($view)
 			);
 			$this->table = $table;
-		}
-
-		// Assign the correct table alias
-		if (array_key_exists('table_alias', $config))
-		{
-			$this->table_alias = $config['table_alias'];
-		}
-		else
-		{
-			$table_alias = $this->configProvider->get(
-				$this->option . '.views.' . FOFInflector::singularize($this->name) .
-				'.config.table_alias', false
-			);
-			$this->table_alias = $table_alias;
 		}
 
 		// Set the internal state marker - used to ignore setting state from the request
@@ -1747,7 +1727,7 @@ class FOFModel extends JObject
 		if ($alias)
 		{
 			$alias = ' AS ' . $db->qn($alias);
-		} else 
+		} else
 		{
 			$alias = '';
 		}
@@ -1764,7 +1744,7 @@ class FOFModel extends JObject
 			}
 
 			$order = $db->qn($order);
-			
+
 			if ($alias)
 			{
 				$order = $db->qn($this->getTableAlias()) . '.' . $order;
@@ -1804,13 +1784,13 @@ class FOFModel extends JObject
 
 	/**
 	 * Get the alias set for this model's table
-	 * 
+	 *
 	 *
 	 * @return  string 	The table alias
 	 */
 	public function getTableAlias()
 	{
-		return $this->table_alias;
+		return $this->getTable($this->table)->getTableAlias();
 	}
 
 	/**

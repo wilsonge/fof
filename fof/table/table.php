@@ -71,7 +71,7 @@ class FOFTable extends JObject
 
 	/**
 	 * Tag helper
-	 * 
+	 *
 	 * @var    JHelperTags
 	 */
 	protected $_tagsHelper = null;
@@ -97,6 +97,13 @@ class FOFTable extends JObject
 	 * @var    boolean
 	 */
 	protected $_trigger_events = false;
+
+	/**
+	 * Table alias used in queries
+	 *
+	 * @var    string
+	 */
+	protected $_tableAlias = false;
 
 	/**
 	 * Array with alias for "special" columns such as ordering, hits etc etc
@@ -152,7 +159,7 @@ class FOFTable extends JObject
 
 	/**
 	 * The prefix for the table class
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_tablePrefix = '';
@@ -305,9 +312,21 @@ class FOFTable extends JObject
 				$config['db'] = JFactory::getDBO();
 			}
 
+			// Assign the correct table alias
+			if (array_key_exists('table_alias', $config))
+			{
+				$table_alias = $config['table_alias'];
+			}
+			else
+			{
+				$configProviderTableAliasKey = $option . '.tables.' . FOFInflector::singularize($type) . '.tablealias';
+				$table_alias = $configProvider->get($configProviderTableAliasKey, false	);
+			}
+
 			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db']);
 			$instance->setInput($tmpInput);
 			$instance->setTablePrefix($prefix);
+			$instance->setTableAlias($table_alias);
 
 			// Determine and set the asset key for this table
 			$assetKey = 'com_' . $component . '.' . strtolower(FOFInflector::singularize($type));
@@ -435,10 +454,10 @@ class FOFTable extends JObject
 	public function setHasTags($newState = false)
 	{
 		$this->_has_tags = false;
-		
+
 		// Tags are available only in 3.1+
 		if (version_compare(JVERSION, '3.1', 'ge'))
-		{	
+		{
 			$this->_has_tags = $newState ? true : false;
 
 			if ($this->_has_tags && !$this->_tagsHelper)
@@ -451,7 +470,7 @@ class FOFTable extends JObject
 
 	/**
 	 * Set the class prefix
-	 * 
+	 *
 	 * @param string $prefix The prefix
 	 */
 	public function setTablePrefix($prefix)
@@ -896,12 +915,12 @@ class FOFTable extends JObject
 		// Manage tags, if present
 		if ($this->_has_tags)
 		{
-			// TODO: JHelperTags sucks, it guesses that tags are stored in 
+			// TODO: JHelperTags sucks, it guesses that tags are stored in
 			// the metadata property. Not our case, therefore we need to add it
 			// in a fake object
 			$tagsTable = clone($this);
 			$tagsTable->metadata = $metadata;
-			$this->_tagsHelper->preStoreProcess($tagsTable);	
+			$this->_tagsHelper->preStoreProcess($tagsTable);
 		}
 
 		// If a primary key exists update the object, otherwise insert it.
@@ -1791,6 +1810,17 @@ class FOFTable extends JObject
 		}
 
 		return $cache[$tableName];
+	}
+
+	public function getTableAlias()
+	{
+		return $this->_tableAlias;
+	}
+
+	public function setTableAlias($string)
+	{
+		$string = preg_replace('#[^A-Z0-9_]#i', '', $string);
+		$this->_tableAlias = $string;
 	}
 
 	/**
@@ -2929,7 +2959,7 @@ class FOFTable extends JObject
 
 		// Fetch the extension name
 		$component = JComponentHelper::getComponent($component);
-		
+
 		// Fetch the name using the menu item
 		$query = $this->_db->getQuery(true);
 		$query->select('title')->from('#__menu')->where('component_id = ' . (int) $component->id);
@@ -3025,7 +3055,7 @@ class FOFTable extends JObject
 
 	/**
 	 * Get the content type for ucm
-	 * 
+	 *
 	 * @return string The content type alias
 	 */
 	public function getContentType()
