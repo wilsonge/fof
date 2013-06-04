@@ -16,39 +16,63 @@ class FOFTableTest extends FofDatabaseTestCase
 	{
 		FOFTable::forceInstance(null);
 		$db = JFactory::getDbo();
+		$methods = array('onBeforeReset', 'onAfterReset');
+		$constr_args = array('jos_foftest_foobars', 'foftest_id_foobar', &$db);
 
-		$table = $this->getMock('FOFTable',												// Class name to mock
-								array('onBeforeReset'),									// Methods to mock
-								array('#__foftest_foobars', 'foftest_id_foobar', &$db),	// Construct arguments
-								'',
-								true,
-								true,
-								true,
-								true);
+		$table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
 
-		$table->expects($this->any())
-			  ->method('onBeforeReset')
-			  ->will($this->returnValue(false));
+		$table->expects($this->any())->method('onBeforeReset')->will($this->returnValue(false));
+		$table->expects($this->any())->method('onAfterReset') ->will($this->returnValue(true));
 
 		$this->assertFalse($table->reset(), 'Reset should return FALSE when onBeforeReset returns FALSE');
 
 		unset($table);
 
 		// Rebuild the mock to return true on onBeforeReset
-		$table = $this->getMock('FOFTable',												// Class name to mock
-								array('onBeforeReset'),									// Methods to mock
-								array('#__foftest_foobars', 'foftest_id_foobar', &$db),	// Construct arguments
-								'',
-								true,
-								true,
-								true,
-								true);
+		$table = $this->getMock('FOFTable', $methods, $constr_args,	'',	true, true,	true, true);
 
-		$table->expects($this->any())
-			  ->method('onBeforeReset')
-			  ->will($this->returnValue(true));
+		$table->expects($this->any())->method('onBeforeReset')->will($this->returnValue(true));
+		$table->expects($this->any())->method('onAfterReset') ->will($this->returnValue(true));
 
-		//$this->assertFalse($table->reset(), 'Reset should return FALSE when onBeforeReset returns FALSE');
+		$table->load(1);
+		$rc = $table->reset();
+
+		// First of all let's check the return value
+		$this->assertNull($rc, 'Reset should return NULL when onBeforeReset returns TRUE');
+
+		// Then let's check if reset method worked
+		// @TODO we must check for additional fields, like joined columns
+		// This test is not 100% correct, we must change it after FOFTable refactoring
+		$fields  = $table->getTableFields();
+		$success = true;
+		foreach($fields as $field => $class)
+		{
+			// Primary key shouldn't be resetted
+			if($field == $table->getKeyName() && !$table->$field)
+			{
+				$success = false;
+				break;
+			}
+			elseif($field != $table->getKeyName() && $table->$field)
+			{
+				$success = false;
+				break;
+			}
+		}
+
+		$this->assertTrue($success, 'Reset method failed on resetting table properties');
+
+		unset($table);
+
+		// Rebuild the mock to return true on onBeforeReset AND false on onAfterReset
+		$table = $this->getMock('FOFTable', $methods, $constr_args,	'', true, true,	true, true);
+
+		$table->expects($this->any())->method('onBeforeReset')->will($this->returnValue(true));
+		$table->expects($this->any())->method('onAfterReset') ->will($this->returnValue(false));
+
+		$table->load(1);
+
+		$this->assertFalse($table->reset(), 'Reset should return FALSE when onAfterReset is FALSE');
 	}
 
 	public function testGetUcmCoreAlias()

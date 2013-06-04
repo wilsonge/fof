@@ -2606,7 +2606,7 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * The even which runs after the object is reset to its default values.
+	 * The event which runs after the object is reset to its default values.
 	 *
 	 * @return  boolean  True to allow the reset to complete without errors
 	 */
