@@ -30,6 +30,7 @@ class FOFDispatcherTest extends FofTestCase
 	{
 		$message = 'Incorrect task';
 
+		// Should we test for ids on other cases, too?
 		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'read'  , $message);
 		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , false,  'GET' 	 , 'edit'  , $message);
 		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'read'  , $message);

@@ -28,6 +28,13 @@ if (class_exists('FOFTable', false))
 class FOFTable extends JObject
 {
 	/**
+	 * Cache array for instances
+	 *
+	 * @var    array
+	 */
+	private static $instances = array();
+
+	/**
 	 * Include paths for searching for FOFTable classes.
 	 *
 	 * @var    array
@@ -175,8 +182,6 @@ class FOFTable extends JObject
 	 */
 	public static function &getAnInstance($type = null, $prefix = 'JTable', $config = array())
 	{
-		static $instances = array();
-
 		// Make sure $config is an array
 		if (is_object($config))
 		{
@@ -240,7 +245,7 @@ class FOFTable extends JObject
 		$configProvider = new FOFConfigProvider;
 		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
 
-		if (!array_key_exists($tableClass, $instances))
+		if (!array_key_exists($tableClass, self::$instances))
 		{
 			if (!class_exists($tableClass))
 			{
@@ -353,10 +358,40 @@ class FOFTable extends JObject
 			$aliases = $configProvider->get($configProviderFieldmapKey, $instance->_columnAlias);
 			$instance->_columnAlias = array_merge($instance->_columnAlias, $aliases);
 
-			$instances[$tableClass] = $instance;
+			self::$instances[$tableClass] = $instance;
 		}
 
-		return $instances[$tableClass];
+		return self::$instances[$tableClass];
+	}
+
+	/**
+	 * Force an instance inside class cache. Setting arguments to null nukes all or part of the cache
+	 *
+	 * @param    string|null       $key        TableClass to replace. Set it to null to nuke the entire cache
+	 * @param    FOFTable|null     $instance   Instance to replace. Set it to null to nuke $key instances
+	 *
+	 * @return   bool              Did I correctly switch the instance?
+	 */
+	public static function forceInstance($key = null, $instance = null)
+	{
+		if(is_null($key))
+		{
+			self::$instances = array();
+
+			return true;
+		}
+		elseif($key && isset(self::$instances[$key]))
+		{
+			// I'm forcing an instance, but it's not a FOFTable, abort! abort!
+			if(!$instance || ($instance && $instance instanceof FOFTable))
+			{
+				self::$instances[$key] = $instance;
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -2897,14 +2932,15 @@ class FOFTable extends JObject
 	public function getNextOrder($where = '')
 	{
 		// If there is no ordering field set an error and return false.
-		if (!property_exists($this, 'ordering'))
+		$ordering = $this->getColumnAlias('ordering');
+		if (!property_exists($this, $ordering))
 		{
 			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
 		}
 
 		// Get the largest ordering value for a given where clause.
 		$query = $this->_db->getQuery(true);
-		$query->select('MAX(ordering)');
+		$query->select('MAX('.$this->_db->qn($ordering).')');
 		$query->from($this->_tbl);
 
 		if ($where)
