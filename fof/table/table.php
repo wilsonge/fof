@@ -514,7 +514,8 @@ class FOFTable extends JObject
 	{
 		if (in_array($field, $this->knownFields))
 		{
-			unset($this->knownFields[$field]);
+			$pos = array_search($field, $this->knownFields);
+			unset($this->knownFields[$pos]);
 		}
 	}
 
