@@ -52,6 +52,11 @@ if (!defined('_JDEFINES')) {
         require_once JPATH_BASE . '/includes/defines.php';
 }
 
+if (!defined('JPATH_TESTS'))
+{
+	define('JPATH_TESTS', dirname(__FILE__));
+}
+
 // Import the platform in legacy mode.
 require_once JPATH_LIBRARIES . '/import.php';
 
@@ -61,6 +66,8 @@ JError::setErrorHandling(E_WARNING, 'message');
 
 // Bootstrap the CMS libraries.
 require_once JPATH_LIBRARIES . '/cms.php';
+
+jimport('joomla.application.input');
 
 // Register the core Joomla test classes.
 //JLoader::registerPrefix('Test', __DIR__ . '/core');

@@ -457,4 +457,19 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	{
 		return true;
 	}
+
+	/**
+	 * Performs a check between two versions. Use this function instead of PHP version_compare
+	 * so we can mock it while testing
+	 *
+	 * @param   string    $version1    First version number
+	 * @param   string    $version2    Second version number
+	 * @param   string    $operator    Operator (see version_compare for valid operators)
+	 *
+	 * @return  boolean
+	 */
+	public function checkVersion($version1, $version2, $operator)
+	{
+		return version_compare($version1, $version2, $operator);
+	}
 }
