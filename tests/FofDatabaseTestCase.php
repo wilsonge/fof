@@ -92,7 +92,7 @@ abstract class FofDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
 				define('DB_NOT_AVAILABLE', true);
 			}
 
-			if (JError::isError(self::$dbo))
+			if (class_exists('JError') && JError::isError(self::$dbo))
 			{
 				//ignore errors
 				define('DB_NOT_AVAILABLE', true);

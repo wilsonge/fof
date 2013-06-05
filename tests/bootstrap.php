@@ -61,8 +61,11 @@ if (!defined('JPATH_TESTS'))
 require_once JPATH_LIBRARIES . '/import.php';
 
 // Force library to be in JError legacy mode
-JError::setErrorHandling(E_NOTICE, 'message');
-JError::setErrorHandling(E_WARNING, 'message');
+if (class_exists('JError'))
+{
+	JError::setErrorHandling(E_NOTICE, 'message');
+	JError::setErrorHandling(E_WARNING, 'message');
+}
 
 // Bootstrap the CMS libraries.
 require_once JPATH_LIBRARIES . '/cms.php';
@@ -74,3 +77,7 @@ jimport('joomla.application.input');
 
 // Load FOF's autoloader
 require_once __DIR__ . '/../fof/include.php';
+
+// Apply the SQL
+require_once __DIR__ . '/stubs/dbimport.php';
+_fof_unittest_importdb();
