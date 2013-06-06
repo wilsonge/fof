@@ -11,7 +11,7 @@ JFormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for the FOF framework
- * Supports a one line text field.
+ * Supports a button input.
  *
  * @package  FrameworkOnFramework
  * @since    2.0

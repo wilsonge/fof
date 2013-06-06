@@ -55,8 +55,8 @@ class FOFModelFieldNumber extends FOFModelField
 			$extra = '=';
 		}
 
-		$sql = '((' . $this->_db->qn($this->name) . ' >' . $extra . ' ' . $from . ') AND ';
-		$sql .= '(' . $this->_db->qn($this->name) . ' <' . $extra . ' ' . $to . '))';
+		$sql = '((' . $this->getFieldName() . ' >' . $extra . ' ' . $from . ') AND ';
+		$sql .= '(' . $this->getFieldName() . ' <' . $extra . ' ' . $to . '))';
 
 		return $sql;
 	}
@@ -88,8 +88,8 @@ class FOFModelFieldNumber extends FOFModelField
 			$extra = '=';
 		}
 
-		$sql = '((' . $this->_db->qn($this->name) . ' <' . $extra . ' ' . $from . ') AND ';
-		$sql .= '(' . $this->_db->qn($this->name) . ' >' . $extra . ' ' . $to . '))';
+		$sql = '((' . $this->getFieldName() . ' <' . $extra . ' ' . $from . ') AND ';
+		$sql .= '(' . $this->getFieldName() . ' >' . $extra . ' ' . $to . '))';
 
 		return $sql;
 	}
@@ -122,8 +122,8 @@ class FOFModelFieldNumber extends FOFModelField
 			$extra = '=';
 		}
 
-		$sql = '((' . $this->_db->qn($this->name) . ' >' . $extra . ' ' . $from . ') AND ';
-		$sql .= '(' . $this->_db->qn($this->name) . ' <' . $extra . ' ' . $to . '))';
+		$sql = '((' . $this->getFieldName() . ' >' . $extra . ' ' . $from . ') AND ';
+		$sql .= '(' . $this->getFieldName() . ' <' . $extra . ' ' . $to . '))';
 
 		return $sql;
 	}

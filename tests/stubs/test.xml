@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <table name="jos_foftest_foobars">
+    <column>foftest_id_foobar</column>
+    <column>title</column>
+    <column>slug</column>
+    <column>enabled</column>
+    <column>ordering</column>
+    <column>created_by</column>
+    <column>created_on</column>
+    <column>modified_by</column>
+    <column>modified_on</column>
+    <column>locked_by</column>
+    <column>locked_on</column>
+    <row>
+      <value>1</value>
+      <value>Guinea Pig row</value>
+      <value>guinea-pig-row</value>
+      <value>1</value>
+      <value>1</value>
+      <value>42</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+    </row>
+  </table>
+  
+  <table name="jos_foftest_foobaraliases">
+    <column>id_foobar_aliases</column>
+    <column>fo_title</column>
+    <column>fo_slug</column>
+    <column>fo_enabled</column>
+    <column>fo_ordering</column>
+    <column>fo_created_by</column>
+    <column>fo_created_on</column>
+    <column>fo_modified_by</column>
+    <column>fo_modified_on</column>
+    <column>fo_locked_by</column>
+    <column>fo_locked_on</column>
+    <row>
+      <value>1</value>
+      <value>Aliased Guinea Pig row</value>
+      <value>aliased-guinea-pig-row</value>
+      <value>1</value>
+      <value>1</value>
+      <value>42</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+    </row>
+  </table>
+</dataset>

@@ -29,7 +29,7 @@ class FOFConfigDomainViews implements FOFConfigDomainInterface
 		// Initialise
 		$ret['views'] = array();
 
-		// Parse the dispatcher configuration
+		// Parse view configuration
 		$viewData = $xml->xpath('view');
 
 		// Sanity check
@@ -196,7 +196,7 @@ class FOFConfigDomainViews implements FOFConfigDomainInterface
 	 *
 	 * @return  string  The setting for the requested option
 	 */
-	protected function getOption($view, &$configuration, $params, $default = null)
+	protected function getConfig($view, &$configuration, $params, $default = null)
 	{
 		$ret = $default;
 

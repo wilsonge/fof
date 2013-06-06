@@ -66,7 +66,7 @@ class FOFConfigProvider
 
 	/**
 	 * Returns the value of a variable. Variables use a dot notation, e.g.
-	 * view.option.whatever where the first part is the domain, the rest of the
+	 * view.config.whatever where the first part is the domain, the rest of the
 	 * parts specify the path to the variable.
 	 *
 	 * @param   string  $variable  The variable name
