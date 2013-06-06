@@ -2,7 +2,7 @@
 //require_once 'PHPUnit/Framework.php';
 require_once 'PHPUnit/Autoload.php';
 
-abstract class FofTestCase extends PHPUnit_Framework_TestCase
+abstract class FtestCase extends PHPUnit_Framework_TestCase
 {
 	protected $factoryState = array();
 	protected $mockPlatform;

@@ -72,8 +72,8 @@ require_once JPATH_LIBRARIES . '/cms.php';
 
 jimport('joomla.application.input');
 
-// Register the core Joomla test classes.
-//JLoader::registerPrefix('Test', __DIR__ . '/core');
+// Register the FOF test classes.
+JLoader::registerPrefix('Ftest', __DIR__ . '/unit/core');
 
 // Load FOF's autoloader
 require_once __DIR__ . '/../fof/include.php';

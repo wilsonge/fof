@@ -7,10 +7,7 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// I rember that there was a way to autoload the base test, but I can't remember how :(
-require_once JPATH_TESTS.'/FofDatabaseTestCase.php';
-
-class FOFTableTest extends FofDatabaseTestCase
+class FOFTableTest extends FtestCaseDatabase
 {
 	public function testSetKnownFields()
 	{
