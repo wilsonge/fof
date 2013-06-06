@@ -69,21 +69,17 @@ else
 	require_once JPATH_LIBRARIES . '/import.php';
 }
 
-JError::setErrorHandling(E_NOTICE, 'message');
-JError::setErrorHandling(E_WARNING, 'message');
-
 // Bootstrap the CMS libraries.
 require_once JPATH_LIBRARIES . '/cms.php';
-
-jimport('joomla.application.input');
-
-// Register the FOF test classes.
-JLoader::registerPrefix('Ftest', JPATH_TESTS . '/unit/core');
-
-// Load FOF's autoloader
-require_once __DIR__ . '/../../fof/include.php';
 
 // Apply the SQL
 require_once __DIR__ . '/stubs/dbimport.php';
 $importer = new FteststubsDbimport;
 $importer->importdb();
+
+// Register the FOF test classes.
+JLoader::registerPrefix('Ftest', JPATH_TESTS . '/unit/core');
+
+// Load FOF's autoloader
+jimport('joomla.application.input');
+require_once __DIR__ . '/../../fof/include.php';

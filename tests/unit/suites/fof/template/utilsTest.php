@@ -10,19 +10,70 @@
 /**
  * Test class for FOFTemplateUtils
  */
-class FOFTemplateUtilsTest extends PHPUnit_Framework_TestCase
+class FOFTemplateUtilsTest extends FtestCase
 {
 	/**
-	* Test to addCSS method
-	*/
-	public function testAddCSS()
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 */
+	protected function setUp()
 	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
+		parent::setUp();
+
+		$this->saveFactoryState();
+		JFactory::$document = JDocument::getInstance('html');
+
+		global $_SERVER;
+		$_SERVER['HTTP_HOST'] = 'www.example.com';
+		$_SERVER['REQUEST_URI'] = '/index.php?option=com_foobar';
+		$_SERVER['SCRIPT_NAME'] = '/index.php';
+
+		$this->saveFOFPlatform();
+		$this->replaceFOFPlatform();
+	}
+
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 */
+	protected function tearDown()
+	{
+		$this->restoreFactoryState();
+		$this->restoreFOFPlatform();
+
+		parent::tearDown();
+	}
+
+	/**
+	 * Test to addCSS method
+	 *
+	 * @param   string  $path     CSS path to add
+	 * @param   string  $expect   Rendered CSS path to expect
+	 * @param   string  $message  Message on failure
+	 *
+	 * @return  void
+	 *
+	 * @dataProvider getTestAddCSS
+	 */
+	public function testAddCSS($path, $expect, $message)
+	{
+		$document = FOFPlatform::getInstance()->getDocument();
+		FOFTemplateUtils::addCSS($path);
+
+		$styleSheets = $this->readAttribute($document, '_styleSheets');
+
+		$this->assertArrayHasKey($expect, $styleSheets, $message);
+	}
+
+	public function getTestAddCSS()
+	{
+		return array(
+			array('media://com_finder/css/dates.css', 'http://www.example.com/media/com_finder/css/dates.css', 'media:// should be changed into media location'),
+			array('admin://com_finder/css/dates.css', 'http://www.example.com/administrator/com_finder/css/dates.css', 'admin:// should be changed into administrator path'),
+			array('site://com_finder/css/dates.css', 'http://www.example.com/com_finder/css/dates.css', 'site:// should be changed into site path'),
 		);
 	}
-	
+
 	/**
 	* Test to addJS method
 	*/
@@ -33,7 +84,7 @@ class FOFTemplateUtilsTest extends PHPUnit_Framework_TestCase
 			'This test has not been implemented yet.'
 		);
 	}
-	
+
 	/**
 	* Test to addLESS method
 	*/
@@ -44,7 +95,7 @@ class FOFTemplateUtilsTest extends PHPUnit_Framework_TestCase
 			'This test has not been implemented yet.'
 		);
 	}
-	
+
 	/**
 	* Test to sefSort method
 	*/
@@ -70,7 +121,7 @@ class FOFTemplateUtilsTest extends PHPUnit_Framework_TestCase
 			$message
 		);
 	}
-	
+
 	public function getTestGetAltPaths()
 	{
 		return array(
@@ -79,7 +130,7 @@ class FOFTemplateUtilsTest extends PHPUnit_Framework_TestCase
 			array('site://com_finder/css/dates.css', 'com_finder/css/dates.css', 'normal', 'site:// should be changed into site path'),
 		);
 	}
-	
+
 	/**
 	* Test to parsePath method
 	*/
@@ -90,7 +141,7 @@ class FOFTemplateUtilsTest extends PHPUnit_Framework_TestCase
 			'This test has not been implemented yet.'
 		);
 	}
-	
+
 	/**
 	* Test to route method
 	*/
