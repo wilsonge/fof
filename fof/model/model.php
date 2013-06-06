@@ -1715,7 +1715,7 @@ class FOFModel extends JObject
 		$table = $this->getTable();
 		$tableName = $table->getTableName();
 		$tableKey = $table->getKeyName();
-		$db = $this->getDBO();
+		$db = $this->getDbo();
 
 		$query = $db->getQuery(true);
 
@@ -1738,7 +1738,7 @@ class FOFModel extends JObject
 		{
 			$order = $this->getState('filter_order', null, 'cmd');
 
-			if (!in_array($order, array_keys($this->getTable()->getData())))
+			if (!in_array($order, array_keys($table->getData())))
 			{
 				$order = $tableKey;
 			}
