@@ -345,4 +345,23 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 
 		parent::tearDown();
 	}
+
+	/**
+	 * Gets a mock session object.
+	 *
+	 * @param   array  $options  An array of key-value options for the JSession mock.
+	 * getId : the value to be returned by the mock getId method
+	 * get.user.id : the value to assign to the user object id returned by get('user')
+	 * get.user.name : the value to assign to the user object name returned by get('user')
+	 * get.user.username : the value to assign to the user object username returned by get('user')
+	 *
+	 * @return  JSession
+	 */
+	public function getMockSession($options = array())
+	{
+		// Attempt to load the real class first.
+		class_exists('JSession');
+
+		return FtestMockSession::create($this, $options);
+	}
 }

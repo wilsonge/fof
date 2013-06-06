@@ -20,14 +20,29 @@ class FOFTemplateUtilsTest extends FtestCase
 	{
 		parent::setUp();
 
+		// Force a JDocumentHTML instance
 		$this->saveFactoryState();
 		JFactory::$document = JDocument::getInstance('html');
 
+		// Fake the server variables to get JURI working right
 		global $_SERVER;
 		$_SERVER['HTTP_HOST'] = 'www.example.com';
 		$_SERVER['REQUEST_URI'] = '/index.php?option=com_foobar';
 		$_SERVER['SCRIPT_NAME'] = '/index.php';
 
+		// Fake the session
+		JFactory::$session = $this->getMockSession();
+		$application = JFactory::getApplication('site');
+
+		// Fake the template
+		$template = (object)array(
+			'template'		=> 'system',
+		);
+		$attribute = new ReflectionProperty($application, 'template');
+		$attribute->setAccessible(TRUE);
+		$attribute->setValue($application, $template);
+
+		// Replace the FOFPlatform with our fake one
 		$this->saveFOFPlatform();
 		$this->replaceFOFPlatform();
 	}
