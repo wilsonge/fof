@@ -39,7 +39,7 @@ if(function_exists('date_default_timezone_get') && function_exists('date_default
 define('DS', DIRECTORY_SEPARATOR);
 
 // Load configuration
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../config.php';
 
 // Load system defines
 $siteroot = $fofTestConfig['site_root'];
@@ -54,7 +54,7 @@ if (!defined('_JDEFINES')) {
 
 if (!defined('JPATH_TESTS'))
 {
-	define('JPATH_TESTS', dirname(__FILE__));
+	define('JPATH_TESTS', realpath(__DIR__ . '/..'));
 }
 
 // Import the platform in legacy mode.
@@ -73,11 +73,12 @@ require_once JPATH_LIBRARIES . '/cms.php';
 jimport('joomla.application.input');
 
 // Register the FOF test classes.
-JLoader::registerPrefix('Ftest', __DIR__ . '/unit/core');
+JLoader::registerPrefix('Ftest', JPATH_TESTS . '/unit/core');
 
 // Load FOF's autoloader
-require_once __DIR__ . '/../fof/include.php';
+require_once __DIR__ . '/../../fof/include.php';
 
 // Apply the SQL
 require_once __DIR__ . '/stubs/dbimport.php';
-_fof_unittest_importdb();
+$importer = new FteststubsDbimport;
+$importer->importdb();

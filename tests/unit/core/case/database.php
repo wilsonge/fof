@@ -136,6 +136,6 @@ abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet(JPATH_TESTS.'/stubs/test.xml');
+		return $this->createXMLDataSet(JPATH_TESTS.'/unit/stubs/test.xml');
 	}
 }
