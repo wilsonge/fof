@@ -58,14 +58,19 @@ if (!defined('JPATH_TESTS'))
 }
 
 // Import the platform in legacy mode.
-require_once JPATH_LIBRARIES . '/import.php';
-
-// Force library to be in JError legacy mode
-if (class_exists('JError'))
+if (file_exists(JPATH_LIBRARIES . '/import.legacy.php'))
 {
-	JError::setErrorHandling(E_NOTICE, 'message');
-	JError::setErrorHandling(E_WARNING, 'message');
+	// Joomla! 2.5
+	require_once JPATH_LIBRARIES . '/import.legacy.php';
 }
+else
+{
+	// Joomla! 3.x
+	require_once JPATH_LIBRARIES . '/import.php';
+}
+
+JError::setErrorHandling(E_NOTICE, 'message');
+JError::setErrorHandling(E_WARNING, 'message');
 
 // Bootstrap the CMS libraries.
 require_once JPATH_LIBRARIES . '/cms.php';
