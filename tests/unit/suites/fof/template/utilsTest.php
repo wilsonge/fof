@@ -188,9 +188,10 @@ class FOFTemplateUtilsTest extends FtestCase
 	public function getTestGetAltPaths()
 	{
 		return array(
-			array('media://com_finder/css/dates.css', 'media/com_finder/css/dates.css', 'normal', 'media:// should be changed into media location'),
-			array('admin://com_finder/css/dates.css', 'administrator/com_finder/css/dates.css', 'normal', 'admin:// should be changed into administrator path'),
-			array('site://com_finder/css/dates.css', 'com_finder/css/dates.css', 'normal', 'site:// should be changed into site path'),
+			array('media://com_foobar/css/test.css', 'media/com_foobar/css/test.css', 'normal', 'media:// should be changed into media location'),
+			array('admin://com_foobar/css/test.css', 'administrator/com_foobar/css/test.css', 'normal', 'admin:// should be changed into administrator path'),
+			array('site://com_foobar/css/test.css', 'com_foobar/css/test.css', 'normal', 'site:// should be changed into site path'),
+			array('media://com_foobar/css/test.css', 'templates/fake_test_template/media/com_foobar/css/test.css', 'alternate', 'media:// alternate link should be changed into templates media path'),
 		);
 	}
 
