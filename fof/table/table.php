@@ -1065,6 +1065,7 @@ class FOFTable extends JObject
 		{
 			$this->_db->insertObject($this->_tbl, $updateObject, $this->_tbl_key);
 		}
+		$this->bind($updateObject);
 
 		// Now the real tags storing process
 		if ($this->_has_tags)
