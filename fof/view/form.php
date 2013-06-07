@@ -60,11 +60,6 @@ class FOFViewForm extends FOFViewHtml
 			return;
 		}
 
-		// Render the toolbar
-		$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
-		$toolbar->perms = $this->perms;
-		$toolbar->renderToolbar($this->input->getCmd('view', 'cpanel'), $task, $this->input);
-
 		// Show the view
 		// -- Output HTML before the view template
 		$this->preRender();

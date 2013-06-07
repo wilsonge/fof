@@ -7,11 +7,76 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-/**
- * Test class for FOFInflector
- */
-class FOFDispatcherTest extends PHPUnit_Framework_TestCase
+// I rember that there was a way to autoload the base test, but I can't remember how :(
+require_once JPATH_TESTS.'/FofTestCase.php';
+
+class FOFDispatcherTest extends FofTestCase
 {
+	public function testOnBeforeDispatch()
+	{
+		$dispatcher = FOFDispatcher::getTmpInstance();
+
+		$this->assertTrue($dispatcher->onBeforeDispatch(), 'onBeforeDispatch should return TRUE');
+	}
+
+	public function testOnBeforeDispatchCli()
+	{
+		$dispatcher = FOFDispatcher::getTmpInstance();
+
+		$this->assertTrue($dispatcher->onBeforeDispatchCLI(), 'onBeforeDispatchCLI should return TRUE');
+	}
+
+	public function getTestGetTask()
+	{
+		$message = 'Incorrect task';
+
+		// Should we test for ids on other cases, too?
+		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'read'  , $message);
+		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , false,  'GET' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'read'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , false, 'GET' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'GET'  	 , 'add'   , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'POST'	 , 'save'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'POST'	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'PUT' 	 , 'save'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'PUT' 	 , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'DELETE' , 'delete'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'DELETE' , 'edit'  , $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'GET' 	 , 'browse', $message);
+		$data[] = array(new FOFInput(array())           , 'foobars', true,  'GET' 	 , 'browse', $message);
+		$data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'POST'	 , 'save'  , $message);
+		$data[] = array(new FOFInput(array())           , 'foobars', true,  'POST'	 , 'browse', $message);
+
+		return $data;
+	}
+
+	/**
+	 * @dataProvider getTestGetTask
+	 */
+	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
+	{
+		$mockPlatform = $this->getMock('FOFPlatformJoomla');
+		$mockPlatform->expects($this->any())
+					 ->method('isFrontend')
+					 ->will($this->returnValue($frontend));
+
+		FOFPlatform::forceInstance($mockPlatform);
+
+		$_SERVER['REQUEST_METHOD'] = $method;
+		$dispatcher = FOFDispatcher::getTmpInstance();
+		$reflection = new ReflectionClass($dispatcher);
+
+		$property = $reflection->getProperty('input');
+		$property->setAccessible(true);
+
+		$method  = $reflection->getMethod('getTask');
+		$method->setAccessible(true);
+
+		$property->setValue($dispatcher, $input);
+		$task = $method->invokeArgs($dispatcher, array($view));
+		$this->assertEquals($expected, $task, $message);
+	}
+
 	public function test_createDecryptionKey()
 	{
 		$dispatcher = FOFDispatcher::getTmpInstance();
@@ -28,8 +93,10 @@ class FOFDispatcherTest extends PHPUnit_Framework_TestCase
 		$method->setAccessible(true);
 
 		// Let's call the method I want to test
-		$key = $method->invokeArgs($dispatcher, array($base32));
+		$key = $method->invokeArgs($dispatcher, array(1370123514));
 
-		$this->assertEquals('c96cdbff0d9ff340e35ecf826bab15893a4fb956c238420660de169dc84139e5', $key);
+		$this->assertEquals('86b618ea6f2793ad6df388fe47f8883b8a5ac3fd57ac477de77cdce578339737',
+							$key,
+							'Decryption key is not the expected one');
 	}
 }
