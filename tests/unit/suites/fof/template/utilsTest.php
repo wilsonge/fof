@@ -170,49 +170,90 @@ class FOFTemplateUtilsTest extends FtestCase
 		);
 	}
 
-	/**
-	* Test to getAltPaths method
-	*
-	* @dataProvider getTestGetAltPaths
-	*/
-	public function testGetAltPaths($path, $expect, $normal, $message)
-	{
-		$altpath = FOFTemplateUtils::getAltPaths($path);
-		$this->assertEquals(
-			$expect,
-			$altpath[$normal],
-			$message
-		);
-	}
+
+    /**
+     * Test to parsePath method
+     *
+     * @dataProvider getTestParsePath
+     */
+    public function testParsePath($path, $localfile, $expect, $message)
+    {
+        $fullurl = FOFTemplateUtils::parsePath($path, $localfile);
+        $this->assertEquals(
+            $expect,
+            $fullurl,
+            $message
+        );
+    }
+
+    public function getTestParsePath()
+    {
+        return array(
+            array('media://com_foobar/css/test.css', false, 'http://www.example.com/templates/fake_test_template/media/com_foobar/css/test.css', 'media:// should be changed into media location and should be retrieved from template as override exists'),
+            array('media://com_foobar/css/test2.css', false, 'http://www.example.com/media/com_foobar/css/test2.css', 'media:// should be changed into media location'),
+            array('media://com_foobar/css/test.css', true, JPATH_THEMES.'/fake_test_template/media/com_foobar/css/test.css', 'media:// should be changed into media location and should be retrieved from template as override exists'),
+        );
+    }
+
+
+    /**
+     * Test to getAltPaths method
+     *
+     * @dataProvider getTestGetAltPaths
+     */
+    public function testGetAltPaths($path, $expect, $normal, $message)
+    {
+        $altpath = FOFTemplateUtils::getAltPaths($path);
+        $this->assertEquals(
+            $expect,
+            $altpath[$normal],
+            $message
+        );
+    }
 
 	public function getTestGetAltPaths()
 	{
 		return array(
-			array('media://com_finder/css/dates.css', 'media/com_finder/css/dates.css', 'normal', 'media:// should be changed into media location'),
-			array('admin://com_finder/css/dates.css', 'administrator/com_finder/css/dates.css', 'normal', 'admin:// should be changed into administrator path'),
-			array('site://com_finder/css/dates.css', 'com_finder/css/dates.css', 'normal', 'site:// should be changed into site path'),
+			array('media://com_foobar/css/test.css', 'media/com_foobar/css/test.css', 'normal', 'media:// should be changed into media location'),
+			array('admin://com_foobar/css/test.css', 'administrator/com_foobar/css/test.css', 'normal', 'admin:// should be changed into administrator path'),
+			array('site://com_foobar/css/test.css', 'com_foobar/css/test.css', 'normal', 'site:// should be changed into site path'),
+			array('media://com_foobar/css/test.css', 'templates/fake_test_template/media/com_foobar/css/test.css', 'alternate', 'media:// alternate link should be changed into templates media path'),
 		);
 	}
 
-	/**
-	* Test to parsePath method
-	*/
-	public function testParsePath()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
+    /**
+     * Test to loadPosition method
+     */
+    public function testLoadPosition()
+    {
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
 
-	/**
-	* Test to route method
-	*/
-	public function testRoute()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
+    /**
+     * Test to route method
+     *
+     * @dataProvider getTestRoute
+     */
+    public function testRoute($url, $expect, $message)
+    {
+        $fullurl = FOFTemplateUtils::route($url);
+        $this->assertEquals(
+            $expect,
+            $fullurl,
+            $message
+        );
+    }
+
+    public function getTestRoute()
+    {
+        return array(
+            array('index.php', '/index.php', 'Any URL starting with index.php should return itself'),
+            array('index.php?option=com_foobar&amp;view=foo', '/index.php/component/foobar/?view=foo', 'Any URL starting with index.php should return itself'),
+            array('view=categories&amp;layout=tree', '/index.php/component/foobar/?view=categories&amp;layout=tree', 'Any new variables passed in should override the current URL'),
+            array('view=cpanel&amp;layout=default&amp;format=json', '/index.php/component/foobar/?view=cpanel&amp;layout=default&amp;format=json', 'A non-html format should be appended to the URL'),
+        );
+    }
 }
