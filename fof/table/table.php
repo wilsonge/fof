@@ -167,9 +167,16 @@ class FOFTable extends JObject
 	/**
 	 * The prefix for the table class
 	 *
-	 * @var string
+	 * @var		string
 	 */
 	protected $_tablePrefix = '';
+
+	/**
+	 * The known fields for this table
+	 *
+	 * @var		array
+	 */
+	protected $knownFields = array();
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -419,14 +426,8 @@ class FOFTable extends JObject
 				$fields = array_merge($fields, $j_fields);
 			}
 
-			foreach ($fields as $name => $v)
-			{
-				// Add the field if it is not already present.
-				if (!isset($this->$name))
-				{
-					$this->$name = null;
-				}
-			}
+			$this->setKnownFields(array_keys($fields), true);
+			$this->reset();
 		}
 		else
 		{
@@ -434,20 +435,90 @@ class FOFTable extends JObject
 		}
 
 		// If we are tracking assets, make sure an access field exists and initially set the default.
+		$asset_id_field	= $this->getColumnAlias('asset_id');
+		$access_field	= $this->getColumnAlias('access');
 
-		if (isset($this->asset_id) || property_exists($this, 'asset_id'))
+		if (in_array($asset_id_field, $this->getKnownFields()))
 		{
 			JLoader::import('joomla.access.rules');
 			$this->_trackAssets = true;
 		}
 
 		// If the acess property exists, set the default.
-
-		if (isset($this->access) || property_exists($this, 'access'))
+		if (in_array($access_field, $this->getKnownFields()))
 		{
-			$this->access = (int) JFactory::getConfig()->get('access');
+			$this->$access_field = (int) JFactory::getConfig()->get('access');
 		}
 	}
+
+	/**
+	 * Replace the entire known fields array
+	 *
+	 * @param   array    $fields      A simple array of known field names
+	 * @param   boolean  $initialise  Should we initialise variables to null?
+	 *
+	 * @return  void
+	 */
+	public function setKnownFields($fields, $initialise = false)
+	{
+		$this->knownFields = $fields;
+
+		if ($initialise)
+		{
+			foreach ($this->knownFields as $field)
+			{
+				$this->$field = null;
+			}
+		}
+	}
+
+	/**
+	 * Get the known fields array
+	 *
+	 * @return  array
+	 */
+	public function getKnownFields()
+	{
+		return $this->knownFields;
+	}
+
+	/**
+	 * Add a field to the known fields array
+	 *
+	 * @param   string   $field       The name of the field to add
+	 * @param   boolean  $initialise  Should we initialise the variable to null?
+	 *
+	 * @return  void
+	 */
+	public function addKnownField($field, $initialise = false)
+	{
+		if (!in_array($field, $this->knownFields))
+		{
+			$this->knownFields[] = $field;
+
+			if ($initialise)
+			{
+				$this->$field = null;
+			}
+		}
+	}
+
+	/**
+	 * Remove a field from the known fields array
+	 *
+	 * @param   string  $field  The name of the field to remove
+	 *
+	 * @return  void
+	 */
+	public function removeKnownField($field)
+	{
+		if (in_array($field, $this->knownFields))
+		{
+			$pos = array_search($field, $this->knownFields);
+			unset($this->knownFields[$pos]);
+		}
+	}
+
 
 	/**
 	 * Sets the events trigger switch state
@@ -587,7 +658,7 @@ class FOFTable extends JObject
 		$query->from($this->_tbl);
 
 		// Joined fields are ok, since I initialized them in the constructor
-		$fields = array_keys($this->getProperties());
+		$fields = $this->getKnownFields();
 
 		foreach ($keys as $field => $value)
 		{
@@ -595,7 +666,7 @@ class FOFTable extends JObject
 
 			if (!in_array($field, $fields))
 			{
-				throw new UnexpectedValueException(sprintf('Missing field in database: %s &#160; %s.', get_class($this), $field));
+				throw new UnexpectedValueException(sprintf('Missing field in table %s : %s.', $this->_tbl, $field));
 			}
 
 			// Add the search tuple to the query.
@@ -871,10 +942,9 @@ class FOFTable extends JObject
 		}
 
 		// Bind the source value, excluding the ignored fields.
-		foreach ($this->getProperties() as $k => $v)
+		foreach ($this->getKnownFields() as $k)
 		{
 			// Only process fields not in the ignore array.
-
 			if (!in_array($k, $ignore))
 			{
 				if (isset($src[$k]))
@@ -931,42 +1001,71 @@ class FOFTable extends JObject
 
 		$k = $this->_tbl_key;
 
-		if (!empty($this->asset_id))
-		{
-			$currentAssetId = $this->asset_id;
-		}
-
-		if (0 == $this->$k)
+		if ($this->$k == 0)
 		{
 			$this->$k = null;
 		}
 
-		// The asset id field is managed privately by this class.
-		if ($this->_trackAssets)
+		$asset_id_field	= $this->getColumnAlias('asset_id');
+		if (in_array($asset_id_field, $this->getKnownFields()))
 		{
-			unset($this->asset_id);
+			if (!empty($this->$asset_id_field))
+			{
+				$currentAssetId = $this->$asset_id_field;
+			}
+
+			// The asset id field is managed privately by this class.
+			if ($this->_trackAssets)
+			{
+				unset($this->$asset_id_field);
+			}
 		}
 
 		// Manage tags, if present
 		if ($this->_has_tags)
 		{
-			// TODO: JHelperTags sucks, it guesses that tags are stored in
-			// the metadata property. Not our case, therefore we need to add it
-			// in a fake object
+			// TODO: JHelperTags sucks in Joomla! 3.1, it requires that tags are
+			// stored in the metadata property. Not our case, therefore we need
+			// to add it in a fake object. We sent a PR to Joomla! CMS to fix
+			// that. Once it's accepted, we'll have to remove the attrocity
+			// here...
 			$tagsTable = clone($this);
 			$tagsTable->metadata = $metadata;
 			$this->_tagsHelper->preStoreProcess($tagsTable);
 		}
 
+		// Create the object used for inserting/udpating data to the database
+		$fields     = $this->getTableFields();
+		$properties = $this->getKnownFields();
+		$keys       = array();
+
+		foreach ($properties as $property)
+		{
+			// 'input' property is a reserved name
+
+			if (isset($fields[$property]))
+			{
+				$keys[] = $property;
+			}
+		}
+
+		$updateObject = array();
+		foreach ($keys as $key)
+		{
+			$updateObject[$key] = $this->$key;
+		}
+		$updateObject = (object)$updateObject;
+
 		// If a primary key exists update the object, otherwise insert it.
 		if ($this->$k)
 		{
-			$this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
+			$this->_db->updateObject($this->_tbl, $updateObject, $this->_tbl_key, $updateNulls);
 		}
 		else
 		{
-			$this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
+			$this->_db->insertObject($this->_tbl, $updateObject, $this->_tbl_key);
 		}
+		$this->bind($updateObject);
 
 		// Now the real tags storing process
 		if ($this->_has_tags)
@@ -985,14 +1084,6 @@ class FOFTable extends JObject
 			}
 		}
 
-		// If the table is not set to track assets return true.
-		if (!$this->_trackAssets)
-		{
-			$result = true;
-
-			return $this->onAfterStore();
-		}
-
 		if ($this->_locked)
 		{
 			$this->_unlock();
@@ -1001,66 +1092,69 @@ class FOFTable extends JObject
 		/*
 		 * Asset Tracking
 		 */
-
-		$parentId = $this->_getAssetParentId();
-		$name     = $this->_getAssetName();
-		$title    = $this->_getAssetTitle();
-
-		$asset = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
-		$asset->loadByName($name);
-
-		// Re-inject the asset id.
-		$this->asset_id = $asset->id;
-
-		// Check for an error.
-		$error = $asset->getError();
-
-		if ($error)
+		if (in_array($asset_id_field, $this->getKnownFields()) && $this->_trackAssets)
 		{
-			$this->setError($error);
+			$parentId = $this->_getAssetParentId();
+			$name     = $this->_getAssetName();
+			$title    = $this->_getAssetTitle();
 
-			return false;
+			$asset = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+			$asset->loadByName($name);
+
+			// Re-inject the asset id.
+			$this->$asset_id_field = $asset->id;
+
+			// Check for an error.
+			$error = $asset->getError();
+
+			if ($error)
+			{
+				$this->setError($error);
+
+				return false;
+			}
+
+			// Specify how a new or moved node asset is inserted into the tree.
+			if (empty($this->$asset_id_field) || $asset->parent_id != $parentId)
+			{
+				$asset->setLocation($parentId, 'last-child');
+			}
+
+			// Prepare the asset to be stored.
+			$asset->parent_id = $parentId;
+			$asset->name      = $name;
+			$asset->title     = $title;
+
+			if ($this->_rules instanceof JAccessRules)
+			{
+				$asset->rules = (string) $this->_rules;
+			}
+
+			if (!$asset->check() || !$asset->store($updateNulls))
+			{
+				$this->setError($asset->getError());
+
+				return false;
+			}
+
+			// Create an asset_id or heal one that is corrupted.
+			if (empty($this->$asset_id_field) || (($currentAssetId != $this->$asset_id_field) && !empty($this->$asset_id_field)))
+			{
+				// Update the asset_id field in this table.
+				$this->$asset_id_field = (int) $asset->id;
+
+				$query = $this->_db->getQuery(true);
+				$query->update($this->_db->qn($this->_tbl));
+				$query->set('asset_id = ' . (int) $this->$asset_id_field);
+				$query->where($this->_db->qn($k) . ' = ' . (int) $this->$k);
+				$this->_db->setQuery($query);
+
+				$this->_db->execute();
+			}
+
+			$result = true;
 		}
 
-		// Specify how a new or moved node asset is inserted into the tree.
-		if (empty($this->asset_id) || $asset->parent_id != $parentId)
-		{
-			$asset->setLocation($parentId, 'last-child');
-		}
-
-		// Prepare the asset to be stored.
-		$asset->parent_id = $parentId;
-		$asset->name      = $name;
-		$asset->title     = $title;
-
-		if ($this->_rules instanceof JAccessRules)
-		{
-			$asset->rules = (string) $this->_rules;
-		}
-
-		if (!$asset->check() || !$asset->store($updateNulls))
-		{
-			$this->setError($asset->getError());
-
-			return false;
-		}
-
-		// Create an asset_id or heal one that is corrupted.
-		if (empty($this->asset_id) || ($currentAssetId != $this->asset_id && !empty($this->asset_id)))
-		{
-			// Update the asset_id field in this table.
-			$this->asset_id = (int) $asset->id;
-
-			$query = $this->_db->getQuery(true);
-			$query->update($this->_db->qn($this->_tbl));
-			$query->set('asset_id = ' . (int) $this->asset_id);
-			$query->where($this->_db->qn($k) . ' = ' . (int) $this->$k);
-			$this->_db->setQuery($query);
-
-			$this->_db->execute();
-		}
-
-		$result = true;
 		$result = $this->onAfterStore();
 
 		return $result;
@@ -1086,9 +1180,11 @@ class FOFTable extends JObject
 		}
 
 		// If there is no ordering field set an error and return false.
-		if (!property_exists($this, 'ordering'))
+		$ordering_field = $this->getColumnAlias('ordering');
+
+		if (!in_array($ordering_field, $this->getKnownFields()))
 		{
-			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
+			throw new UnexpectedValueException(sprintf('%s does not support ordering.', $this->_tbl));
 		}
 
 		// If the change is none, do nothing.
@@ -1104,23 +1200,23 @@ class FOFTable extends JObject
 		$query = $this->_db->getQuery(true);
 
 		// Select the primary key and ordering values from the table.
-		$query->select($this->_tbl_key . ', ordering');
+		$query->select(array($this->_db->qn($this->_tbl_key), $this->_db->qn($ordering_field)));
 		$query->from($this->_tbl);
 
 		// If the movement delta is negative move the row up.
 
 		if ($delta < 0)
 		{
-			$query->where('ordering < ' . (int) $this->ordering);
-			$query->order('ordering DESC');
+			$query->where($this->_db->qn($ordering_field) . ' < ' . $this->_db->q((int) $this->ordering));
+			$query->order($this->_db->qn($ordering_field) . ' DESC');
 		}
 
 		// If the movement delta is positive move the row down.
 
 		elseif ($delta > 0)
 		{
-			$query->where('ordering > ' . (int) $this->ordering);
-			$query->order('ordering ASC');
+			$query->where($this->_db->qn($ordering_field) . ' > ' . $this->_db->q((int) $this->ordering));
+			$query->order($this->_db->qn($ordering_field) . ' ASC');
 		}
 
 		// Add the custom WHERE clause if set.
@@ -1141,7 +1237,7 @@ class FOFTable extends JObject
 			// Update the ordering field for this instance to the row's ordering value.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set('ordering = ' . (int) $row->ordering);
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $row->ordering));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -1149,7 +1245,7 @@ class FOFTable extends JObject
 			// Update the ordering field for the row to this instance's ordering value.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set('ordering = ' . (int) $this->ordering);
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->ordering));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -1162,7 +1258,7 @@ class FOFTable extends JObject
 			// Update the ordering field for this instance.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set('ordering = ' . (int) $this->ordering);
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->ordering));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -1191,9 +1287,9 @@ class FOFTable extends JObject
 
 		$property_name = $this->getColumnAlias('ordering');
 
-		if (!property_exists($this, $property_name))
+		if (!in_array($property_name, $this->getKnownFields()))
 		{
-			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
+			throw new UnexpectedValueException(sprintf('%s does not support ordering.', $this->_tbl_key));
 		}
 
 		$k = $this->_tbl_key;
@@ -1202,7 +1298,7 @@ class FOFTable extends JObject
 		$query = $this->_db->getQuery(true);
 		$query->select($this->_tbl_key . ', ' . $this->_db->qn($property_name));
 		$query->from($this->_tbl);
-		$query->where($this->_db->qn($property_name) . ' >= 0');
+		$query->where($this->_db->qn($property_name) . ' >= ' . $this->_db->q(0));
 		$query->order($this->_db->qn($property_name));
 
 		// Setup the extra where and ordering clause data.
@@ -1230,7 +1326,7 @@ class FOFTable extends JObject
 					// Update the row ordering field.
 					$query = $this->_db->getQuery(true);
 					$query->update($this->_tbl);
-					$query->set($this->_db->qn($property_name) . ' = ' . ($i + 1));
+					$query->set($this->_db->qn($property_name) . ' = ' . $this->_db->q($i + 1));
 					$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 					$this->_db->setQuery($query);
 					$this->_db->execute();
@@ -1256,8 +1352,8 @@ class FOFTable extends JObject
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
 
-		if (!(in_array($fldLockedBy, array_keys($this->getProperties()))
-			|| in_array($fldLockedOn, array_keys($this->getProperties()))))
+		if (!(in_array($fldLockedBy, $this->getKnownFields())
+			|| in_array($fldLockedOn, $this->getKnownFields())))
 		{
 			return true;
 		}
@@ -1284,7 +1380,7 @@ class FOFTable extends JObject
 			->update($this->_db->qn($this->_tbl))
 			->set(
 				array(
-					$this->_db->qn($fldLockedBy) . ' = ' . (int) $userId,
+					$this->_db->qn($fldLockedBy) . ' = ' . $this->_db->q((int) $userId),
 					$this->_db->qn($fldLockedOn) . ' = ' . $this->_db->q($time)
 				)
 			)
@@ -1309,8 +1405,8 @@ class FOFTable extends JObject
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 		$fldLockedOn = $this->getColumnAlias('locked_on');
 
-		if (!(in_array($fldLockedBy, array_keys($this->getProperties()))
-			|| in_array($fldLockedOn, array_keys($this->getProperties()))))
+		if (!(in_array($fldLockedBy, $this->getKnownFields())
+			|| in_array($fldLockedOn, $this->getKnownFields())))
 		{
 			return true;
 		}
@@ -1406,7 +1502,7 @@ class FOFTable extends JObject
 		$modified_on = $this->getColumnAlias('modified_on');
 
 		$locked_byName = $this->getColumnAlias('locked_by');
-		$checkin       = in_array($locked_byName, array_keys($this->getProperties()));
+		$checkin       = in_array($locked_byName, $this->getKnownFields());
 
 		foreach ($cid as $item)
 		{
@@ -1494,7 +1590,7 @@ class FOFTable extends JObject
 			->update($this->_db->qn($this->_tbl))
 			->set($this->_db->qn($enabledName) . ' = ' . (int) $publish);
 
-		$checkin = in_array($locked_byName, array_keys($this->getProperties()));
+		$checkin = in_array($locked_byName, $this->getKnownFields());
 
 		if ($checkin)
 		{
@@ -1649,8 +1745,9 @@ class FOFTable extends JObject
 		}
 
 		// If there is no hits field, just return true.
+		$hits_field = $this->getColumnAlias('hits');
 
-		if (!property_exists($this, 'hits'))
+		if (!in_array($hits_field, $this->getKnownFields()))
 		{
 			return true;
 		}
@@ -1669,7 +1766,7 @@ class FOFTable extends JObject
 			// Check the row in by primary key.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->qn('hits') . ' = (' . $this->_db->qn('hits') . ' + 1)');
+			$query->set($this->_db->qn($hits_field) . ' = (' . $this->_db->qn($hits_field) . ' + 1)');
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -2139,32 +2236,13 @@ class FOFTable extends JObject
 		$title       = $this->getColumnAlias('title');
 		$slug        = $this->getColumnAlias('slug');
 
-		$hasCreatedOn = isset($this->$created_on) || property_exists($this, $created_on);
-		$hasCreatedBy = isset($this->$created_by) || property_exists($this, $created_by);
-
-		// First of all, let's unset fields that aren't related to the table (ie joined fields)
-		$fields     = $this->getTableFields();
-		$properties = $this->getProperties();
-
-		foreach ($properties as $property => $value)
-		{
-			// 'input' property is a reserved name
-
-			if ($property == 'input')
-			{
-				continue;
-			}
-
-			if (!isset($fields[$property]))
-			{
-				unset($this->$property);
-			}
-		}
+		$hasCreatedOn = in_array($created_on, $this->getKnownFields());
+		$hasCreatedBy = in_array($created_by, $this->getKnownFields());
 
 		if ($hasCreatedOn && $hasCreatedBy)
 		{
-			$hasModifiedOn = isset($this->$modified_on) || property_exists($this, $modified_on);
-			$hasModifiedBy = isset($this->$modified_by) || property_exists($this, $modified_by);
+			$hasModifiedOn = in_array($modified_on, $this->getKnownFields());
+			$hasModifiedBy = in_array($modified_by, $this->getKnownFields());
 
 			if (empty($this->$created_by) || ($this->$created_on == '0000-00-00 00:00:00') || empty($this->$created_on))
 			{
@@ -2209,8 +2287,8 @@ class FOFTable extends JObject
 		}
 
 		// Do we have a set of title and slug fields?
-		$hasTitle = isset($this->$title) || property_exists($this, $title);
-		$hasSlug  = isset($this->$slug) || property_exists($this, $slug);
+		$hasTitle = in_array($title, $this->getFields());
+		$hasSlug  = in_array($slug, $this->getFields());
 
 		if ($hasTitle && $hasSlug)
 		{
@@ -2933,7 +3011,7 @@ class FOFTable extends JObject
 	{
 		// If there is no ordering field set an error and return false.
 		$ordering = $this->getColumnAlias('ordering');
-		if (!property_exists($this, $ordering))
+		if (!in_array($ordering, $this->getKnownFields()))
 		{
 			throw new UnexpectedValueException(sprintf('%s does not support ordering.', get_class($this)));
 		}
@@ -3081,7 +3159,7 @@ class FOFTable extends JObject
 	{
 		$alias = $this->getColumnAlias($alias);
 
-		if (property_exists($this, $alias))
+		if (in_array($alias, $this->getKnownFields()))
 		{
 			return $alias;
 		}

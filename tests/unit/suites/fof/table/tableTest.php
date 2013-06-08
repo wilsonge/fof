@@ -7,11 +7,79 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-// I rember that there was a way to autoload the base test, but I can't remember how :(
-require_once JPATH_TESTS.'/FofDatabaseTestCase.php';
-
-class FOFTableTest extends FofDatabaseTestCase
+class FOFTableTest extends FtestCaseDatabase
 {
+	public function testSetKnownFields()
+	{
+		FOFTable::forceInstance(null);
+
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+
+		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+		$knownFields = array(
+			'foo',
+			'bar',
+			'baz',
+		);
+		$table->setKnownFields($knownFields);
+
+		$this->assertAttributeEquals($knownFields, 'knownFields', $table, 'Known fields set differ from defined list');
+	}
+
+	public function testGetKnownFields()
+	{
+		FOFTable::forceInstance(null);
+
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+
+		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+		$knownFields = array(
+			'foo',
+			'bar',
+			'baz',
+		);
+		$table->setKnownFields($knownFields);
+
+		$result = $table->getKnownFields();
+
+		$this->assertEquals($knownFields, $result, 'Known fields fetched differ from defined list');
+	}
+
+	public function testAddKnownField()
+	{
+		FOFTable::forceInstance(null);
+
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+
+		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+		$table->addKnownField('foo');
+		$table->addKnownField('bar');
+
+		$known_fields = $this->readAttribute($table, 'knownFields');
+
+		$this->assertContains('foo', $known_fields, 'Known fields set differ from defined list');
+		$this->assertContains('bar', $known_fields, 'Known fields set differ from defined list');
+	}
+
+	public function testRemoveKnownField()
+	{
+		FOFTable::forceInstance(null);
+
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+
+		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+		$table->addKnownField('foo');
+		$table->removeKnownField('foo');
+
+		$known_fields = $this->readAttribute($table, 'knownFields');
+
+		$this->assertNotContains('foo', $known_fields, 'Known fields set differ from defined list');
+	}
+
 	public function testReset()
 	{
 		FOFTable::forceInstance(null);
@@ -88,13 +156,16 @@ class FOFTableTest extends FofDatabaseTestCase
 		$method->setAccessible(true);
 
 		$table->propertyExist = 'dummy';
+		$table->addKnownField('propertyExist');
 		$alias = $method->invokeArgs($table, array('propertyExist'));
-		$this->assertEquals('propertyExist', $alias, 'Invalid value for existant property');
+		$this->assertEquals('propertyExist', $alias, 'Invalid value for existing property');
+		$table->removeKnownField('propertyExists');
 
 		$alias = $method->invokeArgs($table, array('propertyDoesNotExist'));
-		$this->assertEquals('null', $alias, 'Invalid value for non-existant property');
+		$this->assertEquals('null', $alias, 'Invalid value for non-existing property');
 
 		$table->testalias = 'aliased property';
+		$table->addKnownField('testalias');
 		$table->setColumnAlias('testcolumn', 'testalias');
 		$alias = $method->invokeArgs($table, array('testcolumn'));
 		$this->assertEquals('testalias', $alias, 'Invalid value for aliased property');

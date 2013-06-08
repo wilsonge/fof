@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `jos_foftest_foobaraliases`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   `id_foobar_aliases` int(11) NOT NULL AUTO_INCREMENT,
   `fo_title` varchar(100) NOT NULL,
@@ -13,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   PRIMARY KEY (`id_foobar_aliases`)
 );
 
+DROP TABLE IF EXISTS `jos_foftest_foobars`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_foobars` (
   `foftest_id_foobar` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,

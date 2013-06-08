@@ -387,14 +387,19 @@ class FOFModel extends JObject
 			$config = array();
 		}
 
+		if (!array_key_exists('savesate', $config))
+		{
+			$config['savestate'] = false;
+		}
+
 		$ret = self::getAnInstance($type, $prefix, $config)
 			->getClone()
 			->clearState()
 			->clearInput()
 			->reset()
+			->savestate(0)
 			->limitstart(0)
-			->limit(0)
-			->savestate(0);
+			->limit(0);
 
 		return $ret;
 	}
@@ -632,7 +637,8 @@ class FOFModel extends JObject
 		}
 
 		// Get and store the pagination request variables
-		$this->populateSavestate();
+		$defaultSaveState = array_key_exists('savestate', $config) ? $config['savestate'] : -999;
+		$this->populateSavestate($defaultSaveState);
 
 		if (FOFPlatform::getInstance()->isCli())
 		{
@@ -1875,13 +1881,15 @@ class FOFModel extends JObject
 	/**
 	 * Initialises the _savestate variable
 	 *
+	 * @param   integer  $defaultSaveState  The default value for the savestate
+	 *
 	 * @return  void
 	 */
-	public function populateSavestate()
+	public function populateSavestate($defaultSaveState = -999)
 	{
 		if (is_null($this->_savestate))
 		{
-			$savestate = $this->input->getInt('savestate', -999);
+			$savestate = $this->input->getInt('savestate', $defaultSaveState);
 
 			if ($savestate == -999)
 			{

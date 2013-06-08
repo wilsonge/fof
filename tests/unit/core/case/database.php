@@ -5,7 +5,7 @@ require_once 'PHPUnit/Autoload.php';
 require_once 'PHPUnit/Extensions/Database/TestCase.php';
 require_once 'PHPUnit/Extensions/Database/DataSet/XmlDataSet.php';
 
-abstract class FofDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
+abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 {
 	public static $database;
 	public static $dbo;
@@ -92,7 +92,7 @@ abstract class FofDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
 				define('DB_NOT_AVAILABLE', true);
 			}
 
-			if (JError::isError(self::$dbo))
+			if (class_exists('JError') && JError::isError(self::$dbo))
 			{
 				//ignore errors
 				define('DB_NOT_AVAILABLE', true);
@@ -136,6 +136,6 @@ abstract class FofDatabaseTestCase extends PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function getDataSet()
 	{
-		return $this->createXMLDataSet(JPATH_TESTS.'/stubs/test.xml');
+		return $this->createXMLDataSet(JPATH_TESTS.'/unit/stubs/test.xml');
 	}
 }

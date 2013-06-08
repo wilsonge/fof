@@ -382,7 +382,7 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 
 		if (method_exists($app, 'getUserState'))
 		{
-			$old_state = $app->getUserState($key);
+			$old_state = $app->getUserState($key, $default);
 		}
 		else
 		{
