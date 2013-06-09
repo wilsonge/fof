@@ -223,9 +223,21 @@ class FOFToolbar
 			$this->input = $input;
 		}
 
-		// If there is a render_._toolbar=0 in the URL, do not render a toolbar
+		// If tmpl=component the default behaviour is to not render the toolbar
+		if ($this->input->getCmd('tmpl', '') == 'component')
+		{
+			$render_toolbar = false;
+		}
+		else
+		{
+			$render_toolbar = true;
+		}
 
-		if (!$this->input->getBool('render_toolbar', true))
+		// If there is a render_toolbar=0 in the URL, do not render a toolbar
+
+		$render_toolbar = $this->input->getBool('render_toolbar', $render_toolbar);
+
+		if (!$render_toolbar)
 		{
 			return;
 		}
