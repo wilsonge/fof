@@ -57,8 +57,11 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 		}
 
 		// Render the submenu and toolbar
-		$this->renderButtons($view, $task, $input, $config);
-		$this->renderLinkbar($view, $task, $input, $config);
+		if ($input->getBool('render_toolbar', true))
+		{
+			$this->renderButtons($view, $task, $input, $config);
+			$this->renderLinkbar($view, $task, $input, $config);
+		}
 	}
 
 	/**

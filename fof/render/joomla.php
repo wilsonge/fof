@@ -57,7 +57,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		}
 
 		// Render submenu and toolbar (only if asked to)
-		if ($input->getBool('render.toolbar', true))
+		if ($input->getBool('render_toolbar', true))
 		{
 			$this->renderButtons($view, $task, $input, $config);
 			$this->renderLinkbar($view, $task, $input, $config);

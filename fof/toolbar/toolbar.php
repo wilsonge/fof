@@ -223,9 +223,9 @@ class FOFToolbar
 			$this->input = $input;
 		}
 
-		// If there is a render.toolbar=0 in the URL, do not render a toolbar
+		// If there is a render_._toolbar=0 in the URL, do not render a toolbar
 
-		if (!$this->input->getBool('render.toolbar', true))
+		if (!$this->input->getBool('render_toolbar', true))
 		{
 			return;
 		}

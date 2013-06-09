@@ -58,8 +58,13 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			// Wrap output in an akeeba-bootstrap class div
 			echo "<div class=\"akeeba-bootstrap\">\n";
 		}
-		$this->renderButtons($view, $task, $input, $config);
-		$this->renderLinkbar($view, $task, $input, $config);
+
+		// Render submenu and toolbar (only if asked to)
+		if ($input->getBool('render_toolbar', true))
+		{
+			$this->renderButtons($view, $task, $input, $config);
+			$this->renderLinkbar($view, $task, $input, $config);
+		}
 
 		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
 		{
