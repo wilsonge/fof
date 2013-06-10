@@ -938,16 +938,16 @@ ENDJS;
 
 				if ($formType == 'read')
 				{
-					$input = $field->static;
+					$inputField = $field->static;
 				}
 				else if ($formType == 'edit')
 				{
-					$input = $field->input;
+					$inputField = $field->input;
 				}
 
 				if (empty($title))
 				{
-					$html .= "\t\t\t" . $input . PHP_EOL;
+					$html .= "\t\t\t" . $inputField . PHP_EOL;
 
 					if (!empty($description) && $formType == 'edit')
 					{
@@ -967,7 +967,7 @@ ENDJS;
 					}
 					$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
 					$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
-					$html .= "\t\t\t\t" . $input . PHP_EOL;
+					$html .= "\t\t\t\t" . $inputField . PHP_EOL;
 
 					if (!empty($description))
 					{
