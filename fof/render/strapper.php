@@ -935,6 +935,19 @@ ENDJS;
 				$required	 = $field->required;
 				$labelClass	 = $field->labelClass;
 				$description = $field->description;
+				
+				// Auto-generate label and description if needed
+				$jinput 	 = JFactory::getApplication()->input;
+				// Field label
+				$emptylabel  = $form->getFieldAttribute($field->fieldname, 'emptylabel', '', $field->group);
+				if (empty($title) && empty($emptylabel)) {
+					$title = strtoupper($jinput->get('option').'_'.$field->id.'_LABEL');
+				}
+				// Field description
+				$emptydescription  = $form->getFieldAttribute($field->fieldname, 'emptydescription', '', $field->group);
+				if (empty($description) && empty($emptydescription)) {
+					$description = strtoupper($jinput->get('option').'_'.$field->id.'_DESC');
+				}
 
 				if ($formType == 'read')
 				{
