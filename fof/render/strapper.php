@@ -933,21 +933,22 @@ ENDJS;
 			{
 				$required	 = $field->required;
 				$labelClass	 = $field->labelClass;
-				
+
 				// Auto-generate label and description if needed
 				// Field label
 				$title 		 = $form->getFieldAttribute($field->fieldname, 'label', '', $field->group);
 				$emptylabel  = $form->getFieldAttribute($field->fieldname, 'emptylabel', false, $field->group);
-				if (empty($title) && !$emptylabel) 
+				if (empty($title) && !$emptylabel)
 				{
-					$title = strtoupper($input->get('option').'_'.$field->id.'_LABEL');
+					$model->getName();
+					$title = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_LABEL');
 				}
 				// Field description
 				$description 		= $form->getFieldAttribute($field->fieldname, 'description', '', $field->group);
 				$emptydescription   = $form->getFieldAttribute($field->fieldname, 'emptydescription', false, $field->group);
-				if (empty($description) && !$emptydescription) 
+				if (empty($description) && !$emptydescription)
 				{
-					$description = strtoupper($input->get('option').'_'.$field->id.'_DESC');
+					$description = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_DESC');
 				}
 
 				if ($formType == 'read')
