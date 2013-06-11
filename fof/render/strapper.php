@@ -945,11 +945,16 @@ ENDJS;
 				}
 				// Field description
 				$description 		= $form->getFieldAttribute($field->fieldname, 'description', '', $field->group);
+
+				// The following code is backwards incompatible. Most forms don't require a description in their form
+				// fields. Having to use emptydescription="1" on each one of them is an overkill. Removed.
+				/*
 				$emptydescription   = $form->getFieldAttribute($field->fieldname, 'emptydescription', false, $field->group);
 				if (empty($description) && !$emptydescription)
 				{
 					$description = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_DESC');
 				}
+				*/
 
 				if ($formType == 'read')
 				{
