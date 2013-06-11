@@ -931,10 +931,30 @@ ENDJS;
 
 			foreach ($fields as $field)
 			{
-				$title		 = $field->title;
 				$required	 = $field->required;
 				$labelClass	 = $field->labelClass;
-				$description = $field->description;
+
+				// Auto-generate label and description if needed
+				// Field label
+				$title 		 = $form->getFieldAttribute($field->fieldname, 'label', '', $field->group);
+				$emptylabel  = $form->getFieldAttribute($field->fieldname, 'emptylabel', false, $field->group);
+				if (empty($title) && !$emptylabel)
+				{
+					$model->getName();
+					$title = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_LABEL');
+				}
+				// Field description
+				$description 		= $form->getFieldAttribute($field->fieldname, 'description', '', $field->group);
+
+				// The following code is backwards incompatible. Most forms don't require a description in their form
+				// fields. Having to use emptydescription="1" on each one of them is an overkill. Removed.
+				/*
+				$emptydescription   = $form->getFieldAttribute($field->fieldname, 'emptydescription', false, $field->group);
+				if (empty($description) && !$emptydescription)
+				{
+					$description = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_DESC');
+				}
+				*/
 
 				if ($formType == 'read')
 				{
