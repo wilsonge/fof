@@ -1466,10 +1466,11 @@ class FOFModel extends JObject
 
 			if ($query === false)
 			{
-				$sql = (string) $this->buildQuery(false);
+				$subquery = $this->buildQuery(false);
+				$subquery->clear('order');
 				$query = $this->_db->getQuery(true)
 					->select('COUNT(*)')
-					->from("($sql) AS a");
+					->from("(" . (string)$subquery . ") AS a");
 			}
 
 			$this->_db->setQuery((string) $query);
