@@ -642,7 +642,7 @@ class FOFDispatcher extends JObject
 			$authenticate = JAuthentication::getInstance();
 			$response = $authenticate->authenticate($authInfo, $options);
 
-			if ($response->status == JAUTHENTICATE_STATUS_SUCCESS)
+			if ($response->status == JAuthentication::STATUS_SUCCESS)
 			{
 				FOFPlatform::getInstance()->importPlugin('user');
 				$results = FOFPlatform::getInstance()->runPlugins('onLoginUser', array((array) $response, $options));
