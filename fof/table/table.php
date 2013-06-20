@@ -699,6 +699,14 @@ class FOFTable extends JObject
 					{
 						$query->leftJoin($join->getElements());
 					}
+					elseif (stripos($t, 'right') !== false)
+					{
+						$query->rightJoin($join->getElements());
+					}
+					elseif (stripos($t, 'outer') !== false)
+					{
+						$query->outerJoin($join->getElements());
+					}
 				}
 			}
 		}
