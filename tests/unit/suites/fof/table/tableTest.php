@@ -93,7 +93,49 @@ class FOFTableTest extends FtestCaseDatabase
 
         $property->setValue($table, true);
 
-        $this->assertTrue($table->check(), 'Check() should return true when autoChecks are enabled and everything is ok');
+        $table->foftest_id_foobar   = 999;
+        $table->title               = 'Dummy title';
+        $table->slug                = 'dummy-title';
+        $table->enabled             = 1;
+        $table->ordering            = 99;
+        $table->created_by          = 0;
+        $table->created_on          = '0000-00-00 00:00:00';
+        $table->modified_by         = 0;
+        $table->modified_on         = '0000-00-00 00:00:00';
+        $table->locked_by           = 0;
+        $table->locked_on           = '0000-00-00 00:00:00';
+
+        $this->assertTrue($table->check(), 'Check() should return true when some "magic" field is empty');
+
+        $table->foftest_id_foobar   = 999;
+        $table->title               = '';
+        $table->slug                = '';
+        $table->enabled             = 1;
+        $table->ordering            = 99;
+        $table->created_by          = 0;
+        $table->created_on          = '0000-00-00 00:00:00';
+        $table->modified_by         = 0;
+        $table->modified_on         = '0000-00-00 00:00:00';
+        $table->locked_by           = 0;
+        $table->locked_on           = '0000-00-00 00:00:00';
+
+        $this->assertFalse($table->check(), 'Check() should return false when some required field is empty');
+
+        $table->foftest_id_foobar   = 999;
+        $table->title               = '';
+        $table->slug                = '';
+        $table->enabled             = 1;
+        $table->ordering            = 99;
+        $table->created_by          = 0;
+        $table->created_on          = '0000-00-00 00:00:00';
+        $table->modified_by         = 0;
+        $table->modified_on         = '0000-00-00 00:00:00';
+        $table->locked_by           = 0;
+        $table->locked_on           = '0000-00-00 00:00:00';
+
+        $table->setSkipChecks(array('title', 'slug'));
+
+        $this->assertTrue($table->check(), 'Check() should return false when some required field is empty');
     }
 
 	public function testReset()

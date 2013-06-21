@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `#__foftest_foobaraliases` (
 
 DROP TABLE IF EXISTS `#__foftest_foobars`;
 CREATE TABLE IF NOT EXISTS `#__foftest_foobars` (
-  `foftest_id_foobar` int(11) NOT NULL AUTO_INCREMENT,
+  `foftest_foobar_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
   `slug` varchar(100) NOT NULL,
   `enabled` tinyint(4) NOT NULL,
@@ -27,5 +27,5 @@ CREATE TABLE IF NOT EXISTS `#__foftest_foobars` (
   `modified_on` datetime NOT NULL,
   `locked_by` int(11) NOT NULL,
   `locked_on` datetime NOT NULL,
-  PRIMARY KEY (`foftest_id_foobar`)
+  PRIMARY KEY (`foftest_foobar_id`)
 );

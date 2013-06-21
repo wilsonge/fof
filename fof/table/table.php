@@ -751,22 +751,27 @@ class FOFTable extends JObject
             return false;
         }
 
-		$result = true;
+        $result       = true;
+        $known        = $this->getKnownFields();
+        $skipFields[] = $this->_tbl_key;
+
+        if(in_array($this->getColumnAlias('created_on'), $known))   $skipFields[] = $this->getColumnAlias('created_on');
+        if(in_array($this->getColumnAlias('created_by'), $known))   $skipFields[] = $this->getColumnAlias('created_by');
+        if(in_array($this->getColumnAlias('modified_on'), $known))  $skipFields[] = $this->getColumnAlias('modified_on');
+        if(in_array($this->getColumnAlias('modified_by'), $known))  $skipFields[] = $this->getColumnAlias('modified_by');
+        if(in_array($this->getColumnAlias('locked_by'), $known))    $skipFields[] = $this->getColumnAlias('locked_by');
+        if(in_array($this->getColumnAlias('locked_on'), $known))    $skipFields[] = $this->getColumnAlias('locked_on');
+
+        // Let's merge it with custom skips
+        $skipFields = array_merge($skipFields, $this->_skipChecks);
 
 		foreach ($fields as $field)
 		{
-			// Primary key, better skip that
-
-			if ($field->Field == $this->_tbl_key)
-			{
-				continue;
-			}
-
 			$fieldName = $field->Field;
 
 			// Field is not nullable but it's null, set error
 
-			if ($field->Null == 'NO' && $this->$fieldName == '' && !in_array($fieldName, $this->_skipChecks))
+			if ($field->Null == 'NO' && $this->$fieldName == '' && !in_array($fieldName, $skipFields))
 			{
 				$text = str_replace('#__', 'COM_', $this->getTableName()) . '_ERR_' . $fieldName;
 				$this->setError(JText::_(strtoupper($text)));
