@@ -9,10 +9,15 @@
 
 class FOFTableTest extends FtestCaseDatabase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        FOFTable::forceInstance(null);
+    }
+
 	public function testSetKnownFields()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -29,8 +34,6 @@ class FOFTableTest extends FtestCaseDatabase
 
 	public function testGetKnownFields()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -49,8 +52,6 @@ class FOFTableTest extends FtestCaseDatabase
 
 	public function testAddKnownField()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -66,8 +67,6 @@ class FOFTableTest extends FtestCaseDatabase
 
 	public function testRemoveKnownField()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -80,9 +79,25 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertNotContains('foo', $known_fields, 'Known fields set differ from defined list');
 	}
 
+    public function testCheck()
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $reflection = new ReflectionClass($table);
+        $property   = $reflection->getProperty('_autoChecks');
+        $property->setAccessible(true);
+        $property->setValue($table, false);
+
+        $this->assertTrue($table->check(), 'Check() should return true when autoChecks are disabled');
+
+        $property->setValue($table, true);
+
+        $this->assertTrue($table->check(), 'Check() should return true when autoChecks are enabled and everything is ok');
+    }
+
 	public function testReset()
 	{
-		FOFTable::forceInstance(null);
 		$db = JFactory::getDbo();
 		$methods = array('onBeforeReset', 'onAfterReset');
 		$constr_args = array('jos_foftest_foobars', 'foftest_id_foobar', &$db);
@@ -145,8 +160,6 @@ class FOFTableTest extends FtestCaseDatabase
 
 	public function testGetUcmCoreAlias()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -176,8 +189,6 @@ class FOFTableTest extends FtestCaseDatabase
 	 */
 	public function testGetContentType($option, $view, $expected, $message)
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => $option, 'view' => $view));
 
 		$table = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);

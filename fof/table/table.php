@@ -744,6 +744,13 @@ class FOFTable extends JObject
 		}
 
 		$fields = $this->getTableFields();
+
+        // No fields? Why in the hell am I here?
+        if(!$fields)
+        {
+            return false;
+        }
+
 		$result = true;
 
 		foreach ($fields as $field)
