@@ -670,7 +670,7 @@ class FOFTable extends JObject
 			}
 
 			// Add the search tuple to the query.
-			$query->where($this->_db->qn($field) . ' = ' . $this->_db->q($value));
+			$query->where($this->_db->qn($this->_tbl . '.' . $field) . ' = ' . $this->_db->q($value));
 		}
 
 		// Do I have any joined table?
@@ -698,6 +698,14 @@ class FOFTable extends JObject
 					elseif (stripos($t, 'left') !== false)
 					{
 						$query->leftJoin($join->getElements());
+					}
+					elseif (stripos($t, 'right') !== false)
+					{
+						$query->rightJoin($join->getElements());
+					}
+					elseif (stripos($t, 'outer') !== false)
+					{
+						$query->outerJoin($join->getElements());
 					}
 				}
 			}

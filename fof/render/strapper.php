@@ -58,8 +58,13 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			// Wrap output in an akeeba-bootstrap class div
 			echo "<div class=\"akeeba-bootstrap\">\n";
 		}
-		$this->renderButtons($view, $task, $input, $config);
-		$this->renderLinkbar($view, $task, $input, $config);
+
+		// Render submenu and toolbar (only if asked to)
+		if ($input->getBool('render_toolbar', true))
+		{
+			$this->renderButtons($view, $task, $input, $config);
+			$this->renderLinkbar($view, $task, $input, $config);
+		}
 
 		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
 		{
@@ -926,23 +931,43 @@ ENDJS;
 
 			foreach ($fields as $field)
 			{
-				$title		 = $field->title;
 				$required	 = $field->required;
 				$labelClass	 = $field->labelClass;
-				$description = $field->description;
+
+				// Auto-generate label and description if needed
+				// Field label
+				$title 		 = $form->getFieldAttribute($field->fieldname, 'label', '', $field->group);
+				$emptylabel  = $form->getFieldAttribute($field->fieldname, 'emptylabel', false, $field->group);
+				if (empty($title) && !$emptylabel)
+				{
+					$model->getName();
+					$title = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_LABEL');
+				}
+				// Field description
+				$description 		= $form->getFieldAttribute($field->fieldname, 'description', '', $field->group);
+
+				// The following code is backwards incompatible. Most forms don't require a description in their form
+				// fields. Having to use emptydescription="1" on each one of them is an overkill. Removed.
+				/*
+				$emptydescription   = $form->getFieldAttribute($field->fieldname, 'emptydescription', false, $field->group);
+				if (empty($description) && !$emptydescription)
+				{
+					$description = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_DESC');
+				}
+				*/
 
 				if ($formType == 'read')
 				{
-					$input = $field->static;
+					$inputField = $field->static;
 				}
 				else if ($formType == 'edit')
 				{
-					$input = $field->input;
+					$inputField = $field->input;
 				}
 
 				if (empty($title))
 				{
-					$html .= "\t\t\t" . $input . PHP_EOL;
+					$html .= "\t\t\t" . $inputField . PHP_EOL;
 
 					if (!empty($description) && $formType == 'edit')
 					{
@@ -962,7 +987,7 @@ ENDJS;
 					}
 					$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
 					$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
-					$html .= "\t\t\t\t" . $input . PHP_EOL;
+					$html .= "\t\t\t\t" . $inputField . PHP_EOL;
 
 					if (!empty($description))
 					{

@@ -247,6 +247,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 		{
 			$name = JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname));
 
+			$sortOptions[$i] = new stdClass();
 			$sortOptions[$i]->option = $option;
 			$sortOptions[$i]->value = $option['value'];
 			$sortOptions[$i]->name = $name;
