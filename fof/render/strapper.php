@@ -66,7 +66,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			$this->renderLinkbar($view, $task, $input, $config);
 		}
 
-		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
+		if (!FOFPlatform::getInstance()->isCli() && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$sidebarEntries = JHtmlSidebar::getEntries();
 
@@ -100,7 +100,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			return;
 		}
 
-		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
+		if (!FOFPlatform::getInstance()->isCli() && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$sidebarEntries = JHtmlSidebar::getEntries();
 
@@ -165,7 +165,7 @@ ENDJAVASCRIPT;
 			$style = $config['linkbar_style'];
 		}
 
-		if (!version_compare(JVERSION, '3.0.0', 'ge'))
+		if (!FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$style = 'classic';
 		}
@@ -442,7 +442,7 @@ ENDJAVASCRIPT;
 
 		// Joomla! 3.0+ support
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			JHtml::_('bootstrap.tooltip');
 			JHtml::_('behavior.multiselect');
@@ -481,7 +481,7 @@ ENDJS;
 
 		// Joomla! 3.0 sidebar support
 
-		if (version_compare(JVERSION, '3.0', 'gt') && $show_filters)
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'gt') && $show_filters)
 		{
 			JHtmlSidebar::setAction("index.php?option=" .
 				$input->getCmd('option') . "&view=" .
@@ -507,7 +507,7 @@ ENDJS;
 
 				// Under Joomla! < 3.0 we can't have filter-only fields
 
-				if (version_compare(JVERSION, '3.0', 'lt') && empty($header))
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt') && empty($header))
 				{
 					continue;
 				}
@@ -537,7 +537,7 @@ ENDJS;
 					$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
 				}
 
-				if (version_compare(JVERSION, '3.0', 'ge'))
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 				{
 					// Joomla! 3.0 or later
 					if (!empty($filter))
@@ -614,7 +614,7 @@ ENDJS;
 
 		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
 
-		if (version_compare(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
 		{
 			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
 		}
@@ -625,7 +625,7 @@ ENDJS;
 		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			// Joomla! 3.0+
 			// Get and output the sidebar, if present
@@ -693,7 +693,7 @@ ENDJS;
 
 		// Open the table header region if required
 
-		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		if ($show_header || ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt')))
 		{
 			$html .= "\t\t\t<thead>" . PHP_EOL;
 		}
@@ -709,7 +709,7 @@ ENDJS;
 
 		// Render filter row if enabled
 
-		if ($show_filters && version_compare(JVERSION, '3.0', 'lt'))
+		if ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			$html .= "\t\t\t\t<tr>";
 			$html .= $filter_html;
@@ -718,7 +718,7 @@ ENDJS;
 
 		// Close the table header region if required
 
-		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		if ($show_header || ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt')))
 		{
 			$html .= "\t\t\t</thead>" . PHP_EOL;
 		}
@@ -767,7 +767,7 @@ ENDJS;
 		$html .= "\t\t\t</tbody>" . PHP_EOL;
 
 		// Render the pagination bar, if enabled, on J! 2.5
-		if ($show_pagination && version_compare(JVERSION, '3.0', 'lt'))
+		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			$pagination = $form->getModel()->getPagination();
 			$html .= "\t\t\t<tfoot>" . PHP_EOL;
@@ -787,14 +787,14 @@ ENDJS;
 
 		// Render the pagination bar, if enabled, on J! 3.0+
 
-		if ($show_pagination && version_compare(JVERSION, '3.0', 'ge'))
+		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$html .= $model->getPagination()->getListFooter();
 		}
 
 		// Close the wrapper element div on Joomla! 3.0+
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$html .= "</div>\n";
 		}

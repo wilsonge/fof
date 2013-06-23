@@ -527,6 +527,6 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	 */
 	public function supportsAjaxOrdering()
 	{
-		return version_compare(JVERSION, '3.0.0', 'ge');
+		return $this->checkVersion(JVERSION, '3.0', 'ge');
 	}
 }
