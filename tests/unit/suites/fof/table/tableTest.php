@@ -83,8 +83,6 @@ class FOFTableTest extends FtestCaseDatabase
 
     public function testLoad()
     {
-        //$this->getDataSet();
-
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
         $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
@@ -236,6 +234,40 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertFalse($table->reset(), 'Reset should return FALSE when onAfterReset is FALSE');
 	}
 
+    /**
+     * @dataProvider getTestBind
+     */
+    public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
+    {
+        $db          = JFactory::getDbo();
+        $methods     = array('onBeforeBind');
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table->expects($this->any())->method('onBeforeBind')->will($this->returnValue($onBefore));
+
+        $rc = $table->bind($toBind, $toSkip);
+        $this->assertEquals($returnValue, $rc, 'Bind() Wrong return value');
+
+        // Only if I'm executing the bind function I do more checks
+        if($returnValue)
+        {
+            foreach($toCheck as $check)
+            {
+                $this->assertEquals($check['value'], $table->$check['field'], $check['msg']);
+            }
+        }
+    }
+
+    public function testBindException()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $table->bind('This is a wrong argument');
+    }
+
 	public function testGetUcmCoreAlias()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -280,4 +312,73 @@ class FOFTableTest extends FtestCaseDatabase
 
 		return $data;
 	}
+
+    public function getTestBind()
+    {
+        //TODO Create a dataset with "rules", too
+
+        // Check when onBeforeBind is false
+        $data[] = array(false, false, array(), array(), array());
+
+        // Check binding with array
+        $data[] = array(true, true, array('title' => 'Binded array title'), array(), array(
+                    array(
+                        'field' => 'title',
+                        'value' => 'Binded array title',
+                        'msg'   => 'Wrong value binded')
+                    )
+                  );
+
+        // Check binding with object
+        $bind   = new stdClass();
+        $bind->title = 'Binded object title';
+
+        $data[] = array(true, true, $bind, array(), array(
+                    array(
+                        'field' => 'title',
+                        'value' => 'Binded object title',
+                        'msg'   => 'Wrong value binded')
+                    )
+                  );
+        // Check binding with array and array ignore fields
+        $bind   = new stdClass();
+        $bind->title = 'Binded object title';
+        $bind->slug  = 'Ignored field';
+
+        $data[] = array(true, true, $bind, array('slug'), array(
+                    array(
+                        'field' => 'title',
+                        'value' => 'Binded object title',
+                        'msg'   => 'Wrong value binded'),
+                    array(
+                        'field' => 'slug',
+                        'value' => '',
+                        'msg'   => 'Ignored field binded')
+                    )
+                  );
+
+        // Check binding with array and string ignore fields
+        $bind              = new stdClass();
+        $bind->title       = 'Binded object title';
+        $bind->slug        = 'Ignored field';
+        $bind->created_by  = 'Ignored field';
+
+        $data[] = array(true, true, $bind, 'slug created_by', array(
+            array(
+                'field' => 'title',
+                'value' => 'Binded object title',
+                'msg'   => 'Wrong value binded'),
+            array(
+                'field' => 'slug',
+                'value' => '',
+                'msg'   => 'Ignored field binded'),
+            array(
+                'field' => 'created_by',
+                'value' => '',
+                'msg'   => 'Ignored field binded')
+            )
+        );
+
+        return $data;
+    }
 }

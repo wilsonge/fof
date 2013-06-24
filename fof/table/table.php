@@ -936,7 +936,7 @@ class FOFTable extends JObject
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @throws  UnexpectedValueException
+	 * @throws  InvalidArgumentException
 	 */
 	public function bind($src, $ignore = array())
 	{
