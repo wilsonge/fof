@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
   <table name="jos_foftest_foobars">
-    <column>foftest_id_foobar</column>
+    <column>foftest_foobar_id</column>
     <column>title</column>
     <column>slug</column>
     <column>enabled</column>
@@ -26,7 +26,7 @@
       <value>0000-00-00 00:00:00</value>
     </row>
   </table>
-  
+
   <table name="jos_foftest_foobaraliases">
     <column>id_foobar_aliases</column>
     <column>fo_title</column>

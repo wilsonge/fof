@@ -614,6 +614,8 @@ class FOFTable extends JObject
 		if (!$this->_tableExists)
 		{
 			$result = false;
+
+            return $this->onAfterLoad($result);
 		}
 
 		if (empty($keys))

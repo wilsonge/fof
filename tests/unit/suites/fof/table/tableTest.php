@@ -13,7 +13,9 @@ class FOFTableTest extends FtestCaseDatabase
     {
         parent::setUp();
 
+        FOFPlatform::forceInstance(null);
         FOFTable::forceInstance(null);
+
     }
 
 	public function testSetKnownFields()
@@ -79,6 +81,25 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertNotContains('foo', $known_fields, 'Known fields set differ from defined list');
 	}
 
+    public function testLoad()
+    {
+        //$this->getDataSet();
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $reflection = new ReflectionClass($table);
+        $property   = $reflection->getProperty('_tableExists');
+        $property->setAccessible(true);
+        $property->setValue($table, false);
+
+        $this->assertNull($table->load(), 'Load() should return NULL when no table exists');
+
+        $property->setValue($table, true);
+
+        $this->assertNull($table->load(), 'Load() should return NULL when the primary key has no value');
+    }
+
     public function testCheck()
     {
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -93,7 +114,7 @@ class FOFTableTest extends FtestCaseDatabase
 
         $property->setValue($table, true);
 
-        $table->foftest_id_foobar   = 999;
+        $table->foftest_foobar_id   = 999;
         $table->title               = 'Dummy title';
         $table->slug                = 'dummy-title';
         $table->enabled             = 1;
@@ -107,7 +128,7 @@ class FOFTableTest extends FtestCaseDatabase
 
         $this->assertTrue($table->check(), 'Check() should return true when some "magic" field is empty');
 
-        $table->foftest_id_foobar   = 999;
+        $table->foftest_foobar_id   = 999;
         $table->title               = '';
         $table->slug                = '';
         $table->enabled             = 1;
@@ -121,7 +142,7 @@ class FOFTableTest extends FtestCaseDatabase
 
         $this->assertFalse($table->check(), 'Check() should return false when some required field is empty');
 
-        $table->foftest_id_foobar   = 999;
+        $table->foftest_foobar_id   = 999;
         $table->title               = '';
         $table->slug                = '';
         $table->enabled             = 1;
@@ -142,7 +163,7 @@ class FOFTableTest extends FtestCaseDatabase
 	{
 		$db = JFactory::getDbo();
 		$methods = array('onBeforeReset', 'onAfterReset');
-		$constr_args = array('jos_foftest_foobars', 'foftest_id_foobar', &$db);
+		$constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
 		$table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
 

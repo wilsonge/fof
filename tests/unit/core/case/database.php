@@ -7,9 +7,10 @@ require_once 'PHPUnit/Extensions/Database/DataSet/XmlDataSet.php';
 
 abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 {
-	public static $database;
-	public static $dbo;
-	protected $factoryState = array ();
+	public static   $database;
+	public static   $dbo;
+
+	protected       $factoryState = array ();
 
 	public static function tearDownAfterClass()
 	{
