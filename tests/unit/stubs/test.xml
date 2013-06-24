@@ -104,5 +104,57 @@
       <value>0</value>
       <value>0000-00-00 00:00:00</value>
     </row>
+    <row>
+      <value>2</value>
+      <value>Second row</value>
+      <value>second-row</value>
+      <value>1</value>
+      <value>2</value>
+      <value>42</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>Third row</value>
+      <value>third-row</value>
+      <value>0</value>
+      <value>3</value>
+      <value>42</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>Fourth row</value>
+      <value>fourth-row</value>
+      <value>0</value>
+      <value>4</value>
+      <value>42</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+    </row>
+    <row>
+      <value>5</value>
+      <value>Locked record</value>
+      <value>locked-record</value>
+      <value>1</value>
+      <value>5</value>
+      <value>42</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value>0000-00-00 00:00:00</value>
+      <value>32</value>
+      <value>2013-06-24 13:00:00</value>
+    </row>
   </table>
 </dataset>

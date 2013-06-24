@@ -1221,6 +1221,12 @@ class FOFTable extends JObject
 		$row   = null;
 		$query = $this->_db->getQuery(true);
 
+        // If the table is not loaded, return false
+        if (empty($this->$k))
+        {
+            return false;
+        }
+
 		// Select the primary key and ordering values from the table.
 		$query->select(array($this->_db->qn($this->_tbl_key), $this->_db->qn($ordering_field)));
 		$query->from($this->_tbl);
@@ -1229,7 +1235,7 @@ class FOFTable extends JObject
 
 		if ($delta < 0)
 		{
-			$query->where($this->_db->qn($ordering_field) . ' < ' . $this->_db->q((int) $this->ordering));
+			$query->where($this->_db->qn($ordering_field) . ' < ' . $this->_db->q((int) $this->$ordering_field));
 			$query->order($this->_db->qn($ordering_field) . ' DESC');
 		}
 
@@ -1237,7 +1243,7 @@ class FOFTable extends JObject
 
 		elseif ($delta > 0)
 		{
-			$query->where($this->_db->qn($ordering_field) . ' > ' . $this->_db->q((int) $this->ordering));
+			$query->where($this->_db->qn($ordering_field) . ' > ' . $this->_db->q((int) $this->$ordering_field));
 			$query->order($this->_db->qn($ordering_field) . ' ASC');
 		}
 
@@ -1259,7 +1265,7 @@ class FOFTable extends JObject
 			// Update the ordering field for this instance to the row's ordering value.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $row->ordering));
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $row->$ordering_field));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -1267,20 +1273,20 @@ class FOFTable extends JObject
 			// Update the ordering field for the row to this instance's ordering value.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->ordering));
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->$ordering_field));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
 
 			// Update the instance value.
-			$this->ordering = $row->ordering;
+			$this->$ordering_field = $row->$ordering_field;
 		}
 		else
 		{
 			// Update the ordering field for this instance.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->ordering));
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->$ordering_field));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -1291,13 +1297,15 @@ class FOFTable extends JObject
 		return $result;
 	}
 
-	/**
-	 * Change the ordering of the records of the table
-	 *
-	 * @param   string  $where  The WHERE clause of the SQL used to fetch the order
-	 *
-	 * @return  boolean  True is successful
-	 */
+    /**
+     * Change the ordering of the records of the table
+     *
+     * @param   string   $where  The WHERE clause of the SQL used to fetch the order
+     *
+     * @return  boolean  True is successful
+     *
+     * @throws  UnexpectedValueException
+     */
 	public function reorder($where = '')
 	{
 		if (!$this->onBeforeReorder($where))
