@@ -98,6 +98,21 @@ class FOFTableTest extends FtestCaseDatabase
         $property->setValue($table, true);
 
         $this->assertNull($table->load(), 'Load() should return NULL when the primary key has no value');
+
+        $rc = $table->load(1);
+        $this->assertTrue($rc, 'Successfully load should return TRUE');
+        $this->assertEquals('Guinea Pig row', $table->title, 'Load() by primary key failed');
+
+        $table->load(1);
+        $table->load(2, false);
+        $this->assertEquals('Guinea Pig row', $table->title, "Load() by non-existent primary key (without reset) shouldn't touch table fields");
+
+        // Reset everything
+        $table->reset();
+        $table->foftest_foobar_id = null;
+
+        $table->load(array('slug' => 'guinea-pig-row'));
+        $this->assertEquals(1, $table->foftest_foobar_id, 'Load() by fields to match failed');
     }
 
     public function testCheck()
