@@ -464,14 +464,14 @@ abstract class FOFView extends JObject
 	 */
 	public function display($tpl = null)
 	{
-		if (version_compare(JVERSION, '3.0', 'lt'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			JError::setErrorHandling(E_ALL, 'ignore');
 		}
 
 		$result = $this->loadTemplate($tpl);
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			JError::setErrorHandling(E_WARNING, 'callback');
 		}
@@ -852,7 +852,7 @@ abstract class FOFView extends JObject
 			}
 		}
 
-		if (version_compare(JVERSION, '3.0', 'lt') && ($result instanceof Exception))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt') && ($result instanceof Exception))
 		{
 			JError::raiseError($result->getCode(), $result->getMessage());
 		}

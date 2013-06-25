@@ -1,3 +1,21 @@
+-- Main table used for tests
+DROP TABLE IF EXISTS `jos_foftest_foobars`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_foobars` (
+  `foftest_foobar_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `enabled` tinyint(4) NOT NULL,
+  `ordering` tinyint(4) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_on` datetime NOT NULL,
+  `modified_by` int(11) NOT NULL,
+  `modified_on` datetime NOT NULL,
+  `locked_by` int(11) NOT NULL,
+  `locked_on` datetime NOT NULL,
+  PRIMARY KEY (`foftest_foobar_id`)
+);
+
+-- Table used for testing aliases
 DROP TABLE IF EXISTS `jos_foftest_foobaraliases`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   `id_foobar_aliases` int(11) NOT NULL AUTO_INCREMENT,
@@ -14,18 +32,10 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   PRIMARY KEY (`id_foobar_aliases`)
 );
 
-DROP TABLE IF EXISTS `jos_foftest_foobars`;
-CREATE TABLE IF NOT EXISTS `jos_foftest_foobars` (
-  `foftest_id_foobar` int(11) NOT NULL AUTO_INCREMENT,
+-- Table without any "special" column (ordering, hits etc etc)
+DROP TABLE IF EXISTS `jos_foftest_bares`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_bares` (
+  `foftest_bare_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
-  `slug` varchar(100) NOT NULL,
-  `enabled` tinyint(4) NOT NULL,
-  `ordering` tinyint(4) NOT NULL,
-  `created_by` int(11) NOT NULL,
-  `created_on` datetime NOT NULL,
-  `modified_by` int(11) NOT NULL,
-  `modified_on` datetime NOT NULL,
-  `locked_by` int(11) NOT NULL,
-  `locked_on` datetime NOT NULL,
-  PRIMARY KEY (`foftest_id_foobar`)
+  PRIMARY KEY (`foftest_bare_id`)
 );

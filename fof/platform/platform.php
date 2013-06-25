@@ -88,15 +88,18 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	}
 
 	/**
-	 * Force a specific platform object to be used
+	 * Force a specific platform object to be used. If null, nukes the cache
 	 *
-	 * @param   FOFPlatformInterface  $instance  The Platform object to be used
+	 * @param   FOFPlatformInterface|null  $instance  The Platform object to be used
 	 *
 	 * @return  void
 	 */
-	public static function forceInstance(FOFPlatformInterface $instance)
+	public static function forceInstance($instance)
 	{
-		self::$instance = $instance;
+        if($instance instanceof FOFPlatformInterface || is_null($instance))
+        {
+            self::$instance = $instance;
+        }
 	}
 
 	/**

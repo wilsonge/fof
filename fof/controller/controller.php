@@ -3043,7 +3043,7 @@ class FOFController extends JObject
 
 		if (!$hasToken)
 		{
-			if (version_compare(JVERSION, '3.0', 'ge'))
+			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 			}

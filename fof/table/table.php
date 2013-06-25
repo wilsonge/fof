@@ -562,7 +562,7 @@ class FOFTable extends JObject
 		$this->_has_tags = false;
 
 		// Tags are available only in 3.1+
-		if (version_compare(JVERSION, '3.1', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.1', 'ge'))
 		{
 			$this->_has_tags = $newState ? true : false;
 
@@ -614,6 +614,8 @@ class FOFTable extends JObject
 		if (!$this->_tableExists)
 		{
 			$result = false;
+
+            return $this->onAfterLoad($result);
 		}
 
 		if (empty($keys))
@@ -744,22 +746,34 @@ class FOFTable extends JObject
 		}
 
 		$fields = $this->getTableFields();
-		$result = true;
+
+        // No fields? Why in the hell am I here?
+        if(!$fields)
+        {
+            return false;
+        }
+
+        $result       = true;
+        $known        = $this->getKnownFields();
+        $skipFields[] = $this->_tbl_key;
+
+        if(in_array($this->getColumnAlias('created_on'), $known))   $skipFields[] = $this->getColumnAlias('created_on');
+        if(in_array($this->getColumnAlias('created_by'), $known))   $skipFields[] = $this->getColumnAlias('created_by');
+        if(in_array($this->getColumnAlias('modified_on'), $known))  $skipFields[] = $this->getColumnAlias('modified_on');
+        if(in_array($this->getColumnAlias('modified_by'), $known))  $skipFields[] = $this->getColumnAlias('modified_by');
+        if(in_array($this->getColumnAlias('locked_by'), $known))    $skipFields[] = $this->getColumnAlias('locked_by');
+        if(in_array($this->getColumnAlias('locked_on'), $known))    $skipFields[] = $this->getColumnAlias('locked_on');
+
+        // Let's merge it with custom skips
+        $skipFields = array_merge($skipFields, $this->_skipChecks);
 
 		foreach ($fields as $field)
 		{
-			// Primary key, better skip that
-
-			if ($field->Field == $this->_tbl_key)
-			{
-				continue;
-			}
-
 			$fieldName = $field->Field;
 
 			// Field is not nullable but it's null, set error
 
-			if ($field->Null == 'NO' && $this->$fieldName == '' && !in_array($fieldName, $this->_skipChecks))
+			if ($field->Null == 'NO' && $this->$fieldName == '' && !in_array($fieldName, $skipFields))
 			{
 				$text = str_replace('#__', 'COM_', $this->getTableName()) . '_ERR_' . $fieldName;
 				$this->setError(JText::_(strtoupper($text)));
@@ -853,7 +867,7 @@ class FOFTable extends JObject
 			$query->group($db->qn('master') . '.' . $db->qn($k));
 			$this->_db->setQuery((string) $query);
 
-			if (version_compare(JVERSION, '3.0', 'ge'))
+			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
 				try
 				{
@@ -922,7 +936,7 @@ class FOFTable extends JObject
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @throws  UnexpectedValueException
+	 * @throws  InvalidArgumentException
 	 */
 	public function bind($src, $ignore = array())
 	{
@@ -1207,6 +1221,12 @@ class FOFTable extends JObject
 		$row   = null;
 		$query = $this->_db->getQuery(true);
 
+        // If the table is not loaded, return false
+        if (empty($this->$k))
+        {
+            return false;
+        }
+
 		// Select the primary key and ordering values from the table.
 		$query->select(array($this->_db->qn($this->_tbl_key), $this->_db->qn($ordering_field)));
 		$query->from($this->_tbl);
@@ -1215,7 +1235,7 @@ class FOFTable extends JObject
 
 		if ($delta < 0)
 		{
-			$query->where($this->_db->qn($ordering_field) . ' < ' . $this->_db->q((int) $this->ordering));
+			$query->where($this->_db->qn($ordering_field) . ' < ' . $this->_db->q((int) $this->$ordering_field));
 			$query->order($this->_db->qn($ordering_field) . ' DESC');
 		}
 
@@ -1223,7 +1243,7 @@ class FOFTable extends JObject
 
 		elseif ($delta > 0)
 		{
-			$query->where($this->_db->qn($ordering_field) . ' > ' . $this->_db->q((int) $this->ordering));
+			$query->where($this->_db->qn($ordering_field) . ' > ' . $this->_db->q((int) $this->$ordering_field));
 			$query->order($this->_db->qn($ordering_field) . ' ASC');
 		}
 
@@ -1245,7 +1265,7 @@ class FOFTable extends JObject
 			// Update the ordering field for this instance to the row's ordering value.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $row->ordering));
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $row->$ordering_field));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -1253,20 +1273,20 @@ class FOFTable extends JObject
 			// Update the ordering field for the row to this instance's ordering value.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->ordering));
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->$ordering_field));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
 
 			// Update the instance value.
-			$this->ordering = $row->ordering;
+			$this->$ordering_field = $row->$ordering_field;
 		}
 		else
 		{
 			// Update the ordering field for this instance.
 			$query = $this->_db->getQuery(true);
 			$query->update($this->_tbl);
-			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->ordering));
+			$query->set($this->_db->qn($ordering_field) . ' = ' . $this->_db->q((int) $this->$ordering_field));
 			$query->where($this->_tbl_key . ' = ' . $this->_db->q($this->$k));
 			$this->_db->setQuery($query);
 			$this->_db->execute();
@@ -1277,13 +1297,15 @@ class FOFTable extends JObject
 		return $result;
 	}
 
-	/**
-	 * Change the ordering of the records of the table
-	 *
-	 * @param   string  $where  The WHERE clause of the SQL used to fetch the order
-	 *
-	 * @return  boolean  True is successful
-	 */
+    /**
+     * Change the ordering of the records of the table
+     *
+     * @param   string   $where  The WHERE clause of the SQL used to fetch the order
+     *
+     * @return  boolean  True is successful
+     *
+     * @throws  UnexpectedValueException
+     */
 	public function reorder($where = '')
 	{
 		if (!$this->onBeforeReorder($where))
@@ -1375,7 +1397,7 @@ class FOFTable extends JObject
 
 		$date = JFactory::getDate();
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$time = $date->toSql();
 		}
@@ -1615,7 +1637,7 @@ class FOFTable extends JObject
 
 		$this->_db->setQuery((string) $query);
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			try
 			{
@@ -1925,7 +1947,7 @@ class FOFTable extends JObject
 				// The table doesn't exist. Return false.
 				$cache[$tableName] = false;
 			}
-			elseif (version_compare(JVERSION, '3.0', 'ge'))
+			elseif (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
 				$fields = $this->_db->getTableColumns($name, false);
 
@@ -2263,7 +2285,7 @@ class FOFTable extends JObject
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 
-				if (version_compare(JVERSION, '3.0', 'ge'))
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 				{
 					$this->$created_on = $date->toSql();
 				}
@@ -2283,7 +2305,7 @@ class FOFTable extends JObject
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 
-				if (version_compare(JVERSION, '3.0', 'ge'))
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 				{
 					$this->$modified_on = $date->toSql();
 				}

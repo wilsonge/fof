@@ -9,10 +9,17 @@
 
 class FOFTableTest extends FtestCaseDatabase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        FOFPlatform::forceInstance(null);
+        FOFTable::forceInstance(null);
+
+    }
+
 	public function testSetKnownFields()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -29,8 +36,6 @@ class FOFTableTest extends FtestCaseDatabase
 
 	public function testGetKnownFields()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -49,8 +54,6 @@ class FOFTableTest extends FtestCaseDatabase
 
 	public function testAddKnownField()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -66,8 +69,6 @@ class FOFTableTest extends FtestCaseDatabase
 
 	public function testRemoveKnownField()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -80,12 +81,102 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertNotContains('foo', $known_fields, 'Known fields set differ from defined list');
 	}
 
+    public function testLoad()
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $reflection = new ReflectionClass($table);
+        $property   = $reflection->getProperty('_tableExists');
+        $property->setAccessible(true);
+        $property->setValue($table, false);
+
+        $this->assertNull($table->load(), 'Load() should return NULL when no table exists');
+
+        $property->setValue($table, true);
+
+        $this->assertNull($table->load(), 'Load() should return NULL when the primary key has no value');
+
+        $rc = $table->load(1);
+        $this->assertTrue($rc, 'Successfully load should return TRUE');
+        $this->assertEquals('Guinea Pig row', $table->title, 'Load() by primary key failed');
+
+        $table->load(1);
+        $table->load('FOOBAR', false);
+        $this->assertEquals('Guinea Pig row', $table->title, "Load() by non-existent primary key (without reset) shouldn't touch table fields");
+
+        // Reset everything
+        $table->reset();
+        $table->foftest_foobar_id = null;
+
+        $table->load(array('slug' => 'guinea-pig-row'));
+        $this->assertEquals(1, $table->foftest_foobar_id, 'Load() by fields to match failed');
+    }
+
+    public function testCheck()
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $reflection = new ReflectionClass($table);
+        $property   = $reflection->getProperty('_autoChecks');
+        $property->setAccessible(true);
+        $property->setValue($table, false);
+
+        $this->assertTrue($table->check(), 'Check() should return true when autoChecks are disabled');
+
+        $property->setValue($table, true);
+
+        $table->foftest_foobar_id   = 999;
+        $table->title               = 'Dummy title';
+        $table->slug                = 'dummy-title';
+        $table->enabled             = 1;
+        $table->ordering            = 99;
+        $table->created_by          = 0;
+        $table->created_on          = '0000-00-00 00:00:00';
+        $table->modified_by         = 0;
+        $table->modified_on         = '0000-00-00 00:00:00';
+        $table->locked_by           = 0;
+        $table->locked_on           = '0000-00-00 00:00:00';
+
+        $this->assertTrue($table->check(), 'Check() should return true when some "magic" field is empty');
+
+        $table->foftest_foobar_id   = 999;
+        $table->title               = '';
+        $table->slug                = '';
+        $table->enabled             = 1;
+        $table->ordering            = 99;
+        $table->created_by          = 0;
+        $table->created_on          = '0000-00-00 00:00:00';
+        $table->modified_by         = 0;
+        $table->modified_on         = '0000-00-00 00:00:00';
+        $table->locked_by           = 0;
+        $table->locked_on           = '0000-00-00 00:00:00';
+
+        $this->assertFalse($table->check(), 'Check() should return false when some required field is empty');
+
+        $table->foftest_foobar_id   = 999;
+        $table->title               = '';
+        $table->slug                = '';
+        $table->enabled             = 1;
+        $table->ordering            = 99;
+        $table->created_by          = 0;
+        $table->created_on          = '0000-00-00 00:00:00';
+        $table->modified_by         = 0;
+        $table->modified_on         = '0000-00-00 00:00:00';
+        $table->locked_by           = 0;
+        $table->locked_on           = '0000-00-00 00:00:00';
+
+        $table->setSkipChecks(array('title', 'slug'));
+
+        $this->assertTrue($table->check(), 'Check() should return false when some required field is empty');
+    }
+
 	public function testReset()
 	{
-		FOFTable::forceInstance(null);
 		$db = JFactory::getDbo();
 		$methods = array('onBeforeReset', 'onAfterReset');
-		$constr_args = array('jos_foftest_foobars', 'foftest_id_foobar', &$db);
+		$constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
 		$table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
 
@@ -143,10 +234,95 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertFalse($table->reset(), 'Reset should return FALSE when onAfterReset is FALSE');
 	}
 
+    /**
+     * @dataProvider getTestBind
+     */
+    public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
+    {
+        $db          = JFactory::getDbo();
+        $methods     = array('onBeforeBind');
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table->expects($this->any())->method('onBeforeBind')->will($this->returnValue($onBefore));
+
+        $rc = $table->bind($toBind, $toSkip);
+        $this->assertEquals($returnValue, $rc, 'Bind() Wrong return value');
+
+        // Only if I'm executing the bind function I do more checks
+        if($returnValue)
+        {
+            foreach($toCheck as $check)
+            {
+                $this->assertEquals($check['value'], $table->$check['field'], $check['msg']);
+            }
+        }
+    }
+
+    public function testBindException()
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $table->bind('This is a wrong argument');
+    }
+
+    /**
+     * @dataProvider getTestMove
+     */
+    public function testMove($events, $tableinfo, $test, $check)
+    {
+        $db          = JFactory::getDbo();
+        $methods     = array('onBeforeMove', 'onAfterMove');
+        $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+
+        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table->expects($this->any())->method('onBeforeMove')->will($this->returnValue($events['before']));
+        $table->expects($this->any())->method('onAfterMove')->will($this->returnValue($events['after']));
+
+        if(isset($test['alias']))
+        {
+            $table->setColumnAlias('ordering', $test['alias']);
+        }
+
+        $ordering = $table->getColumnAlias('ordering');
+
+        if($test['id'])
+        {
+            $table->load($test['id']);
+        }
+
+        $rc = $table->move($test['delta'], $test['where']);
+
+        $this->assertEquals($check['return'], $rc, 'Move() wrong return value');
+
+        // Only if I'm executing the move function I do more checks
+        if(isset($check['more']) && $check['more'])
+        {
+            // Is the current record ok?
+            $this->assertEquals($check['value'], $table->$ordering, $check['msg']);
+
+            // Let's check that the moved record has the correct ordering
+            if($check['find'])
+            {
+                $table->load($check['find']['id']);
+                $this->assertEquals($check['find']['value'], $table->$ordering, $check['find']['msg']);
+            }
+        }
+    }
+
+    public function testMoveException()
+    {
+        $this->setExpectedException('UnexpectedValueException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
+        $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+        $table->move(0);
+    }
+
 	public function testGetUcmCoreAlias()
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
 		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -176,8 +352,6 @@ class FOFTableTest extends FtestCaseDatabase
 	 */
 	public function testGetContentType($option, $view, $expected, $message)
 	{
-		FOFTable::forceInstance(null);
-
 		$config['input'] = new FOFInput(array('option' => $option, 'view' => $view));
 
 		$table = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -191,4 +365,166 @@ class FOFTableTest extends FtestCaseDatabase
 
 		return $data;
 	}
+
+    public function getTestBind()
+    {
+        //TODO Create a dataset with "rules", too
+
+        // Check when onBeforeBind is false
+        $data[] = array(false, false, array(), array(), array());
+
+        // Check binding with array
+        $data[] = array(true, true, array('title' => 'Binded array title'), array(), array(
+            array(
+                'field' => 'title',
+                'value' => 'Binded array title',
+                'msg'   => 'Wrong value binded')
+            )
+        );
+
+        // Check binding with object
+        $bind   = new stdClass();
+        $bind->title = 'Binded object title';
+
+        $data[] = array(true, true, $bind, array(), array(
+            array(
+                'field' => 'title',
+                'value' => 'Binded object title',
+                'msg'   => 'Wrong value binded')
+            )
+        );
+
+        // Check binding with array and array ignore fields
+        $bind   = new stdClass();
+        $bind->title = 'Binded object title';
+        $bind->slug  = 'Ignored field';
+
+        $data[] = array(true, true, $bind, array('slug'), array(
+            array(
+                'field' => 'title',
+                'value' => 'Binded object title',
+                'msg'   => 'Wrong value binded'),
+            array(
+                'field' => 'slug',
+                'value' => '',
+                'msg'   => 'Ignored field binded')
+            )
+        );
+
+        // Check binding with array and string ignore fields
+        $bind              = new stdClass();
+        $bind->title       = 'Binded object title';
+        $bind->slug        = 'Ignored field';
+        $bind->created_by  = 'Ignored field';
+
+        $data[] = array(true, true, $bind, 'slug created_by', array(
+            array(
+                'field' => 'title',
+                'value' => 'Binded object title',
+                'msg'   => 'Wrong value binded'),
+            array(
+                'field' => 'slug',
+                'value' => '',
+                'msg'   => 'Ignored field binded'),
+            array(
+                'field' => 'created_by',
+                'value' => '',
+                'msg'   => 'Ignored field binded')
+            )
+        );
+
+        return $data;
+    }
+
+    public function getTestMove()
+    {
+        // Test vs table not loaded
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 0, 'delta'  => 1, 'where' => ''),
+            array('return' => false)
+        );
+
+        // Test vs onBeforeMove returns false
+        $data[] = array(
+            array('before' => false, 'after' => false),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 4, 'delta'  => 0, 'where' => ''),
+            array('return' => false)
+        );
+
+        // Test vs delta = 0 and onAfterMove returns false
+        $data[] = array(
+            array('before' => true, 'after' => false),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 4, 'delta'  => 0, 'where' => ''),
+            array('return' => false)
+        );
+
+        // Test vs delta = 0 and onAfterMove returns true
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 4, 'delta'  => 0, 'where' => ''),
+            array('return' => true, 'more' => false)
+        );
+
+        // Test vs delta = 1 (everything else ok)
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 4, 'delta'  => 1, 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 5,
+                'msg'    => 'Move() wrong ordering with delta = 1, no where',
+                'find'   => array(
+                    'id'    => 5,
+                    'value' => 4,
+                    'msg'   => 'Move() wrong record swapping with delta = 1, no where'
+                )
+            )
+        );
+
+        // Test vs delta = -1 (everything else ok)
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 4, 'delta'  => -1, 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 3,
+                'msg'    => 'Move() wrong ordering with delta = 1, no where',
+                'find'   => array(
+                    'id'    => 3,
+                    'value' => 4,
+                    'msg'   => 'Move() wrong record swapping with delta = -1, no where'
+                )
+
+            )
+        );
+
+        // Test vs delta = 1, using aliases
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+            array('id'     => 4, 'alias' => 'fo_ordering', 'delta'  => 1, 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 5,
+                'msg'    => 'Move() wrong ordering with delta = 1, no where',
+                'find'   => array(
+                    'id'    => 5,
+                    'value' => 4,
+                    'msg'   => 'Move() wrong record swapping with delta = 1, no where'
+                )
+            )
+        );
+
+        return $data;
+    }
 }
