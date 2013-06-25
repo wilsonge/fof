@@ -29,7 +29,7 @@
       <value>2</value>
       <value>Second row</value>
       <value>second-row</value>
-      <value>1</value>
+      <value>0</value>
       <value>2</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
@@ -42,7 +42,7 @@
       <value>3</value>
       <value>Third row</value>
       <value>third-row</value>
-      <value>0</value>
+      <value>1</value>
       <value>3</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
@@ -108,7 +108,7 @@
       <value>2</value>
       <value>Second row</value>
       <value>second-row</value>
-      <value>1</value>
+      <value>0</value>
       <value>2</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
@@ -121,7 +121,7 @@
       <value>3</value>
       <value>Third row</value>
       <value>third-row</value>
-      <value>0</value>
+      <value>1</value>
       <value>3</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
