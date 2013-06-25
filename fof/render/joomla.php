@@ -335,7 +335,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		{
 			JHTML::_('behavior.framework', true);
 			JHTML::_('behavior.formvalidation');
-			$class = ' class="form-validate"';
+			$class = 'form-validate ';
 			$this->loadValidationScript($form);
 		}
 
