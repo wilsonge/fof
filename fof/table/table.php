@@ -1315,9 +1315,9 @@ class FOFTable extends JObject
 
 		// If there is no ordering field set an error and return false.
 
-		$property_name = $this->getColumnAlias('ordering');
+		$order_field = $this->getColumnAlias('ordering');
 
-		if (!in_array($property_name, $this->getKnownFields()))
+		if (!in_array($order_field, $this->getKnownFields()))
 		{
 			throw new UnexpectedValueException(sprintf('%s does not support ordering.', $this->_tbl_key));
 		}
@@ -1326,10 +1326,10 @@ class FOFTable extends JObject
 
 		// Get the primary keys and ordering values for the selection.
 		$query = $this->_db->getQuery(true);
-		$query->select($this->_tbl_key . ', ' . $this->_db->qn($property_name));
+		$query->select($this->_tbl_key . ', ' . $this->_db->qn($order_field));
 		$query->from($this->_tbl);
-		$query->where($this->_db->qn($property_name) . ' >= ' . $this->_db->q(0));
-		$query->order($this->_db->qn($property_name));
+		$query->where($this->_db->qn($order_field) . ' >= ' . $this->_db->q(0));
+		$query->order($this->_db->qn($order_field));
 
 		// Setup the extra where and ordering clause data.
 
@@ -1347,16 +1347,16 @@ class FOFTable extends JObject
 		{
 			// Make sure the ordering is a positive integer.
 
-			if ($row->ordering >= 0)
+			if ($row->$order_field >= 0)
 			{
 				// Only update rows that are necessary.
 
-				if ($row->ordering != $i + 1)
+				if ($row->$order_field != $i + 1)
 				{
 					// Update the row ordering field.
 					$query = $this->_db->getQuery(true);
 					$query->update($this->_tbl);
-					$query->set($this->_db->qn($property_name) . ' = ' . $this->_db->q($i + 1));
+					$query->set($this->_db->qn($order_field) . ' = ' . $this->_db->q($i + 1));
 					$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 					$this->_db->setQuery($query);
 					$this->_db->execute();

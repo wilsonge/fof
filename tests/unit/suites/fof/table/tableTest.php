@@ -235,7 +235,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
     /**
-     * @dataProvider getTestBind
+     * @dataProvider    getTestBind
      */
     public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
     {
@@ -269,8 +269,8 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
-     * @group tableMove
-     * @dataProvider getTestMove
+     * @group           tableMove
+     * @dataProvider    getTestMove
      */
     public function testMove($events, $tableinfo, $test, $check)
     {
@@ -320,6 +320,70 @@ class FOFTableTest extends FtestCaseDatabase
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
         $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
         $table->move(0);
+    }
+
+    /**
+     * @group           tableReorder
+     * @dataProvider    getTestReorder
+     */
+    public function testReorder($events, $tableinfo, $test, $check)
+    {
+        $db          = JFactory::getDbo();
+        $methods     = array('onBeforeReorder', 'onAfterReorder');
+        $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+
+        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table->expects($this->any())->method('onBeforeReorder')->will($this->returnValue($events['before']));
+        $table->expects($this->any())->method('onAfterReorder')->will($this->returnValue($events['after']));
+
+        if(isset($test['alias']))
+        {
+            $table->setColumnAlias('ordering', $test['alias']);
+        }
+
+        if($test['id'] && $test['ordering'])
+        {
+            $ordering = $table->getColumnAlias('ordering');
+
+            $table->load($test['id']);
+            $table->$ordering = $test['ordering'];
+            $table->store();
+        }
+
+        $rc = $table->reorder($test['where']);
+
+        // First of all, let's check the return value
+        $this->assertEquals($check['return'], $rc, 'Reorder() wrong return value');
+
+        if(isset($check['more']) && $check['more'])
+        {
+            // Then, let's check if the reorder method worked
+            $query = $db->getQuery(true)
+                        ->select(array($tableinfo['id'], $ordering))
+                        ->from($tableinfo['table'])
+                        ->order($ordering.' ASC');
+
+            if($test['where'])
+            {
+                $query->where($test['where']);
+            }
+
+            $rows = $db->setQuery($query)->loadAssocList();
+
+            $this->assertEquals($check['list'], $rows, $check['msg']);
+        }
+    }
+
+    /**
+     * @group           tableReorder
+     */
+    public function testReorderException()
+    {
+        $this->setExpectedException('UnexpectedValueException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
+        $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+        $table->reorder();
     }
 
 	public function testGetUcmCoreAlias()
@@ -610,6 +674,110 @@ class FOFTableTest extends FtestCaseDatabase
                     'id'    => 5,
                     'value' => 4,
                     'msg'   => 'Move() wrong record swapping with delta = 1, no where'
+                )
+            )
+        );
+
+        return $data;
+    }
+
+    public function getTestReorder()
+    {
+        // Test vs onBeforeReorder returns false
+        $data[] = array(
+            array('before' => false, 'after' => false),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id' => '', 'ordering' => '', 'where' => ''),
+            array('return' => false)
+        );
+
+        // Test vs reorder, positive number, no where
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id' => 3, 'ordering' => 100, 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'msg'    => 'Reorder() wrong reordered recordset with positive number, no where',
+                'list'   => array(
+                    array('foftest_foobar_id' => 1, 'ordering' => 1),
+                    array('foftest_foobar_id' => 2, 'ordering' => 2),
+                    array('foftest_foobar_id' => 4, 'ordering' => 3),
+                    array('foftest_foobar_id' => 5, 'ordering' => 4),
+                    array('foftest_foobar_id' => 3, 'ordering' => 5)
+                )
+            )
+        );
+
+        // Test vs reorder, negative number, no where
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id' => 3, 'ordering' => -100, 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'msg'    => 'Reorder() wrong reordered recordset with negative number, no where',
+                'list'   => array(
+                    array('foftest_foobar_id' => 3, 'ordering' => -100),
+                    array('foftest_foobar_id' => 1, 'ordering' => 1),
+                    array('foftest_foobar_id' => 2, 'ordering' => 2),
+                    array('foftest_foobar_id' => 4, 'ordering' => 3),
+                    array('foftest_foobar_id' => 5, 'ordering' => 4)
+                )
+            )
+        );
+
+        // Test vs reorder, positive number, where enabled = 1
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id' => 3, 'ordering' => 100, 'where' => 'enabled = 1'),
+            array(
+                'return' => true,
+                'more'   => true,
+                'msg'    => 'Reorder() wrong reordered recordset with positive number, where enabled = 1',
+                'list'   => array(
+                    array('foftest_foobar_id' => 1, 'ordering' => 1),
+                    array('foftest_foobar_id' => 5, 'ordering' => 2),
+                    array('foftest_foobar_id' => 3, 'ordering' => 3)
+                )
+            )
+        );
+
+        // Test vs reorder, negative number, where enabled = 1
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id' => 3, 'ordering' => -100, 'where' => 'enabled = 1'),
+            array(
+                'return' => true,
+                'more'   => true,
+                'msg'    => 'Reorder() wrong reordered recordset with negative number, where enabled = 1',
+                'list'   => array(
+                    array('foftest_foobar_id' => 3, 'ordering' => -100),
+                    array('foftest_foobar_id' => 1, 'ordering' => 1),
+                    array('foftest_foobar_id' => 5, 'ordering' => 2)
+                )
+            )
+        );
+
+        // Test vs aliased reorder, positive number, no where
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+            array('id' => 3, 'ordering' => 100, 'alias' => 'fo_ordering', 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'msg'    => 'Reorder() wrong aliased reordered recordset with positive number, no where',
+                'list'   => array(
+                    array('id_foobar_aliases' => 1, 'fo_ordering' => 1),
+                    array('id_foobar_aliases' => 2, 'fo_ordering' => 2),
+                    array('id_foobar_aliases' => 4, 'fo_ordering' => 3),
+                    array('id_foobar_aliases' => 5, 'fo_ordering' => 4),
+                    array('id_foobar_aliases' => 3, 'fo_ordering' => 5)
                 )
             )
         );
