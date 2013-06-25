@@ -269,6 +269,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @group tableMove
      * @dataProvider getTestMove
      */
     public function testMove($events, $tableinfo, $test, $check)
@@ -304,7 +305,7 @@ class FOFTableTest extends FtestCaseDatabase
             $this->assertEquals($check['value'], $table->$ordering, $check['msg']);
 
             // Let's check that the moved record has the correct ordering
-            if($check['find'])
+            if(isset($check['find']))
             {
                 $table->load($check['find']['id']);
                 $this->assertEquals($check['find']['value'], $table->$ordering, $check['find']['msg']);
@@ -470,7 +471,7 @@ class FOFTableTest extends FtestCaseDatabase
             array('return' => true, 'more' => false)
         );
 
-        // Test vs delta = 1 (everything else ok)
+        // Test vs delta = 1 (everything else ok) inner record
         $data[] = array(
             array('before' => true, 'after' => true),
             array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
@@ -488,7 +489,20 @@ class FOFTableTest extends FtestCaseDatabase
             )
         );
 
-        // Test vs delta = -1 (everything else ok)
+        // Test vs delta = 1 (everything else ok) outer record
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 5, 'delta'  => 1, 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 5,
+                'msg'    => 'Move() wrong ordering with delta = 1, no where'
+            )
+        );
+
+        // Test vs delta = -1 (everything else ok) inner record
         $data[] = array(
             array('before' => true, 'after' => true),
             array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
@@ -497,13 +511,88 @@ class FOFTableTest extends FtestCaseDatabase
                 'return' => true,
                 'more'   => true,
                 'value'  => 3,
-                'msg'    => 'Move() wrong ordering with delta = 1, no where',
+                'msg'    => 'Move() wrong ordering with delta = -1, no where',
                 'find'   => array(
                     'id'    => 3,
                     'value' => 4,
                     'msg'   => 'Move() wrong record swapping with delta = -1, no where'
                 )
 
+            )
+        );
+
+        // Test vs delta = -1 (everything else ok) outer record
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 1, 'delta'  => -1, 'where' => ''),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 1,
+                'msg'    => 'Move() wrong ordering with delta = -1, no where'
+            )
+        );
+
+        // Test vs delta = 1 and where (everything else ok), inner record
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 2, 'delta'  => 1, 'where' => 'enabled = 0'),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 4,
+                'msg'    => 'Move() wrong ordering with delta = 1, where enabled = 0',
+                'find'   => array(
+                    'id'    => 4,
+                    'value' => 2,
+                    'msg'   => 'Move() wrong record swapping with delta = 1, where enabled = 0'
+                )
+            )
+        );
+
+        // Test vs delta = 1 and where (everything else ok), outer record
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 4, 'delta'  => 1, 'where' => 'enabled = 0'),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 4,
+                'msg'    => 'Move() wrong ordering with delta = 1, where enabled = 0',
+            )
+        );
+
+        // Test vs delta = -1 and where (everything else ok), outer record
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 2, 'delta'  => -1, 'where' => 'enabled = 0'),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 2,
+                'msg'    => 'Move() wrong ordering with delta = -1, where enabled = 0',
+            )
+        );
+
+        // Test vs delta = -1 and where (everything else ok), inner record
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array('id'     => 4, 'delta'  => -1, 'where' => 'enabled = 0'),
+            array(
+                'return' => true,
+                'more'   => true,
+                'value'  => 2,
+                'msg'    => 'Move() wrong ordering with delta = 1, where enabled = 0',
+                'find'   => array(
+                    'id'    => 2,
+                    'value' => 4,
+                    'msg'   => 'Move() wrong record swapping with delta = 1, where enabled = 0'
+                )
             )
         );
 
