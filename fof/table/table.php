@@ -1395,6 +1395,12 @@ class FOFTable extends JObject
 			$this->$k = $oid;
 		}
 
+        // No primary key defined, stop here
+        if (!$this->$k)
+        {
+            return false;
+        }
+
 		$date = JFactory::getDate();
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
