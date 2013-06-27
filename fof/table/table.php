@@ -1476,20 +1476,32 @@ class FOFTable extends JObject
 		return $this->_db->execute();
 	}
 
-	/**
-	 * Is a record locked?
-	 *
-	 * @param   integer  $with     The userid to preform the match with. If an item is checked
-	 *                             out by this user the function will return false.
-	 * @param   integer  $against  Junk inherited from JTable; ignore
-	 *
-	 * @return  boolean  True if the record is locked by another user
-	 */
-	public function isCheckedOut($with = 0, $against = null)
+    /**
+     * Is a record locked?
+     *
+     * @param   integer $with            The userid to preform the match with. If an item is checked
+     *                                   out by this user the function will return false.
+     * @param   integer $unused_against  Junk inherited from JTable; ignore
+     *
+     * @throws  UnexpectedValueException
+     *
+     * @return  boolean  True if the record is locked by another user
+     */
+	public function isCheckedOut($with = 0, $unused_against = null)
 	{
+        $against     = null;
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 
-		if (isset($this) && is_a($this, 'FOFTable') && is_null($against))
+        $k  = $this->_tbl_key;
+
+        // If no primary key is given, return false.
+
+        if ($this->$k === null)
+        {
+            throw new UnexpectedValueException('Null primary key not allowed.');
+        }
+
+		if (isset($this) && is_a($this, 'FOFTable') && !$against)
 		{
 			$against = $this->get($fldLockedBy);
 		}

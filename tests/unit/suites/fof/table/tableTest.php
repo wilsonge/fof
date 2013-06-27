@@ -477,6 +477,34 @@ class FOFTableTest extends FtestCaseDatabase
         }
     }
 
+    /**
+     * @group           tableIsCheckedOut
+     * @dataProvider    getTestIsCheckedOut
+     */
+    public function testIsCheckedOut($tableinfo, $test, $check)
+    {
+        $db    = JFactory::getDbo();
+        $table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+
+        if($test['alias'])
+        {
+            $table->setColumnAlias('locked_by', $test['alias']['lockby']);
+            $table->setColumnAlias('locked_on', $test['alias']['lockon']);
+        }
+
+        $table->load($test['id']);
+        $this->assertEquals($check['return'], $table->isCheckedOut($test['with']), $check['msg']);
+    }
+
+    public function testIsCheckedOutExcpetion()
+    {
+        $this->setExpectedException('UnexpectedValueException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
+        $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+        $table->isCheckedOut();
+    }
+
 	public function testGetUcmCoreAlias()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -1031,6 +1059,84 @@ class FOFTableTest extends FtestCaseDatabase
             array(
                 'return' => true,
                 'more'   => true
+            )
+        );
+
+        return $data;
+    }
+
+    public function getTestIsCheckedOut()
+    {
+        // Unlocked record, no user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 4,
+                'alias'     => '',
+                'with'      => ''
+            ),
+            array(
+                'return'    => false,
+                'msg'       => 'isCheckedOut: Wrong return value, unlocked record with no user'
+            )
+        );
+
+        // Unlocked record, with user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 4,
+                'alias'     => '',
+                'with'      => 42
+            ),
+            array(
+                'return'    => false,
+                'msg'       => 'isCheckedOut: Wrong return value, unlocked record with user'
+            )
+        );
+
+        // Locked record, without user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 5,
+                'alias'     => '',
+                'with'      => ''
+            ),
+            array(
+                'return'    => true,
+                'msg'       => 'isCheckedOut: Wrong return value, locked record without user'
+            )
+        );
+
+        // Locked record, with user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 5,
+                'alias'     => '',
+                'with'      => 42
+            ),
+            array(
+                'return'    => true,
+                'msg'       => 'isCheckedOut: Wrong return value, locked record with user'
+            )
+        );
+
+        // Locked record, without user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+            array(
+                'id'        => 5,
+                'alias'     => array(
+                    'lockon'  => 'fo_locked_on',
+                    'lockby'  => 'fo_locked_by'
+                ),
+                'with'      => 42
+            ),
+            array(
+                'return'    => true,
+                'msg'       => 'isCheckedOut: Wrong return value, locked record with user'
             )
         );
 
