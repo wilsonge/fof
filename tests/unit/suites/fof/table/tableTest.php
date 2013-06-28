@@ -279,6 +279,10 @@ class FOFTableTest extends FtestCaseDatabase
         $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
 
         $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+
+        // Mocking these methods will prevent some FOF features (ie slug creation, created_by set up and so on)
+        // I think it's ok since we're going to test that features when we'll test these methods,
+        // now we only care about the store() method
         $table->expects($this->any())->method('onBeforeStore')->will($this->returnValue($events['before']));
         $table->expects($this->any())->method('onAfterStore')->will($this->returnValue($events['after']));
 
@@ -313,6 +317,12 @@ class FOFTableTest extends FtestCaseDatabase
 
         if($check['more'])
         {
+            $tocheck = $test['bind'];
+            if($test['updateNulls'])
+            {
+                $tocheck = array_merge($tocheck, $test['nullable']);
+            }
+
             $k = $table->getKeyName();
             $query = $db->getQuery(true)
                         ->select('*')
@@ -320,9 +330,16 @@ class FOFTableTest extends FtestCaseDatabase
                         ->where($tableinfo['id'].' = '.$table->$k);
             $row = $db->setQuery($query)->loadAssoc();
 
-            foreach($row as $field => $value)
+            foreach($tocheck as $field => $value)
             {
-                $this->assertEquals($table->$field, $value, sprintf('Store: wrong stored value, %s instead of %s', $value, $table->$field));
+                if($test['updateNulls'] && array_key_exists($field, $test['nullable']))
+                {
+                    $this->assertEmpty($row[$field], sprintf('Store: wrong stored value, %s instead of empty', $row[$field]));
+                }
+                else
+                {
+                    $this->assertEquals($row[$field], $value, sprintf('Store: wrong stored value, %s instead of %s', $value, $row[$field]));
+                }
             }
         }
 
@@ -683,68 +700,124 @@ class FOFTableTest extends FtestCaseDatabase
     public function getTestStore()
     {
         // Test vs onBefore returns false
-        /*$data[] = array(
+        $data[] = array(
             array('before' => false, 'after' => false),
             array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
             array(
-                'loadid'   => 3,
-                'alias'    => '',
-                'assetkey' => 'com_foftest.foobar',
-                'bind'     => array(
-                    'title'   => 'Modified title',
-                    'enabled' => 0
-                ),
-                'nullable' => '',
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => '',
                 'updateNulls' => false
             ),
+            array('return' => false, 'more' => false)
+        );
+
+        // Test vs onAfter returns false
+        $data[] = array(
+            array('before' => true, 'after' => false),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
             array(
-                'return' => false,
-                'more'   => false
-            )
-        );*/
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => '',
+                'updateNulls' => false
+            ),
+            array('return' => false, 'more' => false)
+        );
 
         // Update test with assets, without updating nulls
         $data[] = array(
             array('before' => true, 'after' => true),
             array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
             array(
-                'loadid'   => 3,
-                'alias'    => '',
-                'assetkey' => 'com_foftest.foobar',
-                'bind'     => array(
-                    'title'      => 'Modified title',
-                    'enabled'    => 0
-                ),
-                'nullable' => array(
-                    'created_by' => null
-                ),
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => array('created_by' => null),
                 'updateNulls' => false
             ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Update test with assets, updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
             array(
-                'return' => true,
-                'more'   => true
-            )
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => array('created_by' => null),
+                'updateNulls' => true
+            ),
+            array('return' => true, 'more' => true)
         );
 
         // Update test without assets
-        /*$data[] = array(
+        $data[] = array(
             array('before' => true, 'after' => true),
             array('table'  => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
             array(
-                'loadid'   => 3,
-                'alias'    => '',
-                'assetkey' => '',
-                'bind'     => array(
-                    'title'   => 'Modified title'
-                ),
-                'nullable' => '',
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => '',
+                'bind'        => array('title'=> 'Modified title'),
+                'nullable'    => '',
                 'updateNulls' => false
             ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Insert new object with assets, updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
             array(
-                'return' => true,
-                'more'   => true
-            )
-        );*/
+                'loadid'   => '',
+                'alias'    => '',
+                'assetkey' => 'com_foftest.foobar',
+                'bind'     => array('title' => 'New element', 'enabled' => 0),
+                'nullable' => array('created_by' => null),
+                'updateNulls' => true
+            ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Insert new object with assets, without updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'      => '',
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'New element', 'enabled' => 0),
+                'nullable'    => array('created_by' => null),
+                'updateNulls' => false
+            ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Update test with assets and alias
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+            array(
+                'loadid'      => 3,
+                'alias'       => 'fo_asset_id',
+                'assetkey'    => '',
+                'bind'        => array('fo_title' => 'Modified title', 'fo_enabled' => 0),
+                'nullable'    => '',
+                'updateNulls' => false
+            ),
+            array('return' => true, 'more' => true)
+        );
 
         return $data;
     }
