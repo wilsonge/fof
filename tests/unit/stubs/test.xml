@@ -6,6 +6,7 @@
     <column>slug</column>
     <column>enabled</column>
     <column>ordering</column>
+    <column>asset_id</column>
     <column>created_by</column>
     <column>created_on</column>
     <column>modified_by</column>
@@ -18,6 +19,7 @@
       <value>guinea-pig-row</value>
       <value>1</value>
       <value>1</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -31,6 +33,7 @@
       <value>second-row</value>
       <value>0</value>
       <value>2</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -44,6 +47,7 @@
       <value>third-row</value>
       <value>1</value>
       <value>3</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -57,6 +61,7 @@
       <value>fourth-row</value>
       <value>0</value>
       <value>4</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -70,6 +75,7 @@
       <value>locked-record</value>
       <value>1</value>
       <value>5</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -85,6 +91,7 @@
     <column>fo_slug</column>
     <column>fo_enabled</column>
     <column>fo_ordering</column>
+    <column>fo_asset_id</column>
     <column>fo_created_by</column>
     <column>fo_created_on</column>
     <column>fo_modified_by</column>
@@ -97,6 +104,7 @@
       <value>aliased-guinea-pig-row</value>
       <value>1</value>
       <value>1</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -110,6 +118,7 @@
       <value>second-row</value>
       <value>0</value>
       <value>2</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -123,6 +132,7 @@
       <value>third-row</value>
       <value>1</value>
       <value>3</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -136,6 +146,7 @@
       <value>fourth-row</value>
       <value>0</value>
       <value>4</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -149,6 +160,7 @@
       <value>locked-record</value>
       <value>1</value>
       <value>5</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -157,6 +169,24 @@
       <value>2013-06-24 13:00:00</value>
     </row>
   </table>
+
+  <table name="jos_foftest_bares">
+      <column>foftest_bare_id</column>
+      <column>title</column>
+      <row>
+          <value>1</value>
+          <value>First Row</value>
+      </row>
+      <row>
+          <value>2</value>
+          <value>Second Row</value>
+      </row>
+      <row>
+          <value>3</value>
+          <value>Third Row</value>
+      </row>
+  </table>
+
   <table name="jos_session">
     <column>session_id</column>
     <column>client_id</column>
@@ -174,7 +204,367 @@
         <value>99</value>
         <value>FakeUser</value>
     </row>
-
   </table>
 
+  <!-- Restore the assets table, so we can play with them -->
+  <table name="jos_assets">
+      <column>id</column>
+      <column>parent_id</column>
+      <column>lft</column>
+      <column>rgt</column>
+      <column>level</column>
+      <column>name</column>
+      <column>title</column>
+      <column>rules</column>
+      <row>
+          <value>1</value>
+          <value>0</value>
+          <value>0</value>
+          <value>71</value>
+          <value>0</value>
+          <value>root.1</value>
+          <value>Root Asset</value>
+          <value>{&quot;core.login.site&quot;:{&quot;6&quot;:1,&quot;2&quot;:1},&quot;core.login.admin&quot;:{&quot;6&quot;:1},&quot;core.login.offline&quot;:{&quot;6&quot;:1},&quot;core.admin&quot;:{&quot;8&quot;:1},&quot;core.manage&quot;:{&quot;7&quot;:1},&quot;core.create&quot;:{&quot;6&quot;:1,&quot;3&quot;:1},&quot;core.delete&quot;:{&quot;6&quot;:1},&quot;core.edit&quot;:{&quot;6&quot;:1,&quot;4&quot;:1},&quot;core.edit.state&quot;:{&quot;6&quot;:1,&quot;5&quot;:1},&quot;core.edit.own&quot;:{&quot;6&quot;:1,&quot;3&quot;:1}}</value>
+      </row>
+      <row>
+          <value>2</value>
+          <value>1</value>
+          <value>1</value>
+          <value>2</value>
+          <value>1</value>
+          <value>com_admin</value>
+          <value>com_admin</value>
+          <value>{}</value>
+      </row>
+      <row>
+          <value>3</value>
+          <value>1</value>
+          <value>3</value>
+          <value>6</value>
+          <value>1</value>
+          <value>com_banners</value>
+          <value>com_banners</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1},&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>4</value>
+          <value>1</value>
+          <value>7</value>
+          <value>8</value>
+          <value>1</value>
+          <value>com_cache</value>
+          <value>com_cache</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;7&quot;:1}}</value>
+      </row>
+      <row>
+          <value>5</value>
+          <value>1</value>
+          <value>9</value>
+          <value>10</value>
+          <value>1</value>
+          <value>com_checkin</value>
+          <value>com_checkin</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;7&quot;:1}}</value>
+      </row>
+      <row>
+          <value>6</value>
+          <value>1</value>
+          <value>11</value>
+          <value>12</value>
+          <value>1</value>
+          <value>com_config</value>
+          <value>com_config</value>
+          <value>{}</value>
+      </row>
+      <row>
+          <value>7</value>
+          <value>1</value>
+          <value>13</value>
+          <value>16</value>
+          <value>1</value>
+          <value>com_contact</value>
+          <value>com_contact</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1},&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[],&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>8</value>
+          <value>1</value>
+          <value>17</value>
+          <value>20</value>
+          <value>1</value>
+          <value>com_content</value>
+          <value>com_content</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1},&quot;core.create&quot;:{&quot;3&quot;:1},&quot;core.delete&quot;:[],&quot;core.edit&quot;:{&quot;4&quot;:1},&quot;core.edit.state&quot;:{&quot;5&quot;:1},&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>9</value>
+          <value>1</value>
+          <value>21</value>
+          <value>22</value>
+          <value>1</value>
+          <value>com_cpanel</value>
+          <value>com_cpanel</value>
+          <value>{}</value>
+      </row>
+      <row>
+          <value>10</value>
+          <value>1</value>
+          <value>23</value>
+          <value>24</value>
+          <value>1</value>
+          <value>com_installer</value>
+          <value>com_installer</value>
+          <value>{&quot;core.admin&quot;:[],&quot;core.manage&quot;:{&quot;7&quot;:0},&quot;core.delete&quot;:{&quot;7&quot;:0},&quot;core.edit.state&quot;:{&quot;7&quot;:0}}</value>
+      </row>
+      <row>
+          <value>11</value>
+          <value>1</value>
+          <value>25</value>
+          <value>26</value>
+          <value>1</value>
+          <value>com_languages</value>
+          <value>com_languages</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:[],&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>12</value>
+          <value>1</value>
+          <value>27</value>
+          <value>28</value>
+          <value>1</value>
+          <value>com_login</value>
+          <value>com_login</value>
+          <value>{}</value>
+      </row>
+      <row>
+          <value>13</value>
+          <value>1</value>
+          <value>29</value>
+          <value>30</value>
+          <value>1</value>
+          <value>com_mailto</value>
+          <value>com_mailto</value>
+          <value>{}</value>
+      </row>
+      <row>
+          <value>14</value>
+          <value>1</value>
+          <value>31</value>
+          <value>32</value>
+          <value>1</value>
+          <value>com_massmail</value>
+          <value>com_massmail</value>
+          <value>{}</value>
+      </row>
+      <row>
+          <value>15</value>
+          <value>1</value>
+          <value>33</value>
+          <value>34</value>
+          <value>1</value>
+          <value>com_media</value>
+          <value>com_media</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1},&quot;core.create&quot;:{&quot;3&quot;:1},&quot;core.delete&quot;:{&quot;5&quot;:1}}</value>
+      </row>
+      <row>
+          <value>16</value>
+          <value>1</value>
+          <value>35</value>
+          <value>36</value>
+          <value>1</value>
+          <value>com_menus</value>
+          <value>com_menus</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:[],&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>17</value>
+          <value>1</value>
+          <value>37</value>
+          <value>38</value>
+          <value>1</value>
+          <value>com_messages</value>
+          <value>com_messages</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;7&quot;:1}}</value>
+      </row>
+      <row>
+          <value>18</value>
+          <value>1</value>
+          <value>39</value>
+          <value>40</value>
+          <value>1</value>
+          <value>com_modules</value>
+          <value>com_modules</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:[],&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>19</value>
+          <value>1</value>
+          <value>41</value>
+          <value>44</value>
+          <value>1</value>
+          <value>com_newsfeeds</value>
+          <value>com_newsfeeds</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1},&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[],&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>20</value>
+          <value>1</value>
+          <value>45</value>
+          <value>46</value>
+          <value>1</value>
+          <value>com_plugins</value>
+          <value>com_plugins</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>21</value>
+          <value>1</value>
+          <value>47</value>
+          <value>48</value>
+          <value>1</value>
+          <value>com_redirect</value>
+          <value>com_redirect</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:[]}</value>
+      </row>
+      <row>
+          <value>22</value>
+          <value>1</value>
+          <value>49</value>
+          <value>50</value>
+          <value>1</value>
+          <value>com_search</value>
+          <value>com_search</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1}}</value>
+      </row>
+      <row>
+          <value>23</value>
+          <value>1</value>
+          <value>51</value>
+          <value>52</value>
+          <value>1</value>
+          <value>com_templates</value>
+          <value>com_templates</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:[],&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>24</value>
+          <value>1</value>
+          <value>53</value>
+          <value>56</value>
+          <value>1</value>
+          <value>com_users</value>
+          <value>com_users</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:[],&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>25</value>
+          <value>1</value>
+          <value>57</value>
+          <value>60</value>
+          <value>1</value>
+          <value>com_weblinks</value>
+          <value>com_weblinks</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1},&quot;core.create&quot;:{&quot;3&quot;:1},&quot;core.delete&quot;:[],&quot;core.edit&quot;:{&quot;4&quot;:1},&quot;core.edit.state&quot;:{&quot;5&quot;:1},&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>26</value>
+          <value>1</value>
+          <value>61</value>
+          <value>62</value>
+          <value>1</value>
+          <value>com_wrapper</value>
+          <value>com_wrapper</value>
+          <value>{}</value>
+      </row>
+      <row>
+          <value>27</value>
+          <value>8</value>
+          <value>18</value>
+          <value>19</value>
+          <value>2</value>
+          <value>com_content.category.2</value>
+          <value>Uncategorised</value>
+          <value>{&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[],&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>28</value>
+          <value>3</value>
+          <value>4</value>
+          <value>5</value>
+          <value>2</value>
+          <value>com_banners.category.3</value>
+          <value>Uncategorised</value>
+          <value>{&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>29</value>
+          <value>7</value>
+          <value>14</value>
+          <value>15</value>
+          <value>2</value>
+          <value>com_contact.category.4</value>
+          <value>Uncategorised</value>
+          <value>{&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[],&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>30</value>
+          <value>19</value>
+          <value>42</value>
+          <value>43</value>
+          <value>2</value>
+          <value>com_newsfeeds.category.5</value>
+          <value>Uncategorised</value>
+          <value>{&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[],&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>31</value>
+          <value>25</value>
+          <value>58</value>
+          <value>59</value>
+          <value>2</value>
+          <value>com_weblinks.category.6</value>
+          <value>Uncategorised</value>
+          <value>{&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[],&quot;core.edit.own&quot;:[]}</value>
+      </row>
+      <row>
+          <value>32</value>
+          <value>24</value>
+          <value>54</value>
+          <value>55</value>
+          <value>1</value>
+          <value>com_users.category.7</value>
+          <value>Uncategorised</value>
+          <value>{&quot;core.create&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>33</value>
+          <value>1</value>
+          <value>63</value>
+          <value>64</value>
+          <value>1</value>
+          <value>com_finder</value>
+          <value>com_finder</value>
+          <value>{&quot;core.admin&quot;:{&quot;7&quot;:1},&quot;core.manage&quot;:{&quot;6&quot;:1}}</value>
+      </row>
+      <row>
+          <value>34</value>
+          <value>1</value>
+          <value>65</value>
+          <value>66</value>
+          <value>1</value>
+          <value>com_joomlaupdate</value>
+          <value>com_joomlaupdate</value>
+          <value>{&quot;core.admin&quot;:[],&quot;core.manage&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>35</value>
+          <value>1</value>
+          <value>67</value>
+          <value>68</value>
+          <value>1</value>
+          <value>com_tags</value>
+          <value>com_tags</value>
+          <value>{&quot;core.admin&quot;:[],&quot;core.manage&quot;:[],&quot;core.manage&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+  </table>
 </dataset>

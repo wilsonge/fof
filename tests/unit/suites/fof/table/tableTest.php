@@ -269,6 +269,66 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @group           tableStore
+     * @dataProvider    getTestStore
+     */
+    public function testStore($events, $tableinfo, $test, $check)
+    {
+        $db          = JFactory::getDbo();
+        $methods     = array('onBeforeStore', 'onAfterStore');
+        $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+
+        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table->expects($this->any())->method('onBeforeStore')->will($this->returnValue($events['before']));
+        $table->expects($this->any())->method('onAfterStore')->will($this->returnValue($events['after']));
+
+        if($test['alias'])
+        {
+            $table->setColumnAlias('asset_id', $test['alias']);
+        }
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        // We have to manually provide this info, since we can't use the getInstance method (we have to mock)
+        if($test['assetkey'])
+        {
+            $table->setAssetKey($test['assetkey']);
+        }
+
+        $table->bind($test['bind']);
+
+        if($test['nullable'])
+        {
+            foreach($test['nullable'] as $field => $value)
+            {
+                $table->$field = null;
+            }
+        }
+
+        $rc = $table->store($test['updateNulls']);
+        $this->assertEquals($check['return'], $rc, 'Store: wrong return value');
+
+        if($check['more'])
+        {
+            $k = $table->getKeyName();
+            $query = $db->getQuery(true)
+                        ->select('*')
+                        ->from($tableinfo['table'])
+                        ->where($tableinfo['id'].' = '.$table->$k);
+            $row = $db->setQuery($query)->loadAssoc();
+
+            foreach($row as $field => $value)
+            {
+                $this->assertEquals($table->$field, $value, sprintf('Store: wrong stored value, %s instead of %s', $value, $table->$field));
+            }
+        }
+
+    }
+
+    /**
      * @group           tableMove
      * @dataProvider    getTestMove
      */
@@ -616,6 +676,75 @@ class FOFTableTest extends FtestCaseDatabase
                 'msg'   => 'Ignored field binded')
             )
         );
+
+        return $data;
+    }
+
+    public function getTestStore()
+    {
+        // Test vs onBefore returns false
+        /*$data[] = array(
+            array('before' => false, 'after' => false),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'   => 3,
+                'alias'    => '',
+                'assetkey' => 'com_foftest.foobar',
+                'bind'     => array(
+                    'title'   => 'Modified title',
+                    'enabled' => 0
+                ),
+                'nullable' => '',
+                'updateNulls' => false
+            ),
+            array(
+                'return' => false,
+                'more'   => false
+            )
+        );*/
+
+        // Update test with assets, without updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'   => 3,
+                'alias'    => '',
+                'assetkey' => 'com_foftest.foobar',
+                'bind'     => array(
+                    'title'      => 'Modified title',
+                    'enabled'    => 0
+                ),
+                'nullable' => array(
+                    'created_by' => null
+                ),
+                'updateNulls' => false
+            ),
+            array(
+                'return' => true,
+                'more'   => true
+            )
+        );
+
+        // Update test without assets
+        /*$data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+            array(
+                'loadid'   => 3,
+                'alias'    => '',
+                'assetkey' => '',
+                'bind'     => array(
+                    'title'   => 'Modified title'
+                ),
+                'nullable' => '',
+                'updateNulls' => false
+            ),
+            array(
+                'return' => true,
+                'more'   => true
+            )
+        );*/
 
         return $data;
     }

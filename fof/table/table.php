@@ -1061,6 +1061,12 @@ class FOFTable extends JObject
 		$properties = $this->getKnownFields();
 		$keys       = array();
 
+        // Let's remove the asset_id field, since we unset the property above and we would get a PHP notice
+        if(isset($fields[$asset_id_field]))
+        {
+            unset($fields[$asset_id_field]);
+        }
+
 		foreach ($properties as $property)
 		{
 			// 'input' property is a reserved name
@@ -2843,16 +2849,24 @@ class FOFTable extends JObject
 		return self::$_includePaths;
 	}
 
-	/**
-	 * Method to compute the default name of the asset.
-	 * The default name is in the form table_name.id
-	 * where id is the value of the primary key of the table.
-	 *
-	 * @return  string
-	 */
+    /**
+     * Method to compute the default name of the asset.
+     * The default name is in the form table_name.id
+     * where id is the value of the primary key of the table.
+     *
+     * @throws  UnexpectedValueException
+     *
+     * @return  string
+     */
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
+
+        // If there is no assetKey defined, let's set it to table name
+        if(!$this->_assetKey)
+        {
+            throw new UnexpectedValueException('Table must have an asset key defined in order to track assets');
+        }
 
 		return $this->_assetKey . '.' . (int) $this->$k;
 	}
