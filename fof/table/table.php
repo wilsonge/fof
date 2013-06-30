@@ -771,6 +771,11 @@ class FOFTable extends JObject
 		{
 			$fieldName = $field->Field;
 
+			if (empty($fieldname))
+			{
+				$fieldname = $fielddata->column_name;
+			}
+
 			// Field is not nullable but it's null, set error
 
 			if ($field->Null == 'NO' && $this->$fieldName == '' && !in_array($fieldName, $skipFields))
@@ -1993,6 +1998,22 @@ class FOFTable extends JObject
 
 				$cache[$tableName] = $fields[$name];
 			}
+
+			// PostgreSQL date type compatibility
+			if (($this->_db->name == 'postgresql') && ($cache[$tableName] != false))
+			{
+				foreach ($cache[$tableName] as $field)
+				{
+					if (strtolower($field->type) == 'timestamp without time zone')
+					{
+						if (stristr($field->Default, '\'::timestamp without time zone'))
+						{
+							list ($date, $junk) = explode('::', $field->Default, 2);
+							$field->Default = trim($date, "'");
+						}
+					}
+				}
+			}
 		}
 
 		return $cache[$tableName];
@@ -2298,7 +2319,9 @@ class FOFTable extends JObject
 			$hasModifiedOn = in_array($modified_on, $this->getKnownFields());
 			$hasModifiedBy = in_array($modified_by, $this->getKnownFields());
 
-			if (empty($this->$created_by) || ($this->$created_on == '0000-00-00 00:00:00') || empty($this->$created_on))
+			$nullDate = $this->_db->getNullDate();
+
+			if (empty($this->$created_by) || ($this->$created_on == $nullDate) || empty($this->$created_on))
 			{
 				$uid = FOFPlatform::getInstance()->getUser()->id;
 
@@ -2341,8 +2364,8 @@ class FOFTable extends JObject
 		}
 
 		// Do we have a set of title and slug fields?
-		$hasTitle = in_array($title, $this->getFields());
-		$hasSlug  = in_array($slug, $this->getFields());
+		$hasTitle = in_array($title, $this->getKnownFields());
+		$hasSlug  = in_array($slug, $this->getKnownFields());
 
 		if ($hasTitle && $hasSlug)
 		{
