@@ -1982,7 +1982,7 @@ class FOFTable extends JObject
 			}
 
 			// PostgreSQL date type compatibility
-			if ($cache[$tableName] != false)
+			if (($this->_db->name == 'postgresql') && ($cache[$tableName] != false))
 			{
 				foreach ($cache[$tableName] as $field)
 				{
