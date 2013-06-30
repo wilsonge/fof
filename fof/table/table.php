@@ -1061,6 +1061,12 @@ class FOFTable extends JObject
 		$properties = $this->getKnownFields();
 		$keys       = array();
 
+        // Let's remove the asset_id field, since we unset the property above and we would get a PHP notice
+        if(isset($fields[$asset_id_field]))
+        {
+            unset($fields[$asset_id_field]);
+        }
+
 		foreach ($properties as $property)
 		{
 			// 'input' property is a reserved name
@@ -1315,9 +1321,9 @@ class FOFTable extends JObject
 
 		// If there is no ordering field set an error and return false.
 
-		$property_name = $this->getColumnAlias('ordering');
+		$order_field = $this->getColumnAlias('ordering');
 
-		if (!in_array($property_name, $this->getKnownFields()))
+		if (!in_array($order_field, $this->getKnownFields()))
 		{
 			throw new UnexpectedValueException(sprintf('%s does not support ordering.', $this->_tbl_key));
 		}
@@ -1326,10 +1332,10 @@ class FOFTable extends JObject
 
 		// Get the primary keys and ordering values for the selection.
 		$query = $this->_db->getQuery(true);
-		$query->select($this->_tbl_key . ', ' . $this->_db->qn($property_name));
+		$query->select($this->_tbl_key . ', ' . $this->_db->qn($order_field));
 		$query->from($this->_tbl);
-		$query->where($this->_db->qn($property_name) . ' >= ' . $this->_db->q(0));
-		$query->order($this->_db->qn($property_name));
+		$query->where($this->_db->qn($order_field) . ' >= ' . $this->_db->q(0));
+		$query->order($this->_db->qn($order_field));
 
 		// Setup the extra where and ordering clause data.
 
@@ -1347,16 +1353,16 @@ class FOFTable extends JObject
 		{
 			// Make sure the ordering is a positive integer.
 
-			if ($row->ordering >= 0)
+			if ($row->$order_field >= 0)
 			{
 				// Only update rows that are necessary.
 
-				if ($row->ordering != $i + 1)
+				if ($row->$order_field != $i + 1)
 				{
 					// Update the row ordering field.
 					$query = $this->_db->getQuery(true);
 					$query->update($this->_tbl);
-					$query->set($this->_db->qn($property_name) . ' = ' . $this->_db->q($i + 1));
+					$query->set($this->_db->qn($order_field) . ' = ' . $this->_db->q($i + 1));
 					$query->where($this->_tbl_key . ' = ' . $this->_db->q($row->$k));
 					$this->_db->setQuery($query);
 					$this->_db->execute();
@@ -1394,6 +1400,12 @@ class FOFTable extends JObject
 		{
 			$this->$k = $oid;
 		}
+
+        // No primary key defined, stop here
+        if (!$this->$k)
+        {
+            return false;
+        }
 
 		$date = JFactory::getDate();
 
@@ -1470,20 +1482,32 @@ class FOFTable extends JObject
 		return $this->_db->execute();
 	}
 
-	/**
-	 * Is a record locked?
-	 *
-	 * @param   integer  $with     The userid to preform the match with. If an item is checked
-	 *                             out by this user the function will return false.
-	 * @param   integer  $against  Junk inherited from JTable; ignore
-	 *
-	 * @return  boolean  True if the record is locked by another user
-	 */
-	public function isCheckedOut($with = 0, $against = null)
+    /**
+     * Is a record locked?
+     *
+     * @param   integer $with            The userid to preform the match with. If an item is checked
+     *                                   out by this user the function will return false.
+     * @param   integer $unused_against  Junk inherited from JTable; ignore
+     *
+     * @throws  UnexpectedValueException
+     *
+     * @return  boolean  True if the record is locked by another user
+     */
+	public function isCheckedOut($with = 0, $unused_against = null)
 	{
+        $against     = null;
 		$fldLockedBy = $this->getColumnAlias('locked_by');
 
-		if (isset($this) && is_a($this, 'FOFTable') && is_null($against))
+        $k  = $this->_tbl_key;
+
+        // If no primary key is given, return false.
+
+        if ($this->$k === null)
+        {
+            throw new UnexpectedValueException('Null primary key not allowed.');
+        }
+
+		if (isset($this) && is_a($this, 'FOFTable') && !$against)
 		{
 			$against = $this->get($fldLockedBy);
 		}
@@ -2825,16 +2849,24 @@ class FOFTable extends JObject
 		return self::$_includePaths;
 	}
 
-	/**
-	 * Method to compute the default name of the asset.
-	 * The default name is in the form table_name.id
-	 * where id is the value of the primary key of the table.
-	 *
-	 * @return  string
-	 */
+    /**
+     * Method to compute the default name of the asset.
+     * The default name is in the form table_name.id
+     * where id is the value of the primary key of the table.
+     *
+     * @throws  UnexpectedValueException
+     *
+     * @return  string
+     */
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
+
+        // If there is no assetKey defined, let's set it to table name
+        if(!$this->_assetKey)
+        {
+            throw new UnexpectedValueException('Table must have an asset key defined in order to track assets');
+        }
 
 		return $this->_assetKey . '.' . (int) $this->$k;
 	}
