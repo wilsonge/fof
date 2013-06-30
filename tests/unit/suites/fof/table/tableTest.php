@@ -269,6 +269,83 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @group           tableStore
+     * @dataProvider    getTestStore
+     */
+    public function testStore($events, $tableinfo, $test, $check)
+    {
+        $db          = JFactory::getDbo();
+        $methods     = array('onBeforeStore', 'onAfterStore');
+        $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+
+        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+
+        // Mocking these methods will prevent some FOF features (ie slug creation, created_by set up and so on)
+        // I think it's ok since we're going to test that features when we'll test these methods,
+        // now we only care about the store() method
+        $table->expects($this->any())->method('onBeforeStore')->will($this->returnValue($events['before']));
+        $table->expects($this->any())->method('onAfterStore')->will($this->returnValue($events['after']));
+
+        if($test['alias'])
+        {
+            $table->setColumnAlias('asset_id', $test['alias']);
+        }
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        // We have to manually provide this info, since we can't use the getInstance method (we have to mock)
+        if($test['assetkey'])
+        {
+            $table->setAssetKey($test['assetkey']);
+        }
+
+        $table->bind($test['bind']);
+
+        if($test['nullable'])
+        {
+            foreach($test['nullable'] as $field => $value)
+            {
+                $table->$field = null;
+            }
+        }
+
+        $rc = $table->store($test['updateNulls']);
+        $this->assertEquals($check['return'], $rc, 'Store: wrong return value');
+
+        if($check['more'])
+        {
+            $tocheck = $test['bind'];
+            if($test['updateNulls'])
+            {
+                $tocheck = array_merge($tocheck, $test['nullable']);
+            }
+
+            $k = $table->getKeyName();
+            $query = $db->getQuery(true)
+                        ->select('*')
+                        ->from($tableinfo['table'])
+                        ->where($tableinfo['id'].' = '.$table->$k);
+            $row = $db->setQuery($query)->loadAssoc();
+
+            foreach($tocheck as $field => $value)
+            {
+                if($test['updateNulls'] && array_key_exists($field, $test['nullable']))
+                {
+                    $this->assertEmpty($row[$field], sprintf('Store: wrong stored value, %s instead of empty', $row[$field]));
+                }
+                else
+                {
+                    $this->assertEquals($row[$field], $value, sprintf('Store: wrong stored value, %s instead of %s', $value, $row[$field]));
+                }
+            }
+        }
+
+    }
+
+    /**
      * @group           tableMove
      * @dataProvider    getTestMove
      */
@@ -395,9 +472,8 @@ class FOFTableTest extends FtestCaseDatabase
      */
     public function testCheckout($tableinfo, $test, $check)
     {
-        $db = JFactory::getDbo();
-
-        $table           = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+        $db    = JFactory::getDbo();
+        $table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
 
         if($test['loadid'])
         {
@@ -421,7 +497,6 @@ class FOFTableTest extends FtestCaseDatabase
             $locked_by = $table->getColumnAlias('locked_by');
             $locked_on = $table->getColumnAlias('locked_on');
 
-
             $query = $db->getQuery(true)
                         ->select(array($locked_by, $locked_on))
                         ->from($table->getTableName())
@@ -432,6 +507,79 @@ class FOFTableTest extends FtestCaseDatabase
             $this->assertEquals($table->$locked_by, $row->$locked_by, 'Checkout() Wrong value for '.$locked_by.' property');
             $this->assertEquals($table->$locked_on, $row->$locked_on, 'Checkout() Wrong value for '.$locked_on.' property');
         }
+    }
+
+    /**
+     * @group           tableCheckin
+     * @dataProvider    getTestCheckin
+     */
+    public function testCheckin($tableinfo, $test, $check)
+    {
+        $db    = JFactory::getDbo();
+        $table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['alias'])
+        {
+            $table->setColumnAlias('locked_by', $test['alias']['lockby']);
+            $table->setColumnAlias('locked_on', $test['alias']['lockon']);
+        }
+
+        $rc = $table->checkin($test['id']);
+
+        $this->assertEquals($check['return'], $rc, 'Checkin() Wrong return value');
+
+        if($check['more'])
+        {
+            // Let's check if everything is alright
+            $pk        = $table->getKeyName();
+            $locked_by = $table->getColumnAlias('locked_by');
+            $locked_on = $table->getColumnAlias('locked_on');
+
+            $query = $db->getQuery(true)
+                        ->select(array($locked_by, $locked_on))
+                        ->from($table->getTableName())
+                        ->where($pk.' = '.($test['loadid'] ? $test['loadid'] : $test['id']));
+
+            $row = $db->setQuery($query)->loadObject();
+
+            $this->assertEquals('0', $table->$locked_by, 'Checkin() Wrong table value for '.$locked_by.' property');
+            $this->assertEquals('' , $table->$locked_on, 'Checkin() Wrong table value for '.$locked_on.' property');
+            $this->assertEquals('0', $row->$locked_by  , 'Checkin() Wrong db value for '.$locked_by.' property');
+            $this->assertEquals('0000-00-00 00:00:00', $row->$locked_on, 'Checkin() Wrong db value for '.$locked_on.' property');
+        }
+    }
+
+    /**
+     * @group           tableIsCheckedOut
+     * @dataProvider    getTestIsCheckedOut
+     */
+    public function testIsCheckedOut($tableinfo, $test, $check)
+    {
+        $db    = JFactory::getDbo();
+        $table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+
+        if($test['alias'])
+        {
+            $table->setColumnAlias('locked_by', $test['alias']['lockby']);
+            $table->setColumnAlias('locked_on', $test['alias']['lockon']);
+        }
+
+        $table->load($test['id']);
+        $this->assertEquals($check['return'], $table->isCheckedOut($test['with']), $check['msg']);
+    }
+
+    public function testIsCheckedOutExcpetion()
+    {
+        $this->setExpectedException('UnexpectedValueException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
+        $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+        $table->isCheckedOut();
     }
 
 	public function testGetUcmCoreAlias()
@@ -544,6 +692,131 @@ class FOFTableTest extends FtestCaseDatabase
                 'value' => '',
                 'msg'   => 'Ignored field binded')
             )
+        );
+
+        return $data;
+    }
+
+    public function getTestStore()
+    {
+        // Test vs onBefore returns false
+        $data[] = array(
+            array('before' => false, 'after' => false),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => '',
+                'updateNulls' => false
+            ),
+            array('return' => false, 'more' => false)
+        );
+
+        // Test vs onAfter returns false
+        $data[] = array(
+            array('before' => true, 'after' => false),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => '',
+                'updateNulls' => false
+            ),
+            array('return' => false, 'more' => false)
+        );
+
+        // Update test with assets, without updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => array('created_by' => null),
+                'updateNulls' => false
+            ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Update test with assets, updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'Modified title', 'enabled' => 0),
+                'nullable'    => array('created_by' => null),
+                'updateNulls' => true
+            ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Update test without assets
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+            array(
+                'loadid'      => 3,
+                'alias'       => '',
+                'assetkey'    => '',
+                'bind'        => array('title'=> 'Modified title'),
+                'nullable'    => '',
+                'updateNulls' => false
+            ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Insert new object with assets, updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'   => '',
+                'alias'    => '',
+                'assetkey' => 'com_foftest.foobar',
+                'bind'     => array('title' => 'New element', 'enabled' => 0),
+                'nullable' => array('created_by' => null),
+                'updateNulls' => true
+            ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Insert new object with assets, without updating nulls
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid'      => '',
+                'alias'       => '',
+                'assetkey'    => 'com_foftest.foobar',
+                'bind'        => array('title' => 'New element', 'enabled' => 0),
+                'nullable'    => array('created_by' => null),
+                'updateNulls' => false
+            ),
+            array('return' => true, 'more' => true)
+        );
+
+        // Update test with assets and alias
+        $data[] = array(
+            array('before' => true, 'after' => true),
+            array('table'  => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+            array(
+                'loadid'      => 3,
+                'alias'       => 'fo_asset_id',
+                'assetkey'    => '',
+                'bind'        => array('fo_title' => 'Modified title', 'fo_enabled' => 0),
+                'nullable'    => '',
+                'updateNulls' => false
+            ),
+            array('return' => true, 'more' => true)
         );
 
         return $data;
@@ -910,6 +1183,162 @@ class FOFTableTest extends FtestCaseDatabase
             array(
                 'return' => true,
                 'more'   => true
+            )
+        );
+
+        return $data;
+    }
+
+    public function getTestCheckin()
+    {
+        // Test vs table without checkin support
+        $data[] = array(
+            array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+            array(
+                'loadid' => '',
+                'id'     => 5,
+                'alias'  => ''
+            ),
+            array(
+                'return' => true,
+                'more'   => false
+            )
+        );
+
+        // Test vs table, no id given
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid' => '',
+                'id'     => null,
+                'alias'  => ''
+            ),
+            array(
+                'return' => false,
+                'more'   => false
+            )
+        );
+
+        // Test vs table, id given
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid' => '',
+                'id'     => 4,
+                'alias'  => ''
+            ),
+            array(
+                'return' => true,
+                'more'   => true
+            )
+        );
+
+        // Test vs table, no id given, load it first
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'loadid' => 4,
+                'id'     => null,
+                'alias'  => ''
+            ),
+            array(
+                'return' => true,
+                'more'   => true
+            )
+        );
+
+        // Test vs aliased table, no id given, load it first
+        $data[] = array(
+            array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+            array(
+                'loadid' => 4,
+                'id'     => null,
+                'alias'  => array(
+                    'lockby' => 'fo_locked_by',
+                    'lockon' => 'fo_locked_on'
+                )
+            ),
+            array(
+                'return' => true,
+                'more'   => true
+            )
+        );
+
+        return $data;
+    }
+
+    public function getTestIsCheckedOut()
+    {
+        // Unlocked record, no user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 4,
+                'alias'     => '',
+                'with'      => ''
+            ),
+            array(
+                'return'    => false,
+                'msg'       => 'isCheckedOut: Wrong return value, unlocked record with no user'
+            )
+        );
+
+        // Unlocked record, with user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 4,
+                'alias'     => '',
+                'with'      => 42
+            ),
+            array(
+                'return'    => false,
+                'msg'       => 'isCheckedOut: Wrong return value, unlocked record with user'
+            )
+        );
+
+        // Locked record, without user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 5,
+                'alias'     => '',
+                'with'      => ''
+            ),
+            array(
+                'return'    => true,
+                'msg'       => 'isCheckedOut: Wrong return value, locked record without user'
+            )
+        );
+
+        // Locked record, with user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+            array(
+                'id'        => 5,
+                'alias'     => '',
+                'with'      => 42
+            ),
+            array(
+                'return'    => true,
+                'msg'       => 'isCheckedOut: Wrong return value, locked record with user'
+            )
+        );
+
+        // Locked record, without user
+        $data[] = array(
+            array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+            array(
+                'id'        => 5,
+                'alias'     => array(
+                    'lockon'  => 'fo_locked_on',
+                    'lockby'  => 'fo_locked_by'
+                ),
+                'with'      => 42
+            ),
+            array(
+                'return'    => true,
+                'msg'       => 'isCheckedOut: Wrong return value, locked record with user'
             )
         );
 
