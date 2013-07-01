@@ -15,19 +15,6 @@ defined('_JEXEC') or die();
  */
 class FOFModelFieldNumber extends FOFModelField
 {
-
-	/**
-	 * Is it a null or otherwise empty value?
-	 *
-	 * @param   mixed  $value  The value to test for emptiness
-	 *
-	 * @return  boolean
-	 */
-	public function isEmpty($value)
-	{
-		return is_null($value) || ($value === '');
-	}
-
 	/**
 	 * The partial match is mapped to an exact match
 	 *
