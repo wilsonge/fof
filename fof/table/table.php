@@ -1533,6 +1533,12 @@ class FOFTable extends JObject
 	 */
 	public function copy($cid = null)
 	{
+		//We have to cast the id as array, or the helper function will return an empty set
+		if($cid)
+		{
+			$cid = (array) $cid;
+		}
+
 		JArrayHelper::toInteger($cid);
 		$k = $this->_tbl_key;
 
@@ -1579,6 +1585,7 @@ class FOFTable extends JObject
 				}
 			}
 
+			// TODO Should we notify the user that we had a problem with this record?
 			if (!$this->onBeforeCopy($item))
 			{
 				continue;
@@ -1591,8 +1598,10 @@ class FOFTable extends JObject
 			$this->$modified_by = null;
 
 			// Let's fire the event only if everything is ok
+			// TODO Should we notify the user that we had a problem with this record?
 			if ($this->store())
 			{
+				// TODO Should we notify the user that we had a problem with this record?
 				$this->onAfterCopy($item);
 			}
 
@@ -2341,8 +2350,8 @@ class FOFTable extends JObject
 		}
 
 		// Do we have a set of title and slug fields?
-		$hasTitle = in_array($title, $this->getFields());
-		$hasSlug  = in_array($slug, $this->getFields());
+		$hasTitle = in_array($title, $this->getKnownFields());
+		$hasSlug  = in_array($slug, $this->getKnownFields());
 
 		if ($hasTitle && $hasSlug)
 		{

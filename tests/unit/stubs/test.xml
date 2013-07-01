@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    PLEASE PAY ATTENTION IF YOU ADD MORE RECORDS!
+    In some tests (ie copy tests) we "cheat" and we check new records directly using the new ID, to simplify testing.
+    For example, if I know that there are 5 records, I know that the next one will have ID = 6.
+    If you add more rows, you'll likely get some problems, so please remember to double check tests.
+-->
 <dataset>
   <table name="jos_foftest_foobars">
     <column>foftest_foobar_id</column>
