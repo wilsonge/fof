@@ -10,6 +10,7 @@ abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 	public static   $database;
 	public static   $dbo;
 
+	protected       $loadDataset  = true;
 	protected       $factoryState = array ();
 
 	public static function tearDownAfterClass()
@@ -34,15 +35,46 @@ abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 		$this->savedFactoryState['mailer']		= JFactory::$mailer;
 	}
 
-	protected function setUp()
+	/**
+	 * Override of base setUp method, so we can flag which methods need to load a dataset
+	 *
+	 * @param bool $loadDataset
+	 */
+	protected function setUp($loadDataset = true)
 	{
-		parent::setUp();
+		$this->loadDataset = $loadDataset;
+
+		if($this->loadDataset)
+		{
+			$this->databaseTester = NULL;
+
+			$this->getDatabaseTester()->setSetUpOperation($this->getSetUpOperation());
+			$this->getDatabaseTester()->setDataSet($this->getDataSet());
+			$this->getDatabaseTester()->onSetUp();
+		}
+
 		$this->saveFactoryState();
 	}
 
+	/**
+	 * Override of standard tearDown function. Connections with database are closed only if we
+	 * requested a dataset for the current test
+	 */
 	protected function tearDown()
 	{
-		parent::tearDown();
+		if($this->loadDataset)
+		{
+			$this->getDatabaseTester()->setTearDownOperation($this->getTearDownOperation());
+			$this->getDatabaseTester()->setDataSet($this->getDataSet());
+			$this->getDatabaseTester()->onTearDown();
+
+			/**
+			 * Destroy the tester after the test is run to keep DB connections
+			 * from piling up.
+			 */
+			$this->databaseTester = NULL;
+		}
+
 		$this->restoreFactoryState();
 	}
 

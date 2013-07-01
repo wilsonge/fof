@@ -11,13 +11,24 @@ class FOFTableTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
-        parent::setUp();
+	    $loadDataset = true;
+	    $annotations = $this->getAnnotations();
+
+	    // Do I need a dataset for this set or not?
+	    if(isset($annotations['method']) && isset($annotations['method']['preventDataLoading']))
+	    {
+		    $loadDataset = false;
+	    }
+
+	    parent::setUp($loadDataset);
 
         FOFPlatform::forceInstance(null);
         FOFTable::forceInstance(null);
-
     }
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testSetKnownFields()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -34,6 +45,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertAttributeEquals($knownFields, 'knownFields', $table, 'Known fields set differ from defined list');
 	}
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testGetKnownFields()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -52,6 +66,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertEquals($knownFields, $result, 'Known fields fetched differ from defined list');
 	}
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testAddKnownField()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -67,6 +84,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertContains('bar', $known_fields, 'Known fields set differ from defined list');
 	}
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testRemoveKnownField()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -113,7 +133,11 @@ class FOFTableTest extends FtestCaseDatabase
         $this->assertEquals(1, $table->foftest_foobar_id, 'Load() by fields to match failed');
     }
 
-    public function testCheck()
+	/**
+	 * @preventDataLoading
+	 * @group               tableCheck
+	 */
+	public function testCheck()
     {
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
         $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -235,6 +259,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
     /**
+     * @preventDataLoading
      * @dataProvider    getTestBind
      */
     public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
@@ -259,7 +284,10 @@ class FOFTableTest extends FtestCaseDatabase
         }
     }
 
-    public function testBindException()
+	/**
+	 * @preventDataLoading
+	 */
+	public function testBindException()
     {
         $this->setExpectedException('InvalidArgumentException');
 
@@ -391,6 +419,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @preventDataLoading
      * @group           tableMove
      */
     public function testMoveException()
@@ -425,6 +454,7 @@ class FOFTableTest extends FtestCaseDatabase
         {
             $ordering = $table->getColumnAlias('ordering');
 
+	        $table->setAssetKey('com_foftest.foobar');
             $table->load($test['id']);
             $table->$ordering = $test['ordering'];
             $table->store();
@@ -455,6 +485,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @preventDataLoading
      * @group           tableReorder
      */
     public function testReorderException()
@@ -555,6 +586,10 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * In this test we used a trick: since Joomla uses JTableSession calling
+     * JTable::getInstance('session'), it's impossible to mock. So we create a fake user
+     * that's surfing in our site writing directly into the session table
+     *
      * @group           tableIsCheckedOut
      * @dataProvider    getTestIsCheckedOut
      */
@@ -573,13 +608,130 @@ class FOFTableTest extends FtestCaseDatabase
         $this->assertEquals($check['return'], $table->isCheckedOut($test['with']), $check['msg']);
     }
 
-    public function testIsCheckedOutExcpetion()
+	/**
+	 * @preventDataLoading
+	 */
+	public function testIsCheckedOutExcpetion()
     {
         $this->setExpectedException('UnexpectedValueException');
 
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
         $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
         $table->isCheckedOut();
+    }
+
+    /**
+     * @group           tableCopy
+     * @dataProvider    getTestCopy
+     */
+    public function testCopy($events, $tableinfo, $test, $check)
+    {
+	    // TODO at the moment the case when onAfterCopy returns false is not covered, since
+	    // it simply doens't change anything...
+
+        $db          = JFactory::getDbo();
+        $methods     = array('onBeforeCopy', 'onAfterCopy');
+        $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+	    $table->expects($this->any())->method('onBeforeCopy')->will($this->returnValue($events['before']));
+	    $table->expects($this->any())->method('onAfterCopy')->will($this->returnValue($events['after']));
+
+	    //$table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+	    $table->setAssetKey('com_foftest.foobar');
+
+        if($test['alias'])
+        {
+            foreach($test['alias'] as $field => $alias)
+            {
+                $table->setColumnAlias($field, $alias);
+            }
+        }
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        $rc = $table->copy($test['cids']);
+        $this->assertEquals($check['return'], $rc, 'Copy: Wrong return value');
+
+        if($check['more'])
+        {
+	        $nocopy = 0;
+
+	        // Fields that I should ignore while compariring the two rows
+			$skipfields[] = $table->getKeyName();
+	        $skipfields[] = $table->getColumnAlias('slug');
+	        $skipfields[] = $table->getColumnAlias('asset_id');
+	        $skipfields[] = $table->getColumnAlias('created_by');
+	        $skipfields[] = $table->getColumnAlias('created_on');
+	        $skipfields[] = $table->getColumnAlias('modified_by');
+	        $skipfields[] = $table->getColumnAlias('modified_on');
+
+	        // Fields that MUST be different between the two rows
+	        $difffields[] = $table->getKeyName();
+	        $difffields[] = $table->getColumnAlias('slug');
+	        $difffields[] = $table->getColumnAlias('asset_id');
+	        $difffields[] = $table->getColumnAlias('created_on');
+
+	        // I "cheat" with the id of copied elements to make my life easier, since I already know
+	        // the values that they will get... :)
+            foreach($check['cids'] as $original => $copy)
+            {
+	            // The record shouldn't be copied
+	            if(!$copy)
+	            {
+					$nocopy++;
+		            continue;
+	            }
+
+                $query = $db->getQuery(true)
+                            ->select('*')
+                            ->from($tableinfo['table'])
+                            ->where($tableinfo['id'].' = '.$original);
+                $orig_row = $db->setQuery($query)->loadAssoc();
+
+                $query = $db->getQuery(true)
+                            ->select('*')
+                            ->from($tableinfo['table'])
+                            ->where($tableinfo['id'].' = '.$copy);
+                $copy_row = $db->setQuery($query)->loadAssoc();
+
+	            // Create two "working" arrays for testing same and diff fields
+	            $orig_row_same = $orig_row;
+	            $copy_row_same = $copy_row;
+	            $orig_row_diff = $orig_row;
+	            $copy_row_diff = $copy_row;
+
+	            // Let's remove fields that are different
+	            foreach($orig_row as $field => $value)
+	            {
+		            if(in_array($field, $skipfields))
+		            {
+			            unset($orig_row_same[$field]);
+			            unset($copy_row_same[$field]);
+		            }
+
+		            if(!in_array($field, $difffields))
+		            {
+			            unset($orig_row_diff[$field]);
+			            unset($copy_row_diff[$field]);
+		            }
+	            }
+
+				$this->assertEquals($orig_row_same, $copy_row_same, 'Copy: Non special fields should be the same');
+				$this->assertNotEquals($orig_row_diff, $copy_row_diff, "Copy: Special fields shouldn't be the same");
+            }
+
+	        // Let's check if
+	        if($nocopy)
+	        {
+		        $query    = $db->getQuery(true)->select('COUNT(*)')->from($tableinfo['table']);
+		        $count    = $db->setQuery($query)->loadResult();
+		        $expected = 5 + count($check['cids']) - $nocopy;
+		        $this->assertEquals($expected, $count, 'Copy: Wrong total number of items, maybe some unwanted records has been copied?');
+	        }
+        }
     }
 
 	public function testGetUcmCoreAlias()
@@ -1344,4 +1496,119 @@ class FOFTableTest extends FtestCaseDatabase
 
         return $data;
     }
+
+	public function getTestCopy()
+	{
+		// Test with onBefore returning false
+		$data[] = array(
+			array('before' => false, 'after' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => 1),
+			array('return' => true,	'more' => true,	'cids' => array(1 => 0))
+		);
+
+		// Test with no ids
+		$data[] = array(
+			array('before' => true, 'after' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '','loadid' => '','cids' => ''),
+			array('return' => false, 'more' => false)
+		);
+
+		// Single record, loading it first
+		$data[] = array(
+			array('before' => true, 'after' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => 1, 'cids' => ''),
+			array('return' => true, 'more' => true, 'cids' => array(1 => 6))
+		);
+
+		// Single record, passing it to the copy function
+		$data[] = array(
+			array('before' => true, 'after' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => 2),
+			array('return' => true,	'more' => true,	'cids' => array(2 => 6))
+		);
+
+		// Single record, checked out (so it shold be skipped)
+		$data[] = array(
+			array('before' => true, 'after' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => 5),
+			array('return' => true, 'more' => true,	'cids' => array(5 => 0))
+		);
+
+		// Multiple records, some of them shouldn't be copied
+		$data[] = array(
+			array('before' => true, 'after' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array(
+				'alias'  => '',
+				'loadid' => '',
+				'cids'   => array(1,3,4,5)
+			),
+			array(
+				'return' => true,
+				'more'   => true,
+				'cids'   => array(
+					1 => 6,
+					3 => 7,
+					4 => 8,
+					5 => 0,
+				)
+			)
+		);
+
+		// Test vs bare table (no special columns)
+		$data[] = array(
+			array('before' => true, 'after' => true),
+			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+			array(
+				'alias'  => '',
+				'loadid' => '',
+				'cids'   => array(1,2,3)
+			),
+			array(
+				'return' => true,
+				'more'   => true,
+				'cids'   => array(
+					1 => 4,
+					2 => 5,
+					3 => 6
+				)
+			)
+		);
+
+		// Test vs table with aliases
+		$data[] = array(
+			array('before' => true, 'after' => true),
+			array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+			array(
+				'alias'  => array(
+					'slug'        => 'fo_slug',
+					'title'       => 'fo_title',
+					'created_by'  => 'fo_created_by',
+					'created_on'  => 'fo_created_on',
+					'modified_by' => 'fo_modified_by',
+					'modified_on' => 'fo_modified_on',
+					'locked_by'   => 'fo_locked_by',
+					'locked_on'   => 'fo_locked_on'
+				),
+				'loadid' => '',
+				'cids'   => array(1,2,5)
+			),
+			array(
+				'return' => true,
+				'more'   => true,
+				'cids'   => array(
+					1 => 6,
+					2 => 7,
+					5 => 0
+				)
+			)
+		);
+
+		return $data;
+	}
 }

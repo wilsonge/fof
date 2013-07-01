@@ -771,9 +771,9 @@ class FOFTable extends JObject
 		{
 			$fieldName = $field->Field;
 
-			if (empty($fieldname))
+			if (empty($fieldName))
 			{
-				$fieldname = $fielddata->column_name;
+				$fieldName = $field->column_name;
 			}
 
 			// Field is not nullable but it's null, set error
@@ -1538,6 +1538,12 @@ class FOFTable extends JObject
 	 */
 	public function copy($cid = null)
 	{
+		//We have to cast the id as array, or the helper function will return an empty set
+		if($cid)
+		{
+			$cid = (array) $cid;
+		}
+
 		JArrayHelper::toInteger($cid);
 		$k = $this->_tbl_key;
 
@@ -1584,6 +1590,7 @@ class FOFTable extends JObject
 				}
 			}
 
+			// TODO Should we notify the user that we had a problem with this record?
 			if (!$this->onBeforeCopy($item))
 			{
 				continue;
@@ -1596,8 +1603,10 @@ class FOFTable extends JObject
 			$this->$modified_by = null;
 
 			// Let's fire the event only if everything is ok
+			// TODO Should we notify the user that we had a problem with this record?
 			if ($this->store())
 			{
+				// TODO Should we notify the user that we had a problem with this record?
 				$this->onAfterCopy($item);
 			}
 
