@@ -111,6 +111,12 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
 		$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
 		$modelName = (string) $this->element['model'];
+		$nonePlaceholder = (string) $this->element['none'];
+
+		if (!empty($nonePlaceholder))
+		{
+			$options[] = JHtml::_('select.option', JText::_($nonePlaceholder), null);
+		}
 
 		// Process field atrtibutes
 		$applyAccess = strtolower($applyAccess);
