@@ -11,14 +11,24 @@ class FOFTableTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
-	    // TODO prevent table loading if we're not using the DB
-	    // NOTE to self: use getAnnotations() and create a custom new annotation
-        parent::setUp();
+	    $loadDataset = true;
+	    $annotations = $this->getAnnotations();
+
+	    // Do I need a dataset for this set or not?
+	    if(isset($annotations['method']) && isset($annotations['method']['preventDataLoading']))
+	    {
+		    $loadDataset = false;
+	    }
+
+	    parent::setUp($loadDataset);
 
         FOFPlatform::forceInstance(null);
         FOFTable::forceInstance(null);
     }
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testSetKnownFields()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -35,6 +45,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertAttributeEquals($knownFields, 'knownFields', $table, 'Known fields set differ from defined list');
 	}
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testGetKnownFields()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -53,6 +66,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertEquals($knownFields, $result, 'Known fields fetched differ from defined list');
 	}
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testAddKnownField()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -68,6 +84,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertContains('bar', $known_fields, 'Known fields set differ from defined list');
 	}
 
+	/**
+	 * @preventDataLoading
+	 */
 	public function testRemoveKnownField()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -114,7 +133,11 @@ class FOFTableTest extends FtestCaseDatabase
         $this->assertEquals(1, $table->foftest_foobar_id, 'Load() by fields to match failed');
     }
 
-    public function testCheck()
+	/**
+	 * @preventDataLoading
+	 * @group               tableCheck
+	 */
+	public function testCheck()
     {
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
         $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -236,6 +259,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
     /**
+     * @preventDataLoading
      * @dataProvider    getTestBind
      */
     public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
@@ -260,7 +284,10 @@ class FOFTableTest extends FtestCaseDatabase
         }
     }
 
-    public function testBindException()
+	/**
+	 * @preventDataLoading
+	 */
+	public function testBindException()
     {
         $this->setExpectedException('InvalidArgumentException');
 
@@ -392,6 +419,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @preventDataLoading
      * @group           tableMove
      */
     public function testMoveException()
@@ -457,6 +485,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @preventDataLoading
      * @group           tableReorder
      */
     public function testReorderException()
@@ -579,7 +608,10 @@ class FOFTableTest extends FtestCaseDatabase
         $this->assertEquals($check['return'], $table->isCheckedOut($test['with']), $check['msg']);
     }
 
-    public function testIsCheckedOutExcpetion()
+	/**
+	 * @preventDataLoading
+	 */
+	public function testIsCheckedOutExcpetion()
     {
         $this->setExpectedException('UnexpectedValueException');
 

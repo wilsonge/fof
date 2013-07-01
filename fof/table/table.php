@@ -771,9 +771,9 @@ class FOFTable extends JObject
 		{
 			$fieldName = $field->Field;
 
-			if (empty($fieldname))
+			if (empty($fieldName))
 			{
-				$fieldname = $fielddata->column_name;
+				$fieldName = $field->column_name;
 			}
 
 			// Field is not nullable but it's null, set error
