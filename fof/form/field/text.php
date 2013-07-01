@@ -139,6 +139,12 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 			foreach ($fields as $fielddata)
 			{
 				$fieldname = $fielddata->Field;
+
+				if (empty($fieldname))
+				{
+					$fieldname = $fielddata->column_name;
+				}
+
 				$search    = '[ITEM:' . strtoupper($fieldname) . ']';
 				$replace   = $this->item->$fieldname;
 				$link_url  = str_replace($search, $replace, $link_url);
