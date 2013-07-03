@@ -903,6 +903,17 @@ class FOFController extends JObject
 			$result = true;
 		}
 
+		if ($result)
+		{
+			$plugin_event = FOFInflector::camelize('on before ' . $this->bareComponent . ' controller ' . $this->viewName . ' ' . $task);
+			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$input));
+
+			if (in_array(false, $plugin_result, true))
+			{
+				$result = false;
+			}
+		}
+
 		if (!$result)
 		{
 			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
@@ -940,11 +951,26 @@ class FOFController extends JObject
 		if (method_exists($this, $method_name))
 		{
 			$result = $this->$method_name();
+		}
+		else
+		{
+			$result = true;
+		}
 
-			if (!$result)
+		if ($result)
+		{
+			$plugin_event = FOFInflector::camelize('on after ' . $this->bareComponent . ' controller ' . $this->viewName . ' ' . $task);
+			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$input, &$ret));
+
+			if (in_array(false, $plugin_result, true))
 			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+				$result = false;
 			}
+		}
+
+		if (!$result)
+		{
+			throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 		}
 
 		return $ret;
