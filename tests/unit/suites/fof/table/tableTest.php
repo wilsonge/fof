@@ -736,6 +736,61 @@ class FOFTableTest extends FtestCaseDatabase
         }
     }
 
+	/**
+	 * @group           tablePublish
+	 * @dataProvider    getTestPublish
+	 */
+	public function testPublish($events, $tableinfo, $test, $check)
+	{
+		$db          = JFactory::getDbo();
+		$methods     = array('onBeforePublish');
+		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+		$table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+		$table->expects($this->any())->method('onBeforePublish')->will($this->returnValue($events['before']));
+
+		if($test['alias'])
+		{
+			foreach($test['alias'] as $field => $alias)
+			{
+				$table->setColumnAlias($field, $alias);
+			}
+		}
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$rc = $table->publish($test['cids'], $test['publish'], $test['user']);
+		$this->assertEquals($check['return'], $rc, 'Publish: Wrong return value');
+
+		if($check['more'])
+		{
+			$enabledName = $table->getColumnAlias('enabled');
+			$cids        = $test['loadid'] ? (array)$test['loadid'] : (array)$test['cids'];
+
+			// Let's get an indexed array on primary key
+			$query = $db->getQuery(true)
+						->select(array($table->getKeyName(), $enabledName))
+						->from($tableinfo['table'])
+						->where($table->getKeyName(). ' IN('.implode(',', $cids).')');
+
+			$rows = $db->setQuery($query)->loadObjectList($table->getKeyName());
+
+			// If there is only record, the publish method should update the table, too
+			if(count($check['cids']) == 1 && $test['loadid'])
+			{
+				$this->assertEquals($test['publish'], $table->$enabledName, 'Publish: wrong value assigned to the table');
+			}
+
+			// Is something different from the expected?
+			foreach($check['cids'] as $record => $value)
+			{
+				$this->assertEquals($value, $rows[$record]->$enabledName, 'Publish: record '.$record.' has a wrong publish value in the database');
+			}
+		}
+	}
+
 	public function testGetUcmCoreAlias()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -816,5 +871,10 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getTestCopy()
 	{
 		return TableDataprovider::getTestCopy();
+	}
+
+	public function getTestPublish()
+	{
+		return TableDataprovider::getTestPublish();
 	}
 }

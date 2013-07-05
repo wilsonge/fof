@@ -1627,6 +1627,21 @@ class FOFTable extends JObject
 	 */
 	public function publish($cid = null, $publish = 1, $user_id = 0)
 	{
+		$enabledName   = $this->getColumnAlias('enabled');
+		$locked_byName = $this->getColumnAlias('locked_by');
+
+		// Mhm... you called the publish method on a table without publish support...
+		if(!in_array($enabledName, $this->getKnownFields()))
+		{
+			return false;
+		}
+
+		//We have to cast the id as array, or the helper function will return an empty set
+		if($cid)
+		{
+			$cid = (array) $cid;
+		}
+
 		JArrayHelper::toInteger($cid);
 		$user_id = (int) $user_id;
 		$publish = (int) $publish;
@@ -1651,9 +1666,6 @@ class FOFTable extends JObject
 			return false;
 		}
 
-		$enabledName   = $this->getColumnAlias('enabled');
-		$locked_byName = $this->getColumnAlias('locked_by');
-
 		$query = $this->_db->getQuery(true)
 			->update($this->_db->qn($this->_tbl))
 			->set($this->_db->qn($enabledName) . ' = ' . (int) $publish);
@@ -1668,8 +1680,9 @@ class FOFTable extends JObject
 			);
 		}
 
-		$cids = $this->_db->qn($k) . ' = ' .
-			implode(' OR ' . $this->_db->qn($k) . ' = ', $cid);
+		//Why this crazy statement?
+		// TODO Rewrite this statment using IN. Check if it work in SQLServer and PostgreSQL
+		$cids = $this->_db->qn($k) . ' = ' . implode(' OR ' . $this->_db->qn($k) . ' = ', $cid);
 
 		$query->where('(' . $cids . ')');
 
@@ -1700,11 +1713,12 @@ class FOFTable extends JObject
 		{
 			if ($this->_db->getAffectedRows() == 1)
 			{
+				// TODO should we check for its return value?
 				$this->checkin($cid[0]);
 
 				if ($this->$k == $cid[0])
 				{
-					$this->published = $publish;
+					$this->$enabledName = $publish;
 				}
 			}
 		}
@@ -1717,7 +1731,9 @@ class FOFTable extends JObject
 	/**
 	 * Delete a record
 	 *
-	 * @param   integer  $oid  The primary key value of the item to delete
+	 * @param   integer $oid  The primary key value of the item to delete
+	 *
+	 * @throws  UnexpectedValueException
 	 *
 	 * @return  boolean  True on success
 	 */

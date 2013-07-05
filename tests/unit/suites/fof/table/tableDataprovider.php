@@ -842,4 +842,87 @@ abstract class TableDataprovider
 
 		return $data;
 	}
+
+	public static function getTestPublish()
+	{
+		// Test with onBefore returning false
+		$data[] = array(
+			array('before' => false),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => 1, 'publish' => 1, 'user' => ''),
+			array('return' => false, 'more' => false, 'cids' => array())
+		);
+
+		// Test with single id already published
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => 1, 'publish' => 1, 'user' => ''),
+			array('return' => true,	'more' => true, 'cids' => array(1 => 1))
+		);
+
+		// Test with table loaded
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => 2, 'cids' => '', 'publish' => 1, 'user' => ''),
+			array('return' => true,	'more' => true, 'cids' => array(2 => 1))
+		);
+
+		// Test with array of elements - publish them all
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => array(2,3), 'publish' => 1, 'user' => ''),
+			array('return' => true,	'more' => true, 'cids' => array(2 => 1, 3 => 1))
+		);
+
+		// Test with array of elements - some are locked, but we don't provide an userid
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => array(4,5), 'publish' => 0, 'user' => ''),
+			array('return' => true,	'more' => true, 'cids' => array(4 => 0, 5 => 1))
+		);
+
+		// Test with array of elements - some are locked, we provide a valid userid
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => array(4,5), 'publish' => 0, 'user' => 99),
+			array('return' => true,	'more' => true, 'cids' => array(4 => 0, 5 => 0))
+		);
+
+		// Test with array of elements - some are locked, we provide an invalid userid
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => array(4,5), 'publish' => 0, 'user' => 88),
+			array('return' => true,	'more' => true, 'cids' => array(4 => 0, 5 => 1))
+		);
+
+		// Test with table with no publish field
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+			array('alias'  => '', 'loadid' => '', 'cids' => '', 'publish' => '', 'user' => ''),
+			array('return' => false, 'more' => false, 'cids' => array())
+		);
+
+		// Test with aliased table
+		$data[] = array(
+			array('before' => true),
+			array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+			array('alias'  => array(
+					'enabled'   => 'fo_enabled',
+					'locked_by' => 'fo_locked_by'),
+			      'loadid' => '',
+			      'cids' => array(4,5),
+			      'publish' => 0,
+			      'user' => 88),
+			array('return' => true,	'more' => true, 'cids' => array(4 => 0, 5 => 1))
+		);
+
+		return $data;
+	}
 }
