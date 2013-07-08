@@ -1092,12 +1092,18 @@ class FOFTable extends JObject
 		// If a primary key exists update the object, otherwise insert it.
 		if ($this->$k)
 		{
-			$this->_db->updateObject($this->_tbl, $updateObject, $this->_tbl_key, $updateNulls);
+			$result = $this->_db->updateObject($this->_tbl, $updateObject, $this->_tbl_key, $updateNulls);
 		}
 		else
 		{
-			$this->_db->insertObject($this->_tbl, $updateObject, $this->_tbl_key);
+			$result = $this->_db->insertObject($this->_tbl, $updateObject, $this->_tbl_key);
 		}
+
+		if ($result !== true)
+		{
+			return false;
+		}
+		
 		$this->bind($updateObject);
 
 		// Now the real tags storing process
