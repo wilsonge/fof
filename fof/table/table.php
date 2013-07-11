@@ -179,6 +179,20 @@ class FOFTable extends JObject
 	protected $knownFields = array();
 
 	/**
+	 * A list of table fields, keyed per table
+	 *
+	 * @var array
+	 */
+	protected static $tableFieldCache = array();
+
+	/**
+	 * A list of tables in the database
+	 *
+	 * @var array
+	 */
+	protected static $tableCache = array();
+
+	/**
 	 * Returns a static object instance of a particular table type
 	 *
 	 * @param   string  $type    The table name
@@ -1103,7 +1117,7 @@ class FOFTable extends JObject
 		{
 			return false;
 		}
-		
+
 		$this->bind($updateObject);
 
 		// Now the real tags storing process
@@ -1955,14 +1969,11 @@ class FOFTable extends JObject
 	 */
 	public function getTableFields($tableName = null)
 	{
-		static $cache = array();
-		static $tables = array();
-
 		// Make sure we have a list of tables in this db
 
-		if (empty($tables))
+		if (empty(self::$tableCache))
 		{
-			$tables = $this->_db->getTableList();
+			self::$tableCache = $this->_db->getTableList();
 		}
 
 		if (!$tableName)
@@ -1970,7 +1981,7 @@ class FOFTable extends JObject
 			$tableName = $this->_tbl;
 		}
 
-		if (!array_key_exists($tableName, $cache))
+		if (!array_key_exists($tableName, self::$tableFieldCache))
 		{
 			// Lookup the fields for this table only once.
 			$name = $tableName;
@@ -1986,10 +1997,10 @@ class FOFTable extends JObject
 				$checkName = $name;
 			}
 
-			if (!in_array($checkName, $tables))
+			if (!in_array($checkName, self::$tableCache))
 			{
 				// The table doesn't exist. Return false.
-				$cache[$tableName] = false;
+				self::$tableFieldCache[$tableName] = false;
 			}
 			elseif (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
@@ -2000,7 +2011,7 @@ class FOFTable extends JObject
 					$fields = false;
 				}
 
-				$cache[$tableName] = $fields;
+				self::$tableFieldCache[$tableName] = $fields;
 			}
 			else
 			{
@@ -2011,13 +2022,13 @@ class FOFTable extends JObject
 					$fields = false;
 				}
 
-				$cache[$tableName] = $fields[$name];
+				self::$tableFieldCache[$tableName] = $fields[$name];
 			}
 
 			// PostgreSQL date type compatibility
-			if (($this->_db->name == 'postgresql') && ($cache[$tableName] != false))
+			if (($this->_db->name == 'postgresql') && (self::$tableFieldCache[$tableName] != false))
 			{
-				foreach ($cache[$tableName] as $field)
+				foreach (self::$tableFieldCache[$tableName] as $field)
 				{
 					if (strtolower($field->type) == 'timestamp without time zone')
 					{
@@ -2031,7 +2042,7 @@ class FOFTable extends JObject
 			}
 		}
 
-		return $cache[$tableName];
+		return self::$tableFieldCache[$tableName];
 	}
 
 	public function getTableAlias()
