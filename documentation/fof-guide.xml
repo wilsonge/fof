@@ -504,7 +504,12 @@ function postflight($type, $parent)
     structure for your components. A component's structure looks like
     this:</para>
 
-    <para/>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/component-structure.png"
+                   scalefit="1" width="14cm"/>
+      </imageobject>
+    </mediaobject>
 
     <para>The Dispatcher is the entry point of your component. Some people
     would call this a "front Controller" and this is actually what it is. It's
@@ -2761,12 +2766,12 @@ $json = ob_end_clean();
       PHP and HTML code are intermixed to create the appropriate
       representation of the data to be served to a web browser. While this
       gives maximum flexibility to the developer it is also a drag, requiring
-      you to write a lot of repetitive code. </para>
+      you to write a lot of repetitive code.</para>
 
       <para>Joomla! 1.6 and later is providing a solution to this problem, at
       least for edit views: JForm. With it it's possible to create an XML file
-      which defines the controls of the form and have JForm render it as HTML.
-      </para>
+      which defines the controls of the form and have JForm render it as
+      HTML.</para>
 
       <para>Pros:</para>
 
@@ -2777,8 +2782,7 @@ $json = ob_end_clean();
 
         <listitem>
           <para>The HTML generation is abstracted, making it easier to upgrade
-          to newer versions of Joomla! using a different HTML structure
-          </para>
+          to newer versions of Joomla! using a different HTML structure</para>
         </listitem>
       </itemizedlist>
 
@@ -2787,11 +2791,11 @@ $json = ob_end_clean();
       <itemizedlist>
         <listitem>
           <para>You need to change your Controllers, Models and Views to cater
-          for and display the forms </para>
+          for and display the forms</para>
         </listitem>
 
         <listitem>
-          <para>They only apply to edit views </para>
+          <para>They only apply to edit views</para>
         </listitem>
       </itemizedlist>
 
@@ -2801,34 +2805,33 @@ $json = ob_end_clean();
       Moreover, the forms are handled automatically by the FOF base MVC
       classes without requiring you to write any additional code. If you want
       you can always combine a traditional .php view template with a form file
-      for maximum customisation of your view. </para>
+      for maximum customisation of your view.</para>
 
       <section xml:id="form-types">
         <title>Form types</title>
 
         <section xml:id="different-form-types">
-          <title>The different form types </title>
+          <title>The different form types</title>
 
           <para>As implied above, there are three types of XML forms available
           in FOF: Browse, Read and Edit. Each one follows slightly different
           conventions and is used in different tasks of each MVC triad. In
           this section we are going to present what each of those types does
-          and what is its structure. </para>
+          and what is its structure.</para>
 
           <para>There a few things you should know before we go into more
-          details. </para>
+          details.</para>
 
           <para>All form files are placed in your view's
           <filename>tmpl</filename> directory, e.g.
-          <filename>components/com_example/views/items/tmpl</filename>.
-          </para>
+          <filename>components/com_example/views/items/tmpl</filename>.</para>
 
           <para>All form files' names begin with <filename>form.</filename>
           and end with <filename>.xml</filename>. This is required for Joomla!
           to distinguish them from view metadata XML files. The middle part of
           their name follows the same convention as the regular view template
           files, i.e. "default" for browse tasks, "form" for edit tasks and
-          "item" for read tasks. </para>
+          "item" for read tasks.</para>
 
           <para>For example, the browse form for <code>com_example</code>'s
           items view is located in
@@ -2842,8 +2845,8 @@ $json = ob_end_clean();
 
           <para>Browse forms are used to create a records list view. They are
           typically used in the back-end to allow the user to view and
-          manipulate a list of records. A typical browse form looks like this:
-          </para>
+          manipulate a list of records. A typical browse form looks like
+          this:</para>
 
           <programlisting>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;form
@@ -2888,10 +2891,10 @@ $json = ob_end_clean();
           attribute of the <code>&lt;fieldset&gt;</code> MUST always be
           <option>items</option>. Extra tags and/or
           <code>&lt;fieldset&gt;</code> tags with different name attributes
-          (or no name attributes) will be ignored. </para>
+          (or no name attributes) will be ignored.</para>
 
           <section>
-            <title>Form attributes </title>
+            <title>Form attributes</title>
 
             <para>The enclosing <code>&lt;form&gt;</code> tag MUST have the
             following attributes:</para>
@@ -2902,13 +2905,13 @@ $json = ob_end_clean();
 
                 <listitem>
                   <para>It must be always set to <option>browse</option> for
-                  FOF to recognise this as a Browse form </para>
+                  FOF to recognise this as a Browse form</para>
                 </listitem>
               </varlistentry>
             </variablelist>
 
             <para>The enclosing &lt;form&gt; tag MAY have one or more of the
-            following attributes: </para>
+            following attributes:</para>
 
             <variablelist>
               <varlistentry>
@@ -2919,7 +2922,7 @@ $json = ob_end_clean();
                   styling of your components. You can give a comma separated
                   list of LESS files' identifiers (see the "Media files
                   identifiers" section below) to be loaded by FOF. For example
-                  <uri>media://com_example/less/backend.less</uri> </para>
+                  <uri>media://com_example/less/backend.less</uri></para>
 
                   <para>Compiled LESS files are cached in the
                   <filename>media/lib_fof/compiled directory</filename> for
@@ -2928,14 +2931,13 @@ $json = ob_end_clean();
                   site's cache or adminstrator/cache directory as these
                   directories are not supposed to be web-accessible, whereas
                   the compiled CSS files, by definition, need to be
-                  web-accessible. </para>
+                  web-accessible.</para>
 
                   <para>Since LESS files require a lot of memory and time to
                   compile you can also provide an alternative pre-compiled CSS
                   file, separated from your LESS file with two bars. For
                   example:
-                  <uri>media://com_example/less/backend.less||media://com_example/css/backend.css</uri>
-                  </para>
+                  <uri>media://com_example/less/backend.less||media://com_example/css/backend.css</uri></para>
                 </listitem>
               </varlistentry>
 
@@ -2946,11 +2948,11 @@ $json = ob_end_clean();
                   <para>This works in the same manner as the lessfiles
                   directive, but you are only supposed to specify standard CSS
                   files. The CSS files are defined using identifiers, too.
-                  <uri>For example: media://com_example/css/backend.css</uri>
-                  </para>
+                  <uri>For example:
+                  media://com_example/css/backend.css</uri></para>
 
                   <para>Please note that media file overrides rules are in
-                  effect for these CSS files. </para>
+                  effect for these CSS files.</para>
                 </listitem>
               </varlistentry>
 
@@ -2961,10 +2963,10 @@ $json = ob_end_clean();
                   <para>Works the same way as cssfiles, but it's used to load
                   Javascript files. The Javascript files are defined using
                   identifiers, too. For example:
-                  <uri>media://com_example/js/backend.js</uri> </para>
+                  <uri>media://com_example/js/backend.js</uri></para>
 
                   <para>Please note that media file overrides rules are in
-                  effect for these Javascript files. </para>
+                  effect for these Javascript files.</para>
                 </listitem>
               </varlistentry>
 
@@ -2974,7 +2976,7 @@ $json = ob_end_clean();
                 <listitem>
                   <para>Should we display the header section of the browse
                   form? This is the place where the field titles are
-                  displayed. </para>
+                  displayed.</para>
                 </listitem>
               </varlistentry>
 
@@ -2986,7 +2988,7 @@ $json = ob_end_clean();
                   On Joomla! 2.5 this is the area below the header where the
                   user can filter the display based on his own criteria. On
                   Joomla! 3.0 and later this area is rendered in the sidebar,
-                  at the left hand side of the records list. </para>
+                  at the left hand side of the records list.</para>
                 </listitem>
               </varlistentry>
 
@@ -2997,7 +2999,7 @@ $json = ob_end_clean();
                   <para>Should we show the pagination results? That's the
                   links to the first, second, third, …, last page and the
                   drop-down for the number of items per page. It is displayed
-                  below the list of records. </para>
+                  below the list of records.</para>
                 </listitem>
               </varlistentry>
 
@@ -3007,7 +3009,7 @@ $json = ob_end_clean();
                 <listitem>
                   <para>A translation key displayed instead of a records list
                   when the current view contains no records, e.g. the table is
-                  empty or the filters limit display to zero records. </para>
+                  empty or the filters limit display to zero records.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -3021,8 +3023,8 @@ $json = ob_end_clean();
           display just a single record. These are nowhere near as powerful as
           hand-coded PHP-based view templates but can be used to get a quick
           single item output in a snatch when prototyping a component or when
-          your data is really simple. A typical read form looks like this:
-          </para>
+          your data is really simple. A typical read form looks like
+          this:</para>
 
           <programlisting>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;form
@@ -3051,27 +3053,27 @@ $json = ob_end_clean();
 
           <para>You MUST have at least one <code>&lt;fieldset&gt;</code> tag.
           The name attribute of the <code>&lt;fieldset&gt;</code> is
-          indifferent. </para>
+          indifferent.</para>
 
           <section>
-            <title>Form attributes </title>
+            <title>Form attributes</title>
 
             <para>The enclosing <code>&lt;form&gt;</code> tag MUST have the
-            following attributes: </para>
+            following attributes:</para>
 
             <variablelist>
               <varlistentry>
                 <term>type</term>
 
                 <listitem>
-                  <para> It must be always set to <option>read</option> for
-                  FOF to recognise this as a Read form </para>
+                  <para>It must be always set to <option>read</option> for FOF
+                  to recognise this as a Read form</para>
                 </listitem>
               </varlistentry>
             </variablelist>
 
             <para>The enclosing &lt;form&gt; tag MAY have one or more of the
-            following attributes: </para>
+            following attributes:</para>
 
             <variablelist>
               <varlistentry>
@@ -3082,8 +3084,8 @@ $json = ob_end_clean();
                   styling of your components. You can give a comma separated
                   list of LESS files' identifiers (see the "Media files
                   identifiers" section below) to be loaded by FOF. For
-                  example: <uri>media://com_example/less/backend.less</uri>
-                  </para>
+                  example:
+                  <uri>media://com_example/less/backend.less</uri></para>
 
                   <para>Compiled LESS files are cached in the
                   <filename>media/lib_fof/compiled</filename> directory for
@@ -3093,14 +3095,13 @@ $json = ob_end_clean();
                   <filename>adminstrator/cache</filename> directory as these
                   directories are not supposed to be web-accessible, whereas
                   the compiled CSS files, by definition, need to be
-                  web-accessible. </para>
+                  web-accessible.</para>
 
                   <para>Since LESS files require a lot of memory and time to
                   compile you can also provide an alternative pre-compiled CSS
                   file, separated from your LESS file with two bars. For
                   example:
-                  <uri>media://com_example/less/backend.less||media://com_example/css/backend.css</uri>
-                  </para>
+                  <uri>media://com_example/less/backend.less||media://com_example/css/backend.css</uri></para>
                 </listitem>
               </varlistentry>
 
@@ -3108,14 +3109,14 @@ $json = ob_end_clean();
                 <term>cssfiles</term>
 
                 <listitem>
-                  <para> This works in the same manner as the
+                  <para>This works in the same manner as the
                   <code>lessfiles</code> directive, but you are only supposed
                   to specify standard CSS files. The CSS files are defined
                   using identifiers, too. For example:
-                  <uri>media://com_example/css/backend.css</uri> </para>
+                  <uri>media://com_example/css/backend.css</uri></para>
 
                   <para>Please note that media file overrides rules are in
-                  effect for these CSS files. </para>
+                  effect for these CSS files.</para>
                 </listitem>
               </varlistentry>
 
@@ -3126,10 +3127,10 @@ $json = ob_end_clean();
                   <para>Works the same way as <code>cssfiles</code>, but it's
                   used to load Javascript files. The Javascript files are
                   defined using identifiers, too. For example:
-                  <uri>media://com_example/js/backend.js</uri> </para>
+                  <uri>media://com_example/js/backend.js</uri></para>
 
                   <para>Please note that media file overrides rules are in
-                  effect for these Javascript files. </para>
+                  effect for these Javascript files.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -3144,10 +3145,10 @@ $json = ob_end_clean();
           the front-end you will need to specialise your Toolbar class to
           render a front-end toolbar in the edit task of this specific view,
           otherwise the form will not be able to be submitted (unless you do
-          other tricks, outside the scope of this developers' documentation).
-          </para>
+          other tricks, outside the scope of this developers'
+          documentation).</para>
 
-          <para>An edit form looks like this: </para>
+          <para>An edit form looks like this:</para>
 
           <programlisting>&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;form
@@ -3203,7 +3204,7 @@ $json = ob_end_clean();
             <title>Form attributes</title>
 
             <para>The enclosing <code>&lt;form&gt;</code> tag MAY have one or
-            more of the following attributes: </para>
+            more of the following attributes:</para>
 
             <variablelist>
               <varlistentry>
@@ -3272,7 +3273,7 @@ $json = ob_end_clean();
                   its unobtrusive Javascript validation script. Please note
                   that FOF does not perform automatic server-side validation
                   checks. This is the responsibility of your specialised Table
-                  class and its check() method. </para>
+                  class and its check() method.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -3280,33 +3281,32 @@ $json = ob_end_clean();
         </section>
 
         <section xml:id="formatting-your-forms">
-          <title>Formatting your forms </title>
+          <title>Formatting your forms</title>
 
           <para>OK, granted, the automatically rendered forms are a timesaver
           but, by default, they look terrible. This is quite expected. It's
           like comparing a rug churned out by a mechanised production line
           (the automatically rendered form) and a hand-stiched persian rug
           (the hand-coded PHP-based view template). The good news is that,
-          unlike rugs, there's some room of improvement with XML forms.
-          </para>
+          unlike rugs, there's some room of improvement with XML forms.</para>
 
           <para>For starters, the <code>&lt;fieldset&gt;</code>s of Edit and
           Read forms, as well as the fields themselves, can be assigned CSS
           classes and IDs which can help you provide a custom style. Moreover,
           you can mix XML forms and PHP-based view templates to further
-          customise the display of your forms. </para>
+          customise the display of your forms.</para>
 
           <para>In this section we will cover both customisation methods. If
           this doesn't sound enough for your project you can always use
           hand-coded PHP-based view templates, much like how you did since
           Joomla! 1.5.0. It's up to you to decide which method is best for
-          your project! </para>
+          your project!</para>
 
           <section xml:id="format-forms-with-classes">
-            <title>Assigning classes and IDs to &lt;fieldset&gt;s </title>
+            <title>Assigning classes and IDs to &lt;fieldset&gt;s</title>
 
             <para>Each fieldset of a Read and Edit form can have the following
-            optional attributes: </para>
+            optional attributes:</para>
 
             <variablelist>
               <varlistentry>
@@ -3314,7 +3314,7 @@ $json = ob_end_clean();
 
                 <listitem>
                   <para>One or more CSS classes to be applied to the generated
-                  <code>&lt;div&gt;</code> element. </para>
+                  <code>&lt;div&gt;</code> element.</para>
                 </listitem>
               </varlistentry>
 
@@ -3323,8 +3323,8 @@ $json = ob_end_clean();
 
                 <listitem>
                   <para>The value of this attribute is applied to the id
-                  attribute of the generated <code>&lt;div&gt;</code> element.
-                  </para>
+                  attribute of the generated <code>&lt;div&gt;</code>
+                  element.</para>
                 </listitem>
               </varlistentry>
 
@@ -3334,7 +3334,7 @@ $json = ob_end_clean();
                 <listitem>
                   <para>The value of this attribute is rendered as a level 3
                   heading (<code>&lt;h3&gt;</code>) element at the top of the
-                  generated <code>&lt;div&gt;</code> element. </para>
+                  generated <code>&lt;div&gt;</code> element.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -3344,21 +3344,20 @@ $json = ob_end_clean();
             (which back ports Bootstrap to Joomla! 2.5) you can use
             Bootstrap's classes to create visually interesting interfaces. For
             example, using <code>class="span6 pull-left"</code> will create a
-            half-page-wide left floating sidebar out of your field set.
-            </para>
+            half-page-wide left floating sidebar out of your field set.</para>
           </section>
 
           <section xml:id="format-forms-mixing-with-php">
-            <title>Mixing XML forms with PHP-based view templates </title>
+            <title>Mixing XML forms with PHP-based view templates</title>
 
             <para>Inside your .php view template file you can use
             <code>$this-&gt;getRenderedForm()</code> to return the XML form
             file rendered as HTML. This allows you to customise the layout
             (e.g. adding information before/after the form) while still using
-            the XML file to render the actual form. </para>
+            the XML file to render the actual form.</para>
 
             <para>To use this approach, simply insert this code in your custom
-            .php template file: </para>
+            .php template file:</para>
 
             <programlisting>&lt;?php
 $viewTemplate = $this-&gt;getRenderedForm();
