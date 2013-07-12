@@ -905,8 +905,8 @@ class FOFController extends JObject
 
 		if ($result)
 		{
-			$plugin_event = FOFInflector::camelize('on before ' . $this->bareComponent . ' controller ' . $this->viewName . ' ' . $task);
-			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$input));
+			$plugin_event = FOFInflector::camelize('on before ' . $this->bareComponent . ' controller ' . $this->view . ' ' . $task);
+			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$this->input));
 
 			if (in_array(false, $plugin_result, true))
 			{
@@ -959,8 +959,8 @@ class FOFController extends JObject
 
 		if ($result)
 		{
-			$plugin_event = FOFInflector::camelize('on after ' . $this->bareComponent . ' controller ' . $this->viewName . ' ' . $task);
-			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$input, &$ret));
+			$plugin_event = FOFInflector::camelize('on after ' . $this->bareComponent . ' controller ' . $this->view . ' ' . $task);
+			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$this->input, &$ret));
 
 			if (in_array(false, $plugin_result, true))
 			{
