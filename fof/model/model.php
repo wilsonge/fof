@@ -912,7 +912,7 @@ class FOFModel extends JObject
 		$this->record = null;
 		$this->list = null;
 		$this->pagination = null;
-		$this->total = 0;
+		$this->total = null;
 		$this->otable = null;
 
 		return $this;
@@ -1474,7 +1474,6 @@ class FOFModel extends JObject
 			}
 
 			$this->_db->setQuery((string) $query);
-			$this->_db->execute();
 
 			$this->total = $this->_db->loadResult();
 		}
