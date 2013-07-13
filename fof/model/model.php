@@ -151,7 +151,7 @@ class FOFModel extends JObject
 	 * Total rows based on the filters set in the model's state
 	 * @var int
 	 */
-	protected $total = 0;
+	protected $total = null;
 
 	/**
 	 * Should I save the model's state in the session?
@@ -1460,7 +1460,7 @@ class FOFModel extends JObject
 	 */
 	public function getTotal()
 	{
-		if (empty($this->total))
+		if (is_null($this->total))
 		{
 			$query = $this->buildCountQuery();
 
