@@ -17,6 +17,8 @@ defined('_JEXEC') or die();
  */
 class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 {
+	private $cache = null;
+
 	/**
 	 * Is this platform enabled?
 	 *
@@ -528,5 +530,127 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	public function supportsAjaxOrdering()
 	{
 		return $this->checkVersion(JVERSION, '3.0', 'ge');
+	}
+
+	/**
+	 * Is the global FOF cache enabled?
+	 *
+	 * @return  boolean
+	 */
+	public function isGlobalFOFCacheEnabled()
+	{
+		return !(defined('JDEBUG') && JDEBUG);
+	}
+
+	/**
+	 * Saves something to the cache. This is supposed to be used for system-wide
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to save
+	 * @param   string  $content  The actual data to save
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function setCache($key, $content)
+	{
+		$registry = $this->getCacheObject();
+
+		$registry->set($key, $content);
+
+		return $this->saveCache();
+	}
+
+	/**
+	 * Retrieves data from the cache. This is supposed to be used for system-side
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to retrieve
+	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
+	 *
+	 * @return  string  The cached value
+	 */
+	public function getCache($key, $default = null)
+	{
+		$registry = $this->getCacheObject();
+
+		return $registry->get($key, $default);
+	}
+
+	/**
+	 * Gets a reference to the cache object, loading it from the disk if
+	 * needed.
+	 *
+	 * @param   boolean  $force  Should I forcibly reload the registry?
+	 *
+	 * @return  JRegistry
+	 */
+	private function &getCacheObject($force = false)
+	{
+		// Check if we have to load the cache file or we are forced to do that
+		if (is_null($this->cache) || $force)
+		{
+			// Create a new JRegistry object
+			JLoader::import('joomla.registry.registry');
+			$this->cache = new JRegistry();
+
+
+			// Find the path to the file
+			$cachePath = JPATH_CACHE . '/fof';
+			$filename  = $cachePath . '/cache.php';
+
+			JLoader::import('joomla.filesystem.file');
+
+			// Load the cache file if it exists. JRegistryFormatPHP fails
+			// miserably, so I have to work around it.
+			if (JFile::exists($filename))
+			{
+				@include_once $filename;
+
+				$className = 'FOFCacheStorage';
+
+				if (class_exists($className))
+				{
+					$object = new $className;
+					$this->cache->loadObject($object);
+				}
+			}
+		}
+
+		return $this->cache;
+	}
+
+	/**
+	 * Save the cache object back to disk
+	 *
+	 * @return  boolean  True on success
+	 */
+	private function saveCache()
+	{
+		// Get the JRegistry object of our cached data
+		$registry = $this->getCacheObject();
+
+		// Import core libraries
+		JLoader::import('joomla.filesystem.file');
+		JLoader::import('joomla.filesystem.folder');
+
+		// Find the path to the file
+		$cachePath = JPATH_CACHE . '/fof';
+		$filename  = $cachePath . '/cache.php';
+
+		// Does the path exist?
+		if (!JFolder::exists($cachePath))
+		{
+			// No? Create it.
+			JFolder::create($cachePath);
+		}
+
+		// Get the data
+		$options = array(
+			'class' => 'FOFCacheStorage'
+		);
+		$data	 = $registry->toString('PHP', $options);
+
+		// And save it to the file
+		return JFile::write($filename, $data);
 	}
 }

@@ -253,4 +253,31 @@ interface FOFPlatformInterface
 	 * @return  boolean
 	 */
 	public function checkVersion($version1, $version2, $operator);
+
+	/**
+	 * Saves something to the cache. This is supposed to be used for system-wide
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to save
+	 * @param   string  $content  The actual data to save
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function setCache($key, $content);
+
+	/**
+	 * Retrieves data from the cache. This is supposed to be used for system-side
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to retrieve
+	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
+	 */
+	public function getCache($key, $default = null);
+
+	/**
+	 * Is the global FOF cache enabled?
+	 *
+	 * @return  boolean
+	 */
+	public function isGlobalFOFCacheEnabled();
 }

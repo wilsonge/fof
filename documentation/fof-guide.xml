@@ -2726,6 +2726,26 @@ $json = ob_end_clean();
           </varlistentry>
 
           <varlistentry>
+            <term>use_table_cache</term>
+
+            <listitem>
+              <para>By default FOF caches the names of the tables in the
+              database and their field definitions in the file
+              <filename><replaceable>JPATH_CACHE</replaceable>/fof/cache.php</filename>,
+              where JPATH_CACHE is usually the cache directory in the front-
+              or back-end of your site respectively. If you've set
+              <parameter>Debug System</parameter> to <option>Yes</option> in
+              your site's Global Configuration then by default the cache is
+              not used.</para>
+
+              <para>You can override this behaviour per view / for all views
+              of a component using this parameter. Set to 0 to force the cache
+              to never be used or set it to 1 to force the cache to always be
+              used (even when your site is in debug mode).</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>view_path</term>
 
             <listitem>

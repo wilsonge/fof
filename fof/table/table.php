@@ -42,6 +42,13 @@ class FOFTable extends JObject
 	private static $_includePaths = array();
 
 	/**
+	 * The configuration parameters array
+	 *
+	 * @var  array
+	 */
+	protected $config = array();
+
+	/**
 	 * Name of the database table to model.
 	 *
 	 * @var    string
@@ -349,7 +356,21 @@ class FOFTable extends JObject
 				$table_alias = $configProvider->get($configProviderTableAliasKey, false	);
 			}
 
-			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db']);
+			// Can we use the FOF cache?
+			if (!array_key_exists('use_table_cache', $config))
+			{
+				$config['use_table_cache'] = FOFPlatform::getInstance()->isGlobalFOFCacheEnabled();
+			}
+
+			$alt_use_table_cache = $configProvider->get($configProviderKey . 'use_table_cache', null);
+
+			if (!is_null($alt_use_table_cache))
+			{
+				$config['use_table_cache'] = $alt_use_table_cache;
+			}
+
+			// Create a new table instance
+			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db'], $config);
 			$instance->setInput($tmpInput);
 			$instance->setTablePrefix($prefix);
 			$instance->setTableAlias($table_alias);
@@ -418,15 +439,17 @@ class FOFTable extends JObject
 	/**
 	 * Class Constructor.
 	 *
-	 * @param   string           $table  Name of the database table to model.
-	 * @param   string           $key    Name of the primary key field in the table.
-	 * @param   JDatabaseDriver  &$db    Database driver
+	 * @param   string           $table   Name of the database table to model.
+	 * @param   string           $key     Name of the primary key field in the table.
+	 * @param   JDatabaseDriver  &$db     Database driver
+	 * @param   array            $config  The configuration parameters array
 	 */
-	public function __construct($table, $key, &$db)
+	public function __construct($table, $key, &$db, $config = array())
 	{
 		$this->_tbl     = $table;
 		$this->_tbl_key = $key;
 		$this->_db      = $db;
+		$this->config   = $config;
 
 		// Initialise the table properties.
 
@@ -832,6 +855,11 @@ class FOFTable extends JObject
 
 			if ($k != $this->_tbl_key && (strpos($k, '_') !== 0))
 			{
+				if (is_array($v))
+				{
+					$v = (object)$v;
+				}
+
 				$this->$k = $v->Default;
 			}
 		}
@@ -1969,11 +1997,62 @@ class FOFTable extends JObject
 	 */
 	public function getTableFields($tableName = null)
 	{
+		// Should I load the cached data?
+		$useCache = $this->config['use_table_cache'];
+
 		// Make sure we have a list of tables in this db
 
 		if (empty(self::$tableCache))
 		{
-			self::$tableCache = $this->_db->getTableList();
+			if ($useCache)
+			{
+				// Try to load table cache from a cache file
+				$cacheData = FOFPlatform::getInstance()->getCache('tables', null);
+
+				// Unserialise the cached data, or set the table cache to empty
+				// if the cache data wasn't loaded.
+				if (!is_null($cacheData))
+				{
+					self::$tableCache = json_decode($cacheData, true);
+				}
+				else
+				{
+					self::$tableCache = array();
+				}
+			}
+
+			// This check is true if the cache data doesn't exist / is not loaded
+			if (empty(self::$tableCache))
+			{
+				self::$tableCache = $this->_db->getTableList();
+
+				if ($useCache)
+				{
+					FOFPlatform::getInstance()->setCache('tables', json_encode(self::$tableCache));
+				}
+			}
+		}
+
+		// Make sure the cached table fields cache is loaded
+
+		if (empty(self::$tableFieldCache))
+		{
+			if ($useCache)
+			{
+				// Try to load table cache from a cache file
+				$cacheData = FOFPlatform::getInstance()->getCache('tablefields', null);
+
+				// Unserialise the cached data, or set to empty if the cache
+				// data wasn't loaded.
+				if (!is_null($cacheData))
+				{
+					self::$tableFieldCache = json_decode($cacheData, true);
+				}
+				else
+				{
+					self::$tableFieldCache = array();
+				}
+			}
 		}
 
 		if (!$tableName)
@@ -2039,6 +2118,12 @@ class FOFTable extends JObject
 						}
 					}
 				}
+			}
+
+			// Save the data for this table into the cache
+			if ($useCache)
+			{
+				$cacheData = FOFPlatform::getInstance()->setCache('tablefields', json_encode(self::$tableFieldCache));
 			}
 		}
 
@@ -3290,5 +3375,10 @@ class FOFTable extends JObject
 		$alias = $component . '.' . $view;
 
 		return $alias;
+	}
+
+	public function setConfig(array $config)
+	{
+		$this->config = $config;
 	}
 }
