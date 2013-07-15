@@ -1950,6 +1950,12 @@ class FOFTable extends JObject
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
+			// Special internal fields
+			if (in_array($k, array('config', 'input', 'knownFields')))
+			{
+				continue;
+			}
+
 			if (($k[0] == '_') || ($k[0] == '*'))
 			{
 				// Internal field
