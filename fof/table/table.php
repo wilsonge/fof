@@ -449,6 +449,12 @@ class FOFTable extends JObject
 		$this->_tbl     = $table;
 		$this->_tbl_key = $key;
 		$this->_db      = $db;
+
+		// Make sure the use FOF cache information is in the config
+		if (!array_key_exists('use_table_cache', $config))
+		{
+			$config['use_table_cache'] = FOFPlatform::getInstance()->isGlobalFOFCacheEnabled();
+		}
 		$this->config   = $config;
 
 		// Initialise the table properties.
@@ -1998,7 +2004,7 @@ class FOFTable extends JObject
 	public function getTableFields($tableName = null)
 	{
 		// Should I load the cached data?
-		$useCache = $this->config['use_table_cache'];
+		$useCache = array_key_exists('use_table_cache', $this->config) ? $this->config['use_table_cache'] : false;
 
 		// Make sure we have a list of tables in this db
 
