@@ -2058,7 +2058,18 @@ class FOFTable extends JObject
 				// data wasn't loaded.
 				if (!is_null($cacheData))
 				{
-					self::$tableFieldCache = json_decode($cacheData, true);
+					$decoded = json_decode($cacheData, true);
+					$tableCache = array();
+					
+					if (count($decoded))
+					{
+						foreach ($decoded as $tableName => $tableFields)
+						{
+							$tableCache[$tableName] = (object)$tableFields;
+						}
+					}
+					
+					self::$tableFieldCache = $tableCache;
 				}
 				else
 				{
@@ -2139,7 +2150,7 @@ class FOFTable extends JObject
 			}
 		}
 
-		return is_array(self::$tableFieldCache[$tableName]) ? (object)self::$tableFieldCache[$tableName] : self::$tableFieldCache[$tableName];
+		return self::$tableFieldCache[$tableName];
 	}
 
 	public function getTableAlias()
