@@ -2065,7 +2065,14 @@ class FOFTable extends JObject
 					{
 						foreach ($decoded as $tableName => $tableFields)
 						{
-							$tableCache[$tableName] = (object)$tableFields;
+							$temp = array();
+							
+							foreach($tableFields as $field => $def)
+							{
+								$temp[$field] = (object)$def;
+							}
+							
+							$tableCache[$tableName] = $temp;
 						}
 					}
 					
