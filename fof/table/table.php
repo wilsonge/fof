@@ -2139,7 +2139,7 @@ class FOFTable extends JObject
 			}
 		}
 
-		return self::$tableFieldCache[$tableName];
+		return is_array(self::$tableFieldCache[$tableName]) ? (object)self::$tableFieldCache[$tableName] : self::$tableFieldCache[$tableName];
 	}
 
 	public function getTableAlias()
