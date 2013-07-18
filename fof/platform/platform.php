@@ -505,4 +505,15 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	{
 		return true;
 	}
+
+	/**
+	 * Clears the cache of system-wide FOF data. You are supposed to call this in
+	 * your components' installation script post-installation and post-upgrade
+	 * methods or whenever you are modifying the structure of database tables
+	 * accessed by FOF. Please note that FOF's cache never expires and is not
+	 * purged by Joomla!. You MUST use this method to manually purge the cache.
+	 *
+	 * @return  boolean  True on success
+	 */
+	abstract public function clearCache();
 }

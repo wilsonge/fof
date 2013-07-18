@@ -653,4 +653,39 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 		// And save it to the file
 		return JFile::write($filename, $data);
 	}
+
+	/**
+	 * Clears the cache of system-wide FOF data. You are supposed to call this in
+	 * your components' installation script post-installation and post-upgrade
+	 * methods or whenever you are modifying the structure of database tables
+	 * accessed by FOF. Please note that FOF's cache never expires and is not
+	 * purged by Joomla!. You MUST use this method to manually purge the cache.
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function clearCache()
+	{
+		// Import core libraries
+		JLoader::import('joomla.filesystem.file');
+		JLoader::import('joomla.filesystem.folder');
+
+		// Find the path to the file
+		$cachePath = JPATH_CACHE . '/fof';
+		$filename  = $cachePath . '/cache.php';
+
+		if (JFile::exists($filename))
+		{
+			// This prevents stupid Joomla! error messages when the file is owned
+			// by the web server user and the FTP layer is enabled (yeah, I know,
+			// right?)
+			if (!@unlink($filename))
+			{
+				return JFile::delete($filename);
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
 }
