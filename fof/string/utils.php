@@ -36,7 +36,7 @@ abstract class FOFStringUtils
 		$value = trim(strtolower($value));
 
 		// Remove any duplicate whitespace, and ensure all characters are alphanumeric
-		$value = preg_replace(array('/\s+/', '/[^A-Za-z0-9\-]/'), array('-', ''), $value);
+		$value = preg_replace(array('/\s+/', '/[^A-Za-z0-9\-_]/'), array('-', ''), $value);
 
 		// Limit length
 		if (strlen($value) > 100)
