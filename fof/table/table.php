@@ -861,11 +861,6 @@ class FOFTable extends JObject
 
 			if ($k != $this->_tbl_key && (strpos($k, '_') !== 0))
 			{
-				if (is_array($v))
-				{
-					$v = (object)$v;
-				}
-
 				$this->$k = $v->Default;
 			}
 		}
@@ -2067,12 +2062,18 @@ class FOFTable extends JObject
 						{
 							$temp = array();
 
-							foreach($tableFields as $field => $def)
+							if (is_array($tableFields))
 							{
-								$temp[$field] = (object)$def;
+								foreach($tableFields as $field => $def)
+								{
+									$temp[$field] = (object)$def;
+								}
+								$tableCache[$myTableName] = $temp;
 							}
-
-							$tableCache[$myTableName] = $temp;
+							elseif (is_object($tableFields) || is_bool($tableFields))
+							{
+								$tableCache[$myTableName] = $tableFields;
+							}
 						}
 					}
 
