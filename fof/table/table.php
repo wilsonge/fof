@@ -2060,22 +2060,22 @@ class FOFTable extends JObject
 				{
 					$decoded = json_decode($cacheData, true);
 					$tableCache = array();
-					
+
 					if (count($decoded))
 					{
-						foreach ($decoded as $tableName => $tableFields)
+						foreach ($decoded as $myTableName => $tableFields)
 						{
 							$temp = array();
-							
+
 							foreach($tableFields as $field => $def)
 							{
 								$temp[$field] = (object)$def;
 							}
-							
-							$tableCache[$tableName] = $temp;
+
+							$tableCache[$myTableName] = $temp;
 						}
 					}
-					
+
 					self::$tableFieldCache = $tableCache;
 				}
 				else
