@@ -1714,7 +1714,7 @@ class FOFController extends JObject
 
 		// Redirect
 
-		if ($customURL = $this->input->get('returnurl', '', 'input'))
+		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
 		}
