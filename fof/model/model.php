@@ -1111,9 +1111,38 @@ class FOFModel extends JObject
 			$table->load($oid);
 		}
 
-		if (!$this->onBeforeSave($data, $table))
+		if ($data instanceof FOFTable)
+		{
+			$allData = $data->getData();
+		}
+		elseif (is_object($data))
+		{
+			$allData = (array) $data;
+		}
+		else
+		{
+			$allData = $data;
+		}
+
+		if (!$this->onBeforeSave($allData, $table))
 		{
 			return false;
+		}
+		else
+		{
+			// onBeforeSave successful, refetch the possibly modified data
+			if ($data instanceof FOFTable)
+			{
+				$data->bind($allData);
+			}
+			elseif (is_object($data))
+			{
+				$data = (object) $allData;
+			}
+			else
+			{
+				$data = $allData;
+			}
 		}
 
 		if (!$table->save($data))
@@ -2285,7 +2314,6 @@ class FOFModel extends JObject
 	protected function onBeforeSave(&$data, &$table)
 	{
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
-
 		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
@@ -2293,25 +2321,12 @@ class FOFModel extends JObject
 			// Do I have a new record?
 			$key = $table->getKeyName();
 
-			if ($data instanceof FOFTable)
-			{
-				$allData = $data->getData();
-			}
-			elseif (is_object($data))
-			{
-				$allData = (array) $data;
-			}
-			else
-			{
-				$allData = $data;
-			}
-
-			$pk = (!empty($allData[$key])) ? $allData[$key] : 0;
+			$pk = (!empty($data[$key])) ? $data[$key] : 0;
 
 			$this->_isNewRecord = $pk <= 0;
 
 			// Bind the data
-			$table->bind($allData);
+			$table->bind($data);
 
 			// Call the behaviors
 			$result = $this->modelDispatcher->trigger('onBeforeSave', array(&$this, &$data));
@@ -2332,22 +2347,6 @@ class FOFModel extends JObject
 				$this->setError($table->getError());
 
 				return false;
-			}
-			else
-			{
-				// Plugin successful, refetch the possibly modified data
-				if ($data instanceof FOFTable)
-				{
-					$data->bind($allData);
-				}
-				elseif (is_object($data))
-				{
-					$data = (object) $allData;
-				}
-				else
-				{
-					$data = $allData;
-				}
 			}
 		}
 		catch (Exception $e)
