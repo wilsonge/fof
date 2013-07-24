@@ -485,7 +485,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  boolean  True on success
 	 */
-	abstract public function setCache($key, $content);
+	public function setCache($key, $content)
+	{
+		return false;
+	}
 
 	/**
 	 * Retrieves data from the cache. This is supposed to be used for system-side
@@ -494,7 +497,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 * @param   string  $key      The key of the data to retrieve
 	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
 	 */
-	abstract public function getCache($key, $default = null);
+	public function getCache($key, $default = null)
+	{
+		return false;
+	}
 
 	/**
 	 * Is the global FOF cache enabled?
@@ -515,5 +521,8 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  boolean  True on success
 	 */
-	abstract public function clearCache();
+	public function clearCache()
+	{
+		return false;
+	}
 }
