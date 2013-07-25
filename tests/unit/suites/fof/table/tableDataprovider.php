@@ -925,4 +925,97 @@ abstract class TableDataprovider
 
 		return $data;
 	}
+
+	public static function getTestDelete()
+	{
+		// Test when onBefore returns false
+		$data[] = array(
+			array('onBeforeDelete' => false, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 4, 'cid' => '', 'mockAsset' => false),
+			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => true)
+		);
+
+		// Test when getAsset returns false
+		$data[] = array(
+			array('onBeforeDelete' => false, 'onAfterDelete' => true, 'getAsset' => false),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 2, 'cid' => '', 'mockAsset' => false),
+			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
+		);
+
+		// Test when there is a problem getting the asset
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true, 'getAsset' => false),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 4, 'cid' => '', 'mockAsset' => false),
+			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
+		);
+
+		// Test when there is an error while deleting the asset
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 4, 'cid' => '', 'mockAsset' => array('return' => false)),
+			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
+		);
+
+		// Test with successful delete with asset
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 4, 'cid' => '', 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
+			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => true)
+		);
+
+		// Test with with delete vs empty asset_id
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 2, 'cid' => '', 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
+			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
+		);
+
+		// Test with successful delete, passing the table id
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => '', 'cid' => 4, 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
+			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => true)
+		);
+
+		// Test with successful delete, but onAfter returns false
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => false),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 4, 'cid' => '', 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
+			array('return' => false, 'more' => true, 'count' => 0, 'checkAsset' => true)
+		);
+
+		// Test with successful delete vs bare table
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+			array('loadid' => 2, 'cid' => '', 'mockAsset' => false),
+			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
+		);
+
+		// Test vs bare table
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+			array('loadid' => 2, 'cid' => '', 'mockAsset' => false),
+			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
+		);
+
+		// Test vs table with alias
+		$data[] = array(
+			array('onBeforeDelete' => true, 'onAfterDelete' => true),
+			array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+			array('loadid' => 2, 'cid' => '', 'mockAsset' => false, 'alias' => array('asset_id' => 'fo_asset_id')),
+			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
+		);
+
+		return $data;
+	}
 }

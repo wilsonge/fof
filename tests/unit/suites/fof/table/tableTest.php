@@ -791,6 +791,95 @@ class FOFTableTest extends FtestCaseDatabase
 		}
 	}
 
+	/**
+	 * @group           tableDelete
+	 * @dataProvider    getTestDelete
+	 */
+	public function testDelete($events, $tableinfo, $test, $check)
+	{
+		$db          = JFactory::getDbo();
+		$methods     = array_keys($events);
+		if($test['mockAsset'])  $methods[] = 'getAsset';
+
+		$id          = max($test['loadid'], $test['cid']);
+		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+		$table       = $this->getMock('FOFTable', $methods, $constr_args, '', true, true, true, true);
+
+		foreach($events as $event => $return)
+		{
+			$table->expects($this->any())->method($event)->will($this->returnValue($return));
+		}
+
+		if($test['mockAsset'])
+		{
+			$asset = $this->getMock('JTableAsset', array('delete'), array(&$db));
+			$asset->expects($this->any())->method('delete')->will($this->returnValue($test['mockAsset']['return']));
+			$table->expects($this->any())->method('getAsset')->will($this->returnValue($asset));
+		}
+
+		// Should I check if the asset has been deleted?
+		if($check['checkAsset'])
+		{
+			$query = $db->getQuery(true)->select($table->getColumnAlias('asset_id'))->from($tableinfo['table'])->where($table->getKeyName().' = '.$id);
+			$asset_id = $db->setQuery($query)->loadResult();
+		}
+
+		// We have to manually provide this info, since we can't use the getInstance method (we have to mock)
+		if(isset($test['assetkey']))
+		{
+			$table->setAssetKey($test['assetkey']);
+		}
+
+		if(isset($test['alias']))
+		{
+			foreach($test['alias'] as $column => $alias)
+			{
+				$table->setColumnAlias($column, $alias);
+			}
+		}
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$rc = $table->delete($test['cid']);
+		$this->assertEquals($check['return'], $rc, 'Delete: Wrong return value');
+
+		if($check['more'])
+		{
+			$query = $db->getQuery(true)
+						->select('COUNT(*)')
+						->from($tableinfo['table'])
+						->where($table->getKeyName().' = '.$id);
+			$count = $db->setQuery($query)->loadResult();
+
+			$this->assertEquals($check['count'], $count, 'Delete: Wrong behavior on record under delete');
+
+			if($check['checkAsset'])
+			{
+				$query = $db->getQuery(true)->select('COUNT(*)')->from('#__assets')->where('id = '.$asset_id);
+				$count = $db->setQuery($query)->loadResult();
+
+				// I can use the same variable, since when I delete the record, I want the asset deleted, too
+				$this->assertEquals($check['count'], $count, 'Delete: Wrong behavior on record asset under delete');
+			}
+
+		}
+	}
+
+	/**
+	 * @preventDataLoading
+	 */
+	public function testDeleteException()
+	{
+		$this->setExpectedException('UnexpectedValueException');
+
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobars'));
+		$table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+		$table->delete();
+	}
+
 	public function testGetUcmCoreAlias()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
@@ -876,5 +965,10 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getTestPublish()
 	{
 		return TableDataprovider::getTestPublish();
+	}
+
+	public function getTestDelete()
+	{
+		return TableDataprovider::getTestDelete();
 	}
 }

@@ -1793,33 +1793,27 @@ class FOFTable extends JObject
 			$this->load($oid);
 		}
 
+		$k  = $this->_tbl_key;
+		$pk = (!$oid) ? $this->$k : $oid;
+
+		// If no primary key is given, return false.
+		if (!$pk)
+		{
+			throw new UnexpectedValueException('Null primary key not allowed.');
+		}
+
+		// Execute the logic only if I have a primary key, otherwise I could have weird results
 		if (!$this->onBeforeDelete($oid))
 		{
 			return false;
 		}
 
-		$k  = $this->_tbl_key;
-		$pk = (is_null($oid)) ? $this->$k : $oid;
-
-		// If no primary key is given, return false.
-
-		if ($pk === null)
-		{
-			throw new UnexpectedValueException('Null primary key not allowed.');
-		}
-
 		// If tracking assets, remove the asset first.
-
 		if ($this->_trackAssets)
 		{
-			// Get and the asset name.
-			$this->$k = $pk;
-			$name     = $this->_getAssetName();
+			$asset    = $this->getAsset();
 
-			// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a FOFTable
-			$asset    = JTable::getInstance('Asset');
-
-			if ($asset->loadByName($name))
+			if ($asset)
 			{
 				if (!$asset->delete())
 				{
@@ -1830,7 +1824,8 @@ class FOFTable extends JObject
 			}
 			else
 			{
-				$this->setError($asset->getError());
+				// TODO how can we handle the error, since getAsset will return false?
+				//$this->setError($asset->getError());
 
 				return false;
 			}
@@ -1854,7 +1849,7 @@ class FOFTable extends JObject
 		$query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
 		$this->_db->setQuery($query);
 
-		// Check for a database error.
+		// @TODO Check for a database error.
 		$this->_db->execute();
 
 		$result = $this->onAfterDelete($oid);
@@ -3028,6 +3023,27 @@ class FOFTable extends JObject
 		}
 
 		return self::$_includePaths;
+	}
+
+	/**
+	 * Loads the asset table related to this table.
+	 * This will help tests, too, since we can mock this function.
+	 *
+	 * @return bool|JTableAsset     False on failure, otherwise JTableAsset
+	 */
+	protected function getAsset()
+	{
+		$name     = $this->_getAssetName();
+
+		// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a FOFTable
+		$asset    = JTable::getInstance('Asset');
+
+		if (!$asset->loadByName($name))
+		{
+			return false;
+		}
+
+		return $asset;
 	}
 
     /**
