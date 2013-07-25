@@ -1808,8 +1808,10 @@ class FOFTable extends JObject
 			return false;
 		}
 
+		$assetField = $this->getColumnAlias('asset_id');
+
 		// If tracking assets, remove the asset first.
-		if ($this->_trackAssets)
+		if ($this->_trackAssets && $this->$assetField)
 		{
 			$asset    = $this->getAsset();
 

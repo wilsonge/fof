@@ -973,7 +973,7 @@ abstract class TableDataprovider
 			array('onBeforeDelete' => true, 'onAfterDelete' => true),
 			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
 			array('loadid' => 2, 'cid' => '', 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
-			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
+			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
 		);
 
 		// Test with successful delete, passing the table id
