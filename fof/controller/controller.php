@@ -905,8 +905,8 @@ class FOFController extends JObject
 
 		if ($result)
 		{
-			$plugin_event = FOFInflector::camelize('on before ' . $this->bareComponent . ' controller ' . $this->viewName . ' ' . $task);
-			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$input));
+			$plugin_event = FOFInflector::camelize('on before ' . $this->bareComponent . ' controller ' . $this->view . ' ' . $task);
+			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$this->input));
 
 			if (in_array(false, $plugin_result, true))
 			{
@@ -959,8 +959,8 @@ class FOFController extends JObject
 
 		if ($result)
 		{
-			$plugin_event = FOFInflector::camelize('on after ' . $this->bareComponent . ' controller ' . $this->viewName . ' ' . $task);
-			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$input, &$ret));
+			$plugin_event = FOFInflector::camelize('on after ' . $this->bareComponent . ' controller ' . $this->view . ' ' . $task);
+			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$this->input, &$ret));
 
 			if (in_array(false, $plugin_result, true))
 			{
@@ -1017,7 +1017,7 @@ class FOFController extends JObject
 		// Display the view
 		$conf = JFactory::getConfig();
 
-		if (!FOFPlatform::getInstance()->isCli() && JFactory::getApplication()->isSite() && $cachable && $viewType != 'feed' && $conf->get('caching') >= 1)
+		if (!FOFPlatform::getInstance()->isCli() && JFactory::getApplication()->isSite() && $cachable && ($viewType != 'feed') && $conf->get('caching') >= 1)
 		{
 			// Get a JCache object
 			$option = $this->input->get('option', 'com_foobar', 'cmd');
@@ -1035,15 +1035,37 @@ class FOFController extends JObject
 				$groups = $user->groups;
 			}
 
-			$cacheId = md5(serialize(array(JCache::makeId(), $view->getName(), $this->doTask, $groups)));
-
 			// Set up safe URL parameters
+
+			if (!is_array($urlparams))
+			{
+				$urlparams = array(
+					'option'		=> 'CMD',
+					'view'			=> 'CMD',
+					'task'			=> 'CMD',
+					'format'		=> 'CMD',
+					'layout'		=> 'CMD',
+					'id'			=> 'INT',
+				);
+			}
 
 			if (is_array($urlparams))
 			{
 				$app = JFactory::getApplication();
 
-				$registeredurlparams = $app->get('registeredurlparams');
+				$registeredurlparams = null;
+
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+				{
+					if (property_exists($app, 'registeredurlparams'))
+					{
+						$registeredurlparams = $app->registeredurlparams;
+					}
+				}
+				else
+				{
+					$registeredurlparams = $app->get('registeredurlparams');
+				}
 
 				if (empty($registeredurlparams))
 				{
@@ -1056,8 +1078,18 @@ class FOFController extends JObject
 					$registeredurlparams->$key = $value;
 				}
 
-				$app->set('registeredurlparams', $registeredurlparams);
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+				{
+					$app->registeredurlparams = $registeredurlparams;
+				}
+				else
+				{
+					$app->set('registeredurlparams', $registeredurlparams);
+				}
 			}
+
+			// Create the cache ID after setting the registered URL params, as they are used to generate the ID
+			$cacheId = md5(serialize(array(JCache::makeId(), $view->getName(), $this->doTask, $groups)));
 
 			// Get the cached view or cache the current view
 			$cache->get($view, 'display', $cacheId);
@@ -1682,7 +1714,7 @@ class FOFController extends JObject
 
 		// Redirect
 
-		if ($customURL = $this->input->get('returnurl', '', 'input'))
+		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
 		}

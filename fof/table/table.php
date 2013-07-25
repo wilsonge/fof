@@ -42,6 +42,13 @@ class FOFTable extends JObject
 	private static $_includePaths = array();
 
 	/**
+	 * The configuration parameters array
+	 *
+	 * @var  array
+	 */
+	protected $config = array();
+
+	/**
 	 * Name of the database table to model.
 	 *
 	 * @var    string
@@ -177,6 +184,20 @@ class FOFTable extends JObject
 	 * @var		array
 	 */
 	protected $knownFields = array();
+
+	/**
+	 * A list of table fields, keyed per table
+	 *
+	 * @var array
+	 */
+	protected static $tableFieldCache = array();
+
+	/**
+	 * A list of tables in the database
+	 *
+	 * @var array
+	 */
+	protected static $tableCache = array();
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -335,7 +356,21 @@ class FOFTable extends JObject
 				$table_alias = $configProvider->get($configProviderTableAliasKey, false	);
 			}
 
-			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db']);
+			// Can we use the FOF cache?
+			if (!array_key_exists('use_table_cache', $config))
+			{
+				$config['use_table_cache'] = FOFPlatform::getInstance()->isGlobalFOFCacheEnabled();
+			}
+
+			$alt_use_table_cache = $configProvider->get($configProviderKey . 'use_table_cache', null);
+
+			if (!is_null($alt_use_table_cache))
+			{
+				$config['use_table_cache'] = $alt_use_table_cache;
+			}
+
+			// Create a new table instance
+			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db'], $config);
 			$instance->setInput($tmpInput);
 			$instance->setTablePrefix($prefix);
 			$instance->setTableAlias($table_alias);
@@ -404,15 +439,23 @@ class FOFTable extends JObject
 	/**
 	 * Class Constructor.
 	 *
-	 * @param   string           $table  Name of the database table to model.
-	 * @param   string           $key    Name of the primary key field in the table.
-	 * @param   JDatabaseDriver  &$db    Database driver
+	 * @param   string           $table   Name of the database table to model.
+	 * @param   string           $key     Name of the primary key field in the table.
+	 * @param   JDatabaseDriver  &$db     Database driver
+	 * @param   array            $config  The configuration parameters array
 	 */
-	public function __construct($table, $key, &$db)
+	public function __construct($table, $key, &$db, $config = array())
 	{
 		$this->_tbl     = $table;
 		$this->_tbl_key = $key;
 		$this->_db      = $db;
+
+		// Make sure the use FOF cache information is in the config
+		if (!array_key_exists('use_table_cache', $config))
+		{
+			$config['use_table_cache'] = FOFPlatform::getInstance()->isGlobalFOFCacheEnabled();
+		}
+		$this->config   = $config;
 
 		// Initialise the table properties.
 
@@ -1092,12 +1135,18 @@ class FOFTable extends JObject
 		// If a primary key exists update the object, otherwise insert it.
 		if ($this->$k)
 		{
-			$this->_db->updateObject($this->_tbl, $updateObject, $this->_tbl_key, $updateNulls);
+			$result = $this->_db->updateObject($this->_tbl, $updateObject, $this->_tbl_key, $updateNulls);
 		}
 		else
 		{
-			$this->_db->insertObject($this->_tbl, $updateObject, $this->_tbl_key);
+			$result = $this->_db->insertObject($this->_tbl, $updateObject, $this->_tbl_key);
 		}
+
+		if ($result !== true)
+		{
+			return false;
+		}
+
 		$this->bind($updateObject);
 
 		// Now the real tags storing process
@@ -1912,6 +1961,12 @@ class FOFTable extends JObject
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
+			// Special internal fields
+			if (in_array($k, array('config', 'input', 'knownFields')))
+			{
+				continue;
+			}
+
 			if (($k[0] == '_') || ($k[0] == '*'))
 			{
 				// Internal field
@@ -1965,14 +2020,86 @@ class FOFTable extends JObject
 	 */
 	public function getTableFields($tableName = null)
 	{
-		static $cache = array();
-		static $tables = array();
+		// Should I load the cached data?
+		$useCache = array_key_exists('use_table_cache', $this->config) ? $this->config['use_table_cache'] : false;
 
 		// Make sure we have a list of tables in this db
 
-		if (empty($tables))
+		if (empty(self::$tableCache))
 		{
-			$tables = $this->_db->getTableList();
+			if ($useCache)
+			{
+				// Try to load table cache from a cache file
+				$cacheData = FOFPlatform::getInstance()->getCache('tables', null);
+
+				// Unserialise the cached data, or set the table cache to empty
+				// if the cache data wasn't loaded.
+				if (!is_null($cacheData))
+				{
+					self::$tableCache = json_decode($cacheData, true);
+				}
+				else
+				{
+					self::$tableCache = array();
+				}
+			}
+
+			// This check is true if the cache data doesn't exist / is not loaded
+			if (empty(self::$tableCache))
+			{
+				self::$tableCache = $this->_db->getTableList();
+
+				if ($useCache)
+				{
+					FOFPlatform::getInstance()->setCache('tables', json_encode(self::$tableCache));
+				}
+			}
+		}
+
+		// Make sure the cached table fields cache is loaded
+
+		if (empty(self::$tableFieldCache))
+		{
+			if ($useCache)
+			{
+				// Try to load table cache from a cache file
+				$cacheData = FOFPlatform::getInstance()->getCache('tablefields', null);
+
+				// Unserialise the cached data, or set to empty if the cache
+				// data wasn't loaded.
+				if (!is_null($cacheData))
+				{
+					$decoded = json_decode($cacheData, true);
+					$tableCache = array();
+
+					if (count($decoded))
+					{
+						foreach ($decoded as $myTableName => $tableFields)
+						{
+							$temp = array();
+
+							if (is_array($tableFields))
+							{
+								foreach($tableFields as $field => $def)
+								{
+									$temp[$field] = (object)$def;
+								}
+								$tableCache[$myTableName] = $temp;
+							}
+							elseif (is_object($tableFields) || is_bool($tableFields))
+							{
+								$tableCache[$myTableName] = $tableFields;
+							}
+						}
+					}
+
+					self::$tableFieldCache = $tableCache;
+				}
+				else
+				{
+					self::$tableFieldCache = array();
+				}
+			}
 		}
 
 		if (!$tableName)
@@ -1980,7 +2107,7 @@ class FOFTable extends JObject
 			$tableName = $this->_tbl;
 		}
 
-		if (!array_key_exists($tableName, $cache))
+		if (!array_key_exists($tableName, self::$tableFieldCache))
 		{
 			// Lookup the fields for this table only once.
 			$name = $tableName;
@@ -1996,10 +2123,10 @@ class FOFTable extends JObject
 				$checkName = $name;
 			}
 
-			if (!in_array($checkName, $tables))
+			if (!in_array($checkName, self::$tableCache))
 			{
 				// The table doesn't exist. Return false.
-				$cache[$tableName] = false;
+				self::$tableFieldCache[$tableName] = false;
 			}
 			elseif (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
@@ -2010,7 +2137,7 @@ class FOFTable extends JObject
 					$fields = false;
 				}
 
-				$cache[$tableName] = $fields;
+				self::$tableFieldCache[$tableName] = $fields;
 			}
 			else
 			{
@@ -2021,13 +2148,13 @@ class FOFTable extends JObject
 					$fields = false;
 				}
 
-				$cache[$tableName] = $fields[$name];
+				self::$tableFieldCache[$tableName] = $fields[$name];
 			}
 
 			// PostgreSQL date type compatibility
-			if (($this->_db->name == 'postgresql') && ($cache[$tableName] != false))
+			if (($this->_db->name == 'postgresql') && (self::$tableFieldCache[$tableName] != false))
 			{
-				foreach ($cache[$tableName] as $field)
+				foreach (self::$tableFieldCache[$tableName] as $field)
 				{
 					if (strtolower($field->type) == 'timestamp without time zone')
 					{
@@ -2039,9 +2166,15 @@ class FOFTable extends JObject
 					}
 				}
 			}
+
+			// Save the data for this table into the cache
+			if ($useCache)
+			{
+				$cacheData = FOFPlatform::getInstance()->setCache('tablefields', json_encode(self::$tableFieldCache));
+			}
 		}
 
-		return $cache[$tableName];
+		return self::$tableFieldCache[$tableName];
 	}
 
 	public function getTableAlias()
@@ -3289,5 +3422,10 @@ class FOFTable extends JObject
 		$alias = $component . '.' . $view;
 
 		return $alias;
+	}
+
+	public function setConfig(array $config)
+	{
+		$this->config = $config;
 	}
 }

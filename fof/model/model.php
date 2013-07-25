@@ -151,7 +151,7 @@ class FOFModel extends JObject
 	 * Total rows based on the filters set in the model's state
 	 * @var int
 	 */
-	protected $total = 0;
+	protected $total = null;
 
 	/**
 	 * Should I save the model's state in the session?
@@ -912,7 +912,7 @@ class FOFModel extends JObject
 		$this->record = null;
 		$this->list = null;
 		$this->pagination = null;
-		$this->total = 0;
+		$this->total = null;
 		$this->otable = null;
 
 		return $this;
@@ -1111,9 +1111,38 @@ class FOFModel extends JObject
 			$table->load($oid);
 		}
 
-		if (!$this->onBeforeSave($data, $table))
+		if ($data instanceof FOFTable)
+		{
+			$allData = $data->getData();
+		}
+		elseif (is_object($data))
+		{
+			$allData = (array) $data;
+		}
+		else
+		{
+			$allData = $data;
+		}
+
+		if (!$this->onBeforeSave($allData, $table))
 		{
 			return false;
+		}
+		else
+		{
+			// onBeforeSave successful, refetch the possibly modified data
+			if ($data instanceof FOFTable)
+			{
+				$data->bind($allData);
+			}
+			elseif (is_object($data))
+			{
+				$data = (object) $allData;
+			}
+			else
+			{
+				$data = $allData;
+			}
 		}
 
 		if (!$table->save($data))
@@ -1460,7 +1489,7 @@ class FOFModel extends JObject
 	 */
 	public function getTotal()
 	{
-		if (empty($this->total))
+		if (is_null($this->total))
 		{
 			$query = $this->buildCountQuery();
 
@@ -1474,7 +1503,6 @@ class FOFModel extends JObject
 			}
 
 			$this->_db->setQuery((string) $query);
-			$this->_db->execute();
 
 			$this->total = $this->_db->loadResult();
 		}
@@ -2286,7 +2314,6 @@ class FOFModel extends JObject
 	protected function onBeforeSave(&$data, &$table)
 	{
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
-
 		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
@@ -2294,25 +2321,12 @@ class FOFModel extends JObject
 			// Do I have a new record?
 			$key = $table->getKeyName();
 
-			if ($data instanceof FOFTable)
-			{
-				$allData = $data->getData();
-			}
-			elseif (is_object($data))
-			{
-				$allData = (array) $data;
-			}
-			else
-			{
-				$allData = $data;
-			}
-
-			$pk = (!empty($allData[$key])) ? $allData[$key] : 0;
+			$pk = (!empty($data[$key])) ? $data[$key] : 0;
 
 			$this->_isNewRecord = $pk <= 0;
 
 			// Bind the data
-			$table->bind($allData);
+			$table->bind($data);
 
 			// Call the behaviors
 			$result = $this->modelDispatcher->trigger('onBeforeSave', array(&$this, &$data));
@@ -2333,22 +2347,6 @@ class FOFModel extends JObject
 				$this->setError($table->getError());
 
 				return false;
-			}
-			else
-			{
-				// Plugin successful, refetch the possibly modified data
-				if ($data instanceof FOFTable)
-				{
-					$data->bind($allData);
-				}
-				elseif (is_object($data))
-				{
-					$data = (object) $allData;
-				}
-				else
-				{
-					$data = $allData;
-				}
 			}
 		}
 		catch (Exception $e)

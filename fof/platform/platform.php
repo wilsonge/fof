@@ -475,4 +475,54 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	{
 		return version_compare($version1, $version2, $operator);
 	}
+
+	/**
+	 * Saves something to the cache. This is supposed to be used for system-wide
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to save
+	 * @param   string  $content  The actual data to save
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function setCache($key, $content)
+	{
+		return false;
+	}
+
+	/**
+	 * Retrieves data from the cache. This is supposed to be used for system-side
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to retrieve
+	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
+	 */
+	public function getCache($key, $default = null)
+	{
+		return false;
+	}
+
+	/**
+	 * Is the global FOF cache enabled?
+	 *
+	 * @return  boolean
+	 */
+	public function isGlobalFOFCacheEnabled()
+	{
+		return true;
+	}
+
+	/**
+	 * Clears the cache of system-wide FOF data. You are supposed to call this in
+	 * your components' installation script post-installation and post-upgrade
+	 * methods or whenever you are modifying the structure of database tables
+	 * accessed by FOF. Please note that FOF's cache never expires and is not
+	 * purged by Joomla!. You MUST use this method to manually purge the cache.
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function clearCache()
+	{
+		return false;
+	}
 }
