@@ -154,6 +154,27 @@
 	====================================================================================================
 	-->
 	
+	<target name="docsdeploy" depends="docsdeploy-fofguide">
+		<echo>All FOF documentation has been uploaded</echo>
+	</target>
+	
+	<target name="docsdeploy-fofguide">
+		<echo>Uploading FOF Developer's Guide</echo>
+		<ftpdeploy
+			host="${ftp.host}"
+			port="${ftp.port}"
+			username="${ftp.username}"
+			password="${ftp.password}"
+			dir="${ftp.dir.docs}/fof"
+			mode="${ftp.mode}"
+			passive="true"
+			level="debug">
+			<fileset dir="${dirs.documentation}">
+				<include name="fof-guide.xml"/>
+			</fileset>			
+		</ftpdeploy>
+	</target>
+	
 	<target name="ftpdeploy" depends="git">
 		<echo>Uploading dev release</echo>
 		<ftpdeploy

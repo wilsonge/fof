@@ -96,10 +96,10 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 */
 	public static function forceInstance($instance)
 	{
-        if($instance instanceof FOFPlatformInterface || is_null($instance))
-        {
-            self::$instance = $instance;
-        }
+		if ($instance instanceof FOFPlatformInterface || is_null($instance))
+		{
+			self::$instance = $instance;
+		}
 	}
 
 	/**
@@ -324,7 +324,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Returns the JUser object for the current user
 	 *
-	 * @param   $id  integer  The ID of the user to fetch
+	 * @param   integer  $id  The ID of the user to fetch
 	 *
 	 * @see FOFPlatformInterface::getUser()
 	 *
@@ -465,9 +465,9 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 * Performs a check between two versions. Use this function instead of PHP version_compare
 	 * so we can mock it while testing
 	 *
-	 * @param   string    $version1    First version number
-	 * @param   string    $version2    Second version number
-	 * @param   string    $operator    Operator (see version_compare for valid operators)
+	 * @param   string  $version1  First version number
+	 * @param   string  $version2  Second version number
+	 * @param   string  $operator  Operator (see version_compare for valid operators)
 	 *
 	 * @return  boolean
 	 */
@@ -496,6 +496,8 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @param   string  $key      The key of the data to retrieve
 	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
+	 *
+	 * @return  string  The cached value
 	 */
 	public function getCache($key, $default = null)
 	{
@@ -525,4 +527,27 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	{
 		return false;
 	}
+
+	/**
+	 * logs in a user
+	 *
+	 * @param   array  $authInfo  authentification information
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function loginUser($authInfo)
+	{
+		return true;
+	}
+
+	/**
+	 * logs out a user
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function logoutUser()
+	{
+		return true;
+	}
+
 }
