@@ -255,5 +255,4 @@ Filling in the relevent langauge strings into our language file will then give u
 </form>
 ```
 
-In this view here - we define the form with javascript validation. We then add in the fields as is done in existing components in the model folder (see https://github.com/joomla/joomla-cms/blob/master/administrator/components/com_weblinks/models/forms/weblink.xml)
-
+In this view here - we define the form with javascript validation. We then add in the fields as is done in existing components in the model folder (see https://github.com/joomla/joomla-cms/blob/master/administrator/components/com_weblinks/models/forms/weblink.xml). It is expected for the user to be reasonably familiar with the methods used here. Consult the <a href="http://docs.joomla.org/Form_field">Joomla Form Field docs</a> for more info.
