@@ -104,7 +104,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @group       tableLoad
+	 * @groupXX       tableLoad
 	 */
 	public function testLoad()
     {
@@ -142,9 +142,21 @@ class FOFTableTest extends FtestCaseDatabase
 	 * @group           tableLoad
 	 * @dataProvider    getTestLoadJoined
 	 */
-	public function testLoadJoined()
+	public function testLoadJoined($tableinfo, $test, $check)
 	{
+		require_once JPATH_TESTS.'/unit/core/table/table.php';
 
+		$db = JFactory::getDbo();
+
+		$table = new FtestTable($tableinfo['table'], $tableinfo['id'], $db, $tableinfo['config']);
+
+		foreach($check['columns'] as $column)
+		{
+			$this->assertObjectHasAttribute($column, $table, sprintf('Joined field %s not set', $column));
+		}
+
+		$rc = $table->load($test['cid']);
+		$this->assertEquals($check['return'], $rc, 'Load with joined fields: wrong return value');
 	}
 
 	/**

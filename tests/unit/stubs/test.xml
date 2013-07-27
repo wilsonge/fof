@@ -197,17 +197,20 @@
       <column>foftest_id_foobarjoin</column>
       <column>external_key</column>
       <column>fj_title</column>
+      <column>fj_dummy</column>
       <column>title</column>
       <row>
           <value>1</value>
           <value>2</value>
           <value>First row unique colum name</value>
+          <value>Dummy value for row 1</value>
           <value>First row non-unique colum name</value>
       </row>
       <row>
           <value>2</value>
           <value>4</value>
           <value>Second row unique colum name</value>
+          <value>Dummy value for row 2</value>
           <value>Second row non-unique colum name</value>
       </row>
   </table>

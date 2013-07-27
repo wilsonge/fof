@@ -2278,10 +2278,11 @@ class FOFTable extends JObject
 			return array();
 		}
 
-		// Get joined tables. Ignore FROM clause, since it should not be used (the starting point is the table "table")
 		$tables   = array();
 		$j_tables = array();
 		$j_fields = array();
+
+		// Get joined tables. Ignore FROM clause, since it should not be used (the starting point is the table "table")
 		$joins    = $query->join;
 
 		foreach ($joins as $join)
@@ -2292,12 +2293,17 @@ class FOFTable extends JObject
 		// Clean up table names
 		foreach($tables as $table)
 		{
-			preg_match_all('#(\#__.*?)[\s|\.]#', $table, $matches);
+			preg_match('#(.*)((\w)*(on|using))(.*)#i', $table, $matches);
+
 			if($matches && isset($matches[1]))
 			{
-				foreach($matches[1] as $matchedTable)
+				// I always want the first part, no matter what
+				$parts = explode(' ', $matches[1]);
+				$t_table = $this->_db->qn(trim($parts[0]));
+
+				if(!in_array($t_table, $j_tables))
 				{
-					$j_tables[] = $matchedTable;
+					$j_tables[] =  substr($t_table, 1, strlen($t_table) - 2);
 				}
 			}
 		}
@@ -2347,16 +2353,16 @@ class FOFTable extends JObject
 	}
 
 	/**
-	 * Normalizes the fields, returning an array with all the fields.
-	 * Ie array('foobar, foo') becomes array('foobar', 'foo')
+	 * Normalizes the fields, returning an associative array with all the fields.
+	 * Ie array('foobar as foo, bar') becomes array('foobar' => 'foo', 'bar' => 'bar')
 	 *
-	 * @param   array    $fields    Array with column fields
-	 * @param   boolean  $useAlias  Should I use the column alias or use the extended syntax?
+	 * @param   array $fields    Array with column fields
 	 *
 	 * @return  array  Normalized array
 	 */
-	protected function normalizeSelectFields($fields, $extended = false)
+	protected function normalizeSelectFields($fields)
 	{
+		$db     = JFactory::getDbo();
 		$return = array();
 
 		foreach ($fields as $field)
@@ -2367,10 +2373,29 @@ class FOFTable extends JObject
 			{
 				// Is there any alias?
 				$parts  = preg_split('#\sas\s#i', $t_field);
-				$column = $parts[0];
-				$alias  = isset($parts[1]) ? $parts[1] : '';
 
-				if(!$alias)
+				// Do I have a table.column situation? Let's get the field name
+				$tableField  = explode('.', $parts[0]);
+
+				if(isset($tableField[1]))
+				{
+					$column = $tableField[1];
+				}
+				else
+				{
+					$column = $tableField[0];
+				}
+
+				// Always quote it, so I can safely remove the first and last char
+				$column = $db->qn(trim($column));
+				$column = substr($column, 1, strlen($column) - 2);
+
+				if(isset($parts[1]))
+				{
+					$alias = $db->qn(trim($parts[1]));
+					$alias = substr($alias, 1, strlen($alias) - 2);
+				}
+				else
 				{
 					$alias = $column;
 				}

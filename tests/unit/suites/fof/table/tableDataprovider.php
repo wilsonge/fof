@@ -4,8 +4,137 @@ abstract class TableDataprovider
 {
 	public static function getTestLoadJoined()
 	{
-		$data[] = array(
+		$db        = JFactory::getDbo();
 
+		// No name escaping, no alias, one unique column, no table name before column
+		$jointable      = '#__foftest_foobarjoins ON external_key = foftest_foobar_id';
+		$columns        = array('fj_title');
+		$config['join'] = $db->getQuery(true)->select($columns)->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => $columns)
+		);
+
+		// No name escaping, no alias, two unique column, no table name before column
+		$jointable      = '#__foftest_foobarjoins ON external_key = foftest_foobar_id';
+		$columns        = array('fj_title', 'fj_dummy');
+		$config['join'] = $db->getQuery(true)->select($columns)->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => $columns)
+		);
+
+		// No name escaping, aliases, two unique column, no table name before column
+		$jointable      = '#__foftest_foobarjoins ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)->select('fj_title as alias_title, fj_dummy')->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('alias_title', 'fj_dummy'))
+		);
+
+		// Select name escaping on columns (not on the aliases), aliases, two unique column, no table name before column
+		$jointable      = '#__foftest_foobarjoins ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)
+							 ->select($db->qn('fj_title').' as alias_title, '.$db->qn('fj_dummy'))
+							 ->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('alias_title', 'fj_dummy'))
+		);
+
+		// Select name escaping on all columns and tables, aliases, two unique column, no table name before column
+		$jointable      = $db->qn('#__foftest_foobarjoins').' ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)
+							 ->select($db->qn('fj_title').' as '.$db->qn('alias_title').', '.$db->qn('fj_dummy'))
+							 ->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('alias_title', 'fj_dummy'))
+		);
+
+		// Select name escaping on all columns and tables, table with alias (using AS), aliases, two unique column, no table name before column
+		$jointable      = $db->qn('#__foftest_foobarjoins').' AS fjoin_table ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)
+							 ->select($db->qn('fj_title').' as '.$db->qn('alias_title').', '.$db->qn('fj_dummy'))
+							 ->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('alias_title', 'fj_dummy'))
+		);
+
+		// Select name escaping on all columns and tables, table with alias (not using AS), aliases, two unique column, no table name before column
+		$jointable      = $db->qn('#__foftest_foobarjoins').' fjoin_table ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)
+							 ->select($db->qn('fj_title').' as '.$db->qn('alias_title').', '.$db->qn('fj_dummy'))
+							 ->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('alias_title', 'fj_dummy'))
+		);
+
+		// Select name escaping on all columns and tables, aliases, one unique and one non-unique column, table name before column
+		$jointable      = $db->qn('#__foftest_foobarjoins').' ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)
+							 ->select('#__foftest_foobarjoins.'.$db->qn('title').' as '.$db->qn('nonunique_column').', '.$db->qn('fj_dummy'))
+							 ->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('nonunique_column', 'fj_dummy'))
+		);
+
+		// Select name escaping on all columns and tables (including select ones), aliases,
+		// one unique and one non-unique column, table name before column
+		$jointable      = $db->qn('#__foftest_foobarjoins').' ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)
+							 ->select($db->qn('#__foftest_foobarjoins').'.'.$db->qn('title').' as '.$db->qn('nonunique_column').', '.$db->qn('fj_dummy'))
+							 ->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('nonunique_column', 'fj_dummy'))
+		);
+
+		// Select name escaping on all columns and tables, table with alias (not using AS), aliases,
+		// one unique and one non unique column, alias table name before column
+		$jointable      = $db->qn('#__foftest_foobarjoins').' AS foojoin ON external_key = foftest_foobar_id';
+		$config['join'] = $db->getQuery(true)
+			->select($db->qn('foojoin').'.'.$db->qn('title').' as '.$db->qn('nonunique_column').', '.$db->qn('fj_dummy'))
+			->innerJoin($jointable);
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('nonunique_column', 'fj_dummy'))
+		);
+
+		// Trying more complex query: left + inner join on the same linked table, with aliases (of course)
+		$config['join'] = $db->getQuery(true)
+							 ->select($db->qn('a1').'.'.$db->qn('fj_dummy').' as '.$db->qn('first_table_field'))
+							 ->select($db->qn('a2').'.'.$db->qn('title').' as '.$db->qn('second_table_field'))
+							 ->innerJoin($db->qn('#__foftest_foobarjoins').' AS a1 ON a1.external_key = foftest_foobar_id')
+							 ->leftJoin($db->qn('#__foftest_foobarjoins').' AS a2 ON a2.external_key = foftest_foobar_id');
+
+		$data[] = array(
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id', 'config' => $config),
+			array('cid' => 2),
+			array('return' => true, 'columns' => array('first_table_field', 'second_table_field'))
 		);
 
 		return $data;
