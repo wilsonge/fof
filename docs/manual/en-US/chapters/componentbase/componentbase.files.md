@@ -4,7 +4,8 @@
 2.1.1 reviews.php
 ==========================================
 
-```<?php
+```php
+<?php
 /**
  * @copyright (C) 2013 JoomJunk. All rights reserved.
  * @package    JJ Blog
