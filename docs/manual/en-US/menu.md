@@ -1,3 +1,5 @@
 - Introducing FOF
 - [Introduction](chapters/introduction.md)
 - [Setting up Joomla and RAD](chapters/config/overview.md)
+- [Creating a Basic Backend]
+	- [Files](chapters/componentbase/componentbase.files.md)
