@@ -64,7 +64,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 	 *
 	 * @return  boolean  True to allow saving
 	 */
-	public function onBeforeStore(&$table, &$result)
+	public function onBeforeStore(&$table, $updateNulls)
 	{
 		if ($table->hasTags())
 		{
@@ -135,8 +135,8 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 			$contentType->table = json_encode(
 				array(
 					'special' => array(
-						'dbtable' => $options['tbl'],
-						'key'     => $options['tbl_key'],
+						'dbtable' => $table->getTableName(),
+						'key'     => $table->getKeyName(),
 						'type'    => $name,
 						'prefix'  => $options['table_prefix'],
 						'config'  => 'array()'
@@ -155,7 +155,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 				array(
 					'common' => array(
 						0 => array(
-							"core_content_item_id" => $options['tbl_key'],
+							"core_content_item_id" => $table->getKeyName(),
 							"core_title"           => $this->getUcmCoreAlias('title'),
 							"core_state"           => $this->getUcmCoreAlias('enabled'),
 							"core_alias"           => $this->getUcmCoreAlias('alias'),

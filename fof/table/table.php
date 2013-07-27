@@ -211,7 +211,7 @@ class FOFTable extends JObject implements JTableInterface
 	 *
 	 * @var    array
 	 */
-	protected $default_behaviors = array('tags');
+	protected $default_behaviors = array('tags', 'assets');
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -1127,17 +1127,6 @@ class FOFTable extends JObject implements JTableInterface
 			}
 		}
 
-		// Set rules for assets enabled tables
-		if ($this->_trackAssets)
-		{
-			// Bind the rules.
-
-			if (isset($src['rules']) && is_array($src['rules']))
-			{
-				$this->setRules($src['rules']);
-			}
-		}
-
 		$result = $this->onAfterBind($src);
 
 		return $result;
@@ -1168,31 +1157,10 @@ class FOFTable extends JObject implements JTableInterface
 			$this->$k = null;
 		}
 
-		$asset_id_field	= $this->getColumnAlias('asset_id');
-		if (in_array($asset_id_field, $this->getKnownFields()))
-		{
-			if (!empty($this->$asset_id_field))
-			{
-				$currentAssetId = $this->$asset_id_field;
-			}
-
-			// The asset id field is managed privately by this class.
-			if ($this->_trackAssets)
-			{
-				unset($this->$asset_id_field);
-			}
-		}
-
 		// Create the object used for inserting/udpating data to the database
 		$fields     = $this->getTableFields();
 		$properties = $this->getKnownFields();
 		$keys       = array();
-
-        // Let's remove the asset_id field, since we unset the property above and we would get a PHP notice
-        if(isset($fields[$asset_id_field]))
-        {
-            unset($fields[$asset_id_field]);
-        }
 
 		foreach ($properties as $property)
 		{
@@ -1231,72 +1199,6 @@ class FOFTable extends JObject implements JTableInterface
 		if ($this->_locked)
 		{
 			$this->_unlock();
-		}
-
-		/*
-		 * Asset Tracking
-		 */
-		if (in_array($asset_id_field, $this->getKnownFields()) && $this->_trackAssets)
-		{
-			$parentId = $this->_getAssetParentId();
-			$name     = $this->_getAssetName();
-			$title    = $this->_getAssetTitle();
-
-			$asset = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
-			$asset->loadByName($name);
-
-			// Re-inject the asset id.
-			$this->$asset_id_field = $asset->id;
-
-			// Check for an error.
-			$error = $asset->getError();
-
-			if ($error)
-			{
-				$this->setError($error);
-
-				return false;
-			}
-
-			// Specify how a new or moved node asset is inserted into the tree.
-			if (empty($this->$asset_id_field) || $asset->parent_id != $parentId)
-			{
-				$asset->setLocation($parentId, 'last-child');
-			}
-
-			// Prepare the asset to be stored.
-			$asset->parent_id = $parentId;
-			$asset->name      = $name;
-			$asset->title     = $title;
-
-			if ($this->_rules instanceof JAccessRules)
-			{
-				$asset->rules = (string) $this->_rules;
-			}
-
-			if (!$asset->check() || !$asset->store($updateNulls))
-			{
-				$this->setError($asset->getError());
-
-				return false;
-			}
-
-			// Create an asset_id or heal one that is corrupted.
-			if (empty($this->$asset_id_field) || (($currentAssetId != $this->$asset_id_field) && !empty($this->$asset_id_field)))
-			{
-				// Update the asset_id field in this table.
-				$this->$asset_id_field = (int) $asset->id;
-
-				$query = $this->_db->getQuery(true);
-				$query->update($this->_db->qn($this->_tbl));
-				$query->set('asset_id = ' . (int) $this->$asset_id_field);
-				$query->where($this->_db->qn($k) . ' = ' . (int) $this->$k);
-				$this->_db->setQuery($query);
-
-				$this->_db->execute();
-			}
-
-			$result = true;
 		}
 
 		$result = $this->onAfterStore();
@@ -1852,34 +1754,6 @@ class FOFTable extends JObject implements JTableInterface
 		if ($pk === null)
 		{
 			throw new UnexpectedValueException('Null primary key not allowed.');
-		}
-
-		// If tracking assets, remove the asset first.
-
-		if ($this->_trackAssets)
-		{
-			// Get and the asset name.
-			$this->$k = $pk;
-			$name     = $this->_getAssetName();
-
-			// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a FOFTable
-			$asset    = JTable::getInstance('Asset');
-
-			if ($asset->loadByName($name))
-			{
-				if (!$asset->delete())
-				{
-					$this->setError($asset->getError());
-
-					return false;
-				}
-			}
-			else
-			{
-				$this->setError($asset->getError());
-
-				return false;
-			}
 		}
 
 		// Delete the row by primary key.
@@ -2661,9 +2535,7 @@ class FOFTable extends JObject implements JTableInterface
 		$options = array(
 			'component' 	=> $this->input->get('option'),
 			'view'			=> $this->input->get('view'),
-			'tbl_key'		=> $this->_tbl_key,
-			'table_prefix'	=> $this->_tablePrefix,
-			'tbl'			=> $this->_tbl
+			'table_prefix'	=> $this->_tablePrefix
 		);
 
 		$result = $this->tableDispatcher->trigger('onAfterBind', array(&$this, &$src, $options));
@@ -3272,7 +3144,7 @@ class FOFTable extends JObject implements JTableInterface
      *
      * @return  string
      */
-	protected function _getAssetName()
+	public function getAssetName()
 	{
 		$k = $this->_tbl_key;
 
@@ -3308,9 +3180,9 @@ class FOFTable extends JObject implements JTableInterface
 	 *
 	 * @return  string  The string to use as the title in the asset table.
 	 */
-	protected function _getAssetTitle()
+	public function getAssetTitle()
 	{
-		return $this->_getAssetName();
+		return $this->getAssetName();
 	}
 
 	/**
@@ -3325,7 +3197,7 @@ class FOFTable extends JObject implements JTableInterface
 	 *
 	 * @return  integer
 	 */
-	protected function _getAssetParentId($table = null, $id = null)
+	public function getAssetParentId($table = null, $id = null)
 	{
 		// For simple cases, parent to the asset root.
 		$assets = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));

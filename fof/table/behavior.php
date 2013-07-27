@@ -63,7 +63,7 @@ abstract class FOFTableBehavior extends JEvent
 	 *
 	 * @return  boolean  True to allow saving
 	 */
-	public function onBeforeStore(&$table, &$result)
+	public function onBeforeStore(&$table, $updateNulls)
 	{
 		return true;
 	}
