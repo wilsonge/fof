@@ -9,6 +9,7 @@
 
 require_once JPATH_TESTS . '/unit/core/view/view.php';
 require_once JPATH_TESTS . '/unit/core/model/model.php';
+require_once JPATH_TESTS . '/unit/core/renderer/renderer.php';
 
 /**
  * @group 	View
@@ -35,6 +36,14 @@ class FOFViewTest extends FtestCase
 
 		$view->setLayout('foobar');
 		$this->assertEquals($view->getLayout(), 'foobar', 'getLayout should return foobar');
+	}
+
+	public function testGetLayoutTemplate()
+	{
+		$view = $this->getView();
+
+		$view->setLayout('template:foobar');
+		$this->assertEquals($view->getLayoutTemplate(), 'template', 'getLayoutTemplate should return template');
 	}
 
 	public function testSetLayoutExt()
@@ -105,6 +114,15 @@ class FOFViewTest extends FtestCase
 		$view->setModel($model, true);
 
 		$this->assertEquals($view->getModel(), $model, 'setModel should set the model to the given model');
+	}
+
+	public function testSetRenderer()
+	{
+		$view = $this->getView();
+		$renderer = new FtestRenderer();
+		$view->setRenderer($renderer, true);
+
+		$this->assertEquals($view->getRenderer(), $renderer, 'setRenderer should set the renderer to the given renderer');
 	}
 
 	protected function getView()
