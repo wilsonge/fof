@@ -1,8 +1,8 @@
 2.1 Basic Files
 ==========================================
 
-2.1.1 reviews.php
-==========================================
+2.1.2 reviews.php
+------------------------------------------
 
 This file is required in all Joomla components - however with FOF it requires substantially less code:
 
@@ -31,8 +31,9 @@ We then check to see if FOF library exists. If it doesn't then we throw an error
 
 Finally we call the dispatcher on the component to load the core view.
 
-2.1.2 dispatcher.php
-==========================================
+2.1.3 dispatcher.php
+------------------------------------------
+
 This file simply specifies the default view for the component. In this case we are calling it **restaurants**
 
 ```php
