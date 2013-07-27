@@ -34,6 +34,20 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   PRIMARY KEY (`id_foobar_aliases`)
 );
 
+-- Table used to test joins
+-- We create a generic "key column" so we can test against different table (with aliases or not)
+-- There are different columns (unique and not), so we can test it when we have to use alias
+-- (column name not unique) or not (unique column name)
+DROP TABLE IF EXISTS `jos_foftest_foobarjoins`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_foobarjoins` (
+  `foftest_id_foobarjoin` int(11) NOT NULL AUTO_INCREMENT,
+  `external_key` int(11) NOT NULL,
+  `fj_title` varchar(50) NOT NULL,
+  `fj_dummy` varchar(50) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  PRIMARY KEY (`foftest_id_foobarjoin`)
+);
+
 -- Table without any "special" column (ordering, hits etc etc)
 DROP TABLE IF EXISTS `jos_foftest_bares`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_bares` (
