@@ -55,7 +55,7 @@ To start with we need a restaurant to review. So to do this we create a install.
 
 ```sql
 CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
-  `reviews_restaurants_id` int(11) NOT NULL AUTO_INCREMENT,
+  `reviews_restaurant_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `description` TEXT NOT NULL,
   `address` TEXT,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
   `servicerating` int(1),
   `atmosphererating` int(1),
   `pricerating` int(1),
-   PRIMARY KEY  (`reviews_restaurants_id`)
+   PRIMARY KEY  (`reviews_restaurant_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 ```
 
