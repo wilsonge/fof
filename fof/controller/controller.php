@@ -1136,6 +1136,12 @@ class FOFController extends JObject
 		$model->setState('form_name', $formname);
 
 		$item = $model->getItem();
+
+		if (!($item instanceof FOFTable))
+		{
+			return false;
+		}
+
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
 
@@ -1176,6 +1182,19 @@ class FOFController extends JObject
 		$model->setState('form_name', 'form.' . $this->layout);
 
 		$item = $model->getItem();
+
+		if (!($item instanceof FOFTable))
+		{
+			return false;
+		}
+
+		$itemKey = $item->getKeyName();
+
+		if ($item->$itemKey != $model->getId())
+		{
+			return false;
+		}
+
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
 
@@ -1212,6 +1231,12 @@ class FOFController extends JObject
 		$model->setState('form_name', 'form.' . $this->layout);
 
 		$item = $model->getItem();
+
+		if (!($item instanceof FOFTable))
+		{
+			return false;
+		}
+
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
 
@@ -1268,6 +1293,19 @@ class FOFController extends JObject
 		$model->setState('form_name', 'form.' . $this->layout);
 
 		$item = $model->getItem();
+
+		if (!($item instanceof FOFTable))
+		{
+			return false;
+		}
+
+		$itemKey = $item->getKeyName();
+
+		if ($item->$itemKey != $model->getId())
+		{
+			return false;
+		}
+
 		$formData = is_object($item) ? $item->getData() : array();
 		$form = $model->getForm($formData);
 
@@ -1616,6 +1654,12 @@ class FOFController extends JObject
 				$neworder = (int) $orders[$i];
 
 				$item = $model->getItem();
+
+				if (!($item instanceof FOFTable))
+				{
+					return false;
+				}
+
 				$key = $item->getKeyName();
 
 				if ($item->$key == $ids[$i])
@@ -1998,6 +2042,12 @@ class FOFController extends JObject
 		$id = $model->getId();
 
 		$item = $model->getItem();
+
+		if (!($item instanceof FOFTable))
+		{
+			return false;
+		}
+
 		$key = $item->getKeyName();
 		$loadedid = $item->$key;
 
@@ -2688,6 +2738,10 @@ class FOFController extends JObject
 		if (in_array(strtolower($area), array('false','0','no','403')))
 		{
 			return false;
+		}
+		if (in_array(strtolower($area), array('true','1','yes')))
+		{
+			return true;
 		}
 		elseif (empty($area))
 		{
