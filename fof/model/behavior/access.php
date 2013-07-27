@@ -49,6 +49,6 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 		// And filter the query output by these access levels
 		$db = JFactory::getDbo();
 		$access_levels = array_map(array($db, 'quote'), $access_levels);
-		$query->where($db->qn($accessField).' IN (' . implode(',', $access_levels) . ')');
+		$query->where($db->qn($accessField) . ' IN (' . implode(',', $access_levels) . ')');
 	}
 }

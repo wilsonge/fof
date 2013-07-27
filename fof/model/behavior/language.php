@@ -78,6 +78,6 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 		// And filter the query output by these languages
 		$db = JFactory::getDbo();
 		$languages = array_map(array($db, 'quote'), $languages);
-		$query->where($db->qn($languageField).' IN (' . implode(',', $languages) . ')');
+		$query->where($db->qn($languageField) . ' IN (' . implode(',', $languages) . ')');
 	}
 }
