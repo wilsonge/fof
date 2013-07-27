@@ -193,6 +193,25 @@
       </row>
   </table>
 
+  <table name="jos_foftest_foobarjoins">
+      <column>foftest_id_foobarjoin</column>
+      <column>external_key</column>
+      <column>fj_title</column>
+      <column>title</column>
+      <row>
+          <value>1</value>
+          <value>2</value>
+          <value>First row unique colum name</value>
+          <value>First row non-unique colum name</value>
+      </row>
+      <row>
+          <value>2</value>
+          <value>4</value>
+          <value>Second row unique colum name</value>
+          <value>Second row non-unique colum name</value>
+      </row>
+  </table>
+
   <table name="jos_session">
     <column>session_id</column>
     <column>client_id</column>

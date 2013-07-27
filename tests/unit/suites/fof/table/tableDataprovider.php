@@ -2,10 +2,11 @@
 
 abstract class TableDataprovider
 {
-	public static function getTestGetContentType()
+	public static function getTestLoadJoined()
 	{
-		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');
-		$data[] = array('com_foftest', 'foobars', 'com_foftest.foobar', 'Wrong content type');
+		$data[] = array(
+
+		);
 
 		return $data;
 	}
@@ -1015,6 +1016,14 @@ abstract class TableDataprovider
 			array('loadid' => 2, 'cid' => '', 'mockAsset' => false, 'alias' => array('asset_id' => 'fo_asset_id')),
 			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
 		);
+
+		return $data;
+	}
+
+	public static function getTestGetContentType()
+	{
+		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');
+		$data[] = array('com_foftest', 'foobars', 'com_foftest.foobar', 'Wrong content type');
 
 		return $data;
 	}
