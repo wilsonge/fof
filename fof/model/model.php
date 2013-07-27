@@ -1999,7 +1999,11 @@ class FOFModel extends JObject
 	public function applyAccessFiltering($userID = null)
 	{
 		$user = FOFPlatform::getInstance()->getUser($userID);
-		$this->setState('access', $user->getAuthorisedViewLevels());
+
+		$table = $this->getTable();
+		$accessField = $table->getColumnAlias('access');
+
+		$this->setState($accessField, $user->getAuthorisedViewLevels());
 
 		return $this;
 	}
