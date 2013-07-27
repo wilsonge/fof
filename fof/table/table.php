@@ -84,13 +84,6 @@ class FOFTable extends JObject
 	protected $_has_tags = false;
 
 	/**
-	 * Tag helper
-	 *
-	 * @var    JHelperTags
-	 */
-	protected $_tagsHelper = null;
-
-	/**
 	 * The rules associated with this record.
 	 *
 	 * @var    JAccessRules  A JAccessRules object.
@@ -680,12 +673,6 @@ class FOFTable extends JObject
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.1', 'ge'))
 		{
 			$this->_has_tags = $newState ? true : false;
-
-			if ($this->_has_tags && !$this->_tagsHelper)
-			{
-				$this->_tagsHelper = new JHelperTags();
-				$this->_tagsHelper->typeAlias = $this->_assetKey;
-			}
 		}
 	}
 
@@ -1107,15 +1094,9 @@ class FOFTable extends JObject
 			}
 		}
 
-		// Bind tags
-		if ($this->_has_tags && isset($src['tags']))
-		{
-			$this->metadata = array();
-			$this->metadata['tags'] = $src['tags'];
-			$this->metadata = json_encode($this->metadata);
-		}
+		$result = $this->onAfterBind();
 
-		return true;
+		return $result;
 	}
 
 	/**
@@ -1131,11 +1112,6 @@ class FOFTable extends JObject
 	 */
 	public function store($updateNulls = false)
 	{
-		if ($this->_has_tags)
-		{
-			$metadata = $this->metadata;
-		}
-
 		if (!$this->onBeforeStore($updateNulls))
 		{
 			return false;
@@ -1161,19 +1137,6 @@ class FOFTable extends JObject
 			{
 				unset($this->$asset_id_field);
 			}
-		}
-
-		// Manage tags, if present
-		if ($this->_has_tags)
-		{
-			// TODO: JHelperTags sucks in Joomla! 3.1, it requires that tags are
-			// stored in the metadata property. Not our case, therefore we need
-			// to add it in a fake object. We sent a PR to Joomla! CMS to fix
-			// that. Once it's accepted, we'll have to remove the attrocity
-			// here...
-			$tagsTable = clone($this);
-			$tagsTable->metadata = $metadata;
-			$this->_tagsHelper->preStoreProcess($tagsTable);
 		}
 
 		// Create the object used for inserting/udpating data to the database
@@ -1220,23 +1183,6 @@ class FOFTable extends JObject
 		}
 
 		$this->bind($updateObject);
-
-		// Now the real tags storing process
-		if ($this->_has_tags)
-		{
-			// Check if the content type exists, and create it if it does not
-			$this->checkContentType();
-
-			// TODO: This little guy here fails because JHelperTags
-			// need a JTable object to work, while our is FOFTable
-			// Need probably to write our own FOFHelperTags
-			// Thank you com_tags
-			if (!$this->_tagsHelper->postStoreProcess($tagsTable))
-			{
-				$this->setError('Error storing tags');
-				return false;
-			}
-		}
 
 		if ($this->_locked)
 		{
@@ -1887,17 +1833,6 @@ class FOFTable extends JObject
 			else
 			{
 				$this->setError($asset->getError());
-
-				return false;
-			}
-		}
-
-		// If this resource has tags, delete the tags first
-		if ($this->_has_tags)
-		{
-			if (!$this->_tagsHelper->deleteTagData($this, $pk))
-			{
-				$this->setError('Error deleting Tags');
 
 				return false;
 			}
@@ -2670,6 +2605,51 @@ class FOFTable extends JObject
 	}
 
 	/**
+	 * The event which runs after binding data to the class
+	 *
+	 * @param   object|array  &$src  The data to bind
+	 * 
+	 * @return  boolean  True to allow binding without an error
+	 */
+	protected function onAfterBind(&$src)
+	{
+		// Call the behaviors
+		$options = array(
+			'component' 	=> $this->input->get('option'),
+			'view'			=> $this->input->get('view'),
+			'tbl_key'		=> $this->_tbl_key,
+			'table_prefix'	=> $this->_tablePrefix,
+			'tbl'			=> $this->_tbl
+		);
+
+		$result = $this->tableDispatcher->trigger('onAfterBind', array(&$this, &$src, $options));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
+		if ($this->_trigger_events)
+		{
+			$name = FOFInflector::pluralize($this->getKeyName());
+
+			$result     = FOFPlatform::getInstance()->runPlugins('onAfterBind' . ucfirst($name), array(&$this, &$src));
+
+			if (in_array(false, $result, true))
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * The event which runs after storing (saving) data to the database
 	 *
 	 * @return  boolean  True to allow saving without an error
@@ -3262,6 +3242,20 @@ class FOFTable extends JObject
 	}
 
 	/**
+     * Method to compute the default name of the asset.
+     * The default name is in the form table_name.id
+     * where id is the value of the primary key of the table.
+     *
+     * @throws  UnexpectedValueException
+     *
+     * @return  string
+     */
+	public function getAssetKey()
+	{
+		return $this->_assetKey;
+	}
+
+	/**
 	 * Method to return the title to use for the asset table.  In
 	 * tracking the assets a title is kept for each asset so that there is some
 	 * context available in a unified access manager.  Usually this would just
@@ -3511,126 +3505,6 @@ class FOFTable extends JObject
 		$this->_locked = false;
 
 		return true;
-	}
-
-	/**
-	 * Check if a UCM content type exists for this resource, and
-	 * create it if it does not
-	 */
-	protected function checkContentType()
-	{
-		$contentType = new JTableContenttype($this->_db);
-
-		$alias = $this->getContentType();
-
-		// Fetch the extension name
-		$component = JComponentHelper::getComponent($component);
-
-		// Fetch the name using the menu item
-		$query = $this->_db->getQuery(true);
-		$query->select('title')->from('#__menu')->where('component_id = ' . (int) $component->id);
-		$this->_db->setQuery($query);
-		$component_name = JText::_($this->_db->loadResult());
-
-		$name = $component_name . ' ' . ucfirst($view);
-
-		// Create a new content type for our resource
-		if (!$contentType->load(array('type_alias' => $alias)))
-		{
-			$contentType->type_title = $name;
-			$contentType->type_alias = $alias;
-			$contentType->table = json_encode(
-				array(
-					'special' => array(
-						'dbtable' => $this->_tbl,
-						'key'     => $this->_tbl_key,
-						'type'    => $name,
-						'prefix'  => $this->_tablePrefix,
-						'config' => 'array()'
-					),
-					'common' => array(
-						'dbtable' => '#__ucm_content',
-						'key' => 'ucm_id',
-						'type' => 'CoreContent',
-						'prefix' => 'JTable',
-						'config' => 'array()'
-					)
-				)
-			);
-
-			$contentType->field_mappings = json_encode(
-				array(
-					'common' => array(
-						0 => array(
-							"core_content_item_id" => $this->_tbl_key,
-							"core_title"           => $this->getUcmCoreAlias('title'),
-							"core_state"           => $this->getUcmCoreAlias('enabled'),
-							"core_alias"           => $this->getUcmCoreAlias('alias'),
-							"core_created_time"    => $this->getUcmCoreAlias('created_on'),
-							"core_modified_time"   => $this->getUcmCoreAlias('created_by'),
-							"core_body"            => $this->getUcmCoreAlias('body'),
-							"core_hits"            => $this->getUcmCoreAlias('hits'),
-							"core_publish_up"      => $this->getUcmCoreAlias('publish_up'),
-							"core_publish_down"    => $this->getUcmCoreAlias('publish_down'),
-							"core_access"          => $this->getUcmCoreAlias('access'),
-							"core_params"          => $this->getUcmCoreAlias('params'),
-							"core_featured"        => $this->getUcmCoreAlias('featured'),
-							"core_metadata"        => $this->getUcmCoreAlias('metadata'),
-							"core_language"        => $this->getUcmCoreAlias('language'),
-							"core_images"          => $this->getUcmCoreAlias('images'),
-							"core_urls"            => $this->getUcmCoreAlias('urls'),
-							"core_version"         => $this->getUcmCoreAlias('version'),
-							"core_ordering"        => $this->getUcmCoreAlias('ordering'),
-							"core_metakey"         => $this->getUcmCoreAlias('metakey'),
-							"core_metadesc"        => $this->getUcmCoreAlias('metadesc'),
-							"core_catid"           => $this->getUcmCoreAlias('cat_id'),
-							"core_xreference"      => $this->getUcmCoreAlias('xreference'),
-							"asset_id"             => $this->getUcmCoreAlias('asset_id')
-						)
-					),
-					'special' => array(
-						0 => array(
-						)
-					)
-				)
-			);
-
-			$contentType->router = '';
-
-			$contentType->store();
-		}
-	}
-
-	/**
-	 * Utility methods that fetches the column name for the field.
-	 * If it does not exists, returns a "null" string
-	 *
-	 * @return string The column name
-	 */
-	protected function getUcmCoreAlias($alias)
-	{
-		$alias = $this->getColumnAlias($alias);
-
-		if (in_array($alias, $this->getKnownFields()))
-		{
-			return $alias;
-		}
-
-		return "null";
-	}
-
-	/**
-	 * Get the content type for ucm
-	 *
-	 * @return string The content type alias
-	 */
-	public function getContentType()
-	{
-		$component = $this->input->get('option');
-		$view = FOFInflector::singularize($this->input->get('view'));
-		$alias = $component . '.' . $view;
-
-		return $alias;
 	}
 
 	public function setConfig(array $config)

@@ -30,6 +30,19 @@ abstract class FOFTableBehavior extends JEvent
 	}
 
 	/**
+	 * The event which runs after binding data to the table
+	 *
+	 * @param   FOFTable  &$table  The table which calls this event
+	 * @param   object|array  &$src  The data to bind
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function onAfterBind(&$table, &$src)
+	{
+		return true;
+	}
+
+	/**
 	 * The event which runs after loading a record from the database
 	 *
 	 * @param   FOFTable  &$table  The table which calls this event
