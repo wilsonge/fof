@@ -37,18 +37,6 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 		$table = $model->getTable();
 		$accessField = $table->getColumnAlias('access');
 
-		// Make sure the access field actually exists
-		if (!in_array($accessField, $table->getKnownFields()))
-		{
-			return false;
-		}
-
-		// Get the authorised access levels of the current user
-		$access_levels = JFactory::getUser()->getAuthorisedViewLevels();
-
-		// And filter the query output by these access levels
-		$db = JFactory::getDbo();
-		$access_levels = array_map(array($db, 'quote'), $access_levels);
-		$query->where($db->qn($accessField) . ' IN (' . implode(',', $access_levels) . ')');
+		$model->applyAccessFiltering(null);
 	}
 }
