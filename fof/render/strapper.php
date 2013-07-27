@@ -544,7 +544,7 @@ ENDJS;
 					{
 						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
 						$filter_html .= "\t" . '<label for="title" class="element-invisible">';
-						$filter_html .= $headerField->label;
+						$filter_html .= JText::_($headerField->label);
 						$filter_html .= "</label>\n";
 						$filter_html .= "\t$filter\n";
 						$filter_html .= "</div>\n";
