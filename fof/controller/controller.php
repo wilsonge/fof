@@ -2731,6 +2731,7 @@ class FOFController extends JObject
 		{
 			return false;
 		}
+
 		if (in_array(strtolower($area), array('true','1','yes')))
 		{
 			return true;
