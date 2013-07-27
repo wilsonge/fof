@@ -1,6 +1,6 @@
 var populateWindow = function(link) {
 	var markdownRequest = new Request({
-		"url": here + 'docs/manual/en-GB/' + link,
+		"url": here + 'docs/manual/en-US/' + link,
 		"method": "get",
 		"onSuccess": function(response) {
 			$('docwin').set('html', marked(response));
@@ -32,7 +32,7 @@ var populateWindow = function(link) {
 
 var populateMenu = function() {
 	var markdownRequest = new Request({
-		"url": here + 'docs/manual/en-GB/menu.md',
+		"url": here + 'docs/manual/en-US/menu.md',
 		"method": "get",
 		"onSuccess": function (response) {
 			$('doc-menu').set('html', marked(response));
