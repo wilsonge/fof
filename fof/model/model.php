@@ -562,6 +562,14 @@ class FOFModel extends JObject
 			$component = $config['option'];
 		}
 
+		$this->input->set('option', $component);// Set the $name/$_name variable
+		$component = $this->input->getCmd('option', 'com_foobar');
+
+		if (array_key_exists('option', $config))
+		{
+			$component = $config['option'];
+		}
+
 		$this->input->set('option', $component);
 		$name = str_replace('com_', '', strtolower($component));
 
@@ -733,7 +741,6 @@ class FOFModel extends JObject
 		}
 
 		// Populate the event names from the $config array
-
 		$configKey = $this->option . '.views.' . FOFInflector::singularize($view) . '.config.';
 
 		// Assign after delete event handler
