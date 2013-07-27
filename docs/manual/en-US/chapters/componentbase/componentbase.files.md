@@ -1,8 +1,57 @@
 2.1 Basic Files
 ==========================================
-2.1.1 install.sql
+2.1.1 com_reviews.xml
 ------------------------------------------
-To start with we need a restaurant to review. So to do this we create a install.sql file in the location specified in the xml file:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="2.5" method="upgrade">
+	<name>COM_REVIEWS</name>
+	<author>JoomJunk</author>
+	<creationDate>27th Jul 2013</creationDate>
+	<copyright>Copyright (C) 2013 JoomJunk</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<authorEmail>admin@joomjunk.co.uk</authorEmail>
+	<authorUrl>http://www.joomjunk.co.uk</authorUrl>
+	<version>1.0.0</version>
+
+	<install> <!-- Runs on install -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install/mysql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<uninstall> <!-- Runs on uninstall -->
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install/mysql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+	<update> <!-- Runs on update -->
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+
+	<administration>
+		<menu>COM_REVIEWS</menu>
+		<files folder="admin">
+			<!-- Admin Main Files -->
+			<folder>sql</folder>
+			<folder>views</folder>
+			<filename>index.html</filename>
+			<filename>controller.php</filename>
+		</files>
+		<languages folder="admin">
+				<language tag="en-GB">language/en-GB/en-GB.com_reviews.ini</language>
+				<language tag="en-GB">language/en-GB/en-GB.com_reviews.sys.ini</language>
+		</languages>
+	</administration>
+</extension>
+```
+
+Here we create a standard Joomla XML file simply for the backend of Joomla. If you are unfamiliar with any of the contents of this file we recommend that you look at the <a href="http://docs.joomla.org/Manifest_files">Manifest Files</a> section on the Joomla Documentation Site.
+
+2.1.2 install.sql
+------------------------------------------
+To start with we need a restaurant to review. So to do this we create a install.sql file in the location specified in the XML file:
 
 ```sql
 CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
@@ -29,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
 
 Database tables are named as #__component_view and the auto increment field is named component_view_id. Furthermore other fields have some special names. The published field is called `enabled` and the check in fields are called `locked_by` and `locked_on`. Note that all these conventions are overridable in a fof.xml config file. Read more about this here if desired: https://www.akeebabackup.com/documentation/fof/features-reference.html#fofxml-file
 
-2.1.2 reviews.php
+2.1.3 reviews.php
 ------------------------------------------
 
 This file is required in all Joomla components - however with FOF it requires substantially less code:
@@ -59,10 +108,10 @@ We then check to see if FOF library exists. If it doesn't then we throw an error
 
 Finally we call the dispatcher on the component to load the core view.
 
-2.1.3 dispatcher.php
+2.1.4 dispatcher.php
 ------------------------------------------
 
-This file simply specifies the default view for the component. In this case we are calling it **restaurants**
+This file simply specifies the default view for the component. In this case we are calling it **restaurants** as we defined earlier in our install.sql file (by calling the table #__reviews_restaurants)
 
 ```php
 <?php
