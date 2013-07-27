@@ -17,7 +17,7 @@ defined('_JEXEC') or die();
  */
 class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 {
-	private $cache = null;
+	private $_cache = null;
 
 	/**
 	 * Is this platform enabled?
@@ -587,12 +587,11 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 	private function &getCacheObject($force = false)
 	{
 		// Check if we have to load the cache file or we are forced to do that
-		if (is_null($this->cache) || $force)
+		if (is_null($this->_cache) || $force)
 		{
 			// Create a new JRegistry object
 			JLoader::import('joomla.registry.registry');
-			$this->cache = new JRegistry();
-
+			$this->_cache = new JRegistry;
 
 			// Find the path to the file
 			$cachePath = JPATH_CACHE . '/fof';
@@ -611,12 +610,12 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 				if (class_exists($className))
 				{
 					$object = new $className;
-					$this->cache->loadObject($object);
+					$this->_cache->loadObject($object);
 				}
 			}
 		}
 
-		return $this->cache;
+		return $this->_cache;
 	}
 
 	/**
@@ -675,9 +674,11 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 
 		if (JFile::exists($filename))
 		{
-			// This prevents stupid Joomla! error messages when the file is owned
-			// by the web server user and the FTP layer is enabled (yeah, I know,
-			// right?)
+			/*
+			 This prevents stupid Joomla! error messages when the file is owned
+			 by the web server user and the FTP layer is enabled (yeah, I know,
+			 right?)
+			*/
 			if (!@unlink($filename))
 			{
 				return JFile::delete($filename);
@@ -688,4 +689,52 @@ class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
 			}
 		}
 	}
+
+	/**
+	 * logs in a user
+	 *
+	 * @param   array  $authInfo  authentification information
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function loginUser($authInfo)
+	{
+		JLoader::import('joomla.user.authentication');
+		$options = array('remember'		 => false);
+		$authenticate = JAuthentication::getInstance();
+		$response = $authenticate->authenticate($authInfo, $options);
+
+		if ($response->status == JAuthentication::STATUS_SUCCESS)
+		{
+			$this->importPlugin('user');
+			$results = $this->runPlugins('onLoginUser', array((array) $response, $options));
+
+			JLoader::import('joomla.user.helper');
+			$userid = JUserHelper::getUserId($response->username);
+			$user = $this->getUser($userid);
+
+			$session = JFactory::getSession();
+			$session->set('user', $user);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * logs out a user
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function logoutUser()
+	{
+		JLoader::import('joomla.user.authentication');
+		$app = JFactory::getApplication();
+		$options = array('remember'	 => false);
+		$parameters = array('username'	 => $this->getUser()->username);
+
+		return $app->triggerEvent('onLogoutUser', array($parameters, $options));
+	}
+
 }
