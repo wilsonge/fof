@@ -349,19 +349,43 @@ class FOFModel extends JObject
 	 * @param   string  $name    The name of the behavior
 	 * @param   array   $config  Optional Behavior configuration
 	 *
-	 * @return  boolean
+	 * @return  boolean  True if the behavior is found and added
 	 */
 	public function addBehavior($name, $config = array())
 	{
+		// Sanity check: this objects needs a non-null behavior handler
+		if (!is_object($this->modelDispatcher))
+		{
+			return false;
+		}
 
-		$behaviorClass = 'FOFModelBehavior' . ucfirst(strtolower($name));
+		// Sanity check: this objects needs a behavior handler of the correct class type
+		if (!($this->modelDispatcher instanceof FOFModelDispatcherBehavior))
+		{
+			return false;
+		}
 
-		if (class_exists($behaviorClass) && $this->modelDispatcher)
+		// First look for ComponentnameModelViewnameBehaviorName (e.g. FoobarModelItemsBehaviorFilter)
+		$behaviorClass = ucfirst($this->option) . 'Model' . FOFInflector::pluralize($this->name) . 'Behavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass))
 		{
 			$behavior = new $behaviorClass($this->modelDispatcher, $config);
 
 			return true;
 		}
+
+		// Then look for FOFModelBehaviorName (e.g. FOFModelBehaviorFilter)
+		$behaviorClassAlt = 'FOFModelBehavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClassAlt))
+		{
+			$behavior = new $behaviorClassAlt($this->modelDispatcher, $config);
+
+			return true;
+		}
+
+		// Nothing found? Return false.
 
 		return false;
 	}
