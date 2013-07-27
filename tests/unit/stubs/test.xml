@@ -67,7 +67,7 @@
       <value>fourth-row</value>
       <value>0</value>
       <value>4</value>
-      <value>0</value>
+      <value>36</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -226,7 +226,7 @@
           <value>1</value>
           <value>0</value>
           <value>0</value>
-          <value>71</value>
+          <value>73</value>
           <value>0</value>
           <value>root.1</value>
           <value>Root Asset</value>
@@ -571,6 +571,16 @@
           <value>com_tags</value>
           <value>com_tags</value>
           <value>{&quot;core.admin&quot;:[],&quot;core.manage&quot;:[],&quot;core.manage&quot;:[],&quot;core.delete&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+      </row>
+      <row>
+          <value>36</value>
+          <value>1</value>
+          <value>71</value>
+          <value>72</value>
+          <value>1</value>
+          <value>com_foftest.foobar.4</value>
+          <value>com_foftest.foobar.4</value>
+          <value/>
       </row>
   </table>
 </dataset>

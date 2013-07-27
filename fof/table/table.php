@@ -1676,6 +1676,21 @@ class FOFTable extends JObject
 	 */
 	public function publish($cid = null, $publish = 1, $user_id = 0)
 	{
+		$enabledName   = $this->getColumnAlias('enabled');
+		$locked_byName = $this->getColumnAlias('locked_by');
+
+		// Mhm... you called the publish method on a table without publish support...
+		if(!in_array($enabledName, $this->getKnownFields()))
+		{
+			return false;
+		}
+
+		//We have to cast the id as array, or the helper function will return an empty set
+		if($cid)
+		{
+			$cid = (array) $cid;
+		}
+
 		JArrayHelper::toInteger($cid);
 		$user_id = (int) $user_id;
 		$publish = (int) $publish;
@@ -1700,9 +1715,6 @@ class FOFTable extends JObject
 			return false;
 		}
 
-		$enabledName   = $this->getColumnAlias('enabled');
-		$locked_byName = $this->getColumnAlias('locked_by');
-
 		$query = $this->_db->getQuery(true)
 			->update($this->_db->qn($this->_tbl))
 			->set($this->_db->qn($enabledName) . ' = ' . (int) $publish);
@@ -1717,8 +1729,9 @@ class FOFTable extends JObject
 			);
 		}
 
-		$cids = $this->_db->qn($k) . ' = ' .
-			implode(' OR ' . $this->_db->qn($k) . ' = ', $cid);
+		//Why this crazy statement?
+		// TODO Rewrite this statment using IN. Check if it work in SQLServer and PostgreSQL
+		$cids = $this->_db->qn($k) . ' = ' . implode(' OR ' . $this->_db->qn($k) . ' = ', $cid);
 
 		$query->where('(' . $cids . ')');
 
@@ -1749,11 +1762,12 @@ class FOFTable extends JObject
 		{
 			if ($this->_db->getAffectedRows() == 1)
 			{
+				// TODO should we check for its return value?
 				$this->checkin($cid[0]);
 
 				if ($this->$k == $cid[0])
 				{
-					$this->published = $publish;
+					$this->$enabledName = $publish;
 				}
 			}
 		}
@@ -1766,7 +1780,9 @@ class FOFTable extends JObject
 	/**
 	 * Delete a record
 	 *
-	 * @param   integer  $oid  The primary key value of the item to delete
+	 * @param   integer $oid  The primary key value of the item to delete
+	 *
+	 * @throws  UnexpectedValueException
 	 *
 	 * @return  boolean  True on success
 	 */
@@ -1777,33 +1793,29 @@ class FOFTable extends JObject
 			$this->load($oid);
 		}
 
+		$k  = $this->_tbl_key;
+		$pk = (!$oid) ? $this->$k : $oid;
+
+		// If no primary key is given, return false.
+		if (!$pk)
+		{
+			throw new UnexpectedValueException('Null primary key not allowed.');
+		}
+
+		// Execute the logic only if I have a primary key, otherwise I could have weird results
 		if (!$this->onBeforeDelete($oid))
 		{
 			return false;
 		}
 
-		$k  = $this->_tbl_key;
-		$pk = (is_null($oid)) ? $this->$k : $oid;
-
-		// If no primary key is given, return false.
-
-		if ($pk === null)
-		{
-			throw new UnexpectedValueException('Null primary key not allowed.');
-		}
+		$assetField = $this->getColumnAlias('asset_id');
 
 		// If tracking assets, remove the asset first.
-
-		if ($this->_trackAssets)
+		if ($this->_trackAssets && $this->$assetField)
 		{
-			// Get and the asset name.
-			$this->$k = $pk;
-			$name     = $this->_getAssetName();
+			$asset    = $this->getAsset();
 
-			// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a FOFTable
-			$asset    = JTable::getInstance('Asset');
-
-			if ($asset->loadByName($name))
+			if ($asset)
 			{
 				if (!$asset->delete())
 				{
@@ -1814,7 +1826,8 @@ class FOFTable extends JObject
 			}
 			else
 			{
-				$this->setError($asset->getError());
+				// TODO how can we handle the error, since getAsset will return false?
+				//$this->setError($asset->getError());
 
 				return false;
 			}
@@ -1838,7 +1851,7 @@ class FOFTable extends JObject
 		$query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
 		$this->_db->setQuery($query);
 
-		// Check for a database error.
+		// @TODO Check for a database error.
 		$this->_db->execute();
 
 		$result = $this->onAfterDelete($oid);
@@ -3032,6 +3045,27 @@ class FOFTable extends JObject
 		}
 
 		return self::$_includePaths;
+	}
+
+	/**
+	 * Loads the asset table related to this table.
+	 * This will help tests, too, since we can mock this function.
+	 *
+	 * @return bool|JTableAsset     False on failure, otherwise JTableAsset
+	 */
+	protected function getAsset()
+	{
+		$name     = $this->_getAssetName();
+
+		// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a FOFTable
+		$asset    = JTable::getInstance('Asset');
+
+		if (!$asset->loadByName($name))
+		{
+			return false;
+		}
+
+		return $asset;
 	}
 
     /**
