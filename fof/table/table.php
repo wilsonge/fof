@@ -2471,6 +2471,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforeBind(&$from)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeBind', array(&$this, &$from));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2499,6 +2508,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterLoad(&$result)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterLoad', array(&$this, &$result));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2624,6 +2642,15 @@ class FOFTable extends JObject
 			$this->$slug = $newSlug;
 		}
 
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeStore', array(&$this, $updateNulls));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		// Execute onBeforeStore<tablename> events in loaded plugins
 		if ($this->_trigger_events)
 		{
@@ -2650,6 +2677,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterStore()
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterStore', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2678,6 +2714,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforeMove($updateNulls)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeMove', array(&$this, $updateNulls));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2704,6 +2749,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterMove()
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterMove', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2732,6 +2786,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforeReorder($where = '')
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeReorder', array(&$this, $where));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2758,6 +2821,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterReorder()
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterReorder', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2786,6 +2858,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforeDelete($oid)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeDelete', array(&$this, $oid));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2814,6 +2895,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterDelete($oid)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterDelete', array(&$this, $oid));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2843,6 +2933,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforeHit($oid, $log)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeHit', array(&$this, $oid, $log));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2871,6 +2970,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterHit($oid)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterHit', array(&$this, $oid));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2899,6 +3007,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforeCopy($oid)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeCopy', array(&$this, $oid));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2927,6 +3044,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterCopy($oid)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterCopy', array(&$this, $oid));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2956,6 +3082,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforePublish(&$cid, $publish)
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforePublish', array(&$this, &$cid, $publish));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -2982,6 +3117,15 @@ class FOFTable extends JObject
 	 */
 	protected function onAfterReset()
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onAfterReset', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());
@@ -3008,6 +3152,15 @@ class FOFTable extends JObject
 	 */
 	protected function onBeforeReset()
 	{
+		// Call the behaviors
+		$result = $this->tableDispatcher->trigger('onBeforeReset', array(&$this));
+
+		if (in_array(false, $result, true))
+		{
+			// Behavior failed, return false
+			return false;
+		}
+
 		if ($this->_trigger_events)
 		{
 			$name = FOFInflector::pluralize($this->getKeyName());

@@ -17,15 +17,17 @@ defined('_JEXEC') or die();
 abstract class FOFTableBehavior extends JEvent
 {
 	/**
-	 * This event runs before saving data in the model
+	 * This event runs before binding data to the table
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
-	 * @param   array     &$data   The data to save
+	 * @param   FOFModel  &$table  The table which calls this event
+	 * @param   array     &$data   The data to bind
 	 *
 	 * @return  void
 	 */
-	public function onBeforeSave(&$model, &$data)
+	public function onBeforeBind(&$table, &$data)
 	{
 
 	}
+
+	onAfterLoad(&$table, &$from)
 }
