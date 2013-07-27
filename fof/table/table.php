@@ -725,7 +725,8 @@ class FOFTable extends JObject
 		{
 			if ($j_query->select && $j_query->select->getElements())
 			{
-				$query->select($this->normalizeSelectFields($j_query->select->getElements(), true));
+				//$query->select($this->normalizeSelectFields($j_query->select->getElements(), true));
+				$query->select($j_query->select->getElements());
 			}
 
 			if ($j_query->join)
@@ -735,7 +736,6 @@ class FOFTable extends JObject
 					$t = (string) $join;
 
 					// Joomla doesn't provide any access to the "name" variable, so I have to work with strings...
-
 					if (stripos($t, 'inner') !== false)
 					{
 						$query->innerJoin($join->getElements());
@@ -2266,8 +2266,10 @@ class FOFTable extends JObject
 		}
 
 		// Get joined tables. Ignore FROM clause, since it should not be used (the starting point is the table "table")
-		$tables = array();
-		$joins  = $query->join;
+		$tables   = array();
+		$j_tables = array();
+		$j_fields = array();
+		$joins    = $query->join;
 
 		foreach ($joins as $join)
 		{
@@ -2275,17 +2277,29 @@ class FOFTable extends JObject
 		}
 
 		// Clean up table names
-
-		for ($i = 0; $i < count($tables); $i++)
+		foreach($tables as $table)
 		{
-			preg_match('#\#__.*?\s#', $tables[$i], $matches);
-			$tables[$i] = str_replace(' ', '', $matches[0]);
+			preg_match_all('#(\#__.*?)[\s|\.]#', $table, $matches);
+			if($matches && isset($matches[1]))
+			{
+				foreach($matches[1] as $matchedTable)
+				{
+					$j_tables[] = $matchedTable;
+				}
+			}
+		}
+
+		// Do I have the current table inside the query join? Remove it (its fields are already ok)
+		$find = array_search($this->getTableName(), $j_tables);
+		if($find !== false)
+		{
+			unset($j_tables[$find]);
 		}
 
 		// Get table fields
 		$fields = array();
 
-		foreach ($tables as $table)
+		foreach ($j_tables as $table)
 		{
 			$t_fields = $this->getTableFields($table);
 
@@ -2303,11 +2317,10 @@ class FOFTable extends JObject
 			$j_fields = $this->normalizeSelectFields($j_select->getElements());
 		}
 
-		// Flip the array so I can intesect the keys
-		$fields = array_intersect_key($fields, $j_fields);
+		// I can intesect the keys
+		$fields   = array_intersect_key($fields, $j_fields);
 
 		// Now I walk again the array to change the key of columns that have an alias
-
 		foreach ($j_fields as $column => $alias)
 		{
 			if ($column != $alias)
@@ -2339,12 +2352,19 @@ class FOFTable extends JObject
 
 			foreach ($t_fields as $t_field)
 			{
-				// Is there any alias for this column?
-				preg_match('#\sas\s`?\w+`?#i', $t_field, $match);
-				$alias = empty($match) ? '' : $match[0];
-				$alias = preg_replace('#\sas\s?#i', '', $alias);
+				// Is there any alias?
+				$parts  = preg_split('#\sas\s#i', $t_field);
+				$column = $parts[0];
+				$alias  = isset($parts[1]) ? $parts[1] : '';
 
-				// Grab the "standard" name
+				if(!$alias)
+				{
+					$alias = $column;
+				}
+
+				$return[$column] = $alias;
+
+				/*// Grab the "standard" name
 				// @TODO Check this pattern since it's blind copied from forums
 				preg_match('/([\w]++)`?+(?:\s++as\s++[^,\s]++)?+\s*+($)/i', $t_field, $match);
 				$column = $match[1];
@@ -2366,7 +2386,7 @@ class FOFTable extends JObject
 					$alias = $column;
 				}
 
-				$return[$column] = $alias;
+				$return[$column] = $alias;*/
 			}
 		}
 
