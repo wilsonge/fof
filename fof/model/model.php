@@ -712,6 +712,8 @@ class FOFModel extends JObject
 
 		$configKey = $this->option . '.views.' . FOFInflector::singularize($view) . '.config.';
 
+		// Assign after delete event handler
+
 		if (isset($config['event_after_delete']))
 		{
 			$this->event_after_delete = $config['event_after_delete'];
@@ -723,6 +725,8 @@ class FOFModel extends JObject
 				$this->event_after_delete
 			);
 		}
+
+		// Assign after save event handler
 
 		if (isset($config['event_after_save']))
 		{
@@ -736,6 +740,8 @@ class FOFModel extends JObject
 			);
 		}
 
+		// Assign before delete event handler
+
 		if (isset($config['event_before_delete']))
 		{
 			$this->event_before_delete = $config['event_before_delete'];
@@ -747,6 +753,8 @@ class FOFModel extends JObject
 				$this->event_before_delete
 			);
 		}
+
+		// Assign before save event handler
 
 		if (isset($config['event_before_save']))
 		{
@@ -760,6 +768,8 @@ class FOFModel extends JObject
 			);
 		}
 
+		// Assign state change event handler
+
 		if (isset($config['event_change_state']))
 		{
 			$this->event_change_state = $config['event_change_state'];
@@ -771,6 +781,8 @@ class FOFModel extends JObject
 				$this->event_change_state
 			);
 		}
+
+		// Assign cache clean event handler
 
 		if (isset($config['event_clean_cache']))
 		{
@@ -784,28 +796,28 @@ class FOFModel extends JObject
 			);
 		}
 
+		// Apply model behaviors
+
 		if (isset($config['behaviors']))
 		{
 			$behaviors = (array) $config['behaviors'];
-
-			foreach ($behaviors as $behavior)
-			{
-				$this->addBehavior($behavior);
-			}
+		}
+		elseif ($behaviors = $this->configProvider->get($configKey . 'behaviors', null))
+		{
+			$behaviors = explode(',', $behaviors);
 		}
 		else
 		{
-			$behaviors = $this->configProvider->get(
-				$configKey . 'behaviors',
-				$this->default_behaviors
-			);
+			$behaviors = $this->default_behaviors;
+		}
 
+		if (is_array($behaviors) && count($behaviors))
+		{
 			foreach ($behaviors as $behavior)
 			{
 				$this->addBehavior($behavior);
 			}
 		}
-
 	}
 
 	/**
