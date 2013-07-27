@@ -39,4 +39,18 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 
 		$model->applyAccessFiltering(null);
 	}
+
+	public function onAfterGetItem(&$model, &$record)
+	{
+		if ($record instanceof FOFTable)
+		{
+			$user = FOFPlatform::getInstance()->getUser();
+			$accessField = $record->getColumnAlias('access');
+
+			if (!in_array($record->$accessField, $user->getAuthorisedViewLevels()))
+			{
+				$record = null;
+			}
+		}
+	}
 }
