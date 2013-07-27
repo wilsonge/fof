@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
   `servicerating` int(1),
   `atmosphererating` int(1),
   `pricerating` int(1),
-   PRIMARY KEY  (`id`)
+   PRIMARY KEY  (`reviews_restaurants_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 ```
 
