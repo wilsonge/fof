@@ -44,10 +44,40 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 		}
 
 		// Get the current user's id
-		$user_id = JFactory::getUser()->id;
+		$user_id = FOFPlatform::getInstance()->getUser()->id;
 
 		// And filter the query output by the user id
 		$db = JFactory::getDbo();
 		$query->where($db->qn($createdField) . ' = ' . $db->q($user_id));
+	}
+
+	/**
+	 * The event runs after FOFModel has called FOFTable and retrieved a single
+	 * item from the database. It is used to apply automatic filters.
+	 *
+	 * @param   FOFModel  $model   The model which was called
+	 * @param   FOFTable  $record  The record loaded from the databae
+	 *
+	 * @return  void
+	 */
+	public function onAfterGetItem(&$model, &$record)
+	{
+		if ($record instanceof FOFTable)
+		{
+			$fieldName = $record->getColumnAlias('created_by');
+
+			// Make sure the field actually exists
+			if (!in_array($fieldName, $record->getKnownFields()))
+			{
+				return false;
+			}
+
+			$user_id = FOFPlatform::getInstance()->getUser()->id;
+
+			if ($record->$fieldName != $user_id)
+			{
+				$record = null;
+			}
+		}
 	}
 }

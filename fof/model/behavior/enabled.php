@@ -47,4 +47,32 @@ class FOFModelBehaviorEnabled extends FOFModelBehavior
 		$db = JFactory::getDbo();
 		$query->where($db->qn($enabledField) . ' = ' . $db->q(1));
 	}
+
+	/**
+	 * The event runs after FOFModel has called FOFTable and retrieved a single
+	 * item from the database. It is used to apply automatic filters.
+	 *
+	 * @param   FOFModel  $model   The model which was called
+	 * @param   FOFTable  $record  The record loaded from the databae
+	 *
+	 * @return  void
+	 */
+	public function onAfterGetItem(&$model, &$record)
+	{
+		if ($record instanceof FOFTable)
+		{
+			$fieldName = $record->getColumnAlias('enabled');
+
+			// Make sure the field actually exists
+			if (!in_array($fieldName, $record->getKnownFields()))
+			{
+				return false;
+			}
+
+			if ($record->$fieldName != 1)
+			{
+				$record = null;
+			}
+		}
+	}
 }

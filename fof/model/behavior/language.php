@@ -80,4 +80,64 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 		$languages = array_map(array($db, 'quote'), $languages);
 		$query->where($db->qn($languageField) . ' IN (' . implode(',', $languages) . ')');
 	}
+
+	/**
+	 * The event runs after FOFModel has called FOFTable and retrieved a single
+	 * item from the database. It is used to apply automatic filters.
+	 *
+	 * @param   FOFModel  $model   The model which was called
+	 * @param   FOFTable  $record  The record loaded from the databae
+	 *
+	 * @return  void
+	 */
+	public function onAfterGetItem(&$model, &$record)
+	{
+		if ($record instanceof FOFTable)
+		{
+			$fieldName = $record->getColumnAlias('language');
+
+			// Make sure the field actually exists
+			if (!in_array($fieldName, $record->getKnownFields()))
+			{
+				return false;
+			}
+
+			// Make sure it is a multilingual site and get a list of languages
+			$app = JFactory::getApplication();
+			$hasLanguageFilter = method_exists($app, 'getLanguageFilter');
+			if ($hasLanguageFilter)
+			{
+				$hasLanguageFilter = $app->getLanguageFilter();
+			}
+
+			if (!$hasLanguageFilter)
+			{
+				return false;
+			}
+
+			$lang_filter_plugin = JPluginHelper::getPlugin('system', 'languagefilter');
+			$lang_filter_params = new JRegistry($lang_filter_plugin->params);
+
+			$languages = array('*');
+
+			if ($lang_filter_params->get('remove_default_prefix'))
+			{
+				// Get default site language
+				$lg = JFactory::getLanguage();
+				$languages[] = $lg->getTag();
+			}
+			else
+			{
+				$languages[] = JFactory::getApplication()->input->getCmd('language', '*');
+			}
+
+			// Filter out double languages
+			$languages = array_unique($languages);
+
+			if (!in_array($record->$fieldName, $languages))
+			{
+				$record = null;
+			}
+		}
+	}
 }

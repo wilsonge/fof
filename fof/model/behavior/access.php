@@ -37,17 +37,41 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 		$table = $model->getTable();
 		$accessField = $table->getColumnAlias('access');
 
+		// Make sure the field actually exists
+		if (!in_array($accessField, $table->getKnownFields()))
+		{
+			return false;
+		}
+
 		$model->applyAccessFiltering(null);
 	}
 
+	/**
+	 * The event runs after FOFModel has called FOFTable and retrieved a single
+	 * item from the database. It is used to apply automatic filters.
+	 *
+	 * @param   FOFModel  $model   The model which was called
+	 * @param   FOFTable  $record  The record loaded from the databae
+	 *
+	 * @return  void
+	 */
 	public function onAfterGetItem(&$model, &$record)
 	{
 		if ($record instanceof FOFTable)
 		{
-			$user = FOFPlatform::getInstance()->getUser();
-			$accessField = $record->getColumnAlias('access');
+			$fieldName = $record->getColumnAlias('access');
 
-			if (!in_array($record->$accessField, $user->getAuthorisedViewLevels()))
+			// Make sure the field actually exists
+			if (!in_array($fieldName, $record->getKnownFields()))
+			{
+				return false;
+			}
+
+			// Get the user
+			$user = FOFPlatform::getInstance()->getUser();
+
+			// Filter by authorised access levels
+			if (!in_array($record->$fieldName, $user->getAuthorisedViewLevels()))
 			{
 				$record = null;
 			}
