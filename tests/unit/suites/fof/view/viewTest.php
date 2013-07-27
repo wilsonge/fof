@@ -132,6 +132,9 @@ class FOFViewTest extends FtestCase
 		$this->assertEquals($view->escape($string), '&amp;', 'escape should encode & to &amp;');
 	}
 
+	/**
+	 * @covers FOFView::get
+	 */
 	public function testGetFromModel()
 	{
 		$view = $this->getView();
@@ -141,6 +144,9 @@ class FOFViewTest extends FtestCase
 		$this->assertEquals($view->get('foo'), 'foo', 'get should return foo');
 	}
 
+	/**
+	 * @covers FOFView::get
+	 */
 	public function testGetFromView()
 	{
 		$view = $this->getView();
@@ -262,12 +268,47 @@ class FOFViewTest extends FtestCase
         );
 	}
 
-	protected function getView()
+	public function testNewView()
+	{
+		$view = $this->getView(0);
+		$view = $this->getView(1);
+		$view = $this->getView(2);
+		return;
+	}
+
+	protected function getView($build_with_config = 0)
 	{
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+
+		if ($build_with_config != 1)
+		{
+			$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		}
+		else
+		{
+			$config['input'] = array('option' => 'com_foftest', 'view' => 'Ftest');
+			$config['option'] = 'com_foftest';
+			$config['view'] = 'Ftest';
+			$config['name'] = 'Ftest';
+			$config['charset'] = 'utf-8';
+		}
 		
-		$view = new FtestView($config);
+		if ($build_with_config == 0)
+		{
+			$view = new FtestView($config);
+		}
+		else 
+		{
+			if ($build_with_config == 1) 
+			{
+				$view = new FtestView((object) $config);
+			}
+			else
+			{
+				$view = new FtestView(0);
+			}
+		}
+
 		return $view;
 	}
 }
