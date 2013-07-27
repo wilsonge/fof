@@ -128,3 +128,4 @@ class ReviewsDispatcher extends FOFDispatcher
 	public $defaultView = 'restaurants';
 }
 ```
+
