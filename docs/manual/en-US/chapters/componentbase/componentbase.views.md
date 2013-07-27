@@ -126,6 +126,8 @@ Filling in the relevent langauge strings into our language file will then give u
 
 <img src="../../../../fof-restaurants-view.png" alt="Restaurants View" />
 
+2.1.1 Form View
+------------------------------------------
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
