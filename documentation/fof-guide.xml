@@ -2234,6 +2234,10 @@ $json = ob_end_clean();
                 &lt;!-- Only people with the core.manage privilege can access the somethingelse task --&gt;
                 &lt;task name="somethingelse"&gt;core.manage&lt;/task&gt;
             &lt;/acl&gt;
+            &lt;!-- Configuration options for the model and view --&gt;
+            &lt;config&gt;
+                &lt;option name="behaviors"&gt;filter,access&lt;/option&gt;
+            &lt;/config&gt;
         &lt;/view&gt;
     &lt;/frontend&gt;
 &lt;/fof&gt;
@@ -2380,11 +2384,16 @@ $json = ob_end_clean();
 
           <bridgehead>Option settings</bridgehead>
 
-          <para>The <code>&lt;option&gt;</code> tag can be used to set up a
-          setting of this View. It is equivalent to passing a value in the
-          <varname>$config</varname> array. The <code>name</code> attribute
-          defines the name of the configuration setting you want to modify.
-          The content of the tag is the value of this setting.</para>
+          <para>The configuration options of views and models can be modified
+          directly from the view definition of <filename>fof.xml</filename>.
+          The configuration settings are enclosed inside a single
+          <code>&lt;config&gt;</code> tag. Inside it you can have one or more
+          <code>&lt;option&gt;</code> tags. Each tag is equivalent to passing
+          a value in the <varname>$config</varname> array. The
+          <code>name</code> attribute defines the name of the configuration
+          setting you want to modify. The content of the tag is the value of
+          this setting. See the Configuration settings section below for more
+          information on what each setting is supposed to do.</para>
         </section>
       </section>
 
