@@ -503,25 +503,24 @@ class FOFTable extends JObject
 			$this->_tableExists = false;
 		}
 
-		// Deal with behaviors
+		// Apply table behaviors
+		$configKey = $option . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
+
 		if (isset($config['behaviors']))
 		{
 			$behaviors = (array) $config['behaviors'];
-
-			foreach ($behaviors as $behavior)
-			{
-				$this->addBehavior($behavior);
-			}
+		}
+		elseif ($behaviors = $this->configProvider->get($configKey, null))
+		{
+			$behaviors = explode(',', $behaviors);
 		}
 		else
 		{
-			$configKey = $option . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
+			$behaviors = $this->default_behaviors;
+		}
 
-			$behaviors = $this->configProvider->get(
-				$configKey,
-				$this->default_behaviors
-			);
-
+		if (is_array($behaviors) && count($behaviors))
+		{
 			foreach ($behaviors as $behavior)
 			{
 				$this->addBehavior($behavior);
