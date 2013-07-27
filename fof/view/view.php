@@ -464,17 +464,11 @@ abstract class FOFView extends JObject
 	 */
 	public function display($tpl = null)
 	{
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			JError::setErrorHandling(E_ALL, 'ignore');
-		}
+		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$result = $this->loadTemplate($tpl);
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			JError::setErrorHandling(E_WARNING, 'callback');
-		}
+		FOFPlatform::getInstance()->setErrorHandling(E_WARNING, 'callback');
 
 		if ($result instanceof Exception)
 		{

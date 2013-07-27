@@ -16,6 +16,52 @@ require_once JPATH_TESTS . '/unit/core/renderer/renderer.php';
  */
 class FOFViewTest extends FtestCase
 {
+	/**
+	 * @cover FOFView::display
+	 */
+	public function testDisplay()
+	{
+		$view = $this->getView();
+		$view->addTemplatePath(JPATH_TESTS . '/unit/core/view/tmpl/');
+		$view->setLayout('default');
+
+		$this->expectOutputString('foobar');
+		$view->display();
+	}
+
+	/**
+	 * @cover FOFView::display
+	 */
+	public function testDisplayError()
+	{
+		$view = $this->getView();
+		$view->setLayout('error');
+		
+		try 
+		{
+			$error = $view->display();
+			
+			if ($error instanceof Exception) 
+			{
+				return;
+			}
+		} 
+		catch (Exception $e) 
+		{
+			return;
+		}
+
+		 $this->fail('testDisplayError should have raised an exception');
+	}
+
+	public function testLoadAnyTemplate()
+	{
+		$view = $this->getView();
+		$view->loadAnyTemplate(JPATH_TESTS . '/unit/core/view/tmpl/default');
+
+		$this->expectOutputString('foobar');
+	}
+
 	public function testGetName()
 	{
 		$view = $this->getView();
@@ -185,8 +231,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers loadHelper
-	 * @covers addHelperPath
+	 * @covers FOFView::loadHelper
+	 * @covers FOFView::addHelperPath
 	 */
 	public function testLoadHelper()
 	{
