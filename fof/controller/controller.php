@@ -463,7 +463,7 @@ class FOFController extends JObject
 		$iMethods = array('accesspublic', 'accessregistered', 'accessspecial',
 			'add', 'apply', 'browse', 'cancel', 'copy', 'edit', 'orderdown',
 			'orderup', 'publish', 'read', 'remove', 'save', 'savenew',
-			'saveorder', 'unpublish', 'display');
+			'saveorder', 'unpublish', 'display', 'archive', 'trash');
 
 		// Get the public methods in this class using reflection.
 		$r = new ReflectionClass($this);
@@ -496,6 +496,7 @@ class FOFController extends JObject
 			$defComponent = 'com_foobar';
 			$defView = 'cpanel';
 		}
+
 		$this->component = $this->input->get('option', $defComponent, 'cmd');
 		$this->view = $this->input->get('view', $defView, 'cmd');
 		$this->layout = $this->input->get('layout', null, 'cmd');
@@ -515,6 +516,7 @@ class FOFController extends JObject
 		{
 			$this->layout = $config['layout'];
 		}
+
 		$this->layout = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.layout', $this->layout);
 
 		$this->input->set('option', $this->component);
@@ -599,6 +601,7 @@ class FOFController extends JObject
 			{
 				$modelPath = $this->basePath . '/' . $altModelPath;
 			}
+
 			$this->addModelPath($modelPath, $this->model_prefix);
 		}
 
@@ -621,6 +624,7 @@ class FOFController extends JObject
 			{
 				$viewPath = $this->basePath . '/' . $altViewPath;
 			}
+
 			$this->setPath('view', $viewPath);
 		}
 
@@ -636,6 +640,7 @@ class FOFController extends JObject
 			{
 				$this->default_view = $this->getName();
 			}
+
 			$this->default_view = $this->configProvider->get(
 				$this->component . '.views.' .
 				FOFInflector::singularize($this->view) . '.config.default_view', $this->default_view
@@ -718,6 +723,7 @@ class FOFController extends JObject
 					{
 						$temp[] = trim($t);
 					}
+
 					$temp = array_unique($temp);
 					$this->cacheableTasks = $temp;
 				}
@@ -748,7 +754,6 @@ class FOFController extends JObject
 				$this->registerTask($aliasedtask, $realmethod);
 			}
 		}
-
 	}
 
 	/**
@@ -1127,6 +1132,7 @@ class FOFController extends JObject
 		{
 			$formname = 'form.' . $this->layout;
 		}
+
 		$model->setState('form_name', $formname);
 
 		$item = $model->getItem();
@@ -1304,6 +1310,7 @@ class FOFController extends JObject
 			{
 				$customURL = base64_decode($customURL);
 			}
+
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=edit&id=' . $id;
 			$this->setRedirect($url, JText::_($textkey));
 		}
@@ -1383,6 +1390,7 @@ class FOFController extends JObject
 			{
 				$customURL = base64_decode($customURL);
 			}
+
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view);
 			$this->setRedirect($url, JText::_($textkey));
 		}
@@ -1415,6 +1423,7 @@ class FOFController extends JObject
 			{
 				$customURL = base64_decode($customURL);
 			}
+
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=add';
 			$this->setRedirect($url, JText::_($textkey));
 		}
@@ -1447,6 +1456,7 @@ class FOFController extends JObject
 		{
 			$customURL = base64_decode($customURL);
 		}
+
 		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view);
 		$this->setRedirect($url);
 
@@ -1518,7 +1528,6 @@ class FOFController extends JObject
 	public function publish()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1535,13 +1544,44 @@ class FOFController extends JObject
 	public function unpublish()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
 		}
 
 		return $this->setstate(0);
+	}
+
+	/**
+	 * Archive (set enabled = 2) an item.
+	 *
+	 * @return  void
+	 */
+	public function archive()
+	{
+		// CSRF prevention
+		if ($this->csrfProtection)
+		{
+			$this->_csrfProtection();
+		}
+
+		return $this->setstate(2);
+	}
+
+	/**
+	 * Trash (set enabled = -2) an item.
+	 *
+	 * @return  void
+	 */
+	public function trash()
+	{
+		// CSRF prevention
+		if ($this->csrfProtection)
+		{
+			$this->_csrfProtection();
+		}
+
+		return $this->setstate(-2);
 	}
 
 	/**
@@ -1890,6 +1930,7 @@ class FOFController extends JObject
 				$this->messageType = 'message';
 			}
 		}
+
 		// If the type is explicitly set, set it.
 		else
 		{
@@ -2041,6 +2082,7 @@ class FOFController extends JObject
 			{
 				$customURL = base64_decode($customURL);
 			}
+
 			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=edit&id=' . $id;
 			$this->setRedirect($url, '<li>' . implode('</li><li>', $model->getErrors()), 'error') . '</li>';
 
@@ -2154,6 +2196,7 @@ class FOFController extends JObject
 				}
 			}
 		}
+
 		return $model;
 	}
 
@@ -2214,6 +2257,7 @@ class FOFController extends JObject
 			{
 				$config['input'] = $this->input;
 			}
+
 			$config['input']->set('base_path', $this->basePath);
 
 			$this->_viewObject = $this->getView($viewName, $viewType, $prefix, $config);
@@ -2445,6 +2489,7 @@ class FOFController extends JObject
 				$component = $config['option'];
 			}
 		}
+
 		$config['option'] = $component;
 
 		$view = strtolower($viewName);
@@ -3113,5 +3158,4 @@ class FOFController extends JObject
 			return false;
 		}
 	}
-
 }
