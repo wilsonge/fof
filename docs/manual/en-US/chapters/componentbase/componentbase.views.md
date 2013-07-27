@@ -2,7 +2,7 @@
 ==========================================
 If you were to install the component at this point with FOF installed - you would see the screen below:
 
-<img src="../../../../assets/img/fof-without-views.png" alt="Component installed without views" />
+<img src="../../../fof/docs/assets/img/fof-without-views.png" alt="Component installed without views" />
 
 As you can see there are two errors being shown specifying that the views directory cannot be found and also the default XML file cannot be found.
 
@@ -124,13 +124,20 @@ Note we've chosen to use a custom type="rating" field for the mainrating coloumn
 
 Filling in the relevent langauge strings into our language file will then give us something like in the screenshot below:
 
-<img src="../../../../fof-restaurants-view.png" alt="Restaurants View" />
+<img src="../../../fof/docs/fof-restaurants-view.png" alt="Restaurants View" />
 
 2.1.1 Form View
 ------------------------------------------
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+	@copyright (C) 2013 JoomJunk. All rights reserved.
+	@package    Restaurant Reviews
+	@license    http://www.gnu.org/licenses/gpl-3.0.html
+
+	Restaurants view form file
+-->
 <form
 	validate="true"
 >
