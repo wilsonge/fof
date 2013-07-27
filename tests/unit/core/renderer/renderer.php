@@ -1,5 +1,14 @@
 <?php
 class FtestRenderer extends FOFRenderAbstract {
+
+	/**
+	 * Public constructor. Determines the priority of this class and if it should be enabled
+	 */
+	public function __construct()
+	{
+		$this->priority	 = 1000;
+		$this->enabled	 = true;
+	}
 	
 	/**
 	 * Echoes any HTML to show before the view template
@@ -12,7 +21,7 @@ class FtestRenderer extends FOFRenderAbstract {
 	 * @return  void
 	 */
 	public function preRender($view, $task, $input, $config = array()){
-
+		return 'pre';
 	}
 
 	/**
@@ -27,7 +36,7 @@ class FtestRenderer extends FOFRenderAbstract {
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
-
+		return 'post';
 	}
 
 	/**
@@ -41,7 +50,7 @@ class FtestRenderer extends FOFRenderAbstract {
 	 */
 	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
-
+		return 'browse';
 	}
 
 	/**
@@ -55,7 +64,7 @@ class FtestRenderer extends FOFRenderAbstract {
 	 */
 	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
-
+		return 'read';
 	}
 
 	/**
@@ -69,7 +78,7 @@ class FtestRenderer extends FOFRenderAbstract {
 	 */
 	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
-
+		return 'edit';
 	}
 
 	/**
@@ -84,7 +93,7 @@ class FtestRenderer extends FOFRenderAbstract {
 	 */
 	protected function renderFormRaw(FOFForm &$form, FOFModel $model, FOFInput $input, $formType)
 	{
-		
+		return 'raw';
 	}
 
 }

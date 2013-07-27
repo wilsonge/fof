@@ -51,7 +51,12 @@ class FOFViewTest extends FtestCase
 		$view = $this->getView();
 
 		$view->setLayoutExt('foo');
-		$this->assertEquals($view->getLayoutExt(), 'foo', 'setLayoutExt should set the layout extension to foo');
+
+		$this->assertAttributeEquals(
+        	'foo',  /* expected value */
+          	'_layoutExt',  /* attribute name */
+          	$view 	/* object         */
+        );
 	}
 
 	public function testAssign()
@@ -120,9 +125,95 @@ class FOFViewTest extends FtestCase
 	{
 		$view = $this->getView();
 		$renderer = new FtestRenderer();
-		$view->setRenderer($renderer, true);
+		$view->setRenderer($renderer);
 
 		$this->assertEquals($view->getRenderer(), $renderer, 'setRenderer should set the renderer to the given renderer');
+	}
+
+	public function testGetRenderer()
+	{
+		$view = $this->getView();
+		$renderer = new FtestRenderer();
+		$view->registerRenderer($renderer);
+
+		$this->assertEquals($view->getRenderer(), $renderer, 'getRenderer should get the renderer we set before');
+	}
+
+	public function testRegisterRenderer()
+	{
+		$view = $this->getView();
+		$renderer = new FtestRenderer();
+		$view->registerRenderer($renderer);
+
+		$this->assertEquals($view->getRenderer(), $renderer, 'registerRenderer should get the renderer we set before');
+	}
+
+	public function testSetPreRenderTrue()
+	{
+		$view = $this->getView();
+		$view->setPreRender(true);
+
+		$this->assertAttributeEquals(
+        	true,  /* expected value */
+          	'doPreRender',  /* attribute name */
+          	$view 	/* object         */
+        );
+	}
+
+	public function testSetPreRenderFalse()
+	{
+		$view = $this->getView();
+		$view->setPreRender(false);
+
+		$this->assertAttributeEquals(
+        	false,  /* expected value */
+          	'doPreRender',  /* attribute name */
+          	$view 	/* object         */
+        );
+	}
+
+	public function testSetPostRenderTrue()
+	{
+		$view = $this->getView();
+		$view->setPostRender(true);
+
+		$this->assertAttributeEquals(
+        	true,  /* expected value */
+          	'doPostRender',  /* attribute name */
+          	$view 	/* object         */
+        );
+	}
+
+	/**
+	 * @covers loadHelper
+	 * @covers addHelperPath
+	 */
+	public function testLoadHelper()
+	{
+		$view = $this->getView();
+		$view->addHelperPath(JPATH_TESTS . '/unit/core/helper/');
+		$view->loadHelper('helper');
+
+		$this->assertEquals(class_exists('FtestHelper'), true, 'loadHelper should load the FtestHelper');
+	}
+
+	public function testGetViewOptionAndName()
+	{
+		$view = $this->getView();
+
+		$this->assertEquals($view->getViewOptionAndName(), array('option' => 'com_foftest', 'view' => 'Ftest'), 'getViewOptionAndName');
+	}
+
+	public function testSetPostRenderFalse()
+	{
+		$view = $this->getView();
+		$view->setPostRender(false);
+
+		$this->assertAttributeEquals(
+        	false,  /* expected value */
+          	'doPostRender',  /* attribute name */
+          	$view 	/* object         */
+        );
 	}
 
 	protected function getView()
