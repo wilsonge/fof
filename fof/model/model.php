@@ -709,7 +709,6 @@ class FOFModel extends JObject
 		}
 
 		// Populate the event names from the $config array
-
 		$configKey = $this->option . '.views.' . FOFInflector::singularize($view) . '.config.';
 
 		if (isset($config['event_after_delete']))

@@ -200,6 +200,27 @@ class FOFTable extends JObject
 	protected static $tableCache = array();
 
 	/**
+	 * An instance of FOFConfigProvider to provision configuration overrides
+	 *
+	 * @var    FOFConfigProvider
+	 */
+	protected $configProvider = null;
+
+	/**
+	 * FOFTableDispatcherBehavior for dealing with extra behaviors
+	 *
+	 * @var    FOFTableDispatcherBehavior
+	 */
+	protected $tableDispatcher = null;
+
+	/**
+	 * List of default behaviors to apply to the table
+	 *
+	 * @var    array
+	 */
+	protected $default_behaviors = array();
+
+	/**
 	 * Returns a static object instance of a particular table type
 	 *
 	 * @param   string  $type    The table name
@@ -457,8 +478,13 @@ class FOFTable extends JObject
 		}
 		$this->config   = $config;
 
-		// Initialise the table properties.
+		// Load the configuration provider
+		$this->configProvider = new FOFConfigProvider;
 
+		// Load the behavior dispatcher
+		$this->tableDispatcher = new FOFTableDispatcherBehavior;
+
+		// Initialise the table properties.
 		if ($fields = $this->getTableFields())
 		{
 			// Do I have anything joined?
@@ -475,6 +501,31 @@ class FOFTable extends JObject
 		else
 		{
 			$this->_tableExists = false;
+		}
+
+		// Deal with behaviors
+		if (isset($config['behaviors']))
+		{
+			$behaviors = (array) $config['behaviors'];
+
+			foreach ($behaviors as $behavior)
+			{
+				$this->addBehavior($behavior);
+			}
+		}
+		else
+		{
+			$configKey = $option . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
+
+			$behaviors = $this->configProvider->get(
+				$configKey,
+				$this->default_behaviors
+			);
+
+			foreach ($behaviors as $behavior)
+			{
+				$this->addBehavior($behavior);
+			}
 		}
 
 		// If we are tracking assets, make sure an access field exists and initially set the default.
@@ -562,6 +613,28 @@ class FOFTable extends JObject
 		}
 	}
 
+	/**
+	 * Adds a behavior to the table
+	 *
+	 * @param   string  $name    The name of the behavior
+	 * @param   array   $config  Optional Behavior configuration
+	 *
+	 * @return  boolean
+	 */
+	public function addBehavior($name, $config = array())
+	{
+
+		$behaviorClass = 'FOFTableBehavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass) && $this->tableDispatcher)
+		{
+			$behavior = new $behaviorClass($this->tableDispatcher, $config);
+
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Sets the events trigger switch state
