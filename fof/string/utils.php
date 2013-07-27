@@ -15,7 +15,6 @@ defined('_JEXEC') or die();
  */
 abstract class FOFStringUtils
 {
-
 	/**
 	 * Convert a string into a slug (alias), suitable for use in URLs. Please
 	 * note that transliteration suupport is rudimentary at this stage.
@@ -65,4 +64,25 @@ abstract class FOFStringUtils
 		return $string;
 	}
 
+	/**
+	 * Convert a string to a boolean.
+	 *
+	 * @param   string  $string  The string.
+	 *
+	 * @return  boolean  The converted string
+	 */
+	public static function toBool($string)
+	{
+		if ($string === 'true')
+		{
+			return true;
+		}
+
+		if ($string === 'false')
+		{
+			return false;
+		}
+
+		return (bool) $string;
+	}
 }
