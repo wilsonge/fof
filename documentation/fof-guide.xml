@@ -733,7 +733,7 @@ function postflight($type, $parent)
       <para>Please note that in both cases you are providing the last part of
       the behaviour's name. FOF will look for a view-specific behaviour class
       and if it doesn't it will try falling back to its default implementation
-      of the behaviour. </para>
+      of the behaviour.</para>
 
       <para>The convention for naming the view-specific model behaviour
       classes is <classname>ComponentModelViewBehaviorName</classname>, e.g.
@@ -745,7 +745,8 @@ function postflight($type, $parent)
       <para>If the view-specific model behaviour class is not found, FOF will
       fall back to <classname>FOFModelBehaviorName</classname>, e.g.
       <classname>FOFModelBehaviorFilter</classname> if you are using the
-      "filters" behaviour name.</para>
+      "filters" behaviour name. The built-in behaviours are discussed further
+      down in the Built-in Behaviours section.</para>
 
       <bridgehead>Customising a specialised class</bridgehead>
 
@@ -843,6 +844,441 @@ function postflight($type, $parent)
       e.g. <parameter>com_todo.items</parameter> for a component name
       <code>com_todo</code> and a model for the items
       <code>view</code>.</para>
+
+      <section xml:id="fofmodel-behaviours">
+        <title>Built-in Behaviours</title>
+
+        <para>FOF comes with several built-in model behaviours. They are used
+        to provide core functionality. By default only the "filters" behaviour
+        is attached to a model for performance reasons. In this section we
+        will discuss what each behaviour does.</para>
+
+        <para>You can combine multiple behaviours at once.</para>
+
+        <section xml:id="fofmodel-behaviours-access">
+          <title>access</title>
+
+          <para>Adding this behaviour to a model object filters the front-end
+          output by the viewing access levels the user has access to.</para>
+
+          <important>
+            <para>This behaviour REQUIRES the "filters" behaviour. If you have
+            not added the "filters" behaviour it will not have any effect on
+            browse views. It will, however, work on edit and read
+            views.</para>
+          </important>
+        </section>
+
+        <section xml:id="fofmodel-behaviours-enabled">
+          <title>enabled</title>
+
+          <para>Adding this behaviour to a model object filters the front-end
+          output to only items which are published (enabled=1).</para>
+        </section>
+
+        <section xml:id="fofmodel-behaviours-filters">
+          <title>filters</title>
+
+          <important>
+            <para>This behaviour only works on browse views.</para>
+          </important>
+
+          <para>Adding this behaviour to a model object allows FOF to
+          magically apply filters based on the input data. For example, if you
+          pass &amp;foobar=1 in the URL, or –more generally speaking– have a
+          foobar state variable with a value of 1 then the SQL query used to
+          fetch the items list will be filtered by the rows where the foobar
+          column is set to 1.</para>
+
+          <para>The filters behaviour is smart enough to recognise the type of
+          your table fields and apply the correct type filter each time. There
+          are several different filtering methods per field type. Besides the
+          default filtering method which is used when you only use a plain
+          value in the state variable you can select a different method. To do
+          that you need to pass a hash (keyed) array in the state variable
+          like this array('method' =&gt; 'between', 'from' =&gt; 1, 'to' =&gt;
+          10) or, in URL query format,
+          &amp;foobar[method]=between&amp;foobar[from]=1&amp;foobar[to]=10.</para>
+
+          <para>So, let's discuss the available match types per field
+          type.</para>
+
+          <bridgehead>Number fields</bridgehead>
+
+          <para>For numeric fields you can use the following filtering
+          methods:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>exact</term>
+
+              <listitem>
+                <para>This is the default method. You can just pass the value
+                you want to search. If you want to use the hash array format
+                you have the following keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>exact</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : the value you want to
+                    search</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>partial</term>
+
+              <listitem>
+                <para>For numeric fields this is just an alias to
+                <code>exact</code>.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>between</term>
+
+              <listitem>
+                <para>Returns records whose field value is inside the space
+                between two numbers, inclusive. You have the following
+                keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>between</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>from</option> : Left barrier of the number
+                    space</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>to</option> : Right barrier of the number
+                    space</para>
+                  </listitem>
+                </itemizedlist>
+
+                <para>For example from=1 and to=10 will search for any value
+                between 1 to 10, including 1 and 10.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>outside</term>
+
+              <listitem>
+                <para>Returns records whose field value is outside the space
+                between two numbers, exclusive. You have the following
+                keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>outside</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>from</option> : Left barrier of the number
+                    space</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>to</option> : Right barrier of the number
+                    space</para>
+                  </listitem>
+                </itemizedlist>
+
+                <para>For example from=1 and to=10 will search for any value
+                lower than 1 or greater than 10, excluding 1 and 10.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>interval</term>
+
+              <listitem>
+                <para>Returns records whose field value is following an
+                interval (arithmetical progression)</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>interval</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : The starting value of the
+                    interval</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>interval</option> : The interval
+                    period</para>
+                  </listitem>
+                </itemizedlist>
+
+                <para>For example value=5 interval=2 will search for values 5,
+                7, 9, 11 and so on.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <bridgehead>Boolean fields</bridgehead>
+
+          <para>For boolean (tiny integer) fields you can use the following
+          methods:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>exact</term>
+
+              <listitem>
+                <para>This is the default method. You can just pass the value
+                you want to search. If you want to use the hash array format
+                you have the following keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>exact</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : the value you want to
+                    search</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <bridgehead>Text fields</bridgehead>
+
+          <para>For text fields you can use the following methods:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>partial</term>
+
+              <listitem>
+                <para>This is the default method. You can just pass the value
+                you want to search. The records returned have that value
+                somewhere in their fields (partial text search). If you want
+                to use the hash array format you have the following
+                keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>partial</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : the partial phrase you want
+                    to search</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>exact</term>
+
+              <listitem>
+                <para>Performs an exact search. The fields' values must be
+                exactly equal to the value you use here. You have the
+                following keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>exact</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : the exact phrase you want
+                    to search</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <bridgehead>Date fields</bridgehead>
+
+          <para>For date and date/time fields you can use the following
+          methods:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>exact</term>
+
+              <listitem>
+                <para>This is the default method. Performs an exact search.
+                The fields' values must be exactly equal to the value you use
+                here. You have the following keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>exact</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : the exact phrase you want
+                    to search</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>partial</term>
+
+              <listitem>
+                <para>You can just pass the value you want to search. The
+                records returned have that value somewhere in their fields
+                (partial text search). If you want to use the hash array
+                format you have the following keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>partial</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : the partial phrase you want
+                    to search</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>between</term>
+
+              <listitem>
+                <para>Returns records whose field value is inside the space
+                between two dates, inclusive. You have the following
+                keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>between</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>from</option> : Left barrier of the date
+                    space</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>to</option> : Right barrier of the date
+                    space</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>outside</term>
+
+              <listitem>
+                <para>Returns records whose field value is outside the space
+                between two dates, exclusive. You have the following
+                keys:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>outside</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>from</option> : Left barrier of the number
+                    space</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>to</option> : Right barrier of the number
+                    space</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>interval</term>
+
+              <listitem>
+                <warning>
+                  <para>This method currently only works with MySQL.</para>
+                </warning>
+
+                <para>Returns records whose field value is following an
+                interval (arithmetical progression)</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para><option>method</option> :
+                    <parameter>interval</parameter></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>value</option> : The starting value of the
+                    interval</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><option>interval</option> : The interval period. The
+                    interval can either be a string or an array. As a string
+                    it contains a sign (+ to go to the future or - to go to
+                    the past), the numeric portion of the interval period and
+                    the actual interval (days, months, years, weeks). For
+                    example:</para>
+
+                    <para><parameter>+1 month</parameter> to search for values
+                    every one month in the future or <parameter>-1
+                    month</parameter> to search for values every one month in
+                    the past</para>
+
+                    <para>As an array it can look like this array('sign' =&gt;
+                    '+', 'value' =&gt; '1', 'unit' =&gt; 'month')</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+
+        <section xml:id="fofmodel-behaviours-language">
+          <title>language</title>
+
+          <para>Adding this behaviour to a model object filters the front-end
+          output by language, displaying only the items whose language matches
+          the currently enabled front-end language. Obviously this only has an
+          effect on multi-lingual sites when the Joomla! language filter
+          plugin is enabled.</para>
+        </section>
+
+        <section xml:id="fofmodel-behaviours-private">
+          <title>private</title>
+
+          <para>Adding this behaviour to a model object filters the front-end
+          output by the created_by user, showing only items that have been
+          created by the currently logged in user. Items not created by the
+          current user will not be displayed.</para>
+        </section>
+      </section>
     </section>
 
     <section xml:id="foftable">
@@ -2196,7 +2632,7 @@ $json = ob_end_clean();
             &lt;field name="locked_on"&gt;checked_out_time&lt;/field&gt;
         &lt;/table&gt;
         &lt;!-- Table options for a specific table --&gt;
-        &lt;table name="items"&gt;
+        &lt;table name="item"&gt;
             &lt;field name="enabled"&gt;published&lt;/field&gt;
         &lt;/table&gt;
     &lt;/common&gt;    
