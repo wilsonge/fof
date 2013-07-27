@@ -836,66 +836,98 @@ class FOFToolbar
 				JToolbarHelper::assign($task, $alt);
 				break;
 
-			case 'addNew':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'add';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_NEW';
-				$check = isset($attributes['check']) ?
-					FOFStringUtils::toBool($attributes['check']) : false;
+			case 'new':
+				if ($this->perms->create)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'add';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_NEW';
+					$check = isset($attributes['check']) ?
+						FOFStringUtils::toBool($attributes['check']) : false;
 
-				JToolbarHelper::addNew($task, $alt, $check);
+					JToolbarHelper::addNew($task, $alt, $check);
+				}
+
 				break;
 
 			case 'publish':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
-				$check = isset($attributes['check']) ?
-					FOFStringUtils::toBool($attributes['check']) : false;
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
+					$check = isset($attributes['check']) ?
+						FOFStringUtils::toBool($attributes['check']) : false;
 
-				JToolbarHelper::publish($task, $alt, $check);
+					JToolbarHelper::publish($task, $alt, $check);
+				}
+
 				break;
 
 			case 'publishList':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
 
-				JToolbarHelper::publishList($task, $alt);
+					JToolbarHelper::publishList($task, $alt);
+				}
+
 				break;
 
 			case 'unpublish':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
-				$check = isset($attributes['check']) ?
-					FOFStringUtils::toBool($attributes['check']) : false;
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
+					$check = isset($attributes['check']) ?
+						FOFStringUtils::toBool($attributes['check']) : false;
 
-				JToolbarHelper::unpublish($task, $alt, $check);
+					JToolbarHelper::unpublish($task, $alt, $check);
+				}
+
 				break;
 
 			case 'unpublishList':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
 
-				JToolbarHelper::unpublishList($task, $alt);
+					JToolbarHelper::unpublishList($task, $alt);
+				}
+
 				break;
 
 			case 'archiveList':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'archive';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_ARCHIVE';
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'archive';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_ARCHIVE';
 
-				JToolbarHelper::archiveList($task, $alt);
+					JToolbarHelper::archiveList($task, $alt);
+				}
+
 				break;
 
 			case 'unarchiveList':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'unarchive';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNARCHIVE';
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'unarchive';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNARCHIVE';
 
-				JToolbarHelper::unarchiveList($task, $alt);
+					JToolbarHelper::unarchiveList($task, $alt);
+				}
+
 				break;
 
 			case 'editList':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'edit';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_EDIT';
+				if ($this->perms->edit)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'edit';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_EDIT';
 
-				JToolbarHelper::editList($task, $alt);
+					JToolbarHelper::editList($task, $alt);
+				}
+
 				break;
 
 			case 'editHtml':
@@ -913,20 +945,28 @@ class FOFToolbar
 				break;
 
 			case 'deleteList':
-				$msg = isset($attributes['msg']) ? $attributes['msg'] : '';
-				$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_DELETE';
+				if ($this->perms->delete)
+				{
+					$msg = isset($attributes['msg']) ? $attributes['msg'] : '';
+					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_DELETE';
 
-				JToolbarHelper::deleteList($msg, $task, $alt);
+					JToolbarHelper::deleteList($msg, $task, $alt);
+				}
+
 				break;
 
 			case 'trash':
-				$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
-				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
-				$check = isset($attributes['check']) ?
-					FOFStringUtils::toBool($attributes['check']) : true;
+				if ($this->perms->editstate)
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
+					$check = isset($attributes['check']) ?
+						FOFStringUtils::toBool($attributes['check']) : true;
 
-				JToolbarHelper::trash($task, $alt, $check);
+					JToolbarHelper::trash($task, $alt, $check);
+				}
+
 				break;
 
 			case 'apply':
@@ -953,7 +993,6 @@ class FOFToolbar
 			case 'save2copy':
 				$task = isset($attributes['task']) ? $attributes['task'] : 'save2copy';
 				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_SAVE_AS_COPY';
-
 				JToolbarHelper::save2copy($task, $alt);
 				break;
 
