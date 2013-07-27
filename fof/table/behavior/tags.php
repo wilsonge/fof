@@ -27,30 +27,29 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 	public function onAfterBind(&$table, &$src, $options = array())
 	{
 		// Bind tags
-		if ($table->hasTags() && isset($src['tags']))
+		if ($table->hasTags())
 		{
-			$table->tags = $src['tags'];
-
-			// Now the real tags storing process
-			if ($table->hasTags())
+			if ((!empty($src['tags']) && $src['tags'][0] != ''))
 			{
-				// Check if the content type exists, and create it if it does not
-				$this->checkContentType(&$table, $options);
+				$table->newTags = $src['tags'];
+			}
+			
+			// Check if the content type exists, and create it if it does not
+			$this->checkContentType($table, $options);
 
-				$tagsTable = clone($table);
+			$tagsTable = clone($table);
 
-				$tagsHelper = new JHelperTags();
-				$tagsHelper->typeAlias = $table->getAssetKey();
+			$tagsHelper = new JHelperTags();
+			$tagsHelper->typeAlias = $table->getAssetKey();
 
-				// TODO: This little guy here fails because JHelperTags
-				// need a JTable object to work, while our is FOFTable
-				// Need probably to write our own FOFHelperTags
-				// Thank you com_tags
-				if (!$tagsHelper->postStoreProcess($tagsTable))
-				{
-					$table->setError('Error storing tags');
-					return false;
-				}
+			// TODO: This little guy here fails because JHelperTags
+			// need a JTable object to work, while our is FOFTable
+			// Need probably to write our own FOFHelperTags
+			// Thank you com_tags
+			if (!$tagsHelper->postStoreProcess($tagsTable))
+			{
+				$table->setError('Error storing tags');
+				return false;
 			}
 		}
 
@@ -114,7 +113,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 	{
 		$contentType = new JTableContenttype($table->getDbo());
 
-		$alias = $this->getContentType($options);
+		$alias = $table->getContentType();
 
 		// Fetch the extension name
 		$component = $options['component'];
@@ -126,7 +125,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 		$table->getDbo()->setQuery($query);
 		$component_name = JText::_($table->getDbo()->loadResult());
 
-		$name = $component_name . ' ' . ucfirst($view);
+		$name = $component_name . ' ' . ucfirst($options['view']);
 
 		// Create a new content type for our resource
 		if (!$contentType->load(array('type_alias' => $alias)))
@@ -211,21 +210,5 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 		}
 
 		return "null";
-	}
-
-	/**
-	 * Get the content type for ucm
-	 *
-	 * @return string The content type alias
-	 */
-	public function getContentType($options)
-	{
-		$component = $options['component'];
-		$view = $options['view'];
-
-		$view = FOFInflector::singularize($this->input->get('view'));
-		$alias = $component . '.' . $view;
-
-		return $alias;
 	}
 }

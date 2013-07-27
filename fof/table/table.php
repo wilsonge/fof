@@ -25,7 +25,7 @@ if (class_exists('FOFTable', false))
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFTable extends JObject
+class FOFTable extends JObject implements JTableInterface
 {
 	/**
 	 * Cache array for instances
@@ -211,7 +211,21 @@ class FOFTable extends JObject
 	 *
 	 * @var    array
 	 */
-	protected $default_behaviors = array();
+	protected $default_behaviors = array('tags');
+
+	/**
+	 * Returns a static object instance of a particular table type
+	 *
+	 * @param   string  $type    The table name
+	 * @param   string  $prefix  The prefix of the table class
+	 * @param   array   $config  Optional configuration variables
+	 *
+	 * @return FOFTable
+	 */
+	public static function getInstance($type, $prefix = 'JTable', $config = array())
+	{
+		return self::getAnInstance($type, $prefix, $config);
+	}
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -496,8 +510,38 @@ class FOFTable extends JObject
 			$this->_tableExists = false;
 		}
 
+		// Get the input
+		if (array_key_exists('input', $config))
+		{
+			if ($config['input'] instanceof FOFInput)
+			{
+				$this->input = $config['input'];
+			}
+			else
+			{
+				$this->input = new FOFInput($config['input']);
+			}
+		}
+		else
+		{
+			$this->input = new FOFInput;
+		}
+
+		// Set the $name/$_name variable
+		$component = $this->input->getCmd('option', 'com_foobar');
+
+		if (array_key_exists('option', $config))
+		{
+			$component = $config['option'];
+		}
+
+		$this->input->set('option', $component);
+
 		// Apply table behaviors
-		$configKey = $option . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
+		$type = explode("_", $this->_tbl);
+		$type = $type[count($type) - 1];
+		
+		$configKey = $component . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
 
 		if (isset($config['behaviors']))
 		{
@@ -1094,7 +1138,7 @@ class FOFTable extends JObject
 			}
 		}
 
-		$result = $this->onAfterBind();
+		$result = $this->onAfterBind($src);
 
 		return $result;
 	}
@@ -3510,5 +3554,20 @@ class FOFTable extends JObject
 	public function setConfig(array $config)
 	{
 		$this->config = $config;
+	}
+
+	/**
+	 * Get the content type for ucm
+	 *
+	 * @return string The content type alias
+	 */
+	public function getContentType()
+	{
+		$component = $this->input->get('option');
+
+		$view = FOFInflector::singularize($this->input->get('view'));
+		$alias = $component . '.' . $view;
+
+		return $alias;
 	}
 }
