@@ -1,5 +1,33 @@
 2.1 Basic Files
 ==========================================
+2.1.1 install.sql
+------------------------------------------
+To start with we need a restaurant to review. So to do this we create a install.sql file in the location specified in the xml file:
+
+```sql
+CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
+  `reviews_restaurants_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `address` TEXT,
+  `suburb` varchar(100),
+  `state` varchar(100),
+  `country` varchar(100),
+  `postcode` varchar(100),
+  `telephone` varchar(255),
+  `locked_by` bigint(20) NOT NULL DEFAULT '0',
+  `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `enabled` tinyint(3) NOT NULL DEFAULT '1',
+  `hits` int(11) DEFAULT  '0',
+  `staffrating` int(1),
+  `foodraing` int(1),
+  `servicerating` int(1),
+  `atmosphererating` int(1),
+  `pricerating` int(1),
+   PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+```
+
+Database tables are named as #__component_view and the auto increment field is named component_view_id. Furthermore other fields have some special names. The published field is called `enabled` and the check in fields are called `locked_by` and `locked_on`. Note that all these conventions are overridable in a fof.xml config file. Read more about this here if desired: https://www.akeebabackup.com/documentation/fof/features-reference.html#fofxml-file
 
 2.1.2 reviews.php
 ------------------------------------------
