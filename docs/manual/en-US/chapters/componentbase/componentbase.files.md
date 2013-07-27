@@ -57,6 +57,7 @@ To start with we need a restaurant to review. So to do this we create a install.
 CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
   `reviews_restaurants_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `description` TEXT NOT NULL,
   `address` TEXT,
   `suburb` varchar(100),
   `state` varchar(100),
@@ -68,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `#__reviews_restaurants` (
   `enabled` tinyint(3) NOT NULL DEFAULT '1',
   `hits` int(11) DEFAULT  '0',
   `staffrating` int(1),
-  `foodraing` int(1),
+  `foodrating` int(1),
   `servicerating` int(1),
   `atmosphererating` int(1),
   `pricerating` int(1),
