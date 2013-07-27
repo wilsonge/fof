@@ -2,4 +2,4 @@
 - [Introduction](chapters/introduction.md)
 - [Setting up Joomla and RAD](chapters/config/overview.md)
 - [Creating a Basic Backend](chapters/componentbase/componentbase.md)
-	- [Files](chapters/componentbase/componentbase.files.md)
+	- [Files](chapters/componentbase/componentbase.md#2.1_File_Structure)
