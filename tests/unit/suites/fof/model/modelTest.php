@@ -34,13 +34,20 @@ class FOFModelTest extends FtestCaseDatabase
 	public function testAddIncludePath($test, $check)
 	{
 		$model = FOFModel::getTmpInstance('Foobars', 'FOFModel');
-		$model->addIncludePath($test['path'], $test['prefix']);
+		$return = $model->addIncludePath($test['path'], $test['prefix']);
 
 		$reflection = new ReflectionClass($model);
 		$property   = $reflection->getProperty('paths');
 		$property->setAccessible(true);
+		$value = $property->getValue($model);
 
-		$this->assertEquals($check['paths'], $property->getValue($model), '');
+		$expected = array(
+			array($test['path']),
+			array($test['prefix'] => $test['path'])
+		);
+
+		$this->assertEquals($check['return'], $return, 'AddIncludePath: wrong return value');
+		$this->assertEquals($expected, $value, 'AddIncludePath: wrong assigned value');
 	}
 
 	public function getTestAddIncludePath()
