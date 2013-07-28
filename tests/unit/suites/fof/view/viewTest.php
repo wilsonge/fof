@@ -16,17 +16,23 @@ require_once JPATH_TESTS . '/unit/core/renderer/renderer.php';
  */
 class FOFViewTest extends FtestCase
 {
+	protected $view = null;
+
+	public function setUp()
+	{
+		$this->view = $this->getView();	
+	}
+
 	/**
 	 * @cover FOFView::display
 	 */
 	public function testDisplay()
 	{
-		$view = $this->getView();
-		$view->addTemplatePath(JPATH_TESTS . '/unit/core/view/tmpl/');
-		$view->setLayout('default');
+		$this->view->addTemplatePath(JPATH_TESTS . '/unit/core/view/tmpl/');
+		$this->view->setLayout('default');
 
 		$this->expectOutputString('foobar');
-		$view->display();
+		$this->view->display();
 	}
 
 	/**
@@ -34,12 +40,11 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testDisplayError()
 	{
-		$view = $this->getView();
-		$view->setLayout('error');
+		$this->view->setLayout('error');
 		
 		try 
 		{
-			$error = $view->display();
+			$error = $this->view->display();
 			
 			if ($error instanceof Exception) 
 			{
@@ -54,179 +59,268 @@ class FOFViewTest extends FtestCase
 		 $this->fail('testDisplayError should have raised an exception');
 	}
 
+	/**
+	 * @cover FOFView::testLoadAnyTemplate
+	 */
 	public function testLoadAnyTemplate()
 	{
-		$view = $this->getView();
-		$view->loadAnyTemplate(JPATH_TESTS . '/unit/core/view/tmpl/default');
+		$this->view->error = 'foobar';	
+		echo $this->view->loadAnyTemplate('site:com_search/search/default_error');
 
-		$this->expectOutputString('foobar');
+		$this->expectOutputRegex('/(.)*foobar(.)*/');
 	}
 
+	/**
+	 * @cover 	FOFView::getName()
+	 */
 	public function testGetName()
 	{
-		$view = $this->getView();
-		$this->assertEquals($view->getName(), 'Ftest', 'getName should return Ftest');
+		$this->assertEquals($this->view->getName(), 'Ftest', 'getName should return Ftest');
 	}
 
+	/**
+	 * @cover 	FOFView::setLayout()
+	 * @cover 	FOFView::getLayout()
+	 */
 	public function testSetLayout()
 	{
-		$view = $this->getView();
-
-		$view->setLayout('foobar');
-		$this->assertEquals($view->getLayout(), 'foobar', 'setLayout should set the layout to foobar');
+		$this->view->setLayout('foobar');
+		$this->assertEquals($this->view->getLayout(), 'foobar', 'setLayout should set the layout to foobar');
 	}
 
-	public function testGetLayout()
-	{
-		$view = $this->getView();
-
-		$view->setLayout('foobar');
-		$this->assertEquals($view->getLayout(), 'foobar', 'getLayout should return foobar');
-	}
-
+	/**
+	 * @cover 	FOFView::getLayoutTemplate()
+	 */
 	public function testGetLayoutTemplate()
 	{
-		$view = $this->getView();
-
-		$view->setLayout('template:foobar');
-		$this->assertEquals($view->getLayoutTemplate(), 'template', 'getLayoutTemplate should return template');
+		$this->view->setLayout('template:foobar');
+		$this->assertEquals($this->view->getLayoutTemplate(), 'template', 'getLayoutTemplate should return template');
 	}
 
+	/**
+	 * @cover 	FOFView::setLayoutExt()
+	 */
 	public function testSetLayoutExt()
 	{
-		$view = $this->getView();
-
-		$view->setLayoutExt('foo');
+		$this->view->setLayoutExt('foo');
 
 		$this->assertAttributeEquals(
         	'foo',  /* expected value */
           	'_layoutExt',  /* attribute name */
-          	$view 	/* object         */
+          	$this->view 	/* object         */
         );
 	}
 
+	/**
+	 * @cover 	FOFView::assign()
+	 */
 	public function testAssign()
 	{
-		$view = $this->getView();
-		
-		$view->assign('foo', 'bar');
-		$this->assertEquals($view->foo, 'bar', 'assign should set a foo variable in the view to bar');
+		$this->view->assign('foo', 'bar');
+		$this->assertEquals($this->view->foo, 'bar', 'assign should set a foo variable in the view to bar');
 	}
 
-	public function testAssignRef()
+	/**
+	 * @cover 	FOFView::assign()
+	 */
+	public function testAssignEmpty()
 	{
-		$view = $this->getView();
-		
+		$this->view->assign(null);
+	}
+
+	/**
+	 * @cover 	FOFView::assign()
+	 */
+	public function testAssignObject()
+	{
+		$obj = new stdClass();
+		$obj->test1 = '123';
+		$obj->test2 = '345';
+
+		$this->view->assign($obj);
+
+		$this->assertEquals($this->view->test1, '123', 'assign should set a test1 variable in the view to 123');
+	}
+
+	/**
+	 * @cover 	FOFView::assign()
+	 */
+	public function testAssignArray()
+	{
+		$obj = array();
+		$obj['test1'] = '123';
+		$obj['test2'] = '345';
+
+		$this->view->assign($obj);
+
+		$this->assertEquals($this->view->test1, '123', 'assign should set a test1 variable in the view to 123');
+	}
+
+	/**
+	 * @cover 	FOFView::assignRef()
+	 */
+	public function testAssignRef()
+	{	
 		$foo = 'foo';
-		$view->assignRef('foo', $foo);
+		$this->view->assignRef('foo', $foo);
 		$foo = 'bar';
 
-		$this->assertEquals($view->foo, 'bar', 'assignRef should set a foo variable in the view to bar');
+		$this->assertEquals($this->view->foo, 'bar', 'assignRef should set a foo variable in the view to bar');
 	}
 
+	/**
+	 * @cover 	FOFView::assignRef()
+	 */
+	public function testAssignRefWrong()
+	{	
+		$foo = 'foo';
+		$result = $this->view->assignRef('_foo', $foo);
+
+		$this->assertEquals($result, false, 'testAssignRefWrong should return false for _ prefixed vaariable names');
+
+		$result = $this->view->assignRef(false, $foo);
+
+		$this->assertEquals($result, false, 'testAssignRefWrong should return false for non string variable names');
+	}
+
+	/**
+	 * @cover 	FOFView::escape()
+	 */
 	public function testEscape()
 	{
-		$view = $this->getView();
-		
 		$string = '&';
-		$this->assertEquals($view->escape($string), '&amp;', 'escape should encode & to &amp;');
+		$this->assertEquals($this->view->escape($string), '&amp;', 'escape should encode & to &amp;');
 	}
 
+	/**
+	 * @covers FOFView::get
+	 */
 	public function testGetFromModel()
 	{
-		$view = $this->getView();
 		$model = new FtestModel();
-		$view->setModel($model, true);
+		$this->view->setModel($model, true);
 
-		$this->assertEquals($view->get('foo'), 'foo', 'get should return foo');
+		$this->assertEquals($this->view->get('foo'), 'foo', 'get should return foo');
+		$this->assertEquals($this->view->get('bar'), null, 'get should return false');
 	}
 
-	public function testGetFromView()
+	/**
+	 * @cover  	FOFView::_parseTemplatePath
+	 */
+	public function testParseTemplatePath()
 	{
-		$view = $this->getView();
-		$view->foo = 'bar';
-
-		$this->assertEquals($view->get('foo', ''), 'bar', 'get should return bar');
-	}
-
-	public function testSetModel()
-	{
-		$view = $this->getView();
-		$model = new FtestModel();
-		$view->setModel($model, true);
-
-		$this->assertEquals($view->getModel(), $model, 'getModel should return the model');
-	}
-
-	public function testGetModel()
-	{
-		$view = $this->getView();
-		$model = new FtestModel();
-		$view->setModel($model, true);
-
-		$this->assertEquals($view->getModel(), $model, 'setModel should set the model to the given model');
-	}
-
-	public function testSetRenderer()
-	{
-		$view = $this->getView();
-		$renderer = new FtestRenderer();
-		$view->setRenderer($renderer);
-
-		$this->assertEquals($view->getRenderer(), $renderer, 'setRenderer should set the renderer to the given renderer');
+		$this->view->loadAnyTemplate('admin:test/default');
+		$this->view->loadAnyTemplate('');
 	}
 
 	public function testGetRenderer()
 	{
-		$view = $this->getView();
-		$renderer = new FtestRenderer();
-		$view->registerRenderer($renderer);
-
-		$this->assertEquals($view->getRenderer(), $renderer, 'getRenderer should get the renderer we set before');
+		$this->view->getRenderer();
 	}
 
+	/**
+	 * @cover FOFView::get
+	 */
+	public function testGetFromView()
+	{
+		
+		$this->view->foo = 'bar';
+
+		$this->assertEquals($this->view->get('foo', ''), 'bar', 'get should return bar');
+	}
+
+	/**
+	 * @cover 	FOFView::setModel()
+	 * @cover 	FOFView::getModel()
+	 */
+	public function testSetModel()
+	{
+		
+		$model = new FtestModel();
+		$this->view->setModel($model, true);
+
+		$this->assertEquals($this->view->getModel(), $model, 'getModel should return the model');
+	}
+
+	/**
+	 * @covers FOFView::setRenderer
+	 * @covers FOFView::getRenderer
+	 */
+	public function testSetRenderer()
+	{
+		
+		$renderer = new FtestRenderer();
+		$this->view->setRenderer($renderer);
+
+		$this->assertEquals($this->view->getRenderer(), $renderer, 'setRenderer should set the renderer to the given renderer');
+	}
+
+	/**
+	 * @covers FOFView::registerRenderer
+	 */
 	public function testRegisterRenderer()
 	{
-		$view = $this->getView();
+		
 		$renderer = new FtestRenderer();
-		$view->registerRenderer($renderer);
+		$this->view->registerRenderer($renderer);
 
-		$this->assertEquals($view->getRenderer(), $renderer, 'registerRenderer should get the renderer we set before');
+		$this->assertEquals($this->view->getRenderer(), $renderer, 'registerRenderer should get the renderer we set before');
 	}
 
+	public function testSetEscape()
+	{
+		$this->view->setEscape(array($this, 'exampleEscape'));
+		$string = '&';
+		$this->assertEquals($this->view->escape($string), '&amp;', 'escape should encode & to &amp;');
+	}
+
+	public function exampleEscape($value) 
+	{
+		return htmlentities($value);
+	}
+
+	/**
+	 * @covers FOFView::setPreRender
+	 */
 	public function testSetPreRenderTrue()
 	{
-		$view = $this->getView();
-		$view->setPreRender(true);
+		
+		$this->view->setPreRender(true);
 
 		$this->assertAttributeEquals(
         	true,  /* expected value */
           	'doPreRender',  /* attribute name */
-          	$view 	/* object         */
+          	$this->view 	/* object         */
         );
 	}
 
+	/**
+	 * @covers FOFView::setPreRender
+	 */
 	public function testSetPreRenderFalse()
 	{
-		$view = $this->getView();
-		$view->setPreRender(false);
+		
+		$this->view->setPreRender(false);
 
 		$this->assertAttributeEquals(
         	false,  /* expected value */
           	'doPreRender',  /* attribute name */
-          	$view 	/* object         */
+          	$this->view 	/* object         */
         );
 	}
 
+	/**
+	 * @covers FOFView::setPostRender
+	 */
 	public function testSetPostRenderTrue()
 	{
-		$view = $this->getView();
-		$view->setPostRender(true);
+		
+		$this->view->setPostRender(true);
 
 		$this->assertAttributeEquals(
         	true,  /* expected value */
           	'doPostRender',  /* attribute name */
-          	$view 	/* object         */
+          	$this->view 	/* object         */
         );
 	}
 
@@ -236,38 +330,142 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testLoadHelper()
 	{
-		$view = $this->getView();
-		$view->addHelperPath(JPATH_TESTS . '/unit/core/helper/');
-		$view->loadHelper('helper');
+		
+		$this->view->addHelperPath(JPATH_TESTS . '/unit/core/helper/');
+		$this->view->loadHelper('helper');
 
 		$this->assertEquals(class_exists('FtestHelper'), true, 'loadHelper should load the FtestHelper');
 	}
 
-	public function testGetViewOptionAndName()
+	/**
+	 * @covers FOFView::loadHelper
+	 */
+	public function testLoadNonExistingHelper()
 	{
-		$view = $this->getView();
-
-		$this->assertEquals($view->getViewOptionAndName(), array('option' => 'com_foftest', 'view' => 'Ftest'), 'getViewOptionAndName');
+		$this->view->loadHelper('helper');
 	}
 
+	/**
+	 * @covers FOFView::getViewOptionAndName
+	 */
+	public function testGetViewOptionAndName()
+	{
+		$this->assertEquals($this->view->getViewOptionAndName(), array('option' => 'com_foftest', 'view' => 'Ftest'), 'getViewOptionAndName');
+	}
+
+	/**
+	 * @covers FOFView::setPostRender
+	 */
 	public function testSetPostRenderFalse()
 	{
-		$view = $this->getView();
-		$view->setPostRender(false);
+		
+		$this->view->setPostRender(false);
 
 		$this->assertAttributeEquals(
         	false,  /* expected value */
           	'doPostRender',  /* attribute name */
-          	$view 	/* object         */
+          	$this->view 	/* object         */
         );
+	}
+
+	
+
+	/**
+	 * @covers FOFView::__construct
+	 */
+	public function testViewWithConfigArray()
+	{
+		$config = array();		
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$view = new FtestView($config);
+
+		return $view;
+	}
+
+	/**
+	 * @covers FOFView::__construct
+	 */
+	public function testViewWithConfigObject()
+	{
+		$config = array();		
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$view = new FtestView((object)$config);
+	}
+
+	/**
+	 * @covers FOFView::__construct
+	 */
+	public function testViewWithoutConfig()
+	{
+		$view = new FtestView(0);
+	}
+
+	/**
+	 * @covers FOFView::__construct()
+	 * @covers FOFView::getName()
+	 */
+	public function testViewWithoutName()
+	{
+		$config = array();
+		$view = new FtestView($config);
+		$view->getName();
+	}
+
+	/**
+	 * @covers FOFView::__construct()
+	 * @covers FOFView::getName()
+	 */
+	public function testViewWithViewName()
+	{
+		$config = array();
+		$config['view'] = 'Ftest';
+		$view = new FtestView($config);
+		$view->getName();
+	}
+
+	/**
+	 * @covers FOFView::__construct()
+	 * @covers FOFView::getName()
+	 */
+	public function testViewWithoutNameAndView()
+	{
+		$config = array();
+		
+		try 
+		{
+			$view = new FtestFake($config);
+			$view->getName();
+		} 
+		catch(Exception $e)
+		{
+			return;
+		}
+
+		$this->fail('testViewWithoutNameAndView should have thrown an exception');
+	}
+
+	/**
+	 * @covers FOFView::__construct
+	 */
+	public function testViewWithCustomConfig()
+	{
+		$config = array();		
+		$config['input'] = array('option' => 'com_foftest', 'view' => 'Ftest');
+		$config['option'] = 'com_foftest';
+		$config['view'] = null;
+		$config['name'] = null;
+		$config['charset'] = 'utf-8';
+		$config['escape'] = null;
+		$config['base_path'] = '';
+		$config['template_path'] = '';
+		$config['helper_path'] = '';
+		$config['layout'] = 'default';
+
+		$view = new FtestView($config);
 	}
 
 	protected function getView()
 	{
-		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
-		
-		$view = new FtestView($config);
-		return $view;
+		return $this->testViewWithConfigArray();
 	}
 }
