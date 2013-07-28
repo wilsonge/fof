@@ -181,6 +181,8 @@ abstract class FOFView extends JObject
 
 		parent::__construct($config);
 
+		$component = 'com_foobar';
+		
 		// Get the component name
 		if (array_key_exists('input', $config))
 		{
@@ -210,7 +212,7 @@ abstract class FOFView extends JObject
 		$config['option'] = $component;
 
 		// Get the view name
-
+		$view = null;
 		if (array_key_exists('input', $config))
 		{
 			$view = $tmpInput->getCmd('view', '');
