@@ -60,6 +60,16 @@ class FOFViewRaw extends FOFView
 			$this->input = new FOFInput;
 		}
 
+		if (!array_key_exists('option', $this->config))
+		{
+			$this->config['option'] = $this->input->getCmd('option', 'com_foobar');
+		}
+
+		if (!array_key_exists('view', $this->config))
+		{
+			$this->config['view'] = $this->input->getCmd('view', 'cpanel');
+		}
+
 		$this->lists = new JObject;
 
 		if (!FOFPlatform::getInstance()->isCli())
@@ -271,7 +281,7 @@ class FOFViewRaw extends FOFView
 		$orderingColumn = $table->getColumnAlias('ordering');
 		$fields = $table->getTableFields();
 
-		if (!array_key_exists($orderingColumn, $fields))
+		if (!is_array($fields) || !array_key_exists($orderingColumn, $fields))
 		{
 			return false;
 		}
