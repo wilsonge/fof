@@ -132,6 +132,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 			{
 				$paths = array_merge(array(__DIR__), self::$paths);
 			}
+
 			$paths = array_unique($paths);
 
 			// Loop all paths
@@ -392,7 +393,6 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 */
 	public function importPlugin($type)
 	{
-
 	}
 
 	/**
@@ -563,5 +563,4 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	{
 		return true;
 	}
-
 }
