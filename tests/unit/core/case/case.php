@@ -59,7 +59,7 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 	{
 		JFactory::$application	= $this->savedFactoryState['application'];
 		JFactory::$config		= $this->savedFactoryState['config'];
-		JFactory::$dates			= $this->savedFactoryState['dates'];
+		JFactory::$dates		= $this->savedFactoryState['dates'];
 		JFactory::$session		= $this->savedFactoryState['session'];
 		JFactory::$language		= $this->savedFactoryState['language'];
 		JFactory::$document		= $this->savedFactoryState['document'];
