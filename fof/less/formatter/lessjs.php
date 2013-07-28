@@ -23,7 +23,6 @@ defined('_JEXEC') or die();
  */
 class FOFLessFormatterLessjs extends FOFLessFormatterClassic
 {
-
 	public $disableSingle = true;
 
 	public $breakSelectors = true;
@@ -31,5 +30,4 @@ class FOFLessFormatterLessjs extends FOFLessFormatterClassic
 	public $assignSeparator = ": ";
 
 	public $selectorSeparator = ",";
-
 }
