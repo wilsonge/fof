@@ -145,6 +145,7 @@ class FOFHalDocument
 			{
 				$this->_embedded[$rel] = array($this->_embedded[$rel]);
 			}
+
 			$this->_embedded[$rel][] = $document;
 		}
 		else

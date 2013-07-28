@@ -100,6 +100,7 @@ class FOFLessFormatterClassic
 
 			return true;
 		}
+
 		return false;
 	}
 
@@ -185,5 +186,4 @@ class FOFLessFormatterClassic
 			$this->indentLevel--;
 		}
 	}
-
 }
