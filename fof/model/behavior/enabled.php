@@ -30,7 +30,7 @@ class FOFModelBehaviorEnabled extends FOFModelBehavior
 		// This behavior only applies to the front-end.
 		if (!FOFPlatform::getInstance()->isFrontend())
 		{
-			return false;
+			return;
 		}
 
 		// Get the name of the enabled field
@@ -40,7 +40,7 @@ class FOFModelBehaviorEnabled extends FOFModelBehavior
 		// Make sure the field actually exists
 		if (!in_array($enabledField, $table->getKnownFields()))
 		{
-			return false;
+			return;
 		}
 
 		// Filter by enabled fields only
@@ -52,8 +52,8 @@ class FOFModelBehaviorEnabled extends FOFModelBehavior
 	 * The event runs after FOFModel has called FOFTable and retrieved a single
 	 * item from the database. It is used to apply automatic filters.
 	 *
-	 * @param   FOFModel  $model   The model which was called
-	 * @param   FOFTable  $record  The record loaded from the databae
+	 * @param   FOFModel  &$model   The model which was called
+	 * @param   FOFTable  &$record  The record loaded from the databae
 	 *
 	 * @return  void
 	 */
@@ -66,7 +66,7 @@ class FOFModelBehaviorEnabled extends FOFModelBehavior
 			// Make sure the field actually exists
 			if (!in_array($fieldName, $record->getKnownFields()))
 			{
-				return false;
+				return;
 			}
 
 			if ($record->$fieldName != 1)

@@ -30,7 +30,7 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 		// This behavior only applies to the front-end.
 		if (!FOFPlatform::getInstance()->isFrontend())
 		{
-			return false;
+			return;
 		}
 
 		// Get the name of the access field
@@ -40,7 +40,7 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 		// Make sure the access field actually exists
 		if (!in_array($createdField, $table->getKnownFields()))
 		{
-			return false;
+			return;
 		}
 
 		// Get the current user's id
@@ -55,8 +55,8 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 	 * The event runs after FOFModel has called FOFTable and retrieved a single
 	 * item from the database. It is used to apply automatic filters.
 	 *
-	 * @param   FOFModel  $model   The model which was called
-	 * @param   FOFTable  $record  The record loaded from the databae
+	 * @param   FOFModel  &$model   The model which was called
+	 * @param   FOFTable  &$record  The record loaded from the databae
 	 *
 	 * @return  void
 	 */
@@ -69,7 +69,7 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 			// Make sure the field actually exists
 			if (!in_array($fieldName, $record->getKnownFields()))
 			{
-				return false;
+				return;
 			}
 
 			$user_id = FOFPlatform::getInstance()->getUser()->id;

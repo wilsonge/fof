@@ -30,7 +30,7 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 		// This behavior only applies to the front-end.
 		if (!FOFPlatform::getInstance()->isFrontend())
 		{
-			return false;
+			return;
 		}
 
 		// Get the name of the language field
@@ -40,12 +40,13 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 		// Make sure the access field actually exists
 		if (!in_array($languageField, $table->getKnownFields()))
 		{
-			return false;
+			return;
 		}
 
 		// Make sure it is a multilingual site and get a list of languages
 		$app = JFactory::getApplication();
 		$hasLanguageFilter = method_exists($app, 'getLanguageFilter');
+
 		if ($hasLanguageFilter)
 		{
 			$hasLanguageFilter = $app->getLanguageFilter();
@@ -53,7 +54,7 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 
 		if (!$hasLanguageFilter)
 		{
-			return false;
+			return;
 		}
 
 		$lang_filter_plugin = JPluginHelper::getPlugin('system', 'languagefilter');
@@ -85,8 +86,8 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 	 * The event runs after FOFModel has called FOFTable and retrieved a single
 	 * item from the database. It is used to apply automatic filters.
 	 *
-	 * @param   FOFModel  $model   The model which was called
-	 * @param   FOFTable  $record  The record loaded from the databae
+	 * @param   FOFModel  &$model   The model which was called
+	 * @param   FOFTable  &$record  The record loaded from the databae
 	 *
 	 * @return  void
 	 */
@@ -99,12 +100,13 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 			// Make sure the field actually exists
 			if (!in_array($fieldName, $record->getKnownFields()))
 			{
-				return false;
+				return;
 			}
 
 			// Make sure it is a multilingual site and get a list of languages
 			$app = JFactory::getApplication();
 			$hasLanguageFilter = method_exists($app, 'getLanguageFilter');
+
 			if ($hasLanguageFilter)
 			{
 				$hasLanguageFilter = $app->getLanguageFilter();
@@ -112,7 +114,7 @@ class FOFModelBehaviorLanguage extends FOFModelBehavior
 
 			if (!$hasLanguageFilter)
 			{
-				return false;
+				return;
 			}
 
 			$lang_filter_plugin = JPluginHelper::getPlugin('system', 'languagefilter');
