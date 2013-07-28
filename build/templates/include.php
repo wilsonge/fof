@@ -22,5 +22,5 @@ if (!defined('FOF_INCLUDED'))
 
 	// Register the FOF autoloader
     require_once __DIR__ . '/autoloader/fof.php';
-	FOFAutloaderFof::init();
+	FOFAutoloaderFof::init();
 }
