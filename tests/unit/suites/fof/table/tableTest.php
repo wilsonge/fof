@@ -8,6 +8,7 @@
  */
 
 require_once 'tableDataprovider.php';
+require_once JPATH_TESTS.'/unit/core/table/table.php';
 
 class FOFTableTest extends FtestCaseDatabase
 {
@@ -156,8 +157,6 @@ class FOFTableTest extends FtestCaseDatabase
 	 */
 	public function testLoadJoined($tableinfo, $test, $check)
 	{
-		require_once JPATH_TESTS.'/unit/core/table/table.php';
-
 		$db = JFactory::getDbo();
 
 		$table = new FtestTable($tableinfo['table'], $tableinfo['id'], $db, $tableinfo['config']);

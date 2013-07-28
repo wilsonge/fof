@@ -41,12 +41,33 @@ class FOFModelTest extends FtestCaseDatabase
 		$property->setAccessible(true);
 		$value = $property->getValue($model);
 
+		if(is_string($test['path']))
+		{
+			$test['path'] = JPath::clean($test['path']);
+		}
+		elseif(is_array($test['path']))
+		{
+			$paths = array();
+
+			foreach($test['path'] as $path)
+			{
+				$paths[] = JPath::clean($path);
+			}
+
+			$test['path'] = $paths;
+		}
+
 		$expected = array(
-			array($test['path']),
-			array($test['prefix'] => $test['path'])
+			'' => array($test['path']),
+			$test['prefix'] => array($test['path'])
 		);
 
-		$this->assertEquals($check['return'], $return, 'AddIncludePath: wrong return value');
+		foreach($check['return'] as $path)
+		{
+			$cleaned[] = JPath::clean($path);
+		}
+
+		$this->assertEquals($cleaned, $return, 'AddIncludePath: wrong return value');
 		$this->assertEquals($expected, $value, 'AddIncludePath: wrong assigned value');
 	}
 
