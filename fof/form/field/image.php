@@ -16,5 +16,4 @@ defined('_JEXEC') or die();
  */
 class FOFFormFieldImage extends FOFFormFieldMedia
 {
-
 }

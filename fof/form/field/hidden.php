@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldHidden'))
  */
 class FOFFormFieldHidden extends JFormFieldHidden implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -87,5 +86,4 @@ class FOFFormFieldHidden extends JFormFieldHidden implements FOFFormField
 	{
 		return $this->getInput();
 	}
-
 }

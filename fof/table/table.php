@@ -17,6 +17,11 @@ if (class_exists('FOFTable', false))
 	return;
 }
 
+if (!interface_exists('JTableInterface', true))
+{
+	interface JTableInterface {}
+}
+
 /**
  * FrameworkOnFramework Table class. The Table is one part controller, one part
  * model and one part data adapter. It's supposed to handle operations for single
