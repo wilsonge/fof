@@ -27,7 +27,8 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @dataProvider getTestCreateNoExceptionData
+	 * @dataProvider	getTestCreateNoExceptionData
+	 * @covers			FOFHalLink::__construct
 	 */
 	public function testCreateNoException($href, $templated, $name, $hreflang, $title, $message)
 	{
@@ -51,6 +52,7 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider				getTestCreateExceptionData
+	 * @covers						FOFHalLink::__construct
 	 * @expectedException			RuntimeException
 	 * @expectedExceptionMessage	A HAL link must always have a non-empty href
 	 */
@@ -71,7 +73,8 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @dataProvider getTestCheckData
+	 * @dataProvider	getTestCheckData
+	 * @covers			FOFHalLink::check
 	 */
 	public function testCheck($href, $templated, $expect, $message)
 	{
@@ -92,10 +95,38 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @dataProvider getTestMagicGetterData
+	 * @dataProvider	getTestMagicGetterData
+	 * @covers			FOFHalLink::__get
 	 */
 	public function testMagicGetter($property, $expect, $message)
 	{
 		$link = new FOFHalLink('http://www.example.com/nada.json', false, 'My name', 'en-GB', 'My title');
+
+		$this->assertEquals($link->$property, $expect, $message);
+	}
+
+	public function getTestMagicSetterData()
+	{
+		return array(
+			array('href', 'http://www.example.com/lol.json', 'The href property cannot be set'),
+			array('templated', true, 'The templated property cannot be set'),
+			array('name', 'My new name', 'The name property cannot be set'),
+			array('hreflang', 'el-CY', 'The hreflang property cannot be set'),
+			array('title', 'My new title', 'The title property cannot be set'),
+			array('invalidwhatever', 123, 'An invalid property should not be set'),
+		);
+	}
+
+	/**
+	 * @dataProvider	getTestMagicGetterData
+	 * @covers			FOFHalLink::__set
+	 */
+	public function testMagicSetter($property, $expect, $message)
+	{
+		$link = new FOFHalLink('http://www.example.com/nada.json', false, 'My name', 'en-GB', 'My title');
+
+		$link->$property = $expect;
+
+		$this->assertEquals($link->$property, $expect, $message);
 	}
 }
