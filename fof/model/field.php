@@ -33,6 +33,13 @@ abstract class FOFModelField
 	protected $type = '';
 
 	/**
+	 * The alias of the table used for filtering
+	 *
+	 * @var string
+	 */
+	protected $table_alias = false;
+
+	/**
 	 * The null value for this type
 	 *
 	 * @var  mixed
@@ -42,15 +49,17 @@ abstract class FOFModelField
 	/**
 	 * Constructor
 	 *
-	 * @param   JDatabaseDriver  $db     The database object
-	 * @param   object           $field  The field informations as taken from the db
+	 * @param   JDatabaseDriver  $db     		The database object
+	 * @param   object           $field  		The field informations as taken from the db
+	 * @param   string           $table_alias  	The table alias to use when filtering
 	 */
-	public function __construct($db, $field)
+	public function __construct($db, $field, $table_alias = false)
 	{
 		$this->_db = $db;
 
 		$this->name = $field->name;
 		$this->type = $field->type;
+		$this->table_alias = $table_alias;
 	}
 
 	/**
@@ -122,7 +131,16 @@ abstract class FOFModelField
 			return '';
 		}
 
-		return $this->search($value, '=');
+		if (is_array($value))
+		{
+			$db = JFactory::getDbo();
+			$value = array_map(array($db, 'quote'), $value);
+			return '(' . $this->getFieldName() . ' IN (' . implode(',', $value) . '))';
+		}
+		else
+		{
+			return $this->search($value, '=');
+		}
 	}
 
 	/**
@@ -191,7 +209,24 @@ abstract class FOFModelField
 			return '';
 		}
 
-		return '(' . $this->_db->qn($this->name) . ' ' . $operator . ' ' . $this->_db->quote($value) . ')';
+		return '(' . $this->getFieldName() . ' ' . $operator . ' ' . $this->_db->quote($value) . ')';
+	}
+
+	/**
+	 * Get the field name with the given table alias
+	 *
+	 * @return  string 	The field name
+	 */
+	public function getFieldName()
+	{
+		$name = $this->_db->qn($this->name);
+
+		if ($this->table_alias)
+		{
+			$name = $this->_db->qn($this->table_alias) . '.' . $name;
+		}
+
+		return $name;
 	}
 
 	/**
@@ -221,7 +256,16 @@ abstract class FOFModelField
 				$db = JFactory::getDBO();
 			}
 
-			$field = new $className($db, $field);
+			if (isset($config['table_alias']))
+			{
+				$table_alias = $config['table_alias'];
+			}
+			else
+			{
+				$table_alias = false;
+			}
+
+			$field = new $className($db, $field, $table_alias);
 
 			return $field;
 		}
@@ -246,6 +290,9 @@ abstract class FOFModelField
 			case 'longtext':
 			case 'char':
 			case 'mediumtext':
+			case 'character varying':
+			case 'nvarchar':
+			case 'nchar':
 				$type = 'Text';
 				break;
 
@@ -254,7 +301,14 @@ abstract class FOFModelField
 			case 'time':
 			case 'year':
 			case 'timestamp':
+			case 'timestamp without time zone':
+			case 'timestamp with time zone':
 				$type = 'Date';
+				break;
+
+			case 'tinyint':
+			case 'smallint':
+				$type='Boolean';
 				break;
 
 			default:

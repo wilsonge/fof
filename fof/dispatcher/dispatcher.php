@@ -121,6 +121,7 @@ class FOFDispatcher extends JObject
 				{
 					$config['input'] = (array) $config['input'];
 				}
+
 				$config['input'] = array_merge($_REQUEST, $config['input']);
 				$input = new FOFInput($config['input']);
 			}
@@ -193,7 +194,7 @@ class FOFDispatcher extends JObject
 		}
 		else
 		{
-			$this->input = JRequest::get('default', 3);
+			$this->input = new FOFInput;
 		}
 
 		// Get the default values for the component name
@@ -222,6 +223,7 @@ class FOFDispatcher extends JObject
 		{
 			$this->view = $this->defaultView;
 		}
+
 		$this->layout = $this->input->getCmd('layout', null);
 
 		// Overrides from the config
@@ -255,7 +257,7 @@ class FOFDispatcher extends JObject
 	{
 		if (!FOFPlatform::getInstance()->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))
 		{
-			if (version_compare(JVERSION, '3.0', 'ge'))
+			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 			}
@@ -283,7 +285,7 @@ class FOFDispatcher extends JObject
 		{
 			JResponse::setHeader('Status', '403 Forbidden', true);
 
-			if (version_compare(JVERSION, '3.0', 'ge'))
+			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 			}
@@ -327,7 +329,7 @@ class FOFDispatcher extends JObject
 		{
 			JResponse::setHeader('Status', '403 Forbidden', true);
 
-			if (version_compare(JVERSION, '3.0', 'ge'))
+			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 			}
@@ -419,6 +421,7 @@ class FOFDispatcher extends JObject
 				{
 					$task = 'add';
 				}
+
 				// If it's an edit in the frontend, it's really a read
 				elseif (($task == 'edit') && FOFPlatform::getInstance()->isFrontend())
 				{
@@ -491,11 +494,7 @@ class FOFDispatcher extends JObject
 
 		if ($this->fofAuth_LogoutOnReturn && $this->_fofAuth_isLoggedIn)
 		{
-			JLoader::import('joomla.user.authentication');
-			$app = JFactory::getApplication();
-			$options = array('remember'	 => false);
-			$parameters = array('username'	 => FOFPlatform::getInstance()->getUser()->username);
-			$results = $app->triggerEvent('onLogoutUser', array($parameters, $options));
+			return FOFPlatform::getInstance()->logoutUser();
 		}
 
 		return true;
@@ -637,25 +636,7 @@ class FOFDispatcher extends JObject
 				continue;
 			}
 
-			JLoader::import('joomla.user.authentication');
-			$options = array('remember'		 => false);
-			$authenticate = JAuthentication::getInstance();
-			$response = $authenticate->authenticate($authInfo, $options);
-
-			if ($response->status == JAUTHENTICATE_STATUS_SUCCESS)
-			{
-				FOFPlatform::getInstance()->importPlugin('user');
-				$results = FOFPlatform::getInstance()->runPlugins('onLoginUser', array((array) $response, $options));
-
-				JLoader::import('joomla.user.helper');
-				$userid = JUserHelper::getUserId($response->username);
-				$user = FOFPlatform::getInstance()->getUser($userid);
-
-				$session = JFactory::getSession();
-				$session->set('user', $user);
-
-				$this->_fofAuth_isLoggedIn = true;
-			}
+			$this->_fofAuth_isLoggedIn = FOFPlatform::getInstance()->login($authInfo);
 		}
 	}
 
@@ -740,16 +721,15 @@ class FOFDispatcher extends JObject
 	 */
 	public static function isCliAdmin()
 	{
-		static $isCLI = null;
+		static $isCLI   = null;
 		static $isAdmin = null;
 
 		if (is_null($isCLI) && is_null($isAdmin))
 		{
-			$isCLI = FOFPlatform::getInstance()->isCli();
+			$isCLI   = FOFPlatform::getInstance()->isCli();
 			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
 		return array($isCLI, $isAdmin);
 	}
-
 }

@@ -66,10 +66,11 @@ abstract class FOFRenderAbstract
 	 * @param   FOFModel  $model     The model providing our data
 	 * @param   FOFInput  $input     The input object
 	 * @param   string    $formType  The form type: edit, browse or read
+	 * @param   boolean   $raw       If true, the raw form fields rendering (without the surrounding form tag) is returned.
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	public function renderForm(FOFForm &$form, FOFModel $model, FOFInput $input, $formType = null)
+	public function renderForm(FOFForm &$form, FOFModel $model, FOFInput $input, $formType = null, $raw = false)
 	{
 		if (is_null($formType))
 		{
@@ -86,11 +87,26 @@ abstract class FOFRenderAbstract
 				break;
 
 			case 'read':
-				return $this->renderFormRead($form, $model, $input);
+				if ($raw)
+				{
+					return $this->renderFormRaw($form, $model, $input, 'read');
+				}
+				else
+				{
+					return $this->renderFormRead($form, $model, $input);
+				}
+
 				break;
 
 			default:
-				return $this->renderFormEdit($form, $model, $input);
+				if ($raw)
+				{
+					return $this->renderFormRaw($form, $model, $input, 'edit');
+				}
+				else
+				{
+					return $this->renderFormEdit($form, $model, $input);
+				}
 				break;
 		}
 	}
@@ -127,4 +143,16 @@ abstract class FOFRenderAbstract
 	 * @return  string    The HTML rendering of the form
 	 */
 	abstract protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input);
+
+	/**
+	 * Renders a raw FOFForm and returns the corresponding HTML
+	 *
+	 * @param   FOFForm   &$form  	 The form to render
+	 * @param   FOFModel  $model  	 The model providing our data
+	 * @param   FOFInput  $input  	 The input object
+	 * @param   string	  $formType  The form type e.g. 'edit' or 'read'
+	 *
+	 * @return  string    The HTML rendering of the form
+	 */
+	abstract protected function renderFormRaw(FOFForm &$form, FOFModel $model, FOFInput $input, $formType);
 }

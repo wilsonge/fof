@@ -11,14 +11,13 @@ JFormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for the FOF framework
- * Supports a one line text field.
+ * Supports a captcha field.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
 class FOFFormFieldCaptcha extends JFormFieldCaptcha implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -84,5 +83,4 @@ class FOFFormFieldCaptcha extends JFormFieldCaptcha implements FOFFormField
 	{
 		return $this->getInput();
 	}
-
 }

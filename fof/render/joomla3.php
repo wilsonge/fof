@@ -14,14 +14,13 @@ defined('_JEXEC') or die;
  */
 class FOFRenderJoomla3 extends FOFRenderStrapper
 {
-
 	/**
 	 * Public constructor. Determines the priority of this class and if it should be enabled
 	 */
 	public function __construct()
 	{
 		$this->priority	 = 55;
-		$this->enabled	 = version_compare(JVERSION, '3.0', 'ge');
+		$this->enabled	 = FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge');
 	}
 
 	/**
@@ -57,8 +56,11 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 		}
 
 		// Render the submenu and toolbar
-		$this->renderButtons($view, $task, $input, $config);
-		$this->renderLinkbar($view, $task, $input, $config);
+		if ($input->getBool('render_toolbar', true))
+		{
+			$this->renderButtons($view, $task, $input, $config);
+			$this->renderLinkbar($view, $task, $input, $config);
+		}
 	}
 
 	/**
@@ -82,5 +84,4 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 
 		echo "</div>\n";
 	}
-
 }

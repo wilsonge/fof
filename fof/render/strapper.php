@@ -14,7 +14,6 @@ defined('_JEXEC') or die;
  */
 class FOFRenderStrapper extends FOFRenderAbstract
 {
-
 	/**
 	 * Public constructor. Determines the priority of this class and if it should be enabled
 	 */
@@ -58,10 +57,15 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			// Wrap output in an akeeba-bootstrap class div
 			echo "<div class=\"akeeba-bootstrap\">\n";
 		}
-		$this->renderButtons($view, $task, $input, $config);
-		$this->renderLinkbar($view, $task, $input, $config);
 
-		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
+		// Render submenu and toolbar (only if asked to)
+		if ($input->getBool('render_toolbar', true))
+		{
+			$this->renderButtons($view, $task, $input, $config);
+			$this->renderLinkbar($view, $task, $input, $config);
+		}
+
+		if (!FOFPlatform::getInstance()->isCli() && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$sidebarEntries = JHtmlSidebar::getEntries();
 
@@ -95,7 +99,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			return;
 		}
 
-		if (!FOFPlatform::getInstance()->isCli() && version_compare(JVERSION, '3.0.0', 'ge'))
+		if (!FOFPlatform::getInstance()->isCli() && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$sidebarEntries = JHtmlSidebar::getEntries();
 
@@ -160,7 +164,7 @@ ENDJAVASCRIPT;
 			$style = $config['linkbar_style'];
 		}
 
-		if (!version_compare(JVERSION, '3.0.0', 'ge'))
+		if (!FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$style = 'classic';
 		}
@@ -238,6 +242,7 @@ ENDJAVASCRIPT;
 					{
 						echo "<i class=\"icon icon-" . $link['icon'] . "\"></i>";
 					}
+
 					echo $link['name'];
 					echo '<b class="caret"></b>';
 					echo '</a>';
@@ -246,7 +251,6 @@ ENDJAVASCRIPT;
 
 					foreach ($link['items'] as $item)
 					{
-
 						echo "<li";
 
 						if ($item['active'])
@@ -272,6 +276,7 @@ ENDJAVASCRIPT;
 
 						echo "</li>";
 					}
+
 					echo "</ul>\n";
 				}
 				else
@@ -302,6 +307,7 @@ ENDJAVASCRIPT;
 
 				echo "</li>\n";
 			}
+
 			echo "</ul>\n";
 		}
 	}
@@ -377,7 +383,6 @@ ENDJAVASCRIPT;
 
 		$substitutions = array(
 			'icon-32-new'		 => 'icon-plus',
-			'icon-32-edit'		 => 'icon-pencil',
 			'icon-32-publish'	 => 'icon-eye-open',
 			'icon-32-unpublish'	 => 'icon-eye-close',
 			'icon-32-delete'	 => 'icon-trash',
@@ -408,6 +413,7 @@ ENDJAVASCRIPT;
 				{
 					$id = null;
 				}
+
 				$action	 = call_user_func_array(array(&$button, 'fetchButton'), $node);
 				$action	 = str_replace('class="toolbar"', 'class="toolbar btn"', $action);
 				$action	 = str_replace('<span ', '<i ', $action);
@@ -437,7 +443,7 @@ ENDJAVASCRIPT;
 
 		// Joomla! 3.0+ support
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			JHtml::_('bootstrap.tooltip');
 			JHtml::_('behavior.multiselect');
@@ -476,12 +482,37 @@ ENDJS;
 
 		// Joomla! 3.0 sidebar support
 
-		if (version_compare(JVERSION, '3.0', 'gt') && $show_filters)
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'gt'))
 		{
-			JHtmlSidebar::setAction("index.php?option=" .
-				$input->getCmd('option') . "&view=" .
-				FOFInflector::pluralize($input->getCmd('view'))
-			);
+			if ($show_filters)
+			{
+				JHtmlSidebar::setAction("index.php?option=" .
+					$input->getCmd('option') . "&view=" .
+					FOFInflector::pluralize($input->getCmd('view'))
+				);
+			}
+
+			// Reorder the fields with ordering first
+			$tmpFields = array();
+			$i = 1;
+
+			foreach ($headerFields as $tmpField)
+			{
+				if ($tmpField instanceof FOFFormHeaderOrdering)
+				{
+					$tmpFields[0] = $tmpField;
+				}
+
+				else
+				{
+					$tmpFields[$i] = $tmpField;
+				}
+
+				$i++;
+			}
+
+			$headerFields = $tmpFields;
+			ksort($headerFields, SORT_NUMERIC);
 		}
 
 		// Pre-render the header and filter rows
@@ -502,7 +533,7 @@ ENDJS;
 
 				// Under Joomla! < 3.0 we can't have filter-only fields
 
-				if (version_compare(JVERSION, '3.0', 'lt') && empty($header))
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt') && empty($header))
 				{
 					continue;
 				}
@@ -532,14 +563,14 @@ ENDJS;
 					$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
 				}
 
-				if (version_compare(JVERSION, '3.0', 'ge'))
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 				{
 					// Joomla! 3.0 or later
 					if (!empty($filter))
 					{
 						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
 						$filter_html .= "\t" . '<label for="title" class="element-invisible">';
-						$filter_html .= $headerField->label;
+						$filter_html .= JText::_($headerField->label);
 						$filter_html .= "</label>\n";
 						$filter_html .= "\t$filter\n";
 						$filter_html .= "</div>\n";
@@ -609,7 +640,7 @@ ENDJS;
 
 		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
 
-		if (version_compare(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
 		{
 			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
 		}
@@ -620,7 +651,7 @@ ENDJS;
 		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			// Joomla! 3.0+
 			// Get and output the sidebar, if present
@@ -688,7 +719,7 @@ ENDJS;
 
 		// Open the table header region if required
 
-		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		if ($show_header || ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt')))
 		{
 			$html .= "\t\t\t<thead>" . PHP_EOL;
 		}
@@ -704,7 +735,7 @@ ENDJS;
 
 		// Render filter row if enabled
 
-		if ($show_filters && version_compare(JVERSION, '3.0', 'lt'))
+		if ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			$html .= "\t\t\t\t<tr>";
 			$html .= $filter_html;
@@ -713,7 +744,7 @@ ENDJS;
 
 		// Close the table header region if required
 
-		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
+		if ($show_header || ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt')))
 		{
 			$html .= "\t\t\t</thead>" . PHP_EOL;
 		}
@@ -742,6 +773,31 @@ ENDJS;
 
 				$fields = $form->getFieldset('items');
 
+				// Reorder the fields to have ordering first
+				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'gt'))
+				{
+					$tmpFields = array();
+					$i = 1;
+
+					foreach ($fields as $tmpField)
+					{
+						if ($tmpField instanceof FOFFormFieldOrdering)
+						{
+							$tmpFields[0] = $tmpField;
+						}
+
+						else
+						{
+							$tmpFields[$i] = $tmpField;
+						}
+
+						$i++;
+					}
+
+					$fields = $tmpFields;
+					ksort($fields, SORT_NUMERIC);
+				}
+
 				foreach ($fields as $field)
 				{
 					$field->rowid	 = $i;
@@ -759,10 +815,11 @@ ENDJS;
 			$html .= JText::_($norows_placeholder);
 			$html .= "</td></tr>\n";
 		}
+
 		$html .= "\t\t\t</tbody>" . PHP_EOL;
 
 		// Render the pagination bar, if enabled, on J! 2.5
-		if ($show_pagination && version_compare(JVERSION, '3.0', 'lt'))
+		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			$pagination = $form->getModel()->getPagination();
 			$html .= "\t\t\t<tfoot>" . PHP_EOL;
@@ -782,14 +839,14 @@ ENDJS;
 
 		// Render the pagination bar, if enabled, on J! 3.0+
 
-		if ($show_pagination && version_compare(JVERSION, '3.0', 'ge'))
+		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$html .= $model->getPagination()->getListFooter();
 		}
 
 		// Close the wrapper element div on Joomla! 3.0+
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$html .= "</div>\n";
 		}
@@ -811,78 +868,7 @@ ENDJS;
 	 */
 	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
-		// Get the key for this model's table
-		$key		 = $model->getTable()->getKeyName();
-		$keyValue	 = $model->getId();
-
-		$html = '';
-
-		foreach ($form->getFieldsets() as $fieldset)
-		{
-			$fields = $form->getFieldset($fieldset->name);
-
-			if (isset($fieldset->class))
-			{
-				$class = 'class="' . $fieldset->class . '"';
-			}
-			else
-			{
-				$class = '';
-			}
-
-			$html .= "\t" . '<div id="' . $fieldset->name . '" ' . $class . '>' . PHP_EOL;
-
-			if (isset($fieldset->label) && !empty($fieldset->label))
-			{
-				$html .= "\t\t" . '<h3>' . JText::_($fieldset->label) . '</h3>' . PHP_EOL;
-			}
-
-			foreach ($fields as $field)
-			{
-				$title		 = $field->title;
-				$required	 = $field->required;
-				$labelClass	 = $field->labelClass;
-				$description = $field->description;
-
-				$input = $field->static;
-
-				if (empty($title))
-				{
-					$html .= "\t\t\t" . $input . PHP_EOL;
-
-					if (!empty($description))
-					{
-						$html .= "\t\t\t\t" . '<span class="help-block">';
-						$html .= JText::_($description) . '</span>' . PHP_EOL;
-					}
-				}
-				else
-				{
-					$html .= "\t\t\t" . '<div class="control-group">' . PHP_EOL;
-					$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
-					$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
-
-					if ($required)
-					{
-						$html .= ' *';
-					}
-					$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
-					$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
-					$html .= "\t\t\t\t" . $input . PHP_EOL;
-
-					if (!empty($description))
-					{
-						$html .= "\t\t\t\t" . '<span class="help-block">';
-						$html .= JText::_($description) . '</span>' . PHP_EOL;
-					}
-
-					$html .= "\t\t\t\t" . '</div>' . PHP_EOL;
-					$html .= "\t\t\t" . '</div>' . PHP_EOL;
-				}
-			}
-
-			$html .= "\t" . '</div>' . PHP_EOL;
-		}
+		$html = $this->renderFormRaw($form, $model, $input, 'read');
 
 		return $html;
 	}
@@ -904,8 +890,11 @@ ENDJS;
 
 		$html = '';
 
-		if ($validate = $form->getAttribute('validate'))
+		$validate	 = strtolower($form->getAttribute('validate'));
+
+		if (in_array($validate, array('true', 'yes', '1', 'on')))
 		{
+			JHTML::_('behavior.framework', true);
 			JHTML::_('behavior.formvalidation');
 			$class = ' form-validate';
 			$this->loadValidationScript($form);
@@ -949,9 +938,28 @@ ENDJS;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $input->getCmd('view', 'edit') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
-
 		$html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
+
+		$html .= $this->renderFormRaw($form, $model, $input, 'edit');
+		$html .= '</form>';
+
+		return $html;
+	}
+
+	/**
+	 * Renders a raw FOFForm and returns the corresponding HTML
+	 *
+	 * @param   FOFForm   &$form     The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * @param   string	  $formType  The form type e.g. 'edit' or 'read'
+	 *
+	 * @return  string    The HTML rendering of the form
+	 */
+	protected function renderFormRaw(FOFForm &$form, FOFModel $model, FOFInput $input, $formType)
+	{
+		$html = '';
 
 		foreach ($form->getFieldsets() as $fieldset)
 		{
@@ -975,16 +983,54 @@ ENDJS;
 
 			foreach ($fields as $field)
 			{
-				$title		 = $field->title;
 				$required	 = $field->required;
 				$labelClass	 = $field->labelClass;
-				$description = $field->description;
 
-				$input = $field->input;
+				// Auto-generate label and description if needed
+				// Field label
+				$title 		 = $form->getFieldAttribute($field->fieldname, 'label', '', $field->group);
+				$emptylabel  = $form->getFieldAttribute($field->fieldname, 'emptylabel', false, $field->group);
 
-				if (!is_null($title))
+				if (empty($title) && !$emptylabel)
 				{
+					$model->getName();
+					$title = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_LABEL');
+				}
 
+				// Field description
+				$description = $form->getFieldAttribute($field->fieldname, 'description', '', $field->group);
+
+				// The following code is backwards incompatible. Most forms don't require a description in their form
+				// fields. Having to use emptydescription="1" on each one of them is an overkill. Removed.
+				/*
+				$emptydescription   = $form->getFieldAttribute($field->fieldname, 'emptydescription', false, $field->group);
+				if (empty($description) && !$emptydescription)
+				{
+					$description = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_DESC');
+				}
+				*/
+
+				if ($formType == 'read')
+				{
+					$inputField = $field->static;
+				}
+				elseif ($formType == 'edit')
+				{
+					$inputField = $field->input;
+				}
+
+				if (empty($title))
+				{
+					$html .= "\t\t\t" . $inputField . PHP_EOL;
+
+					if (!empty($description) && $formType == 'edit')
+					{
+						$html .= "\t\t\t\t" . '<span class="help-block">';
+						$html .= JText::_($description) . '</span>' . PHP_EOL;
+					}
+				}
+				else
+				{
 					$html .= "\t\t\t" . '<div class="control-group">' . PHP_EOL;
 					$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
 					$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
@@ -996,7 +1042,7 @@ ENDJS;
 
 					$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
 					$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
-					$html .= "\t\t\t\t" . $input . PHP_EOL;
+					$html .= "\t\t\t\t" . $inputField . PHP_EOL;
 
 					if (!empty($description))
 					{
@@ -1007,18 +1053,11 @@ ENDJS;
 					$html .= "\t\t\t\t" . '</div>' . PHP_EOL;
 					$html .= "\t\t\t" . '</div>' . PHP_EOL;
 				}
-				else
-				{
-					$html .= "\t\t\t\t" . $input . PHP_EOL;
-				}
 			}
 
 			$html .= "\t" . '</div>' . PHP_EOL;
 		}
 
-		$html .= '</form>';
-
 		return $html;
 	}
-
 }

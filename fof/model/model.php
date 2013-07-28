@@ -151,7 +151,7 @@ class FOFModel extends JObject
 	 * Total rows based on the filters set in the model's state
 	 * @var int
 	 */
-	protected $total = 0;
+	protected $total = null;
 
 	/**
 	 * Should I save the model's state in the session?
@@ -349,19 +349,43 @@ class FOFModel extends JObject
 	 * @param   string  $name    The name of the behavior
 	 * @param   array   $config  Optional Behavior configuration
 	 *
-	 * @return  boolean
+	 * @return  boolean  True if the behavior is found and added
 	 */
 	public function addBehavior($name, $config = array())
 	{
+		// Sanity check: this objects needs a non-null behavior handler
+		if (!is_object($this->modelDispatcher))
+		{
+			return false;
+		}
 
-		$behaviorClass = 'FOFModelBehavior' . ucfirst(strtolower($name));
+		// Sanity check: this objects needs a behavior handler of the correct class type
+		if (!($this->modelDispatcher instanceof FOFModelDispatcherBehavior))
+		{
+			return false;
+		}
 
-		if (class_exists($behaviorClass) && $this->modelDispatcher)
+		// First look for ComponentnameModelViewnameBehaviorName (e.g. FoobarModelItemsBehaviorFilter)
+		$behaviorClass = ucfirst($this->option) . 'Model' . FOFInflector::pluralize($this->name) . 'Behavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass))
 		{
 			$behavior = new $behaviorClass($this->modelDispatcher, $config);
 
 			return true;
 		}
+
+		// Then look for FOFModelBehaviorName (e.g. FOFModelBehaviorFilter)
+		$behaviorClassAlt = 'FOFModelBehavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClassAlt))
+		{
+			$behavior = new $behaviorClassAlt($this->modelDispatcher, $config);
+
+			return true;
+		}
+
+		// Nothing found? Return false.
 
 		return false;
 	}
@@ -387,14 +411,19 @@ class FOFModel extends JObject
 			$config = array();
 		}
 
+		if (!array_key_exists('savesate', $config))
+		{
+			$config['savestate'] = false;
+		}
+
 		$ret = self::getAnInstance($type, $prefix, $config)
 			->getClone()
 			->clearState()
 			->clearInput()
 			->reset()
+			->savestate(0)
 			->limitstart(0)
-			->limit(0)
-			->savestate(0);
+			->limit(0);
 
 		return $ret;
 	}
@@ -533,6 +562,14 @@ class FOFModel extends JObject
 			$component = $config['option'];
 		}
 
+		$this->input->set('option', $component);// Set the $name/$_name variable
+		$component = $this->input->getCmd('option', 'com_foobar');
+
+		if (array_key_exists('option', $config))
+		{
+			$component = $config['option'];
+		}
+
 		$this->input->set('option', $component);
 		$name = str_replace('com_', '', strtolower($component));
 
@@ -632,7 +669,8 @@ class FOFModel extends JObject
 		}
 
 		// Get and store the pagination request variables
-		$this->populateSavestate();
+		$defaultSaveState = array_key_exists('savestate', $config) ? $config['savestate'] : -999;
+		$this->populateSavestate($defaultSaveState);
 
 		if (FOFPlatform::getInstance()->isCli())
 		{
@@ -703,8 +741,9 @@ class FOFModel extends JObject
 		}
 
 		// Populate the event names from the $config array
-
 		$configKey = $this->option . '.views.' . FOFInflector::singularize($view) . '.config.';
+
+		// Assign after delete event handler
 
 		if (isset($config['event_after_delete']))
 		{
@@ -718,6 +757,8 @@ class FOFModel extends JObject
 			);
 		}
 
+		// Assign after save event handler
+
 		if (isset($config['event_after_save']))
 		{
 			$this->event_after_save = $config['event_after_save'];
@@ -729,6 +770,8 @@ class FOFModel extends JObject
 				$this->event_after_save
 			);
 		}
+
+		// Assign before delete event handler
 
 		if (isset($config['event_before_delete']))
 		{
@@ -742,6 +785,8 @@ class FOFModel extends JObject
 			);
 		}
 
+		// Assign before save event handler
+
 		if (isset($config['event_before_save']))
 		{
 			$this->event_before_save = $config['event_before_save'];
@@ -753,6 +798,8 @@ class FOFModel extends JObject
 				$this->event_before_save
 			);
 		}
+
+		// Assign state change event handler
 
 		if (isset($config['event_change_state']))
 		{
@@ -766,6 +813,8 @@ class FOFModel extends JObject
 			);
 		}
 
+		// Assign cache clean event handler
+
 		if (isset($config['event_clean_cache']))
 		{
 			$this->event_clean_cache = $config['event_clean_cache'];
@@ -778,28 +827,28 @@ class FOFModel extends JObject
 			);
 		}
 
+		// Apply model behaviors
+
 		if (isset($config['behaviors']))
 		{
 			$behaviors = (array) $config['behaviors'];
-
-			foreach ($behaviors as $behavior)
-			{
-				$this->addBehavior($behavior);
-			}
+		}
+		elseif ($behaviors = $this->configProvider->get($configKey . 'behaviors', null))
+		{
+			$behaviors = explode(',', $behaviors);
 		}
 		else
 		{
-			$behaviors = $this->configProvider->get(
-				$configKey . 'behaviors',
-				$this->default_behaviors
-			);
+			$behaviors = $this->default_behaviors;
+		}
 
+		if (is_array($behaviors) && count($behaviors))
+		{
 			foreach ($behaviors as $behavior)
 			{
 				$this->addBehavior($behavior);
 			}
 		}
-
 	}
 
 	/**
@@ -906,7 +955,7 @@ class FOFModel extends JObject
 		$this->record = null;
 		$this->list = null;
 		$this->pagination = null;
-		$this->total = 0;
+		$this->total = null;
 		$this->otable = null;
 
 		return $this;
@@ -1105,9 +1154,38 @@ class FOFModel extends JObject
 			$table->load($oid);
 		}
 
-		if (!$this->onBeforeSave($data, $table))
+		if ($data instanceof FOFTable)
+		{
+			$allData = $data->getData();
+		}
+		elseif (is_object($data))
+		{
+			$allData = (array) $data;
+		}
+		else
+		{
+			$allData = $data;
+		}
+
+		if (!$this->onBeforeSave($allData, $table))
 		{
 			return false;
+		}
+		else
+		{
+			// onBeforeSave successful, refetch the possibly modified data
+			if ($data instanceof FOFTable)
+			{
+				$data->bind($allData);
+			}
+			elseif (is_object($data))
+			{
+				$data = (object) $allData;
+			}
+			else
+			{
+				$data = $allData;
+			}
 		}
 
 		if (!$table->save($data))
@@ -1454,20 +1532,20 @@ class FOFModel extends JObject
 	 */
 	public function getTotal()
 	{
-		if (empty($this->total))
+		if (is_null($this->total))
 		{
 			$query = $this->buildCountQuery();
 
 			if ($query === false)
 			{
-				$sql = (string) $this->buildQuery(false);
+				$subquery = $this->buildQuery(false);
+				$subquery->clear('order');
 				$query = $this->_db->getQuery(true)
 					->select('COUNT(*)')
-					->from("($sql) AS a");
+					->from("(" . (string)$subquery . ") AS a");
 			}
 
 			$this->_db->setQuery((string) $query);
-			$this->_db->execute();
 
 			$this->total = $this->_db->loadResult();
 		}
@@ -1642,7 +1720,7 @@ class FOFModel extends JObject
 			return $table;
 		}
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			throw new Exception(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name), 0);
 		}
@@ -1715,26 +1793,43 @@ class FOFModel extends JObject
 		$table = $this->getTable();
 		$tableName = $table->getTableName();
 		$tableKey = $table->getKeyName();
-		$db = $this->getDBO();
+		$db = $this->getDbo();
 
 		$query = $db->getQuery(true);
 
 		// Call the behaviors
 		$this->modelDispatcher->trigger('onBeforeBuildQuery', array(&$this, &$query));
 
-		$query->select('*')->from($db->qn($tableName));
+		$alias = $this->getTableAlias();
+
+		if ($alias)
+		{
+			$alias = ' AS ' . $db->qn($alias);
+		} else
+		{
+			$alias = '';
+		}
+
+		$query->select('*')->from($db->qn($tableName) . $alias) ;
 
 		if (!$overrideLimits)
 		{
 			$order = $this->getState('filter_order', null, 'cmd');
 
-			if (!in_array($order, array_keys($this->getTable()->getData())))
+			if (!in_array($order, array_keys($table->getData())))
 			{
 				$order = $tableKey;
 			}
 
+			$order = $db->qn($order);
+
+			if ($alias)
+			{
+				$order = $db->qn($this->getTableAlias()) . '.' . $order;
+			}
+
 			$dir = $this->getState('filter_order_Dir', 'ASC', 'cmd');
-			$query->order($db->qn($order) . ' ' . $dir);
+			$query->order($order . ' ' . $dir);
 		}
 
 		// Call the behaviors
@@ -1752,7 +1847,7 @@ class FOFModel extends JObject
 	{
 		$tableName = $this->getTable()->getTableName();
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			$fields = $this->getDbo()->getTableColumns($tableName, true);
 		}
@@ -1763,6 +1858,17 @@ class FOFModel extends JObject
 		}
 
 		return $fields;
+	}
+
+	/**
+	 * Get the alias set for this model's table
+	 *
+	 *
+	 * @return  string 	The table alias
+	 */
+	public function getTableAlias()
+	{
+		return $this->getTable($this->table)->getTableAlias();
 	}
 
 	/**
@@ -1847,13 +1953,15 @@ class FOFModel extends JObject
 	/**
 	 * Initialises the _savestate variable
 	 *
+	 * @param   integer  $defaultSaveState  The default value for the savestate
+	 *
 	 * @return  void
 	 */
-	public function populateSavestate()
+	public function populateSavestate($defaultSaveState = -999)
 	{
 		if (is_null($this->_savestate))
 		{
-			$savestate = $this->input->getInt('savestate', -999);
+			$savestate = $this->input->getInt('savestate', $defaultSaveState);
 
 			if ($savestate == -999)
 			{
@@ -1891,7 +1999,11 @@ class FOFModel extends JObject
 	public function applyAccessFiltering($userID = null)
 	{
 		$user = FOFPlatform::getInstance()->getUser($userID);
-		$this->setState('access', $user->getAuthorisedViewLevels());
+
+		$table = $this->getTable();
+		$accessField = $table->getColumnAlias('access');
+
+		$this->setState($accessField, $user->getAuthorisedViewLevels());
 
 		return $this;
 	}
@@ -2033,13 +2145,14 @@ class FOFModel extends JObject
 	/**
 	 * Guesses the best candidate for the path to use for a particular form.
 	 *
-	 * @param   string  $source  The name of the form file to load, without the .xml extension
+	 * @param   string  $source  The name of the form file to load, without the .xml extension.
+	 * @param   array   $paths   The paths to look into. You can declare this to override the default FOF paths.
 	 *
-	 * @return  string  The path and filename of the form to load
+	 * @return  mixed  A string if the path and filename of the form to load is found, false otherwise.
 	 *
 	 * @since   2.0
 	 */
-	public function findFormFilename($source)
+	public function findFormFilename($source, $paths = array())
 	{
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view 	= $this->input->getCmd('view', 'cpanels');
@@ -2049,25 +2162,28 @@ class FOFModel extends JObject
 		$alt_file_root = $componentPaths['alt'];
 		$template_root = FOFPlatform::getInstance()->getTemplateOverridePath($option);
 
-		// Set up the paths to look into
-		$paths = array(
-			// In the template override
-			$template_root . '/' . $view,
-			$template_root . '/' . FOFInflector::singularize($view),
-			$template_root . '/' . FOFInflector::pluralize($view),
-			// In this side of the component
-			$file_root . '/views/' . $view . '/tmpl',
-			$file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
-			$file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
-			// In the other side of the component
-			$alt_file_root . '/views/' . $view . '/tmpl',
-			$alt_file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
-			$alt_file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
-			// In the models/forms of this side
-			$file_root . '/models/forms',
-			// In the models/forms of the other side
-			$alt_file_root . '/models/forms',
-		);
+		if (empty($paths))
+		{
+			// Set up the paths to look into
+			$paths = array(
+				// In the template override
+				$template_root . '/' . $view,
+				$template_root . '/' . FOFInflector::singularize($view),
+				$template_root . '/' . FOFInflector::pluralize($view),
+				// In this side of the component
+				$file_root . '/views/' . $view . '/tmpl',
+				$file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
+				$file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
+				// In the other side of the component
+				$alt_file_root . '/views/' . $view . '/tmpl',
+				$alt_file_root . '/views/' . FOFInflector::singularize($view) . '/tmpl',
+				$alt_file_root . '/views/' . FOFInflector::pluralize($view) . '/tmpl',
+				// In the models/forms of this side
+				$file_root . '/models/forms',
+				// In the models/forms of the other side
+				$alt_file_root . '/models/forms',
+			);
+		}
 
 		// Set up the suffixes to look into
 		$suffixes = array();
@@ -2230,7 +2346,16 @@ class FOFModel extends JObject
 	 */
 	protected function onAfterGetItem(&$record)
 	{
-
+		try
+		{
+			// Call the behaviors
+			$result = $this->modelDispatcher->trigger('onAfterGetItem', array(&$this, &$record));
+		}
+		catch (Exception $e)
+		{
+			// Oops, an exception occured!
+			$this->setError($e->getMessage());
+		}
 	}
 
 	/**
@@ -2245,7 +2370,6 @@ class FOFModel extends JObject
 	protected function onBeforeSave(&$data, &$table)
 	{
 		// Let's import the plugin only if we're not in CLI (content plugin needs a user)
-
 		FOFPlatform::getInstance()->importPlugin('content');
 
 		try
@@ -2253,25 +2377,12 @@ class FOFModel extends JObject
 			// Do I have a new record?
 			$key = $table->getKeyName();
 
-			if ($data instanceof FOFTable)
-			{
-				$allData = $data->getData();
-			}
-			elseif (is_object($data))
-			{
-				$allData = (array) $data;
-			}
-			else
-			{
-				$allData = $data;
-			}
-
-			$pk = (!empty($allData[$key])) ? $allData[$key] : 0;
+			$pk = (!empty($data[$key])) ? $data[$key] : 0;
 
 			$this->_isNewRecord = $pk <= 0;
 
 			// Bind the data
-			$table->bind($allData);
+			$table->bind($data);
 
 			// Call the behaviors
 			$result = $this->modelDispatcher->trigger('onBeforeSave', array(&$this, &$data));
@@ -2292,22 +2403,6 @@ class FOFModel extends JObject
 				$this->setError($table->getError());
 
 				return false;
-			}
-			else
-			{
-				// Plugin successful, refetch the possibly modified data
-				if ($data instanceof FOFTable)
-				{
-					$data->bind($allData);
-				}
-				elseif (is_object($data))
-				{
-					$data = (object) $allData;
-				}
-				else
-				{
-					$data = $allData;
-				}
 			}
 		}
 		catch (Exception $e)
