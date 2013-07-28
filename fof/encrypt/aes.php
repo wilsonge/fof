@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFEncryptAES
+class FOFEncryptAes
 {
 	/** @var string The AES cipher to use (this is an mcrypt identifier, not the bit strength) */
 	private $_cipherType = 0;
