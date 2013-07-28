@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldTimezone'))
  */
 class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -104,5 +103,4 @@ class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
 	{
 		return $this->getStatic();
 	}
-
 }

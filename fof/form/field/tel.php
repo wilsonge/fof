@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldTel'))
  */
 class FOFFormFieldTel extends JFormFieldTel implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -121,6 +120,7 @@ class FOFFormFieldTel extends JFormFieldTel implements FOFFormField
 		{
 			$class = ' ' . (string) $this->element['class'];
 		}
+
 		if ($this->element['show_link'] == 'true')
 		{
 			$show_link = true;
@@ -136,6 +136,7 @@ class FOFFormFieldTel extends JFormFieldTel implements FOFFormField
 		{
 			$this->value = JText::_($empty_replacement);
 		}
+
 		$value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
 		// Create the HTML
@@ -157,5 +158,4 @@ class FOFFormFieldTel extends JFormFieldTel implements FOFFormField
 
 		return $html;
 	}
-
 }

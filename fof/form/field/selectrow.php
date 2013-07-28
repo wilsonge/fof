@@ -16,7 +16,6 @@ defined('_JEXEC') or die();
  */
 class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -121,5 +120,4 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 		// Get the HTML
 		return JHTML::_('grid.id', $this->rowid, $key_id, $checked_out);
 	}
-
 }
