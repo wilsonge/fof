@@ -126,5 +126,4 @@ class FOFModelFieldNumber extends FOFModelField
 
 		return $sql;
 	}
-
 }

@@ -25,8 +25,10 @@ interface FOFPlatformInterface
 	/**
 	 * Set the error Handling, if possible
 	 *
-	 * @param integer 	$level     PHP error level (E_ALL)
-	 * @param string 	$log_level What to do with the error (ignore, callback)
+	 * @param   integer  $level      PHP error level (E_ALL)
+	 * @param   string   $log_level  What to do with the error (ignore, callback)
+	 *
+	 * @return  void
 	 */
 	public function setErrorHandling($level, $log_level);
 	/**

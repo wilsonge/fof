@@ -113,5 +113,4 @@ class FOFModelFieldText extends FOFModelField
 	{
 		return '';
 	}
-
 }
