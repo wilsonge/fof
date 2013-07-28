@@ -15,13 +15,13 @@ defined('_JEXEC') or die();
  */
 class FOFEncryptTotp
 {
-	private $_passCodeLength = 6;
+	private $passCodeLength = 6;
 
-	private $_pinModulo;
+	private $pinModulo;
 
-	private $_secretLength = 10;
+	private $secretLength = 10;
 
-	private $_timeStep = 30;
+	private $timeStep = 30;
 
 	/**
 	 * Initialises an RFC6238-compatible TOTP generator. Please note that this
@@ -35,10 +35,10 @@ class FOFEncryptTotp
 	 */
 	public function __construct($timeStep = 30, $passCodeLength = 6, $secretLength = 10)
 	{
-		$this->_timeStep       = $timeStep;
-		$this->_passCodeLength = $passCodeLength;
-		$this->_secretLength   = $secretLength;
-		$this->_pinModulo      = pow(10, $this->_passCodeLength);
+		$this->timeStep       = $timeStep;
+		$this->passCodeLength = $passCodeLength;
+		$this->secretLength   = $secretLength;
+		$this->pinModulo      = pow(10, $this->passCodeLength);
 	}
 
 	/**
@@ -57,7 +57,7 @@ class FOFEncryptTotp
 			$time = time();
 		}
 
-		$period = floor($time / $this->_timeStep);
+		$period = floor($time / $this->timeStep);
 
 		return $period;
 	}
@@ -109,7 +109,7 @@ class FOFEncryptTotp
 		$offset = $offset & 0xF;
 
 		$truncatedHash = $this->hashToInt($hash, $offset) & 0x7FFFFFFF;
-		$pinValue = str_pad($truncatedHash % $this->_pinModulo, $this->_passCodeLength, "0", STR_PAD_LEFT);
+		$pinValue = str_pad($truncatedHash % $this->pinModulo, $this->passCodeLength, "0", STR_PAD_LEFT);
 
 		return $pinValue;
 	}
@@ -157,7 +157,7 @@ class FOFEncryptTotp
 	{
 		$secret = "";
 
-		for ($i = 1; $i <= $this->_secretLength; $i++)
+		for ($i = 1; $i <= $this->secretLength; $i++)
 		{
 			$c = rand(0, 255);
 			$secret .= pack("c", $c);
