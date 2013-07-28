@@ -194,7 +194,7 @@ class FOFDispatcher extends JObject
 		}
 		else
 		{
-			$this->input = JRequest::get('default', 3);
+			$this->input = new FOFInput;
 		}
 
 		// Get the default values for the component name
