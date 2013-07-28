@@ -6,6 +6,6 @@ class TableFtest extends FOFTable {
 		parent::__construct($table, $key, $db, $config);
 
 		$this->_tbl     = '#__foftest_foobars';
-		$this->_tbl_key = 'foftest_foobars_id';
+		$this->_tbl_key = 'foftest_foobar_id';
 	}
 }
