@@ -29,6 +29,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
+	 * @covers              FOFTable::setKnownFields
 	 * @preventDataLoading
 	 */
 	public function testSetKnownFields()
@@ -48,6 +49,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @covers              FOFTable::getKnownFields
 	 * @preventDataLoading
 	 */
 	public function testGetKnownFields()
@@ -69,6 +71,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @covers              FOFTable::addKnownFields
 	 * @preventDataLoading
 	 */
 	public function testAddKnownField()
@@ -87,6 +90,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @covers              FOFTable::removeKnownFields
 	 * @preventDataLoading
 	 */
 	public function testRemoveKnownField()
@@ -104,7 +108,8 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @groupXX       tableLoad
+	 * @group       tableLoad
+	 * @covers      FOFTable::load
 	 */
 	public function testLoad()
     {
@@ -139,7 +144,8 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
-	 * @group           tableLoad
+	 * @group           tableLoadJoined
+	 * @covers          FOFTable::load
 	 * @dataProvider    getTestLoadJoined
 	 */
 	public function testLoadJoined($tableinfo, $test, $check)
@@ -160,8 +166,9 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @preventDataLoading
 	 * @group               tableCheck
+	 * @covers              FOFTable::check
+	 * @preventDataLoading
 	 */
 	public function testCheck()
     {
@@ -222,6 +229,9 @@ class FOFTableTest extends FtestCaseDatabase
         $this->assertTrue($table->check(), 'Check() should return false when some required field is empty');
     }
 
+	/**
+	 * @covers              FOFTable::reset
+	 */
 	public function testReset()
 	{
 		$db = JFactory::getDbo();
@@ -285,8 +295,9 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
     /**
+     * @covers              FOFTable::bind
+     * @dataProvider        getTestBind
      * @preventDataLoading
-     * @dataProvider    getTestBind
      */
     public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
     {
@@ -311,6 +322,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
+	 * @covers              FOFTable::bind
 	 * @preventDataLoading
 	 */
 	public function testBindException()
@@ -323,8 +335,9 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
-     * @group           tableStore
-     * @dataProvider    getTestStore
+     * @group               tableStore
+     * @covers              FOFTable::store
+     * @dataProvider        getTestStore
      */
     public function testStore($events, $tableinfo, $test, $check)
     {
@@ -399,9 +412,10 @@ class FOFTableTest extends FtestCaseDatabase
 
     }
 
-    /**
-     * @group           tableMove
-     * @dataProvider    getTestMove
+	/**
+     * @group               tableMove
+     * @covers              FOFTable::move
+     * @dataProvider        getTestMove
      */
     public function testMove($events, $tableinfo, $test, $check)
     {
@@ -444,22 +458,24 @@ class FOFTableTest extends FtestCaseDatabase
         }
     }
 
-    /**
-     * @preventDataLoading
-     * @group           tableMove
-     */
-    public function testMoveException()
-    {
-        $this->setExpectedException('UnexpectedValueException');
+	/**
+	 * @group               tableMove
+	 * @covers              FOFTable::move
+	 * @preventDataLoading
+	 */
+	public function testMoveException()
+	{
+		$this->setExpectedException('UnexpectedValueException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
-        $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
-        $table->move(0);
-    }
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
+		$table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+		$table->move(0);
+	}
 
-    /**
-     * @group           tableReorder
-     * @dataProvider    getTestReorder
+	/**
+     * @group               tableReorder
+	 * @covers              FOFTable::reorder
+     * @dataProvider        getTestReorder
      */
     public function testReorder($events, $tableinfo, $test, $check)
     {
@@ -511,8 +527,9 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               tableReorder
+     * @covers              FOFTable::reorder
      * @preventDataLoading
-     * @group           tableReorder
      */
     public function testReorderException()
     {
@@ -524,8 +541,9 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
-     * @group           tableCheckout
-     * @dataProvider    getTestCheckout
+     * @group               tableCheckout
+     * @covers              FOFTable::checkout
+     * @dataProvider        getTestCheckout
      */
     public function testCheckout($tableinfo, $test, $check)
     {
@@ -567,8 +585,9 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
-     * @group           tableCheckin
-     * @dataProvider    getTestCheckin
+     * @group               tableCheckin
+     * @covers              FOFTable::checkin
+     * @dataProvider        getTestCheckin
      */
     public function testCheckin($tableinfo, $test, $check)
     {
@@ -616,8 +635,9 @@ class FOFTableTest extends FtestCaseDatabase
      * JTable::getInstance('session'), it's impossible to mock. So we create a fake user
      * that's surfing in our site writing directly into the session table
      *
-     * @group           tableIsCheckedOut
-     * @dataProvider    getTestIsCheckedOut
+     * @group               tableIsCheckedOut
+     * @covers              FOFTable::isCheckedOut
+     * @dataProvider        getTestIsCheckedOut
      */
     public function testIsCheckedOut($tableinfo, $test, $check)
     {
@@ -635,6 +655,7 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
+	 * @covers              FOFTable::isCheckedOut
 	 * @preventDataLoading
 	 */
 	public function testIsCheckedOutExcpetion()
@@ -647,8 +668,9 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
-     * @group           tableCopy
-     * @dataProvider    getTestCopy
+     * @group               tableCopy
+     * @covers              FOFTable::copy
+     * @dataProvider        getTestCopy
      */
     public function testCopy($events, $tableinfo, $test, $check)
     {
@@ -761,8 +783,9 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
-	 * @group           tablePublish
-	 * @dataProvider    getTestPublish
+	 * @group               tablePublish
+	 * @covers              FOFTable::publish
+	 * @dataProvider        getTestPublish
 	 */
 	public function testPublish($events, $tableinfo, $test, $check)
 	{
@@ -816,14 +839,14 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @group           tableDelete
-	 * @dataProvider    getTestDelete
+	 * @group               tableDelete
+	 * @covers              FOFTable::delete
+	 * @dataProvider        getTestDelete
 	 */
 	public function testDelete($events, $tableinfo, $test, $check)
 	{
 		$db          = JFactory::getDbo();
 		$methods     = array_keys($events);
-		if($test['mockAsset'])  $methods[] = 'getAsset';
 
 		$id          = max($test['loadid'], $test['cid']);
 		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
@@ -832,20 +855,6 @@ class FOFTableTest extends FtestCaseDatabase
 		foreach($events as $event => $return)
 		{
 			$table->expects($this->any())->method($event)->will($this->returnValue($return));
-		}
-
-		if($test['mockAsset'])
-		{
-			$asset = $this->getMock('JTableAsset', array('delete'), array(&$db));
-			$asset->expects($this->any())->method('delete')->will($this->returnValue($test['mockAsset']['return']));
-			$table->expects($this->any())->method('getAsset')->will($this->returnValue($asset));
-		}
-
-		// Should I check if the asset has been deleted?
-		if($check['checkAsset'])
-		{
-			$query = $db->getQuery(true)->select($table->getColumnAlias('asset_id'))->from($tableinfo['table'])->where($table->getKeyName().' = '.$id);
-			$asset_id = $db->setQuery($query)->loadResult();
 		}
 
 		// We have to manually provide this info, since we can't use the getInstance method (we have to mock)
@@ -879,20 +888,11 @@ class FOFTableTest extends FtestCaseDatabase
 			$count = $db->setQuery($query)->loadResult();
 
 			$this->assertEquals($check['count'], $count, 'Delete: Wrong behavior on record under delete');
-
-			if($check['checkAsset'])
-			{
-				$query = $db->getQuery(true)->select('COUNT(*)')->from('#__assets')->where('id = '.$asset_id);
-				$count = $db->setQuery($query)->loadResult();
-
-				// I can use the same variable, since when I delete the record, I want the asset deleted, too
-				$this->assertEquals($check['count'], $count, 'Delete: Wrong behavior on record asset under delete');
-			}
-
 		}
 	}
 
 	/**
+	 * @covers              FOFTable::delete
 	 * @preventDataLoading
 	 */
 	public function testDeleteException()
@@ -904,7 +904,8 @@ class FOFTableTest extends FtestCaseDatabase
 		$table->delete();
 	}
 
-	public function testGetUcmCoreAlias()
+	// getUcmCoreAlias has been moved inside the behaviors
+	/*public function testGetUcmCoreAlias()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
@@ -928,10 +929,11 @@ class FOFTableTest extends FtestCaseDatabase
 		$table->setColumnAlias('testcolumn', 'testalias');
 		$alias = $method->invokeArgs($table, array('testcolumn'));
 		$this->assertEquals('testalias', $alias, 'Invalid value for aliased property');
-	}
+	}*/
 
 	/**
-	 * @dataProvider getTestGetContentType
+	 * @covers              FOFTable::getContentType
+	 * @dataProvider        getTestGetContentType
 	 */
 	public function testGetContentType($option, $view, $expected, $message)
 	{

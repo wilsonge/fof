@@ -1056,54 +1056,36 @@ abstract class TableDataprovider
 		return $data;
 	}
 
+	/**
+	 * Dataprovideer for testDelete test. Please note that data dealing with assets has been removed, since now we're
+	 * handling that using behaviours, so the right place test that is when we test behaviors, not the table
+	 *
+	 * @return array
+	 */
 	public static function getTestDelete()
 	{
 		// Test when onBefore returns false
 		$data[] = array(
 			array('onBeforeDelete' => false, 'onAfterDelete' => true),
 			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
-			array('loadid' => 4, 'cid' => '', 'mockAsset' => false),
-			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => true)
-		);
-
-		// Test when getAsset returns false
-		$data[] = array(
-			array('onBeforeDelete' => false, 'onAfterDelete' => true, 'getAsset' => false),
-			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
-			array('loadid' => 2, 'cid' => '', 'mockAsset' => false),
-			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
-		);
-
-		// Test when there is a problem getting the asset
-		$data[] = array(
-			array('onBeforeDelete' => true, 'onAfterDelete' => true, 'getAsset' => false),
-			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
-			array('loadid' => 4, 'cid' => '', 'mockAsset' => false),
-			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
-		);
-
-		// Test when there is an error while deleting the asset
-		$data[] = array(
-			array('onBeforeDelete' => true, 'onAfterDelete' => true),
-			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
-			array('loadid' => 4, 'cid' => '', 'mockAsset' => array('return' => false)),
-			array('return' => false, 'more' => true, 'count' => 1, 'checkAsset' => false)
+			array('loadid' => 4, 'cid' => ''),
+			array('return' => false, 'more' => true, 'count' => 1)
 		);
 
 		// Test with successful delete with asset
 		$data[] = array(
 			array('onBeforeDelete' => true, 'onAfterDelete' => true),
 			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
-			array('loadid' => 4, 'cid' => '', 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
-			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => true)
+			array('loadid' => 4, 'cid' => '', 'assetkey' => 'com_foftest.foobar'),
+			array('return' => true, 'more' => true, 'count' => 0)
 		);
 
 		// Test with with delete vs empty asset_id
 		$data[] = array(
 			array('onBeforeDelete' => true, 'onAfterDelete' => true),
 			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
-			array('loadid' => 2, 'cid' => '', 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
-			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
+			array('loadid' => 2, 'cid' => '', 'assetkey' => 'com_foftest.foobar'),
+			array('return' => true, 'more' => true, 'count' => 0)
 		);
 
 		// Test with successful delete, passing the table id
@@ -1118,32 +1100,32 @@ abstract class TableDataprovider
 		$data[] = array(
 			array('onBeforeDelete' => true, 'onAfterDelete' => false),
 			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
-			array('loadid' => 4, 'cid' => '', 'mockAsset' => false, 'assetkey' => 'com_foftest.foobar'),
-			array('return' => false, 'more' => true, 'count' => 0, 'checkAsset' => true)
+			array('loadid' => 4, 'cid' => '', 'assetkey' => 'com_foftest.foobar'),
+			array('return' => false, 'more' => true, 'count' => 0)
 		);
 
 		// Test with successful delete vs bare table
 		$data[] = array(
 			array('onBeforeDelete' => true, 'onAfterDelete' => true),
 			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
-			array('loadid' => 2, 'cid' => '', 'mockAsset' => false),
-			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
+			array('loadid' => 2, 'cid' => ''),
+			array('return' => true, 'more' => true, 'count' => 0)
 		);
 
 		// Test vs bare table
 		$data[] = array(
 			array('onBeforeDelete' => true, 'onAfterDelete' => true),
 			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
-			array('loadid' => 2, 'cid' => '', 'mockAsset' => false),
-			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
+			array('loadid' => 2, 'cid' => ''),
+			array('return' => true, 'more' => true, 'count' => 0)
 		);
 
 		// Test vs table with alias
 		$data[] = array(
 			array('onBeforeDelete' => true, 'onAfterDelete' => true),
 			array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
-			array('loadid' => 2, 'cid' => '', 'mockAsset' => false, 'alias' => array('asset_id' => 'fo_asset_id')),
-			array('return' => true, 'more' => true, 'count' => 0, 'checkAsset' => false)
+			array('loadid' => 2, 'cid' => '', 'alias' => array('asset_id' => 'fo_asset_id')),
+			array('return' => true, 'more' => true, 'count' => 0)
 		);
 
 		return $data;

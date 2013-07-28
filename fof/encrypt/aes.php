@@ -17,13 +17,13 @@ defined('_JEXEC') or die();
 class FOFEncryptAES
 {
 	/** @var string The AES cipher to use (this is an mcrypt identifier, not the bit strength) */
-	private $cipherType = 0;
+	private $_cipherType = 0;
 
 	/** @var string Cipher mode. Can be CBC or ECB. We recommend using CBC */
-	private $cipherMode = 0;
+	private $_cipherMode = 0;
 
 	/** @var string The cipher key (password) */
-	private $keyString = '';
+	private $_keyString = '';
 
 	/**
 	 * Initialise the AES encryption object
@@ -34,32 +34,32 @@ class FOFEncryptAES
 	 */
 	public function __construct($key, $strength = 256, $mode = 'cbc')
 	{
-		$this->keyString = $key;
+		$this->_keyString = $key;
 
 		switch ($strength)
 		{
 			case 256:
 			default:
-				$this->cipherType = MCRYPT_RIJNDAEL_256;
+				$this->_cipherType = MCRYPT_RIJNDAEL_256;
 				break;
 
 			case 192:
-				$this->cipherType = MCRYPT_RIJNDAEL_192;
+				$this->_cipherType = MCRYPT_RIJNDAEL_192;
 				break;
 
 			case 128:
-				$this->cipherType = MCRYPT_RIJNDAEL_128;
+				$this->_cipherType = MCRYPT_RIJNDAEL_128;
 				break;
 		}
 
 		switch (strtoupper($mode))
 		{
 			case 'ECB':
-				$this->cipherMode = MCRYPT_MODE_ECB;
+				$this->_cipherMode = MCRYPT_MODE_ECB;
 				break;
 
 			case 'CBC':
-				$this->cipherMode = MCRYPT_MODE_CBC;
+				$this->_cipherMode = MCRYPT_MODE_CBC;
 				break;
 		}
 	}
@@ -76,17 +76,17 @@ class FOFEncryptAES
 	 */
 	public function encryptString($stringToEncrypt, $base64encoded = true)
 	{
-		if (strlen($this->keyString) != 32)
+		if (strlen($this->_keyString) != 32)
 		{
-			$key = hash('sha256', $this->keyString, true);
+			$key = hash('sha256', $this->_keyString, true);
 		}
 		else
 		{
-			$key = $this->keyString;
+			$key = $this->_keyString;
 		}
 
 		// Set up the IV (Initialization Vector)
-		$iv_size = mcrypt_get_iv_size($this->cipherType, $this->cipherMode);
+		$iv_size = mcrypt_get_iv_size($this->_cipherType, $this->_cipherMode);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_DEV_URANDOM);
 
 		if (empty($iv))
@@ -100,7 +100,7 @@ class FOFEncryptAES
 		}
 
 		// Encrypt the data
-		$cipherText = mcrypt_encrypt($this->cipherType, $key, $stringToEncrypt, $this->cipherMode, $iv);
+		$cipherText = mcrypt_encrypt($this->_cipherType, $key, $stringToEncrypt, $this->_cipherMode, $iv);
 
 		// Prepend the IV to the ciphertext
 		$cipherText = $iv . $cipherText;
@@ -125,13 +125,13 @@ class FOFEncryptAES
 	 */
 	public function decryptString($stringToDecrypt, $base64encoded = true)
 	{
-		if (strlen($this->keyString) != 32)
+		if (strlen($this->_keyString) != 32)
 		{
-			$key = hash('sha256', $this->keyString, true);
+			$key = hash('sha256', $this->_keyString, true);
 		}
 		else
 		{
-			$key = $this->keyString;
+			$key = $this->_keyString;
 		}
 
 		if ($base64encoded)
@@ -140,14 +140,14 @@ class FOFEncryptAES
 		}
 
 		// Calculate the IV size
-		$iv_size = mcrypt_get_iv_size($this->cipherType, $this->cipherMode);
+		$iv_size = mcrypt_get_iv_size($this->_cipherType, $this->_cipherMode);
 
 		// Extract IV
 		$iv = substr($stringToDecrypt, 0, $iv_size);
 		$stringToDecrypt = substr($stringToDecrypt, $iv_size);
 
 		// Decrypt the data
-		$plainText = mcrypt_decrypt($this->cipherType, $key, $stringToDecrypt, $this->cipherMode, $iv);
+		$plainText = mcrypt_decrypt($this->_cipherType, $key, $stringToDecrypt, $this->_cipherMode, $iv);
 
 		return $plainText;
 	}
@@ -209,26 +209,26 @@ class FOFEncryptAES
 			return false;
 		}
 
-		$algorithms = mcrypt_list_algorithms();
+		$algorightms = mcrypt_list_algorithms();
 
-		if (!in_array('rijndael-128', $algorithms))
+		if (!in_array('rijndael-128', $algorightms))
 		{
 			return false;
 		}
 
-		if (!in_array('rijndael-192', $algorithms))
+		if (!in_array('rijndael-192', $algorightms))
 		{
 			return false;
 		}
 
-		if (!in_array('rijndael-256', $algorithms))
+		if (!in_array('rijndael-256', $algorightms))
 		{
 			return false;
 		}
 
-		$algorithms = hash_algos();
+		$algorightms = hash_algos();
 
-		if (!in_array('sha256', $algorithms))
+		if (!in_array('sha256', $algorightms))
 		{
 			return false;
 		}

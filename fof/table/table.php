@@ -2430,11 +2430,12 @@ class FOFTable extends JObject implements JTableInterface
 	protected function onAfterLoad(&$result)
 	{
 		// Call the behaviors
-		$result = $this->tableDispatcher->trigger('onAfterLoad', array(&$this, &$result));
+		$eventRistult = $this->tableDispatcher->trigger('onAfterLoad', array(&$this, &$result));
 
-		if (in_array(false, $result, true))
+		if (in_array(false, $eventRistult, true))
 		{
 			// Behavior failed, return false
+			$result = false;
 			return false;
 		}
 
