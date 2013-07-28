@@ -53,6 +53,7 @@ class FOFHalLinks
 			{
 				$this->_links[$rel] = array($this->_links[$rel]);
 			}
+
 			$this->_links[$rel][] = $link;
 		}
 		else
