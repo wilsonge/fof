@@ -464,7 +464,7 @@ ENDJAVASCRIPT;
 		else {
 			dirn = direction.options[direction.selectedIndex].value;
 		}
-		Joomla.tableOrdering(order, dirn, '');
+		Joomla.tableOrdering(order, dirn);
 	}
 </script>
 
