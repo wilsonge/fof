@@ -19,7 +19,6 @@ defined('_JEXEC') or die();
  */
 class FOFDispatcher extends JObject
 {
-
 	/** @var array Configuration variables */
 	protected $config = array();
 

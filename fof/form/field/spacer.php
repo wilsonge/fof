@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldSpacer'))
  */
 class FOFFormFieldSpacer extends JFormFieldSpacer implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -87,5 +86,4 @@ class FOFFormFieldSpacer extends JFormFieldSpacer implements FOFFormField
 	{
 		return $this->getInput();
 	}
-
 }

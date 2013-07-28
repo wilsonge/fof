@@ -60,5 +60,4 @@ class FOFFormFieldTitle extends FOFFormFieldText implements FOFFormField
 
 		return $html;
 	}
-
 }

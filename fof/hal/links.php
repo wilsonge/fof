@@ -43,7 +43,7 @@ class FOFHalLinks
 			return false;
 		}
 
-		if (!array_key_exists($rel, $this->_links) || !$overwrite)
+		if (!array_key_exists($rel, $this->_links) || $overwrite)
 		{
 			$this->_links[$rel] = $link;
 		}
