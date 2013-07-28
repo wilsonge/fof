@@ -212,4 +212,17 @@ abstract class FOFModelBehavior extends JEvent
 	{
 
 	}
+
+	/**
+	 * This event runs after getting a single item
+	 *
+	 * @param   FOFModel  &$model   The model which calls this event
+	 * @param   FOFTable  &$record  The record loaded by this model
+	 *
+	 * @return  void
+	 */
+	public function onAfterGetItem(&$model, &$record)
+	{
+
+	}
 }

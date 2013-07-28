@@ -65,4 +65,27 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 			array("foo&bar=foo", "fooabarfoo", 'Non-alphanumeric should be removed'),
 		);
 	}
+
+	public function getToBoolProvider()
+	{
+		return array(
+			array('true' => true),
+			array('false' => false),
+			array(' true ' => true),
+			array('' => false),
+			array('0' => false),
+			array('1' => true),
+			array('any' => true),
+		);
+	}
+
+	/**
+	 * Test the toBool method.
+	 *
+	 * @dataProvider getToBoolProvider
+	 */
+	public function testToBool($string, $expected)
+	{
+		$this->assertEquals($expected, FOFStringUtils::toBool($string));
+	}
 }

@@ -103,7 +103,10 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertNotContains('foo', $known_fields, 'Known fields set differ from defined list');
 	}
 
-    public function testLoad()
+	/**
+	 * @groupXX       tableLoad
+	 */
+	public function testLoad()
     {
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
         $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -134,6 +137,27 @@ class FOFTableTest extends FtestCaseDatabase
         $table->load(array('slug' => 'guinea-pig-row'));
         $this->assertEquals(1, $table->foftest_foobar_id, 'Load() by fields to match failed');
     }
+
+	/**
+	 * @group           tableLoad
+	 * @dataProvider    getTestLoadJoined
+	 */
+	public function testLoadJoined($tableinfo, $test, $check)
+	{
+		require_once JPATH_TESTS.'/unit/core/table/table.php';
+
+		$db = JFactory::getDbo();
+
+		$table = new FtestTable($tableinfo['table'], $tableinfo['id'], $db, $tableinfo['config']);
+
+		foreach($check['columns'] as $column)
+		{
+			$this->assertObjectHasAttribute($column, $table, sprintf('Joined field %s not set', $column));
+		}
+
+		$rc = $table->load($test['cid']);
+		$this->assertEquals($check['return'], $rc, 'Load with joined fields: wrong return value');
+	}
 
 	/**
 	 * @preventDataLoading
@@ -917,9 +941,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertEquals($expected, $table->getContentType(), $message);
 	}
 
-	public function getTestGetContentType()
+	public function getTestLoadJoined()
 	{
-		return TableDataprovider::getTestGetContentType();
+		return TableDataprovider::getTestLoadJoined();
 	}
 
     public function getTestBind()
@@ -970,5 +994,10 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getTestDelete()
 	{
 		return TableDataprovider::getTestDelete();
+	}
+
+	public function getTestGetContentType()
+	{
+		return TableDataprovider::getTestGetContentType();
 	}
 }
