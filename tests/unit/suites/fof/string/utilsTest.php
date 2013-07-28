@@ -26,7 +26,7 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 			$message
 		);
 	}
-	
+
 	public function getTestToSlug()
 	{
 		return array(
@@ -39,7 +39,7 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 			array("Foobar", "foobar", 'Strings should be forced into lowercase'),
 		);
 	}
-	
+
 	/**
 	* Test to ASCII method
 	*
@@ -54,7 +54,7 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 			$message
 		);
 	}
-	
+
 	public function getTestToASCII()
 	{
 		return array(
@@ -69,13 +69,12 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 	public function getToBoolProvider()
 	{
 		return array(
-			array('true' => true),
-			array('false' => false),
-			array(' true ' => true),
-			array('' => false),
-			array('0' => false),
-			array('1' => true),
-			array('any' => true),
+			array('true', true),
+			array('false', false),
+			array('', false),
+			array('0', false),
+			array('1', true),
+			array('any', true),
 		);
 	}
 
