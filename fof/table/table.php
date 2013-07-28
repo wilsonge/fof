@@ -541,7 +541,7 @@ class FOFTable extends JObject implements JTableInterface
 		// Apply table behaviors
 		$type = explode("_", $this->_tbl);
 		$type = $type[count($type) - 1];
-		
+
 		$configKey = $component . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
 
 		if (isset($config['behaviors']))
@@ -831,7 +831,8 @@ class FOFTable extends JObject implements JTableInterface
 		{
 			if ($j_query->select && $j_query->select->getElements())
 			{
-				$query->select($this->normalizeSelectFields($j_query->select->getElements(), true));
+				//$query->select($this->normalizeSelectFields($j_query->select->getElements(), true));
+				$query->select($j_query->select->getElements());
 			}
 
 			if ($j_query->join)
@@ -841,7 +842,6 @@ class FOFTable extends JObject implements JTableInterface
 					$t = (string) $join;
 
 					// Joomla doesn't provide any access to the "name" variable, so I have to work with strings...
-
 					if (stripos($t, 'inner') !== false)
 					{
 						$query->innerJoin($join->getElements());
@@ -2209,9 +2209,12 @@ class FOFTable extends JObject implements JTableInterface
 			return array();
 		}
 
+		$tables   = array();
+		$j_tables = array();
+		$j_fields = array();
+
 		// Get joined tables. Ignore FROM clause, since it should not be used (the starting point is the table "table")
-		$tables = array();
-		$joins  = $query->join;
+		$joins    = $query->join;
 
 		foreach ($joins as $join)
 		{
@@ -2219,17 +2222,34 @@ class FOFTable extends JObject implements JTableInterface
 		}
 
 		// Clean up table names
-
-		for ($i = 0; $i < count($tables); $i++)
+		foreach($tables as $table)
 		{
-			preg_match('#\#__.*?\s#', $tables[$i], $matches);
-			$tables[$i] = str_replace(' ', '', $matches[0]);
+			preg_match('#(.*)((\w)*(on|using))(.*)#i', $table, $matches);
+
+			if($matches && isset($matches[1]))
+			{
+				// I always want the first part, no matter what
+				$parts = explode(' ', $matches[1]);
+				$t_table = $this->_db->qn(trim($parts[0]));
+
+				if(!in_array($t_table, $j_tables))
+				{
+					$j_tables[] =  substr($t_table, 1, strlen($t_table) - 2);
+				}
+			}
+		}
+
+		// Do I have the current table inside the query join? Remove it (its fields are already ok)
+		$find = array_search($this->getTableName(), $j_tables);
+		if($find !== false)
+		{
+			unset($j_tables[$find]);
 		}
 
 		// Get table fields
 		$fields = array();
 
-		foreach ($tables as $table)
+		foreach ($j_tables as $table)
 		{
 			$t_fields = $this->getTableFields($table);
 
@@ -2247,11 +2267,10 @@ class FOFTable extends JObject implements JTableInterface
 			$j_fields = $this->normalizeSelectFields($j_select->getElements());
 		}
 
-		// Flip the array so I can intesect the keys
-		$fields = array_intersect_key($fields, $j_fields);
+		// I can intesect the keys
+		$fields   = array_intersect_key($fields, $j_fields);
 
 		// Now I walk again the array to change the key of columns that have an alias
-
 		foreach ($j_fields as $column => $alias)
 		{
 			if ($column != $alias)
@@ -2265,16 +2284,16 @@ class FOFTable extends JObject implements JTableInterface
 	}
 
 	/**
-	 * Normalizes the fields, returning an array with all the fields.
-	 * Ie array('foobar, foo') becomes array('foobar', 'foo')
+	 * Normalizes the fields, returning an associative array with all the fields.
+	 * Ie array('foobar as foo, bar') becomes array('foobar' => 'foo', 'bar' => 'bar')
 	 *
-	 * @param   array    $fields    Array with column fields
-	 * @param   boolean  $useAlias  Should I use the column alias or use the extended syntax?
+	 * @param   array $fields    Array with column fields
 	 *
 	 * @return  array  Normalized array
 	 */
-	protected function normalizeSelectFields($fields, $extended = false)
+	protected function normalizeSelectFields($fields)
 	{
+		$db     = JFactory::getDbo();
 		$return = array();
 
 		foreach ($fields as $field)
@@ -2283,12 +2302,38 @@ class FOFTable extends JObject implements JTableInterface
 
 			foreach ($t_fields as $t_field)
 			{
-				// Is there any alias for this column?
-				preg_match('#\sas\s`?\w+`?#i', $t_field, $match);
-				$alias = empty($match) ? '' : $match[0];
-				$alias = preg_replace('#\sas\s?#i', '', $alias);
+				// Is there any alias?
+				$parts  = preg_split('#\sas\s#i', $t_field);
 
-				// Grab the "standard" name
+				// Do I have a table.column situation? Let's get the field name
+				$tableField  = explode('.', $parts[0]);
+
+				if(isset($tableField[1]))
+				{
+					$column = $tableField[1];
+				}
+				else
+				{
+					$column = $tableField[0];
+				}
+
+				// Always quote it, so I can safely remove the first and last char
+				$column = $db->qn(trim($column));
+				$column = substr($column, 1, strlen($column) - 2);
+
+				if(isset($parts[1]))
+				{
+					$alias = $db->qn(trim($parts[1]));
+					$alias = substr($alias, 1, strlen($alias) - 2);
+				}
+				else
+				{
+					$alias = $column;
+				}
+
+				$return[$column] = $alias;
+
+				/*// Grab the "standard" name
 				// @TODO Check this pattern since it's blind copied from forums
 				preg_match('/([\w]++)`?+(?:\s++as\s++[^,\s]++)?+\s*+($)/i', $t_field, $match);
 				$column = $match[1];
@@ -2310,7 +2355,7 @@ class FOFTable extends JObject implements JTableInterface
 					$alias = $column;
 				}
 
-				$return[$column] = $alias;
+				$return[$column] = $alias;*/
 			}
 		}
 
@@ -2380,11 +2425,12 @@ class FOFTable extends JObject implements JTableInterface
 	protected function onAfterLoad(&$result)
 	{
 		// Call the behaviors
-		$result = $this->tableDispatcher->trigger('onAfterLoad', array(&$this, &$result));
+		$eventRistult = $this->tableDispatcher->trigger('onAfterLoad', array(&$this, &$result));
 
-		if (in_array(false, $result, true))
+		if (in_array(false, $eventRistult, true))
 		{
 			// Behavior failed, return false
+			$result = false;
 			return false;
 		}
 
@@ -2545,7 +2591,7 @@ class FOFTable extends JObject implements JTableInterface
 	 * The event which runs after binding data to the class
 	 *
 	 * @param   object|array  &$src  The data to bind
-	 * 
+	 *
 	 * @return  boolean  True to allow binding without an error
 	 */
 	protected function onAfterBind(&$src)

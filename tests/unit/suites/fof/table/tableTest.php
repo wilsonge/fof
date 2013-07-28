@@ -103,7 +103,10 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertNotContains('foo', $known_fields, 'Known fields set differ from defined list');
 	}
 
-    public function testLoad()
+	/**
+	 * @group       tableLoad
+	 */
+	public function testLoad()
     {
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
         $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
@@ -134,6 +137,27 @@ class FOFTableTest extends FtestCaseDatabase
         $table->load(array('slug' => 'guinea-pig-row'));
         $this->assertEquals(1, $table->foftest_foobar_id, 'Load() by fields to match failed');
     }
+
+	/**
+	 * @group           tableLoadJoined
+	 * @dataProvider    getTestLoadJoined
+	 */
+	public function testLoadJoined($tableinfo, $test, $check)
+	{
+		require_once JPATH_TESTS.'/unit/core/table/table.php';
+
+		$db = JFactory::getDbo();
+
+		$table = new FtestTable($tableinfo['table'], $tableinfo['id'], $db, $tableinfo['config']);
+
+		foreach($check['columns'] as $column)
+		{
+			$this->assertObjectHasAttribute($column, $table, sprintf('Joined field %s not set', $column));
+		}
+
+		$rc = $table->load($test['cid']);
+		$this->assertEquals($check['return'], $rc, 'Load with joined fields: wrong return value');
+	}
 
 	/**
 	 * @preventDataLoading
@@ -799,7 +823,6 @@ class FOFTableTest extends FtestCaseDatabase
 	{
 		$db          = JFactory::getDbo();
 		$methods     = array_keys($events);
-		if($test['mockAsset'])  $methods[] = 'getAsset';
 
 		$id          = max($test['loadid'], $test['cid']);
 		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
@@ -808,20 +831,6 @@ class FOFTableTest extends FtestCaseDatabase
 		foreach($events as $event => $return)
 		{
 			$table->expects($this->any())->method($event)->will($this->returnValue($return));
-		}
-
-		if($test['mockAsset'])
-		{
-			$asset = $this->getMock('JTableAsset', array('delete'), array(&$db));
-			$asset->expects($this->any())->method('delete')->will($this->returnValue($test['mockAsset']['return']));
-			$table->expects($this->any())->method('getAsset')->will($this->returnValue($asset));
-		}
-
-		// Should I check if the asset has been deleted?
-		if($check['checkAsset'])
-		{
-			$query = $db->getQuery(true)->select($table->getColumnAlias('asset_id'))->from($tableinfo['table'])->where($table->getKeyName().' = '.$id);
-			$asset_id = $db->setQuery($query)->loadResult();
 		}
 
 		// We have to manually provide this info, since we can't use the getInstance method (we have to mock)
@@ -855,16 +864,6 @@ class FOFTableTest extends FtestCaseDatabase
 			$count = $db->setQuery($query)->loadResult();
 
 			$this->assertEquals($check['count'], $count, 'Delete: Wrong behavior on record under delete');
-
-			if($check['checkAsset'])
-			{
-				$query = $db->getQuery(true)->select('COUNT(*)')->from('#__assets')->where('id = '.$asset_id);
-				$count = $db->setQuery($query)->loadResult();
-
-				// I can use the same variable, since when I delete the record, I want the asset deleted, too
-				$this->assertEquals($check['count'], $count, 'Delete: Wrong behavior on record asset under delete');
-			}
-
 		}
 	}
 
@@ -880,7 +879,8 @@ class FOFTableTest extends FtestCaseDatabase
 		$table->delete();
 	}
 
-	public function testGetUcmCoreAlias()
+	// getUcmCoreAlias has been moved inside the behaviors
+	/*public function testGetUcmCoreAlias()
 	{
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
@@ -904,7 +904,7 @@ class FOFTableTest extends FtestCaseDatabase
 		$table->setColumnAlias('testcolumn', 'testalias');
 		$alias = $method->invokeArgs($table, array('testcolumn'));
 		$this->assertEquals('testalias', $alias, 'Invalid value for aliased property');
-	}
+	}*/
 
 	/**
 	 * @dataProvider getTestGetContentType
@@ -917,9 +917,9 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertEquals($expected, $table->getContentType(), $message);
 	}
 
-	public function getTestGetContentType()
+	public function getTestLoadJoined()
 	{
-		return TableDataprovider::getTestGetContentType();
+		return TableDataprovider::getTestLoadJoined();
 	}
 
     public function getTestBind()
@@ -970,5 +970,10 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getTestDelete()
 	{
 		return TableDataprovider::getTestDelete();
+	}
+
+	public function getTestGetContentType()
+	{
+		return TableDataprovider::getTestGetContentType();
 	}
 }

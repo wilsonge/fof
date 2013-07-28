@@ -135,6 +135,7 @@ class FOFConfigProvider
 		{
 			return $ret;
 		}
+
 		$data = JFile::read($filename);
 
 		// Load the XML data in a SimpleXMLElement object
@@ -152,6 +153,7 @@ class FOFConfigProvider
 		{
 			return $ret;
 		}
+
 		$xml = array_shift($areaData);
 
 		// Parse individual configuration domains
@@ -257,5 +259,4 @@ class FOFConfigProvider
 
 		return $ret;
 	}
-
 }
