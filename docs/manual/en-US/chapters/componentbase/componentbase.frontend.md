@@ -95,3 +95,131 @@ We then need to create the view itself in "views/restaurants/tmpl/restaurants.xm
 	</fieldset>
 </form>
 ```
+
+2.2.1 Restaurant View
+------------------------------------------
+
+We'll now add the final front-end view into our component. This will show all the details for a single restaurant. We will split it into two coloumns with two field sets
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	@copyright (C) 2013 JoomJunk. All rights reserved.
+	@package    Restaurant Reviews
+	@license    http://www.gnu.org/licenses/gpl-3.0.html
+
+	Restaurants view form file
+-->
+<form
+	type="read"
+>
+	<fieldset
+		name="item_details"
+		class="form-horizontal span8"
+	>
+		<field
+			name="name"
+			type="text"
+			label="COM_REVIEW_RESTAURANTS_FIELD_NAME"
+			size="50"
+		 />
+
+		<field
+			name="city"
+			type="text"
+			label="COM_REVIEWS_FIELD_CITY"
+			size="20"
+		 />
+		<field
+			name="description"
+			type="editor"
+			label="COM_REVIEWS_RATING_DESCRIPTION"
+		/>
+	</fieldset>
+	<fieldset
+		name="item_review"
+		class="form-horizontal span4"
+	>
+		<field
+			name="mainrating"
+			type="rating"
+			label="COM_REVIEWS_RATING_MAIN"
+			size="50"
+		 />
+		<field
+			name="staffrating"
+			type="rating"
+			label="COM_REVIEWS_RATING_STAFF"
+			size="20"
+		 />
+		<field
+			name="foodrating"
+			type="rating"
+			label="COM_REVIEWS_RATING_FOOD"
+			size="50"
+		 />
+		<field
+			name="servicerating"
+			type="rating"
+			label="COM_REVIEWS_RATING_SERVICE"
+			size="20"
+		 />
+		<field
+			name="atmosphererating"
+			type="rating"
+			label="COM_REVIEWS_RATING_ATMOSPHERE"
+			class="inputbox"
+			filter="intval"
+		/>
+		<field
+			name="pricerating"
+			type="rating"
+			label="COM_REVIEWS_RATING_PRICE"
+			class="inputbox"
+			filter="intval"
+		/>
+	</fieldset>
+	<fieldset
+		name="clearfix"
+		class="clearfix"
+	/>
+</form>
+```
+
+Finally we'll create our metadata view so we can reference a specific restaurant in the backend. Note the extra code here that allows us to select any restaurant that has been created in the backend.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	@copyright (C) 2013 JoomJunk. All rights reserved.
+	@package    Restaurant Reviews
+	@license    http://www.gnu.org/licenses/gpl-3.0.html
+
+	Restaurants view form file
+-->
+<metadata>
+	<!-- View definition -->
+	<view>
+		<!-- Layout options -->
+		<options>
+			<!-- Default layout's name -->
+			<default name="COM_REVIEWS_VIEW_ITEM_TITLE" />
+		</options>
+	</view>
+	<fields name="request">
+		<fieldset name="request">
+				<field
+						name="id"
+						type="sql"
+						query="SELECT reviews_restaurant_id, name FROM #__reviews_restaurants" key_field="reviews_restaurant_id" value_field="name"
+						label="COM_REVIEWS_FIELD_ID"
+						description="COM_REVIEWS_FIELD_ID_DESC"
+						required="true"
+						default="1"
+				/>
+		</fieldset>
+	</fields>
+</metadata>
+```
+
+Congratulations in it's most basic rudimentary form you now have a working, fully functioning component. In part 3 we'll start to work further on this component including adding a custom form field and adding the options for users to make comments on restaurants with their own ratings.
