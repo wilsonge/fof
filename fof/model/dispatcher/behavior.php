@@ -17,5 +17,4 @@ JLoader::import('legacy.dispatcher.dispatcher');
  */
 class FOFModelDispatcherBehavior extends JDispatcher
 {
-
 }
