@@ -26,7 +26,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforeSave(&$model, &$data)
 	{
-
 	}
 
 	/**
@@ -38,7 +37,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforeDelete(&$model)
 	{
-
 	}
 
 	/**
@@ -50,7 +48,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforeCopy(&$model)
 	{
-
 	}
 
 	/**
@@ -62,7 +59,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforePublish(&$model)
 	{
-
 	}
 
 	/**
@@ -74,7 +70,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforeHit(&$model)
 	{
-
 	}
 
 	/**
@@ -86,7 +81,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforeMove(&$model)
 	{
-
 	}
 
 	/**
@@ -98,7 +92,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforeReorder(&$model)
 	{
-
 	}
 
 	/**
@@ -112,7 +105,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onBeforeBuildQuery(&$model, &$query)
 	{
-
 	}
 
 	/**
@@ -124,7 +116,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterSave(&$model)
 	{
-
 	}
 
 	/**
@@ -136,7 +127,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterDelete(&$model)
 	{
-
 	}
 
 	/**
@@ -148,7 +138,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterCopy(&$model)
 	{
-
 	}
 
 	/**
@@ -160,7 +149,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterPublish(&$model)
 	{
-
 	}
 
 	/**
@@ -172,7 +160,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterHit(&$model)
 	{
-
 	}
 
 	/**
@@ -184,7 +171,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterMove(&$model)
 	{
-
 	}
 
 	/**
@@ -196,7 +182,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterReorder(&$model)
 	{
-
 	}
 
 	/**
@@ -210,7 +195,6 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterBuildQuery(&$model, &$query)
 	{
-
 	}
 
 	/**
@@ -223,6 +207,5 @@ abstract class FOFModelBehavior extends JEvent
 	 */
 	public function onAfterGetItem(&$model, &$record)
 	{
-
 	}
 }

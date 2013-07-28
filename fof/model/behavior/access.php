@@ -30,7 +30,7 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 		// This behavior only applies to the front-end.
 		if (!FOFPlatform::getInstance()->isFrontend())
 		{
-			return false;
+			return;
 		}
 
 		// Get the name of the access field
@@ -40,7 +40,7 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 		// Make sure the field actually exists
 		if (!in_array($accessField, $table->getKnownFields()))
 		{
-			return false;
+			return;
 		}
 
 		$model->applyAccessFiltering(null);
@@ -50,8 +50,8 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 	 * The event runs after FOFModel has called FOFTable and retrieved a single
 	 * item from the database. It is used to apply automatic filters.
 	 *
-	 * @param   FOFModel  $model   The model which was called
-	 * @param   FOFTable  $record  The record loaded from the databae
+	 * @param   FOFModel  &$model   The model which was called
+	 * @param   FOFTable  &$record  The record loaded from the databae
 	 *
 	 * @return  void
 	 */
@@ -64,7 +64,7 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 			// Make sure the field actually exists
 			if (!in_array($fieldName, $record->getKnownFields()))
 			{
-				return false;
+				return;
 			}
 
 			// Get the user
