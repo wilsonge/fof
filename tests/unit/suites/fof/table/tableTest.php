@@ -1,7 +1,7 @@
 <?php
 /**
  * @package	    FrameworkOnFramework.UnitTest
- * @subpackage  Inflector
+ * @subpackage  Table
  *
  * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
@@ -71,7 +71,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::addKnownFields
+	 * @covers              FOFTable::addKnownField
 	 * @preventDataLoading
 	 */
 	public function testAddKnownField()
@@ -90,7 +90,7 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::removeKnownFields
+	 * @covers              FOFTable::removeKnownField
 	 * @preventDataLoading
 	 */
 	public function testRemoveKnownField()

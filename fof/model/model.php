@@ -100,6 +100,12 @@ class FOFModel extends JObject
 	protected $list = null;
 
 	/**
+	 * The list of paths where FOF should look for the model
+	 * @var array
+	 */
+	protected static $paths = array();
+
+	/**
 	 * The model (base) name
 	 *
 	 * @var    string
@@ -432,7 +438,7 @@ class FOFModel extends JObject
 	 * Add a directory where FOFModel should search for models. You may
 	 * either pass a string or an array of directories.
 	 *
-	 * @param   mixed   $path    A path or array[sting] of paths to search.
+	 * @param   mixed   $path    A path or array[string] of paths to search.
 	 * @param   string  $prefix  A prefix for models.
 	 *
 	 * @return  array  An array with directory elements. If prefix is equal to '', all directories are returned.
@@ -441,39 +447,32 @@ class FOFModel extends JObject
 	 */
 	public static function addIncludePath($path = '', $prefix = '')
 	{
-		static $paths;
-
-		if (!isset($paths))
+		if (!isset(self::$paths[$prefix]))
 		{
-			$paths = array();
+			self::$paths[$prefix] = array();
 		}
 
-		if (!isset($paths[$prefix]))
+		if (!isset(self::$paths['']))
 		{
-			$paths[$prefix] = array();
-		}
-
-		if (!isset($paths['']))
-		{
-			$paths[''] = array();
+			self::$paths[''] = array();
 		}
 
 		if (!empty($path))
 		{
 			jimport('joomla.filesystem.path');
 
-			if (!in_array($path, $paths[$prefix]))
+			if (!in_array($path, self::$paths[$prefix]))
 			{
-				array_unshift($paths[$prefix], JPath::clean($path));
+				array_unshift(self::$paths[$prefix], JPath::clean($path));
 			}
 
-			if (!in_array($path, $paths['']))
+			if (!in_array($path, self::$paths['']))
 			{
-				array_unshift($paths[''], JPath::clean($path));
+				array_unshift(self::$paths[''], JPath::clean($path));
 			}
 		}
 
-		return $paths[$prefix];
+		return self::$paths[$prefix];
 	}
 
 	/**
@@ -517,7 +516,7 @@ class FOFModel extends JObject
 	/**
 	 * Public class constructor
 	 *
-	 * @param   type  $config  The configuration array
+	 * @param array $config The configuration array
 	 */
 	public function __construct($config = array())
 	{
