@@ -1154,6 +1154,8 @@ abstract class FOFView extends JObject
 	 */
 	protected function _createFileName($type, $parts = array())
 	{
+		$filename = '';
+
 		switch ($type)
 		{
 			case 'template':
