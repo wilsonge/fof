@@ -192,6 +192,7 @@ abstract class FOFView extends JObject
 			{
 				$tmpInput = new FOFInput($config['input']);
 			}
+
 			$component = $tmpInput->getCmd('option', '');
 		}
 		else
@@ -635,7 +636,6 @@ abstract class FOFView extends JObject
 
 				return $result;
 			}
-
 		}
 
 		// Degrade to JObject::get
@@ -1160,8 +1160,6 @@ abstract class FOFView extends JObject
 	 */
 	protected function _createFileName($type, $parts = array())
 	{
-		$filename = '';
-
 		switch ($type)
 		{
 			case 'template':
@@ -1172,6 +1170,7 @@ abstract class FOFView extends JObject
 				$filename = strtolower($parts['name']) . '.php';
 				break;
 		}
+
 		return $filename;
 	}
 }
