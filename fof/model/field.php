@@ -131,7 +131,16 @@ abstract class FOFModelField
 			return '';
 		}
 
-		return $this->search($value, '=');
+		if (is_array($value))
+		{
+			$db = JFactory::getDbo();
+			$value = array_map(array($db, 'quote'), $value);
+			return '(' . $this->getFieldName() . ' IN (' . implode(',', $value) . '))';
+		}
+		else
+		{
+			return $this->search($value, '=');
+		}
 	}
 
 	/**
@@ -205,14 +214,14 @@ abstract class FOFModelField
 
 	/**
 	 * Get the field name with the given table alias
-	 * 
+	 *
 	 * @return  string 	The field name
 	 */
-	public function getFieldName() 
+	public function getFieldName()
 	{
 		$name = $this->_db->qn($this->name);
-		
-		if ($this->table_alias) 
+
+		if ($this->table_alias)
 		{
 			$name = $this->_db->qn($this->table_alias) . '.' . $name;
 		}
@@ -281,6 +290,9 @@ abstract class FOFModelField
 			case 'longtext':
 			case 'char':
 			case 'mediumtext':
+			case 'character varying':
+			case 'nvarchar':
+			case 'nchar':
 				$type = 'Text';
 				break;
 
@@ -289,7 +301,14 @@ abstract class FOFModelField
 			case 'time':
 			case 'year':
 			case 'timestamp':
+			case 'timestamp without time zone':
+			case 'timestamp with time zone':
 				$type = 'Date';
+				break;
+
+			case 'tinyint':
+			case 'smallint':
+				$type='Boolean';
 				break;
 
 			default:

@@ -53,6 +53,20 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	protected static $instance = null;
 
 	/**
+	 * Set the error Handling, if possible
+	 *
+	 * @param integer 	$level     PHP error level (E_ALL)
+	 * @param string 	$log_level What to do with the error (ignore, callback)
+	 */
+	public function setErrorHandling($level, $log_level)
+	{
+		if ($this->checkVersion(JVERSION, '3.0', 'lt') )
+		{
+			JError::setErrorHandling($level, $log_level);
+		}
+	}
+
+	/**
 	 * Register a path where platform files will be looked for. These take
 	 * precedence over the built-in platform files.
 	 *
@@ -88,15 +102,18 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	}
 
 	/**
-	 * Force a specific platform object to be used
+	 * Force a specific platform object to be used. If null, nukes the cache
 	 *
-	 * @param   FOFPlatformInterface  $instance  The Platform object to be used
+	 * @param   FOFPlatformInterface|null  $instance  The Platform object to be used
 	 *
 	 * @return  void
 	 */
-	public static function forceInstance(FOFPlatformInterface $instance)
+	public static function forceInstance($instance)
 	{
-		self::$instance = $instance;
+		if ($instance instanceof FOFPlatformInterface || is_null($instance))
+		{
+			self::$instance = $instance;
+		}
 	}
 
 	/**
@@ -115,6 +132,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 			{
 				$paths = array_merge(array(__DIR__), self::$paths);
 			}
+
 			$paths = array_unique($paths);
 
 			// Loop all paths
@@ -321,7 +339,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Returns the JUser object for the current user
 	 *
-	 * @param   $id  integer  The ID of the user to fetch
+	 * @param   integer  $id  The ID of the user to fetch
 	 *
 	 * @see FOFPlatformInterface::getUser()
 	 *
@@ -375,7 +393,6 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 */
 	public function importPlugin($type)
 	{
-
 	}
 
 	/**
@@ -462,14 +479,88 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 * Performs a check between two versions. Use this function instead of PHP version_compare
 	 * so we can mock it while testing
 	 *
-	 * @param   string    $version1    First version number
-	 * @param   string    $version2    Second version number
-	 * @param   string    $operator    Operator (see version_compare for valid operators)
+	 * @param   string  $version1  First version number
+	 * @param   string  $version2  Second version number
+	 * @param   string  $operator  Operator (see version_compare for valid operators)
 	 *
 	 * @return  boolean
 	 */
 	public function checkVersion($version1, $version2, $operator)
 	{
 		return version_compare($version1, $version2, $operator);
+	}
+
+	/**
+	 * Saves something to the cache. This is supposed to be used for system-wide
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to save
+	 * @param   string  $content  The actual data to save
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function setCache($key, $content)
+	{
+		return false;
+	}
+
+	/**
+	 * Retrieves data from the cache. This is supposed to be used for system-side
+	 * FOF data, not application data.
+	 *
+	 * @param   string  $key      The key of the data to retrieve
+	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
+	 *
+	 * @return  string  The cached value
+	 */
+	public function getCache($key, $default = null)
+	{
+		return false;
+	}
+
+	/**
+	 * Is the global FOF cache enabled?
+	 *
+	 * @return  boolean
+	 */
+	public function isGlobalFOFCacheEnabled()
+	{
+		return true;
+	}
+
+	/**
+	 * Clears the cache of system-wide FOF data. You are supposed to call this in
+	 * your components' installation script post-installation and post-upgrade
+	 * methods or whenever you are modifying the structure of database tables
+	 * accessed by FOF. Please note that FOF's cache never expires and is not
+	 * purged by Joomla!. You MUST use this method to manually purge the cache.
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function clearCache()
+	{
+		return false;
+	}
+
+	/**
+	 * logs in a user
+	 *
+	 * @param   array  $authInfo  authentification information
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function loginUser($authInfo)
+	{
+		return true;
+	}
+
+	/**
+	 * logs out a user
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function logoutUser()
+	{
+		return true;
 	}
 }

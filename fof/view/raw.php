@@ -127,7 +127,6 @@ class FOFViewRaw extends FOFView
 	 */
 	protected function preRender()
 	{
-
 	}
 
 	/**
@@ -138,7 +137,6 @@ class FOFViewRaw extends FOFView
 	 */
 	protected function postRender()
 	{
-
 	}
 
 	/**
@@ -251,7 +249,7 @@ class FOFViewRaw extends FOFView
 	 */
 	public function hasAjaxOrderingSupport()
 	{
-		if (version_compare(JVERSION, '3.0', 'lt'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			return false;
 		}
@@ -316,5 +314,4 @@ class FOFViewRaw extends FOFView
 	{
 		return $this->perms;
 	}
-
 }

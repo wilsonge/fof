@@ -14,7 +14,6 @@ defined('_JEXEC') or die;
  */
 class FOFRenderJoomla extends FOFRenderAbstract
 {
-
 	/**
 	 * Public constructor. Determines the priority of this class and if it should be enabled
 	 */
@@ -57,7 +56,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		}
 
 		// Render submenu and toolbar (only if asked to)
-		if ($input->getBool('render.toolbar', true))
+		if ($input->getBool('render_toolbar', true))
 		{
 			$this->renderButtons($view, $task, $input, $config);
 			$this->renderLinkbar($view, $task, $input, $config);
@@ -266,6 +265,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			$html .= JText::_($norows_placeholder);
 			$html .= "</td></tr>\n";
 		}
+
 		$html .= "\t\t\t</tbody>" . PHP_EOL;
 
 		// Render the pagination bar, if enabled
@@ -280,6 +280,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			{
 				$html .= $pagination->getListFooter();
 			}
+
 			$html .= "</td></tr>\n";
 			$html .= "\t\t\t</tfoot>" . PHP_EOL;
 		}
@@ -335,7 +336,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		{
 			JHTML::_('behavior.framework', true);
 			JHTML::_('behavior.formvalidation');
-			$class = ' class="form-validate"';
+			$class = 'form-validate ';
 			$this->loadValidationScript($form);
 		}
 
@@ -386,10 +387,10 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Renders a raw FOFForm and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   &$form  	The form to render
-	 * @param   FOFModel  $model  	The model providing our data
-	 * @param   FOFInput  $input  	The input object
-	 * @param   string	  $formType The form type e.g. 'edit' or 'read'
+	 * @param   FOFForm   &$form  	 The form to render
+	 * @param   FOFModel  $model  	 The model providing our data
+	 * @param   FOFInput  $input  	 The input object
+	 * @param   string	  $formType  The form type e.g. 'edit' or 'read'
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -433,7 +434,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 				{
 					$html .= "\t\t\t" . $field->static . PHP_EOL;
 				}
-				else if ($formType == 'edit')
+				elseif ($formType == 'edit')
 				{
 					$html .= "\t\t\t" . $field->input . PHP_EOL;
 				}
@@ -559,5 +560,4 @@ ENDJAVASCRIPT;
 
 		echo '<div id="FOFHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';
 	}
-
 }

@@ -110,6 +110,7 @@ class FOFViewCsv extends FOFViewHtml
 		{
 			$document->setMimeEncoding('text/csv');
 		}
+
 		JResponse::setHeader('Pragma', 'public');
 		JResponse::setHeader('Expires', '0');
 		JResponse::setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
@@ -122,7 +123,7 @@ class FOFViewCsv extends FOFViewHtml
 			$tpl = 'csv';
 		}
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			JError::setErrorHandling(E_ALL, 'ignore');
 		}
@@ -143,7 +144,7 @@ class FOFViewCsv extends FOFViewHtml
 			$hasFailed = true;
 		}
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
 			if ($result instanceof Exception)
 			{

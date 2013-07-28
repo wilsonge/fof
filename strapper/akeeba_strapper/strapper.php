@@ -226,7 +226,7 @@ class AkeebaStrapper
 			}
 		}
 
-		if (($key == 'joomla3') && ($loadBootstrap == 'lite'))
+		if (($key == 'joomla3') && in_array($loadBootstrap, array('lite', 'none')))
 		{
 			// Use Joomla!'s Javascript
 			JHtml::_('bootstrap.framework');

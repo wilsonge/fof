@@ -20,3 +20,5 @@ refs/heads/staging
 
 build.xml
 antconfig.txt
+
+/build/bin/
