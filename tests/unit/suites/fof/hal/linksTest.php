@@ -58,4 +58,83 @@ class FOFHalLinksTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($newlink, $links['custom'][0]);
 		$this->assertEquals($anotherlink, $links['custom'][1]);
 	}
+
+	/**
+	 * @covers FOFHalLinks::addLinks
+	 */
+	function testAddLinks()
+	{
+		// Create a sample link
+		$link = new FOFHalLink('http://www.example.com/nada.json');
+		$linkset = new FOFHalLinks();
+
+		// ==== Add a link to a link set ====
+		$result = $linkset->addLink('custom', $link);
+
+		// ==== Replace the link in the link set ====
+		$newlinks = array(
+			new FOFHalLink('http://www.example.com/yeah.json', false, 'Something'),
+			new FOFHalLink('http://www.example.com/another.json', false, 'Something else')
+		);
+
+		$result = $linkset->addLinks('custom', $newlinks, true);
+
+		$links = $this->readAttribute($linkset, '_links');
+
+		$this->assertArrayHasKey('custom', $links, 'The link set must have an array key for our replaced rel');
+
+		$this->assertInternalType('array', $links['custom']);
+
+		$this->assertEquals($newlinks[0], $links['custom'][0]);
+		$this->assertEquals($newlinks[1], $links['custom'][1]);
+
+		// ==== Append to an existing set ====
+		$result = $linkset->addLink('custom', $link, true);
+
+		$result = $linkset->addLinks('custom', $newlinks, false);
+
+		$links = $this->readAttribute($linkset, '_links');
+
+		$this->assertArrayHasKey('custom', $links, 'The link set must have an array key for our replaced rel');
+
+		$this->assertInternalType('array', $links['custom']);
+
+		$this->assertEquals($link, $links['custom'][0]);
+		$this->assertEquals($newlinks[0], $links['custom'][1]);
+		$this->assertEquals($newlinks[1], $links['custom'][2]);
+	}
+
+	function testGetLinks()
+	{
+		// Create a sample link
+		$newlinks = array(
+			'foo' => array(
+				new FOFHalLink('http://www.example.com/yeah.json', false, 'Something'),
+				new FOFHalLink('http://www.example.com/another.json', false, 'Something else')
+			),
+			'bar' => array(
+				new FOFHalLink('http://www.example.com/foo{?id}.json', true, 'Foo link'),
+				new FOFHalLink('http://www.example.com/bar{?id}.json', true, 'Bar link')
+			),
+		);
+
+		$linkset = new FOFHalLinks();
+
+		$linkset->addLinks('foo', $newlinks['foo']);
+		$linkset->addLinks('bar', $newlinks['bar']);
+
+		$links = $linkset->getLinks();
+
+		$this->assertArrayHasKey('foo', $links);
+		$this->assertArrayHasKey('bar', $links);
+
+		$this->assertEquals($newlinks['foo'][0], $links['foo'][0]);
+		$this->assertEquals($newlinks['foo'][1], $links['foo'][1]);
+		$this->assertEquals($newlinks['bar'][0], $links['bar'][0]);
+		$this->assertEquals($newlinks['bar'][1], $links['bar'][1]);
+
+		$links = $linkset->getLinks('foo');
+		$this->assertEquals($newlinks['foo'][0], $links[0]);
+		$this->assertEquals($newlinks['foo'][1], $links[1]);
+	}
 }
