@@ -1,2 +1,2 @@
 #!/bin/sh
-phpunit --bootstrap=unit/bootstrap.php --colors "$@" .
+phpunit -c configuration.xml "$@" .
