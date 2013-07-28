@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldLanguage'))
  */
 class FOFFormFieldLanguage extends JFormFieldLanguage implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -116,5 +115,4 @@ class FOFFormFieldLanguage extends JFormFieldLanguage implements FOFFormField
 			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
-
 }

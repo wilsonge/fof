@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldPassword'))
  */
 class FOFFormFieldPassword extends JFormFieldPassword implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -95,5 +94,4 @@ class FOFFormFieldPassword extends JFormFieldPassword implements FOFFormField
 			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
-
 }

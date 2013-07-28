@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldPlugins'))
  */
 class FOFFormFieldPlugins extends JFormFieldPlugins implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -95,5 +94,4 @@ class FOFFormFieldPlugins extends JFormFieldPlugins implements FOFFormField
 			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
-
 }

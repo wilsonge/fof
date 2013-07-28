@@ -21,7 +21,6 @@ if (!class_exists('JFormFieldTextarea'))
  */
 class FOFFormFieldTextarea extends JFormFieldTextarea implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
@@ -91,5 +90,4 @@ class FOFFormFieldTextarea extends JFormFieldTextarea implements FOFFormField
 	{
 		return $this->getStatic();
 	}
-
 }
