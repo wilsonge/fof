@@ -31,7 +31,8 @@ class FOFFormHeaderField extends FOFFormHeader
 			$view = $this->form->getView();
 
 			return JHTML::_('grid.sort', $label, $this->name,
-				$view->getLists()->order_Dir, $view->getLists()->order
+				$view->getLists()->order_Dir, $view->getLists()->order,
+				$this->form->getModel()->task
 			);
 		}
 		else
