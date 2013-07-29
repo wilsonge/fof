@@ -31,7 +31,7 @@ class FOFModelTest extends FtestCaseDatabase
 	 * @dataProvider        getTestAddIncludePath
 	 * @preventDataLoading
 	 */
-	public function testAddIncludePath($test, $check)
+	/*public function testAddIncludePath($test, $check)
 	{
 		$model = FOFModel::getTmpInstance('Foobars', 'FOFModel');
 		$return = $model->addIncludePath($test['path'], $test['prefix']);
@@ -69,7 +69,7 @@ class FOFModelTest extends FtestCaseDatabase
 
 		$this->assertEquals($cleaned, $return, 'AddIncludePath: wrong return value');
 		$this->assertEquals($expected, $value, 'AddIncludePath: wrong assigned value');
-	}
+	}*/
 
 	public function getTestAddIncludePath()
 	{
