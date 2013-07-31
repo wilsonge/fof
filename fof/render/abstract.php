@@ -124,7 +124,7 @@ abstract class FOFRenderAbstract
 	abstract protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input);
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for a Read view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
@@ -135,7 +135,7 @@ abstract class FOFRenderAbstract
 	abstract protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input);
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for an Edit view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
