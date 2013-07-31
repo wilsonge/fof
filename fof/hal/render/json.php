@@ -113,7 +113,14 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 
 		if (is_object($data))
 		{
-			$data = (array) $data;
+			if ($data instanceof FOFTable)
+			{
+				$data = $data->getData();
+			}
+			else
+			{
+				$data = (array) $data;
+			}
 
 			if (!empty($data))
 			{
