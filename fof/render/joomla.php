@@ -296,7 +296,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for a Read view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
@@ -312,7 +312,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for an Edit view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
