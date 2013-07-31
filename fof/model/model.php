@@ -5,7 +5,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 /**
  * FrameworkOnFramework Model class. The Model is the worhorse. It performs all
@@ -20,7 +20,6 @@ defined('_JEXEC') or die();
  */
 class FOFModel extends JObject
 {
-
 	/**
 	 * Indicates if the internal state has been set
 	 *
@@ -247,6 +246,7 @@ class FOFModel extends JObject
 				{
 					$config['input'] = (array) $config['input'];
 				}
+
 				$config['input'] = array_merge($_REQUEST, $config['input']);
 				$config['input'] = new FOFInput($config['input']);
 			}
@@ -260,6 +260,7 @@ class FOFModel extends JObject
 		{
 			$component = $config['input']->get('option', 'com_foobar');
 		}
+
 		$config['option'] = $component;
 
 		$needsAView = true;
@@ -508,8 +509,8 @@ class FOFModel extends JObject
 			case 'model':
 				$filename = strtolower($parts['name']) . '.php';
 				break;
-
 		}
+
 		return $filename;
 	}
 
@@ -561,7 +562,8 @@ class FOFModel extends JObject
 			$component = $config['option'];
 		}
 
-		$this->input->set('option', $component);// Set the $name/$_name variable
+		// Set the $name/$_name variable
+		$this->input->set('option', $component);
 		$component = $this->input->getCmd('option', 'com_foobar');
 
 		if (array_key_exists('option', $config))
@@ -692,6 +694,7 @@ class FOFModel extends JObject
 			$limit = $this->getUserStateFromRequest($component . '.' . $view . '.limit', 'limit', $default_limit, 'int', $this->_savestate);
 			$limitstart = $this->getUserStateFromRequest($component . '.' . $view . '.limitstart', 'limitstart', 0, 'int', $this->_savestate);
 		}
+
 		$this->setState('limit', $limit);
 		$this->setState('limitstart', $limitstart);
 
@@ -926,6 +929,7 @@ class FOFModel extends JObject
 			{
 				$this->id_list[] = (int) $value;
 			}
+
 			$this->id = $this->id_list[0];
 		}
 
@@ -981,7 +985,8 @@ class FOFModel extends JObject
 	 */
 	public function clearInput()
 	{
-		$this->input = new FOFInput(array());
+		$defSource = array();
+		$this->input = new FOFInput($defSource);
 
 		return $this;
 	}
@@ -1121,6 +1126,7 @@ class FOFModel extends JObject
 			$firstItem = array_shift($list);
 			$table->bind($firstItem);
 		}
+
 		unset($list);
 
 		return $table;
@@ -1172,7 +1178,7 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			// onBeforeSave successful, refetch the possibly modified data
+			// If onBeforeSave successful, refetch the possibly modified data
 			if ($data instanceof FOFTable)
 			{
 				$data->bind($allData);
@@ -1228,7 +1234,6 @@ class FOFModel extends JObject
 	{
 		if (is_array($this->id_list) && !empty($this->id_list))
 		{
-
 			$table = $this->getTable($this->table);
 
 			if (!$this->onBeforeCopy($table))
@@ -1315,6 +1320,7 @@ class FOFModel extends JObject
 				$oUser = FOFPlatform::getInstance()->getUser();
 				$user = $oUser->id;
 			}
+
 			$table = $this->getTable($this->table);
 
 			if (!$this->onBeforePublish($table))
@@ -1541,7 +1547,7 @@ class FOFModel extends JObject
 				$subquery->clear('order');
 				$query = $this->_db->getQuery(true)
 					->select('COUNT(*)')
-					->from("(" . (string)$subquery . ") AS a");
+					->from("(" . (string) $subquery . ") AS a");
 			}
 
 			$this->_db->setQuery((string) $query);
@@ -1804,12 +1810,13 @@ class FOFModel extends JObject
 		if ($alias)
 		{
 			$alias = ' AS ' . $db->qn($alias);
-		} else
+		}
+		else
 		{
 			$alias = '';
 		}
 
-		$query->select('*')->from($db->qn($tableName) . $alias) ;
+		$query->select('*')->from($db->qn($tableName) . $alias);
 
 		if (!$overrideLimits)
 		{
@@ -1861,7 +1868,6 @@ class FOFModel extends JObject
 
 	/**
 	 * Get the alias set for this model's table
-	 *
 	 *
 	 * @return  string 	The table alias
 	 */
@@ -2195,6 +2201,7 @@ class FOFModel extends JObject
 				$suffixes[] = $suffix . '.xml';
 			}
 		}
+
 		$suffixes[] = '.xml';
 
 		// Look for all suffixes in all paths
@@ -2331,7 +2338,6 @@ class FOFModel extends JObject
 	 */
 	protected function onProcessList(&$resultArray)
 	{
-
 	}
 
 	/**
@@ -2780,6 +2786,7 @@ class FOFModel extends JObject
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_MODEL_GET_NAME'), 500);
 			}
+
 			$this->name = strtolower($r[1]);
 		}
 
