@@ -2125,8 +2125,20 @@ class FOFController extends JObject
 				$customURL = base64_decode($customURL);
 			}
 
-			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=edit&id=' . $id;
-			$this->setRedirect($url, '<li>' . implode('</li><li>', $model->getErrors()), 'error') . '</li>';
+			if (!empty($customURL))
+			{
+				$url = $customURL;
+			}
+			elseif ($id != 0)
+			{
+				$url = 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=edit&id=' . $id;
+			}
+			else
+			{
+				$url = 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=add';
+			}
+
+			$this->setRedirect($url, '<li>' . implode('</li><li>', $model->getErrors()) . '</li>', 'error');
 
 			return false;
 		}
