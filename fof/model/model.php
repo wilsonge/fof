@@ -1817,7 +1817,7 @@ class FOFModel extends JObject
 			$alias = '';
 		}
 
-		$select = $this->getTableAlias() ? $db->qn($this->getTableAlias()).'*' : $db->qn($tableName).'*';
+		$select = $this->getTableAlias() ? $db->qn($this->getTableAlias()).'.*' : $db->qn($tableName).'.*';
 
 		$query->select($select)->from($db->qn($tableName) . $alias);
 
