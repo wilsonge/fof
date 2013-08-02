@@ -31,7 +31,7 @@ interface FOFPlatformInterface
 	 *
 	 * @return  void
 	 */
-	public function setErrorHandling($level, $log_level, $options);
+	public function setErrorHandling($level, $log_level, $options = array());
 	/**
 	 * Returns the ordering of the platform class. Files with a lower ordering
 	 * number will be loaded first.

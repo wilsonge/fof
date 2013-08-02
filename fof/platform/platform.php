@@ -61,7 +61,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @return  void
 	 */
-	public function setErrorHandling($level, $log_level, $options)
+	public function setErrorHandling($level, $log_level, $options = array())
 	{
 		if ($this->checkVersion(JVERSION, '3.0', 'lt') )
 		{
