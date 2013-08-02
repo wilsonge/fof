@@ -201,6 +201,13 @@ class FOFController extends JObject
 	private $_viewObject = null;
 
 	/**
+	 * A cache for the view item objects created in this controller
+	 *
+	 * @var   array
+	 */
+	protected $viewsCache = array();
+
+	/**
 	 * A copy of the FOFModel object used in this triad
 	 *
 	 * @var    FOFModel
@@ -2384,8 +2391,6 @@ class FOFController extends JObject
 	 */
 	public function getView($name = '', $type = '', $prefix = '', $config = array())
 	{
-		static $views;
-
 		// Make sure $config is an array
 		if (is_object($config))
 		{
@@ -2394,11 +2399,6 @@ class FOFController extends JObject
 		elseif (!is_array($config))
 		{
 			$config = array();
-		}
-
-		if (!isset($views))
-		{
-			$views = array();
 		}
 
 		if (empty($name))
@@ -2411,11 +2411,13 @@ class FOFController extends JObject
 			$prefix = $this->getName() . 'View';
 		}
 
-		if (empty($views[$name]))
+		$signature = md5($name . $type . $prefix . serialize($config));
+
+		if (empty($this->viewsCache[$signature]))
 		{
 			if ($view = $this->createView($name, $prefix, $type, $config))
 			{
-				$views[$name] = & $view;
+				$this->viewsCache[$signature] = & $view;
 			}
 			else
 			{
@@ -2423,7 +2425,7 @@ class FOFController extends JObject
 			}
 		}
 
-		return $views[$name];
+		return $this->viewsCache[$signature];
 	}
 
 	/**
