@@ -635,22 +635,6 @@ ENDJS;
 		$filter_order_Dir	 = $form->getView()->getLists()->order_Dir;
 
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="task" value="' . $input->getCmd('task', 'browse') . '" />' . PHP_EOL;
-
-		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
-
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
-		{
-			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
-		}
-
-		$html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
@@ -851,6 +835,23 @@ ENDJS;
 		{
 			$html .= "</div>\n";
 		}
+
+		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="task" value="' . $input->getCmd('task', 'browse') . '" />' . PHP_EOL;
+
+		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
+
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
+		{
+			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
+		}
+
+		$html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
 		// End the form
 		$html .= '</form>' . PHP_EOL;
