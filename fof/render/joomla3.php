@@ -47,42 +47,12 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 			return;
 		}
 
-		if (!FOFPlatform::getInstance()->isCli())
-		{
-			// Wrap output in a Joomla-versioned div
-			$version = new JVersion;
-			$version = str_replace('.', '', $version->RELEASE);
-			echo "<div class=\"joomla-version-$version\">\n";
-		}
-
 		// Render the submenu and toolbar
 		if ($input->getBool('render_toolbar', true))
 		{
 			$this->renderButtons($view, $task, $input, $config);
 			$this->renderLinkbar($view, $task, $input, $config);
 		}
-	}
-
-	/**
-	 * Echoes any HTML to show after the view template
-	 *
-	 * @param   string    $view    The current view
-	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input array (request parameters)
-	 * @param   array     $config  The view configuration array
-	 *
-	 * @return  void
-	 */
-	public function postRender($view, $task, $input, $config = array())
-	{
-		$format = $input->getCmd('format', 'html');
-
-		if ($format != 'html' || FOFPlatform::getInstance()->isCli())
-		{
-			return;
-		}
-
-		echo "</div>\n";
 	}
 
 	/**
