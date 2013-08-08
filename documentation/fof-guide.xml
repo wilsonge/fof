@@ -1673,7 +1673,7 @@ class FoobarTableFoo extends FOFTable
           <term>onAfterMove<replaceable>TABLENAME</replaceable></term>
 
           <listitem>
-            <para>is triggered before a single record is moved
+            <para>is triggered after a single record is moved
             (reordered)</para>
           </listitem>
         </varlistentry>
@@ -2068,7 +2068,7 @@ class FoobarTableFoo extends FOFTable
       yourself copying code from any FOFView class into your extension's
       specialised table class you're doing it wrong.</para>
 
-      <para>FOF controller can be customised very easily using the
+      <para>FOF view can be customised very easily using the
       <methodname>on<replaceable>Task</replaceable></methodname> methods. The
       <replaceable>Task</replaceable> here is the name of the controller task
       they are related to. For example, <methodname>onBrowse</methodname> runs
