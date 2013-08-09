@@ -658,7 +658,7 @@ ENDJS;
 								$options,
 								'value',
 								'text',
-								$form->getModel()->getState($headerField->name, ''), true
+								$model->getState($headerField->name, ''), true
 							)
 						);
 					}
@@ -802,7 +802,7 @@ ENDJS;
 		$html .= "\t\t\t<tbody>" . PHP_EOL;
 		$fields		 = $form->getFieldset('items');
 		$num_columns = count($fields);
-		$items		 = $form->getModel()->getItemList();
+		$items		 = $model->getItemList();
 
 		if ($count = count($items))
 		{
@@ -810,7 +810,7 @@ ENDJS;
 
 			foreach ($items as $i => $item)
 			{
-				$table_item = $form->getModel()->getTable();
+				$table_item = $model->getTable();
 				$table_item->bind($item);
 
 				$form->bind($item);
@@ -870,7 +870,7 @@ ENDJS;
 		// Render the pagination bar, if enabled, on J! 2.5
 		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
-			$pagination = $form->getModel()->getPagination();
+			$pagination = $model->getPagination();
 			$html .= "\t\t\t<tfoot>" . PHP_EOL;
 			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
 
