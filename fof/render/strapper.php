@@ -327,6 +327,70 @@ ENDJAVASCRIPT;
 			return;
 		}
 
+		$this->renderLinkbarItems($toolbar);
+	}
+
+	/**
+	 * Renders the submenu (link bar) for a category view when it is used in a
+	 * extension
+	 *
+	 * Note: this function has to be called from the addSubmenu function in
+	 * 		 the ExtensionNameHelper class located in
+	 * 		 administrator/components/com_ExtensionName/helpers/Extensionname.php
+	 *
+	 * Example Code:
+	 *
+	 *	class ExtensionNameHelper
+	 *	{
+	 * 		public static function addSubmenu($vName)
+	 *		{
+	 *			// Load FOF
+	 *			include_once JPATH_LIBRARIES . '/fof/include.php';
+	 *
+	 *			if (!defined('FOF_INCLUDED'))
+	 *			{
+	 *				JError::raiseError('500', 'FOF is not installed');
+	 *			}
+	 *
+	 *			$strapper = new FOFRenderStrapper;
+	 *			$strapper->renderCategoryLinkbar('com_babioonevent');
+	 *		}
+	 *	}
+	 *
+	 * @param   string  $extension  The name of the extension
+	 * @param   array   $config     Extra configuration variables for the toolbar
+	 *
+	 * @return  void
+	 */
+	public function renderCategoryLinkbar($extension, $config = array())
+	{
+		// On command line don't do anything
+		if (FOFPlatform::getInstance()->isCli())
+		{
+			return;
+		}
+
+		// Do not render a category submenu unless we are in the the admin area
+		if (!FOFPlatform::getInstance()->isBackend())
+		{
+			return;
+		}
+
+		$toolbar = FOFToolbar::getAnInstance($extension, $config);
+		$toolbar->renderSubmenu();
+
+		$this->renderLinkbarItems($toolbar);
+	}
+
+	/**
+	 * do the rendering job for the linkbar
+	 *
+	 * @param   FOFToolbar  $toolbar  A toolbar object
+	 *
+	 * @return  void
+	 */
+	private function renderLinkbarItems($toolbar)
+	{
 		$links = $toolbar->getLinks();
 
 		if (!empty($links))
