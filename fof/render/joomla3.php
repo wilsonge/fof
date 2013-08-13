@@ -56,6 +56,27 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	}
 
 	/**
+	 * Echoes any HTML to show after the view template
+	 *
+	 * @param   string    $view    The current view
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   array     $config  The view configuration array
+	 *
+	 * @return  void
+	 */
+	public function postRender($view, $task, $input, $config = array())
+	{
+		/*
+		We don't need to do anything here, if we are running Joomla3,
+		so overwrite the default with all the closing div's
+
+		I added it here because I am not 100% sure if it would break BC
+		when doing it in the default strapper
+		*/
+	}
+
+	/**
 	 * Renders the submenu (link bar)
 	 *
 	 * @param   string    $view    The active view name
