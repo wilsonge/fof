@@ -1,4 +1,6 @@
-# What is FOF?
+# Framework on Framework (a.k.a. Joomla! RAD layer) [![Build Status](https://travis-ci.org/akeeba/fof.png)](https://travis-ci.org/akeeba/fof)
+
+## What is FOF? 
 
 FOF (Framework on Framework) is a rapid application development framework for Joomla!.
 Unlike other frameworks, it is not standalone. It extends the Joomla! Platform
@@ -9,7 +11,7 @@ being productive from the first day you start using it. Our goal is to always su
 the officially supported LTS versions of Joomla! and not break backwards compatibility
 without a clear deprecation and migration path.
 
-# Free Software means collaboration
+## Free Software means collaboration
 
 The reason of existence of FOSS (Free and Open Source Software) is collaboration between developers. FoF is no exception; it exists because of and for the community of Joomla! developers. It is provided free of charge and with all of the freedoms of the GPL for you to benefit. And in true Free Software spirit, the community aspect is very strong. Participating is easy and fun.
 
