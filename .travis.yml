@@ -6,6 +6,10 @@ php:
 env:
   - JVERSION_TEST=3.1
 
+branches:
+  only:
+    - staging
+
 before_script:
   - pear channel-discover pear.phpunit.de
   - pear install phpunit/DbUnit
