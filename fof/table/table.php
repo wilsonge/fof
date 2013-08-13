@@ -418,15 +418,23 @@ class FOFTable extends JObject implements JTableInterface
 				$instance->setTriggerEvents($config['trigger_events']);
 			}
 
-			if (array_key_exists('has_tags', $config))
+			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.1', 'ge'))
 			{
-				$instance->setHasTags($config['has_tags']);
-			}
+				if (array_key_exists('has_tags', $config))
+				{
+					$instance->setHasTags($config['has_tags']);
+				}
 
-			$altHasTags = $configProvider->get($configProviderKey . 'has_tags', null);
-			if ($altHasTags)
+				$altHasTags = $configProvider->get($configProviderKey . 'has_tags', null);
+
+				if ($altHasTags)
+				{
+					$instance->setHasTags($altHasTags);
+				}
+			}
+			else
 			{
-				$instance->setHasTags($altHasTags);
+				$instance->setHasTags(false);
 			}
 
 			$configProviderFieldmapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
