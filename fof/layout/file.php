@@ -20,80 +20,18 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFLayoutFile extends JLayoutBase
+class FOFLayoutFile extends JLayoutFile
 {
-	/**
-	 * @var    string  Dot separated path to the layout file, relative to base path
-	 * @since  3.0
-	 */
-	protected $layoutId = '';
-
-	/**
-	 * @var    string  Base path to use when loading layout files
-	 * @since  3.0
-	 */
-	protected $basePath = null;
-
-	/**
-	 * @var    string  Full path to actual layout files, after possible template override check
-	 * @since  3.0.3
-	 */
-	protected $fullPath = false;
-
-	/**
-	 * Method to instantiate the file-based layout.
-	 *
-	 * @param   string  $layoutId  Dot separated path to the layout file, relative to base path
-	 * @param   string  $basePath  Base path to use when loading layout files
-	 *
-	 * @since   3.0
-	 */
-	public function __construct($layoutId, $basePath = null)
-	{
-		$this->layoutId = $layoutId;
-		$this->basePath = is_null($basePath) ? JPATH_ROOT . '/layouts' : rtrim($basePath, DIRECTORY_SEPARATOR);
-	}
-
-	/**
-	 * Method to render the layout.
-	 *
-	 * @param   object  $displayData  Object which properties are used inside the layout file to build displayed output
-	 *
-	 * @return  string  The necessary HTML to display the layout
-	 *
-	 * @since   3.0
-	 */
-	public function render($displayData)
-	{
-		$layoutOutput = '';
-
-		// Check possible overrides, and build the full path to layout file
-		$path = $this->getPath();
-
-		// If there exists such a layout file, include it and collect its output
-		if ($path !== false)
-		{
-			ob_start();
-			include $path;
-			$layoutOutput = ob_get_contents();
-			ob_end_clean();
-		}
-
-		return $layoutOutput;
-	}
-
 	/**
 	 * Method to finds the full real file path, checking possible overrides
 	 *
 	 * @return  string  The full path to the layout file
-	 *
-	 * @since   3.0
 	 */
 	protected function getPath()
 	{
 		jimport('joomla.filesystem.path');
 
-		if (!$this->fullPath && !empty($this->layoutId))
+		if (is_null($this->fullPath) && !empty($this->layoutId))
 		{
 			$parts = explode('.', $this->layoutId);
 			$file  = array_pop($parts);
@@ -115,9 +53,10 @@ class FOFLayoutFile extends JLayoutBase
 
 			reset($files);
 
-			while ((list(, $fileName) = each($files)) && !$this->fullPath)
+			while ((list(, $fileName) = each($files)) && is_null($this->fullPath))
 			{
-				$this->fullPath = JPath::find($possiblePaths, $fileName);
+				$r = JPath::find($possiblePaths, $fileName);
+				$this->fullPath = $r === false ? null : $r;
 			}
 		}
 
