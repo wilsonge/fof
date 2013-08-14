@@ -826,7 +826,7 @@ ENDJS;
 				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'gt'))
 				{
 					$tmpFields = array();
-					$i = 1;
+					$j = 1;
 
 					foreach ($fields as $tmpField)
 					{
@@ -837,10 +837,10 @@ ENDJS;
 
 						else
 						{
-							$tmpFields[$i] = $tmpField;
+							$tmpFields[$j] = $tmpField;
 						}
 
-						$i++;
+						$j++;
 					}
 
 					$fields = $tmpFields;
