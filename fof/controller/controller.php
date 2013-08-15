@@ -219,7 +219,7 @@ class FOFController extends JObject
 	 *
 	 * @var    boolean
 	 */
-	private $_hasForm = false;
+	protected $_hasForm = false;
 
 	/**
 	 * Gets a static (Singleton) instance of a controller class. It loads the
