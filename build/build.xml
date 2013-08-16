@@ -50,10 +50,8 @@
 	</target>
 	
 	<target name="setup-properties" description="Set up version and build properties">
-		<!-- Initialize the build.date timestamp -->
-		<tstamp>
-			<format property="build.date" pattern="%Y-%m-%d" />
-		</tstamp>
+		<!-- Initialize the git.date timestamp -->
+		<gitdate workingcopy="${dirs.root}" format="Y-m-d" propertyname="git.date" />
 
 		<!-- Initialize the version if it's not set -->
 		<if>
@@ -80,7 +78,7 @@
 		<copy file="./templates/lib_fof.xml" tofile="${dirs.root}/lib_fof.xml" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -91,7 +89,7 @@
 		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -100,7 +98,7 @@
 		<copy file="./templates/version.txt" tofile="${dirs.strapper}/version.txt" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -110,7 +108,7 @@
 		<copy file="./templates/include.php" tofile="${dirs.library}/include.php" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -196,7 +194,7 @@
 		<copy file="./templates/release.json" tofile="${dirs.root}/release.json" overwrite="true">
 			<filterchain id="standard-tokens">
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 					<token key="RELEASEDIR" value="${phing.dir}/${dirs.release}" />
 					<token key="REPODIR" value="${phing.dir}/${dirs.root}" />
