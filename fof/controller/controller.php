@@ -219,7 +219,7 @@ class FOFController extends JObject
 	 *
 	 * @var    boolean
 	 */
-	protected $_hasForm = false;
+	protected $hasForm = false;
 
 	/**
 	 * Gets a static (Singleton) instance of a controller class. It loads the
@@ -1146,7 +1146,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		$this->display(in_array('browse', $this->cacheableTasks));
@@ -1199,7 +1199,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		// Display
@@ -1241,7 +1241,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		// Display
@@ -1310,7 +1310,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		// Display
@@ -2319,7 +2319,7 @@ class FOFController extends JObject
 				$viewType = $this->input->getCmd('format', 'html');
 			}
 
-			if (($viewType == 'html') && $this->_hasForm)
+			if (($viewType == 'html') && $this->hasForm)
 			{
 				$viewType = 'form';
 			}
