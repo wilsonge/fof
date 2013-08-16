@@ -1466,7 +1466,7 @@ function postflight($type, $parent)
 
       <para>Let's see it in action with a real an example. Let's you have the
       table <database>foo</database> linked to the table
-      <database>bar</database>: </para>
+      <database>bar</database>:</para>
 
       <table>
         <title>Table foo</title>
@@ -1536,7 +1536,7 @@ function postflight($type, $parent)
         </tgroup>
       </table>
 
-      <para>In plain sql you should do something like this: </para>
+      <para>In plain sql you should do something like this:</para>
 
       <programlisting>SELECT jos_foo.*, jos_bar.title as bar_title, barfield
 FROM jos_foo
@@ -1544,8 +1544,8 @@ INNER JOIN jos_bar ON jos_bar.foo_id = jos_foo.foo_id
 WHERE jos_foo.foo_id = 1
 </programlisting>
 
-      <para>When setting up the table, FOF already does a query like this:
-      </para>
+      <para>When setting up the table, FOF already does a query like
+      this:</para>
 
       <programlisting>SELECT jos_foo.*
 FROM jos_foo
@@ -1554,7 +1554,7 @@ WHERE jos_foo.foo_id = 1
 
       <para>So we just have to "inject" the join part. We can do that
       extending the <classname>FOFTable</classname>, creating a query using
-      Joomla! object and then assigning it to the table: </para>
+      Joomla! object and then assigning it to the table:</para>
 
       <programlisting>&lt;?php
 class FoobarTableFoo extends FOFTable
@@ -4560,8 +4560,10 @@ echo $viewTemplate;
             <listitem>
               <para><emphasis role="strong">label</emphasis> The language
               string which will be used for the label of the field; this is a
-              language string that will be fed to JText::_() for
-              translation.</para>
+              language string that will be fed to JText::_() for translation.
+              If you leave it empty FOF will automatically generate a language
+              string using the convention
+              <code><replaceable>COMPONENTNAME</replaceable>_<replaceable>VIEWNAME</replaceable>_<replaceable>FIELDNAME</replaceable>_LABEL</code>.</para>
             </listitem>
 
             <listitem>
@@ -4580,7 +4582,8 @@ echo $viewTemplate;
 
             <listitem>
               <para><emphasis role="strong">emptylabel</emphasis> Set this to
-              1 if you intend to have a field without a label</para>
+              1 if you intend to have a field without a label. In this case
+              you must NOT define the <code>label</code> attribute.</para>
             </listitem>
 
             <listitem>
@@ -4941,7 +4944,10 @@ echo $viewTemplate;
 
             <para>This will display a hidden input.</para>
 
-            <para>You can set no attributes other than the common ones.</para>
+            <para>You can set the common attributes. Moreover, to make sure
+            this field is rendered properly, you MUST define the attribute
+            <code>emptylabel="1"</code> and NOT assign a label attribute at
+            all.</para>
           </section>
 
           <section xml:id="image">
