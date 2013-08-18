@@ -2308,7 +2308,7 @@ class FOFModel extends JObject
 	 * Method to allow derived classes to preprocess the form.
 	 *
 	 * @param   FOFForm  $form   A FOFForm object.
-	 * @param   mixed    $data   The data expected for the form.
+	 * @param   mixed    &$data  The data expected for the form.
 	 * @param   string   $group  The name of the plugin group to import (defaults to "content").
 	 *
 	 * @return  void
@@ -2317,7 +2317,7 @@ class FOFModel extends JObject
 	 * @since   2.0
 	 * @throws  Exception if there is an error in the form event.
 	 */
-	protected function preprocessForm(FOFForm $form, $data, $group = 'content')
+	protected function preprocessForm(FOFForm $form, &$data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
 		JLoader::import('joomla.plugin.helper');
