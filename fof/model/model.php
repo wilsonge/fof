@@ -2091,7 +2091,11 @@ class FOFModel extends JObject
 			'load_data'	 => $loadData,
 		);
 
+		$this->onBeforeLoadForm($name, $source, $options);
+
 		$form = $this->loadForm($name, $source, $options);
+
+		$this->onAfterLoadForm($form, $name, $source, $options);
 
 		return $form;
 	}
@@ -2172,9 +2176,15 @@ class FOFModel extends JObject
 				$data = array();
 			}
 
+			// Allows data and form manipulation before preprocessing the form
+			$this->onBeforePreprocessForm($form, $data);
+
 			// Allow for additional modification of the form, and events to be triggered.
 			// We pass the data because plugins may require it.
 			$this->preprocessForm($form, $data);
+
+			// Allows data and form manipulation After preprocessing the form
+			$this->onAfterPreprocessForm($form, $data);
 
 			// Load the data into the form after the plugins have operated.
 			$form->bind($data);
@@ -2298,7 +2308,7 @@ class FOFModel extends JObject
 	 * Method to allow derived classes to preprocess the form.
 	 *
 	 * @param   FOFForm  $form   A FOFForm object.
-	 * @param   mixed    $data   The data expected for the form.
+	 * @param   mixed    &$data  The data expected for the form.
 	 * @param   string   $group  The name of the plugin group to import (defaults to "content").
 	 *
 	 * @return  void
@@ -2307,7 +2317,7 @@ class FOFModel extends JObject
 	 * @since   2.0
 	 * @throws  Exception if there is an error in the form event.
 	 */
-	protected function preprocessForm(FOFForm $form, $data, $group = 'content')
+	protected function preprocessForm(FOFForm $form, &$data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
 		JLoader::import('joomla.plugin.helper');
@@ -2377,6 +2387,57 @@ class FOFModel extends JObject
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Allows the manipulation before the form is loaded
+	 *
+	 * @param   string  &$name     The name of the form.
+	 * @param   string  &$source   The form source. Can be XML string if file flag is set to false.
+	 * @param   array   &$options  Optional array of options for the form creation.
+	 *
+	 * @return  viod
+	 */
+	public function onBeforeLoadForm(&$name, &$source, &$options)
+	{
+	}
+
+	/**
+	 * Allows the manipulation after the form is loaded
+	 *
+	 * @param   FOFForm  $form      A FOFForm object.
+	 * @param   string   &$name     The name of the form.
+	 * @param   string   &$source   The form source. Can be XML string if file flag is set to false.
+	 * @param   array    &$options  Optional array of options for the form creation.
+	 *
+	 * @return  viod
+	 */
+	public function onAfterLoadForm(FOFForm $form, &$name, &$source, &$options)
+	{
+	}
+
+	/**
+	 * Allows data and form manipulation before preprocessing the form
+	 *
+	 * @param   FOFForm  $form    A FOFForm object.
+	 * @param   array    &$data   The data expected for the form.
+	 *
+	 * @return  viod
+	 */
+	public function onBeforePreprocessForm(FOFForm $form, &$data)
+	{
+	}
+
+	/**
+	 * Allows data and form manipulation after preprocessing the form
+	 *
+	 * @param   FOFForm  $form    A FOFForm object.
+	 * @param   array    &$data   The data expected for the form.
+	 *
+	 * @return  viod
+	 */
+	public function onAfterPreprocessForm(FOFForm $form, &$data)
+	{
 	}
 
 	/**
