@@ -2421,11 +2421,10 @@ class FOFModel extends JObject
 	 *
 	 * @param   FOFForm  $form    A FOFForm object.
 	 * @param   array    &$data   The data expected for the form.
-	 * @param   string   &$group  The name of the plugin group to import
 	 *
 	 * @return  viod
 	 */
-	public function onBeforePreprocessForm(FOFForm $form, &$data, &$group)
+	public function onBeforePreprocessForm(FOFForm $form, &$data)
 	{
 	}
 
@@ -2434,11 +2433,10 @@ class FOFModel extends JObject
 	 *
 	 * @param   FOFForm  $form    A FOFForm object.
 	 * @param   array    &$data   The data expected for the form.
-	 * @param   string   &$group  The name of the plugin group to import
 	 *
 	 * @return  viod
 	 */
-	public function onAfterPreprocessForm(FOFForm $form, &$data, &$group)
+	public function onAfterPreprocessForm(FOFForm $form, &$data)
 	{
 	}
 
