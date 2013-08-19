@@ -2095,7 +2095,10 @@ class FOFModel extends JObject
 
 		$form = $this->loadForm($name, $source, $options);
 
-		$this->onAfterLoadForm($form, $name, $source, $options);
+		if ($form instanceof FOFForm)
+		{
+			$this->onAfterLoadForm($form, $name, $source, $options);
+		}
 
 		return $form;
 	}
