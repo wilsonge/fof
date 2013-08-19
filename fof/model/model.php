@@ -993,6 +993,31 @@ class FOFModel extends JObject
 	}
 
 	/**
+	 * Set the internal input field
+	 *
+	 * @param $input
+	 *
+	 * @return FOFModel
+	 */
+	public function setInput($input)
+	{
+		if (!($input instanceof FOFInput))
+		{
+			if (!is_array($input))
+			{
+				$input = (array) $input;
+			}
+
+			$input = array_merge($_REQUEST, $input);
+			$input = new FOFInput($input);
+		}
+
+		$this->input = $input;
+
+		return $this;
+	}
+
+	/**
 	 * Resets the saved state for this view
 	 *
 	 * @return  FOFModel
