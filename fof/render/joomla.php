@@ -238,6 +238,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			foreach ($items as $i => $item)
 			{
 				$table_item = $form->getModel()->getTable();
+				$table_item->reset();
 				$table_item->bind($item);
 
 				$form->bind($item);
