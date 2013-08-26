@@ -521,7 +521,7 @@ ENDJAVASCRIPT;
 	 *
 	 * @return  void
 	 */
-	private function renderLinkbarItems($toolbar)
+	protected function renderLinkbarItems($toolbar)
 	{
 		$links = $toolbar->getLinks();
 
