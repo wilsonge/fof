@@ -1000,6 +1000,7 @@ ENDJS;
 			{
 				$required	 = $field->required;
 				$labelClass	 = $field->labelClass;
+				$groupClass	 = $form->getFieldAttribute($field->fieldname, 'groupclass', '', $field->group);
 
 				// Auto-generate label and description if needed
 				// Field label
@@ -1048,7 +1049,7 @@ ENDJS;
 				}
 				else
 				{
-					$html .= "\t\t\t" . '<div class="control-group">' . PHP_EOL;
+					$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . PHP_EOL;
 					$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
 					$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
 
