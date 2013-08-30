@@ -1271,6 +1271,7 @@ class FOFModel extends JObject
 					$session = JFactory::getSession();
 					$tableprops = $table->getProperties(true);
 					unset($tableprops['input']);
+					unset($tableprops['config']['input']);
 					unset($tableprops['config']['db']);
 					unset($tableprops['config']['dbo']);
 					$hash = $this->getHash() . 'savedata';
