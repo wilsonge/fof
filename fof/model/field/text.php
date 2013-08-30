@@ -21,9 +21,9 @@ class FOFModelFieldText extends FOFModelField
 	 * @param   JDatabaseDriver  $db     The database object
 	 * @param   object           $field  The field informations as taken from the db
 	 */
-	public function __construct($db, $field)
+	public function __construct($db, $field, $table_alias = false)
 	{
-		parent::__construct($db, $field);
+		parent::__construct($db, $field, $table_alias = false);
 
 		$this->null_value = '';
 	}
