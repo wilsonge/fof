@@ -8,7 +8,7 @@ env:
 
 branches:
   only:
-    - staging
+    - development
 
 before_script:
   - pear channel-discover pear.phpunit.de
