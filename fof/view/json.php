@@ -5,7 +5,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 JLoader::import('joomla.application.component.view');
 
@@ -77,7 +77,7 @@ class FOFViewJson extends FOFViewHtml
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
-			JError::setErrorHandling(E_ALL, 'ignore');
+			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 		}
 
 		$hasFailed = false;
@@ -102,8 +102,6 @@ class FOFViewJson extends FOFViewHtml
 			{
 				$hasFailed = true;
 			}
-
-			JError::setErrorHandling(E_WARNING, 'callback');
 		}
 
 		if ($hasFailed)
@@ -180,7 +178,7 @@ class FOFViewJson extends FOFViewHtml
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
-			JError::setErrorHandling(E_ALL, 'ignore');
+			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 		}
 
 		$hasFailed = false;
@@ -200,8 +198,6 @@ class FOFViewJson extends FOFViewHtml
 			{
 				$hasFailed = true;
 			}
-
-			JError::setErrorHandling(E_WARNING, 'callback');
 		}
 
 		if ($hasFailed)

@@ -5,7 +5,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 /**
  * FrameworkOnFramework model behavior class to filter front-end access to items
@@ -48,7 +48,11 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 
 		// And filter the query output by the user id
 		$db = JFactory::getDbo();
-		$query->where($db->qn($createdField) . ' = ' . $db->q($user_id));
+
+		$alias = $model->getTableAlias();
+		$alias = $alias ? $alias . '.' : '';
+
+		$query->where($alias . $db->qn($createdField) . ' = ' . $db->q($user_id));
 	}
 
 	/**

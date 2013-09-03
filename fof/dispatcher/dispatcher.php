@@ -5,7 +5,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 /**
  * FrameworkOnFramework dispatcher class
@@ -19,7 +19,6 @@ defined('_JEXEC') or die();
  */
 class FOFDispatcher extends JObject
 {
-
 	/** @var array Configuration variables */
 	protected $config = array();
 
@@ -636,7 +635,7 @@ class FOFDispatcher extends JObject
 				continue;
 			}
 
-			$this->_fofAuth_isLoggedIn = FOFPlatform::getInstance()->login($authInfo);
+			$this->_fofAuth_isLoggedIn = FOFPlatform::getInstance()->loginUser($authInfo);
 		}
 	}
 

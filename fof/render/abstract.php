@@ -80,6 +80,7 @@ abstract class FOFRenderAbstract
 		{
 			$formType = strtolower($formType);
 		}
+
 		switch ($formType)
 		{
 			case 'browse':
@@ -112,6 +113,66 @@ abstract class FOFRenderAbstract
 	}
 
 	/**
+	 * Renders the submenu (link bar) for a category view when it is used in a
+	 * extension
+	 *
+	 * Note: this function has to be called from the addSubmenu function in
+	 * 		 the ExtensionNameHelper class located in
+	 * 		 administrator/components/com_ExtensionName/helpers/Extensionname.php
+	 *
+	 * Example Code:
+	 *
+	 *	class ExtensionNameHelper
+	 *	{
+	 * 		public static function addSubmenu($vName)
+	 *		{
+	 *			// Load FOF
+	 *			include_once JPATH_LIBRARIES . '/fof/include.php';
+	 *
+	 *			if (!defined('FOF_INCLUDED'))
+	 *			{
+	 *				JError::raiseError('500', 'FOF is not installed');
+	 *			}
+	 *
+	 *			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+	 *			{
+	 *				$strapper = new FOFRenderJoomla3;
+	 *			}
+	 *			else
+	 *			{
+	 *				$strapper = new FOFRenderJoomla;
+	 *			}
+	 *
+	 *			$strapper->renderCategoryLinkbar('com_babioonevent');
+	 *		}
+	 *	}
+	 *
+	 * @param   string  $extension  The name of the extension
+	 * @param   array   $config     Extra configuration variables for the toolbar
+	 *
+	 * @return  void
+	 */
+	public function renderCategoryLinkbar($extension, $config = array())
+	{
+		// On command line don't do anything
+		if (FOFPlatform::getInstance()->isCli())
+		{
+			return;
+		}
+
+		// Do not render a category submenu unless we are in the the admin area
+		if (!FOFPlatform::getInstance()->isBackend())
+		{
+			return;
+		}
+
+		$toolbar = FOFToolbar::getAnInstance($extension, $config);
+		$toolbar->renderSubmenu();
+
+		$this->renderLinkbarItems($toolbar);
+	}
+
+	/**
 	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
@@ -123,7 +184,7 @@ abstract class FOFRenderAbstract
 	abstract protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input);
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for a Read view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
@@ -134,7 +195,7 @@ abstract class FOFRenderAbstract
 	abstract protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input);
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for an Edit view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
@@ -147,10 +208,10 @@ abstract class FOFRenderAbstract
 	/**
 	 * Renders a raw FOFForm and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   &$form  	 The form to render
-	 * @param   FOFModel  $model  	 The model providing our data
-	 * @param   FOFInput  $input  	 The input object
-	 * @param   string	  $formType  The form type e.g. 'edit' or 'read'
+	 * @param   FOFForm   &$form     The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * @param   string    $formType  The form type e.g. 'edit' or 'read'
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */

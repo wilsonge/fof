@@ -5,7 +5,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 /**
  * The Toolbar class renders the back-end component title area and the back-
@@ -562,7 +562,7 @@ class FOFToolbar
 	 *
 	 * @return  void
 	 */
-	protected function renderSubmenu()
+	public function renderSubmenu()
 	{
 		$views = $this->getMyViews();
 
