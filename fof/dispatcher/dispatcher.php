@@ -635,7 +635,7 @@ class FOFDispatcher extends JObject
 				continue;
 			}
 
-			$this->_fofAuth_isLoggedIn = FOFPlatform::getInstance()->login($authInfo);
+			$this->_fofAuth_isLoggedIn = FOFPlatform::getInstance()->loginUser($authInfo);
 		}
 	}
 
