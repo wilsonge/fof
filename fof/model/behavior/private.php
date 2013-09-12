@@ -68,6 +68,12 @@ class FOFModelBehaviorPrivate extends FOFModelBehavior
 	{
 		if ($record instanceof FOFTable)
 		{
+			$keyName = $record->getKeyName();
+			if ($record->$keyName === null)
+			{
+				return;
+			}
+
 			$fieldName = $record->getColumnAlias('created_by');
 
 			// Make sure the field actually exists
