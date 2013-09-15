@@ -5,3 +5,4 @@
 	- [Basic Backend Files](chapters/componentbase/componentbase.files.md)
 	- [Basic Default and Edit View](chapters/componentbase/componentbase.views.md)
 	- [Basic Frontend View](chapters/componentbase/componentbase.frontend.md)
+- [Adding the ability for users to submit reviews](chapters/comments/comments.md)
