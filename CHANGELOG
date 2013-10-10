@@ -1,0 +1,23 @@
+FOF 2.1.rc4
+================================================================================
++ Added DTD for XML forms under documentation/form.dtd
++ Add Joomla formatter for FOFLess
+~ Update to lessc 0.3.9
+# Error when deleting entry of FOFTable which is using assets
+# jquery.ui.tooltip.js in AkeebaStrapper::jQueryUI() breaks Joomla 3 tooltip
+# JHtml::_('behavior.multiselect') must be loaded in Joomla 2.5 and for FOFRenderJoomla
+
+Note for older versions
+================================================================================
+ FOF 2.1.rc3 is the first version of FOF shipped with Joomla! itself. Changes
+ prior to this (i.e. changes before October 9th, 2013) were not tracked in this
+ changelog.
+
+*** LEGEND ***
+================================================================================
++ New feature or addition (no b/c issues)
+- Feature removal
+~ Small change (no b/c issues)
+# Bug fix (no b/c or security issues)
+$ Security bug fix (b/c issues possible; check description)
+! Major change or bug fix (b/c issues)
