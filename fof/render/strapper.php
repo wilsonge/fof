@@ -454,12 +454,12 @@ ENDJAVASCRIPT;
 	{
 		$html = '';
 
-		// Joomla! 3.0+ support
+		JHtml::_('behavior.multiselect');
 
+		// Joomla! 3.0+ support
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			JHtml::_('bootstrap.tooltip');
-			JHtml::_('behavior.multiselect');
 			JHtml::_('dropdown.init');
 			JHtml::_('formbehavior.chosen', 'select');
 			$view	 = $form->getView();
