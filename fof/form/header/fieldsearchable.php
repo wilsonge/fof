@@ -72,11 +72,11 @@ class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
 
 		$html = '';
 
-		$html .= '<button class="' . $buttonclass . '" onclick="this.form.submit();">' . "\n";
-		$html .= "\t" . JText::_('JSEARCH_FILTER') . "\n";
+		$html .= '<button class="' . $buttonclass . '" onclick="this.form.submit();" title="' . JText::_('JSEARCH_FILTER') . '" >' . "\n";
+		$html .= '<i class="icon-search"></i>';
 		$html .= '</button>' . "\n";
-		$html .= '<button class="' . $buttonclass . '" onclick="document.adminForm.' . $this->id . '.value=\'\';this.form.submit();">' . "\n";
-		$html .= "\t" . JText::_('JSEARCH_RESET') . "\n";
+		$html .= '<button class="' . $buttonclass . '" onclick="document.adminForm.' . $this->id . '.value=\'\';this.form.submit();" title="' . JText::_('JSEARCH_RESET') . '">' . "\n";
+		$html .= '<i class="icon-remove"></i>';
 		$html .= '</button>' . "\n";
 
 		return $html;
