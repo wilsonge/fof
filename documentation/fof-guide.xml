@@ -4693,7 +4693,7 @@ echo $viewTemplate;
 
               <listitem>
                 <para><emphasis role="strong">format</emphasis> (defaults
-                'Y-m-d')</para>
+                '%Y-%m-%d')</para>
               </listitem>
 
               <listitem>
