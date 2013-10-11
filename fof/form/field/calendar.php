@@ -126,13 +126,13 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 	public function getRepeatable()
 	{
 		// Initialize some field attributes.
-		$format = $this->element['format'] ? (string) $this->element['format'] : '%Y-%m-%d';
-
-		$class = $this->element['class'] ? (string) $this->element['class'] : '';
+		$format = $this->element['format'] ? (string) $this->element['format'] : 'Y-m-d';
+		$class  = $this->element['class'] ? (string) $this->element['class'] : '';
 
 		// Get some system objects.
 		$config = JFactory::getConfig();
 		$user = JFactory::getUser();
+		$date = JFactory::getDate($this->value, 'UTC');
 
 		// If a known filter is given use it.
 		switch (strtoupper((string) $this->element['filter']))
@@ -142,11 +142,7 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 				if ((int) $this->value)
 				{
 					// Get a date object based on the correct timezone.
-					$date = JFactory::getDate($this->value, 'UTC');
 					$date->setTimezone(new DateTimeZone($config->get('offset')));
-
-					// Transform the date string.
-					$this->value = $date->format('Y-m-d H:i:s', true, false);
 				}
 				break;
 
@@ -155,14 +151,16 @@ class FOFFormFieldCalendar extends JFormFieldCalendar implements FOFFormField
 				if ((int) $this->value)
 				{
 					// Get a date object based on the correct timezone.
-					$date = JFactory::getDate($this->value, 'UTC');
 					$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
-
-					// Transform the date string.
-					$this->value = $date->format('Y-m-d H:i:s', true, false);
 				}
 				break;
+
+			default:
+				break;
 		}
+
+		// Transform the date string.
+		$this->value = $date->format($format, true, false);
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
