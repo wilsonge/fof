@@ -2,6 +2,9 @@ FOF 2.1.rc4
 ================================================================================
 + Added DTD for XML forms under documentation/form.dtd
 + Add Joomla formatter for FOFLess
++ 'btn' class assigned to buttons of fieldsearchable by default (adheres to Joomla! 3 styling guidelines)
+
++ Using icons for fieldsearchable's search/reset buttons
 ~ Update to lessc 0.3.9
 # Error when deleting entry of FOFTable which is using assets
 # jquery.ui.tooltip.js in AkeebaStrapper::jQueryUI() breaks Joomla 3 tooltip
