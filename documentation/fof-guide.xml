@@ -5164,18 +5164,18 @@ echo $viewTemplate;
                 <literal>getSomeFoobarData</literal></para>
               </listitem>
 
+							<listitem>
+								<para><emphasis role="strong">source_format</emphasis>
+									(optional) The format of the returned data of the static
+									method. Set to <literal>optionsobject</literal> if
+									the method returns a pre-generated options object.</para>
+							</listitem>
+
               <listitem>
                 <para><emphasis role="strong">source_key</emphasis> (optional)
                 If you are using an array of indexed arrays, this is the key
                 of the indexed array that contains the key of the drop-down
                 option.</para>
-              </listitem>
-
-              <listitem>
-                <para><emphasis role="strong">source_key</emphasis> (optional)
-                If you are using an array of indexed arrays, this is the key
-                of the indexed array that contains the value (description) of
-                the drop-down option.</para>
               </listitem>
 
               <listitem>
