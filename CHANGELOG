@@ -8,6 +8,7 @@ FOF 2.1.rc4
 # Error when deleting entry of FOFTable which is using assets
 # jquery.ui.tooltip.js in AkeebaStrapper::jQueryUI() breaks Joomla 3 tooltip
 # JHtml::_('behavior.multiselect') must be loaded in Joomla 2.5 and for FOFRenderJoomla
+# Unable to add component-specific behaviours to models
 ! JFormField changes in Joomla! 3.2 Beta 1 broke FOF form fields
 
 Backwards compatibility notes
