@@ -850,11 +850,6 @@ abstract class FOFView extends JObject
 		{
 			JError::raiseError($result->getCode(), $result->getMessage());
 		}
-		else
-		{
-			// On J3+ I have to bubble the exception
-			throw new Exception($result->getMessage(), $result->getCode());
-		}
 
 		return $result;
 	}
