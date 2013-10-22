@@ -10,6 +10,7 @@ FOF 2.1.rc4
 # JHtml::_('behavior.multiselect') must be loaded in Joomla 2.5 and for FOFRenderJoomla
 # Unable to add component-specific behaviours to models
 # Fix loadTemplate behaviour on J3+
+# When the table cache reports a table as non-existent (e.g. the server failed to reply to SHOW TABLES) you had to clean the cache to see the table in FOF
 ! JFormField changes in Joomla! 3.2 Beta 1 broke FOF form fields
 
 Backwards compatibility notes
