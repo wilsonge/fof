@@ -3132,7 +3132,7 @@ class FOFController extends JObject
 		if (is_null($isCli))
 		{
 			$isCli = FOFPlatform::getInstance()->isCli();
-			$iAdmin = FOFPlatform::getInstance()->isBackend();
+			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
 		switch ($this->csrfProtection)

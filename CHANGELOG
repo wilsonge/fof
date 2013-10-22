@@ -1,3 +1,7 @@
+FOF 2.1.rc5
+================================================================================
+# gh-188 Typo in FOFController::_csrfProtection()
+
 FOF 2.1.rc4
 ================================================================================
 + Added DTD for XML forms under documentation/form.dtd
