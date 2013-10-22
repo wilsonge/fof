@@ -1,5 +1,6 @@
 FOF 2.1.rc5
 ================================================================================
+~ Typos in some LESS compiler files, stating version 0.3.8 instead of 0.3.9
 # gh-188 Typo in FOFController::_csrfProtection()
 
 FOF 2.1.rc4
