@@ -1,3 +1,8 @@
+FOF 2.1.rc5
+================================================================================
+~ Typos in some LESS compiler files, stating version 0.3.8 instead of 0.3.9
+# gh-188 Typo in FOFController::_csrfProtection()
+
 FOF 2.1.rc4
 ================================================================================
 + Added DTD for XML forms under documentation/form.dtd
@@ -5,11 +10,13 @@ FOF 2.1.rc4
 + 'btn' class assigned to buttons of fieldsearchable by default (adheres to Joomla! 3 styling guidelines)
 + Using icons for fieldsearchable's search/reset buttons
 ~ Update to lessc 0.3.9
+~ FOF table caching now respects Joomla! caching options (is it enabled, cache handler and cache lifetime).
 # Error when deleting entry of FOFTable which is using assets
 # jquery.ui.tooltip.js in AkeebaStrapper::jQueryUI() breaks Joomla 3 tooltip
 # JHtml::_('behavior.multiselect') must be loaded in Joomla 2.5 and for FOFRenderJoomla
 # Unable to add component-specific behaviours to models
 # Fix loadTemplate behaviour on J3+
+# When the table cache reports a table as non-existent (e.g. the server failed to reply to SHOW TABLES) you had to clean the cache to see the table in FOF
 ! JFormField changes in Joomla! 3.2 Beta 1 broke FOF form fields
 
 Backwards compatibility notes

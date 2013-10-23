@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 /**
  * This class is taken verbatim from:
  *
- * lessphp v0.3.8
+ * lessphp v0.3.9
  * http://leafo.net/lessphp
  *
  * LESS css compiler, adapted from http://lesscss.org
