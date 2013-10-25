@@ -3,7 +3,7 @@
  * A handy distribution of namespaced jQuery, jQuery UI and Twitter
  * Bootstrapper for use with Akeeba components.
  *
- * This file includes only Joomla! 3.0/3.1-specific style overrides
+ * This file includes only Joomla! 3.2-specific style overrides
  */
 /*
  * Bootstrap (namespaced)
@@ -19,7 +19,7 @@ div.akeeba-bootstrap {
    * A handy distribution of namespaced jQuery, jQuery UI and Twitter
    * Bootstrapper for use with Akeeba components.
    *
-   * This file includes the full Boostrap markup for Joomla! 3.0/3.1 templates which do not include Bootstrap CSS styling (default)
+   * This file includes the full Boostrap markup for Joomla! 3.2 templates which do not include Bootstrap CSS styling (default)
    */
 
     /*
@@ -1950,9 +1950,6 @@ div.akeeba-bootstrap .dropdown-submenu:hover > a > [class*=" icon-"] {
 div.akeeba-bootstrap .icon-glass {
     background-position: 0      0;
 }
-div.akeeba-bootstrap .icon-heart {
-    background-position: -96px 0;
-}
 div.akeeba-bootstrap .icon-film {
     background-position: -192px 0;
 }
@@ -1983,9 +1980,6 @@ div.akeeba-bootstrap .icon-download-alt {
 div.akeeba-bootstrap .icon-inbox {
     background-position: -168px -24px;
 }
-div.akeeba-bootstrap .icon-play-circle {
-    background-position: -192px -24px;
-}
 div.akeeba-bootstrap .icon-repeat {
     background-position: -216px -24px;
 }
@@ -2009,15 +2003,6 @@ div.akeeba-bootstrap .icon-qrcode {
 }
 div.akeeba-bootstrap .icon-barcode {
     background-position: -456px -24px;
-}
-div.akeeba-bootstrap .icon-tag {
-    background-position: 0 -48px;
-}
-div.akeeba-bootstrap .icon-tags {
-    background-position: -25px -48px;
-}
-div.akeeba-bootstrap .icon-book {
-    background-position: -48px -48px;
 }
 div.akeeba-bootstrap .icon-font {
     background-position: -144px -48px;
@@ -2072,18 +2057,6 @@ div.akeeba-bootstrap .icon-step-backward {
 }
 div.akeeba-bootstrap .icon-fast-backward {
     background-position: -216px -72px;
-}
-div.akeeba-bootstrap .icon-backward {
-    background-position: -240px -72px;
-}
-div.akeeba-bootstrap .icon-pause {
-    background-position: -288px -72px;
-}
-div.akeeba-bootstrap .icon-stop {
-    background-position: -312px -72px;
-}
-div.akeeba-bootstrap .icon-forward {
-    background-position: -336px -72px;
 }
 div.akeeba-bootstrap .icon-fast-forward {
     background-position: -360px -72px;
