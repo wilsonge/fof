@@ -22,7 +22,12 @@ $viewTemplate = $this->getRenderedForm();
 echo $viewTemplate;
 ```
 
-So in form.php we have put in the code above. If you were to install the component then you would see now change between what we had before and now. The next step however is to create the comments and comment view so we can include them into the restaurant view.
+So in form.php we have put in the code above. If you were to install the component then you would see no change between what we had before and now. The next step however is to create the comments and comment view so we can include them into the restaurant view.
 
 3.2 Adding the comments view
 ------------------------------------------
+The next step is to create the four views for the comments (comments (list) frontend, comment (form) frontend, comments (list) backend, comment (form) backend).
+
+```xml
+
+```
