@@ -579,6 +579,8 @@ ENDJS;
 				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 				{
 					// Joomla! 3.0 or later
+					$form_html = '';
+					
 					if (!empty($filter))
 					{
 						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
@@ -614,6 +616,7 @@ ENDJS;
 				else
 				{
 					// Joomla! 2.5
+					$form_html = 'class="form-horizontal"';
 					$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
 
 					if (!empty($filter))
@@ -622,7 +625,7 @@ ENDJS;
 
 						if (!empty($buttons))
 						{
-							$filter_html .= '<div class="btn-group pull-left hidden-phone">' . PHP_EOL;
+							$filter_html .= '<div class="btn-group hidden-phone">' . PHP_EOL;
 							$filter_html .= "\t\t\t\t\t\t$buttons" . PHP_EOL;
 							$filter_html .= '</div>' . PHP_EOL;
 						}
@@ -648,7 +651,7 @@ ENDJS;
 		$filter_order		 = $form->getView()->getLists()->order;
 		$filter_order_Dir	 = $form->getView()->getLists()->order_Dir;
 
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" ' . $form_html . '>' . PHP_EOL;
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
