@@ -579,7 +579,7 @@ ENDJS;
 				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 				{
 					// Joomla! 3.0 or later
-					$form_html = '';
+					$form_class = '';
 					
 					if (!empty($filter))
 					{
@@ -616,7 +616,7 @@ ENDJS;
 				else
 				{
 					// Joomla! 2.5
-					$form_html = 'class="form-horizontal"';
+					$form_class = 'class="form-horizontal"';
 					$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
 
 					if (!empty($filter))
@@ -651,7 +651,7 @@ ENDJS;
 		$filter_order		 = $form->getView()->getLists()->order;
 		$filter_order_Dir	 = $form->getView()->getLists()->order_Dir;
 
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" ' . $form_html . '>' . PHP_EOL;
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" ' . $form_class . '>' . PHP_EOL;
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
