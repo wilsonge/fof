@@ -160,10 +160,10 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 		if ($table->isAssetsTracked())
 		{
 			// Get and the asset name.
-			$name    	= $table->getAssetName();
+			$name = $table->getAssetName();
 
 			// Do NOT touch JTable here -- we are loading the core asset table which is a JTable, not a FOFTable
-			$asset    = JTable::getInstance('Asset');
+			$asset = JTable::getInstance('Asset');
 
 			if ($asset->loadByName($name))
 			{

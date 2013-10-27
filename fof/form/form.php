@@ -34,12 +34,12 @@ class FOFForm extends JForm
 	/**
 	 * Method to get an instance of a form.
 	 *
-	 * @param   string  $name     The name of the form.
-	 * @param   string  $data     The name of an XML file or string to load as the form definition.
-	 * @param   array   $options  An array of form options.
-	 * @param   string  $replace  Flag to toggle whether form fields should be replaced if a field
-	 *                            already exists with the same group/name.
-	 * @param   string  $xpath    An optional xpath to search for the fields.
+	 * @param   string  	$name		The name of the form.
+	 * @param   string  	$data		The name of an XML file or string to load as the form definition.
+	 * @param   array   	$options	An array of form options.
+	 * @param   bool  		$replace	Flag to toggle whether form fields should be replaced if a field
+	 *                      	      	already exists with the same group/name.
+	 * @param   bool|string $xpath		An optional xpath to search for the fields.
 	 *
 	 * @return  object  FOFForm instance.
 	 *
