@@ -989,7 +989,7 @@ class FOFTable extends JObject implements JTableInterface
 	}
 
 	/**
-	 * Generic check for whether dependancies exist for this object in the db schema
+	 * Generic check for whether dependencies exist for this object in the db schema
 	 *
 	 * @param   integer  $oid    The primary key of the record to delete
 	 * @param   array    $joins  Any joins to foreign table, used to determine if dependent records exist

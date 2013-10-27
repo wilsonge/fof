@@ -2993,8 +2993,6 @@ class FOFController extends JObject
 			FOFInflector::singularize($this->view) . '.acl.edit', 'core.edit'
 		);
 
-		// Else go with the generic one
-
 		return $this->checkACL($privilege);
 	}
 
@@ -3124,6 +3122,8 @@ class FOFController extends JObject
 	 * (depending the Joomla! version) if the check fails.
 	 *
 	 * @return  boolean  True if the CSRF check is successful
+	 *
+	 * @throws Exception
 	 */
 	protected function _csrfProtection()
 	{

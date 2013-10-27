@@ -123,7 +123,7 @@ class FOFToolbar
 	}
 
 	/**
-	 * Public cinstructor
+	 * Public constructor
 	 *
 	 * @param   array  $config  The configuration array of the component
 	 */
