@@ -77,7 +77,7 @@ class FOFForm extends JForm
 			{
 				if ($forms[$name]->loadFile($data, $replace, $xpath) == false)
 				{
-					throw new RuntimeException('FOFForm::getInstance could not load file');
+					throw new RuntimeException('FOFForm::getInstance could not load file ' . $data . '.xml');
 				}
 			}
 		}
