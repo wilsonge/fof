@@ -246,12 +246,14 @@ class FOFDispatcher extends JObject
 		$this->input->set('layout', $this->layout);
 	}
 
-	/**
-	 * The main code of the Dispatcher. It spawns the necessary controller and
-	 * runs it.
-	 *
-	 * @return  null|Exception
-	 */
+    /**
+     * The main code of the Dispatcher. It spawns the necessary controller and
+     * runs it.
+     *
+     * @throws Exception
+     *
+     * @return  null|JError
+     */
 	public function dispatch()
 	{
 		if (!FOFPlatform::getInstance()->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))

@@ -515,11 +515,11 @@ class FOFModel extends JObject
 		return $filename;
 	}
 
-	/**
-	 * Public class constructor
-	 *
-	 * @param   type  $config  The configuration array
-	 */
+    /**
+     * Public class constructor
+     *
+     * @param array $config The configuration array
+     */
 	public function __construct($config = array())
 	{
 		// Make sure $config is an array
@@ -1733,7 +1733,7 @@ class FOFModel extends JObject
 	 * @param   string   $type          Filter for the variable, for valid values see {@link JFilterInput::clean()}. Optional.
 	 * @param   boolean  $setUserState  Should I save the variable in the user state? Default: true. Optional.
 	 *
-	 * @return  The request user state.
+	 * @return  string   The request user state.
 	 */
 	protected function getUserStateFromRequest($key, $request, $default = null, $type = 'none', $setUserState = true)
 	{
@@ -1760,15 +1760,17 @@ class FOFModel extends JObject
 		return $result;
 	}
 
-	/**
-	 * Method to get a table object, load it if necessary.
-	 *
-	 * @param   string  $name     The table name. Optional.
-	 * @param   string  $prefix   The class prefix. Optional.
-	 * @param   array   $options  Configuration array for model. Optional.
-	 *
-	 * @return  FOFTable  A FOFTable object
-	 */
+    /**
+     * Method to get a table object, load it if necessary.
+     *
+     * @param   string  $name The table name. Optional.
+     * @param   string  $prefix The class prefix. Optional.
+     * @param   array   $options Configuration array for model. Optional.
+     *
+     * @throws Exception
+     *
+     * @return  FOFTable  A FOFTable object
+     */
 	public function getTable($name = '', $prefix = null, $options = array())
 	{
 		if (empty($name))
@@ -2131,20 +2133,20 @@ class FOFModel extends JObject
 		return $form;
 	}
 
-	/**
-	 * Method to get a form object.
-	 *
-	 * @param   string   $name     The name of the form.
-	 * @param   string   $source   The form source. Can be XML string if file flag is set to false.
-	 * @param   array    $options  Optional array of options for the form creation.
-	 * @param   boolean  $clear    Optional argument to force load a new form.
-	 * @param   string   $xpath    An optional xpath to search for the fields.
-	 *
-	 * @return  mixed  FOFForm object on success, False on error.
-	 *
-	 * @see     FOFForm
-	 * @since   2.0
-	 */
+    /**
+     * Method to get a form object.
+     *
+     * @param   string          $name The name of the form.
+     * @param   string          $source The form source. Can be XML string if file flag is set to false.
+     * @param   array           $options Optional array of options for the form creation.
+     * @param   boolean         $clear Optional argument to force load a new form.
+     * @param   bool|string     $xpath An optional xpath to search for the fields.
+     *
+     * @return  mixed  FOFForm object on success, False on error.
+     *
+     * @see     FOFForm
+     * @since   2.0
+     */
 	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
 	{
 		// Handle the optional arguments.
@@ -2427,7 +2429,7 @@ class FOFModel extends JObject
 	 * @param   string  &$source   The form source. Can be XML string if file flag is set to false.
 	 * @param   array   &$options  Optional array of options for the form creation.
 	 *
-	 * @return  viod
+	 * @return  void
 	 */
 	public function onBeforeLoadForm(&$name, &$source, &$options)
 	{
@@ -2441,7 +2443,7 @@ class FOFModel extends JObject
 	 * @param   string   &$source   The form source. Can be XML string if file flag is set to false.
 	 * @param   array    &$options  Optional array of options for the form creation.
 	 *
-	 * @return  viod
+	 * @return  void
 	 */
 	public function onAfterLoadForm(FOFForm $form, &$name, &$source, &$options)
 	{
@@ -2453,7 +2455,7 @@ class FOFModel extends JObject
 	 * @param   FOFForm  $form    A FOFForm object.
 	 * @param   array    &$data   The data expected for the form.
 	 *
-	 * @return  viod
+	 * @return  void
 	 */
 	public function onBeforePreprocessForm(FOFForm $form, &$data)
 	{
@@ -2465,7 +2467,7 @@ class FOFModel extends JObject
 	 * @param   FOFForm  $form    A FOFForm object.
 	 * @param   array    &$data   The data expected for the form.
 	 *
-	 * @return  viod
+	 * @return  void
 	 */
 	public function onAfterPreprocessForm(FOFForm $form, &$data)
 	{
