@@ -78,8 +78,9 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 	public function getStatic()
 	{
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
-
 		$value = $this->element['value'] ? (string) $this->element['value'] : '1';
+		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';
 
 		if (empty($this->value))
 		{
@@ -107,8 +108,9 @@ class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
 	public function getRepeatable()
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
-
 		$value = $this->element['value'] ? (string) $this->element['value'] : '1';
+		$disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+		$onclick = $this->element['onclick'] ? ' onclick="' . (string) $this->element['onclick'] . '"' : '';
 
 		if (empty($this->value))
 		{
