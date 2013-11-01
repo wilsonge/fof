@@ -23,7 +23,7 @@ class FOFModelFieldText extends FOFModelField
 	 */
 	public function __construct($db, $field, $table_alias = false)
 	{
-		parent::__construct($db, $field, $table_alias = false);
+		parent::__construct($db, $field, $table_alias);
 
 		$this->null_value = '';
 	}
