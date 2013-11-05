@@ -1,5 +1,6 @@
 FOF 2.1.0
 ================================================================================
+# gh-199 J3.2 Fixed form validation Javascript error
 + Added required option to FOFFormFieldCheckbox
 # Fix FOFFormFieldCheckbox (undefined $disabled and $onclick)
 ~ Typos in some LESS compiler files, stating version 0.3.8 instead of 0.3.9
