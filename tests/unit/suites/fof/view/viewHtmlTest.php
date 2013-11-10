@@ -24,6 +24,10 @@ class FOFViewHtmlTest extends FtestCase
 		// Fake the session
 		JFactory::$session = $this->getMockSession();
 		$application = JFactory::getApplication('site');
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.2.0', 'ge'))
+		{
+			$application->initialise();
+		}
 
 		// Fake the template
 		$template = (object)array(
