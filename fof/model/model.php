@@ -901,12 +901,20 @@ class FOFModel extends JObject
 	/**
 	 * Sets the ID and resets internal data
 	 *
-	 * @param   integer  $id  The ID to use
+	 * @param   integer $id The ID to use
+	 *
+	 * @throws InvalidArgumentException
 	 *
 	 * @return FOFModel
 	 */
 	public function setId($id = 0)
 	{
+		// No stirng or no integer? What are you trying to do???
+		if (!is_string($id) && !is_integer($id))
+		{
+			throw new InvalidArgumentException(sprintf('%s::ssetId()', get_class($this)));
+		}
+
 		$this->reset();
 		$this->id = (int) $id;
 		$this->id_list = array($this->id);

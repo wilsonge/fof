@@ -26,9 +26,50 @@ class FOFModelTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @group               modelTestSetId
+	 * @group               FOFModel
+	 * @covers              FOFModel::setId
+	 * @dataProvider        getTestSetId
+	 * @preventDataLoading
+	 */
+	public function testSetId($modelId)
+	{
+		$config['option'] = 'com_foftest';
+
+		$model = new FOFModel($config);
+		$rc = $model->setId($modelId);
+
+		$this->assertInstanceOf('FOFModel', $rc, 'FOFModel::setId should return itself in order to support chaining');
+
+		$reflect  = new ReflectionClass($model);
+		$property = $reflect->getProperty('id');
+		$property->setAccessible(true);
+		$value    = $property->getValue($model);
+
+		$this->assertEquals($modelId, $value, 'FOFModel::setId Wrong set value');
+	}
+
+	/**
+	 * @group               modelTestSetIdException
+	 * @group               FOFModel
+	 * @covers              FOFModel::setId
+	 * @dataProvider        getTestSetIdException
+	 * @preventDataLoading
+	 */
+	public function testSetIdException($modelId)
+	{
+		$this->setExpectedException('InvalidArgumentException');
+
+		$config['option'] = 'com_foftest';
+
+		$model = new FOFModel($config);
+		$model->setId($modelId);
+	}
+
+	/**
 	 * @group               modelIncludePath
 	 * @covers              FOFModel::addIncludePath
-	 * @dataProvider        getTestAddIncludePath
+	 * @dataProvider        getTestAddIncludePathException
 	 * @preventDataLoading
 	 */
 	/*public function testAddIncludePath($test, $check)
@@ -74,5 +115,15 @@ class FOFModelTest extends FtestCaseDatabase
 	public function getTestAddIncludePath()
 	{
 		return ModelDataprovider::getTestAddIncludePath();
+	}
+
+	public function getTestSetId()
+	{
+		return ModelDataprovider::getTestSetId();
+	}
+
+	public function getTestSetIdException()
+	{
+		return ModelDataprovider::getTestSetIdException();
 	}
 }

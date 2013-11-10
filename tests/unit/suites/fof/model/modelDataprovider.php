@@ -12,4 +12,23 @@ abstract class ModelDataprovider
 
 		return $data;
 	}
+
+	public static function getTestSetId()
+	{
+		$data[] = array(1);
+		$data[] = array('12');
+		$data[] = array(0);
+		$data[] = array('0');
+
+		return $data;
+	}
+
+	public static function getTestSetIdException()
+	{
+		$data[] = array(array(4));
+		$data[] = array(array(4, 7));
+		$data[] = array(new stdClass());
+
+		return $data;
+	}
 }
