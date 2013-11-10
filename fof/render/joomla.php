@@ -466,18 +466,16 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
 		$js = <<<ENDJAVASCRIPT
-(function($){
-	Joomla.submitbutton = function(task)
+Joomla.submitbutton = function(task)
+{
+	if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
 	{
-		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
-		{
-			Joomla.submitform(task, document.getElementById('adminForm'));
-		}
-		else {
-			alert('$message');
-		}
+		Joomla.submitform(task, document.getElementById('adminForm'));
 	}
-})(akeeba.jQuery);
+	else {
+		alert('$message');
+	}
+};
 ENDJAVASCRIPT;
 
 		$document = FOFPlatform::getInstance()->getDocument();
