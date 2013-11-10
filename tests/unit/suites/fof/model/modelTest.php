@@ -23,6 +23,9 @@ class FOFModelTest extends FtestCaseDatabase
 		}
 
 		parent::setUp($loadDataset);
+
+		// TODO It seems that another test is "polluting" FOFPlatform instance, leaving a Mock Object as current instance
+		FOFPlatform::forceInstance(null);
 	}
 
 	/**
