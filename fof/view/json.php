@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  view
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -77,7 +78,7 @@ class FOFViewJson extends FOFViewHtml
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
-			JError::setErrorHandling(E_ALL, 'ignore');
+			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 		}
 
 		$hasFailed = false;
@@ -102,8 +103,6 @@ class FOFViewJson extends FOFViewHtml
 			{
 				$hasFailed = true;
 			}
-
-			JError::setErrorHandling(E_WARNING, 'callback');
 		}
 
 		if ($hasFailed)
@@ -180,7 +179,7 @@ class FOFViewJson extends FOFViewHtml
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
-			JError::setErrorHandling(E_ALL, 'ignore');
+			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 		}
 
 		$hasFailed = false;
@@ -188,6 +187,11 @@ class FOFViewJson extends FOFViewHtml
 		try
 		{
 			$result = $this->loadTemplate($tpl, true);
+
+            if ($result instanceof Exception)
+            {
+                $hasFailed = true;
+            }
 		}
 		catch (Exception $e)
 		{
@@ -200,8 +204,6 @@ class FOFViewJson extends FOFViewHtml
 			{
 				$hasFailed = true;
 			}
-
-			JError::setErrorHandling(E_WARNING, 'callback');
 		}
 
 		if ($hasFailed)

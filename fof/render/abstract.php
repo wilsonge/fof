@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  render
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
@@ -110,6 +111,66 @@ abstract class FOFRenderAbstract
 				}
 				break;
 		}
+	}
+
+	/**
+	 * Renders the submenu (link bar) for a category view when it is used in a
+	 * extension
+	 *
+	 * Note: this function has to be called from the addSubmenu function in
+	 * 		 the ExtensionNameHelper class located in
+	 * 		 administrator/components/com_ExtensionName/helpers/Extensionname.php
+	 *
+	 * Example Code:
+	 *
+	 *	class ExtensionNameHelper
+	 *	{
+	 * 		public static function addSubmenu($vName)
+	 *		{
+	 *			// Load FOF
+	 *			include_once JPATH_LIBRARIES . '/fof/include.php';
+	 *
+	 *			if (!defined('FOF_INCLUDED'))
+	 *			{
+	 *				JError::raiseError('500', 'FOF is not installed');
+	 *			}
+	 *
+	 *			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+	 *			{
+	 *				$strapper = new FOFRenderJoomla3;
+	 *			}
+	 *			else
+	 *			{
+	 *				$strapper = new FOFRenderJoomla;
+	 *			}
+	 *
+	 *			$strapper->renderCategoryLinkbar('com_babioonevent');
+	 *		}
+	 *	}
+	 *
+	 * @param   string  $extension  The name of the extension
+	 * @param   array   $config     Extra configuration variables for the toolbar
+	 *
+	 * @return  void
+	 */
+	public function renderCategoryLinkbar($extension, $config = array())
+	{
+		// On command line don't do anything
+		if (FOFPlatform::getInstance()->isCli())
+		{
+			return;
+		}
+
+		// Do not render a category submenu unless we are in the the admin area
+		if (!FOFPlatform::getInstance()->isBackend())
+		{
+			return;
+		}
+
+		$toolbar = FOFToolbar::getAnInstance($extension, $config);
+		$toolbar->renderSubmenu();
+
+		$this->renderLinkbarItems($toolbar);
 	}
 
 	/**

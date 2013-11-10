@@ -1,6 +1,7 @@
 <?php
 /**
  * @package    FrameworkOnFramework
+ * @subpackage controller
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -13,7 +14,7 @@ defined('_JEXEC') or die;
  * paradigm, where the controller is mainly used to set up the model state and
  * spawn the view.
  *
- * @package  FrameworkOnFramework.Controller
+ * @package  FrameworkOnFramework
  * @since    1.0
  */
 class FOFController extends JObject
@@ -201,6 +202,13 @@ class FOFController extends JObject
 	private $_viewObject = null;
 
 	/**
+	 * A cache for the view item objects created in this controller
+	 *
+	 * @var   array
+	 */
+	protected $viewsCache = array();
+
+	/**
 	 * A copy of the FOFModel object used in this triad
 	 *
 	 * @var    FOFModel
@@ -212,7 +220,7 @@ class FOFController extends JObject
 	 *
 	 * @var    boolean
 	 */
-	private $_hasForm = false;
+	protected $hasForm = false;
 
 	/**
 	 * Gets a static (Singleton) instance of a controller class. It loads the
@@ -257,7 +265,7 @@ class FOFController extends JObject
 	 * @param   string  $view    The view name, e.g. cpanel
 	 * @param   array   $config  Configuration parameters
 	 *
-	 * @return  \className  A disposable class instance
+	 * @return  \FOFController  A disposable class instance
 	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
@@ -881,14 +889,16 @@ class FOFController extends JObject
 		return $filename;
 	}
 
-	/**
-	 * Executes a given controller task. The onBefore<task> and onAfter<task>
-	 * methods are called automatically if they exist.
-	 *
-	 * @param   string  $task  The task to execute, e.g. "browse"
-	 *
-	 * @return  null|bool  False on execution failure
-	 */
+    /**
+     * Executes a given controller task. The onBefore<task> and onAfter<task>
+     * methods are called automatically if they exist.
+     *
+     * @param   string $task The task to execute, e.g. "browse"
+     *
+     * @throws  Exception   Exception thrown if the onBefore<task> returns false
+     *
+     * @return  null|bool  False on execution failure
+     */
 	public function execute($task)
 	{
 		$this->task = $task;
@@ -991,7 +1001,7 @@ class FOFController extends JObject
 	 * @param   bool  $cachable   Is this view cacheable?
 	 * @param   bool  $urlparams  Add your safe URL parameters (see further down in the code)
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function display($cachable = false, $urlparams = false)
 	{
@@ -1112,7 +1122,7 @@ class FOFController extends JObject
 	 * Implements a default browse task, i.e. read a bunch of records and send
 	 * them to the browser.
 	 *
-	 * @return  void
+	 * @return  boolean
 	 */
 	public function browse()
 	{
@@ -1139,7 +1149,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		$this->display(in_array('browse', $this->cacheableTasks));
@@ -1151,7 +1161,7 @@ class FOFController extends JObject
 	 * Single record read. The id set in the request is passed to the model and
 	 * then the item layout is used to render the result.
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function read()
 	{
@@ -1192,7 +1202,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		// Display
@@ -1204,7 +1214,7 @@ class FOFController extends JObject
 	/**
 	 * Single record add. The form layout is used to present a blank page.
 	 *
-	 * @return  void
+	 * @return  false|void
 	 */
 	public function add()
 	{
@@ -1234,7 +1244,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		// Display
@@ -1245,7 +1255,7 @@ class FOFController extends JObject
 	 * Single record edit. The ID set in the request is passed to the model,
 	 * then the form layout is used to edit the result.
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function edit()
 	{
@@ -1303,7 +1313,7 @@ class FOFController extends JObject
 
 		if ($form !== false)
 		{
-			$this->_hasForm = true;
+			$this->hasForm = true;
 		}
 
 		// Display
@@ -1315,7 +1325,7 @@ class FOFController extends JObject
 	/**
 	 * Save the incoming data and then return to the Edit task
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function apply()
 	{
@@ -1351,7 +1361,7 @@ class FOFController extends JObject
 	/**
 	 * Duplicates selected items
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function copy()
 	{
@@ -1398,7 +1408,7 @@ class FOFController extends JObject
 	/**
 	 * Save the incoming data and then return to the Browse task
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function save()
 	{
@@ -1431,7 +1441,7 @@ class FOFController extends JObject
 	/**
 	 * Save the incoming data and then return to the Add task
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function savenew()
 	{
@@ -1464,7 +1474,7 @@ class FOFController extends JObject
 	/**
 	 * Cancel the edit, check in the record and return to the Browse task
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function cancel()
 	{
@@ -1496,7 +1506,7 @@ class FOFController extends JObject
 	/**
 	 * Sets the access to public. Joomla! 1.5 compatibility.
 	 *
-	 * @return  void
+	 * @return  bool
 	 *
 	 * @deprecated since 2.0
 	 */
@@ -1515,7 +1525,7 @@ class FOFController extends JObject
 	/**
 	 * Sets the access to registered. Joomla! 1.5 compatibility.
 	 *
-	 * @return  void
+	 * @return  bool
 	 *
 	 * @deprecated since 2.0
 	 */
@@ -1534,7 +1544,7 @@ class FOFController extends JObject
 	/**
 	 * Sets the access to special. Joomla! 1.5 compatibility.
 	 *
-	 * @return  void
+	 * @return  bool
 	 *
 	 * @deprecated since 2.0
 	 */
@@ -1553,7 +1563,7 @@ class FOFController extends JObject
 	/**
 	 * Publish (set enabled = 1) an item.
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function publish()
 	{
@@ -1569,7 +1579,7 @@ class FOFController extends JObject
 	/**
 	 * Unpublish (set enabled = 0) an item.
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function unpublish()
 	{
@@ -1585,7 +1595,7 @@ class FOFController extends JObject
 	/**
 	 * Archive (set enabled = 2) an item.
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function archive()
 	{
@@ -1601,7 +1611,7 @@ class FOFController extends JObject
 	/**
 	 * Trash (set enabled = -2) an item.
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function trash()
 	{
@@ -1617,7 +1627,7 @@ class FOFController extends JObject
 	/**
 	 * Saves the order of the items
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function saveorder()
 	{
@@ -1680,7 +1690,7 @@ class FOFController extends JObject
 	/**
 	 * Moves selected items one position down the ordering list
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function orderdown()
 	{
@@ -1724,7 +1734,7 @@ class FOFController extends JObject
 	/**
 	 * Moves selected items one position up the ordering list
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function orderup()
 	{
@@ -1768,7 +1778,7 @@ class FOFController extends JObject
 	/**
 	 * Delete selected item(s)
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	public function remove()
 	{
@@ -1981,7 +1991,7 @@ class FOFController extends JObject
 	 *
 	 * @param   integer  $state  The desired state. 0 is unpublished, 1 is published.
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	final protected function setstate($state = 0)
 	{
@@ -2020,7 +2030,7 @@ class FOFController extends JObject
 	 *
 	 * @param   integer  $level  The desired viewing access level ID
 	 *
-	 * @return  void
+	 * @return  bool
 	 */
 	final protected function setaccess($level = 0)
 	{
@@ -2098,6 +2108,16 @@ class FOFController extends JObject
 			return false;
 		}
 
+		// Set the layout to form, if it's not set in the URL
+
+		if (is_null($this->layout))
+		{
+			$this->layout = 'form';
+		}
+
+		// Do I have a form?
+		$model->setState('form_name', 'form.' . $this->layout);
+
 		$status = $model->save($data);
 
 		if ($status && ($id != 0))
@@ -2125,8 +2145,20 @@ class FOFController extends JObject
 				$customURL = base64_decode($customURL);
 			}
 
-			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=edit&id=' . $id;
-			$this->setRedirect($url, '<li>' . implode('</li><li>', $model->getErrors()), 'error') . '</li>';
+			if (!empty($customURL))
+			{
+				$url = $customURL;
+			}
+			elseif ($id != 0)
+			{
+				$url = 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=edit&id=' . $id;
+			}
+			else
+			{
+				$url = 'index.php?option=' . $this->component . '&view=' . $this->view . '&task=add';
+			}
+
+			$this->setRedirect($url, '<li>' . implode('</li><li>', $model->getErrors()) . '</li>', 'error');
 
 			return false;
 		}
@@ -2290,7 +2322,7 @@ class FOFController extends JObject
 				$viewType = $this->input->getCmd('format', 'html');
 			}
 
-			if (($viewType == 'html') && $this->_hasForm)
+			if (($viewType == 'html') && $this->hasForm)
 			{
 				$viewType = 'form';
 			}
@@ -2308,14 +2340,16 @@ class FOFController extends JObject
 		return $this->_viewObject;
 	}
 
-	/**
-	 * Method to get the controller name
-	 *
-	 * The dispatcher name is set by default parsed using the classname, or it can be set
-	 * by passing a $config['name'] in the class constructor
-	 *
-	 * @return  string  The name of the dispatcher
-	 */
+    /**
+     * Method to get the controller name
+     *
+     * The dispatcher name is set by default parsed using the classname, or it can be set
+     * by passing a $config['name'] in the class constructor
+     *
+     * @throws Exception
+     *
+     * @return  string  The name of the dispatcher
+     */
 	public function getName()
 	{
 		if (empty($this->name))
@@ -2360,20 +2394,20 @@ class FOFController extends JObject
 		return $this->methods;
 	}
 
-	/**
-	 * Method to get a reference to the current view and load it if necessary.
-	 *
-	 * @param   string  $name    The view name. Optional, defaults to the controller name.
-	 * @param   string  $type    The view type. Optional.
-	 * @param   string  $prefix  The class prefix. Optional.
-	 * @param   array   $config  Configuration array for view. Optional.
-	 *
-	 * @return  FOFView  Reference to the view or an error.
-	 */
+    /**
+     * Method to get a reference to the current view and load it if necessary.
+     *
+     * @param   string  $name   The view name. Optional, defaults to the controller name.
+     * @param   string  $type   The view type. Optional.
+     * @param   string  $prefix The class prefix. Optional.
+     * @param   array   $config Configuration array for view. Optional.
+     *
+     * @throws Exception
+     *
+     * @return  FOFView  Reference to the view or an error.
+     */
 	public function getView($name = '', $type = '', $prefix = '', $config = array())
 	{
-		static $views;
-
 		// Make sure $config is an array
 		if (is_object($config))
 		{
@@ -2382,11 +2416,6 @@ class FOFController extends JObject
 		elseif (!is_array($config))
 		{
 			$config = array();
-		}
-
-		if (!isset($views))
-		{
-			$views = array();
 		}
 
 		if (empty($name))
@@ -2399,11 +2428,13 @@ class FOFController extends JObject
 			$prefix = $this->getName() . 'View';
 		}
 
-		if (empty($views[$name]))
+		$signature = md5($name . $type . $prefix . serialize($config));
+
+		if (empty($this->viewsCache[$signature]))
 		{
 			if ($view = $this->createView($name, $prefix, $type, $config))
 			{
-				$views[$name] = & $view;
+				$this->viewsCache[$signature] = & $view;
 			}
 			else
 			{
@@ -2411,7 +2442,7 @@ class FOFController extends JObject
 			}
 		}
 
-		return $views[$name];
+		return $this->viewsCache[$signature];
 	}
 
 	/**
@@ -2969,8 +3000,6 @@ class FOFController extends JObject
 			FOFInflector::singularize($this->view) . '.acl.edit', 'core.edit'
 		);
 
-		// Else go with the generic one
-
 		return $this->checkACL($privilege);
 	}
 
@@ -3100,6 +3129,8 @@ class FOFController extends JObject
 	 * (depending the Joomla! version) if the check fails.
 	 *
 	 * @return  boolean  True if the CSRF check is successful
+	 *
+	 * @throws Exception
 	 */
 	protected function _csrfProtection()
 	{
@@ -3108,7 +3139,7 @@ class FOFController extends JObject
 		if (is_null($isCli))
 		{
 			$isCli = FOFPlatform::getInstance()->isCli();
-			$iAdmin = FOFPlatform::getInstance()->isBackend();
+			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
 		switch ($this->csrfProtection)

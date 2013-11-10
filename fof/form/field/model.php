@@ -1,6 +1,7 @@
 <?php
 /**
  * @package    FrameworkOnFramework
+ * @subpackage form
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -240,10 +241,10 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 				continue;
 			}
 
-			$key = (string) $stateoption['key'];
-			$value = (string) $stateoption;
+			$stateKey = (string) $stateoption['key'];
+			$stateValue = (string) $stateoption;
 
-			$model->setState($key, $value);
+			$model->setState($stateKey, $stateValue);
 		}
 
 		// Set the query and get the result list.

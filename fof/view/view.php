@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  view
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -470,8 +471,6 @@ abstract class FOFView extends JObject
 		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$result = $this->loadTemplate($tpl);
-
-		FOFPlatform::getInstance()->setErrorHandling(E_WARNING, 'callback');
 
 		if ($result instanceof Exception)
 		{

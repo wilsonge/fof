@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  render
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
@@ -64,20 +65,6 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			$this->renderButtons($view, $task, $input, $config);
 			$this->renderLinkbar($view, $task, $input, $config);
 		}
-
-		if (!FOFPlatform::getInstance()->isCli() && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
-		{
-			$sidebarEntries = JHtmlSidebar::getEntries();
-
-			if (!empty($sidebarEntries))
-			{
-				$html = '<div id="j-sidebar-container" class="span2">' . "\n";
-				$html .= "\t" . JHtmlSidebar::render() . "\n";
-				$html .= "</div>\n";
-				$html .= '<div id="j-main-container" class="span10">' . "\n";
-				echo $html;
-			}
-		}
 	}
 
 	/**
@@ -125,16 +112,18 @@ class FOFRenderStrapper extends FOFRenderAbstract
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
 		$js = <<<ENDJAVASCRIPT
-		Joomla.submitbutton = function(task)
+(function($){
+	Joomla.submitbutton = function(task)
+	{
+		if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
 		{
-			if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
-			{
-				Joomla.submitform(task, document.getElementById('adminForm'));
-			}
-			else {
-				alert('$message');
-			}
+			Joomla.submitform(task, document.getElementById('adminForm'));
 		}
+		else {
+			alert('$message');
+		}
+	}
+})(akeeba.jQuery);
 ENDJAVASCRIPT;
 
 		$document = FOFPlatform::getInstance()->getDocument();
@@ -341,6 +330,18 @@ ENDJAVASCRIPT;
 			return;
 		}
 
+		$this->renderLinkbarItems($toolbar);
+	}
+
+	/**
+	 * do the rendering job for the linkbar
+	 *
+	 * @param   FOFToolbar  $toolbar  A toolbar object
+	 *
+	 * @return  void
+	 */
+	protected function renderLinkbarItems($toolbar)
+	{
 		$links = $toolbar->getLinks();
 
 		if (!empty($links))
@@ -348,6 +349,21 @@ ENDJAVASCRIPT;
 			foreach ($links as $link)
 			{
 				JHtmlSidebar::addEntry($link['name'], $link['link'], $link['active']);
+
+				$dropdown = false;
+
+				if (array_key_exists('dropdown', $link))
+				{
+					$dropdown = $link['dropdown'];
+				}
+
+				if ($dropdown)
+				{
+					foreach ($link['items'] as $item)
+					{
+						JHtmlSidebar::addEntry('– ' . $item['name'], $item['link'], $item['active']);
+					}
+				}
 			}
 		}
 	}
@@ -441,12 +457,12 @@ ENDJAVASCRIPT;
 	{
 		$html = '';
 
-		// Joomla! 3.0+ support
+		JHtml::_('behavior.multiselect');
 
+		// Joomla! 3.0+ support
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
 			JHtml::_('bootstrap.tooltip');
-			JHtml::_('behavior.multiselect');
 			JHtml::_('dropdown.init');
 			JHtml::_('formbehavior.chosen', 'select');
 			$view	 = $form->getView();
@@ -566,6 +582,8 @@ ENDJS;
 				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 				{
 					// Joomla! 3.0 or later
+					$form_class = '';
+					
 					if (!empty($filter))
 					{
 						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
@@ -593,7 +611,7 @@ ENDJS;
 								$options,
 								'value',
 								'text',
-								$form->getModel()->getState($headerField->name, ''), true
+								$model->getState($headerField->name, ''), true
 							)
 						);
 					}
@@ -601,6 +619,7 @@ ENDJS;
 				else
 				{
 					// Joomla! 2.5
+					$form_class = 'class="form-horizontal"';
 					$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
 
 					if (!empty($filter))
@@ -609,7 +628,9 @@ ENDJS;
 
 						if (!empty($buttons))
 						{
-							$filter_html .= "\t\t\t\t\t\t<nobr>$buttons</nobr>" . PHP_EOL;
+							$filter_html .= '<div class="btn-group hidden-phone">' . PHP_EOL;
+							$filter_html .= "\t\t\t\t\t\t$buttons" . PHP_EOL;
+							$filter_html .= '</div>' . PHP_EOL;
 						}
 					}
 					elseif (!empty($options))
@@ -633,23 +654,7 @@ ENDJS;
 		$filter_order		 = $form->getView()->getLists()->order;
 		$filter_order_Dir	 = $form->getView()->getLists()->order_Dir;
 
-		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="task" value="' . $input->getCmd('task', 'browse') . '" />' . PHP_EOL;
-
-		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
-
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
-		{
-			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
-		}
-
-		$html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
+		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" ' . $form_class . '>' . PHP_EOL;
 
 		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
 		{
@@ -753,7 +758,7 @@ ENDJS;
 		$html .= "\t\t\t<tbody>" . PHP_EOL;
 		$fields		 = $form->getFieldset('items');
 		$num_columns = count($fields);
-		$items		 = $form->getModel()->getItemList();
+		$items		 = $model->getItemList();
 
 		if ($count = count($items))
 		{
@@ -761,7 +766,8 @@ ENDJS;
 
 			foreach ($items as $i => $item)
 			{
-				$table_item = $form->getModel()->getTable();
+				$table_item = $model->getTable();
+				$table_item->reset();
 				$table_item->bind($item);
 
 				$form->bind($item);
@@ -777,7 +783,7 @@ ENDJS;
 				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'gt'))
 				{
 					$tmpFields = array();
-					$i = 1;
+					$j = 1;
 
 					foreach ($fields as $tmpField)
 					{
@@ -788,10 +794,10 @@ ENDJS;
 
 						else
 						{
-							$tmpFields[$i] = $tmpField;
+							$tmpFields[$j] = $tmpField;
 						}
 
-						$i++;
+						$j++;
 					}
 
 					$fields = $tmpFields;
@@ -821,7 +827,7 @@ ENDJS;
 		// Render the pagination bar, if enabled, on J! 2.5
 		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
 		{
-			$pagination = $form->getModel()->getPagination();
+			$pagination = $model->getPagination();
 			$html .= "\t\t\t<tfoot>" . PHP_EOL;
 			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
 
@@ -850,6 +856,23 @@ ENDJS;
 		{
 			$html .= "</div>\n";
 		}
+
+		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="task" value="' . $input->getCmd('task', 'browse') . '" />' . PHP_EOL;
+
+		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
+
+		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
+		{
+			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
+		}
+
+		$html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;
 
 		// End the form
 		$html .= '</form>' . PHP_EOL;
@@ -985,6 +1008,7 @@ ENDJS;
 			{
 				$required	 = $field->required;
 				$labelClass	 = $field->labelClass;
+				$groupClass	 = $form->getFieldAttribute($field->fieldname, 'groupclass', '', $field->group);
 
 				// Auto-generate label and description if needed
 				// Field label
@@ -1033,7 +1057,7 @@ ENDJS;
 				}
 				else
 				{
-					$html .= "\t\t\t" . '<div class="control-group">' . PHP_EOL;
+					$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . PHP_EOL;
 					$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
 					$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
 

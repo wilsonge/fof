@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  platform
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -57,14 +58,15 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @param   integer  $level      PHP error level (E_ALL)
 	 * @param   string   $log_level  What to do with the error (ignore, callback)
+	 * @param   array    $options    Options for the error handler
 	 *
 	 * @return  void
 	 */
-	public function setErrorHandling($level, $log_level)
+	public function setErrorHandling($level, $log_level, $options = array())
 	{
 		if ($this->checkVersion(JVERSION, '3.0', 'lt') )
 		{
-			JError::setErrorHandling($level, $log_level);
+			return JError::setErrorHandling($level, $log_level, $options);
 		}
 	}
 

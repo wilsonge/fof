@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  model
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -97,12 +98,6 @@ class FOFModel extends JObject
 	 * @var array
 	 */
 	protected $list = null;
-
-	/**
-	 * The list of paths where FOF should look for the model
-	 * @var array
-	 */
-	protected static $paths = array();
 
 	/**
 	 * The model (base) name
@@ -373,7 +368,19 @@ class FOFModel extends JObject
 		}
 
 		// First look for ComponentnameModelViewnameBehaviorName (e.g. FoobarModelItemsBehaviorFilter)
-		$behaviorClass = ucfirst($this->option) . 'Model' . FOFInflector::pluralize($this->name) . 'Behavior' . ucfirst(strtolower($name));
+		$option_name = str_replace('com_', '', $this->name);
+		$behaviorClass = ucfirst($option_name) . 'Model' . FOFInflector::pluralize($this->name) . 'Behavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass))
+		{
+			$behavior = new $behaviorClass($this->modelDispatcher, $config);
+
+			return true;
+		}
+
+		// Then look for ComponentnameModelBehaviorName (e.g. FoobarModelBehaviorFilter)
+		$option_name = str_replace('com_', '', $this->name);
+		$behaviorClass = ucfirst($option_name) . 'ModelBehavior' . ucfirst(strtolower($name));
 
 		if (class_exists($behaviorClass))
 		{
@@ -439,7 +446,7 @@ class FOFModel extends JObject
 	 * Add a directory where FOFModel should search for models. You may
 	 * either pass a string or an array of directories.
 	 *
-	 * @param   mixed   $path    A path or array[string] of paths to search.
+	 * @param   mixed   $path    A path or array[sting] of paths to search.
 	 * @param   string  $prefix  A prefix for models.
 	 *
 	 * @return  array  An array with directory elements. If prefix is equal to '', all directories are returned.
@@ -448,32 +455,39 @@ class FOFModel extends JObject
 	 */
 	public static function addIncludePath($path = '', $prefix = '')
 	{
-		if (!isset(self::$paths[$prefix]))
+		static $paths;
+
+		if (!isset($paths))
 		{
-			self::$paths[$prefix] = array();
+			$paths = array();
 		}
 
-		if (!isset(self::$paths['']))
+		if (!isset($paths[$prefix]))
 		{
-			self::$paths[''] = array();
+			$paths[$prefix] = array();
+		}
+
+		if (!isset($paths['']))
+		{
+			$paths[''] = array();
 		}
 
 		if (!empty($path))
 		{
 			jimport('joomla.filesystem.path');
 
-			if (!in_array($path, self::$paths[$prefix]))
+			if (!in_array($path, $paths[$prefix]))
 			{
-				array_unshift(self::$paths[$prefix], JPath::clean($path));
+				array_unshift($paths[$prefix], JPath::clean($path));
 			}
 
-			if (!in_array($path, self::$paths['']))
+			if (!in_array($path, $paths['']))
 			{
-				array_unshift(self::$paths[''], JPath::clean($path));
+				array_unshift($paths[''], JPath::clean($path));
 			}
 		}
 
-		return self::$paths[$prefix];
+		return $paths[$prefix];
 	}
 
 	/**
@@ -487,7 +501,7 @@ class FOFModel extends JObject
 	 */
 	public static function addTablePath($path)
 	{
-		JTable::addIncludePath($path);
+		FOFTable::addIncludePath($path);
 	}
 
 	/**
@@ -514,11 +528,11 @@ class FOFModel extends JObject
 		return $filename;
 	}
 
-	/**
-	 * Public class constructor
-	 *
-	 * @param array $config The configuration array
-	 */
+    /**
+     * Public class constructor
+     *
+     * @param array $config The configuration array
+     */
 	public function __construct($config = array())
 	{
 		// Make sure $config is an array
@@ -992,6 +1006,31 @@ class FOFModel extends JObject
 	}
 
 	/**
+	 * Set the internal input field
+	 *
+	 * @param $input
+	 *
+	 * @return FOFModel
+	 */
+	public function setInput($input)
+	{
+		if (!($input instanceof FOFInput))
+		{
+			if (!is_array($input))
+			{
+				$input = (array) $input;
+			}
+
+			$input = array_merge($_REQUEST, $input);
+			$input = new FOFInput($input);
+		}
+
+		$this->input = $input;
+
+		return $this;
+	}
+
+	/**
 	 * Resets the saved state for this view
 	 *
 	 * @return  FOFModel
@@ -1172,6 +1211,48 @@ class FOFModel extends JObject
 			$allData = $data;
 		}
 
+		// Get the form if there is any
+		$form = $this->getForm($allData, false);
+
+		if ($form instanceof FOFForm)
+		{
+			// Make sure that $allData has for any field a key
+			$fieldset = $form->getFieldset();
+
+			foreach ($fieldset as $nfield => $fldset)
+			{
+				if (!array_key_exists($nfield, $allData))
+				{
+					$field = $form->getField($fldset->fieldname, $fldset->group);
+					$type  = strtolower($field->type);
+
+					switch ($type)
+					{
+						case 'checkbox':
+							$allData[$nfield] = 0;
+							break;
+
+						default:
+							$allData[$nfield] = '';
+							break;
+					}
+				}
+			}
+
+			$serverside_validate = strtolower($form->getAttribute('serverside_validate'));
+
+			$validateResult = true;
+			if (in_array($serverside_validate, array('true', 'yes', '1', 'on')))
+			{
+				$validateResult = $this->validateForm($form, $allData);
+			}
+
+			if ($validateResult === false)
+			{
+				return false;
+			}
+		}
+
 		if (!$this->onBeforeSave($allData, $table))
 		{
 			return false;
@@ -1203,6 +1284,9 @@ class FOFModel extends JObject
 					$session = JFactory::getSession();
 					$tableprops = $table->getProperties(true);
 					unset($tableprops['input']);
+					unset($tableprops['config']['input']);
+					unset($tableprops['config']['db']);
+					unset($tableprops['config']['dbo']);
 					$hash = $this->getHash() . 'savedata';
 					$session->set($hash, serialize($tableprops));
 				}
@@ -1662,7 +1746,7 @@ class FOFModel extends JObject
 	 * @param   string   $type          Filter for the variable, for valid values see {@link JFilterInput::clean()}. Optional.
 	 * @param   boolean  $setUserState  Should I save the variable in the user state? Default: true. Optional.
 	 *
-	 * @return  The request user state.
+	 * @return  string   The request user state.
 	 */
 	protected function getUserStateFromRequest($key, $request, $default = null, $type = 'none', $setUserState = true)
 	{
@@ -1689,15 +1773,17 @@ class FOFModel extends JObject
 		return $result;
 	}
 
-	/**
-	 * Method to get a table object, load it if necessary.
-	 *
-	 * @param   string  $name     The table name. Optional.
-	 * @param   string  $prefix   The class prefix. Optional.
-	 * @param   array   $options  Configuration array for model. Optional.
-	 *
-	 * @return  FOFTable  A FOFTable object
-	 */
+    /**
+     * Method to get a table object, load it if necessary.
+     *
+     * @param   string  $name The table name. Optional.
+     * @param   string  $prefix The class prefix. Optional.
+     * @param   array   $options Configuration array for model. Optional.
+     *
+     * @throws Exception
+     *
+     * @return  FOFTable  A FOFTable object
+     */
 	public function getTable($name = '', $prefix = null, $options = array())
 	{
 		if (empty($name))
@@ -1816,7 +1902,9 @@ class FOFModel extends JObject
 			$alias = '';
 		}
 
-		$query->select('*')->from($db->qn($tableName) . $alias);
+		$select = $this->getTableAlias() ? $db->qn($this->getTableAlias()) . '.*' : $db->qn($tableName) . '.*';
+
+		$query->select($select)->from($db->qn($tableName) . $alias);
 
 		if (!$overrideLimits)
 		{
@@ -2046,25 +2134,32 @@ class FOFModel extends JObject
 			'load_data'	 => $loadData,
 		);
 
+		$this->onBeforeLoadForm($name, $source, $options);
+
 		$form = $this->loadForm($name, $source, $options);
+
+		if ($form instanceof FOFForm)
+		{
+			$this->onAfterLoadForm($form, $name, $source, $options);
+		}
 
 		return $form;
 	}
 
-	/**
-	 * Method to get a form object.
-	 *
-	 * @param   string   $name     The name of the form.
-	 * @param   string   $source   The form source. Can be XML string if file flag is set to false.
-	 * @param   array    $options  Optional array of options for the form creation.
-	 * @param   boolean  $clear    Optional argument to force load a new form.
-	 * @param   string   $xpath    An optional xpath to search for the fields.
-	 *
-	 * @return  mixed  FOFForm object on success, False on error.
-	 *
-	 * @see     FOFForm
-	 * @since   2.0
-	 */
+    /**
+     * Method to get a form object.
+     *
+     * @param   string          $name The name of the form.
+     * @param   string          $source The form source. Can be XML string if file flag is set to false.
+     * @param   array           $options Optional array of options for the form creation.
+     * @param   boolean         $clear Optional argument to force load a new form.
+     * @param   bool|string     $xpath An optional xpath to search for the fields.
+     *
+     * @return  mixed  FOFForm object on success, False on error.
+     *
+     * @see     FOFForm
+     * @since   2.0
+     */
 	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
 	{
 		// Handle the optional arguments.
@@ -2127,9 +2222,15 @@ class FOFModel extends JObject
 				$data = array();
 			}
 
+			// Allows data and form manipulation before preprocessing the form
+			$this->onBeforePreprocessForm($form, $data);
+
 			// Allow for additional modification of the form, and events to be triggered.
 			// We pass the data because plugins may require it.
 			$this->preprocessForm($form, $data);
+
+			// Allows data and form manipulation After preprocessing the form
+			$this->onAfterPreprocessForm($form, $data);
 
 			// Load the data into the form after the plugins have operated.
 			$form->bind($data);
@@ -2253,7 +2354,7 @@ class FOFModel extends JObject
 	 * Method to allow derived classes to preprocess the form.
 	 *
 	 * @param   FOFForm  $form   A FOFForm object.
-	 * @param   mixed    $data   The data expected for the form.
+	 * @param   mixed    &$data  The data expected for the form.
 	 * @param   string   $group  The name of the plugin group to import (defaults to "content").
 	 *
 	 * @return  void
@@ -2262,7 +2363,7 @@ class FOFModel extends JObject
 	 * @since   2.0
 	 * @throws  Exception if there is an error in the form event.
 	 */
-	protected function preprocessForm(FOFForm $form, $data, $group = 'content')
+	protected function preprocessForm(FOFForm $form, &$data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
 		JLoader::import('joomla.plugin.helper');
@@ -2318,13 +2419,71 @@ class FOFModel extends JObject
 			// Get the validation messages from the form.
 			foreach ($form->getErrors() as $message)
 			{
-				$this->setError($message);
+				if ($message instanceof Exception)
+				{
+					$this->setError($message->getMessage());
+				}
+				else
+				{
+					$this->setError($message);
+				}
 			}
 
 			return false;
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Allows the manipulation before the form is loaded
+	 *
+	 * @param   string  &$name     The name of the form.
+	 * @param   string  &$source   The form source. Can be XML string if file flag is set to false.
+	 * @param   array   &$options  Optional array of options for the form creation.
+	 *
+	 * @return  void
+	 */
+	public function onBeforeLoadForm(&$name, &$source, &$options)
+	{
+	}
+
+	/**
+	 * Allows the manipulation after the form is loaded
+	 *
+	 * @param   FOFForm  $form      A FOFForm object.
+	 * @param   string   &$name     The name of the form.
+	 * @param   string   &$source   The form source. Can be XML string if file flag is set to false.
+	 * @param   array    &$options  Optional array of options for the form creation.
+	 *
+	 * @return  void
+	 */
+	public function onAfterLoadForm(FOFForm $form, &$name, &$source, &$options)
+	{
+	}
+
+	/**
+	 * Allows data and form manipulation before preprocessing the form
+	 *
+	 * @param   FOFForm  $form    A FOFForm object.
+	 * @param   array    &$data   The data expected for the form.
+	 *
+	 * @return  void
+	 */
+	public function onBeforePreprocessForm(FOFForm $form, &$data)
+	{
+	}
+
+	/**
+	 * Allows data and form manipulation after preprocessing the form
+	 *
+	 * @param   FOFForm  $form    A FOFForm object.
+	 * @param   array    &$data   The data expected for the form.
+	 *
+	 * @return  void
+	 */
+	public function onAfterPreprocessForm(FOFForm $form, &$data)
+	{
 	}
 
 	/**

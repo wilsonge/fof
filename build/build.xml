@@ -50,10 +50,8 @@
 	</target>
 	
 	<target name="setup-properties" description="Set up version and build properties">
-		<!-- Initialize the build.date timestamp -->
-		<tstamp>
-			<format property="build.date" pattern="%Y-%m-%d" />
-		</tstamp>
+		<!-- Initialize the git.date timestamp -->
+		<gitdate workingcopy="${dirs.root}" format="Y-m-d H:i:s" propertyname="git.date" />
 
 		<!-- Initialize the version if it's not set -->
 		<if>
@@ -80,7 +78,7 @@
 		<copy file="./templates/lib_fof.xml" tofile="${dirs.root}/lib_fof.xml" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -91,7 +89,7 @@
 		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -100,7 +98,7 @@
 		<copy file="./templates/version.txt" tofile="${dirs.strapper}/version.txt" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -110,7 +108,7 @@
 		<copy file="./templates/include.php" tofile="${dirs.library}/include.php" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 				</replacetokens>
 			</filterchain>
@@ -144,7 +142,7 @@
 	
 	<target name="doc-pdf" description="Documentation in PDF format">
 		<exec command="xsltproc --nonet --xinclude --novalid --stringparam img.src.path ${dirs.documentation}/ --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/fof-guide.fo ${dirs.bin.dbxsl}/fo/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
-		<exec command="fop -fo ${dirs.bin.release}/fof-guide.fo -pdf ${dirs.bin.release}/fof-guide.pdf" logoutput="true" />
+		<exec command="${dirs.bin.fop}/fop -fo ${dirs.bin.release}/fof-guide.fo -pdf ${dirs.bin.release}/fof-guide.pdf" logoutput="true" />
 		<delete file="${dirs.release}/fof-guide.fo" quiet="yes" />
 	</target>
 	
@@ -196,7 +194,7 @@
 		<copy file="./templates/release.json" tofile="${dirs.root}/release.json" overwrite="true">
 			<filterchain id="standard-tokens">
 				<replacetokens begintoken="##" endtoken="##">
-					<token key="DATE" value="${build.date}" />
+					<token key="DATE" value="${git.date}" />
 					<token key="VERSION" value="${version}" />
 					<token key="RELEASEDIR" value="${phing.dir}/${dirs.release}" />
 					<token key="REPODIR" value="${phing.dir}/${dirs.root}" />
