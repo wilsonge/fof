@@ -1,2 +1,2 @@
 #!/bin/sh
-phpunit -c configuration.xml "$@" .
+php `which phpunit` -c configuration.xml "$@" .
