@@ -86,6 +86,7 @@ $importer->importdb();
 
 // Register the FOF test classes.
 JLoader::registerPrefix('Ftest', JPATH_TESTS . '/unit/core');
+JLoader::import('joomla.filesystem.path');
 
 // Load FOF's autoloader
 jimport('joomla.application.input');
