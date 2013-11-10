@@ -11,10 +11,11 @@
 $fofTestConfig = array(
 	'2.5' => realpath(__DIR__.'/environments/2.5'),
 	'3.1' => realpath(__DIR__.'/environments/3.1'),
-	'dbparams' => array(
+	'3.2' => realpath(__DIR__.'/environments/3.2'),
+	/*'dbparams' => array(
 		'host'  => '127.0.0.1',
 		'user'  => 'travis',
 		'pwd'   => '',
 		'db'    => 'fof_test'
-	)
+	)*/
 );
