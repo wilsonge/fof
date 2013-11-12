@@ -1,6 +1,7 @@
 <?php
 /**
  * @package    FrameworkOnFramework
+ * @subpackage controller
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -13,7 +14,7 @@ defined('_JEXEC') or die;
  * paradigm, where the controller is mainly used to set up the model state and
  * spawn the view.
  *
- * @package  FrameworkOnFramework.Controller
+ * @package  FrameworkOnFramework
  * @since    1.0
  */
 class FOFController extends JObject

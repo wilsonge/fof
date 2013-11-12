@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  table
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -2389,14 +2390,7 @@ class FOFTable extends JObject implements JTableInterface
 	 */
 	protected function isQuoted(&$column)
 	{
-		// Under Joomla 3.2 I can safely quote the column again, then return true
-		if(FOFPlatform::getInstance()->checkVersion(JVERSION, '3.2', 'ge'))
-		{
-			$column = JFactory::getDbo()->qn($column);
-			return true;
-		}
-
-		// On previous version I need some "magic". If the first char is not a letter, a number
+		// I need some "magic". If the first char is not a letter, a number
 		// an underscore or # (needed for table), then most likely the field is quoted
 		preg_match_all('/^[a-z0-9_#]/i', $column, $matches);
 

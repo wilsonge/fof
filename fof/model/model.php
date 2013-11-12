@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  model
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -900,12 +901,20 @@ class FOFModel extends JObject
 	/**
 	 * Sets the ID and resets internal data
 	 *
-	 * @param   integer  $id  The ID to use
+	 * @param   integer $id The ID to use
+	 *
+	 * @throws InvalidArgumentException
 	 *
 	 * @return FOFModel
 	 */
 	public function setId($id = 0)
 	{
+		// No stirng or no integer? What are you trying to do???
+		if (!is_string($id) && !is_integer($id))
+		{
+			throw new InvalidArgumentException(sprintf('%s::ssetId()', get_class($this)));
+		}
+
 		$this->reset();
 		$this->id = (int) $id;
 		$this->id_list = array($this->id);

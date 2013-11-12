@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  dispatcher
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -14,7 +15,7 @@ defined('_JEXEC') or die;
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  *
- * @package  FrameworkOnFramework.Dispatcher
+ * @package  FrameworkOnFramework
  * @since    1.0
  */
 class FOFDispatcher extends JObject

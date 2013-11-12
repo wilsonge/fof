@@ -1,10 +1,15 @@
 FOF 2.1.0
 ================================================================================
++ Added required option to FOFFormFieldCheckbox
 ~ Typos in some LESS compiler files, stating version 0.3.8 instead of 0.3.9
 ~ gh-192 Show which form file could not be loaded in the FOFForm::getInstance error message.
 # gh-188 Typo in FOFController::_csrfProtection()
 # gh-189 Fixed Akeeba Strapper layout under Joomla! 2.5
+# gh-196 FOFModelFieldText constructor would not pass the $table_alias to the parent class
 # Unable to add component-specific behaviours to models (regression)
+# gh-203 Unable to create a new entity with behaviour "private" (frontend)
+# gh-199 J3.2 Fixed form validation Javascript error
+# Fix FOFFormFieldCheckbox (undefined $disabled and $onclick)
 
 FOF 2.1.rc4
 ================================================================================
