@@ -674,6 +674,29 @@ class FOFTable extends JObject implements JTableInterface
 	 */
 	public function addBehavior($name, $config = array())
 	{
+		// First look for ComponentnameTableViewnameBehaviorName (e.g. FoobarTableItemsBehaviorTags)
+		$option_name = str_replace('com_', '', $this->name);
+		$behaviorClass = ucfirst($option_name) . 'Table' . FOFInflector::pluralize($this->name) . 'Behavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass))
+		{
+			$behavior = new $behaviorClass($this->tableDispatcher, $config);
+
+			return true;
+		}
+
+		// Then look for ComponentnameTableBehaviorName (e.g. FoobarTableBehaviorTags)
+		$option_name = str_replace('com_', '', $this->name);
+		$behaviorClass = ucfirst($option_name) . 'TableBehavior' . ucfirst(strtolower($name));
+
+		if (class_exists($behaviorClass))
+		{
+			$behavior = new $behaviorClass($this->tableDispatcher, $config);
+
+			return true;
+		}
+
+		// Nothing found? Return false.
 
 		$behaviorClass = 'FOFTableBehavior' . ucfirst(strtolower($name));
 
