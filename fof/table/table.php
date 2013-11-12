@@ -680,25 +680,28 @@ class FOFTable extends JObject implements JTableInterface
 	public function addBehavior($name, $config = array())
 	{
 		// First look for ComponentnameTableViewnameBehaviorName (e.g. FoobarTableItemsBehaviorTags)
-		$option_name = str_replace('com_', '', $this->config['option']);
-		$behaviorClass = $this->config['_table_class'] . 'Behavior' . ucfirst(strtolower($name));
-
-		if (class_exists($behaviorClass))
+		if (isset($this->config['option']))
 		{
-			$behavior = new $behaviorClass($this->tableDispatcher, $config);
+			$option_name = str_replace('com_', '', $this->config['option']);
+			$behaviorClass = $this->config['_table_class'] . 'Behavior' . ucfirst(strtolower($name));
 
-			return true;
-		}
+			if (class_exists($behaviorClass))
+			{
+				$behavior = new $behaviorClass($this->tableDispatcher, $config);
 
-		// Then look for ComponentnameTableBehaviorName (e.g. FoobarTableBehaviorTags)
-		$option_name = str_replace('com_', '', $this->config['option']);
-		$behaviorClass = ucfirst($option_name) . 'TableBehavior' . ucfirst(strtolower($name));
+				return true;
+			}
 
-		if (class_exists($behaviorClass))
-		{
-			$behavior = new $behaviorClass($this->tableDispatcher, $config);
+			// Then look for ComponentnameTableBehaviorName (e.g. FoobarTableBehaviorTags)
+			$option_name = str_replace('com_', '', $this->config['option']);
+			$behaviorClass = ucfirst($option_name) . 'TableBehavior' . ucfirst(strtolower($name));
 
-			return true;
+			if (class_exists($behaviorClass))
+			{
+				$behavior = new $behaviorClass($this->tableDispatcher, $config);
+
+				return true;
+			}
 		}
 
 		// Nothing found? Return false.
