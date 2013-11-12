@@ -1308,13 +1308,13 @@ function postflight($type, $parent)
         <section>
           <title>Adding an Existing Behavior to a Model</title>
 
-          <para>There are 4 ways to add a behavior to a model: </para>
+          <para>There are 4 ways to add a behavior to a model:</para>
 
           <para>1. Using the <property>default_behaviors</property> property
           of the model. This property is an array of behavior names to load
           upon the model construction. By default it contains only the filters
           behavior. You can override it with your preferred behavior in your
-          model class declaration: </para>
+          model class declaration:</para>
 
           <programlisting>class FoobarModelTodos extends FOFmodel {
 
@@ -1377,40 +1377,40 @@ function postflight($type, $parent)
 
           <para>You can create custom behaviors for your component. It's very
           important how you name it, because FOF will search for your
-          behaviors based on their name. </para>
+          behaviors based on their name.</para>
 
           <para>If you want to add a foobar behavior, FOF will search for it
-          in the following order: </para>
+          in the following order:</para>
 
           <orderedlist>
             <listitem>
               <para>First look for ComponentnameModelViewnameBehaviorName (ie:
-              FoobarModelTodosFoobar) </para>
+              FoobarModelTodosFoobar)</para>
             </listitem>
 
             <listitem>
               <para>Then look for ComponentnameModelBehaviorName (ie:
-              FoobarModelFoobar) </para>
+              FoobarModelFoobar)</para>
             </listitem>
 
             <listitem>
-              <para>Then look for FOFModelBehaviorFoobar </para>
+              <para>Then look for FOFModelBehaviorFoobar</para>
             </listitem>
           </orderedlist>
 
           <para>This allows you to create model specific behaviors and also
-          component-wide ones. </para>
+          component-wide ones.</para>
 
           <para>It's also possible to override already existing behaviors, by
           naming them correctly (ie: you can override the enabled behavior by
-          creating a new class called FoobarModelBehaviorEnabled). </para>
+          creating a new class called FoobarModelBehaviorEnabled).</para>
         </section>
 
         <section>
           <title>Available Events for Model Behaviors</title>
 
           <para>In each model behavior you can inject into the workflow using
-          these methods: </para>
+          these methods:</para>
 
           <programlisting>/**
  * This event runs before saving data in the model
@@ -1611,7 +1611,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
 
           <para>Let's create a behavior for our component called Published,
           that will filter the items based on the publish_up and pulish_down
-          fields of a table. </para>
+          fields of a table.</para>
 
           <programlisting>class FOFModelBehaviorPublished extends FOFModelBehavior
 {
@@ -2227,6 +2227,400 @@ class FoobarTableFoo extends FOFTable
       as it allows end users and site integrators (of a power user level,
       granted) to modify or extend the behaviour of FOF-powered extensions
       with great ease.</para>
+
+      <section>
+        <title>Table Behaviors</title>
+
+        <section>
+          <title>Introduction</title>
+
+          <para>Table Behaviors are an handy way to alter the workflow of a
+          FOFTable. It's based upon the standard Joomla Event system.</para>
+
+          <para>Before and After certain actions, the table triggers an
+          "event" which is propagated to each of the registered behaviors for
+          that table. They can then, by registering to these events, alter the
+          way the action itself is performed.</para>
+
+          <para>It's possible to register different behaviors per table; they
+          can be added by default, or even on the fly, after the table is
+          created.</para>
+
+          <para>FOF already provides a list of common behaviors, that can be
+          used by any FOFTable object.</para>
+        </section>
+
+        <section>
+          <title>FOF Standard Behaviors</title>
+
+          <variablelist>
+            <varlistentry>
+              <term>assets </term>
+
+              <listitem>
+                <para>This behavior (added by default by FOF) manages the
+                assets for a resource if the asset_id field (or an alias for
+                it) is set for the table</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>tags</term>
+
+              <listitem>
+                <para>This behavior (added by default by FOF) deals with tags
+                related to the current resource. It will be applied only if
+                the hasTags property is set to true.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+
+        <section>
+          <title>Add an existing Behavior to a Table</title>
+
+          <para>There are 4 ways to add a behavior to a table:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Using the <property>default_behaviors</property> property
+              of the table. This property is an array of behavior names to
+              load upon the table construction. By default it contains the
+              tags and the assets behaviors. You can override it with your
+              preferred behavior in your table class declaration:</para>
+
+              <programlisting>class FoobarTableTodo extends FOFtable {
+
+    ....
+
+    protected $default_behaviors = array('tags');
+
+    ....
+
+}</programlisting>
+            </listitem>
+
+            <listitem>
+              <para>Passing it into the <parameter>$config</parameter>
+              parameter for the constructor of your table
+              class:<programlisting>class FoobarTableTodo extends FOFtable {
+
+    ....
+
+    public function __construct($config = array()) {
+        if (!isset($config['behaviors'])) {
+            $config['behaviors'] = array('tags');
+        }
+
+        parent::__construct($config);
+    }
+
+    ....
+
+}</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para>Passing it when you create the table instance through the
+              <parameter>config</parameter> parameter:</para>
+
+              <programlisting>$model = FOFTable::getTmpInstance('Todo', 'FoobarTable', array('behaviors' =&gt; array('tags')));</programlisting>
+            </listitem>
+
+            <listitem>
+              <para>Adding it dynamically using the method
+              <methodname>addBehavior</methodname>:</para>
+
+              <programlisting>class FoobarTableTodo extends FOFtable {
+....
+
+    public function __construct($config = array()) {
+        parent::__construct($config);
+
+        if ($iWantToAddIt) {
+            $this-&gt;addBehavior('tags');
+        }
+    }
+
+    ....
+}</programlisting>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Creating a new Behavior</title>
+
+          <para>You can create custom behaviors for your component. It's very
+          important how you name it, because FOF will search for your
+          behaviors based on their name. </para>
+
+          <para>If you want to add a <replaceable>foobar</replaceable>
+          behavior, FOF will search for it in the following order:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>First look for ComponentnameTableViewnameBehaviorName (ie:
+              FoobarTableTodosFoobar) </para>
+            </listitem>
+
+            <listitem>
+              <para>Then look for ComponentnameTableBehaviorName (ie:
+              FoobarTableFoobar) </para>
+            </listitem>
+
+            <listitem>
+              <para>Then look for FOFTableBehaviorFoobar </para>
+            </listitem>
+          </itemizedlist>
+
+          <para>This allows you to create table specific behaviors and also
+          component-wide ones. </para>
+
+          <para>It's also possible to override already existing behaviors, by
+          naming them correctly (ie: you can override the <code>tags</code>
+          behavior by creating a new class called FoobarTableehaviorTags).
+          </para>
+        </section>
+
+        <section>
+          <title>Available Events for Table Behaviors</title>
+
+          <para>In each table behavior you can inject into the workflow using
+          these methods: </para>
+
+          <programlisting>/**
+ * This event runs before binding data to the table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   array     &amp;$data   The data to bind
+ *
+ * @return  boolean  True on success
+ */
+public function onBeforeBind(&amp;$table, &amp;$data)
+{
+    return true;
+}
+
+/**
+ * The event which runs after binding data to the table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   object|array  &amp;$src  The data to bind
+ *
+ * @return  boolean  True on success
+ */
+public function onAfterBind(&amp;$table, &amp;$src)
+{
+    return true;
+}
+
+/**
+ * The event which runs after loading a record from the database
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   boolean  &amp;$result  Did the load succeeded?
+ *
+ * @return  void
+ */
+public function onAfterLoad(&amp;$table, &amp;$result)
+{
+
+}
+
+/**
+ * The event which runs before storing (saving) data to the database
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
+ *
+ * @return  boolean  True to allow saving
+ */
+public function onBeforeStore(&amp;$table, $updateNulls)
+{
+    return true;
+}
+
+/**
+ * The event which runs after storing (saving) data to the database
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow saving without an error
+ */
+public function onAfterStore(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The event which runs before moving a record
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
+ *
+ * @return  boolean  True to allow moving
+ */
+public function onBeforeMove(&amp;$table, $updateNulls) 
+{
+    return true;
+}
+
+/**
+ * The event which runs after moving a record
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow moving without an error
+ */
+public function onAfterMove(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The event which runs before reordering a table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   string  $where  The WHERE clause of the SQL query to run on reordering (record filter)
+ *
+ * @return  boolean  True to allow reordering
+ */
+public function onBeforeReorder(&amp;$table, $where = '')
+{
+    return true;
+}
+
+/**
+ * The event which runs after reordering a table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow the reordering to complete without an error
+ */
+public function onAfterReorder(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The event which runs before deleting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record to delete
+ *
+ * @return  boolean  True to allow the deletion
+ */
+public function onBeforeDelete(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The event which runs after deleting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record which was deleted
+ *
+ * @return  boolean  True to allow the deletion without errors
+ */
+public function onAfterDelete(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The event which runs before hitting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record to hit
+ * @param   boolean  $log  Should we log the hit?
+ *
+ * @return  boolean  True to allow the hit
+ */
+public function onBeforeHit(&amp;$table, $oid, $log)
+{
+    return true;
+}
+
+/**
+ * The event which runs after hitting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record which was hit
+ *
+ * @return  boolean  True to allow the hitting without errors
+ */
+public function onAfterHit(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The even which runs before copying a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record being copied
+ *
+ * @return  boolean  True to allow the copy to take place
+ */
+public function onBeforeCopy(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The even which runs after copying a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record which was copied (not the new one)
+ *
+ * @return  boolean  True to allow the copy without errors
+ */
+public function onAfterCopy(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The event which runs before a record is (un)published
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer|array  &amp;$cid     The PK IDs of the records being (un)published
+ * @param   integer        $publish  1 to publish, 0 to unpublish
+ *
+ * @return  boolean  True to allow the (un)publish to proceed
+ */
+public function onBeforePublish(&amp;$table, &amp;$cid, $publish)
+{
+    return true;
+}
+
+/**
+ * The event which runs after the object is reset to its default values.
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow the reset to complete without errors
+ */
+public function onAfterReset(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The even which runs before the object is reset to its default values.
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow the reset to complete
+ */
+public function onBeforeReset(&amp;$table)
+{
+    return true;
+}</programlisting>
+        </section>
+      </section>
     </section>
 
     <section xml:id="fofcontroller">
