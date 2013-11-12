@@ -304,6 +304,9 @@ class FOFTable extends JObject implements JTableInterface
 		$type       = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
 		$tableClass = $prefix . ucfirst($type);
 
+		$config['_table_type'] = $type;
+		$config['_table_class'] = $tableClass;
+
 		$configProvider = new FOFConfigProvider;
 		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
 
@@ -594,6 +597,8 @@ class FOFTable extends JObject implements JTableInterface
 		{
 			$this->$access_field = (int) JFactory::getConfig()->get('access');
 		}
+
+		$this->config = $config;
 	}
 
 	/**
@@ -675,8 +680,8 @@ class FOFTable extends JObject implements JTableInterface
 	public function addBehavior($name, $config = array())
 	{
 		// First look for ComponentnameTableViewnameBehaviorName (e.g. FoobarTableItemsBehaviorTags)
-		$option_name = str_replace('com_', '', $this->name);
-		$behaviorClass = ucfirst($option_name) . 'Table' . FOFInflector::pluralize($this->name) . 'Behavior' . ucfirst(strtolower($name));
+		$option_name = str_replace('com_', '', $this->config['option']);
+		$behaviorClass = $this->config['_table_class'] . 'Behavior' . ucfirst(strtolower($name));
 
 		if (class_exists($behaviorClass))
 		{
@@ -686,7 +691,7 @@ class FOFTable extends JObject implements JTableInterface
 		}
 
 		// Then look for ComponentnameTableBehaviorName (e.g. FoobarTableBehaviorTags)
-		$option_name = str_replace('com_', '', $this->name);
+		$option_name = str_replace('com_', '', $this->config['option']);
 		$behaviorClass = ucfirst($option_name) . 'TableBehavior' . ucfirst(strtolower($name));
 
 		if (class_exists($behaviorClass))
