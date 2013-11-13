@@ -26,7 +26,7 @@ abstract class FOFQueryAbstract
 	 */
 	public static function &getNew($db = null)
 	{
-		JLog::add('FOFQueryAbstract is deprecated. Use JDatabaseQuery instead.', JLog::WARNING, 'deprecated');
+		FOFPlatform::getInstance()->logDeprecated('FOFQueryAbstract is deprecated. Use JDatabaseQuery instead.');
 
 		if (is_null($db))
 		{

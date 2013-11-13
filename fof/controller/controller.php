@@ -833,7 +833,7 @@ class FOFController extends JObject
 	 */
 	public function authorise($task)
 	{
-		JLog::add(__METHOD__ . ' is deprecated. Use checkACL() instead.', JLog::WARNING, 'deprecated');
+		FOFPlatform::getInstance()->logDeprecated(__CLASS__ . '::' .__METHOD__ . ' is deprecated. Use checkACL() instead.');
 
 		return true;
 	}
@@ -2489,7 +2489,7 @@ class FOFController extends JObject
 	 */
 	protected function &_createModel($name, $prefix = '', $config = array())
 	{
-		JLog::add(__METHOD__ . ' is deprecated. Use createModel() instead.', JLog::WARNING, 'deprecated');
+		FOFPlatform::getInstance()->logDeprecated(__CLASS__ . '::' .__METHOD__ . ' is deprecated. Use createModel() instead.');
 
 		return $this->createModel($name, $prefix, $config);
 	}
@@ -2719,7 +2719,7 @@ class FOFController extends JObject
 	 */
 	protected function &_createView($name, $prefix = '', $type = '', $config = array())
 	{
-		JLog::add(__METHOD__ . ' is deprecated. Use createView() instead.', JLog::WARNING, 'deprecated');
+		FOFPlatform::getInstance()->logDeprecated(__CLASS__ . '::' . __METHOD__ . ' is deprecated. Use createView() instead.');
 
 		return $this->createView($name, $prefix, $type, $config);
 	}

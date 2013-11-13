@@ -912,7 +912,7 @@ class FOFModel extends JObject
 		// If this is an array extract the first item
 		if (is_array($id))
 		{
-			JLog::add('Passing arrays to FOFModel::setId is deprecated. Use setIds() instead.', JLog::WARNING, 'deprecated');
+			FOFPlatform::getInstance()->logDeprecated('Passing arrays to FOFModel::setId is deprecated. Use setIds() instead.');
 			$id = array_shift($id);
 		}
 

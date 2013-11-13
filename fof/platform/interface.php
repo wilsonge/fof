@@ -321,4 +321,13 @@ interface FOFPlatformInterface
 	 */
 	public function logoutUser();
 
+	/**
+	 * Logs a deprecated practice. In Joomla! this results in the $message being output in the
+	 * deprecated log file, found in your site's log directory.
+	 *
+	 * @param   $message  The deprecated practice log message
+	 *
+	 * @return  void
+	 */
+	public function logDeprecated($message);
 }

@@ -5,6 +5,7 @@ FOF 2.1.0
 ~ Typos in some LESS compiler files, stating version 0.3.8 instead of 0.3.9
 ~ gh-192 Show which form file could not be loaded in the FOFForm::getInstance error message.
 ~ Passing arrays to FOFModel::setId() is deprecated. Use the setIds() method instead.
+~ Deprecated messages are now logged using a platform class, for better platform abstraction and forward compatibility
 # gh-188 Typo in FOFController::_csrfProtection()
 # gh-189 Fixed Akeeba Strapper layout under Joomla! 2.5
 # gh-196 FOFModelFieldText constructor would not pass the $table_alias to the parent class
