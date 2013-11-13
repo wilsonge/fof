@@ -909,10 +909,17 @@ class FOFModel extends JObject
 	 */
 	public function setId($id = 0)
 	{
-		// No stirng or no integer? What are you trying to do???
-		if (!is_string($id) && !is_integer($id))
+		// If this is an array extract the first item
+		if (is_array($id))
 		{
-			throw new InvalidArgumentException(sprintf('%s::ssetId()', get_class($this)));
+			JLog::add('Passing arrays to FOFModel::setId is deprecated. Use setIds() instead.', JLog::WARNING, 'deprecated');
+			$id = array_shift($id);
+		}
+
+		// No string or no integer? What are you trying to do???
+		if (!is_string($id) && !is_numeric($id))
+		{
+			throw new InvalidArgumentException(sprintf('%s::setId()', get_class($this)));
 		}
 
 		$this->reset();
