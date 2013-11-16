@@ -1,13 +1,14 @@
 <?php
 /**
  * @package	    FrameworkOnFramework.UnitTest
- * @subpackage  Inflector
+ * @subpackage  Table
  *
  * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 require_once 'tableDataprovider.php';
+require_once JPATH_TESTS.'/unit/core/table/table.php';
 
 class FOFTableTest extends FtestCaseDatabase
 {
@@ -30,6 +31,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @covers              FOFTable::setKnownFields
+	 * @group               FOFTable
 	 * @preventDataLoading
 	 */
 	public function testSetKnownFields()
@@ -50,6 +52,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @covers              FOFTable::getKnownFields
+	 * @group               FOFTable
 	 * @preventDataLoading
 	 */
 	public function testGetKnownFields()
@@ -71,7 +74,8 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::addKnownFields
+	 * @covers              FOFTable::addKnownField
+	 * @group               FOFTable
 	 * @preventDataLoading
 	 */
 	public function testAddKnownField()
@@ -90,7 +94,8 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::removeKnownFields
+	 * @covers              FOFTable::removeKnownField
+	 * @group               FOFTable
 	 * @preventDataLoading
 	 */
 	public function testRemoveKnownField()
@@ -108,8 +113,9 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @group       tableLoad
-	 * @covers      FOFTable::load
+	 * @covers              FOFTable::load
+	 * @group               tableLoad
+	 * @group               FOFTable
 	 */
 	public function testLoad()
     {
@@ -144,14 +150,13 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
-	 * @group           tableLoadJoined
-	 * @covers          FOFTable::load
-	 * @dataProvider    getTestLoadJoined
+	 * @covers              FOFTable::load
+	 * @group               tableLoadJoined
+	 * @group               FOFTable
+	 * @dataProvider        getTestLoadJoined
 	 */
 	public function testLoadJoined($tableinfo, $test, $check)
 	{
-		require_once JPATH_TESTS.'/unit/core/table/table.php';
-
 		$db = JFactory::getDbo();
 
 		$table = new FtestTable($tableinfo['table'], $tableinfo['id'], $db, $tableinfo['config']);
@@ -167,6 +172,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tableCheck
+	 * @group               FOFTable
 	 * @covers              FOFTable::check
 	 * @preventDataLoading
 	 */
@@ -231,6 +237,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @covers              FOFTable::reset
+	 * @group               FOFTable
 	 */
 	public function testReset()
 	{
@@ -297,6 +304,7 @@ class FOFTableTest extends FtestCaseDatabase
     /**
      * @covers              FOFTable::bind
      * @dataProvider        getTestBind
+     * @group               FOFTable
      * @preventDataLoading
      */
     public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
@@ -323,6 +331,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @covers              FOFTable::bind
+	 * @group               FOFTable
 	 * @preventDataLoading
 	 */
 	public function testBindException()
@@ -336,6 +345,7 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableStore
+     * @group               FOFTable
      * @covers              FOFTable::store
      * @dataProvider        getTestStore
      */
@@ -414,6 +424,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
      * @group               tableMove
+	 * @group               FOFTable
      * @covers              FOFTable::move
      * @dataProvider        getTestMove
      */
@@ -460,6 +471,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tableMove
+	 * @group               FOFTable
 	 * @covers              FOFTable::move
 	 * @preventDataLoading
 	 */
@@ -474,6 +486,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
      * @group               tableReorder
+	 * @group               FOFTable
 	 * @covers              FOFTable::reorder
      * @dataProvider        getTestReorder
      */
@@ -528,6 +541,7 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableReorder
+     * @group               FOFTable
      * @covers              FOFTable::reorder
      * @preventDataLoading
      */
@@ -542,6 +556,7 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableCheckout
+     * @group               FOFTable
      * @covers              FOFTable::checkout
      * @dataProvider        getTestCheckout
      */
@@ -586,6 +601,7 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableCheckin
+     * @group               FOFTable
      * @covers              FOFTable::checkin
      * @dataProvider        getTestCheckin
      */
@@ -636,6 +652,7 @@ class FOFTableTest extends FtestCaseDatabase
      * that's surfing in our site writing directly into the session table
      *
      * @group               tableIsCheckedOut
+     * @group               FOFTable
      * @covers              FOFTable::isCheckedOut
      * @dataProvider        getTestIsCheckedOut
      */
@@ -656,6 +673,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @covers              FOFTable::isCheckedOut
+	 * @group               FOFTable
 	 * @preventDataLoading
 	 */
 	public function testIsCheckedOutExcpetion()
@@ -669,6 +687,7 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableCopy
+     * @group               FOFTable
      * @covers              FOFTable::copy
      * @dataProvider        getTestCopy
      */
@@ -784,6 +803,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tablePublish
+	 * @group               FOFTable
 	 * @covers              FOFTable::publish
 	 * @dataProvider        getTestPublish
 	 */
@@ -840,6 +860,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tableDelete
+	 * @group               FOFTable
 	 * @covers              FOFTable::delete
 	 * @dataProvider        getTestDelete
 	 */
@@ -893,6 +914,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @covers              FOFTable::delete
+	 * @group               FOFTable
 	 * @preventDataLoading
 	 */
 	public function testDeleteException()
@@ -933,6 +955,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @covers              FOFTable::getContentType
+	 * @group               FOFTable
 	 * @dataProvider        getTestGetContentType
 	 */
 	public function testGetContentType($option, $view, $expected, $message)

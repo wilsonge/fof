@@ -1,2 +1,2 @@
 #!/bin/sh
-phpunit --bootstrap=unit/bootstrap.php .
+php `which phpunit` -c configuration.xml "$@" .
