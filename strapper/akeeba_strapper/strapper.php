@@ -302,18 +302,33 @@ class AkeebaStrapper
     }
 
     /**
-     * Adds an arbitraty Javascript file.
+     * Adds an arbitrary Javascript file.
      *
-     * @param $path string The path to the file, in the format media://path/to/file
-     */
-    public static function addJSfile($path)
+     * @param $path string 	The path to the file, in the format media://path/to/file
+	 * @param $tag	string	The version tag. Uses AkeebaStrapper::$tag by default
+	 */
+    public static function addJSfile($path, $tag = null)
     {
 		if (self::isCli())
 		{
             return;
 		}
 
-        self::$scriptURLs[] = FOFTemplateUtils::parsePath($path);
+		if ($tag === null)
+		{
+			$tag = self::$tag;
+		}
+
+		if (empty($tag))
+		{
+			$tag = '';
+		}
+		else
+		{
+			$tag = '?' . ltrim($tag, '?');
+		}
+
+        self::$scriptURLs[] = FOFTemplateUtils::parsePath($path)  . $tag;
     }
 
     /**
@@ -332,7 +347,7 @@ class AkeebaStrapper
     }
 
     /**
-     * Adds an arbitraty CSS file.
+     * Adds an arbitrary CSS file.
      *
      * @param $path string 	The path to the file, in the format media://path/to/file
 	 * @param $tag	string	The version tag. Uses AkeebaStrapper::$tag by default
@@ -497,11 +512,11 @@ function AkeebaStrapperLoader()
             }
             if ($preload)
             {
-                $myscripts .= '<script type="text/javascript" src="' . $url . $tag . '"></script>' . "\n";
+                $myscripts .= '<script type="text/javascript" src="' . $url . '"></script>' . "\n";
             }
             else
             {
-                JFactory::getDocument()->addScript($url . $tag);
+                JFactory::getDocument()->addScript($url);
             }
         }
 
