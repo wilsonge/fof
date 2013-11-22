@@ -135,12 +135,12 @@ class AkeebaStrapper
 
         if ($jQueryLoad == 'full')
         {
-            self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajq.js');
-            self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akjqmigrate.js');
+            self::addJSfile('media://akeeba_strapper/js/akeebajq.js');
+            self::addJSfile('media://akeeba_strapper/js/akjqmigrate.js');
         }
         else
         {
-            self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/namespace.js');
+            self::addJSfile('media://akeeba_strapper/js/namespace.js');
         }
     }
 
@@ -185,9 +185,7 @@ class AkeebaStrapper
 
 		$theme = self::getPreference('jquery_theme', self::$jqUItheme);
 
-        $url = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajqui.js');
-
-		self::$scriptURLs[] = $url;
+		self::addJSfile('media://akeeba_strapper/js/akeebajqui.js');
 		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.css");
     }
 
@@ -263,7 +261,8 @@ class AkeebaStrapper
         if ($loadBootstrap == 'full')
         {
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
-            self::$scriptURLs[] = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js');
+            self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js');
+
 			if ($source == 'less')
 			{
 				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j25.less', $altCss);
