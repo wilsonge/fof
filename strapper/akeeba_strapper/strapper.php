@@ -335,16 +335,31 @@ class AkeebaStrapper
     /**
      * Adds an arbitraty CSS file.
      *
-     * @param $path string The path to the file, in the format media://path/to/file
+     * @param $path string 	The path to the file, in the format media://path/to/file
+	 * @param $tag	string	The version tag. Uses AkeebaStrapper::$tag by default
      */
-    public static function addCSSfile($path)
+    public static function addCSSfile($path, $tag = null)
     {
 		if (self::isCli())
 		{
             return;
 		}
 
-        self::$cssURLs[] = FOFTemplateUtils::parsePath($path);
+		if ($tag === null)
+		{
+			$tag = self::$tag;
+		}
+
+		if (empty($tag))
+		{
+			$tag = '';
+		}
+		else
+		{
+			$tag = '?' . ltrim($tag, '?');
+		}
+
+        self::$cssURLs[] = FOFTemplateUtils::parsePath($path) . $tag;
     }
 
     /**
@@ -578,11 +593,11 @@ function AkeebaStrapperLoader()
         {
 			if ($preload)
             {
-                $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
+                $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . '" />' . "\n";
             }
             else
             {
-                JFactory::getDocument()->addStyleSheet($url . $tag);
+                JFactory::getDocument()->addStyleSheet($url);
             }
         }
 
