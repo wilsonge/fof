@@ -956,10 +956,17 @@ class FOFModel extends JObject
 		{
 			foreach ($idlist as $value)
 			{
-				$this->id_list[] = (int) $value;
+                // Protect vs fatal error (objects) and wrong behavior (nested array)
+                if(!is_object($value) && !is_array($value))
+                {
+                    $this->id_list[] = (int) $value;
+                }
 			}
 
-			$this->id = $this->id_list[0];
+            if(count($this->id_list))
+            {
+                $this->id = $this->id_list[0];
+            }
 		}
 
 		return $this;

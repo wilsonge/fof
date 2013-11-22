@@ -28,6 +28,29 @@ class FOFModelTest extends FtestCaseDatabase
 		FOFPlatform::forceInstance(null);
 	}
 
+    /**
+     * @group               modelTestGetId
+     * @group               FOFModel
+     * @covers              FOFModel::getId
+     * @preventDataLoading
+     */
+    public function testGetId()
+    {
+        $config['option'] = 'com_foftest';
+
+        $model = new FOFModel($config);
+
+        // I prefer using the reflection class instead of the setter method, so I can be sure of what is going on
+        $reflect  = new ReflectionClass($model);
+        $property = $reflect->getProperty('id');
+        $property->setAccessible(true);
+        $property->setValue($model, 88);
+
+        $value = $model->getId();
+
+        $this->assertEquals(88, $value, 'FOFModel::getId Wrong set value');
+    }
+
 	/**
 	 * @group               modelTestSetId
 	 * @group               FOFModel
@@ -77,6 +100,81 @@ class FOFModelTest extends FtestCaseDatabase
 		$model = new FOFModel($config);
 		$model->setId($modelId);
 	}
+
+    /**
+     * @group               modelTestSetIds
+     * @group               FOFModel
+     * @covers              FOFModel::setIds
+     * @dataProvider        getTestSetIds
+     * @preventDataLoading
+     */
+    public function testSetIds($modelIds, $check)
+    {
+        $config['option'] = 'com_foftest';
+
+        $model = new FOFModel($config);
+        $rc = $model->setIds($modelIds);
+
+        $this->assertInstanceOf('FOFModel', $rc, 'FOFModel::setIds should return itself in order to support chaining');
+
+        $reflect  = new ReflectionClass($model);
+
+        $property = $reflect->getProperty('id');
+        $property->setAccessible(true);
+        $value    = $property->getValue($model);
+
+        $this->assertEquals($check['id'], $value, 'FOFModel::setIds Wrong value for "id" property');
+
+        $property = $reflect->getProperty('id_list');
+        $property->setAccessible(true);
+        $value    = $property->getValue($model);
+
+        $this->assertEquals($check['id_list'], $value, 'FOFModel::setIds Wrong value for "id_list" property');
+    }
+
+    /**
+     * @group               modelTestReset
+     * @group               FOFModel
+     * @covers              FOFModel::reset
+     * @preventDataLoading
+     */
+    public function testReset()
+    {
+        $config['option'] = 'com_foftest';
+
+        $model = new FOFModel($config);
+
+        $toBeInspected = array(
+            'id'         => array('expected' => 0),
+            'id_list'    => array('expected' => null),
+            'record'     => array('expected' => null),
+            'list'       => array('expected' => null),
+            'pagination' => array('expected' => null),
+            'total'      => array('expected' => null),
+            'otable'     => array('expected' => null)
+        );
+
+        $reflect  = new ReflectionClass($model);
+
+        foreach($toBeInspected as $property => &$info)
+        {
+            $t = $reflect->getProperty($property);
+            $t->setAccessible(true);
+
+            $t->setValue($model, 'dummy value');
+
+            $info['reflection'] = $t;
+        }
+
+        $model->reset();
+
+        foreach($toBeInspected as $property => &$info)
+        {
+            $value = $info['reflection']->getValue($model);
+
+            $this->assertEquals($info['expected'], $value, '');
+        }
+    }
 
 	/**
 	 * @group               modelIncludePath
@@ -138,4 +236,9 @@ class FOFModelTest extends FtestCaseDatabase
 	{
 		return ModelDataprovider::getTestSetIdException();
 	}
+
+    public function getTestSetIds()
+    {
+        return ModelDataprovider::getTestSetIds();
+    }
 }

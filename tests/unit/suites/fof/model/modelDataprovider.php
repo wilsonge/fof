@@ -31,4 +31,48 @@ abstract class ModelDataprovider
 
 		return $data;
 	}
+
+    public static function getTestSetIds()
+    {
+        // Correct behavior
+        $data[] = array(
+            array(1, '2'),
+            array('id' => 1, 'id_list' => array(1, 2))
+        );
+
+        // Wrong data
+        $data[] = array(
+            array(array(2, 2)),
+            array('id' => 0, 'id_list' => array())
+        );
+
+
+        $data[] = array(
+            array(),
+            array('id' => 0, 'id_list' => array())
+        );
+
+        // Wrong data
+        $data[] = array(
+            array(),
+            array('id' => 0, 'id_list' => array())
+        );
+
+        $data[] = array(
+            1,
+            array('id' => 0,'id_list' => array())
+        );
+
+        $data[] = array(
+            '1',
+            array('id' => 0,'id_list' => array())
+        );
+
+        $data[] = array(
+            new stdClass(),
+            array('id' => 0,'id_list' => array())
+        );
+
+        return $data;
+    }
 }
