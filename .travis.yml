@@ -4,7 +4,7 @@ php:
   - 5.3
 
 env:
-  - JVERSION_TEST=3.1
+  - JVERSION_TEST=3.2
 
 branches:
   only:
@@ -16,6 +16,7 @@ before_script:
   - mysql -e 'create database fof_test;'
   - if [[ "$JVERSION_TEST" == "2.5" ]]; then cp tests/environments/2.5/joomla.sql joomla.sql; fi
   - if [[ "$JVERSION_TEST" == "3.1" ]]; then cp tests/environments/3.1/joomla.sql joomla.sql; fi
+  - if [[ "$JVERSION_TEST" == "3.2" ]]; then cp tests/environments/3.2/joomla.sql joomla.sql; fi
   - mysql fof_test < joomla.sql
   - cp build/templates/include.php fof/include.php
 
