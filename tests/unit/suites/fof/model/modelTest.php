@@ -49,7 +49,16 @@ class FOFModelTest extends FtestCaseDatabase
 		$property->setAccessible(true);
 		$value    = $property->getValue($model);
 
-		$this->assertEquals($modelId, $value, 'FOFModel::setId Wrong set value');
+        if(is_array($modelId))
+        {
+            $expected = array_shift($modelId);
+        }
+        else
+        {
+            $expected = $modelId;
+        }
+
+		$this->assertEquals($expected, $value, 'FOFModel::setId Wrong set value');
 	}
 
 	/**
