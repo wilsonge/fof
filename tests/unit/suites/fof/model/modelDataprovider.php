@@ -75,4 +75,49 @@ abstract class ModelDataprovider
 
         return $data;
     }
+
+    public static function getTestGetItem()
+    {
+        // Load setting the model id
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('setid' => 2, 'id' => null),
+            array(),
+            array('title' => 'Second row')
+        );
+
+        // Load by passing an id
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('setid' => 0, 'id' => 2),
+            array(),
+            array('title' => 'Second row')
+        );
+
+        // No id at all
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('setid' => 0, 'id' => 0),
+            array(),
+            array('title' => null)
+        );
+
+        // No id at all, but data from the session (ie a record failed the validation)
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('setid' => 0, 'id' => 0),
+            serialize(array('title' => 'Title from session')),
+            array('title' => 'Title from session', 'foftest_foobar_id' => 0)
+        );
+
+        // Test vs data coming from session (record inside the db)
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('setid' => null, 'id' => 2),
+            serialize(array('foftest_foobar_id' => 2, 'title' => 'Title from session')),
+            array('title' => 'Title from session')
+        );
+
+        return $data;
+    }
 }

@@ -176,6 +176,41 @@ class FOFModelTest extends FtestCaseDatabase
         }
     }
 
+    /**
+     * @group               modelTestGetItem
+     * @group               FOFModel
+     * @covers              FOFModel::getItem
+     * @dataProvider        getTestGetItem
+     */
+    public function testGetItem($modelinfo, $test, $session, $checks)
+    {
+        $config['option'] = 'com_foftest';
+        $config['view']   = $modelinfo['name'];
+        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+
+        if($test['setid'])
+        {
+            $model->setId($test['setid']);
+        }
+
+        if($session)
+        {
+            $mockSession = $this->getMock('JSession', array('get'));
+            $mockSession->expects($this->any())->method('get')->will($this->returnValue($session));
+
+            JFactory::$session = $mockSession;
+        }
+
+        $result = $model->getItem($test['id']);
+
+        $this->assertInstanceOf('FOFTable', $result, 'FOFModel::getItem should return an instance of FOFTable');
+
+        foreach($checks as $property => $value)
+        {
+            $this->assertEquals($value, $result->$property, 'FOFModel::getItem loaded the wrong data for property '.$property);
+        }
+    }
+
 	/**
 	 * @group               modelIncludePath
 	 * @covers              FOFModel::addIncludePath
@@ -240,5 +275,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestSetIds()
     {
         return ModelDataprovider::getTestSetIds();
+    }
+
+    public function getTestGetItem()
+    {
+        return ModelDataprovider::getTestGetItem();
     }
 }
