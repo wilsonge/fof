@@ -188,7 +188,7 @@ class AkeebaStrapper
         $url = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/akeebajqui.js');
 
 		self::$scriptURLs[] = $url;
-        self::$cssURLs[] = FOFTemplateUtils::parsePath("media://akeeba_strapper/css/$theme/theme.css");
+		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.css");
     }
 
     /**
@@ -297,7 +297,7 @@ class AkeebaStrapper
 		{
 			foreach($altCss as $css)
 			{
-				self::$cssURLs[] = FOFTemplateUtils::parsePath($css);
+				self::addCSSfile($css);
 			}
 		}
     }
