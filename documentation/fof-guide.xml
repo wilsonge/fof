@@ -2255,7 +2255,7 @@ class FoobarTableFoo extends FOFTable
 
           <variablelist>
             <varlistentry>
-              <term>assets </term>
+              <term>assets</term>
 
               <listitem>
                 <para>This behavior (added by default by FOF) manages the
@@ -2353,7 +2353,7 @@ class FoobarTableFoo extends FOFTable
 
           <para>You can create custom behaviors for your component. It's very
           important how you name it, because FOF will search for your
-          behaviors based on their name. </para>
+          behaviors based on their name.</para>
 
           <para>If you want to add a <replaceable>foobar</replaceable>
           behavior, FOF will search for it in the following order:</para>
@@ -2361,33 +2361,33 @@ class FoobarTableFoo extends FOFTable
           <itemizedlist>
             <listitem>
               <para>First look for ComponentnameTableViewnameBehaviorName (ie:
-              FoobarTableTodosFoobar) </para>
+              FoobarTableTodosFoobar)</para>
             </listitem>
 
             <listitem>
               <para>Then look for ComponentnameTableBehaviorName (ie:
-              FoobarTableFoobar) </para>
+              FoobarTableFoobar)</para>
             </listitem>
 
             <listitem>
-              <para>Then look for FOFTableBehaviorFoobar </para>
+              <para>Then look for FOFTableBehaviorFoobar</para>
             </listitem>
           </itemizedlist>
 
           <para>This allows you to create table specific behaviors and also
-          component-wide ones. </para>
+          component-wide ones.</para>
 
           <para>It's also possible to override already existing behaviors, by
           naming them correctly (ie: you can override the <code>tags</code>
-          behavior by creating a new class called FoobarTableehaviorTags).
-          </para>
+          behavior by creating a new class called
+          FoobarTableehaviorTags).</para>
         </section>
 
         <section>
           <title>Available Events for Table Behaviors</title>
 
           <para>In each table behavior you can inject into the workflow using
-          these methods: </para>
+          these methods:</para>
 
           <programlisting>/**
  * This event runs before binding data to the table
@@ -2867,8 +2867,8 @@ public function onBeforeReset(&amp;$table)
             <row>
               <entry align="left"><methodname>read</methodname></entry>
 
-              <entry><filename>form.php</filename> OR
-              <filename>form.form.xml</filename></entry>
+              <entry><filename>item.php</filename> OR
+              <filename>form.item.xml</filename></entry>
 
               <entry>This is the file that shows the edit page</entry>
             </row>
@@ -2876,8 +2876,8 @@ public function onBeforeReset(&amp;$table)
             <row>
               <entry align="left"><methodname>edit</methodname></entry>
 
-              <entry><filename>item.php</filename> OR
-              <filename>form.item.xml</filename></entry>
+              <entry><filename>form.php</filename> OR
+              <filename>form.form.xml</filename></entry>
 
               <entry>This is the file that shows the data of a single record
               without being able to edit the record</entry>
