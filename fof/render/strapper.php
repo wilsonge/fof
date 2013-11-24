@@ -465,7 +465,7 @@ ENDJAVASCRIPT;
 			JHtml::_('formbehavior.chosen', 'select');
 			$view	 = $form->getView();
 			$order	 = $view->escape($view->getLists()->order);
-			$html .= <<<ENDJS
+			$html .= <<<JS
 <script type="text/javascript">
 	Joomla.orderTable = function() {
 		table = document.getElementById("sortTable");
@@ -482,7 +482,7 @@ ENDJAVASCRIPT;
 	}
 </script>
 
-ENDJS;
+JS;
 		}
 
 		// Getting all header row elements
