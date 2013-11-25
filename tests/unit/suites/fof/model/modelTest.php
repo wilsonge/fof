@@ -347,7 +347,57 @@ class FOFModelTest extends FtestCaseDatabase
         $method->setAccessible(true);
         $list = $method->invoke($model, $test['query'], $test['limitstart'], $test['limit'], $test['group']);
 
-        $this->assertEquals($checks['list'], $list, 'FOFModel::_getList returned a wrong value');
+        $this->assertEquals($checks['list'], $list, 'FOFModel::_getList returned a wrong recordset');
+    }
+
+    /**
+     * @group               modelTestGetItemList
+     * @group               FOFModel
+     * @covers              FOFModel::getItemList
+     * @dataProvider        getTestGetItemList
+     */
+    public function testGetItemList($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        $model = $this->getMock('FOFModel', array('buildQuery'), array($config));
+
+        $model->expects($this->any())->method('buildQuery')->will($this->returnValue($test['query']));
+        $model->limit($test['limit']);
+        $model->limitstart($test['limitstart']);
+
+        $list = $model->getItemList($test['override'], $test['group']);
+
+        $this->assertEquals($checks['list'], $list, 'FOFModel::getItemList return a wrong recordset');
+    }
+
+    /**
+     * Tailored test to check if getItemList is using the internal cache, instead of running the query again
+     *
+     * @group               modelTestGetItemListCache
+     * @group               FOFModel
+     * @covers              FOFModel::getItemList
+     * @dataProvider        getTestGetItemList
+     * @preventDataLoading
+     */
+    public function testGetItemListCache()
+    {
+        $config['option'] = 'com_foftest';
+        $config['view']   = 'foobars';
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+
+        $dummy = array('Hijacked internal cache');
+
+        $property = new ReflectionProperty($model, 'list');
+        $property->setAccessible(true);
+        $property->setValue($model, $dummy);
+
+        $result = $model->getItemList();
+
+        $this->assertEquals($dummy, $result, 'FOFModel::getItemList failed to use its internal cache');
     }
 
     public function getTestSetIDsFromRequest()
@@ -383,5 +433,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetList()
     {
         return ModelDataprovider::getTestGetList();
+    }
+
+    public function getTestGetItemList()
+    {
+        return ModelDataprovider::getTestGetItemList();
     }
 }

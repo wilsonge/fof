@@ -369,4 +369,86 @@ abstract class ModelDataprovider
 
         return $data;
     }
+
+    public static function getTestGetItemList()
+    {
+        $db = JFactory::getDbo();
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 0,
+                'limit'      => 0,
+                'group'      => '',
+                'override'   => false
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 1, 'title' => 'Guinea Pig row', 'slug' => 'guinea-pig-row'),
+                    1 => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    2 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                    3 => (object) array('foftest_foobar_id' => 4, 'title' => 'Fourth row', 'slug' => 'fourth-row'),
+                    4 => (object) array('foftest_foobar_id' => 5, 'title' => 'Locked record', 'slug' => 'locked-record'),
+                )
+            )
+        );
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 1,
+                'limit'      => 2,
+                'group'      => '',
+                'override'   => false
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    1 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                )
+            )
+        );
+
+        // Overriding the limits (limitstart and limit set)
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 1,
+                'limit'      => 2,
+                'group'      => '',
+                'override'   => true
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 1, 'title' => 'Guinea Pig row', 'slug' => 'guinea-pig-row'),
+                    1 => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    2 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                    3 => (object) array('foftest_foobar_id' => 4, 'title' => 'Fourth row', 'slug' => 'fourth-row'),
+                    4 => (object) array('foftest_foobar_id' => 5, 'title' => 'Locked record', 'slug' => 'locked-record'),
+                )
+            )
+        );
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 1,
+                'limit'      => 2,
+                'group'      => 'slug',
+                'override'   => false
+            ),
+            array(
+                'list'       => array(
+                    'second-row' => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    'third-row' => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                )
+            )
+        );
+
+        return $data;
+    }
 }
