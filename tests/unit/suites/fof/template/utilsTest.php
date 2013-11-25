@@ -148,29 +148,6 @@ class FOFTemplateUtilsTest extends FtestCase
 		);
 	}
 
-	/**
-	 * Test to addLESS method
-	 */
-	public function testAddLESS()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * Test to sefSort method
-	 */
-	public function testSefSort()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-
     /**
      * Test to parsePath method
      *
@@ -220,17 +197,6 @@ class FOFTemplateUtilsTest extends FtestCase
 			array('media://com_foobar/css/test.css', 'templates/fake_test_template/media/com_foobar/css/test.css', 'alternate', 'media:// alternate link should be changed into templates media path'),
 		);
 	}
-
-    /**
-     * Test to loadPosition method
-     */
-    public function testLoadPosition()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
 
     /**
      * Test to route method
