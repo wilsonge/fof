@@ -2,16 +2,97 @@
 
 abstract class ModelDataprovider
 {
-	public static function getTestAddIncludePath()
-	{
-		// Adding a string path
-		$data[] = array(
-			array('path' => 'models/foobars.php', 'prefix' => 'FOFModel'),
-			array('return' => array('models/foobars.php'))
-		);
+	public static function getTestSetIDsFromRequest()
+    {
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'id'  => 5,
+                'cid' => array()
+            ),
+            array(
+                'id'      => 5,
+                'id_list' => array(5)
+            )
+        );
 
-		return $data;
-	}
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'id'  => 0,
+                'cid' => array(5, 2)
+            ),
+            array(
+                'id'      => 5,
+                'id_list' => array(5, 2)
+            )
+        );
+
+        // cid vs id => cid wins
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'id'  => 4,
+                'cid' => array(2, 3)
+            ),
+            array(
+                'id'      => 2,
+                'id_list' => array(2, 3)
+            )
+        );
+
+        // id vs kid => id wins
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'id'  => 5,
+                'cid' => array(),
+                'kid' => array(
+                    'name'  => 'foftest_foobar_id',
+                    'value' => 4
+                )
+            ),
+            array(
+                'id'      => 5,
+                'id_list' => array(5)
+            )
+        );
+
+        // cid vs kid => cid wins
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'id'  => 0,
+                'cid' => array(7, 8),
+                'kid' => array(
+                    'name'  => 'foftest_foobar_id',
+                    'value' => 4
+                )
+            ),
+            array(
+                'id'      => 7,
+                'id_list' => array(7, 8)
+            )
+        );
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'id'  => 0,
+                'cid' => array(),
+                'kid' => array(
+                    'name'  => 'foftest_foobar_id',
+                    'value' => 4
+                )
+            ),
+            array(
+                'id'      => 4,
+                'id_list' => array(4)
+            )
+        );
+
+        return $data;
+    }
 
 	public static function getTestSetId()
 	{

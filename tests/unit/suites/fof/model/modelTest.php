@@ -51,6 +51,51 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals(88, $value, 'FOFModel::getId Wrong set value');
     }
 
+    /**
+     * @group               modelTestSetIdsFromRequest
+     * @group               FOFModel
+     * @covers              FOFModel::setIDsFromRequest
+     * @dataProvider        getTestSetIDsFromRequest
+     * @preventDataLoading
+     */
+    public function testSetIDsFromRequest($modelinfo, $test, $checks)
+    {
+        $config['option'] = 'com_foftest';
+        $config['view']   = $modelinfo['name'];
+        $input            = array();
+
+        if(isset($test['cid']))
+        {
+            $input['cid'] = $test['cid'];
+        }
+
+        if(isset($test['id']))
+        {
+            $input['id'] = $test['id'];
+        }
+
+        if(isset($test['kid']))
+        {
+            $input[$test['kid']['name']] = $test['kid']['value'];
+        }
+
+        // FOFModel constructor will automatically set the data coming from the request, taking the from the request
+        // (which is bad for our test), so I have to use the getTmp method.
+        // Sadly, it will reset the input, too, so I have to manually inject it.
+        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+        $model->setInput(new FOFInput($input));
+
+        $model->setIDsFromRequest();
+
+        $property = new ReflectionProperty($model, 'id');
+        $property->setAccessible(true);
+        $this->assertEquals($checks['id'], $property->getValue($model), 'FOFModel::setIDsFromRequests wrong value for property "id"');
+
+        $property = new ReflectionProperty($model, 'id_list');
+        $property->setAccessible(true);
+        $this->assertEquals($checks['id_list'], $property->getValue($model), 'FOFModel::setIDsFromRequests wrong value for property "id_list"');
+    }
+
 	/**
 	 * @group               modelTestSetId
 	 * @group               FOFModel
@@ -280,56 +325,10 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals((string) $checks['query'], (string) $query, 'FOFModel::buildQuery returned a wrong query');
     }
 
-	/**
-	 * @group               modelIncludePath
-	 * @covers              FOFModel::addIncludePath
-	 * @dataProvider        getTestAddIncludePathException
-	 * @preventDataLoading
-	 */
-	/*public function testAddIncludePath($test, $check)
-	{
-		$model = FOFModel::getTmpInstance('Foobars', 'FOFModel');
-		$return = $model->addIncludePath($test['path'], $test['prefix']);
-
-		$reflection = new ReflectionClass($model);
-		$property   = $reflection->getProperty('paths');
-		$property->setAccessible(true);
-		$value = $property->getValue($model);
-
-		if(is_string($test['path']))
-		{
-			$test['path'] = JPath::clean($test['path']);
-		}
-		elseif(is_array($test['path']))
-		{
-			$paths = array();
-
-			foreach($test['path'] as $path)
-			{
-				$paths[] = JPath::clean($path);
-			}
-
-			$test['path'] = $paths;
-		}
-
-		$expected = array(
-			'' => array($test['path']),
-			$test['prefix'] => array($test['path'])
-		);
-
-		foreach($check['return'] as $path)
-		{
-			$cleaned[] = JPath::clean($path);
-		}
-
-		$this->assertEquals($cleaned, $return, 'AddIncludePath: wrong return value');
-		$this->assertEquals($expected, $value, 'AddIncludePath: wrong assigned value');
-	}*/
-
-	public function getTestAddIncludePath()
-	{
-		return ModelDataprovider::getTestAddIncludePath();
-	}
+    public function getTestSetIDsFromRequest()
+    {
+        return ModelDataprovider::getTestSetIDsFromRequest();
+    }
 
 	public function getTestSetId()
 	{
