@@ -325,6 +325,31 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals((string) $checks['query'], (string) $query, 'FOFModel::buildQuery returned a wrong query');
     }
 
+    /**
+     * @group               modelTestGetList
+     * @group               FOFModel
+     * @covers              FOFModel::_getList
+     * @covers              FOFModel::onProcessList
+     * @dataProvider        getTestGetList
+     */
+    public function testGetList($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        // Create a mock so I can test onProcessList, too
+        $model = $this->getMock('FOFModel', array('onProcessList'), array($config));
+        $model->expects($this->any())->method('onProcessList')->will($this->returnCallback($test['callback']));
+
+        $method = new ReflectionMethod($model, '_getList');
+        $method->setAccessible(true);
+        $list = $method->invoke($model, $test['query'], $test['limitstart'], $test['limit'], $test['group']);
+
+        $this->assertEquals($checks['list'], $list, 'FOFModel::_getList returned a wrong value');
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
@@ -353,5 +378,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestBuildQuery()
     {
         return ModelDataprovider::getTestBuildQuery();
+    }
+
+    public function getTestGetList()
+    {
+        return ModelDataprovider::getTestGetList();
     }
 }

@@ -240,4 +240,133 @@ abstract class ModelDataprovider
 
         return $data;
     }
+
+    public static function getTestGetList()
+    {
+        $db = JFactory::getDbo();
+
+        // Standard query
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 0,
+                'limit'      => 0,
+                'group'      => '',
+                'callback'   => function(&$array){}
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 1, 'title' => 'Guinea Pig row', 'slug' => 'guinea-pig-row'),
+                    1 => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    2 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                    3 => (object) array('foftest_foobar_id' => 4, 'title' => 'Fourth row', 'slug' => 'fourth-row'),
+                    4 => (object) array('foftest_foobar_id' => 5, 'title' => 'Locked record', 'slug' => 'locked-record'),
+                )
+            )
+        );
+
+        // String query
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => (string) $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 0,
+                'limit'      => 0,
+                'group'      => '',
+                'callback'   => function(&$array){}
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 1, 'title' => 'Guinea Pig row', 'slug' => 'guinea-pig-row'),
+                    1 => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    2 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                    3 => (object) array('foftest_foobar_id' => 4, 'title' => 'Fourth row', 'slug' => 'fourth-row'),
+                    4 => (object) array('foftest_foobar_id' => 5, 'title' => 'Locked record', 'slug' => 'locked-record'),
+                )
+            )
+        );
+
+        // Standard query with limit
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 0,
+                'limit'      => 3,
+                'group'      => '',
+                'callback'   => function(&$array){}
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 1, 'title' => 'Guinea Pig row', 'slug' => 'guinea-pig-row'),
+                    1 => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    2 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row')
+                )
+            )
+        );
+
+        // Standard query with limit and limitstart
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 2,
+                'limit'      => 3,
+                'group'      => '',
+                'callback'   => function(&$array){}
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                    1 => (object) array('foftest_foobar_id' => 4, 'title' => 'Fourth row', 'slug' => 'fourth-row'),
+                    2 => (object) array('foftest_foobar_id' => 5, 'title' => 'Locked record', 'slug' => 'locked-record'),
+                )
+            )
+        );
+
+        // Standard query with groups
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 0,
+                'limit'      => 0,
+                'group'      => 'slug',
+                'callback'   => function(&$array){}
+            ),
+            array(
+                'list'       => array(
+                    'guinea-pig-row' => (object) array('foftest_foobar_id' => 1, 'title' => 'Guinea Pig row', 'slug' => 'guinea-pig-row'),
+                    'second-row'     => (object) array('foftest_foobar_id' => 2, 'title' => 'Second row', 'slug' => 'second-row'),
+                    'third-row'      => (object) array('foftest_foobar_id' => 3, 'title' => 'Third row', 'slug' => 'third-row'),
+                    'fourth-row'     => (object) array('foftest_foobar_id' => 4, 'title' => 'Fourth row', 'slug' => 'fourth-row'),
+                    'locked-record'  => (object) array('foftest_foobar_id' => 5, 'title' => 'Locked record', 'slug' => 'locked-record'),
+                )
+            )
+        );
+
+        // Let's manipulate the result array
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'query'      => $db->getQuery(true)->select('foftest_foobar_id, title, slug')->from('#__foftest_foobars'),
+                'limitstart' => 0,
+                'limit'      => 0,
+                'group'      => '',
+                'callback'   => function(&$array){foreach($array as $item){ $item->title = $item->title.'XXX';}}
+            ),
+            array(
+                'list'       => array(
+                    0 => (object) array('foftest_foobar_id' => 1, 'title' => 'Guinea Pig rowXXX', 'slug' => 'guinea-pig-row'),
+                    1 => (object) array('foftest_foobar_id' => 2, 'title' => 'Second rowXXX', 'slug' => 'second-row'),
+                    2 => (object) array('foftest_foobar_id' => 3, 'title' => 'Third rowXXX', 'slug' => 'third-row'),
+                    3 => (object) array('foftest_foobar_id' => 4, 'title' => 'Fourth rowXXX', 'slug' => 'fourth-row'),
+                    4 => (object) array('foftest_foobar_id' => 5, 'title' => 'Locked recordXXX', 'slug' => 'locked-record'),
+                )
+            )
+        );
+
+        return $data;
+    }
 }
