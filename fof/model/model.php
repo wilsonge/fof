@@ -1125,7 +1125,8 @@ class FOFModel extends JObject
 	 *
 	 * @param   boolean  $overrideLimits  Should I override set limits?
 	 * @param   string   $group           The group by clause
-	 *
+	 * @codeCoverageIgnore
+     *
 	 * @return  array
 	 */
 	public function &getList($overrideLimits = false, $group = '')

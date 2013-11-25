@@ -211,6 +211,43 @@ class FOFModelTest extends FtestCaseDatabase
         }
     }
 
+    /**
+     * Tailored test to check when the session has a different id from the loaded from db one
+     *
+     * @group               modelTestGetItem
+     * @group               FOFModel
+     * @covers              FOFModel::getItem
+     */
+    public function testGetItemSessionWipe()
+    {
+        $config['option'] = 'com_foftest';
+        $config['view']   = 'foobars';
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+
+        $hackedSession = new JSession;
+
+        // Manually set the session as active
+        $property = new ReflectionProperty($hackedSession, '_state');
+        $property->setAccessible(true);
+        $property->setValue($hackedSession, 'active');
+
+        $session = serialize(array('foftest_foobar_id' => 0, 'title' => 'Title from session'));
+
+        // We're in CLI an no $_SESSION variable? No problem, I'll manually create it!
+        // I'm going to hell for doing this...
+        $_SESSION['__default']['com_foftest.cpanels.savedata'] = $session;
+
+        JFactory::$session = $hackedSession;
+
+        $result = $model->getItem(2);
+
+        $this->assertInstanceOf('FOFTable', $result, 'FOFModel::getItem should return an instance of FOFTable');
+        $this->assertArrayNotHasKey('com_foftest.cpanels.savedata', $_SESSION['__default'], 'FOFModel::getItem should wipe saved session data');
+
+        // Let's remove any evidence...
+        unset($_SESSION);
+    }
+
 	/**
 	 * @group               modelIncludePath
 	 * @covers              FOFModel::addIncludePath
