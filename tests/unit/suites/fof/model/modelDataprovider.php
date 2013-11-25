@@ -120,4 +120,43 @@ abstract class ModelDataprovider
 
         return $data;
     }
+
+    public static function getTestBuildQuery()
+    {
+        $db = JFactory::getDbo();
+
+        // SELECT `#__foftest_foobars`.* FROM `#__foftest_foobars` ORDER BY `foftest_foobar_id` ASC
+        $data[] = array(
+            array('name' => 'foobars'),
+            array('aliasTable' => '', 'overrideLimits' => false),
+            array('query' => $db->getQuery(true)
+                                ->select($db->qn('#__foftest_foobars').'.*')
+                                ->from($db->qn('#__foftest_foobars'))
+                                ->order($db->qn('foftest_foobar_id').' ASC')
+            )
+        );
+
+        // SELECT `#__foftest_foobars`.* FROM `#__foftest_foobars`
+        $data[] = array(
+            array('name' => 'foobars'),
+            array('aliasTable' => '', 'overrideLimits' => true),
+            array('query' => $db->getQuery(true)
+                    ->select($db->qn('#__foftest_foobars').'.*')
+                    ->from($db->qn('#__foftest_foobars'))
+            )
+        );
+
+        // SELECT `foo_alias`.* FROM `#__foftest_foobars` AS `foo_alias` ORDER BY `foo_alias`.`foftest_foobar_id` ASC
+        $data[] = array(
+            array('name' => 'foobars'),
+            array('aliasTable' => 'foo_alias', 'overrideLimits' => false),
+            array('query' => $db->getQuery(true)
+                                ->select($db->qn('foo_alias').'.*')
+                                ->from($db->qn('#__foftest_foobars').' AS '.$db->qn('foo_alias'))
+                                ->order($db->qn('foo_alias').'.'.$db->qn('foftest_foobar_id').' ASC')
+            )
+        );
+
+        return $data;
+    }
 }

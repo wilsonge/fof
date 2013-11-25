@@ -248,6 +248,38 @@ class FOFModelTest extends FtestCaseDatabase
         unset($_SESSION);
     }
 
+    /**
+     * @group               modelTestBuildQuery
+     * @group               FOFModel
+     * @covers              FOFModel::buildQuery
+     * @dataProvider        getTestBuildQuery
+     * @preventDataLoading
+     */
+    public function testBuildQuery($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        // Create a mock so I can test vs different table alias
+        $model = $this->getMock('FOFModel', array('getTableAlias'), array($config), ucfirst($modelinfo['name']).'FoftestModel');
+        $model->expects($this->any())->method('getTableAlias')->will($this->returnValue($test['aliasTable']));
+
+        // Let's create a mocked Behavior, so I can manipulate its behavior (LOL)
+        $behavior = $this->getMock('FOFModelDispatcherBehavior', array('trigger'));
+        $behavior->expects($this->any())->method('trigger')->will($this->returnValue(null));
+
+        // Inject the hacked behavior
+        $property = new ReflectionProperty($model, 'modelDispatcher');
+        $property->setAccessible(true);
+        $property->setValue($model, $behavior);
+
+        $query = $model->buildQuery($test['overrideLimits']);
+
+        $this->assertEquals((string) $checks['query'], (string) $query, 'FOFModel::buildQuery returned a wrong query');
+    }
+
 	/**
 	 * @group               modelIncludePath
 	 * @covers              FOFModel::addIncludePath
@@ -317,5 +349,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetItem()
     {
         return ModelDataprovider::getTestGetItem();
+    }
+
+    public function getTestBuildQuery()
+    {
+        return ModelDataprovider::getTestBuildQuery();
     }
 }
