@@ -51,6 +51,41 @@ class AkeebaStrapper
     /** @var string A query tag to append to CSS and JS files for versioning purposes */
     public static $tag = null;
 
+	/**
+	 * Gets the query tag.
+	 *
+	 * Uses AkeebaStrapper::$tag as the default tag for the extension's mediatag. If
+	 * $overrideTag is set then that tag is used in stead.
+	 *
+	 * @param	string	$overrideTag	If defined this tag is used in stead of
+	 * 									AkeebaStrapper::$tag
+	 *
+	 * @return 	string	The extension's query tag (e.g. ?23f742d04111881faa36ea8bc6d31a59)
+	 * 					or an empty string if it's not set
+	 */
+	public static function getTag($overrideTag = null)
+	{
+		if ($overrideTag !== null)
+		{
+			$tag = $overrideTag;
+		}
+		else
+		{
+			$tag = self::$tag;
+		}
+
+		if (empty($tag))
+		{
+			$tag = '';
+		}
+		else
+		{
+			$tag = '?' . ltrim($tag, '?');
+		}
+
+		return $tag;
+	}
+
     /**
      * Is this something running under the CLI mode?
      * @staticvar bool|null $isCli
@@ -309,29 +344,17 @@ class AkeebaStrapper
     /**
      * Adds an arbitrary Javascript file.
      *
-     * @param $path string 	The path to the file, in the format media://path/to/file
-	 * @param $tag	string	The version tag. Uses AkeebaStrapper::$tag by default
+     * @param $path 		string 	The path to the file, in the format media://path/to/file
+	 * @param $overrideTag	string	If defined this version tag overrides AkeebaStrapper::$tag
 	 */
-    public static function addJSfile($path, $tag = null)
+    public static function addJSfile($path, $overrideTag = null)
     {
 		if (self::isCli())
 		{
             return;
 		}
 
-		if ($tag === null)
-		{
-			$tag = self::$tag;
-		}
-
-		if (empty($tag))
-		{
-			$tag = '';
-		}
-		else
-		{
-			$tag = '?' . ltrim($tag, '?');
-		}
+		$tag = self::getTag($overrideTag);
 
         self::$scriptURLs[] = FOFTemplateUtils::parsePath($path)  . $tag;
     }
@@ -354,31 +377,19 @@ class AkeebaStrapper
     /**
      * Adds an arbitrary CSS file.
      *
-     * @param $path string 	The path to the file, in the format media://path/to/file
-	 * @param $tag	string	The version tag. Uses AkeebaStrapper::$tag by default
+     * @param $path 		string 	The path to the file, in the format media://path/to/file
+	 * @param $overrideTag	string	If defined this version tag overrides AkeebaStrapper::$tag
      */
-    public static function addCSSfile($path, $tag = null)
+    public static function addCSSfile($path, $overrideTag = null)
     {
 		if (self::isCli())
 		{
             return;
 		}
 
-		if ($tag === null)
-		{
-			$tag = self::$tag;
-		}
+		$tag = self::getTag($overrideTag);
 
-		if (empty($tag))
-		{
-			$tag = '';
-		}
-		else
-		{
-			$tag = '?' . ltrim($tag, '?');
-		}
-
-        self::$cssURLs[] = FOFTemplateUtils::parsePath($path) . $tag;
+		self::$cssURLs[] = FOFTemplateUtils::parsePath($path) . $tag;
     }
 
     /**
@@ -465,16 +476,7 @@ function AkeebaStrapperLoader()
         return;
     }
 
-    // Get the query tag
-    $tag = AkeebaStrapper::$tag;
-    if (empty($tag))
-    {
-        $tag = '';
-    }
-    else
-    {
-        $tag = '?' . ltrim($tag, '?');
-    }
+	$tag = AkeebaStrapper::getTag();
 
     $myscripts = '';
 
