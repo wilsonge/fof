@@ -7,6 +7,8 @@
  * @copyright (c) 2012-2013 Akeeba Ltd
  * @license GNU General Public License version 2 or later
  */
+
+// Protect from unauthorized access
 defined('_JEXEC') or die();
 
 if (!defined('FOF_INCLUDED'))
@@ -137,12 +139,12 @@ class AkeebaStrapper
 
         if ($jQueryLoad == 'full')
         {
-            self::addJSfile('media://akeeba_strapper/js/akeebajq.js', FOF_MEDIATAG);
-            self::addJSfile('media://akeeba_strapper/js/akjqmigrate.js', FOF_MEDIATAG);
+            self::addJSfile('media://akeeba_strapper/js/akeebajq.js', AKEEBASTRAPPER_MEDIATAG);
+            self::addJSfile('media://akeeba_strapper/js/akjqmigrate.js', AKEEBASTRAPPER_MEDIATAG);
         }
         else
         {
-            self::addJSfile('media://akeeba_strapper/js/namespace.js', FOF_MEDIATAG);
+            self::addJSfile('media://akeeba_strapper/js/namespace.js', AKEEBASTRAPPER_MEDIATAG);
         }
     }
 
@@ -187,8 +189,8 @@ class AkeebaStrapper
 
 		$theme = self::getPreference('jquery_theme', self::$jqUItheme);
 
-		self::addJSfile('media://akeeba_strapper/js/akeebajqui.js', FOF_MEDIATAG);
-		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.css", FOF_MEDIATAG);
+		self::addJSfile('media://akeeba_strapper/js/akeebajqui.js', AKEEBASTRAPPER_MEDIATAG);
+		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.css", AKEEBASTRAPPER_MEDIATAG);
     }
 
     /**
@@ -264,7 +266,7 @@ class AkeebaStrapper
         if ($loadBootstrap == 'full')
         {
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
-            self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', FOF_MEDIATAG);
+            self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', AKEEBASTRAPPER_MEDIATAG);
 
 			if ($source == 'less')
 			{
@@ -299,7 +301,7 @@ class AkeebaStrapper
 		{
 			foreach($altCss as $css)
 			{
-				self::addCSSfile($css, FOF_MEDIATAG);
+				self::addCSSfile($css, AKEEBASTRAPPER_MEDIATAG);
 			}
 		}
     }
