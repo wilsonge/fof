@@ -21,6 +21,7 @@
             <filename>index.html</filename>
             <filename>strapper.ini</filename>
             <filename>strapper.php</filename>
+						<filename>version.php</filename>
         </files>
 		<files target="media/akeeba_strapper">
 			<filename>version.txt</filename>

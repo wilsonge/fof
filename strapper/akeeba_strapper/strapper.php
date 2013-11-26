@@ -14,6 +14,8 @@ if (!defined('FOF_INCLUDED'))
     include_once JPATH_SITE . '/libraries/fof/include.php';
 }
 
+require_once __DIR__ . '/version.php';
+
 class AkeebaStrapper
 {
 
