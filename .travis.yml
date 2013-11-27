@@ -18,7 +18,7 @@ before_script:
   - if [[ "$JVERSION_TEST" == "3.1" ]]; then cp tests/environments/3.1/joomla.sql joomla.sql; fi
   - if [[ "$JVERSION_TEST" == "3.2" ]]; then cp tests/environments/3.2/joomla.sql joomla.sql; fi
   - mysql fof_test < joomla.sql
-  - cp build/templates/include.php fof/include.php
+  - cp build/templates/fof/include.php fof/include.php
 
 after_script:
   - cat tests/debug.txt
