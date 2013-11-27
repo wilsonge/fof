@@ -57,6 +57,8 @@ class FOFRenderStrapper extends FOFRenderAbstract
 
 			// Wrap output in an akeeba-bootstrap class div
 			echo "<div class=\"akeeba-bootstrap\">\n";
+            echo "<div class=\"row-fluid\">\n";
+
 		}
 
 		// Render submenu and toolbar (only if asked to)
@@ -96,8 +98,9 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			}
 		}
 
-		echo "</div>\n";
-		echo "</div>\n";
+		echo "</div>\n";    // Closes row-fluid div
+		echo "</div>\n";    // Closes akeeba-bootstrap div
+		echo "</div>\n";    // Closes joomla-version div
 	}
 
 	/**
