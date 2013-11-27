@@ -202,12 +202,12 @@ class AkeebaStrapper
             return;
 		}
 
-		if (version_compare(JVERSION, '3.2', 'gt'))
+		if (version_compare(JVERSION, '3.2', 'ge'))
 		{
 			$key = 'joomla32';
 			$default = 'lite';
 		}
-		elseif (version_compare(JVERSION, '3.0', 'gt'))
+		elseif (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$key = 'joomla3';
 			$default = 'lite';
