@@ -17,14 +17,13 @@ defined('_JEXEC') or die;
 class FOFTableBehaviorAssets extends FOFTableBehavior
 {
 	/**
-	 * The event which runs before storing (saving) data to the database
+	 * The event which runs after storing (saving) data to the database
 	 *
 	 * @param   FOFTable  &$table       The table which calls this event
-	 * @param   boolean   $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
 	 *
 	 * @return  boolean  True to allow saving
 	 */
-	public function onBeforeStore(&$table, $updateNulls)
+	public function onAfterStore(&$table)
 	{
 		$result = true;
 
@@ -94,7 +93,7 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 				$asset->rules = (string) $table->getRules();
 			}
 
-			if (!$asset->check() || !$asset->store($updateNulls))
+			if (!$asset->check() || !$asset->store())
 			{
 				$table->setError($asset->getError());
 
