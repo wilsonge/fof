@@ -1,3 +1,8 @@
+FOF 2.1.1
+================================================================================
+# Wrong asset_id (0) saved in table after creating a new item
+# Wrong ACL permissions saved when using the rules field type
+
 FOF 2.1.0
 ================================================================================
 + Added required option to FOFFormFieldCheckbox
