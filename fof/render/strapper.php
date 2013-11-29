@@ -390,6 +390,10 @@ ENDJAVASCRIPT;
 		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendButtons	 = $toolbar->getRenderFrontendButtons();
 
+        // Load main backend language, in order to display toolbar strings
+        // (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
+        FOFPlatform::getInstance()->loadTranslations('joomla');
+
 		if (FOFPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
 		{
 			return;
@@ -412,8 +416,20 @@ ENDJAVASCRIPT;
 			'icon-32-save-new'	 => 'icon-repeat',
 		);
 
-		$html	 = array();
-		$html[]	 = '<div class="well" id="' . $bar->getName() . '">';
+        if(isset(JFactory::getApplication()->JComponentTitle))
+        {
+            $title	 = JFactory::getApplication()->JComponentTitle;
+        }
+
+        $html	 = array();
+        $actions = array();
+
+        // For BC we have to use the same id we're using inside other renderers (FOFHeaderHolder)
+        //$html[]	 = '<div class="well" id="' . $bar->getName() . '">';
+
+        $html[]	 = '<div class="well" id="FOFHeaderHolder">';
+        $html[]  =      '<div class="titleHolder">'.$title.'</div>';
+        $html[]  =      '<div class="buttonsHolder">';
 
 		foreach ($items as $node)
 		{
@@ -431,18 +447,20 @@ ENDJAVASCRIPT;
 					$id = null;
 				}
 
-				$action	 = call_user_func_array(array(&$button, 'fetchButton'), $node);
-				$action	 = str_replace('class="toolbar"', 'class="toolbar btn"', $action);
-				$action	 = str_replace('<span ', '<i ', $action);
-				$action	 = str_replace('</span>', '</i>', $action);
-				$action	 = str_replace(array_keys($substitutions), array_values($substitutions), $action);
-				$html[]	 = $action;
+				$action	    = call_user_func_array(array(&$button, 'fetchButton'), $node);
+				$action	    = str_replace('class="toolbar"', 'class="toolbar btn"', $action);
+				$action	    = str_replace('<span ', '<i ', $action);
+				$action	    = str_replace('</span>', '</i>', $action);
+				$action	    = str_replace(array_keys($substitutions), array_values($substitutions), $action);
+				$actions[]	= $action;
 			}
 		}
 
+        $html   = array_merge($html, $actions);
+		$html[] = '</div>';
 		$html[] = '</div>';
 
-		echo implode("\n", $html);
+        echo implode("\n", $html);
 	}
 
 	/**
