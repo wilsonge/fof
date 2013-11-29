@@ -17,14 +17,13 @@ defined('_JEXEC') or die;
 class FOFTableBehaviorAssets extends FOFTableBehavior
 {
 	/**
-	 * The event which runs before storing (saving) data to the database
+	 * The event which runs after storing (saving) data to the database
 	 *
 	 * @param   FOFTable  &$table       The table which calls this event
-	 * @param   boolean   $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
 	 *
 	 * @return  boolean  True to allow saving
 	 */
-	public function onBeforeStore(&$table, $updateNulls)
+	public function onAfterStore(&$table)
 	{
 		$result = true;
 
@@ -94,7 +93,7 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 				$asset->rules = (string) $table->getRules();
 			}
 
-			if (!$asset->check() || !$asset->store($updateNulls))
+			if (!$asset->check() || !$asset->store())
 			{
 				$table->setError($asset->getError());
 
@@ -109,13 +108,14 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 
 				$k = $table->getKeyName();
 
-				$query = $table->getDbo()->getQuery(true);
-				$query->update($table->getDbo()->qn($table->getTableName()));
-				$query->set('asset_id = ' . (int) $table->$asset_id_field);
-				$query->where($table->getDbo()->qn($k) . ' = ' . (int) $table->$k);
-				$table->getDbo()->setQuery($query);
+                $db = $table->getDbo();
 
-				$table->getDbo()->execute();
+				$query = $db->getQuery(true)
+				            ->update($db->qn($table->getTableName()))
+				            ->set($db->qn($asset_id_field).' = ' . (int) $table->$asset_id_field)
+				            ->where($db->qn($k) . ' = ' . (int) $table->$k);
+
+				$db->setQuery($query)->execute();
 			}
 
 			$result = true;
