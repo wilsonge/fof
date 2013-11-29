@@ -140,7 +140,25 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 			// Bind the rules.
 			if (isset($src['rules']) && is_array($src['rules']))
 			{
-				$table->setRules($src['rules']);
+                // We have to manually remove any empty value, since they will be converted to int,
+                // and "Inherited" values will become "Denied". Joomla is doing this manually, too.
+                $rules = array();
+
+                foreach ($src['rules'] as $action => $ids)
+                {
+                    // Build the rules array.
+                    $rules[$action] = array();
+
+                    foreach ($ids as $id => $p)
+                    {
+                        if ($p !== '')
+                        {
+                            $rules[$action][$id] = ($p == '1' || $p == 'true') ? true : false;
+                        }
+                    }
+                }
+
+				$table->setRules($rules);
 			}
 		}
 
