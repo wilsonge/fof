@@ -356,7 +356,7 @@ class AkeebaStrapper
 
 		$tag = self::getTag($overrideTag);
 
-        self::$scriptURLs[] = FOFTemplateUtils::parsePath($path)  . $tag;
+        self::$scriptURLs[] = array(FOFTemplateUtils::parsePath($path), $tag);
     }
 
     /**
@@ -389,7 +389,7 @@ class AkeebaStrapper
 
 		$tag = self::getTag($overrideTag);
 
-		self::$cssURLs[] = FOFTemplateUtils::parsePath($path) . $tag;
+		self::$cssURLs[] = array(FOFTemplateUtils::parsePath($path), $tag);
     }
 
     /**
@@ -496,9 +496,11 @@ function AkeebaStrapperLoader()
 
     // Include Javascript files
     if (!empty(AkeebaStrapper::$scriptURLs))
-        foreach (AkeebaStrapper::$scriptURLs as $url)
+        foreach (AkeebaStrapper::$scriptURLs as $entry)
         {
-            if ($preloadJ2 && (basename($url) == 'bootstrap.min.js'))
+			list($url, $tag) = $entry;
+
+			if ($preloadJ2 && (basename($url) == 'bootstrap.min.js'))
             {
                 // Special case: check that nobody else is using bootstrap[.min].js on the page.
                 $scriptRegex = "/<script [^>]+(\/>|><\/script>)/i";
@@ -520,11 +522,11 @@ function AkeebaStrapperLoader()
             }
             if ($preload)
             {
-                $myscripts .= '<script type="text/javascript" src="' . $url . '"></script>' . "\n";
+                $myscripts .= '<script type="text/javascript" src="' . $url . $tag . '"></script>' . "\n";
             }
             else
             {
-                JFactory::getDocument()->addScript($url);
+                JFactory::getDocument()->addScript($url . $tag);
             }
         }
 
@@ -611,15 +613,17 @@ function AkeebaStrapperLoader()
 
     // Include CSS files
     if (!empty(AkeebaStrapper::$cssURLs))
-        foreach (AkeebaStrapper::$cssURLs as $url)
+        foreach (AkeebaStrapper::$cssURLs as $entry)
         {
+			list($url, $tag) = $entry;
+
 			if ($preload)
             {
-                $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . '" />' . "\n";
+                $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
             }
             else
             {
-                JFactory::getDocument()->addStyleSheet($url);
+                JFactory::getDocument()->addStyleSheet($url . $tag);
             }
         }
 
