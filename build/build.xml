@@ -74,12 +74,51 @@
 	<target name="library-package" description="FOF Installation Package for Joomla! 1.6+"
 		depends="new-release,setup-properties">
 
-		<!-- Apply templates -->
+		<!-- Generate files_strapper.xml and version.php for Akeeba Strapper -->
 		<copy todir="${dirs.root}" overwrite="true">
 			<fileset dir="./templates">
-				<include name="**" />
-				<exclude name="release.json" />
+				<include name="strapper/**" />
 			</fileset>
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${git.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+		<!-- Generate XML file for FOF -->
+		<copy file="./templates/lib_fof.xml" tofile="${dirs.root}/lib_fof.xml" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${git.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<copy file="${dirs.root}/lib_fof.xml" tofile="${dirs.library}/lib_fof.xml" overwrite="true" />
+
+		<!-- Generate version.txt file for FOF -->
+		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${git.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<!-- Generate version.txt file for Akeeba Strapper -->
+		<copy file="./templates/version.txt" tofile="${dirs.strapper}/version.txt" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${git.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+		<!-- Generate include file for FOF -->
+		<copy file="./templates/include.php" tofile="${dirs.library}/include.php" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
 					<token key="DATE" value="${git.date}" />
@@ -99,6 +138,13 @@
 				<include name="lib_fof.xml" />
 			</fileset>
 		</zipme>
+
+		<!-- Clean up -->
+		<delete>
+			<fileset dir="${dirs.root}">
+				<include name="lib_fof.xml" />
+			</fileset>
+		</delete>
 	</target>
 	
 	<!--

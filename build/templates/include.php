@@ -12,9 +12,7 @@ defined('_JEXEC') or die();
 
 if (!defined('FOF_INCLUDED'))
 {
-	define('FOF_INCLUDED', '##VERSION##');
-	define('FOF_DATE', '##DATE##');
-	define('FOF_MEDIATAG', md5(FOF_INCLUDED . FOF_DATE));
+    define('FOF_INCLUDED', '##VERSION##');
 
 	// Register a debug log
 	if (defined('JDEBUG') && JDEBUG)
