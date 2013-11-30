@@ -305,7 +305,7 @@ class AkeebaStrapper
 
 			if ($source == 'less')
 			{
-				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j25.less', $altCss);
+				self::addLESSfile('media://akeeba_strapper/less/bootstrap.j25.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
 			}
         }
         else
@@ -328,7 +328,7 @@ class AkeebaStrapper
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.css');
 			if ($source == 'less')
 			{
-				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap' . $qualifier . '.less', $altCss);
+				self::addLESSfile('media://akeeba_strapper/less/bootstrap' . $qualifier . '.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
 			}
         }
 
@@ -397,15 +397,18 @@ class AkeebaStrapper
      *
      * @param $path string The path to the file, in the format media://path/to/file
      * @param $altPaths string|array The path to the alternate CSS files, in the format media://path/to/file
-     */
-    public static function addLESSfile($path, $altPaths = null)
+	 * @param $overrideTag	string	If defined this version tag overrides AkeebaStrapper::$tag
+	 */
+    public static function addLESSfile($path, $altPaths = null, $overrideTag = null)
     {
 		if (self::isCli())
 		{
             return;
 		}
 
-        self::$lessURLs[] = array($path, $altPaths);
+		$tag = self::getTag($overrideTag);
+
+		self::$lessURLs[] = array($path, $altPaths, $tag);
     }
 
     /**
@@ -475,8 +478,6 @@ function AkeebaStrapperLoader()
     {
         return;
     }
-
-	$tag = AkeebaStrapper::getTag();
 
     $myscripts = '';
 
@@ -557,7 +558,7 @@ function AkeebaStrapperLoader()
     {
         foreach (AkeebaStrapper::$lessURLs as $entry)
         {
-            list($lessFile, $altFiles) = $entry;
+            list($lessFile, $altFiles, $tag) = $entry;
 
             $url = FOFTemplateUtils::addLESS($lessFile, $altFiles, true);
 
