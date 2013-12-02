@@ -52,9 +52,7 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 			unset($fields[$asset_id_field]);
 		}
 
-		/*
-		 * Asset Tracking
-		 */
+		// Asset Tracking
 		if (in_array($asset_id_field, $table->getKnownFields()) && $table->isAssetsTracked())
 		{
 			$parentId = $table->getAssetParentId();
@@ -78,6 +76,7 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 			}
 
 			// Specify how a new or moved node asset is inserted into the tree.
+            // Since we're unsetting the table field before, this statement is always true...
 			if (empty($table->$asset_id_field) || $asset->parent_id != $parentId)
 			{
 				$asset->setLocation($parentId, 'last-child');
@@ -142,6 +141,7 @@ class FOFTableBehaviorAssets extends FOFTableBehavior
 			{
                 // We have to manually remove any empty value, since they will be converted to int,
                 // and "Inherited" values will become "Denied". Joomla is doing this manually, too.
+                // @todo Should we move this logic inside the setRules method?
                 $rules = array();
 
                 foreach ($src['rules'] as $action => $ids)

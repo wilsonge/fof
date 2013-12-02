@@ -3427,6 +3427,25 @@ class FOFTable extends JObject implements JTableInterface
 		return $this->_trackAssets;
 	}
 
+    /**
+     * Method to manually set this record as ACL asset or not.
+     * We have to do this since the automatic check is made in the constructor, but here we can't set any alias.
+     * So, even if you have an alias for `asset_id`, it wouldn't be reconized and assets won't be tracked.
+     *
+     * @param $state
+     */
+    public function setAssetsTracked($state)
+    {
+        $state = (bool) $state;
+
+        if($state)
+        {
+            JLoader::import('joomla.access.rules');
+        }
+
+        $this->_trackAssets = $state;
+    }
+
 	/**
 	 * Method to provide a shortcut to binding, checking and storing a FOFTable
 	 * instance to the database table.  The method will check a row in once the
