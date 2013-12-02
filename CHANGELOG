@@ -2,6 +2,8 @@ FOF 2.1.1
 ================================================================================
 # Wrong asset_id (0) saved in table after creating a new item
 # Wrong ACL permissions saved when using the rules field type
+# gh-217 Now using the correct ACL privilege (core.create, core.edit, core.edit.own) when creating or modifying an item
+# gh-217 Save toolbar button shows up even when you can't edit an item
 
 FOF 2.1.0
 ================================================================================
