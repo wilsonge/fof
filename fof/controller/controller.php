@@ -2948,9 +2948,39 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeApply()
 	{
+        $model = $this->getThisModel();
+
+        if (!$model->getId())
+        {
+            $model->setIDsFromRequest();
+        }
+
+        $id = $model->getId();
+
+        if(!$id)
+        {
+            $defaultPrivilege = 'core.create';
+        }
+        else
+        {
+            $table = $model->getTable();
+            $table->load($id);
+
+            $created_by = $table->getColumnAlias('created_by');
+
+            if($table->$created_by == JFactory::getUser()->id)
+            {
+                $defaultPrivilege = 'core.edit.own';
+            }
+            else
+            {
+                $defaultPrivilege = 'core.edit';
+            }
+        }
+
 		$privilege = $this->configProvider->get(
 			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.acl.apply', 'core.edit'
+			FOFInflector::singularize($this->view) . '.acl.apply', $defaultPrivilege
 		);
 
 		return $this->checkACL($privilege);
@@ -2980,9 +3010,39 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeCancel()
 	{
+        $model = $this->getThisModel();
+
+        if (!$model->getId())
+        {
+            $model->setIDsFromRequest();
+        }
+
+        $id = $model->getId();
+
+        if(!$id)
+        {
+            $defaultPrivilege = 'core.create';
+        }
+        else
+        {
+            $table = $model->getTable();
+            $table->load($id);
+
+            $created_by = $table->getColumnAlias('created_by');
+
+            if($table->$created_by == JFactory::getUser()->id)
+            {
+                $defaultPrivilege = 'core.edit.own';
+            }
+            else
+            {
+                $defaultPrivilege = 'core.edit';
+            }
+        }
+
 		$privilege = $this->configProvider->get(
 			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.acl.cancel', 'core.edit'
+			FOFInflector::singularize($this->view) . '.acl.cancel', $defaultPrivilege
 		);
 
 		return $this->checkACL($privilege);
@@ -3070,9 +3130,39 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeSave()
 	{
+        $model = $this->getThisModel();
+
+        if (!$model->getId())
+        {
+            $model->setIDsFromRequest();
+        }
+
+        $id = $model->getId();
+
+        if(!$id)
+        {
+            $defaultPrivilege = 'core.create';
+        }
+        else
+        {
+            $table = $model->getTable();
+            $table->load($id);
+
+            $created_by = $table->getColumnAlias('created_by');
+
+            if($table->$created_by == JFactory::getUser()->id)
+            {
+                $defaultPrivilege = 'core.edit.own';
+            }
+            else
+            {
+                $defaultPrivilege = 'core.edit';
+            }
+        }
+
 		$privilege = $this->configProvider->get(
 			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.acl.save', 'core.edit'
+			FOFInflector::singularize($this->view) . '.acl.save', $defaultPrivilege
 		);
 
 		return $this->checkACL($privilege);
@@ -3087,7 +3177,7 @@ class FOFController extends JObject
 	{
 		$privilege = $this->configProvider->get(
 			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.acl.savenew', 'core.edit'
+			FOFInflector::singularize($this->view) . '.acl.savenew', 'core.create'
 		);
 
 		return $this->checkACL($privilege);
