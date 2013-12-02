@@ -444,7 +444,13 @@ class FOFToolbar
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ' &ndash; <small>' . JText::_($subtitle_key) . '</small>', $componentName);
 
 		// Set toolbar icons
-		JToolBarHelper::apply();
+        if ($this->perms->edit)
+        {
+            // Show the apply button only if I can edit the record, otherwise I'll return to the edit form and get a
+            // 403 error since I can't do that
+            JToolBarHelper::apply();
+        }
+
 		JToolBarHelper::save();
 		JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		JToolBarHelper::cancel();
