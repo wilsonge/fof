@@ -16,7 +16,12 @@ if (!defined('FOF_INCLUDED'))
     include_once JPATH_SITE . '/libraries/fof/include.php';
 }
 
-require_once JPATH_SITE . '/media/akeeba_strapper/version.php';
+if (!@include_once(JPATH_SITE . '/media/akeeba_strapper/version.php') && !defined('AKEEBASTRAPPER_VERSION'))
+{
+	define('AKEEBASTRAPPER_VERSION', 'dev');
+	define('AKEEBASTRAPPER_DATE', gmdate('Y-m-d'));
+	define('AKEEBASTRAPPER_MEDIATAG', md5(AKEEBASTRAPPER_VERSION . AKEEBASTRAPPER_DATE));
+}
 
 class AkeebaStrapper
 {
