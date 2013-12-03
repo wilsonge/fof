@@ -444,7 +444,7 @@ class FOFToolbar
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ' &ndash; <small>' . JText::_($subtitle_key) . '</small>', $componentName);
 
 		// Set toolbar icons
-        if ($this->perms->edit)
+        if ($this->perms->edit || $this->perms->editown)
         {
             // Show the apply button only if I can edit the record, otherwise I'll return to the edit form and get a
             // 403 error since I can't do that

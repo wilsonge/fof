@@ -77,10 +77,11 @@ class FOFViewRaw extends FOFView
 		{
 			$platform = FOFPlatform::getInstance();
 			$perms = (object) array(
-					'create'	 => $platform->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
-					'edit'		 => $platform->authorise('core.edit', $this->input->getCmd('option', 'com_foobar')),
-					'editstate'	 => $platform->authorise('core.edit.state', $this->input->getCmd('option', 'com_foobar')),
-					'delete'	 => $platform->authorise('core.delete', $this->input->getCmd('option', 'com_foobar')),
+					'create'	 => $platform->authorise('core.create'     , $this->input->getCmd('option', 'com_foobar')),
+					'edit'		 => $platform->authorise('core.edit'       , $this->input->getCmd('option', 'com_foobar')),
+					'editown'	 => $platform->authorise('core.edit.own'   , $this->input->getCmd('option', 'com_foobar')),
+					'editstate'	 => $platform->authorise('core.edit.state' , $this->input->getCmd('option', 'com_foobar')),
+					'delete'	 => $platform->authorise('core.delete'     , $this->input->getCmd('option', 'com_foobar')),
 			);
 			$this->assign('aclperms', $perms);
 			$this->perms = $perms;
@@ -232,7 +233,7 @@ class FOFViewRaw extends FOFView
         // This perms are used only for hestetic reasons (ie showing toolbar buttons), "real" checks
         // are made by the controller
         // It seems that I can't edit records, maybe I can edit only this one due asset tracking?
-		if (!$this->perms->edit)
+		if (!$this->perms->edit || !$this->perms->editown)
         {
             $model = $this->getModel();
 
@@ -244,7 +245,16 @@ class FOFViewRaw extends FOFView
                 if($table->isAssetsTracked())
                 {
                     $platform = FOFPlatform::getInstance();
-                    $this->perms->edit = $platform->authorise('core.edit', $table->getAssetName());
+
+                    if(!$this->perms->edit)
+                    {
+                        $this->perms->edit = $platform->authorise('core.edit', $table->getAssetName());
+                    }
+
+                    if(!$this->perms->editown)
+                    {
+                        $this->perms->editown = $platform->authorise('core.edit.own', $table->getAssetName());
+                    }
                 }
             }
         }

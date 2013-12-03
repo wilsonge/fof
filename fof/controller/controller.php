@@ -2815,11 +2815,14 @@ class FOFController extends JObject
 					if (FOFPlatform::getInstance()->authorise('core.edit.own', $asset))
 					{
 						$table = $this->getThisModel()->getTable();
+                        $table->load($id);
 
-						if ($table && isset($table->created_by))
+                        $created_by = $table->getColumnAlias('created_by');
+
+						if ($table && isset($table->$created_by))
 						{
 							// Now test the owner is the user.
-							$owner_id = (int) $table->created_by;
+							$owner_id = (int) $table->$created_by;
 
 							// If the owner matches 'me' then do the test.
 							if ($owner_id == FOFPlatform::getInstance()->getUser()->id)
