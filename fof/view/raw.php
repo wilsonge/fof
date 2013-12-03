@@ -249,7 +249,7 @@ class FOFViewRaw extends FOFView
             }
         }
 
-		return $this->onAdd();
+		return $this->onAdd($tpl);
 	}
 
 	/**
@@ -263,7 +263,7 @@ class FOFViewRaw extends FOFView
 	{
 		// All I need is to read the record
 
-		return $this->onAdd();
+		return $this->onAdd($tpl);
 	}
 
 	/**
