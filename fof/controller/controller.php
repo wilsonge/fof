@@ -3130,9 +3130,27 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeSave()
 	{
+		$model = $this->getThisModel();
+
+		if (!$model->getId())
+		{
+			$model->setIDsFromRequest();
+		}
+
+		$id = $model->getId();
+
+		if(!$id)
+		{
+			$defaultPrivilege = 'core.create';
+		}
+		else
+		{
+			$defaultPrivilege = 'core.edit';
+		}
+
 		$privilege = $this->configProvider->get(
 			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.acl.save', 'core.edit'
+			FOFInflector::singularize($this->view) . '.acl.save', $defaultPrivilege
 		);
 
 		return $this->checkACL($privilege);
