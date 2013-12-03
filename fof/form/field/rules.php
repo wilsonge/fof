@@ -87,12 +87,13 @@ class FOFFormFieldRules extends JFormFieldRules implements FOFFormField
 	}
 
     /**
-     * Sadly, at the timing of writing (2013-12-03), Joomla rules field is bugged. When you are dealing with a new record
-     * he fetches default permissions from the root node, that equals to Joomla articles default permissions.
-     * We had to copy paste the whole code, since we can't "inject" the correct asset id, if not found.
-     * Fixed area are surrounded by `FOF Library fix` comments.
+	 * At the timing of this writing (2013-12-03), the Joomla "rules" field is buggy. When you are
+	 * dealing with a new record it gets the default permissions from the root asset node, which
+	 * is fine for the default permissions of Joomla articles, but unsuitable for third party software.
+	 * We had to copy & paste the whole code, since we can't "inject" the correct asset id if one is
+	 * not found. Our fixes are surrounded by `FOF Library fix` remarks.
      *
-     * @return string
+     * @return  string  The input field's HTML for this field type
      */
     public function getInput()
     {
