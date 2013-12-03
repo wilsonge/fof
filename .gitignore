@@ -3,6 +3,8 @@ nbproject/
 fof/include.php
 fof/version.txt
 strapper/version.txt
+strapper/files_strapper.xml
+strapper/akeeba_strapper/version.php
 release/*.zip
 .buildpath
 .settings/
