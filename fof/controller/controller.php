@@ -2963,19 +2963,7 @@ class FOFController extends JObject
         }
         else
         {
-            $table = $model->getTable();
-            $table->load($id);
-
-            $created_by = $table->getColumnAlias('created_by');
-
-            if($table->$created_by == JFactory::getUser()->id)
-            {
-                $defaultPrivilege = 'core.edit.own';
-            }
-            else
-            {
-                $defaultPrivilege = 'core.edit';
-            }
+            $defaultPrivilege = 'core.edit';
         }
 
 		$privilege = $this->configProvider->get(
@@ -3025,19 +3013,7 @@ class FOFController extends JObject
         }
         else
         {
-            $table = $model->getTable();
-            $table->load($id);
-
-            $created_by = $table->getColumnAlias('created_by');
-
-            if($table->$created_by == JFactory::getUser()->id)
-            {
-                $defaultPrivilege = 'core.edit.own';
-            }
-            else
-            {
-                $defaultPrivilege = 'core.edit';
-            }
+            $defaultPrivilege = 'core.edit';
         }
 
 		$privilege = $this->configProvider->get(
@@ -3130,35 +3106,23 @@ class FOFController extends JObject
 	 */
 	protected function onBeforeSave()
 	{
-        $model = $this->getThisModel();
+		$model = $this->getThisModel();
 
-        if (!$model->getId())
-        {
-            $model->setIDsFromRequest();
-        }
+		if (!$model->getId())
+		{
+			$model->setIDsFromRequest();
+		}
 
-        $id = $model->getId();
+		$id = $model->getId();
 
-        if(!$id)
-        {
-            $defaultPrivilege = 'core.create';
-        }
-        else
-        {
-            $table = $model->getTable();
-            $table->load($id);
-
-            $created_by = $table->getColumnAlias('created_by');
-
-            if($table->$created_by == JFactory::getUser()->id)
-            {
-                $defaultPrivilege = 'core.edit.own';
-            }
-            else
-            {
-                $defaultPrivilege = 'core.edit';
-            }
-        }
+		if(!$id)
+		{
+			$defaultPrivilege = 'core.create';
+		}
+		else
+		{
+			$defaultPrivilege = 'core.edit';
+		}
 
 		$privilege = $this->configProvider->get(
 			$this->component . '.views.' .
