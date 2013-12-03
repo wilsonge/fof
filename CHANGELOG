@@ -4,6 +4,7 @@ FOF 2.1.1
 # Wrong ACL permissions saved when using the rules field type
 # gh-217 Now using the correct ACL privilege (core.create, core.edit, core.edit.own) when creating or modifying an item
 # gh-217 Save toolbar button shows up even when you can't edit an item
+# gh-219 The "rule" field assigns a bad asset parent node, making it impossible to work with a newly created asset-tracked item unless you are Super User
 
 FOF 2.1.0
 ================================================================================
