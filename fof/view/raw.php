@@ -229,7 +229,25 @@ class FOFViewRaw extends FOFView
 	 */
 	protected function onEdit($tpl = null)
 	{
-		// An editor is an editor, no matter if the record is new or old :p
+        // This perms are used only for hestetic reasons (ie showing toolbar buttons), "real" checks
+        // are made by the controller
+        // It seems that I can't edit records, maybe I can edit only this one due asset tracking?
+		if (!$this->perms->edit)
+        {
+            $model = $this->getModel();
+
+            if($model)
+            {
+                $table = $model->getTable();
+
+                // Ok, record is tracked, let's see if I can this record
+                if($table->isAssetsTracked())
+                {
+                    $platform = FOFPlatform::getInstance();
+                    $this->perms->edit = $platform->authorise('core.edit', $table->getAssetName());
+                }
+            }
+        }
 
 		return $this->onAdd();
 	}
