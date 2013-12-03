@@ -2963,19 +2963,7 @@ class FOFController extends JObject
         }
         else
         {
-            $table = $model->getTable();
-            $table->load($id);
-
-            $created_by = $table->getColumnAlias('created_by');
-
-            if($table->$created_by == JFactory::getUser()->id)
-            {
-                $defaultPrivilege = 'core.edit.own';
-            }
-            else
-            {
-                $defaultPrivilege = 'core.edit';
-            }
+            $defaultPrivilege = 'core.edit';
         }
 
 		$privilege = $this->configProvider->get(
@@ -3025,19 +3013,7 @@ class FOFController extends JObject
         }
         else
         {
-            $table = $model->getTable();
-            $table->load($id);
-
-            $created_by = $table->getColumnAlias('created_by');
-
-            if($table->$created_by == JFactory::getUser()->id)
-            {
-                $defaultPrivilege = 'core.edit.own';
-            }
-            else
-            {
-                $defaultPrivilege = 'core.edit';
-            }
+            $defaultPrivilege = 'core.edit';
         }
 
 		$privilege = $this->configProvider->get(
