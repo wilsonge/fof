@@ -73,18 +73,33 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
             $table->setRules($test['rules']);
         }
 
+        $query       = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
+        $beforeTotal = $db->setQuery($query)->loadResult();
+
         $return = $behavior->onAfterStore($table);
 
         $this->assertEquals($check['return'], $return, 'FOFTableBehaviorAssets::onAfterStore returned a wrong value');
 
-        // Let's check what has been saved
-        $query = $db->getQuery(true)
-                    ->select('id, rules')
-                    ->from('#__assets')
-                    ->where('name = '.$db->q($table->getAssetName()));
-        $asset = $db->setQuery($query)->loadObject();
+        $asset = null;
+        if($check['count'] == 0)
+        {
+            $query      = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
+            $afterTotal = $db->setQuery($query)->loadResult();
 
-        $this->assertEquals($check['count'], (int) (!is_null($asset)), 'FOFTableBehaviorAssets::onAfterStore wrong number of assets saved');
+            $this->assertEquals(0, $beforeTotal - $afterTotal, 'FOFTableBehaviorAssets::onAfterStore wrong number of assets saved');
+        }
+        else
+        {
+            // Let's check what has been saved
+            $query = $db->getQuery(true)
+                        ->select('id, rules')
+                        ->from('#__assets')
+                        ->where('name = '.$db->q($table->getAssetName()));
+            $asset = $db->setQuery($query)->loadObject();
+
+            $this->assertEquals($check['count'], (int) (!is_null($asset)), 'FOFTableBehaviorAssets::onAfterStore wrong number of assets saved');
+        }
+
 
         if(isset($check['rules']))
         {
@@ -99,7 +114,6 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
             $this->assertEquals($asset->id, $table->$asset_field, 'FOFTableBehaviorAssets::onAfterStore asset id not store inside the table');
         }
     }
-
 
     /**
      * @group               assetsOnAfterBind
@@ -146,6 +160,58 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
         $this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, 'FOFTableBehaviorAssets::onAfterStore set rules wrong');
     }
 
+    /**
+     * @group               assetsOnBeforeDelete
+     * @group               FOFTableBehavior
+     * @covers              FOFTableBehaviorAssets::onBeforeDelete
+     * @dataProvider        getTestOnBeforeDelete
+     */
+    public function testOnBeforeDelete($tableinfo, $test, $check)
+    {
+        $db              = JFactory::getDbo();
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
+
+        if(isset($test['tbl_key']))
+        {
+            $config['tbl_key'] = $test['tbl_key'];
+        }
+
+        $table = FOFTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
+
+        $reflection = new ReflectionProperty($table, 'tableDispatcher');
+        $reflection->setAccessible(true);
+        $dispatcher = $reflection->getValue($table);
+
+        $behavior = new FOFTableBehaviorAssets($dispatcher);
+
+        if(isset($test['alias']))
+        {
+            foreach($test['alias'] as $column => $alias)
+            {
+                $table->setColumnAlias($column, $alias);
+            }
+
+            $table->setAssetsTracked(true);
+        }
+
+        if(isset($test['loadid']))
+        {
+            $table->load($test['loadid']);
+        }
+
+        $query       = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
+        $beforeTotal = $db->setQuery($query)->loadResult();
+
+        $return = $behavior->onBeforeDelete($table, isset($test['id']) ? $test['id'] : null);
+
+        $this->assertEquals($check['return'], $return, 'FOFTableBehaviorAssets::onBeforeDelete returned a wrong value');
+
+        $query      = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
+        $afterTotal = $db->setQuery($query)->loadResult();
+
+        $this->assertEquals($check['count'], $beforeTotal - $afterTotal, 'FOFTableBehaviorAssets::onBeforeDelete deleted a wrong number of assets');
+    }
+
     public function getTestOnAfterStore()
     {
         return assetsDataprovider::getTestOnAfterStore();
@@ -154,5 +220,10 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
     public function getTestOnAfterBind()
     {
         return assetsDataprovider::getTestOnAfterBind();
+    }
+
+    public function getTestOnBeforeDelete()
+    {
+        return assetsDataprovider::getTestOnBeforeDelete();
     }
 }

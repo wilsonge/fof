@@ -3268,10 +3268,10 @@ class FOFTable extends JObject implements JTableInterface
 	{
 		$k = $this->_tbl_key;
 
-        // If there is no assetKey defined, let's set it to table name
-        if(!$this->_assetKey)
+        // If there is no assetKey defined, stop here, or we'll get a wrong name
+        if(!$this->_assetKey || !$this->$k)
         {
-            throw new UnexpectedValueException('Table must have an asset key defined in order to track assets');
+            throw new UnexpectedValueException('Table must have an asset key defined and a value for the table id in order to track assets');
         }
 
 		return $this->_assetKey . '.' . (int) $this->$k;

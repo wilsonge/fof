@@ -111,4 +111,69 @@ abstract class assetsDataprovider
 
         return $data;
     }
+
+    public static function getTestOnBeforeDelete()
+    {
+        // Without asset support
+        $data[] = array(
+            array(
+                'name' => 'bare',
+            ),
+            array(),
+            array('return' => true, 'count' => 0)
+        );
+
+        // With asset support - not loaded
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+            ),
+            array(),
+            array('return' => false, 'count' => 0)
+        );
+
+        // With asset support - loaded no asset
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+            ),
+            array('loadid' => 2),
+            array('return' => true, 'count' => 0)
+        );
+
+        // With asset support - loaded with asset
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+            ),
+            array('loadid' => 4),
+            array('return' => true, 'count' => 1)
+        );
+
+        // With asset support - loaded (using ID) with asset
+        $data[] = array(
+            array(
+                'name' => 'foobar',
+            ),
+            array('id' => 4),
+            array('return' => true, 'count' => 1)
+        );
+
+        // With asset support - loaded (using ID) with asset
+        $data[] = array(
+            array(
+                'name' => 'foobaraliases',
+            ),
+            array(
+                'id'      => 2,
+                'tbl_key' => 'id_foobar_aliases',
+                'alias'   => array(
+                    'asset_id' => 'fo_asset_id',
+                )
+            ),
+            array('return' => true, 'count' => 0)
+        );
+
+        return $data;
+    }
 }
