@@ -3527,6 +3527,144 @@ $json = ob_end_clean();
       example also screws up the document MIME type if you use it in an HTML
       view. Be warned.</para>
     </section>
+
+    <section>
+      <title>ACL configuration</title>
+
+      <para>Another key feature of FOF are automatic ACL checks: before an
+      user is going to do anything, a permission check is made. For example,
+      before browsing a list of records, FOF checks for
+      <classname>core.browse</classname> permission or when we're trying to
+      save a record, permission <classname>core.edit</classname> is
+      checked.</para>
+
+      <para><bridgehead>Adding ACL support in your
+      extension</bridgehead></para>
+
+      <para>In these sections we will analyze our example component To-Do List
+      and we will retrace the steps needed in order to add and manage ACL
+      inside the extension.</para>
+
+      <para>What we want to achieve is a permission system based on two
+      levels: we will define global wide permissions, then we will add
+      "exceptions" to single records. For example, we need that Registered
+      users can always edit records, but we want to prevent them from editing
+      on a single record only because is very important for us.</para>
+
+      <para><bridgehead>Defining the actions</bridgehead></para>
+
+      <para>First of all, we have to define the actions that an user could
+      perform, so create the file <classname>access.xml</classname> inside
+      your extension backend directory and add the following lines:</para>
+
+      <para><programlisting>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;access component="com_todo"&gt;
+  &lt;section name="component"&gt;
+    &lt;action name="core.admin"       title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" /&gt;
+    &lt;action name="core.manage"      title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.create"      title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.delete"      title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit"        title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.own"    title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.state"  title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" /&gt;
+  &lt;/section&gt;
+
+  &lt;section name="unit"&gt;
+    &lt;!-- Actions to be used in for unit --&gt;
+    &lt;action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" /&gt;
+  &lt;/section&gt;
+&lt;/access&gt;</programlisting>As you can see, there are two sections: one
+      for the whole component and another related to single records.</para>
+
+      <para><important>
+          <para>FOF will assume that the following permissions are defined
+          inside your component: <classname>core.admin</classname>,
+          <classname>core.manage</classname>,
+          <classname>core.create</classname>,
+          <classname>core.delete</classname>,
+          <classname>core.edit</classname>,
+          <classname>core.edit.own</classname>,
+          <classname>core.edit.state</classname> .</para>
+
+          <para>In order to fully take advantage of FOF features, we strongly
+          suggest you to define the above actions.</para>
+        </important></para>
+
+      <para><bridgehead>Editing component permissions</bridgehead></para>
+
+      <para>In your <classname>config.xml</classname> file you have to add the
+      following lines:</para>
+
+      <programlisting>&lt;fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC"&gt;
+  &lt;field name="rules" type="rules"
+         label="JCONFIG_PERMISSIONS_LABEL"
+         class="inputbox"
+         filter="rules"
+         component="com_todo"
+         section="component" /&gt;
+&lt;/fieldset&gt;</programlisting>
+
+      <para>In this way Joomla! will render a Permissions tab inside your
+      component options.</para>
+
+      <para><bridgehead>Editing record permissions</bridgehead></para>
+
+      <para>First of all we have to add a column to our table, as per FOF
+      convention its name should be <classname>asset_id</classname> (however
+      you could setup an alias):</para>
+
+      <programlisting>ALTER TABLE `#__todo_items` ADD `asset_id` INT NOT NULL ;</programlisting>
+
+      <para>Then you have to add two fields on your XML form: the saved
+      asset_id and the rule field, that is used to set the permissions to each
+      user group:</para>
+
+      <programlisting>&lt;fieldset name="rules"&gt;
+  &lt;field name="asset_id" type="hidden" emptylabel="true" filter="unset" /&gt;
+
+  &lt;field name="rules"
+         type="rules"
+         emptylabel="true"
+         translate_label="false"
+         filter="rules"
+         validate="rules"
+         class="inputbox"
+         component="com_todo"
+         section="unit" /&gt;
+&lt;/fieldset&gt;</programlisting>
+
+      <para>Finally, you have update your table class and add new method,
+      named <classname>getAssetParentId</classname>. You have to do that since
+      when we have to tell Joomla! what's the parent of our asset record, in
+      this case it would be the component itself:</para>
+
+      <programlisting>public function getAssetParentId($table = null, $id = null)
+{
+    $db = JFactory::getDbo();
+
+    $query = $db-&gt;getQuery(true)
+                -&gt;select($db-&gt;qn('id'))
+                -&gt;from($db-&gt;qn('#__assets'))
+                -&gt;where($db-&gt;qn('name').' = '.$db-&gt;q('com_todo'))
+                -&gt;where($db-&gt;qn('parent_id').' = 1')
+                -&gt;where($db-&gt;qn('level').' = 1');
+    $parent_id = $db-&gt;setQuery($query)-&gt;loadResult();
+
+    if(!$parent_id)
+    {
+       return parent::getAssetParentId($table, $id);
+    }
+    else
+    {
+        return $parent_id;
+    }
+}</programlisting>
+
+      <para>And that's it! Now enjoy the ACL in your extension.</para>
+    </section>
   </chapter>
 
   <chapter xml:id="features-reference">
