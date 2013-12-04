@@ -1889,16 +1889,28 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
       </variablelist>
 
       <para>You can always customise the magic fields' names in your Table
-      class using the <property>_columnAlias</property> array property. For
-      example, if your column is named <database>published</database> instead
-      of <database>enabled</database>:</para>
+      class using the <property>setColumnAlias</property> method. For example,
+      if your column is named <database>published</database> instead of
+      <database>enabled</database>:</para>
 
-      <programlisting>$this-&gt;_columnAlias['enabled'] = 'published';
-</programlisting>
+      <programlisting>function __construct($table, $key, $db, $config)
+{
+    $this-&gt;setColumnAlias('enabled', 'published');
+        
+    parent::__construct($table, $key, $db, $config);
+}</programlisting>
 
       <para>Now FOF will know that the <database>published</database> column
       contains the publish status of the record. This comes in handy when
       you're upgrading a component from POJ (plain old Joomla!) to FOF.</para>
+
+      <para><important>
+          <para>We strongly suggest to set these alias inside the table
+          constructor and more specifically <emphasis
+          role="bold">before</emphasis> calling the parent constructor. In
+          this way, FOF will know everything about your table and can set some
+          automatic feature, like asset tracking.</para>
+        </important></para>
 
       <bridgehead>Using joined tables</bridgehead>
 
@@ -3635,6 +3647,13 @@ $json = ob_end_clean();
          component="com_todo"
          section="unit" /&gt;
 &lt;/fieldset&gt;</programlisting>
+
+      <para><important>
+          <para>At the timing of this writing (2013-12-03), the Joomla!
+          "rules" field is buggy. If you want add per item ACL privileges you
+          <emphasis>must</emphasis> use FOF XML forms, since we found a
+          workaround for this issue.</para>
+        </important></para>
 
       <para>Finally, you have update your table class and add new method,
       named <classname>getAssetParentId</classname>. You have to do that since
