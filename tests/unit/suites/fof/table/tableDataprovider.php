@@ -1277,6 +1277,88 @@ abstract class TableDataprovider
 		return $data;
 	}
 
+	public static function getTableFields()
+	{
+		// Standard behavior
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Using cache but nuking the internal table one
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array()),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Using cache but nuking the internal table and field ones
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array()),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache ON
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF - supplying (existing) tablename (#__ format)
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true, 'table' => '#__foftest_bares'),
+			array('fields' => array(
+					'foftest_bare_id', 'title'
+				)
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF - supplying (existing) tablename (plain format)
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true, 'table' => 'jos_foftest_bares'),
+			array('fields' => array(
+					'foftest_bare_id', 'title'
+				)
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF - supplying (NON existing) tablename (#__ format)
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true, 'table' => '#__wrong'),
+			array('fields' => false)
+		);
+
+		return $data;
+	}
+
 	public static function getIsQuoted()
 	{
 		$db = JFactory::getDbo();

@@ -1048,6 +1048,70 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @group               tableGetTableFields
+	 * @group               FOFTable
+	 * @covers              FOFTable::getTableFields
+	 * @dataProvider        getTableFields
+	 * @preventDataLoading
+	 */
+	public function testGetTableFields($tableinfo, $test, $check)
+	{
+		$config['input']           = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$config['use_table_cache'] = $test['use_table_cache'];
+
+		$table = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if(isset($test['joomlaCache']))
+		{
+			$mock = $this->getMock('FOFPlatformJoomla', array('getCache'));
+
+			if($test['joomlaCache'])
+			{
+				$raw   = file_get_contents(JPATH_TESTS.'/unit/core/cache/cache.txt');
+				$cache = unserialize($raw);
+
+				$mock->expects($this->any())->method('getCache')->will($this->returnCallback(function($arg) use ($cache){
+					return $cache->get($arg, null);
+				}));
+			}
+			else
+			{
+				$mock->expects($this->any())->method('getCache')->will($this->returnValue(null));
+			}
+
+			FOFPlatform::forceInstance($mock);
+		}
+
+		if(isset($test['tableCache']))
+		{
+			$property = new ReflectionProperty($table, 'tableCache');
+			$property->setAccessible(true);
+			$property->setValue($table, $test['tableCache']);
+		}
+
+		if(isset($test['tableFieldCache']))
+		{
+			$property = new ReflectionProperty($table, 'tableFieldCache');
+			$property->setAccessible(true);
+			$property->setValue($table, $test['tableFieldCache']);
+		}
+
+		$return = $table->getTableFields(isset($test['table']) ? $test['table'] : null);
+
+		if(is_array($return))
+		{
+			$fields = array_keys($return);
+		}
+		else
+		{
+			$fields = $return;
+		}
+
+
+		$this->assertEquals($check['fields'], $fields, 'FOFTable::getTableFields returned the wrong value');
+	}
+
+	/**
 	 * @group               tableIsQuoted
 	 * @group               FOFTable
 	 * @covers              FOFTable::isQuoted
@@ -1152,6 +1216,11 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getCSVHeader()
 	{
 		return TableDataprovider::getCSVHeader();
+	}
+
+	public function getTableFields()
+	{
+		return TableDataprovider::getTableFields();
 	}
 
 	public function getIsQuoted()
