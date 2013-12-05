@@ -1277,10 +1277,53 @@ abstract class TableDataprovider
 		return $data;
 	}
 
+	public static function getIsQuoted()
+	{
+		$db = JFactory::getDbo();
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => ''),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => 'enabled'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => '92'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => '__test'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => '#__tablename'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => $db->qn('#__tablename')),
+			array('return' => true)
+		);
+
+		return $data;
+	}
+
 	public static function getTestGetContentType()
 	{
 		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');
-		$data[] = array('com_foftest', 'foobars', 'com_foftest.foobars', 'Wrong content type');
+		$data[] = array('com_foftest', 'foobars', 'com_foftest.foobar', 'Wrong content type');
 
 		return $data;
 	}

@@ -1030,6 +1030,7 @@ class FOFTableTest extends FtestCaseDatabase
 	 * @group               FOFTable
 	 * @covers              FOFTable::getCSVHeader
 	 * @dataProvider        getCSVHeader
+	 * @preventDataLoading
 	 */
 	public function testGetCSVHeader($tableinfo, $test, $check)
 	{
@@ -1044,6 +1045,25 @@ class FOFTableTest extends FtestCaseDatabase
 		$string = $table->getCSVHeader($test['separator']);
 
 		$this->assertEquals($check['string'], $string, 'FOFTable::getCSVHeader returned a wrong value');
+	}
+
+	/**
+	 * @group               tableIsQuoted
+	 * @group               FOFTable
+	 * @covers              FOFTable::isQuoted
+	 * @dataProvider        getIsQuoted
+	 * @preventDataLoading
+	 */
+	public function testIsQuoted($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		$method = new ReflectionMethod($table, 'isQuoted');
+		$method->setAccessible(true);
+		$return = $method->invoke($table, $test['column']);
+
+		$this->assertEquals($check['return'], $return, 'FOFTable::isQuoted returned a wrong value');
 	}
 
 	/**
@@ -1132,6 +1152,11 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getCSVHeader()
 	{
 		return TableDataprovider::getCSVHeader();
+	}
+
+	public function getIsQuoted()
+	{
+		return TableDataprovider::getIsQuoted();
 	}
 
 	public function getTestGetContentType()

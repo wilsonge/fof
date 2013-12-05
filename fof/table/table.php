@@ -2385,13 +2385,18 @@ class FOFTable extends JObject implements JTableInterface
 	/**
 	 * Is the field quoted?
 	 *
-	 * @param   string  $column     Column, passed by reference, so in later version of Joomla
-	 *                              I can always quote them
+	 * @param   string  $column     Column field
 	 *
 	 * @return  bool    Is the field quoted?
 	 */
-	protected function isQuoted(&$column)
+	protected function isQuoted($column)
 	{
+		// Empty string, un-quoted by definition
+		if(!$column)
+		{
+			return false;
+		}
+
 		// I need some "magic". If the first char is not a letter, a number
 		// an underscore or # (needed for table), then most likely the field is quoted
 		preg_match_all('/^[a-z0-9_#]/i', $column, $matches);
