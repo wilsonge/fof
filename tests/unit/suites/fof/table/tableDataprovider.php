@@ -1133,8 +1133,60 @@ abstract class TableDataprovider
 
 	public static function getTestHit()
 	{
+		// With no hits support
 		$data[] = array(
+			array('onBeforeHit' => true, 'onAfterHit' => true),
+			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+			array('loadid' => 1, 'cid' => ''),
+			array('return' => true)
+		);
 
+		// With no hits support - onBefore returns false
+		$data[] = array(
+			array('onBeforeHit' => false, 'onAfterHit' => true),
+			array('table' => 'jos_foftest_bares', 'id' => 'foftest_bare_id'),
+			array('loadid' => 1, 'cid' => ''),
+			array('return' => false)
+		);
+
+		// With hits support - table not loaded
+		$data[] = array(
+			array('onBeforeHit' => true, 'onAfterHit' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => '', 'cid' => ''),
+			array('return' => false)
+		);
+
+		// With hits support - onBefore returns true
+		$data[] = array(
+			array('onBeforeHit' => true, 'onAfterHit' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 2, 'cid' => ''),
+			array('return' => true, 'hits' => 24)
+		);
+
+		// With hits support - onBefore returns true, using id
+		$data[] = array(
+			array('onBeforeHit' => true, 'onAfterHit' => true),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => '', 'cid' => 2),
+			array('return' => true, 'hits' => 24)
+		);
+
+		// With hits support - onAfter returns false
+		$data[] = array(
+			array('onBeforeHit' => true, 'onAfterHit' => false),
+			array('table' => 'jos_foftest_foobars', 'id' => 'foftest_foobar_id'),
+			array('loadid' => 2, 'cid' => ''),
+			array('return' => false, 'hits' => 24)
+		);
+
+		// With hits support - with table alias - everything ok
+		$data[] = array(
+			array('onBeforeHit' => true, 'onAfterHit' => true),
+			array('table' => 'jos_foftest_foobaraliases', 'id' => 'id_foobar_aliases'),
+			array('loadid' => 2, 'cid' => '', 'alias' => array('hits' => 'fo_hits')),
+			array('return' => true, 'hits' => 13)
 		);
 
 		return $data;

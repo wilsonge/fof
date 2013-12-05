@@ -1850,26 +1850,38 @@ class FOFTable extends JObject implements JTableInterface
 		}
 
 		$k  = $this->_tbl_key;
-		$pk = (is_null($oid)) ? $this->$k : $oid;
+		$pk = ($oid) ? $oid : $this->$k;
 
 		// If no primary key is given, return false.
-
-		if ($pk === null)
+		if (!$pk)
 		{
 			$result = false;
 		}
 		else
 		{
 			// Check the row in by primary key.
-			$query = $this->_db->getQuery(true);
-			$query->update($this->_tbl);
-			$query->set($this->_db->qn($hits_field) . ' = (' . $this->_db->qn($hits_field) . ' + 1)');
-			$query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
-			$this->_db->setQuery($query);
-			$this->_db->execute();
+			$query = $this->_db->getQuery(true)
+						  ->update($this->_tbl)
+						  ->set($this->_db->qn($hits_field) . ' = (' . $this->_db->qn($hits_field) . ' + 1)')
+						  ->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
 
-			// Set table values in the object.
-			$this->hits++;
+			$this->_db->setQuery($query)->execute();
+
+			// In order to update the table object, I have to load the table
+			if(!$this->$k)
+			{
+				$query = $this->_db->getQuery(true)
+							  ->select($this->_db->qn($hits_field))
+							  ->from($this->_db->qn($this->_tbl))
+							  ->where($this->_db->qn($this->_tbl_key) . ' = ' . $this->_db->q($pk));
+				
+				$this->$hits_field = $this->_db->setQuery($query)->loadResult();
+			}
+			else
+			{
+				// Set table values in the object.
+				$this->$hits_field++;
+			}
 
 			$result = true;
 		}

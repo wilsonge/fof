@@ -960,13 +960,27 @@ class FOFTableTest extends FtestCaseDatabase
 			}
 		}
 
-		if(isset($test['loadid']))
+		if($test['loadid'])
 		{
 			$table->load($test['loadid']);
 		}
 
 		$rc = $table->hit($test['cid']);
-		$this->assertEquals($check['return'], $rc, 'Hit: Wrong return value');
+		$this->assertEquals($check['return'], $rc, 'FOFTable::hit returned a wrong value');
+
+		if(isset($check['hits']))
+		{
+			$hitField = $table->getColumnAlias('hits');
+
+			$query = $db->getQuery(true)
+						->select($hitField)
+						->from($tableinfo['table'])
+						->where($tableinfo['id'].' = '.$id);
+			$hits = $db->setQuery($query)->loadResult();
+
+			$this->assertEquals($check['hits'], $hits, 'FOFTable::hit saved a wrong value');
+			$this->assertEquals($check['hits'], $table->$hitField, 'FOFTable::hit saved a wrong value inside table object');
+        }
 	}
 
 	/**

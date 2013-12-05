@@ -12,7 +12,7 @@
     <column>slug</column>
     <column>enabled</column>
     <column>ordering</column>
-    <column>hit</column>
+    <column>hits</column>
     <column>asset_id</column>
     <column>created_by</column>
     <column>created_on</column>
@@ -41,8 +41,8 @@
       <value>second-row</value>
       <value>0</value>
       <value>2</value>
-      <value>0</value>
       <value>23</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -103,7 +103,7 @@
     <column>fo_slug</column>
     <column>fo_enabled</column>
     <column>fo_ordering</column>
-    <column>fo_hit</column>
+    <column>fo_hits</column>
     <column>fo_asset_id</column>
     <column>fo_created_by</column>
     <column>fo_created_on</column>
@@ -132,8 +132,8 @@
       <value>second-row</value>
       <value>0</value>
       <value>2</value>
-      <value>0</value>
       <value>12</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
