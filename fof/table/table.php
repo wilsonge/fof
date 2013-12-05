@@ -1908,14 +1908,8 @@ class FOFTable extends JObject implements JTableInterface
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			if (is_array($v) or is_object($v) or $v === null)
+			if (!in_array($k, $this->getKnownFields()))
 			{
-				continue;
-			}
-
-			if ($k[0] == '_')
-			{
-				// Internal field
 				continue;
 			}
 
@@ -1962,14 +1956,8 @@ class FOFTable extends JObject implements JTableInterface
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			if (is_array($v) or is_object($v) or $v === null)
+			if (!in_array($k, $this->getKnownFields()))
 			{
-				continue;
-			}
-
-			if ($k[0] == '_')
-			{
-				// Internal field
 				continue;
 			}
 

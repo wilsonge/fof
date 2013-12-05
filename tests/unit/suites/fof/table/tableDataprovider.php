@@ -1197,7 +1197,7 @@ abstract class TableDataprovider
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => '', 'separator' => ','),
-			array('string' => '0')
+			array('string' => '"","","","","","","0","","","","","",""')
 		);
 
 		$data[] = array(
@@ -1235,6 +1235,43 @@ abstract class TableDataprovider
 				'locked_by'         => null,
 				'locked_on'         => null
 			))
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => '2'),
+			array('return' => array(
+				'foftest_foobar_id' => 2,
+				'title'             => 'Second row',
+				'slug'              => 'second-row',
+				'enabled'           => 0,
+				'ordering'          => 2,
+				'hits'              => 23,
+				'asset_id'          => 0,
+				'created_by'        => 42,
+				'created_on'        => '0000-00-00 00:00:00',
+				'modified_by'       => 0,
+				'modified_on'       => '0000-00-00 00:00:00',
+				'locked_by'         => 0,
+				'locked_on'         => '0000-00-00 00:00:00'
+			))
+		);
+
+		return $data;
+	}
+
+	public static function getCSVHeader()
+	{
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => '', 'separator' => ','),
+			array('string' => '"foftest_foobar_id","title","slug","enabled","ordering","hits","asset_id","created_by","created_on","modified_by","modified_on","locked_by","locked_on"')
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => 2, 'separator' => '\t'),
+			array('string' => '"foftest_foobar_id"\t"title"\t"slug"\t"enabled"\t"ordering"\t"hits"\t"asset_id"\t"created_by"\t"created_on"\t"modified_by"\t"modified_on"\t"locked_by"\t"locked_on"')
 		);
 
 		return $data;
