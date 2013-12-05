@@ -1874,7 +1874,7 @@ class FOFTable extends JObject implements JTableInterface
 							  ->select($this->_db->qn($hits_field))
 							  ->from($this->_db->qn($this->_tbl))
 							  ->where($this->_db->qn($this->_tbl_key) . ' = ' . $this->_db->q($pk));
-				
+
 				$this->$hits_field = $this->_db->setQuery($query)->loadResult();
 			}
 			else
