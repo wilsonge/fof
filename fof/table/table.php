@@ -152,7 +152,7 @@ class FOFTable extends JObject implements JTableInterface
 	 * com_example.viewname format. They asset name will be this key appended
 	 * with the item's ID, e.g. com_example.viewname.123
 	 *
-	 * @var type
+	 * @var    string
 	 */
 	protected $_assetKey = '';
 

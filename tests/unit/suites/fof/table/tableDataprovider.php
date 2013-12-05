@@ -1131,6 +1131,15 @@ abstract class TableDataprovider
 		return $data;
 	}
 
+	public static function getTestHit()
+	{
+		$data[] = array(
+
+		);
+
+		return $data;
+	}
+
 	public static function getTestGetContentType()
 	{
 		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');

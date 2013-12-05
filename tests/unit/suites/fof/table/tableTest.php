@@ -926,32 +926,48 @@ class FOFTableTest extends FtestCaseDatabase
 		$table->delete();
 	}
 
-	// getUcmCoreAlias has been moved inside the behaviors
-	/*public function testGetUcmCoreAlias()
+	/**
+	 * @group               tableHit
+	 * @group               FOFTable
+	 * @covers              FOFTable::hit
+	 * @dataProvider        getTestHit
+	 */
+	public function testHit($events, $tableinfo, $test, $check)
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+		$db          = JFactory::getDbo();
+		$methods     = array_keys($events);
 
-		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
-		$reflection = new ReflectionClass($table);
+		$id          = max($test['loadid'], $test['cid']);
+		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+		$table       = $this->getMock('FOFTable', $methods, $constr_args, '', true, true, true, true);
 
-		$method  = $reflection->getMethod('getUcmCoreAlias');
-		$method->setAccessible(true);
+		foreach($events as $event => $return)
+		{
+			$table->expects($this->any())->method($event)->will($this->returnValue($return));
+		}
 
-		$table->propertyExist = 'dummy';
-		$table->addKnownField('propertyExist');
-		$alias = $method->invokeArgs($table, array('propertyExist'));
-		$this->assertEquals('propertyExist', $alias, 'Invalid value for existing property');
-		$table->removeKnownField('propertyExists');
+		// We have to manually provide this info, since we can't use the getInstance method (we have to mock)
+		if(isset($test['assetkey']))
+		{
+			$table->setAssetKey($test['assetkey']);
+		}
 
-		$alias = $method->invokeArgs($table, array('propertyDoesNotExist'));
-		$this->assertEquals('null', $alias, 'Invalid value for non-existing property');
+		if(isset($test['alias']))
+		{
+			foreach($test['alias'] as $column => $alias)
+			{
+				$table->setColumnAlias($column, $alias);
+			}
+		}
 
-		$table->testalias = 'aliased property';
-		$table->addKnownField('testalias');
-		$table->setColumnAlias('testcolumn', 'testalias');
-		$alias = $method->invokeArgs($table, array('testcolumn'));
-		$this->assertEquals('testalias', $alias, 'Invalid value for aliased property');
-	}*/
+		if(isset($test['loadid']))
+		{
+			$table->load($test['loadid']);
+		}
+
+		$rc = $table->hit($test['cid']);
+		$this->assertEquals($check['return'], $rc, 'Hit: Wrong return value');
+	}
 
 	/**
 	 * @covers              FOFTable::getContentType
@@ -1021,8 +1037,8 @@ class FOFTableTest extends FtestCaseDatabase
 		return TableDataprovider::getTestDelete();
 	}
 
-	public function getTestGetContentType()
+	public function getTestHit()
 	{
-		return TableDataprovider::getTestGetContentType();
+		return TableDataprovider::getTestHit();
 	}
 }
