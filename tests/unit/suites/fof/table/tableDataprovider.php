@@ -1192,10 +1192,19 @@ abstract class TableDataprovider
 		return $data;
 	}
 
-	public static function getTestGetContentType()
+	public static function getTestToCSV()
 	{
-		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');
-		$data[] = array('com_foftest', 'foobars', 'com_foftest.foobar', 'Wrong content type');
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => 2, 'separator' => ','),
+			array('string' => '"2","Second row","second-row","0","2","23","0","42","0000-00-00 00:00:00","0","0000-00-00 00:00:00","0","0000-00-00 00:00:00"')
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => 2, 'separator' => '\t'),
+			array('string' => '"2"\t"Second row"\t"second-row"\t"0"\t"2"\t"23"\t"0"\t"42"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"')
+		);
 
 		return $data;
 	}

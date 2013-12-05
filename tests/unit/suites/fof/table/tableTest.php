@@ -984,6 +984,27 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @group               tableToCsv
+	 * @group               FOFTable
+	 * @covers              FOFTable::toCSV
+	 * @dataProvider        getTestToCSV
+	 */
+	public function testToCSV($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$string = $table->toCSV($test['separator']);
+
+		$this->assertEquals($check['string'], $string, 'FOFTable::toCSV returned a wrong value');
+	}
+
+	/**
 	 * @covers              FOFTable::getContentType
 	 * @group               FOFTable
 	 * @dataProvider        getTestGetContentType
@@ -1054,5 +1075,10 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getTestHit()
 	{
 		return TableDataprovider::getTestHit();
+	}
+
+	public function getTestToCSV()
+	{
+		return TableDataprovider::getTestToCSV();
 	}
 }
