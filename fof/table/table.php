@@ -949,6 +949,7 @@ class FOFTable extends JObject implements JTableInterface
         $known        = $this->getKnownFields();
         $skipFields[] = $this->_tbl_key;
 
+        if(in_array($this->getColumnAlias('hits'), $known))         $skipFields[] = $this->getColumnAlias('hits');
         if(in_array($this->getColumnAlias('created_on'), $known))   $skipFields[] = $this->getColumnAlias('created_on');
         if(in_array($this->getColumnAlias('created_by'), $known))   $skipFields[] = $this->getColumnAlias('created_by');
         if(in_array($this->getColumnAlias('modified_on'), $known))  $skipFields[] = $this->getColumnAlias('modified_on');
@@ -1937,15 +1938,8 @@ class FOFTable extends JObject implements JTableInterface
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			// Special internal fields
-			if (in_array($k, array('config', 'input', 'knownFields')))
+			if (!in_array($k, $this->getKnownFields()))
 			{
-				continue;
-			}
-
-			if (($k[0] == '_') || ($k[0] == '*'))
-			{
-				// Internal field
 				continue;
 			}
 

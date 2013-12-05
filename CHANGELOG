@@ -12,7 +12,9 @@ FOF 2.1.1
 # gh-225 Toolbar and View now will honor core.edit.own permission, too
 # FOFTable will throw an exception if we’re trying to get the assetName without a value for the primary key
 # Fixed table asset behavior, now you can delete a record even if there is no asset
-# Fixed hits table method
+# Fixed FOFTable::hit
+# Fixed FOFTable::check in order to ignore the `hits` field while doing autochecks
+# Fixed FOFTable::getData, only table fields are returned
 
 FOF 2.1.0
 ================================================================================

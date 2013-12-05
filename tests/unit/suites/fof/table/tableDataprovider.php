@@ -1196,6 +1196,12 @@ abstract class TableDataprovider
 	{
 		$data[] = array(
 			array('table' => 'foobars'),
+			array('loadid' => '', 'separator' => ','),
+			array('string' => '0')
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
 			array('loadid' => 2, 'separator' => ','),
 			array('string' => '"2","Second row","second-row","0","2","23","0","42","0000-00-00 00:00:00","0","0000-00-00 00:00:00","0","0000-00-00 00:00:00"')
 		);
@@ -1205,6 +1211,39 @@ abstract class TableDataprovider
 			array('loadid' => 2, 'separator' => '\t'),
 			array('string' => '"2"\t"Second row"\t"second-row"\t"0"\t"2"\t"23"\t"0"\t"42"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"')
 		);
+
+		return $data;
+	}
+
+	public static function getTestGetData()
+	{
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => ''),
+			array('return' => array(
+				'foftest_foobar_id' => null,
+				'title'             => null,
+				'slug'              => null,
+				'enabled'           => null,
+				'ordering'          => null,
+				'hits'              => null,
+				'asset_id'          => 0,
+				'created_by'        => null,
+				'created_on'        => null,
+				'modified_by'       => null,
+				'modified_on'       => null,
+				'locked_by'         => null,
+				'locked_on'         => null
+			))
+		);
+
+		return $data;
+	}
+
+	public static function getTestGetContentType()
+	{
+		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');
+		$data[] = array('com_foftest', 'foobars', 'com_foftest.foobars', 'Wrong content type');
 
 		return $data;
 	}

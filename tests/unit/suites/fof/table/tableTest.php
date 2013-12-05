@@ -1005,6 +1005,27 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @group               tableGetData
+	 * @group               FOFTable
+	 * @covers              FOFTable::getData
+	 * @dataProvider        getTestGetData
+	 */
+	public function testGetData($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$return = $table->getData();
+
+		$this->assertEquals($check['return'], $return, 'FOFTable::getData returned a wrong value');
+	}
+
+	/**
 	 * @covers              FOFTable::getContentType
 	 * @group               FOFTable
 	 * @dataProvider        getTestGetContentType
@@ -1080,5 +1101,15 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getTestToCSV()
 	{
 		return TableDataprovider::getTestToCSV();
+	}
+
+	public function getTestGetData()
+	{
+		return TableDataprovider::getTestGetData();
+	}
+
+	public function getTestGetContentType()
+	{
+		return TableDataprovider::getTestGetContentType();
 	}
 }
