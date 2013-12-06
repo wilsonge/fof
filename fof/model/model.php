@@ -368,7 +368,7 @@ class FOFModel extends JObject
 		}
 
 		// First look for ComponentnameModelViewnameBehaviorName (e.g. FoobarModelItemsBehaviorFilter)
-		$option_name = str_replace('com_', '', $this->name);
+		$option_name = str_replace('com_', '', $this->option);
 		$behaviorClass = ucfirst($option_name) . 'Model' . FOFInflector::pluralize($this->name) . 'Behavior' . ucfirst(strtolower($name));
 
 		if (class_exists($behaviorClass))
@@ -379,7 +379,7 @@ class FOFModel extends JObject
 		}
 
 		// Then look for ComponentnameModelBehaviorName (e.g. FoobarModelBehaviorFilter)
-		$option_name = str_replace('com_', '', $this->name);
+		$option_name = str_replace('com_', '', $this->option);
 		$behaviorClass = ucfirst($option_name) . 'ModelBehavior' . ucfirst(strtolower($name));
 
 		if (class_exists($behaviorClass))
@@ -576,7 +576,7 @@ class FOFModel extends JObject
 			$component = $config['option'];
 		}
 
-		// Set the $name/$_name variable
+		// Set the $name variable
 		$this->input->set('option', $component);
 		$component = $this->input->getCmd('option', 'com_foobar');
 
@@ -586,15 +586,7 @@ class FOFModel extends JObject
 		}
 
 		$this->input->set('option', $component);
-		$name = str_replace('com_', '', strtolower($component));
-
-		if (array_key_exists('name', $config))
-		{
-			$name = $config['name'];
-		}
-
-		$this->name = $name;
-		$this->option = $component;
+		$bareComponent = str_replace('com_', '', strtolower($component));
 
 		// Get the view name
 		$className = get_class($this);
@@ -613,9 +605,21 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$eliminatePart = ucfirst($name) . 'Model';
+			$eliminatePart = ucfirst($bareComponent) . 'Model';
 			$view = strtolower(str_replace($eliminatePart, '', $className));
 		}
+
+		if (array_key_exists('name', $config))
+		{
+			$name = $config['name'];
+		}
+		else
+		{
+			$name = $view;
+		}
+
+		$this->name = $name;
+		$this->option = $component;
 
 		// Set the model state
 		if (array_key_exists('state', $config))
@@ -1821,7 +1825,8 @@ class FOFModel extends JObject
 
 		if (empty($prefix))
 		{
-			$prefix = ucfirst($this->getName()) . 'Table';
+			$bareComponent = str_replace('com_', '', $this->option);
+			$prefix = ucfirst($bareComponent) . 'Table';
 		}
 
 		if (empty($options))

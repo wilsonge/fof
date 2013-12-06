@@ -18,6 +18,7 @@ FOF 2.1.1
 # Fixed FOFTable::check in order to ignore the `hits` field while doing autochecks
 # Fixed FOFTable::getData, only table fields are returned
 # Fixed FOFTable::toCSV, only table fields are returned; plus null fields are returned as empty string
+# FOFModel->name mistakenly contained the component name instead of the model name
 
 FOF 2.1.0
 ================================================================================
