@@ -4922,9 +4922,11 @@ $json = ob_end_clean();
                 <listitem>
                   <para>Set it to <option>true</option> to have Joomla! load
                   its unobtrusive Javascript validation script. Please note
-                  that FOF does not perform automatic server-side validation
-                  checks. This is the responsibility of your specialised Table
-                  class and its check() method.</para>
+                  that FOF does perform some automatic, generic server-side
+                  validation checks where possible. We strongly recommend you
+                  to implement more thorough, customised validation in your
+                  specialised Table class and its check() method where
+                  possible, especially in front-end facing MVC triads.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
