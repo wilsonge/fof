@@ -1638,6 +1638,34 @@ abstract class TableDataprovider
         return $data;
     }
 
+    public static function getTestGetAssetName()
+    {
+        $data[] = array(
+            array('table' => 'foobars'),
+            array('loadid' => 2),
+            array('assetName' => 'com_foftest.foobar.2')
+        );
+
+        $data[] = array(
+            array('table' => 'foobaraliases'),
+            array(
+                'loadid'  => 2,
+                'tbl_key' => 'id_foobar_aliases',
+                'alias'   => array(
+                    'asset_id' => 'fo_asset_id'
+                )),
+            array('assetName' => 'com_foftest.foobaralias.2')
+        );
+
+        $data[] = array(
+            array('table' => 'bares'),
+            array('loadid'  => 2),
+            array('assetName' => 'com_foftest.bare.2')
+        );
+
+        return $data;
+    }
+
 	public static function getTestGetContentType()
 	{
 		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');

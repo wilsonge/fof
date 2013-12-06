@@ -1195,6 +1195,55 @@ class FOFTableTest extends FtestCaseDatabase
         $this->assertEquals($check['fields'], $fields, 'FOFTable::onBeforeStore assigned a wrong value to a "magic" field');
     }
 
+    /**
+     * @group               tableGetAssetName
+     * @group               FOFTable
+     * @covers              FOFTable::getAssetName
+     * @dataProvider        getTestGetAssetName
+     */
+    public function testGetAssetName($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+
+        if(isset($test['tbl_key']))
+        {
+            $config['tbl_key'] = $test['tbl_key'];
+        }
+
+        $table = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        if (isset($test['alias']))
+        {
+            foreach($test['alias'] as $column => $alias)
+            {
+                $table->setColumnAlias($column, $alias);
+            }
+
+            $table->setAssetsTracked(true);
+        }
+
+        $table->load($test['loadid']);
+
+        $assetName = $table->getAssetName();
+
+        $this->assertEquals($check['assetName'], $assetName, 'FOFTable::getAssetName return a wrong asset name');
+    }
+
+    /**
+     * @group               tableGetAssetName
+     * @group               FOFTable
+     * @covers              FOFTable::getAssetName
+     */
+    public function testGetAssetNameException()
+    {
+        $this->setExpectedException('UnexpectedValueException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobars'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $table->getAssetName();
+    }
+
 	/**
 	 * @covers              FOFTable::getContentType
 	 * @group               FOFTable
@@ -1296,6 +1345,11 @@ class FOFTableTest extends FtestCaseDatabase
     public function getTestOnBeforeStore()
     {
         return TableDataprovider::getTestOnBeforeStore();
+    }
+
+    public function getTestGetAssetName()
+    {
+        return TableDataprovider::getTestGetAssetName();
     }
 
 	public function getTestGetContentType()
