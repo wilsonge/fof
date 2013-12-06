@@ -1067,7 +1067,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 			if($test['joomlaCache'])
 			{
-				$raw   = file_get_contents(JPATH_TESTS.'/unit/core/cache/cache.txt');
+				$raw   = file_get_contents(JPATH_TESTS.'/unit/core/cache/cache_joomla.txt');
 				$cache = unserialize($raw);
 
                 $t = $cache->get('tables');
