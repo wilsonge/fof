@@ -103,7 +103,7 @@ class FOFViewCsv extends FOFViewHtml
 		$model = $this->getModel();
 
 		$items = $model->getItemList();
-		$this->assignRef('items', $items);
+		$this->items = $items;
 
 		$document = FOFPlatform::getInstance()->getDocument();
 

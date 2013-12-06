@@ -55,7 +55,7 @@ class FOFViewJson extends FOFViewHtml
 		$model = $this->getModel();
 
 		$items = $model->getItemList();
-		$this->assignRef('items', $items);
+		$this->items = $items;
 
 		$document = FOFPlatform::getInstance()->getDocument();
 
@@ -156,7 +156,7 @@ class FOFViewJson extends FOFViewHtml
 		$model = $this->getModel();
 
 		$item = $model->getItem();
-		$this->assign('item', $item);
+		$this->item = $item;
 
 		$document = FOFPlatform::getInstance()->getDocument();
 

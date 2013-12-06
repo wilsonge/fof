@@ -83,8 +83,9 @@ class FOFViewRaw extends FOFView
 					'editstate'	 => $platform->authorise('core.edit.state' , $this->input->getCmd('option', 'com_foobar')),
 					'delete'	 => $platform->authorise('core.delete'     , $this->input->getCmd('option', 'com_foobar')),
 			);
-			$this->assign('aclperms', $perms);
-			$this->perms = $perms;
+
+			$this->aclperms = $perms;
+			$this->perms    = $perms;
 		}
 	}
 
@@ -191,15 +192,14 @@ class FOFViewRaw extends FOFView
 		$this->lists->set('order_Dir', $model->getState('filter_order_Dir', 'DESC', 'cmd'));
 
 		// Assign data to the view
-		$this->assign('items', $model->getItemList());
-		$this->assign('pagination', $model->getPagination());
-		$this->assignRef('lists', $this->lists);
+		$this->items      = $model->getItemList();
+		$this->pagination = $model->getPagination();
 
 		// Pass page params on frontend only
 		if (FOFPlatform::getInstance()->isFrontend())
 		{
 			$params = JFactory::getApplication()->getParams();
-			$this->assignRef('params', $params);
+			$this->params = $params;
 		}
 
 		return true;
@@ -216,7 +216,7 @@ class FOFViewRaw extends FOFView
 	{
 		JRequest::setVar('hidemainmenu', true);
 		$model = $this->getModel();
-		$this->assign('item', $model->getItem());
+		$this->item = $model->getItem();
 
 		return true;
 	}
