@@ -2584,7 +2584,7 @@ class FOFTable extends JObject implements JTableInterface
 					->select($db->qn($slug))
 					->from($this->_tbl)
 					->where($db->qn($slug) . ' = ' . $db->q($newSlug))
-					->where($db->qn($this->_tbl_key) . ' = ' . $db->q($this->{$this->_tbl_key}), 'AND NOT');
+					->where('NOT '. $db->qn($this->_tbl_key) . ' = ' . $db->q($this->{$this->_tbl_key}));
 				$db->setQuery($query);
 				$existingItems = $db->loadAssocList();
 			}

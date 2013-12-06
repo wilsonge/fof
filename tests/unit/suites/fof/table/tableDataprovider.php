@@ -1439,6 +1439,205 @@ abstract class TableDataprovider
 		return $data;
 	}
 
+    public static function getTestOnBeforeStore()
+    {
+        // New record
+        $data[] = array(
+            array('table' => 'foobars'),
+            array(
+                'updateNulls' => false,
+                'bind'        => array(
+                    'title' => 'FOFTest title'
+                )
+            ),
+            array(
+                'return' => true,
+                'fields' => array(
+                    'foftest_foobar_id' => null,
+                    'title'             => 'FOFTest title',
+                    'slug'              => 'foftest-title',
+                    'enabled'           => '',
+                    'ordering'          => '',
+                    'hits'              => '',
+                    'asset_id'          => 0,
+                    'created_by'        => 42,
+                    'created_on'        => 'NOT NULL',
+                    'modified_by'       => '',
+                    'modified_on'       => '',
+                    'locked_by'         => '',
+                    'locked_on'         => '',
+
+                )
+            )
+        );
+
+        // New record - invalid slug
+        $data[] = array(
+            array('table' => 'foobars'),
+            array(
+                'updateNulls' => false,
+                'bind'        => array(
+                    'title' => 'FOFTest title',
+                    'slug'  => 'foftest.. .title'
+                )
+            ),
+            array(
+                'return' => true,
+                'fields' => array(
+                    'foftest_foobar_id' => null,
+                    'title'             => 'FOFTest title',
+                    'slug'              => 'foftest-title',
+                    'enabled'           => '',
+                    'ordering'          => '',
+                    'hits'              => '',
+                    'asset_id'          => 0,
+                    'created_by'        => 42,
+                    'created_on'        => 'NOT NULL',
+                    'modified_by'       => '',
+                    'modified_on'       => '',
+                    'locked_by'         => '',
+                    'locked_on'         => '',
+
+                )
+            )
+        );
+
+        // Editing a record, slug already in use by the same record
+        $data[] = array(
+            array('table' => 'foobars'),
+            array(
+                'updateNulls' => false,
+                'bind'        => array(
+                    'foftest_foobar_id' => 3,
+                    'title'         => 'Third row',
+                    'created_by'    => 22,
+                    'created_on'    => '2013-12-06 13:00:00'
+                )
+            ),
+            array(
+                'return' => true,
+                'fields' => array(
+                    'foftest_foobar_id' => 3,
+                    'title'             => 'Third row',
+                    'slug'              => 'third-row',
+                    'enabled'           => '',
+                    'ordering'          => '',
+                    'hits'              => '',
+                    'asset_id'          => 0,
+                    'created_by'        => 22,
+                    'created_on'        => '2013-12-06 13:00:00',
+                    'modified_by'       => 42,
+                    'modified_on'       => 'NOT NULL',
+                    'locked_by'         => '',
+                    'locked_on'         => '',
+
+                )
+            )
+        );
+
+
+        // New record, slug already in use
+        $data[] = array(
+            array('table' => 'foobars'),
+            array(
+                'updateNulls' => false,
+                'bind'        => array(
+                    'foftest_foobar_id' => null,
+                    'title'         => 'Third row',
+                    'created_by'    => 22,
+                    'created_on'    => '2013-12-06 13:00:00'
+                )
+            ),
+            array(
+                'return' => true,
+                'fields' => array(
+                    'foftest_foobar_id' => null,
+                    'title'             => 'Third row',
+                    'slug'              => 'third-row-1',
+                    'enabled'           => '',
+                    'ordering'          => '',
+                    'hits'              => '',
+                    'asset_id'          => 0,
+                    'created_by'        => 22,
+                    'created_on'        => '2013-12-06 13:00:00',
+                    'modified_by'       => 42,
+                    'modified_on'       => 'NOT NULL',
+                    'locked_by'         => '',
+                    'locked_on'         => '',
+
+                )
+            )
+        );
+
+        // Editing a record, slug already in use by the same record - TABLE WITH ALIASES
+        $data[] = array(
+            array('table' => 'foobaraliases'),
+            array(
+                'updateNulls' => false,
+                'tbl_key'     => 'id_foobar_aliases',
+                'alias'       => array(
+                    'title'             => 'fo_title',
+                    'slug'              => 'fo_slug',
+                    'enabled'           => 'fo_enabled',
+                    'ordering'          => 'fo_ordering',
+                    'hits'              => 'fo_hits',
+                    'asset_id'          => 'fo_asset_id',
+                    'created_by'        => 'fo_created_by',
+                    'created_on'        => 'fo_created_on',
+                    'modified_by'       => 'fo_modified_by',
+                    'modified_on'       => 'fo_modified_on',
+                    'locked_by'         => 'fo_locked_by',
+                    'locked_on'         =>   'fo_locked_on'
+                ),
+                'bind'        => array(
+                    'id_foobar_aliases' => 3,
+                    'fo_title'          => 'Third row',
+                    'fo_created_by'        => 22,
+                    'fo_created_on'    => '2013-12-06 13:00:00'
+                )
+            ),
+            array(
+                'return' => true,
+                'fields' => array(
+                    'id_foobar_aliases' => 3,
+                    'fo_title'             => 'Third row',
+                    'fo_slug'              => 'third-row',
+                    'fo_enabled'           => '',
+                    'fo_ordering'          => '',
+                    'fo_hits'              => '',
+                    'fo_asset_id'          => 0,
+                    'fo_created_by'        => 22,
+                    'fo_created_on'        => '2013-12-06 13:00:00',
+                    'fo_modified_by'       => 42,
+                    'fo_modified_on'       => 'NOT NULL',
+                    'fo_locked_by'         => '',
+                    'fo_locked_on'         => '',
+
+                )
+            )
+        );
+
+        // New bare record (no special fields)
+        $data[] = array(
+            array('table' => 'bares'),
+            array(
+                'updateNulls' => false,
+                'bind'        => array(
+                    'title' => 'FOFTest title'
+                )
+            ),
+            array(
+                'return' => true,
+                'fields' => array(
+                    'foftest_bare_id' => null,
+                    'title' => 'FOFTest title',
+                )
+            )
+        );
+
+        return $data;
+    }
+
 	public static function getTestGetContentType()
 	{
 		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');

@@ -1132,6 +1132,69 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertEquals($check['return'], $return, 'FOFTable::isQuoted returned a wrong value');
 	}
 
+    /**
+     * @group               tableOnBeforeStore
+     * @group               FOFTable
+     * @covers              FOFTable::onBeforeStore
+     * @dataProvider        getTestOnBeforeStore
+     */
+    public function testOnBeforeStore($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+
+        if(isset($test['tbl_key']))
+        {
+            $config['tbl_key'] = $test['tbl_key'];
+        }
+
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        // Let's mock the platform in order to fake an user
+        $user = (object) array('id' => 42);
+        $mock = $this->getMock('FOFPlatformJoomla', array('getUser'));
+        $mock->expects($this->any())->method('getUser')->will($this->returnValue($user));
+        FOFPlatform::forceInstance($mock);
+
+        if(isset($test['alias']))
+        {
+            foreach($test['alias'] as $column => $alias)
+            {
+                $table->setColumnAlias($column, $alias);
+            }
+        }
+
+        $table->bind($test['bind']);
+
+        $method = new ReflectionMethod($table, 'onBeforeStore');
+        $method->setAccessible(true);
+        $return = $method->invoke($table, $test['updateNulls']);
+
+        $this->assertEquals($check['return'], $return, 'FOFTable::onBeforeStore return a wrong value');
+
+        $fields = $table->getData();
+
+        // Manual checks on datetimes
+        $created_on = $table->getColumnAlias('created_on');
+
+        if(isset($check['fields'][$created_on]) && $check['fields'][$created_on] == 'NOT NULL' )
+        {
+            $this->assertNotEmpty($fields[$created_on], 'FOFTable::onBeforeStore assigned a wrong value to the "'.$created_on.'" field');
+            unset($fields[$created_on]);
+            unset($check['fields'][$created_on]);
+        }
+
+        $modified_on = $table->getColumnAlias('modified_on');
+
+        if(isset($check['fields'][$modified_on]) && $check['fields'][$modified_on] == 'NOT NULL' )
+        {
+            $this->assertNotEmpty($fields[$modified_on], 'FOFTable::onBeforeStore assigned a wrong value to the "'.$modified_on.'" field');
+            unset($fields[$modified_on]);
+            unset($check['fields'][$modified_on]);
+        }
+
+        $this->assertEquals($check['fields'], $fields, 'FOFTable::onBeforeStore assigned a wrong value to a "magic" field');
+    }
+
 	/**
 	 * @covers              FOFTable::getContentType
 	 * @group               FOFTable
@@ -1229,6 +1292,11 @@ class FOFTableTest extends FtestCaseDatabase
 	{
 		return TableDataprovider::getIsQuoted();
 	}
+
+    public function getTestOnBeforeStore()
+    {
+        return TableDataprovider::getTestOnBeforeStore();
+    }
 
 	public function getTestGetContentType()
 	{
