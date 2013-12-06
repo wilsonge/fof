@@ -2,6 +2,8 @@ FOF 2.1.1
 ================================================================================
 + gh-210 Custom tags feature for Akeeba Strapper
 ~ gh-211 Automatically creates a row-fluid element under joomla 2.5
+~ Removed usages of deprecated view methods `assign` and `assignRef`
+~ Using native version_compare function instead of the FOFPlatform proxy one
 # gh-208 Title toolbar not shown in frontend
 # gh-212 Wrong asset_id (0) saved in table after creating a new item
 # gh-214 Wrong ACL permissions saved when using the rules field type

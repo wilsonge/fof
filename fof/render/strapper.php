@@ -88,7 +88,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 			return;
 		}
 
-		if (!FOFPlatform::getInstance()->isCli() && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (!FOFPlatform::getInstance()->isCli() && ‘version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$sidebarEntries = JHtmlSidebar::getEntries();
 
@@ -154,7 +154,7 @@ ENDJAVASCRIPT;
 			$style = $config['linkbar_style'];
 		}
 
-		if (!FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (!version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$style = 'classic';
 		}
@@ -479,7 +479,7 @@ ENDJAVASCRIPT;
 		JHtml::_('behavior.multiselect');
 
 		// Joomla! 3.0+ support
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			JHtml::_('bootstrap.tooltip');
 			JHtml::_('dropdown.init');
@@ -517,7 +517,7 @@ JS;
 
 		// Joomla! 3.0 sidebar support
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'gt'))
+		if (version_compare(JVERSION, '3.0', 'gt'))
 		{
 			if ($show_filters)
 			{
@@ -568,7 +568,7 @@ JS;
 
 				// Under Joomla! < 3.0 we can't have filter-only fields
 
-				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt') && empty($header))
+				if (version_compare(JVERSION, '3.0', 'lt') && empty($header))
 				{
 					continue;
 				}
@@ -598,7 +598,7 @@ JS;
 					$header_html .= "\t\t\t\t\t</th>" . PHP_EOL;
 				}
 
-				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
 					// Joomla! 3.0 or later
 					$form_class = '';
@@ -675,7 +675,7 @@ JS;
 
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm" ' . $form_class . '>' . PHP_EOL;
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			// Joomla! 3.0+
 			// Get and output the sidebar, if present
@@ -743,7 +743,7 @@ JS;
 
 		// Open the table header region if required
 
-		if ($show_header || ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt')))
+		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
 		{
 			$html .= "\t\t\t<thead>" . PHP_EOL;
 		}
@@ -759,7 +759,7 @@ JS;
 
 		// Render filter row if enabled
 
-		if ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
+		if ($show_filters && version_compare(JVERSION, '3.0', 'lt'))
 		{
 			$html .= "\t\t\t\t<tr>";
 			$html .= $filter_html;
@@ -768,7 +768,7 @@ JS;
 
 		// Close the table header region if required
 
-		if ($show_header || ($show_filters && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt')))
+		if ($show_header || ($show_filters && version_compare(JVERSION, '3.0', 'lt')))
 		{
 			$html .= "\t\t\t</thead>" . PHP_EOL;
 		}
@@ -799,7 +799,7 @@ JS;
 				$fields = $form->getFieldset('items');
 
 				// Reorder the fields to have ordering first
-				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'gt'))
+				if (version_compare(JVERSION, '3.0', 'gt'))
 				{
 					$tmpFields = array();
 					$j = 1;
@@ -844,7 +844,7 @@ JS;
 		$html .= "\t\t\t</tbody>" . PHP_EOL;
 
 		// Render the pagination bar, if enabled, on J! 2.5
-		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
+		if ($show_pagination && version_compare(JVERSION, '3.0', 'lt'))
 		{
 			$pagination = $model->getPagination();
 			$html .= "\t\t\t<tfoot>" . PHP_EOL;
@@ -864,14 +864,14 @@ JS;
 
 		// Render the pagination bar, if enabled, on J! 3.0+
 
-		if ($show_pagination && FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if ($show_pagination && version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$html .= $model->getPagination()->getListFooter();
 		}
 
 		// Close the wrapper element div on Joomla! 3.0+
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$html .= "</div>\n";
 		}
@@ -882,7 +882,7 @@ JS;
 
 		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up. Huh!!
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
+		if (version_compare(JVERSION, '3.0', 'ge') && FOFPlatform::getInstance()->isFrontend())
 		{
 			$html .= "\t" . '<input type="hidden" name="id" value="' . $input->getCmd('id', '') . '" />' . PHP_EOL;
 		}

@@ -288,7 +288,7 @@ class FOFViewRaw extends FOFView
 	 */
 	public function hasAjaxOrderingSupport()
 	{
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
+		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			return false;
 		}

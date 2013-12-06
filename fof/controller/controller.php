@@ -1070,7 +1070,7 @@ class FOFController extends JObject
 
 				$registeredurlparams = null;
 
-				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
 					if (property_exists($app, 'registeredurlparams'))
 					{
@@ -1093,7 +1093,7 @@ class FOFController extends JObject
 					$registeredurlparams->$key = $value;
 				}
 
-				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
 					$app->registeredurlparams = $registeredurlparams;
 				}
@@ -3281,7 +3281,7 @@ class FOFController extends JObject
 
 		if (!$hasToken)
 		{
-			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
 			}

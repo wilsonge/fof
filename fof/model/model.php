@@ -1834,7 +1834,7 @@ class FOFModel extends JObject
 			return $table;
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			throw new Exception(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name), 0);
 		}
@@ -1964,7 +1964,7 @@ class FOFModel extends JObject
 	{
 		$tableName = $this->getTable()->getTableName();
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			$fields = $this->getDbo()->getTableColumns($tableName, true);
 		}

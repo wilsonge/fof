@@ -76,7 +76,7 @@ class FOFViewJson extends FOFViewHtml
 			$tpl = 'json';
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
+		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 		}
@@ -97,7 +97,7 @@ class FOFViewJson extends FOFViewHtml
 			$hasFailed = true;
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
+		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			if ($result instanceof Exception)
 			{
@@ -177,7 +177,7 @@ class FOFViewJson extends FOFViewHtml
 			$tpl = 'json';
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
+		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 		}
@@ -198,7 +198,7 @@ class FOFViewJson extends FOFViewHtml
 			$hasFailed = true;
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
+		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			if ($result instanceof Exception)
 			{

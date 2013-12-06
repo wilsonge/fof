@@ -352,7 +352,7 @@ class FOFToolbar
 
 		if ($this->perms->create)
 		{
-			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				JToolBarHelper::addNew();
 			}
@@ -364,7 +364,7 @@ class FOFToolbar
 
 		if ($this->perms->edit)
 		{
-			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				JToolBarHelper::editList();
 			}

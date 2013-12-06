@@ -97,7 +97,7 @@ class FOFFormFieldRules extends JFormFieldRules implements FOFFormField
      */
     public function getInput()
     {
-        if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+        if (version_compare(JVERSION, '3.0', 'ge'))
         {
             return $this->getInput3x();
         }

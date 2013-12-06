@@ -422,7 +422,7 @@ class FOFTable extends JObject implements JTableInterface
 				$instance->setTriggerEvents($config['trigger_events']);
 			}
 
-			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.1', 'ge'))
+			if (version_compare(JVERSION, '3.1', 'ge'))
 			{
 				if (array_key_exists('has_tags', $config))
 				{
@@ -760,7 +760,7 @@ class FOFTable extends JObject implements JTableInterface
 		$this->_has_tags = false;
 
 		// Tags are available only in 3.1+
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.1', 'ge'))
+		if (version_compare(JVERSION, '3.1', 'ge'))
 		{
 			$this->_has_tags = $newState ? true : false;
 		}
@@ -1065,7 +1065,7 @@ class FOFTable extends JObject implements JTableInterface
 			$query->group($db->qn('master') . '.' . $db->qn($k));
 			$this->_db->setQuery((string) $query);
 
-			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				try
 				{
@@ -1741,7 +1741,7 @@ class FOFTable extends JObject implements JTableInterface
 
 		$this->_db->setQuery((string) $query);
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+		if (version_compare(JVERSION, '3.0', 'ge'))
 		{
 			try
 			{
@@ -2088,7 +2088,7 @@ class FOFTable extends JObject implements JTableInterface
 				// The table doesn't exist. Return false.
 				self::$tableFieldCache[$tableName] = false;
 			}
-			elseif (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
+			elseif (version_compare(JVERSION, '3.0', 'ge'))
 			{
 				$fields = $this->_db->getTableColumns($name, false);
 
