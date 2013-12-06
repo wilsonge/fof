@@ -10,6 +10,12 @@ FOF 2.1.1
 # gh-219 The "rule" field assigns a bad asset parent node, making it impossible to work with a newly created asset-tracked item unless you are Super User
 # gh-222 Fixed toolbar "save" button on record with asset tracking
 # gh-225 Toolbar and View now will honor core.edit.own permission, too
+# FOFTable will throw an exception if we’re trying to get the assetName without a value for the primary key
+# Fixed table asset behavior, now you can delete a record even if there is no asset
+# Fixed FOFTable::hit
+# Fixed FOFTable::check in order to ignore the `hits` field while doing autochecks
+# Fixed FOFTable::getData, only table fields are returned
+# Fixed FOFTable::toCSV, only table fields are returned; plus null fields are returned as empty string
 
 FOF 2.1.0
 ================================================================================
@@ -53,7 +59,7 @@ Backwards compatibility notes
 
 	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 

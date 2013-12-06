@@ -1,3 +1,7 @@
+-- If you change any table please remember to change the xml file, too. You have to change the
+-- stored cache, too, in order to reflect the correct state of the site while it is cached.
+-- TODO We will create a script in order to recreate the mocked cache and make our life easier
+
 -- Main table used for tests
 DROP TABLE IF EXISTS `jos_foftest_foobars`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_foobars` (

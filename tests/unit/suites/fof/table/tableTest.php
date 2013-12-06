@@ -984,6 +984,153 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
+	 * @group               tableToCsv
+	 * @group               FOFTable
+	 * @covers              FOFTable::toCSV
+	 * @dataProvider        getTestToCSV
+	 */
+	public function testToCSV($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$string = $table->toCSV($test['separator']);
+
+		$this->assertEquals($check['string'], $string, 'FOFTable::toCSV returned a wrong value');
+	}
+
+	/**
+	 * @group               tableGetData
+	 * @group               FOFTable
+	 * @covers              FOFTable::getData
+	 * @dataProvider        getTestGetData
+	 */
+	public function testGetData($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$return = $table->getData();
+
+		$this->assertEquals($check['return'], $return, 'FOFTable::getData returned a wrong value');
+	}
+
+	/**
+	 * @group               tableGetCSVHeader
+	 * @group               FOFTable
+	 * @covers              FOFTable::getCSVHeader
+	 * @dataProvider        getCSVHeader
+	 * @preventDataLoading
+	 */
+	public function testGetCSVHeader($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$string = $table->getCSVHeader($test['separator']);
+
+		$this->assertEquals($check['string'], $string, 'FOFTable::getCSVHeader returned a wrong value');
+	}
+
+	/**
+	 * @group               tableGetTableFields
+	 * @group               FOFTable
+	 * @covers              FOFTable::getTableFields
+	 * @dataProvider        getTableFields
+	 * @preventDataLoading
+	 */
+	public function testGetTableFields($tableinfo, $test, $check)
+	{
+		$config['input']           = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$config['use_table_cache'] = $test['use_table_cache'];
+
+		$table = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if(isset($test['joomlaCache']))
+		{
+			$mock = $this->getMock('FOFPlatformJoomla', array('getCache'));
+
+			if($test['joomlaCache'])
+			{
+				$raw   = file_get_contents(JPATH_TESTS.'/unit/core/cache/cache.txt');
+				$cache = unserialize($raw);
+
+				$mock->expects($this->any())->method('getCache')->will($this->returnCallback(function($arg) use ($cache){
+					return $cache->get($arg, null);
+				}));
+			}
+			else
+			{
+				$mock->expects($this->any())->method('getCache')->will($this->returnValue(null));
+			}
+
+			FOFPlatform::forceInstance($mock);
+		}
+
+		if(isset($test['tableCache']))
+		{
+			$property = new ReflectionProperty($table, 'tableCache');
+			$property->setAccessible(true);
+			$property->setValue($table, $test['tableCache']);
+		}
+
+		if(isset($test['tableFieldCache']))
+		{
+			$property = new ReflectionProperty($table, 'tableFieldCache');
+			$property->setAccessible(true);
+			$property->setValue($table, $test['tableFieldCache']);
+		}
+
+		$return = $table->getTableFields(isset($test['table']) ? $test['table'] : null);
+
+		if(is_array($return))
+		{
+			$fields = array_keys($return);
+		}
+		else
+		{
+			$fields = $return;
+		}
+
+
+		$this->assertEquals($check['fields'], $fields, 'FOFTable::getTableFields returned the wrong value');
+	}
+
+	/**
+	 * @group               tableIsQuoted
+	 * @group               FOFTable
+	 * @covers              FOFTable::isQuoted
+	 * @dataProvider        getIsQuoted
+	 * @preventDataLoading
+	 */
+	public function testIsQuoted($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		$method = new ReflectionMethod($table, 'isQuoted');
+		$method->setAccessible(true);
+		$return = $method->invoke($table, $test['column']);
+
+		$this->assertEquals($check['return'], $return, 'FOFTable::isQuoted returned a wrong value');
+	}
+
+	/**
 	 * @covers              FOFTable::getContentType
 	 * @group               FOFTable
 	 * @dataProvider        getTestGetContentType
@@ -1054,5 +1201,35 @@ class FOFTableTest extends FtestCaseDatabase
 	public function getTestHit()
 	{
 		return TableDataprovider::getTestHit();
+	}
+
+	public function getTestToCSV()
+	{
+		return TableDataprovider::getTestToCSV();
+	}
+
+	public function getTestGetData()
+	{
+		return TableDataprovider::getTestGetData();
+	}
+
+	public function getCSVHeader()
+	{
+		return TableDataprovider::getCSVHeader();
+	}
+
+	public function getTableFields()
+	{
+		return TableDataprovider::getTableFields();
+	}
+
+	public function getIsQuoted()
+	{
+		return TableDataprovider::getIsQuoted();
+	}
+
+	public function getTestGetContentType()
+	{
+		return TableDataprovider::getTestGetContentType();
 	}
 }

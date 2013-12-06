@@ -949,6 +949,7 @@ class FOFTable extends JObject implements JTableInterface
         $known        = $this->getKnownFields();
         $skipFields[] = $this->_tbl_key;
 
+        if(in_array($this->getColumnAlias('hits'), $known))         $skipFields[] = $this->getColumnAlias('hits');
         if(in_array($this->getColumnAlias('created_on'), $known))   $skipFields[] = $this->getColumnAlias('created_on');
         if(in_array($this->getColumnAlias('created_by'), $known))   $skipFields[] = $this->getColumnAlias('created_by');
         if(in_array($this->getColumnAlias('modified_on'), $known))  $skipFields[] = $this->getColumnAlias('modified_on');
@@ -1874,7 +1875,7 @@ class FOFTable extends JObject implements JTableInterface
 							  ->select($this->_db->qn($hits_field))
 							  ->from($this->_db->qn($this->_tbl))
 							  ->where($this->_db->qn($this->_tbl_key) . ' = ' . $this->_db->q($pk));
-				
+
 				$this->$hits_field = $this->_db->setQuery($query)->loadResult();
 			}
 			else
@@ -1907,14 +1908,8 @@ class FOFTable extends JObject implements JTableInterface
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			if (is_array($v) or is_object($v) or $v === null)
+			if (!in_array($k, $this->getKnownFields()))
 			{
-				continue;
-			}
-
-			if ($k[0] == '_')
-			{
-				// Internal field
 				continue;
 			}
 
@@ -1937,15 +1932,8 @@ class FOFTable extends JObject implements JTableInterface
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			// Special internal fields
-			if (in_array($k, array('config', 'input', 'knownFields')))
+			if (!in_array($k, $this->getKnownFields()))
 			{
-				continue;
-			}
-
-			if (($k[0] == '_') || ($k[0] == '*'))
-			{
-				// Internal field
 				continue;
 			}
 
@@ -1968,14 +1956,8 @@ class FOFTable extends JObject implements JTableInterface
 
 		foreach (get_object_vars($this) as $k => $v)
 		{
-			if (is_array($v) or is_object($v) or $v === null)
+			if (!in_array($k, $this->getKnownFields()))
 			{
-				continue;
-			}
-
-			if ($k[0] == '_')
-			{
-				// Internal field
 				continue;
 			}
 
@@ -2403,13 +2385,18 @@ class FOFTable extends JObject implements JTableInterface
 	/**
 	 * Is the field quoted?
 	 *
-	 * @param   string  $column     Column, passed by reference, so in later version of Joomla
-	 *                              I can always quote them
+	 * @param   string  $column     Column field
 	 *
 	 * @return  bool    Is the field quoted?
 	 */
-	protected function isQuoted(&$column)
+	protected function isQuoted($column)
 	{
+		// Empty string, un-quoted by definition
+		if(!$column)
+		{
+			return false;
+		}
+
 		// I need some "magic". If the first char is not a letter, a number
 		// an underscore or # (needed for table), then most likely the field is quoted
 		preg_match_all('/^[a-z0-9_#]/i', $column, $matches);

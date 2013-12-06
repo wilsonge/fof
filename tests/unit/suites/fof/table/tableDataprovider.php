@@ -1192,6 +1192,216 @@ abstract class TableDataprovider
 		return $data;
 	}
 
+	public static function getTestToCSV()
+	{
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => '', 'separator' => ','),
+			array('string' => '"","","","","","","0","","","","","",""')
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => 2, 'separator' => ','),
+			array('string' => '"2","Second row","second-row","0","2","23","0","42","0000-00-00 00:00:00","0","0000-00-00 00:00:00","0","0000-00-00 00:00:00"')
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => 2, 'separator' => '\t'),
+			array('string' => '"2"\t"Second row"\t"second-row"\t"0"\t"2"\t"23"\t"0"\t"42"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"')
+		);
+
+		return $data;
+	}
+
+	public static function getTestGetData()
+	{
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => ''),
+			array('return' => array(
+				'foftest_foobar_id' => null,
+				'title'             => null,
+				'slug'              => null,
+				'enabled'           => null,
+				'ordering'          => null,
+				'hits'              => null,
+				'asset_id'          => 0,
+				'created_by'        => null,
+				'created_on'        => null,
+				'modified_by'       => null,
+				'modified_on'       => null,
+				'locked_by'         => null,
+				'locked_on'         => null
+			))
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => '2'),
+			array('return' => array(
+				'foftest_foobar_id' => 2,
+				'title'             => 'Second row',
+				'slug'              => 'second-row',
+				'enabled'           => 0,
+				'ordering'          => 2,
+				'hits'              => 23,
+				'asset_id'          => 0,
+				'created_by'        => 42,
+				'created_on'        => '0000-00-00 00:00:00',
+				'modified_by'       => 0,
+				'modified_on'       => '0000-00-00 00:00:00',
+				'locked_by'         => 0,
+				'locked_on'         => '0000-00-00 00:00:00'
+			))
+		);
+
+		return $data;
+	}
+
+	public static function getCSVHeader()
+	{
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => '', 'separator' => ','),
+			array('string' => '"foftest_foobar_id","title","slug","enabled","ordering","hits","asset_id","created_by","created_on","modified_by","modified_on","locked_by","locked_on"')
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('loadid' => 2, 'separator' => '\t'),
+			array('string' => '"foftest_foobar_id"\t"title"\t"slug"\t"enabled"\t"ordering"\t"hits"\t"asset_id"\t"created_by"\t"created_on"\t"modified_by"\t"modified_on"\t"locked_by"\t"locked_on"')
+		);
+
+		return $data;
+	}
+
+	public static function getTableFields()
+	{
+		// Standard behavior
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Using cache but nuking the internal table one
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array()),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Using cache but nuking the internal table and field ones
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array()),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache ON
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true),
+			array('fields' => array(
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF - supplying (existing) tablename (#__ format)
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true, 'table' => '#__foftest_bares'),
+			array('fields' => array(
+					'foftest_bare_id', 'title'
+				)
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF - supplying (existing) tablename (plain format)
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true, 'table' => 'jos_foftest_bares'),
+			array('fields' => array(
+					'foftest_bare_id', 'title'
+				)
+			)
+		);
+
+		// Joomla Cache ON and internal (empty) cache OFF - supplying (NON existing) tablename (#__ format)
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true, 'table' => '#__wrong'),
+			array('fields' => false)
+		);
+
+		return $data;
+	}
+
+	public static function getIsQuoted()
+	{
+		$db = JFactory::getDbo();
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => ''),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => 'enabled'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => '92'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => '__test'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => '#__tablename'),
+			array('return' => false)
+		);
+
+		$data[] = array(
+			array('table' => 'foobars'),
+			array('column' => $db->qn('#__tablename')),
+			array('return' => true)
+		);
+
+		return $data;
+	}
+
 	public static function getTestGetContentType()
 	{
 		$data[] = array('com_foftest', 'foobar', 'com_foftest.foobar', 'Wrong content type');
