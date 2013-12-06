@@ -1299,7 +1299,7 @@ abstract class TableDataprovider
 			)
 		);
 
-		// Using cache but nuking the internal table and field ones
+		// Using internal cache but nuking the internal table and field ones
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array()),
@@ -1319,6 +1319,16 @@ abstract class TableDataprovider
 			)
 		);
 
+        // Joomla Cache OFF and internal (empty) cache ON
+        $data[] = array(
+            array('table' => 'foobars'),
+            array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => false),
+            array('fields' => array(
+                'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+                'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+            )
+        );
+
 		// Joomla Cache ON and internal (empty) cache OFF
 		$data[] = array(
 			array('table' => 'foobars'),
@@ -1328,6 +1338,16 @@ abstract class TableDataprovider
 				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
 			)
 		);
+
+        // Joomla Cache OFF and internal (empty) cache OFF
+        $data[] = array(
+            array('table' => 'foobars'),
+            array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => false),
+            array('fields' => array(
+                'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+                'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
+            )
+        );
 
 		// Joomla Cache ON and internal (empty) cache OFF - supplying (existing) tablename (#__ format)
 		$data[] = array(
@@ -1349,12 +1369,29 @@ abstract class TableDataprovider
 			)
 		);
 
+        // Joomla Cache OFF and internal (empty) cache OFF - supplying (existing) tablename (plain format)
+        $data[] = array(
+            array('table' => 'foobars'),
+            array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => false, 'table' => 'jos_foftest_bares'),
+            array('fields' => array(
+                'foftest_bare_id', 'title'
+            )
+            )
+        );
+
 		// Joomla Cache ON and internal (empty) cache OFF - supplying (NON existing) tablename (#__ format)
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true, 'table' => '#__wrong'),
 			array('fields' => false)
 		);
+
+        // Joomla Cache OFF and internal (empty) cache OFF - supplying (NON existing) tablename (#__ format)
+        $data[] = array(
+            array('table' => 'foobars'),
+            array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => false, 'table' => '#__wrong'),
+            array('fields' => false)
+        );
 
 		return $data;
 	}

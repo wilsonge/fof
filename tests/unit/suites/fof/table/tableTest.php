@@ -1070,7 +1070,9 @@ class FOFTableTest extends FtestCaseDatabase
 				$raw   = file_get_contents(JPATH_TESTS.'/unit/core/cache/cache.txt');
 				$cache = unserialize($raw);
 
-				$mock->expects($this->any())->method('getCache')->will($this->returnCallback(function($arg) use ($cache){
+                $t = $cache->get('tables');
+
+				$mock->expects($this->any())->method('getCache')->will($this->returnCallback(function($arg) use (&$cache){
 					return $cache->get($arg, null);
 				}));
 			}
