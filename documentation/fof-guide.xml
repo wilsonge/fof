@@ -2749,7 +2749,7 @@ public function onBeforeReset(&amp;$table)
       <methodname>onBefore<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname>,
       e.g. <methodname>onBeforeFoobarControllerItemsRead</methodname> to
       handle the <methodname>onBefore</methodname> event of
-      <code>com_foobar</code>, items <code>view</code>, <code>read</code>
+      <code>com_foobar</code>, <code>items</code> view, <code>read</code>
       task. Returning <constant>false</constant> will prevent the task from
       firing. You can do the same for the <methodname>onAfter</methodname>
       event. Do note that plugin events run after the code in your controller
