@@ -471,6 +471,41 @@ class FOFModelTest extends FtestCaseDatabase
         $model->getTable();
     }
 
+    /**
+     * @group               modelTestCreateTable
+     * @group               FOFModel
+     * @covers              FOFModel::_createTable
+     * @dataProvider        getTestCreateTable
+     * @preventDataLoading
+     */
+    public function testCreateTable($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+
+        // I have to get the SAME dbo object, or the table won't be the same
+        if(isset($test['loadDbo']))
+        {
+            $test['config']['dbo'] = $model->getDbo();
+        }
+
+        $method = new ReflectionMethod($model, '_createTable');
+        $method->setAccessible(true);
+        $table = $method->invoke($model, $test['name'], $test['prefix'], $test['config']);
+
+        // Let's reset any saved instance
+        FOFTable::forceInstance();
+
+        $tableCheck = FOFTable::getAnInstance($checks['name'], $checks['prefix'], array('dbo' => $model->getDbo()));
+
+        $this->assertInstanceOf('FOFTable', $table, 'FOFModel::_createTable should return an instance of FOFTable');
+        $this->assertEquals($tableCheck, $table, 'FOFModel::_createTable returned a wrong table');
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
@@ -514,5 +549,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetTable()
     {
         return ModelDataprovider::getTestGetTable();
+    }
+
+    public function getTestCreateTable()
+    {
+        return ModelDataprovider::getTestCreateTable();
     }
 }

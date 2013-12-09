@@ -504,4 +504,44 @@ abstract class ModelDataprovider
 
         return $data;
     }
+
+    public static function getTestCreateTable()
+    {
+        // Standard call
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable', 'config' => array()),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable')
+        );
+
+        // Standard call - with dbo
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable', 'config' => array(), 'loadDbo' => true),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable')
+        );
+
+        // Wrong configuration param
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable', 'config' => ''),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable')
+        );
+
+        // Wrong configuration param (2)
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable', 'config' => new stdClass()),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable')
+        );
+
+        // Wrong table name and table prefix
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array('name' => '$$$Foobar', 'prefix' => '$$$$$$$$FoftestTable', 'config' => array()),
+            array('name' => 'Foobar', 'prefix' => 'FoftestTable')
+        );
+
+        return $data;
+    }
 }
