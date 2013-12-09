@@ -1826,7 +1826,7 @@ class FOFModel extends JObject
 		if (empty($prefix))
 		{
 			$bareComponent = str_replace('com_', '', $this->option);
-			$prefix = ucfirst($bareComponent) . 'Table';
+			$prefix        = ucfirst($bareComponent) . 'Table';
 		}
 
 		if (empty($options))

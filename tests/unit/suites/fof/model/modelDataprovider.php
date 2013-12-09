@@ -451,4 +451,57 @@ abstract class ModelDataprovider
 
         return $data;
     }
+
+    public static function getTestGetTable()
+    {
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'name'   => 'Foobar', 'prefix'  => 'FoftestTable', 'options' => array(),
+                'create' => array(
+                    'name'    => 'Foobar',
+                    'prefix'  => 'FoftestTable',
+                    'options' => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'name'   => 'Foobar', 'prefix'  => null, 'options' => array(),
+                'create' => array(
+                    'name'    => 'Foobar',
+                    'prefix'  => 'FoftestTable',
+                    'options' => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'name'   => '', 'prefix'  => null, 'options' => array(),
+                'create' => array(
+                    'name'    => 'foobar',
+                    'prefix'  => 'FoftestTable',
+                    'options' => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'name'   => '', 'prefix'  => null, 'options' => array(), 'wipeTable' => true,
+                'create' => array(
+                    'name'    => 'foobar',
+                    'prefix'  => 'FoftestTable',
+                    'options' => ''
+                )
+            )
+        );
+
+        return $data;
+    }
 }
