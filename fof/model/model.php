@@ -1758,8 +1758,8 @@ class FOFModel extends JObject
 	 */
 	public function getHash()
 	{
-		$option = $this->input->getCmd('option', 'com_foobar');
-		$view = FOFInflector::pluralize($this->input->getCmd('view', 'cpanel'));
+		$option = $this->option;
+		$view   = FOFInflector::pluralize($this->name);
 
 		return "$option.$view.";
 	}

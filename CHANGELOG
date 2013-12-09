@@ -20,6 +20,7 @@ FOF 2.1.1
 # Fixed FOFTable::toCSV, only table fields are returned; plus null fields are returned as empty string
 # FOFModel->name mistakenly contained the component name instead of the model name
 # gh-230 Fatal error on time format if the JavaScript time format is used.
+# gh-231 FOFModel::getHash would return a wrong hash with temp model instances
 
 FOF 2.1.0
 ================================================================================
