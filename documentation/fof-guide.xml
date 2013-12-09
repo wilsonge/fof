@@ -2882,7 +2882,8 @@ public function onBeforeReset(&amp;$table)
               <entry><filename>item.php</filename> OR
               <filename>form.item.xml</filename></entry>
 
-              <entry>This is the file that shows the edit page</entry>
+              <entry>This is the file that shows the data of a single record
+              without being able to edit the record</entry>
             </row>
 
             <row>
@@ -2891,8 +2892,7 @@ public function onBeforeReset(&amp;$table)
               <entry><filename>form.php</filename> OR
               <filename>form.form.xml</filename></entry>
 
-              <entry>This is the file that shows the data of a single record
-              without being able to edit the record</entry>
+              <entry>This is the file that shows the edit page</entry>
             </row>
           </tbody>
         </tgroup>
