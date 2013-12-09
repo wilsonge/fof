@@ -506,6 +506,63 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals($tableCheck, $table, 'FOFModel::_createTable returned a wrong table');
     }
 
+    /**
+     * @group               modelTest__get
+     * @group               FOFModel
+     * @covers              FOFModel::__get
+     * @preventDataLoading
+     */
+    public function test__get()
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => 'foobars'
+        );
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model->setState('dummy', 'test');
+
+        $this->assertEquals('test', $model->dummy, 'FOFModel::__get failed to retrieve a state using magic getter');
+    }
+
+    /**
+     * @group               modelTest__set
+     * @group               FOFModel
+     * @covers              FOFModel::__set
+     * @preventDataLoading
+     */
+    public function test__set()
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => 'foobars'
+        );
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model->dummy = 'test';
+
+        $this->assertEquals('test', $model->getState('dummy'), 'FOFModel::__set failed to retrieve a state using magic setter');
+    }
+
+    /**
+     * @group               modelTest__call
+     * @group               FOFModel
+     * @covers              FOFModel::__call
+     * @preventDataLoading
+     */
+    public function test__call()
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => 'foobars'
+        );
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model->dummy('test');
+
+        $this->assertEquals('test', $model->getState('dummy'), 'FOFModel::__set failed to retrieve a state using __call');
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
