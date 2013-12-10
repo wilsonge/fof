@@ -20,6 +20,7 @@ FOF 2.1.1
 # Fixed FOFTable::toCSV, only table fields are returned; plus null fields are returned as empty string
 # FOFModel->name mistakenly contained the component name instead of the model name
 # gh-230 Fatal error on time format if the JavaScript time format is used.
+# gh-235 Wrong pluralisation / singularilisation by the inflector is specific few cases (also vastly improved Unit Tests for the Inflector)
 
 FOF 2.1.0
 ================================================================================
