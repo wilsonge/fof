@@ -1826,7 +1826,7 @@ class FOFModel extends JObject
 		if (empty($prefix))
 		{
 			$bareComponent = str_replace('com_', '', $this->option);
-			$prefix = ucfirst($bareComponent) . 'Table';
+			$prefix        = ucfirst($bareComponent) . 'Table';
 		}
 
 		if (empty($options))
@@ -1875,11 +1875,10 @@ class FOFModel extends JObject
 		$result = null;
 
 		// Clean the model name
-		$name = preg_replace('/[^A-Z0-9_]/i', '', $name);
+		$name   = preg_replace('/[^A-Z0-9_]/i', '', $name);
 		$prefix = preg_replace('/[^A-Z0-9_]/i', '', $prefix);
 
 		// Make sure we are returning a DBO object
-
 		if (!array_key_exists('dbo', $config))
 		{
 			$config['dbo'] = $this->getDBO();

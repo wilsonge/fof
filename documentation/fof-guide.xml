@@ -2749,7 +2749,7 @@ public function onBeforeReset(&amp;$table)
       <methodname>onBefore<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname>,
       e.g. <methodname>onBeforeFoobarControllerItemsRead</methodname> to
       handle the <methodname>onBefore</methodname> event of
-      <code>com_foobar</code>, items <code>view</code>, <code>read</code>
+      <code>com_foobar</code>, <code>items</code> view, <code>read</code>
       task. Returning <constant>false</constant> will prevent the task from
       firing. You can do the same for the <methodname>onAfter</methodname>
       event. Do note that plugin events run after the code in your controller
@@ -2882,7 +2882,8 @@ public function onBeforeReset(&amp;$table)
               <entry><filename>item.php</filename> OR
               <filename>form.item.xml</filename></entry>
 
-              <entry>This is the file that shows the edit page</entry>
+              <entry>This is the file that shows the data of a single record
+              without being able to edit the record</entry>
             </row>
 
             <row>
@@ -2891,8 +2892,7 @@ public function onBeforeReset(&amp;$table)
               <entry><filename>form.php</filename> OR
               <filename>form.form.xml</filename></entry>
 
-              <entry>This is the file that shows the data of a single record
-              without being able to edit the record</entry>
+              <entry>This is the file that shows the edit page</entry>
             </row>
           </tbody>
         </tgroup>

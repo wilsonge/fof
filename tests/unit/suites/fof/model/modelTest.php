@@ -428,6 +428,169 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals($dummy, $result, 'FOFModel::getItemList failed to use its internal cache');
     }
 
+    /**
+     * In this test I will simply check that the invocation of the _createTable is made with the correct
+     * arguments. I will check for the correct table to be returned while testing _createTable.
+     *
+     * @group               modelTestGetTable
+     * @group               FOFModel
+     * @covers              FOFModel::getTable
+     * @dataProvider        getTestGetTable
+     * @preventDataLoading
+     */
+    public function testGetTable($modelinfo, $test)
+    {
+        // This is a workaround for dealing with mocked objects. When checking the arguments passed to _createTable
+        // the return value is NULL, and this throws an exception. However, this is the expected behavior. We can't simply
+        // wrap everything with a try-catch statement since it will prevent PHPUnit from notifing us of errors
+        $this->setExpectedException('Exception', 0);
+
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        $model = $this->getMock('FOFModel', array('_createTable'), array($config), ucfirst($modelinfo['name']));
+
+        if(!$test['create']['options'])
+        {
+            $reflection = new ReflectionProperty($model, 'input');
+            $reflection->setAccessible(true);
+
+            $test['create']['options'] = array('input' => $reflection->getValue($model));
+        }
+
+        if(isset($test['wipeTable']))
+        {
+            $reflection = new ReflectionProperty($model, 'table');
+            $reflection->setAccessible(true);
+            $reflection->setValue($model, null);
+        }
+
+        $model->expects($this->any())
+              ->method('_createTable')
+              ->with(
+                $test['create']['name'],
+                $test['create']['prefix'],
+                $test['create']['options']
+            );
+
+        $table = $model->getTable($test['name'], $test['prefix'], $test['options']);
+    }
+
+    /**
+     * @group               modelTestGetTable
+     * @group               FOFModel
+     * @covers              FOFModel::getTable
+     * @preventDataLoading
+     */
+    public function testGetTableException()
+    {
+        $this->setExpectedException('Exception', 0);
+
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => 'foobars'
+        );
+
+        $model = $this->getMock('FOFModel', array('_createTable'), array($config));
+        $model->expects($this->any())->method('_createTable')->will($this->returnValue(false));
+
+        $model->getTable();
+    }
+
+    /**
+     * @group               modelTestCreateTable
+     * @group               FOFModel
+     * @covers              FOFModel::_createTable
+     * @dataProvider        getTestCreateTable
+     * @preventDataLoading
+     */
+    public function testCreateTable($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+
+        // I have to get the SAME dbo object, or the table won't be the same
+        if(isset($test['loadDbo']))
+        {
+            $test['config']['dbo'] = $model->getDbo();
+        }
+
+        $method = new ReflectionMethod($model, '_createTable');
+        $method->setAccessible(true);
+        $table = $method->invoke($model, $test['name'], $test['prefix'], $test['config']);
+
+        // Let's reset any saved instance
+        FOFTable::forceInstance();
+
+        $tableCheck = FOFTable::getAnInstance($checks['name'], $checks['prefix'], array('dbo' => $model->getDbo()));
+
+        $this->assertInstanceOf('FOFTable', $table, 'FOFModel::_createTable should return an instance of FOFTable');
+        $this->assertEquals($tableCheck, $table, 'FOFModel::_createTable returned a wrong table');
+    }
+
+    /**
+     * @group               modelTest__get
+     * @group               FOFModel
+     * @covers              FOFModel::__get
+     * @preventDataLoading
+     */
+    public function test__get()
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => 'foobars'
+        );
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model->setState('dummy', 'test');
+
+        $this->assertEquals('test', $model->dummy, 'FOFModel::__get failed to retrieve a state using magic getter');
+    }
+
+    /**
+     * @group               modelTest__set
+     * @group               FOFModel
+     * @covers              FOFModel::__set
+     * @preventDataLoading
+     */
+    public function test__set()
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => 'foobars'
+        );
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model->dummy = 'test';
+
+        $this->assertEquals('test', $model->getState('dummy'), 'FOFModel::__set failed to retrieve a state using magic setter');
+    }
+
+    /**
+     * @group               modelTest__call
+     * @group               FOFModel
+     * @covers              FOFModel::__call
+     * @preventDataLoading
+     */
+    public function test__call()
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => 'foobars'
+        );
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model->dummy('test');
+
+        $this->assertEquals('test', $model->getState('dummy'), 'FOFModel::__set failed to retrieve a state using __call');
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
@@ -471,5 +634,15 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetItemList()
     {
         return ModelDataprovider::getTestGetItemList();
+    }
+
+    public function getTestGetTable()
+    {
+        return ModelDataprovider::getTestGetTable();
+    }
+
+    public function getTestCreateTable()
+    {
+        return ModelDataprovider::getTestCreateTable();
     }
 }
