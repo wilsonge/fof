@@ -306,7 +306,12 @@ class AkeebaStrapper
         if ($loadBootstrap == 'full')
         {
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
-            self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', AKEEBASTRAPPER_MEDIATAG);
+
+			$filename = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
+			if (@filesize($filename) > 5)
+			{
+				self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', AKEEBASTRAPPER_MEDIATAG);
+			}
 
 			if ($source == 'less')
 			{
