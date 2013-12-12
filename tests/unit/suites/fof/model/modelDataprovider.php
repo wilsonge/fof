@@ -241,6 +241,35 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestGetHash()
+    {
+        $data[] = array(
+            array('name' => 'foobars'),
+            array('tmpInstance' => false),
+            array('hash' => 'com_foftest.foobars.')
+        );
+
+        $data[] = array(
+            array('name' => 'foobar'),
+            array('tmpInstance' => false),
+            array('hash' => 'com_foftest.foobars.')
+        );
+
+        $data[] = array(
+            array('name' => 'foobars'),
+            array('tmpInstance' => true),
+            array('hash' => 'com_foftest.foobars.')
+        );
+
+        $data[] = array(
+            array('name' => 'foobar'),
+            array('tmpInstance' => true),
+            array('hash' => 'com_foftest.foobars.')
+        );
+
+        return $data;
+    }
+
     public static function getTestGetList()
     {
         $db = JFactory::getDbo();

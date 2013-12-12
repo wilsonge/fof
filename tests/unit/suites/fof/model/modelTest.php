@@ -280,14 +280,14 @@ class FOFModelTest extends FtestCaseDatabase
 
         // We're in CLI an no $_SESSION variable? No problem, I'll manually create it!
         // I'm going to hell for doing this...
-        $_SESSION['__default']['com_foftest.cpanels.savedata'] = $session;
+        $_SESSION['__default']['com_foftest.foobars.savedata'] = $session;
 
         JFactory::$session = $hackedSession;
 
         $result = $model->getItem(2);
 
         $this->assertInstanceOf('FOFTable', $result, 'FOFModel::getItem should return an instance of FOFTable');
-        $this->assertArrayNotHasKey('com_foftest.cpanels.savedata', $_SESSION['__default'], 'FOFModel::getItem should wipe saved session data');
+        $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFModel::getItem should wipe saved session data');
 
         // Let's remove any evidence...
         unset($_SESSION);
@@ -323,6 +323,34 @@ class FOFModelTest extends FtestCaseDatabase
         $query = $model->buildQuery($test['overrideLimits']);
 
         $this->assertEquals((string) $checks['query'], (string) $query, 'FOFModel::buildQuery returned a wrong query');
+    }
+
+    /**
+     * @group               modelTestGetHash
+     * @group               FOFModel
+     * @covers              FOFModel::getHash
+     * @dataProvider        getTestGetHash
+     * @preventDataLoading
+     */
+    public function testGetHash($modelinfo, $test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => $modelinfo['name']
+        );
+
+        if(isset($test['tmpInstance']) && $test['tmpInstance'])
+        {
+            $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        }
+        else
+        {
+            $model = FOFModel::getAnInstance('Foobars', 'FoftestModel', $config);
+        }
+
+        $hash = $model->getHash();
+
+        $this->assertEquals($checks['hash'], $hash, 'FOFModel::getHash created a wrong hash value');
     }
 
     /**
@@ -591,6 +619,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestBuildQuery()
     {
         return ModelDataprovider::getTestBuildQuery();
+    }
+
+    public function getTestGetHash()
+    {
+        return ModelDataprovider::getTestGetHash();
     }
 
     public function getTestGetList()
