@@ -21,6 +21,7 @@ FOF 2.1.1
 # FOFModel->name mistakenly contained the component name instead of the model name
 # gh-230 Fatal error on time format if the JavaScript time format is used.
 # gh-235 Wrong pluralisation / singularilisation by the inflector is specific few cases (also vastly improved Unit Tests for the Inflector)
+# Itemid not respected in the front-end of the site, leading to display and functional issues
 
 FOF 2.1.0
 ================================================================================
