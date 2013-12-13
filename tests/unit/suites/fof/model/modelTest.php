@@ -232,6 +232,7 @@ class FOFModelTest extends FtestCaseDatabase
         $config['option'] = 'com_foftest';
         $config['view']   = $modelinfo['name'];
         $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+		$model->savestate(true); // This is required to emulate the save state flag set by getAnInstance, used by the Controller
 
         if($test['setid'])
         {
@@ -267,7 +268,9 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['option'] = 'com_foftest';
         $config['view']   = 'foobars';
+
         $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+		$model->savestate(true); // Required to emulate the save state flag set by getAnInstance used by the Controller
 
         $hackedSession = new JSession;
 
@@ -280,14 +283,19 @@ class FOFModelTest extends FtestCaseDatabase
 
         // We're in CLI an no $_SESSION variable? No problem, I'll manually create it!
         // I'm going to hell for doing this...
-        $_SESSION['__default']['com_foftest.foobars.savedata'] = $session;
+        $_SESSION['__default']['com_foftest.cpanels.savedata'] = $session;
 
         JFactory::$session = $hackedSession;
 
         $result = $model->getItem(2);
 
         $this->assertInstanceOf('FOFTable', $result, 'FOFModel::getItem should return an instance of FOFTable');
-        $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFModel::getItem should wipe saved session data');
+
+		$result = $model->save($result->getData());
+
+		$this->assertEquals($result, true, 'FOFModel::save failed');
+
+        $this->assertArrayNotHasKey('com_foftest.cpanels.savedata', $_SESSION['__default'], 'FOFModel::save should wipe saved session data');
 
         // Let's remove any evidence...
         unset($_SESSION);

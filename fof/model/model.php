@@ -1092,28 +1092,30 @@ class FOFModel extends JObject
 
 			// Do we have saved data?
 			$session = JFactory::getSession();
-			$serialized = $session->get($this->getHash() . 'savedata', null);
-
-			if (!empty($serialized))
+			if ($this->_savestate)
 			{
-				$data = @unserialize($serialized);
-
-				if ($data !== false)
+				$serialized = $session->get($this->getHash() . 'savedata', null);
+				if (!empty($serialized))
 				{
-					$k = $table->getKeyName();
+					$data = @unserialize($serialized);
 
-					if (!array_key_exists($k, $data))
+					if ($data !== false)
 					{
-						$data[$k] = null;
-					}
+						$k = $table->getKeyName();
 
-					if ($data[$k] != $this->id)
-					{
-						$session->set($this->getHash() . 'savedata', null);
-					}
-					else
-					{
-						$this->record->bind($data);
+						if (!array_key_exists($k, $data))
+						{
+							$data[$k] = null;
+						}
+
+						if ($data[$k] != $this->id)
+						{
+							$session->set($this->getHash() . 'savedata', null);
+						}
+						else
+						{
+							$this->record->bind($data);
+						}
 					}
 				}
 			}
@@ -1310,12 +1312,18 @@ class FOFModel extends JObject
 					$this->setError($error);
 					$session = JFactory::getSession();
 					$tableprops = $table->getProperties(true);
+
 					unset($tableprops['input']);
 					unset($tableprops['config']['input']);
 					unset($tableprops['config']['db']);
 					unset($tableprops['config']['dbo']);
-					$hash = $this->getHash() . 'savedata';
-					$session->set($hash, serialize($tableprops));
+
+
+					if ($this->_savestate)
+					{
+						$hash = $this->getHash() . 'savedata';
+						$session->set($hash, serialize($tableprops));
+					}
 				}
 			}
 
@@ -1326,7 +1334,10 @@ class FOFModel extends JObject
 			$this->id = $table->$key;
 
 			// Remove the session data
-			JFactory::getSession()->set($this->getHash() . 'savedata', null);
+			if ($this->_savestate)
+			{
+				JFactory::getSession()->set($this->getHash() . 'savedata', null);
+			}
 		}
 
 		$this->onAfterSave($table);

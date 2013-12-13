@@ -255,6 +255,9 @@ abstract class ModelDataprovider
             array('hash' => 'com_foftest.foobars.')
         );
 
+		// Edit by Nicholas: The hash is not used in temporary model instances (using getTmpInstance), as we are
+		// explicitly DO NOT want the state data to persist.
+		/**
         $data[] = array(
             array('name' => 'foobars'),
             array('tmpInstance' => true),
@@ -266,6 +269,7 @@ abstract class ModelDataprovider
             array('tmpInstance' => true),
             array('hash' => 'com_foftest.foobars.')
         );
+        /**/
 
         return $data;
     }
