@@ -59,8 +59,29 @@ class FOFPlatformFilesystemJoomla extends FOFPlatformFilesystem implements FOFPl
                     $this->isEnabled = false;
                 }
             }
+
+            // If it's enabled, let's import the library
+            if($this->isEnabled)
+            {
+                JLoader::import('joomla.filesystem.file');
+            }
         }
 
         return $this->isEnabled;
+    }
+
+    public function fileExists($path)
+    {
+        return JFile::exists($path);
+    }
+
+    public function fileDelete($file)
+    {
+        return JFile::delete($file);
+    }
+
+    public function fileCopy($src, $dest, $path = null, $use_streams = false)
+    {
+        return JFile::copy($src, $dest, $path, $use_streams);
     }
 }

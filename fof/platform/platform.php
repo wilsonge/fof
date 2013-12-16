@@ -39,6 +39,13 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 */
 	protected $isEnabled = null;
 
+    /**
+     * Filesystem platform that will be used by the currenct instance
+     *
+     * @var FOFPlatformFilesystem
+     */
+    protected $filesystem = null;
+
 	/**
 	 * The list of paths where platform class files will be looked for
 	 *
@@ -52,6 +59,11 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 * @var  FOFPlatformInterface
 	 */
 	protected static $instance = null;
+
+    public function __construct()
+    {
+        $this->filesystem = FOFPlatformFilesystem::getInstance();
+    }
 
 	/**
 	 * Set the error Handling, if possible
@@ -240,6 +252,11 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
 		return $this->isEnabled;
 	}
+
+    public function getFilesystem()
+    {
+        return $this->filesystem;
+    }
 
 	/**
 	 * Returns the base (root) directories for a given component.

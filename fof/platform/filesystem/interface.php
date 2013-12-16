@@ -27,4 +27,33 @@ interface FOFPlatformFilesystemInterface
      * @return  boolean
      */
     public function isEnabled();
+
+    /**
+     * Does the file exists?
+     *
+     * @param   $path  string   Path to the file to test
+     *
+     * @return  bool
+     */
+    public function fileExists($path);
+
+    /**
+     * Delete a file or array of files
+     *
+     * @param   mixed  $file  The file name or an array of file names
+     *
+     * @return  boolean  True on success
+     *
+     */
+    public function fileDelete($file);
+
+    /**
+     * Copies a file
+     *
+     * @param   string   $src          The path to the source file
+     * @param   string   $dest         The path to the destination file
+     *
+     * @return  boolean  True on success
+     */
+    public function fileCopy($src, $dest);
 }
