@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFPlatformJoomla extends FOFPlatform implements FOFPlatformInterface
+class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterface
 {
 	private $_cache = null;
 

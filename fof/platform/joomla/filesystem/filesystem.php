@@ -8,7 +8,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-class FOFPlatformFilesystemJoomla extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
+class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
 {
     /**
      * Is this platform enabled?
