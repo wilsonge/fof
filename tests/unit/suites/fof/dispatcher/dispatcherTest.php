@@ -52,7 +52,7 @@ class FOFDispatcherTest extends FtestCase
 	 */
 	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
 	{
-		$mockPlatform = $this->getMock('FOFPlatformJoomla');
+		$mockPlatform = $this->getMock('FOFPlatformJoomlaPlatform');
 		$mockPlatform->expects($this->any())
 					 ->method('isFrontend')
 					 ->will($this->returnValue($frontend));
