@@ -10,6 +10,9 @@ branches:
   only:
     - development
 
+install:
+  - composer update
+
 before_script:
   - pear channel-discover pear.phpunit.de
   - pear install phpunit/DbUnit
