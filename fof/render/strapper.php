@@ -420,6 +420,10 @@ ENDJAVASCRIPT;
         {
             $title	 = JFactory::getApplication()->JComponentTitle;
         }
+		else
+		{
+			$title = '';
+		}
 
         $html	 = array();
         $actions = array();
