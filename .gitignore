@@ -26,7 +26,6 @@ antconfig.txt
 /build/bin
 
 /vendor/*
-composer.phar
 
 /tests/environments/3.x/cache/
 /tests/environments/3.x/templates/fake_test_template
