@@ -577,4 +577,45 @@ abstract class ModelDataprovider
 
         return $data;
     }
+
+    public static function getTestFindFormFilename()
+    {
+        $paths = array(
+            JPATH_ROOT.'/administrator/templates/system/foobars/form_browse.xml',
+            JPATH_ROOT.'/administrator/templates/system/foobar/'
+        );
+
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array()
+        );
+
+        return $data;
+    }
+
+    protected static function createArrayDir($paths)
+    {
+        $tree = array();
+        foreach ($paths as $path) {
+            $pathParts = explode('/', $path);
+            $subTree = array(array_pop($pathParts));
+
+            if(strpos($subTree[0], '.') !== false)
+            {
+                $subTree = array($subTree[0] => '');
+            }
+
+            foreach (array_reverse($pathParts) as $dir) {
+                $subTree = array($dir => $subTree);
+            }
+            $tree = array_merge_recursive($tree, $subTree);
+        }
+
+        return array_shift($tree);
+    }
 }

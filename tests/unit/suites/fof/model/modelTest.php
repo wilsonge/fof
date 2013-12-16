@@ -7,6 +7,8 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamWrapper;
 require_once 'modelDataprovider.php';
 
 class FOFModelTest extends FtestCaseDatabase
@@ -599,6 +601,50 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals('test', $model->getState('dummy'), 'FOFModel::__set failed to retrieve a state using __call');
     }
 
+    /**
+     * @group               modelTestFindFormFilename
+     * @group               FOFModel
+     * @covers              FOFModel::findFormFilename
+     * @dataProvider        getTestFindFormFilename
+     * @preventDataLoading
+     */public function testFindFormFilename($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => strtolower($modelinfo['name'])
+        );
+
+        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+        $model->setInput(array('option' => 'com_foftest','view'=> strtolower($modelinfo['name'])));
+
+        // First of all I have to trick the platform, providing a template path
+        $platform = $this->getMock('FOFPlatformJoomla', array('getTemplateOverridePath'));
+        $platform->expects($this->any())
+                 ->method('getTemplateOverridePath')
+                 ->will($this->returnValue(JPATH_ROOT.'/administrator/templates/system'));
+
+        FOFPlatform::forceInstance($platform);
+
+        foreach($test['paths'] as $path)
+        {
+            $path  = trim(str_replace('\\', '/', $path), '/');
+            $parts = explode('/', $path);
+            $last = array_pop($parts);
+
+            if(strpos($last, '.') === false)
+            {
+                $parts[] = $last;
+            }
+
+            $paths[] = vfsStream::url('root/'.implode('/', $parts));
+        }
+
+        vfsStream::setup('root', null, $test['structure']);
+
+        // I always have to supply paths, since I have to use the filesystem wrapper
+        $form = $model->findFormFilename($test['form_name'], $paths);
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
@@ -652,5 +698,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestCreateTable()
     {
         return ModelDataprovider::getTestCreateTable();
+    }
+
+    public function getTestFindFormFilename()
+    {
+        return ModelDataprovider::getTestFindFormFilename();
     }
 }

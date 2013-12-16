@@ -2298,17 +2298,20 @@ class FOFModel extends JObject
 	 */
 	public function findFormFilename($source, $paths = array())
 	{
+        // TODO Should we read from internal variables instead of the input? With a temp instance we have no input
 		$option = $this->input->getCmd('option', 'com_foobar');
 		$view 	= $this->input->getCmd('view', 'cpanels');
 
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
-		$file_root = $componentPaths['main'];
-		$alt_file_root = $componentPaths['alt'];
-		$template_root = FOFPlatform::getInstance()->getTemplateOverridePath($option);
+		$file_root      = $componentPaths['main'];
+		$alt_file_root  = $componentPaths['alt'];
+		$template_root  = FOFPlatform::getInstance()->getTemplateOverridePath($option);
 
 		if (empty($paths))
 		{
 			// Set up the paths to look into
+            // PLEASE NOTE: If you ever change this, please update Model Unit tests, too, since we have to
+            // copy these default folders
 			$paths = array(
 				// In the template override
 				$template_root . '/' . $view,
