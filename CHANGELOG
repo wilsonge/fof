@@ -1,5 +1,6 @@
 FOF 2.1.2
 ================================================================================
++ Refactored the Platform package to include filesystem abstraction
 # [LOW] Notice in render/strapper.php
 
 FOF 2.1.1

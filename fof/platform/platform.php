@@ -33,11 +33,49 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	public $ordering = 100;
 
 	/**
+	 * The internal name of this platform implementation. It must match the
+	 * last part of the platform class name and be in all lowercase letters,
+	 * e.g. "foobar" for FOFPlatformFoobar
+	 *
+	 * @var  string
+	 *
+	 * @since  2.1.2
+	 */
+	public $name = '';
+
+	/**
+	 * The human readable platform name
+	 *
+	 * @var  string
+	 *
+	 * @since  2.1.2
+	 */
+	public $humanReadableName = 'Unknown Platform';
+
+	/**
+	 * The platform version string
+	 *
+	 * @var  string
+	 *
+	 * @since  2.1.2
+	 */
+	public $version = '';
+
+	/**
 	 * Caches the enabled status of this platform class.
 	 *
 	 * @var  boolean
 	 */
 	protected $isEnabled = null;
+
+    /**
+     * Filesystem platform that will be used by the currenct instance
+     *
+     * @var FOFPlatformFilesystem
+	 *
+	 * @since  2.1.2
+     */
+    protected $filesystem = null;
 
 	/**
 	 * The list of paths where platform class files will be looked for
@@ -134,37 +172,33 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
 			if (is_array(self::$paths))
 			{
-				$paths = array_merge(array(__DIR__), self::$paths);
+				$paths = array_merge($paths, self::$paths);
 			}
 
 			$paths = array_unique($paths);
 
 			// Loop all paths
-			JLoader::import('joomla.filesystem.folder');
-
 			foreach ($paths as $path)
 			{
 				// Get the .php files containing platform classes
-				$files = JFolder::files($path, '[a-z0-9]\.php$', false, true, array('interface.php', 'platform.php'));
+                $files = self::getFiles($path, array('filesystem'), array('interface.php', 'filesystem.php'));
 
 				if (!empty($files))
 				{
 					foreach ($files as $file)
 					{
 						// Get the class name for this platform class
-						$base_name = basename($file, '.php');
-						$class_name = 'FOFPlatform' . ucfirst($base_name);
+						$class_name = $file['classname'];
 
 						// Load the file if the class doesn't exist
 
 						if (!class_exists($class_name))
 						{
-							@include_once $file;
+							@include_once $file['fullpath'];
 						}
 
 						// If the class still doesn't exist this file didn't
 						// actually contain a platform class; skip it
-
 						if (!class_exists($class_name))
 						{
 							continue;
@@ -212,6 +246,95 @@ abstract class FOFPlatform implements FOFPlatformInterface
 		return self::$instance;
 	}
 
+    /**
+     * This method will crawl a starting directory and get all the valid files that will be analyzed by getInstance.
+     * Then it organizes them into an associative array.
+     *
+     * @param   string  $path               Folder where we should start looking
+     * @param   array   $ignoreFolders      Folder ignore list
+     * @param   array   $ignoreFiles        File ignore list
+     *
+     * @return  array   Associative array, where the `fullpath` key contains the path to the file,
+     *                  and the `classname` key contains the name of the class
+     */
+    protected static function getFiles($path, array $ignoreFolders = array(), array $ignoreFiles = array())
+    {
+        $return = array();
+
+        $files  = self::scanDirectory($path, $ignoreFolders, $ignoreFiles);
+
+        // Ok, I got the files, now I have to organize them
+        foreach($files as $file)
+        {
+            $clean = str_replace($path, '', $file);
+            $clean = trim(str_replace('\\', '/', $clean), '/');
+
+            $parts = explode('/', $clean);
+
+            // If I have less than 3 fragments, it means that the file was inside the generic folder
+            // (interface + abstract) so I have to skip it
+            if(count($parts) < 2)
+            {
+                continue;
+            }
+
+            $return[] = array(
+                'fullpath'  => $file,
+                'classname' => 'FOFPlatform'.ucfirst($parts[0]).ucfirst(basename($parts[1], '.php'))
+            );
+        }
+
+        return $return;
+    }
+
+    /**
+     * Recursive function that will scan every directory unless it's in the ignore list. Files that aren't in the
+     * ignore list are returned.
+     *
+     * @param   string  $path               Folder where we should start looking
+     * @param   array   $ignoreFolders      Folder ignore list
+     * @param   array   $ignoreFiles        File ignore list
+     *
+     * @return  array   List of all the files
+     */
+    protected static function scanDirectory($path, array $ignoreFolders = array(), array $ignoreFiles = array())
+    {
+        $return = array();
+
+        $handle = @opendir($path);
+
+        if(!$handle)
+        {
+            return $return;
+        }
+
+        while (($file = readdir($handle)) !== false)
+        {
+            if($file == '.' || $file == '..')
+            {
+                continue;
+            }
+
+            $fullpath = $path . '/' . $file;
+
+            if((is_dir($fullpath) && in_array($file, $ignoreFolders)) || (is_file($fullpath) && in_array($file, $ignoreFiles)))
+            {
+                continue;
+            }
+
+            if(is_dir($fullpath))
+            {
+                $return = array_merge(self::scanDirectory($fullpath, $ignoreFolders, $ignoreFiles), $return);
+            }
+            else
+            {
+                $return[] = $path . '/' . $file;
+            }
+        }
+
+        return $return;
+    }
+
 	/**
 	 * Returns the ordering of the platform class.
 	 *
@@ -240,6 +363,25 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
 		return $this->isEnabled;
 	}
+
+	/**
+	 * Returns the filesystem associated to the current platform instance
+	 *
+	 * @return  FOFPlatformFilesystem
+	 *
+	 * @since  2.1.2
+	 */
+    public function getFilesystem()
+    {
+		if (!is_object($this->filesystem))
+		{
+			// Instantiate a new filesystem platform implementation object
+			$className = 'FOFPlatform' . ucfirst($this->getPlatformName()) . 'Filesystem';
+			$this->filesystem = new $className;
+		}
+
+        return $this->filesystem;
+    }
 
 	/**
 	 * Returns the base (root) directories for a given component.
@@ -579,5 +721,47 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	public function logDeprecated($message)
 	{
 		// The default implementation does nothing. Override this in your platform classes.
+	}
+
+	/**
+	 * Returns the (internal) name of the platform implementation, e.g.
+	 * "joomla", "foobar123" etc. This MUST be the last part of the platform
+	 * class name. For example, if you have a plaform implementation class
+	 * FOFPlatformFoobar you MUST return "foobar" (all lowercase).
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * Returns the version number string of the platform, e.g. "4.5.6". If
+	 * implementation integrates with a CMS or a versioned foundation (e.g.
+	 * a framework) it is advisable to return that version.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformVersion()
+	{
+		return $this->version;
+	}
+
+	/**
+	 * Returns the human readable platform name, e.g. "Joomla!", "Joomla!
+	 * Framework", "Something Something Something Framework" etc.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformHumanName()
+	{
+		return $this->humanReadableName;
 	}
 }
