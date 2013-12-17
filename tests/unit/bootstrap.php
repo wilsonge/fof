@@ -12,6 +12,16 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+if(file_exists(__DIR__ . '/../../vendor/autoload.php'))
+{
+    require_once __DIR__ . '/../../vendor/autoload.php';
+}
+else
+{
+    echo 'You need to install Composer and run `composer install` on FOF before running the tests.';
+    die();
+}
+
 define('_JEXEC', 1);
 
 // Fix magic quotes.

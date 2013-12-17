@@ -1,5 +1,7 @@
 <?php
 
+use org\bovigo\vfs\vfsStream;
+
 abstract class ModelDataprovider
 {
 	public static function getTestSetIDsFromRequest()
@@ -576,5 +578,186 @@ abstract class ModelDataprovider
         );
 
         return $data;
+    }
+
+    public static function getTestFindFormFilename()
+    {
+        $origpaths = array(
+            JPATH_ROOT.'/administrator/templates/system/foobars/',
+            JPATH_ROOT.'/administrator/templates/system/foobar/',
+            JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl',
+            JPATH_ROOT.'/administrator/components/com_foftest/views/foobar/tmpl',
+            JPATH_ROOT.'/components/com_foftest/views/foobars/tmpl',
+            JPATH_ROOT.'/components/com_foftest/views/foobar/tmpl',
+            JPATH_ROOT.'/components/com_foftest/models/forms',
+            JPATH_ROOT.'/administrator/components/com_foftest/models/forms',
+        );
+
+        foreach($origpaths as &$path)
+        {
+            $path  = trim(str_replace('\\', '/', $path), '/');
+        }
+
+        // Form not found
+        $paths  = $origpaths;
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => false)
+        );
+
+        // Form found in several different places
+        // --- START ---
+        $paths     = $origpaths;
+        $paths[0] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[0]))
+        );
+
+        $paths     = $origpaths;
+        $paths[1] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[1]))
+        );
+
+        $paths     = $origpaths;
+        $paths[2] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[2]))
+        );
+
+        $paths     = $origpaths;
+        $paths[3] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[3]))
+        );
+
+        $paths     = $origpaths;
+        $paths[4] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[4]))
+        );
+
+        $paths     = $origpaths;
+        $paths[5] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[5]))
+        );
+
+        $paths     = $origpaths;
+        $paths[6] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[6]))
+        );
+
+        $paths     = $origpaths;
+        $paths[7] .= '/form_browse.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths
+            ),
+            array('form' => vfsStream::url('root/'.$paths[7]))
+        );
+        // --- END ---
+
+        // Form with specific joomla suffix
+        $paths     = $origpaths;
+        $paths[2] .= '/form_browse.j32.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths,
+                'suffix'    => array('.j32', '.j3')
+            ),
+            array('form' => vfsStream::url('root/'.$paths[2]))
+        );
+
+        $paths     = $origpaths;
+        $paths[2] .= '/form_browse.j3.xml';
+        $data[] = array(
+            array('name' => 'Foobars'),
+            array(
+                'form_name' => 'form_browse',
+                'structure' => self::createArrayDir($paths),
+                'paths'     => $paths,
+                'suffix'    => array('.j32', '.j3')
+            ),
+            array('form' => vfsStream::url('root/'.$paths[2]))
+        );
+
+
+        return $data;
+    }
+
+    protected static function createArrayDir($paths)
+    {
+        $tree = array();
+        foreach ($paths as $path) {
+            $pathParts = explode('/', $path);
+            $subTree   = array(array_pop($pathParts));
+
+            if(strpos($subTree[0], '.') !== false)
+            {
+                $subTree = array($subTree[0] => '');
+            }
+
+            foreach (array_reverse($pathParts) as $dir) {
+                $subTree = array($dir => $subTree);
+            }
+            $tree = array_merge_recursive($tree, $subTree);
+        }
+
+        return $tree;
     }
 }

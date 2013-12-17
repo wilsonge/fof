@@ -25,6 +25,8 @@ antconfig.txt
 
 /build/bin
 
+/vendor/*
+
 /tests/environments/3.x/cache/
 /tests/environments/3.x/templates/fake_test_template
 /tests/environments/2.5/cache/
