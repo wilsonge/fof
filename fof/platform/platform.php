@@ -33,6 +33,35 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	public $ordering = 100;
 
 	/**
+	 * The internal name of this platform implementation. It must match the
+	 * last part of the platform class name and be in all lowercase letters,
+	 * e.g. "foobar" for FOFPlatformFoobar
+	 *
+	 * @var  string
+	 *
+	 * @since  2.1.2
+	 */
+	public $name = '';
+
+	/**
+	 * The human readable platform name
+	 *
+	 * @var  string
+	 *
+	 * @since  2.1.2
+	 */
+	public $humanReadableName = 'Unknown Platform';
+
+	/**
+	 * The platform version string
+	 *
+	 * @var  string
+	 *
+	 * @since  2.1.2
+	 */
+	public $version = '';
+
+	/**
 	 * Caches the enabled status of this platform class.
 	 *
 	 * @var  boolean
@@ -43,6 +72,8 @@ abstract class FOFPlatform implements FOFPlatformInterface
      * Filesystem platform that will be used by the currenct instance
      *
      * @var FOFPlatformFilesystem
+	 *
+	 * @since  2.1.2
      */
     protected $filesystem = null;
 
@@ -59,11 +90,6 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 * @var  FOFPlatformInterface
 	 */
 	protected static $instance = null;
-
-    public function __construct()
-    {
-        $this->filesystem = FOFPlatformFilesystem::getInstance();
-    }
 
 	/**
 	 * Set the error Handling, if possible
@@ -338,8 +364,22 @@ abstract class FOFPlatform implements FOFPlatformInterface
 		return $this->isEnabled;
 	}
 
+	/**
+	 * Returns the filesystem associated to the current platform instance
+	 *
+	 * @return  FOFPlatformFilesystem
+	 *
+	 * @since  2.1.2
+	 */
     public function getFilesystem()
     {
+		if (!is_object($this->filesystem))
+		{
+			// Instantiate a new filesystem platform implementation object
+			$className = 'FOFPlatform' . ucfirst($this->getPlatformName()) . 'Filesystem';
+			$this->filesystem = new $className;
+		}
+
         return $this->filesystem;
     }
 
@@ -681,5 +721,47 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	public function logDeprecated($message)
 	{
 		// The default implementation does nothing. Override this in your platform classes.
+	}
+
+	/**
+	 * Returns the (internal) name of the platform implementation, e.g.
+	 * "joomla", "foobar123" etc. This MUST be the last part of the platform
+	 * class name. For example, if you have a plaform implementation class
+	 * FOFPlatformFoobar you MUST return "foobar" (all lowercase).
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * Returns the version number string of the platform, e.g. "4.5.6". If
+	 * implementation integrates with a CMS or a versioned foundation (e.g.
+	 * a framework) it is advisable to return that version.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformVersion()
+	{
+		return $this->version;
+	}
+
+	/**
+	 * Returns the human readable platform name, e.g. "Joomla!", "Joomla!
+	 * Framework", "Something Something Something Framework" etc.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformHumanName()
+	{
+		return $this->humanReadableName;
 	}
 }

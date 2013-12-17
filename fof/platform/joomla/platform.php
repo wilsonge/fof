@@ -18,7 +18,22 @@ defined('_JEXEC') or die;
  */
 class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterface
 {
+	/**
+	 * The table and table field cache object, used to speed up database access
+	 *
+	 * @var  JRegistry|null
+	 */
 	private $_cache = null;
+
+	/**
+	 * Public constructor
+	 */
+	public function __construct()
+	{
+		$this->name = 'joomla';
+		$this->humanReadableName = 'Joomla!';
+		$this->version = defined('JVERSION') ? JVERSION : '0.0';
+	}
 
 	/**
 	 * Is this platform enabled?

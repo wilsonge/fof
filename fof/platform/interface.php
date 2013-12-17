@@ -45,6 +45,8 @@ interface FOFPlatformInterface
      * Returns the filesystem associated to the current platform instance
      *
      * @return  FOFPlatformFilesystem
+	 *
+	 * @since  2.1.2
      */
     public function getFilesystem();
 
@@ -57,6 +59,39 @@ interface FOFPlatformInterface
 	 * @return  boolean
 	 */
 	public function isEnabled();
+
+	/**
+	 * Returns the (internal) name of the platform implementation, e.g.
+	 * "joomla", "foobar123" etc. This MUST be the last part of the platform
+	 * class name. For example, if you have a plaform implementation class
+	 * FOFPlatformFoobar you MUST return "foobar" (all lowercase).
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformName();
+
+	/**
+	 * Returns the version number string of the platform, e.g. "4.5.6". If
+	 * implementation integrates with a CMS or a versioned foundation (e.g.
+	 * a framework) it is advisable to return that version.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformVersion();
+
+	/**
+	 * Returns the human readable platform name, e.g. "Joomla!", "Joomla!
+	 * Framework", "Something Something Something Framework" etc.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformHumanName();
 
 	/**
 	 * Returns the base (root) directories for a given component. The
