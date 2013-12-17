@@ -65,11 +65,11 @@ abstract class FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
         if (!is_object(self::$instance))
         {
             // Get the paths to look into
-            $paths = array(__DIR__);
+            $paths = array(realpath(__DIR__.'/..'));
 
             if (is_array(self::$paths))
             {
-                $paths = array_merge(array(__DIR__), self::$paths);
+                $paths = array_merge($paths, self::$paths);
             }
 
             $paths = array_unique($paths);
@@ -77,20 +77,19 @@ abstract class FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
             foreach ($paths as $path)
             {
                 // Get the .php files containing platform classes
-                $files = self::getFiles($path);
+                $files = self::getFiles($path, array(), array('interface.php', 'platform.php'));
 
                 if (!empty($files))
                 {
                     foreach ($files as $file)
                     {
                         // Get the class name for this platform class
-                        $base_name = basename($file, '.php');
-                        $class_name = 'FOFPlatformFilesystem' . ucfirst($base_name);
+                        $class_name = $file['classname'];
 
                         // Load the file if the class doesn't exist
                         if (!class_exists($class_name))
                         {
-                            @include_once $file;
+                            @include_once $file['fullpath'];
                         }
 
                         // If the class still doesn't exist this file didn't
@@ -171,9 +170,61 @@ abstract class FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
         return $this->isEnabled;
     }
 
-    protected static function getFiles($path)
+    /**
+     * This method will crawl a starting directory and get all the valid files that will be analyzed by getInstance.
+     * Then it organizes them into an associative array.
+     *
+     * @param   string  $path               Folder where we should start looking
+     * @param   array   $ignoreFolders      Folder ignore list
+     * @param   array   $ignoreFiles        File ignore list
+     *
+     * @return  array   Associative array, where the `fullpath` key contains the path to the file,
+     *                  and the `classname` key contains the name of the class
+     */
+    protected static function getFiles($path, array $ignoreFolders = array(), array $ignoreFiles = array())
     {
         $return = array();
+
+        $files  = self::scanDirectory($path, $ignoreFolders, $ignoreFiles);
+
+        // Ok, I got the files, now I have to organize them
+        foreach($files as $file)
+        {
+            $clean = str_replace($path, '', $file);
+            $clean = trim(str_replace('\\', '/', $clean), '/');
+
+            $parts = explode('/', $clean);
+
+            // If I have less than 3 fragments, it means that the file was inside the generic folder
+            // (interface + abstract) so I have to skip it
+            if(count($parts) < 3)
+            {
+                continue;
+            }
+
+            $return[] = array(
+                'fullpath'  => $file,
+                'classname' => 'FOFPlatform'.ucfirst($parts[0]).ucfirst(basename($parts[1], '.php'))
+            );
+        }
+
+        return $return;
+    }
+
+    /**
+     * Recursive function that will scan every directory unless it's in the ignore list. Files that aren't in the
+     * ignore list are returned.
+     *
+     * @param   string  $path               Folder where we should start looking
+     * @param   array   $ignoreFolders      Folder ignore list
+     * @param   array   $ignoreFiles        File ignore list
+     *
+     * @return  array   List of all the files
+     */
+    protected static function scanDirectory($path, array $ignoreFolders = array(), array $ignoreFiles = array())
+    {
+        $return = array();
+
         $handle = @opendir($path);
 
         if(!$handle)
@@ -183,12 +234,26 @@ abstract class FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
 
         while (($file = readdir($handle)) !== false)
         {
-            if($file == '.' || $file == '..' || in_array($file, array('interface.php', 'filesystem.php')))
+            if($file == '.' || $file == '..')
             {
                 continue;
             }
 
-            $return[] = $path . '/' . $file;
+            $fullpath = $path . '/' . $file;
+
+            if((is_dir($fullpath) && in_array($file, $ignoreFolders)) || (is_file($fullpath) && in_array($file, $ignoreFiles)))
+            {
+                continue;
+            }
+
+            if(is_dir($fullpath))
+            {
+                $return = array_merge(self::scanDirectory($fullpath, $ignoreFolders, $ignoreFiles), $return);
+            }
+            else
+            {
+                $return[] = $path . '/' . $file;
+            }
         }
 
         return $return;

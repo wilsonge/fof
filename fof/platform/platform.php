@@ -62,7 +62,7 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
     public function __construct()
     {
-        //$this->filesystem = FOFPlatformFilesystem::getInstance();
+        $this->filesystem = FOFPlatformFilesystem::getInstance();
     }
 
 	/**
@@ -146,18 +146,15 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
 			if (is_array(self::$paths))
 			{
-				$paths = array_merge(array(__DIR__), self::$paths);
+				$paths = array_merge($paths, self::$paths);
 			}
 
 			$paths = array_unique($paths);
 
 			// Loop all paths
-			JLoader::import('joomla.filesystem.folder');
-
 			foreach ($paths as $path)
 			{
 				// Get the .php files containing platform classes
-				//$files = JFolder::files($path, '[a-z0-9]\.php$', false, true, array('interface.php', 'platform.php'));
                 $files = self::getFiles($path, array('filesystem'), array('interface.php', 'filesystem.php'));
 
 				if (!empty($files))
@@ -223,6 +220,17 @@ abstract class FOFPlatform implements FOFPlatformInterface
 		return self::$instance;
 	}
 
+    /**
+     * This method will crawl a starting directory and get all the valid files that will be analyzed by getInstance.
+     * Then it organizes them into an associative array.
+     *
+     * @param   string  $path               Folder where we should start looking
+     * @param   array   $ignoreFolders      Folder ignore list
+     * @param   array   $ignoreFiles        File ignore list
+     *
+     * @return  array   Associative array, where the `fullpath` key contains the path to the file,
+     *                  and the `classname` key contains the name of the class
+     */
     protected static function getFiles($path, array $ignoreFolders = array(), array $ignoreFiles = array())
     {
         $return = array();
@@ -237,6 +245,8 @@ abstract class FOFPlatform implements FOFPlatformInterface
 
             $parts = explode('/', $clean);
 
+            // If I have less than 3 fragments, it means that the file was inside the generic folder
+            // (interface + abstract) so I have to skip it
             if(count($parts) < 2)
             {
                 continue;
@@ -251,6 +261,16 @@ abstract class FOFPlatform implements FOFPlatformInterface
         return $return;
     }
 
+    /**
+     * Recursive function that will scan every directory unless it's in the ignore list. Files that aren't in the
+     * ignore list are returned.
+     *
+     * @param   string  $path               Folder where we should start looking
+     * @param   array   $ignoreFolders      Folder ignore list
+     * @param   array   $ignoreFiles        File ignore list
+     *
+     * @return  array   List of all the files
+     */
     protected static function scanDirectory($path, array $ignoreFolders = array(), array $ignoreFiles = array())
     {
         $return = array();
