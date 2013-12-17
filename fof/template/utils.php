@@ -103,14 +103,14 @@ class FOFTemplateUtils
 		// Get the local LESS file
 		$localFile = self::parsePath($path, true);
 
-		JLoader::import('joomla.filesystem.folder');
+		$filesystem = FOFPlatform::getInstance()->getFilesystem();
 
 		if (is_null($sanityCheck))
 		{
 			// Make sure the cache directory exists
 			if (!is_dir(JPATH_SITE . '/media/lib_fof/compiled/'))
 			{
-				$sanityCheck = JFolder::create(JPATH_SITE . '/media/lib_fof/compiled/');
+				$sanityCheck = $filesystem->folderCreate(JPATH_SITE . '/media/lib_fof/compiled/');
 			}
 			else
 			{

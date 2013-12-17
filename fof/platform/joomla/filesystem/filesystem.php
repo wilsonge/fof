@@ -65,6 +65,7 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
             {
                 JLoader::import('joomla.filesystem.file');
                 JLoader::import('joomla.filesystem.path');
+                JLoader::import('joomla.filesystem.folder');
             }
         }
 
@@ -104,5 +105,27 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
     public function pathFind($paths, $file)
     {
         return JPath::find($paths, $file);
+    }
+
+    public function folderExists($path)
+    {
+        return JFolder::exists($path);
+    }
+
+    public function folderFiles($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
+                                $excludefilter = array('^\..*', '.*~'), $naturalSort = false)
+    {
+        return JFolder::files($path, $filter, $recurse, $full, $exclude, $excludefilter, $naturalSort);
+    }
+
+    public function folderFolders($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
+                                  $excludefilter = array('^\..*'))
+    {
+        return JFolder::folders($path, $filter, $recurse, $full, $exclude, $excludefilter);
+    }
+
+    public function folderCreate($path = '', $mode = 0755)
+    {
+        return JFolder::create($path, $mode);
     }
 }

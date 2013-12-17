@@ -620,17 +620,17 @@ class FOFToolbar
 	 */
 	protected function getMyViews()
 	{
-		$views = array();
-		$t_views = array();
+		$views      = array();
+		$t_views    = array();
 		$using_meta = false;
 
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->component);
-		$searchPath = $componentPaths['main'] . '/views';
+		$searchPath     = $componentPaths['main'] . '/views';
+        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
-		JLoader::import('joomla.filesystem.folder');
 		JLoader::import('joomla.utilities.arrayhelper');
 
-		$allFolders = JFolder::folders($searchPath);
+		$allFolders = $filesystem->folderFolders($searchPath);
 
 		if (!empty($allFolders))
 		{
@@ -645,7 +645,7 @@ class FOFToolbar
 				}
 
 				// Do we have a 'skip.xml' file in there?
-				$files = JFolder::files($searchPath . '/' . $view, '^skip\.xml$');
+				$files = $filesystem->folderFiles($searchPath . '/' . $view, '^skip\.xml$');
 
 				if (!empty($files))
 				{
@@ -653,7 +653,7 @@ class FOFToolbar
 				}
 
 				// Do we have extra information about this view? (ie. ordering)
-				$meta = JFolder::files($searchPath . '/' . $view, '^metadata\.xml$');
+				$meta = $filesystem->folderFiles($searchPath . '/' . $view, '^metadata\.xml$');
 
 				// Not found, do we have it inside the plural one?
 				if (!$meta)
@@ -663,7 +663,7 @@ class FOFToolbar
 					if (in_array($plural, $allFolders))
 					{
 						$view = $plural;
-						$meta = JFolder::files($searchPath . '/' . $view, '^metadata\.xml$');
+						$meta = $filesystem->folderFiles($searchPath . '/' . $view, '^metadata\.xml$');
 					}
 				}
 

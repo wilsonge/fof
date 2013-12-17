@@ -99,4 +99,53 @@ interface FOFPlatformFilesystemInterface
      * @return  mixed   The full path and file name for the target file, or boolean false if the file is not found in any of the paths.
      */
     public function pathFind($paths, $file);
+
+    /**
+     * Wrapper for the standard file_exists function
+     *
+     * @param   string  $path  Folder name relative to installation dir
+     *
+     * @return  boolean  True if path is a folder
+     */
+    public function folderExists($path);
+
+    /**
+     * Utility function to read the files in a folder.
+     *
+     * @param   string   $path           The path of the folder to read.
+     * @param   string   $filter         A filter for file names.
+     * @param   mixed    $recurse        True to recursively search into sub-folders, or an integer to specify the maximum depth.
+     * @param   boolean  $full           True to return the full path to the file.
+     * @param   array    $exclude        Array with names of files which should not be shown in the result.
+     * @param   array    $excludefilter  Array of filter to exclude
+     *
+     * @return  array  Files in the given folder.
+     */
+    public function folderFiles($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
+                                $excludefilter = array('^\..*', '.*~'));
+
+    /**
+     * Utility function to read the folders in a folder.
+     *
+     * @param   string   $path           The path of the folder to read.
+     * @param   string   $filter         A filter for folder names.
+     * @param   mixed    $recurse        True to recursively search into sub-folders, or an integer to specify the maximum depth.
+     * @param   boolean  $full           True to return the full path to the folders.
+     * @param   array    $exclude        Array with names of folders which should not be shown in the result.
+     * @param   array    $excludefilter  Array with regular expressions matching folders which should not be shown in the result.
+     *
+     * @return  array  Folders in the given folder.
+     */
+    public function folderFolders($path, $filter = '.', $recurse = false, $full = false, $exclude = array('.svn', 'CVS', '.DS_Store', '__MACOSX'),
+                                  $excludefilter = array('^\..*'));
+
+    /**
+     * Create a folder -- and all necessary parent folders.
+     *
+     * @param   string   $path  A path to create from the base path.
+     * @param   integer  $mode  Directory permissions to set for folders created. 0755 by default.
+     *
+     * @return  boolean  True if successful.
+     */
+    public function folderCreate($path = '', $mode = 0755);
 }

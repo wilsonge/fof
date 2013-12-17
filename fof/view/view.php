@@ -941,14 +941,14 @@ abstract class FOFView extends JObject
 	 */
 	protected function findRenderer()
 	{
-		JLoader::import('joomla.filesystem.folder');
+        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
 		// Try loading the stock renderers shipped with FOF
 
 		if (empty(self::$renderers) || !class_exists('FOFRenderJoomla', false))
 		{
 			$path = dirname(__FILE__) . '/../render/';
-			$renderFiles = JFolder::files($path, '.php');
+			$renderFiles = $filesystem->folderFiles($path, '.php');
 
 			if (!empty($renderFiles))
 			{

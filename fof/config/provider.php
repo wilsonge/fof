@@ -119,11 +119,10 @@ class FOFConfigProvider
         $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
 		// Check that the path exists
-		JLoader::import('joomla.filesystem.folder');
 		$path = $componentPaths['admin'];
 		$path = $filesystem->pathCheck($path);
 
-		if (!JFolder::exists($path))
+		if (!$filesystem->folderExists($path))
 		{
 			return $ret;
 		}
@@ -185,8 +184,9 @@ class FOFConfigProvider
 
 		if (empty($domains))
 		{
-			JLoader::import('joomla.filesystem.folder');
-			$files = JFolder::files(__DIR__ . '/domain', '.php');
+			$filesystem = FOFPlatform::getInstance()->getFilesystem();
+
+			$files = $filesystem->folderFiles(__DIR__ . '/domain', '.php');
 
 			if (!empty($files))
 			{
