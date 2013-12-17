@@ -40,6 +40,8 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
 	 *
 	 * @param   string   $src          The path to the source file
 	 * @param   string   $dest         The path to the destination file
+     * @param   string   $path         An optional base path to prefix to the file names
+     * @param   boolean  $use_streams  True to use streams
 	 *
 	 * @return  boolean  True on success
 	 */
@@ -53,6 +55,7 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
 	 *
 	 * @param   string   $file         The full file path
 	 * @param   string   &$buffer      The buffer to write
+     * @param   boolean  $use_streams  Use streams
 	 *
 	 * @return  boolean  True on success
 	 */
@@ -124,6 +127,7 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
 	 * @param   boolean  $full           True to return the full path to the file.
 	 * @param   array    $exclude        Array with names of files which should not be shown in the result.
 	 * @param   array    $excludefilter  Array of filter to exclude
+     * @param   boolean  $naturalSort    False for asort, true for natsort
 	 *
 	 * @return  array  Files in the given folder.
 	 */

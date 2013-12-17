@@ -8,7 +8,6 @@
  */
 
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamWrapper;
 require_once 'modelDataprovider.php';
 
 class FOFModelTest extends FtestCaseDatabase
