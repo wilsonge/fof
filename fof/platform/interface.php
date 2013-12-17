@@ -41,6 +41,13 @@ interface FOFPlatformInterface
 	 */
 	public function getOrdering();
 
+    /**
+     * Returns the filesystem associated to the current platform instance
+     *
+     * @return  FOFPlatformFilesystem
+     */
+    public function getFilesystem();
+
 	/**
 	 * Is this platform enabled? This is used for automatic platform detection.
 	 * If the environment we're currently running in doesn't seem to be your

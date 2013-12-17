@@ -13,7 +13,7 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
     /**
      * Is this platform enabled?
      *
-     * @see FOFPlatformInterface::isEnabled()
+     * @see FOFPlatformFilesystemInterface::isEnabled()
      *
      * @return  boolean
      */
@@ -83,5 +83,10 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
     public function fileCopy($src, $dest, $path = null, $use_streams = false)
     {
         return JFile::copy($src, $dest, $path, $use_streams);
+    }
+
+    public function fileWrite($file, &$buffer, $use_streams = false)
+    {
+        return JFile::write($file, $buffer, $use_streams);
     }
 }

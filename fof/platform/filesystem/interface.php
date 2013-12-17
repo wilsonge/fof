@@ -56,4 +56,14 @@ interface FOFPlatformFilesystemInterface
      * @return  boolean  True on success
      */
     public function fileCopy($src, $dest);
+
+    /**
+     * Write contents to a file
+     *
+     * @param   string   $file         The full file path
+     * @param   string   &$buffer      The buffer to write
+     *
+     * @return  boolean  True on success
+     */
+    public function fileWrite($file, &$buffer);
 }

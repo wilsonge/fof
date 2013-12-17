@@ -42,9 +42,7 @@ class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 			{
 				$source_file = FOFTemplateUtils::parsePath($source_file, true);
 
-				JLoader::import('joomla.filesystem.file');
-
-				if (JFile::exists($source_file))
+				if (FOFPlatform::getInstance()->getFilesystem()->fileExists($source_file))
 				{
 					include_once $source_file;
 				}

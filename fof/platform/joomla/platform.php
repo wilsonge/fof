@@ -602,18 +602,17 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 			if ($data === false)
 			{
 				// Find the path to the file
-				$cachePath = JPATH_CACHE . '/fof';
-				$filename  = $cachePath . '/cache.php';
-
-				JLoader::import('joomla.filesystem.file');
+				$cachePath  = JPATH_CACHE . '/fof';
+				$filename   = $cachePath . '/cache.php';
+                $filesystem = $this->getFilesystem();
 
 				// Load the cache file if it exists. JRegistryFormatPHP fails
 				// miserably, so I have to work around it.
-				if (JFile::exists($filename))
+				if ($filesystem->fileExists($filename))
 				{
 					@include_once $filename;
 
-					JFile::delete($filename);
+					$filesystem->fileDelete($filename);
 
 					$className = 'FOFCacheStorage';
 

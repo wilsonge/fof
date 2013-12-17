@@ -116,6 +116,7 @@ class FOFConfigProvider
 
 		// Get the folders of the component
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
 		// Check that the path exists
 		JLoader::import('joomla.filesystem.folder');
@@ -131,12 +132,12 @@ class FOFConfigProvider
 		$filename = $path . '/fof.xml';
 		JLoader::import('joomla.filesystem.file');
 
-		if (!JFile::exists($filename))
+		if (!$filesystem->fileExists($filename))
 		{
 			return $ret;
 		}
 
-		$data = JFile::read($filename);
+		$data = file_get_contents($filename);
 
 		// Load the XML data in a SimpleXMLElement object
 		$xml = simplexml_load_string($data);

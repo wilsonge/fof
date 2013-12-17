@@ -2344,8 +2344,8 @@ class FOFModel extends JObject
 		$suffixes[] = '.xml';
 
 		// Look for all suffixes in all paths
-		JLoader::import('joomla.filesystem.file');
-		$result = false;
+		$result     = false;
+        $filesystem = FOFPlatform::getInstance()->getFilesystem();
 
 		foreach ($paths as $path)
 		{
@@ -2353,7 +2353,7 @@ class FOFModel extends JObject
 			{
 				$filename = $path . '/' . $source . $suffix;
 
-				if (JFile::exists($filename))
+				if ($filesystem->fileExists($filename))
 				{
 					$result = $filename;
 					break;

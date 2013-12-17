@@ -258,4 +258,30 @@ abstract class FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
 
         return $return;
     }
+
+    /**
+     * Gets the extension of a file name
+     *
+     * @param   string  $file  The file name
+     *
+     * @return  string  The file extension
+     */
+    public function getExt($file)
+    {
+        $dot = strrpos($file, '.') + 1;
+
+        return substr($file, $dot);
+    }
+
+    /**
+     * Strips the last extension off of a file name
+     *
+     * @param   string  $file  The file name
+     *
+     * @return  string  The file name without the extension
+     */
+    public function stripExt($file)
+    {
+        return preg_replace('#\.[^.]*$#', '', $file);
+    }
 }
