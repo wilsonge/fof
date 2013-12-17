@@ -333,8 +333,9 @@ class FOFTable extends JObject implements JTableInterface
 					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $altPath);
 				}
 
-				JLoader::import('joomla.filesystem.path');
-				$path = JPath::find(
+                $filesystem = FOFPlatform::getInstance()->getFilesystem();
+
+				$path = $filesystem->pathFind(
 					$searchPaths, strtolower($type) . '.php'
 				);
 

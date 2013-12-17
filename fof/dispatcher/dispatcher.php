@@ -131,10 +131,12 @@ class FOFDispatcher extends JObject
 			$input = new FOFInput;
 		}
 
-		$config['option'] = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
-		$config['view'] = !is_null($view) ? $view : $input->getCmd('view', '');
+		$config['option']   = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
+		$config['view']     = !is_null($view) ? $view : $input->getCmd('view', '');
+
 		$input->set('option', $config['option']);
 		$input->set('view', $config['view']);
+
 		$config['input'] = $input;
 
 		$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Dispatcher';
@@ -155,9 +157,9 @@ class FOFDispatcher extends JObject
 				array_unshift($searchPaths, $config['searchpath']);
 			}
 
-			JLoader::import('joomla.filesystem.path');
+			$filesystem = FOFPlatform::getInstance()->getFilesystem();
 
-			$path = JPath::find(
+			$path = $filesystem->pathFind(
 					$searchPaths, 'dispatcher.php'
 			);
 

@@ -121,7 +121,7 @@ class FOFConfigProvider
 		// Check that the path exists
 		JLoader::import('joomla.filesystem.folder');
 		$path = $componentPaths['admin'];
-		$path = JPath::check($path);
+		$path = $filesystem->pathCheck($path);
 
 		if (!JFolder::exists($path))
 		{
@@ -130,7 +130,6 @@ class FOFConfigProvider
 
 		// Read the filename if it exists
 		$filename = $path . '/fof.xml';
-		JLoader::import('joomla.filesystem.file');
 
 		if (!$filesystem->fileExists($filename))
 		{

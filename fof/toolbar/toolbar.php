@@ -99,8 +99,9 @@ class FOFToolbar
 					array_unshift($searchPaths, $config['searchpath']);
 				}
 
-				JLoader::import('joomla.filesystem.path');
-				$path = JPath::find(
+                $filesystem = FOFPlatform::getInstance()->getFilesystem();
+
+				$path = $filesystem->pathFind(
 						$searchPaths, 'toolbar.php'
 				);
 

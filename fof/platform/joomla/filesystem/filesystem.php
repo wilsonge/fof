@@ -64,6 +64,7 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
             if($this->isEnabled)
             {
                 JLoader::import('joomla.filesystem.file');
+                JLoader::import('joomla.filesystem.path');
             }
         }
 
@@ -88,5 +89,20 @@ class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPl
     public function fileWrite($file, &$buffer, $use_streams = false)
     {
         return JFile::write($file, $buffer, $use_streams);
+    }
+
+    public function pathCheck($path)
+    {
+        return JPath::check($path);
+    }
+
+    public function pathClean($path, $ds = DIRECTORY_SEPARATOR)
+    {
+        return JPath::clean($path, $ds);
+    }
+
+    public function pathFind($paths, $file)
+    {
+        return JPath::find($paths, $file);
     }
 }

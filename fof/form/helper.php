@@ -183,11 +183,12 @@ class FOFFormHelper extends JFormHelper
 		}
 
 		// Try to find the class file.
-		$type = strtolower($type) . '.php';
+		$type       = strtolower($type) . '.php';
+        $filesystem = FOFPlatform::getInstance()->getFilesystem();
 
 		foreach ($paths as $path)
 		{
-			if ($file = JPath::find($path, $type))
+			if ($file = $filesystem->pathFind($path, $type))
 			{
 				require_once $file;
 

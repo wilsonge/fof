@@ -321,6 +321,7 @@ class FOFController extends JObject
 
 		// Get the path names for the component
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
+        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
 		// Look for the best classname match
 		foreach ($classSuffixes as $suffix)
@@ -368,14 +369,14 @@ class FOFController extends JObject
 
 			if (!empty($format))
 			{
-				$path = JPath::find(
+				$path = $filesystem->pathFind(
 					$searchPaths, strtolower($suffix) . '.' . strtolower($format) . '.php'
 				);
 			}
 
 			if (!$path)
 			{
-				$path = JPath::find(
+				$path = $filesystem->pathFind(
 						$searchPaths, strtolower($suffix) . '.php'
 				);
 			}
@@ -790,6 +791,8 @@ class FOFController extends JObject
 		// Just force path to array
 		settype($path, 'array');
 
+        $filesystem = FOFPlatform::getInstance()->getFilesystem();
+
 		if (!isset($this->paths[$type]))
 		{
 			$this->paths[$type] = array();
@@ -799,7 +802,7 @@ class FOFController extends JObject
 		foreach ($path as $dir)
 		{
 			// No surrounding spaces allowed!
-			$dir = rtrim(JPath::check($dir, '/'), '/') . '/';
+			$dir = rtrim($filesystem->pathCheck($dir, '/'), '/') . '/';
 
 			// Add to the top of the search dirs
 			array_unshift($this->paths[$type], $dir);
@@ -2607,7 +2610,8 @@ class FOFController extends JObject
 			$altViewName,
 			'default'
 		);
-		JLoader::import('joomla.filesystem.path');
+
+        $filesystem = FOFPlatform::getInstance()->getFilesystem();
 
 		foreach ($suffixes as $suffix)
 		{
@@ -2622,7 +2626,7 @@ class FOFController extends JObject
 
 			// The class is not loaded. Let's load it!
 			$viewPath = $this->createFileName('view', array('name'	 => $suffix, 'type'	 => $viewType));
-			$path = JPath::find($basePaths, $viewPath);
+			$path = $filesystem->pathFind($basePaths, $viewPath);
 
 			if ($path)
 			{

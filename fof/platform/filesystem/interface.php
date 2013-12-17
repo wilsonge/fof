@@ -66,4 +66,37 @@ interface FOFPlatformFilesystemInterface
      * @return  boolean  True on success
      */
     public function fileWrite($file, &$buffer);
+
+    /**
+     * Checks for snooping outside of the file system root.
+     *
+     * @param   string  $path  A file system path to check.
+     *
+     * @return  string  A cleaned version of the path or exit on error.
+     *
+     * @throws  Exception
+     */
+    public function pathCheck($path);
+
+    /**
+     * Function to strip additional / or \ in a path name.
+     *
+     * @param   string  $path  The path to clean.
+     * @param   string  $ds    Directory separator (optional).
+     *
+     * @return  string  The cleaned path.
+     *
+     * @throws  UnexpectedValueException
+     */
+    public function pathClean($path, $ds = DIRECTORY_SEPARATOR);
+
+    /**
+     * Searches the directory paths for a given file.
+     *
+     * @param   mixed   $paths  An path string or array of path strings to search in
+     * @param   string  $file   The file name to look for.
+     *
+     * @return  mixed   The full path and file name for the target file, or boolean false if the file is not found in any of the paths.
+     */
+    public function pathFind($paths, $file);
 }
