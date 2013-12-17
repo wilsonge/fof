@@ -29,3 +29,4 @@ antconfig.txt
 /tests/environments/3.x/templates/fake_test_template
 /tests/environments/2.5/cache/
 /tests/environments/2.5/templates/fake_test_template
+/release/
