@@ -616,17 +616,44 @@ class FOFModelTest extends FtestCaseDatabase
         $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
         $model->setInput(array('option' => 'com_foftest','view'=> strtolower($modelinfo['name'])));
 
-        // First of all I have to trick the platform, providing a template path
-        $platform = $this->getMock('FOFPlatformJoomla', array('getTemplateOverridePath'));
+        // First of all I stub the filesystem object, so it won't strip out the protocol part
+        $filesystem = $this->getMock('FOFPlatformJoomlaFilesystem', array('fileExists'));
+        $filesystem->expects($this->any())
+                   ->method('fileExists')
+                   ->will($this->returnCallback(function($file){ return is_file($file);}));
+
+        $methods = array('getTemplateOverridePath', 'getFilesystem');
+
+        if(isset($test['suffix']))
+        {
+            $methods[] = 'getTemplateSuffixes';
+        }
+
+        $platform = $this->getMock('FOFPlatformJoomlaPlatform', $methods);
+
+        // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())
                  ->method('getTemplateOverridePath')
                  ->will($this->returnValue(JPATH_ROOT.'/administrator/templates/system'));
 
+        // Finally, force the platform to return my mocked object
+        $platform->expects($this->any())
+                 ->method('getFilesystem')
+                 ->will($this->returnValue($filesystem));
+
+        // Do I want to mock the suffix returned, too?
+        if(isset($test['suffix']))
+        {
+            // I can mock it, so I won't have to update the test with different version of Joomla
+            $platform->expects($this->any())->method('getTemplateSuffixes')->will($this->returnValue($test['suffix']));
+        }
+
         FOFPlatform::forceInstance($platform);
+
+        $paths = array();
 
         foreach($test['paths'] as $path)
         {
-            $path  = trim(str_replace('\\', '/', $path), '/');
             $parts = explode('/', $path);
             $last = array_pop($parts);
 
@@ -642,6 +669,8 @@ class FOFModelTest extends FtestCaseDatabase
 
         // I always have to supply paths, since I have to use the filesystem wrapper
         $form = $model->findFormFilename($test['form_name'], $paths);
+
+        $this->assertEquals($checks['form'], $form, 'FOFModel::findFormFilename returned a wrong value');
     }
 
     public function getTestSetIDsFromRequest()

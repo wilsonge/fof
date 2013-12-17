@@ -2308,7 +2308,7 @@ class FOFModel extends JObject
 		{
 			// Set up the paths to look into
             // PLEASE NOTE: If you ever change this, please update Model Unit tests, too, since we have to
-            // copy these default folders
+            // copy these default folders (we have to add the protocol for the virtual filesystem)
 			$paths = array(
 				// In the template override
 				$template_root . '/' . $view,
@@ -2328,6 +2328,8 @@ class FOFModel extends JObject
 				$alt_file_root . '/models/forms',
 			);
 		}
+
+        $paths = array_unique($paths);
 
 		// Set up the suffixes to look into
 		$suffixes = array();
