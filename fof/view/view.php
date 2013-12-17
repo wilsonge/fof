@@ -408,8 +408,9 @@ abstract class FOFView extends JObject
 		}
 
 		$filetofind = $templateParts['template'] . '.php';
-		JLoader::import('joomla.filesystem.path');
-		$this->_tempFilePath = JPath::find($paths, $filetofind);
+        $filesystem = FOFPlatform::getInstance()->getFilesystem();
+
+		$this->_tempFilePath = $filesystem->pathFind($paths, $filetofind);
 
 		if ($this->_tempFilePath)
 		{
@@ -940,14 +941,14 @@ abstract class FOFView extends JObject
 	 */
 	protected function findRenderer()
 	{
-		JLoader::import('joomla.filesystem.folder');
+        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
 		// Try loading the stock renderers shipped with FOF
 
 		if (empty(self::$renderers) || !class_exists('FOFRenderJoomla', false))
 		{
 			$path = dirname(__FILE__) . '/../render/';
-			$renderFiles = JFolder::files($path, '.php');
+			$renderFiles = $filesystem->folderFiles($path, '.php');
 
 			if (!empty($renderFiles))
 			{
@@ -1045,19 +1046,20 @@ abstract class FOFView extends JObject
 		$file = preg_replace('/[^A-Z0-9_\.-]/i', '', $hlp);
 
 		// Load the template script using the default Joomla! features
-		JLoader::import('joomla.filesystem.path');
-		$helper = JPath::find($this->_path['helper'], $this->_createFileName('helper', array('name' => $file)));
+        $filesystem = FOFPlatform::getInstance()->getFilesystem();
+
+		$helper = $filesystem->pathFind($this->_path['helper'], $this->_createFileName('helper', array('name' => $file)));
 
 		if ($helper == false)
 		{
 			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->config['option']);
 			$path = $componentPaths['main'] . '/helpers';
-			$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
+			$helper = $filesystem->pathFind($path, $this->_createFileName('helper', array('name' => $file)));
 
 			if ($helper == false)
 			{
 				$path = $path = $componentPaths['alt'] . '/helpers';
-				$helper = JPath::find($path, $this->_createFileName('helper', array('name' => $file)));
+				$helper = $filesystem->pathFind($path, $this->_createFileName('helper', array('name' => $file)));
 			}
 		}
 

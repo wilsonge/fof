@@ -30,7 +30,7 @@ class FOFLayoutFile extends JLayoutFile
 	 */
 	protected function getPath()
 	{
-		jimport('joomla.filesystem.path');
+		$filesystem = FOFPlatform::getInstance()->getFilesystem();
 
 		if (is_null($this->fullPath) && !empty($this->layoutId))
 		{
@@ -56,7 +56,7 @@ class FOFLayoutFile extends JLayoutFile
 
 			while ((list(, $fileName) = each($files)) && is_null($this->fullPath))
 			{
-				$r = JPath::find($possiblePaths, $fileName);
+				$r = $filesystem->pathFind($possiblePaths, $fileName);
 				$this->fullPath = $r === false ? null : $r;
 			}
 		}

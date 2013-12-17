@@ -112,9 +112,7 @@ class FOFLess
 	protected function fileExists($name)
 	{
 		/** FOF - BEGIN CHANGE * */
-		JLoader::import('joomla.filesystem.file');
-
-		return JFile::exists($name);
+		return FOFPlatform::getInstance()->getFilesystem()->fileExists($name);
 		/** FOF - END CHANGE * */
 	}
 
@@ -2924,9 +2922,7 @@ class FOFLess
 		if ($outFname !== null)
 		{
 			/** FOF - BEGIN CHANGE * */
-			JLoader::import('joomla.filesystem.file');
-
-			return JFile::write($outFname, $out);
+			return FOFPlatform::getInstance()->getFilesystem()->fileWrite($outFname, $out);
 			/** FOF - END CHANGE * */
 		}
 

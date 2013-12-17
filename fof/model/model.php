@@ -277,6 +277,7 @@ class FOFModel extends JObject
 
 		// Get the component directories
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
 		// Try to load the requested model class
 		if (!class_exists($modelClass))
@@ -291,9 +292,7 @@ class FOFModel extends JObject
 			$include_paths = array_merge($extra_paths, $include_paths);
 
 			// Try to load the model file
-			JLoader::import('joomla.filesystem.path');
-
-			$path = JPath::find(
+			$path = $filesystem->pathFind(
 					$include_paths, self::_createFileName('model', array('name' => $type))
 			);
 
@@ -320,9 +319,7 @@ class FOFModel extends JObject
 				$include_paths = array_merge($extra_paths, $include_paths);
 
 				// Try to load the model file
-				JLoader::import('joomla.filesystem.path');
-
-				$path = JPath::find(
+				$path = $filesystem->pathFind(
 						$include_paths, self::_createFileName('model', array('name' => 'default'))
 				);
 
@@ -474,16 +471,16 @@ class FOFModel extends JObject
 
 		if (!empty($path))
 		{
-			jimport('joomla.filesystem.path');
+            $filesystem = FOFPlatform::getInstance()->getFilesystem();
 
 			if (!in_array($path, $paths[$prefix]))
 			{
-				array_unshift($paths[$prefix], JPath::clean($path));
+				array_unshift($paths[$prefix], $filesystem->pathClean($path));
 			}
 
 			if (!in_array($path, $paths['']))
 			{
-				array_unshift($paths[''], JPath::clean($path));
+				array_unshift($paths[''], $filesystem->pathClean($path));
 			}
 		}
 
@@ -2347,8 +2344,8 @@ class FOFModel extends JObject
 		$suffixes[] = '.xml';
 
 		// Look for all suffixes in all paths
-		JLoader::import('joomla.filesystem.file');
-		$result = false;
+		$result     = false;
+        $filesystem = FOFPlatform::getInstance()->getFilesystem();
 
 		foreach ($paths as $path)
 		{
@@ -2356,7 +2353,7 @@ class FOFModel extends JObject
 			{
 				$filename = $path . '/' . $source . $suffix;
 
-				if (JFile::exists($filename))
+				if ($filesystem->fileExists($filename))
 				{
 					$result = $filename;
 					break;
