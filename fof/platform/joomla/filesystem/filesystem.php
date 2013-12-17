@@ -10,6 +10,16 @@ defined('_JEXEC') or die;
 
 class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
 {
+	public function __construct()
+	{
+		if (class_exists('JLoader'))
+		{
+			JLoader::import('joomla.filesystem.path');
+			JLoader::import('joomla.filesystem.folder');
+			JLoader::import('joomla.filesystem.file');
+		}
+	}
+
 	/**
 	 * Does the file exists?
 	 *
