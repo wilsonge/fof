@@ -487,6 +487,95 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestCopy()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'id_list'  => array(2),
+                'copy'     => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Empty id_list
+        $data[] = array(
+            array(
+                'id_list'  => array(),
+                'copy'     => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Wrong type id_list
+        $data[] = array(
+            array(
+                'id_list'  => '',
+                'copy'     => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Copy returns an error
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'copy'     => false,
+                'error'    => 'Copy returned false',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeCopy returns an error
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'copy'     => false,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeCopy returns an error (copy would be ok)
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'copy'     => true,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onAfterCopy returns an error (copy would be ok)
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'copy'     => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => false
+            ),
+            array('return' => true)
+        );
+
+        return $data;
+    }
+
     public static function getTestGetTable()
     {
         $data[] = array(

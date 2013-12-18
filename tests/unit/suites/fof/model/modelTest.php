@@ -437,6 +437,49 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals($dummy, $result, 'FOFModel::getItemList failed to use its internal cache');
     }
 
+
+    /**
+     * @group               modelTestCopy
+     * @group               FOFModel
+     * @covers              FOFModel::copy
+     * @dataProvider        getTestCopy
+     */
+    public function testCopy($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('copy', 'getError'), $constr_args, '',	true, true, true, true);
+        $table->expects($this->any())->method('copy')->will($this->returnValue($test['copy']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('onBeforeCopy', 'onAfterCopy', 'getTable'), array($config));
+        $model->expects($this->any())->method('onBeforeCopy')->will($this->returnValue($test['onBefore']));
+        $model->expects($this->any())->method('onAfterCopy')->will($this->returnValue($test['onAfter']));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        if(isset($test['id_list']))
+        {
+            $property = new ReflectionProperty($model, 'id_list');
+            $property->setAccessible(true);
+            $property->setValue($model, $test['id_list']);
+        }
+
+        $return = $model->copy();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::copy returned a wrong value');
+
+        if(!$test['copy'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::copy got the wrong error message when copy fails');
+        }
+    }
+
     /**
      * In this test I will simply check that the invocation of the _createTable is made with the correct
      * arguments. I will check for the correct table to be returned while testing _createTable.
@@ -716,6 +759,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetItemList()
     {
         return ModelDataprovider::getTestGetItemList();
+    }
+
+    public function getTestCopy()
+    {
+        return ModelDataprovider::getTestCopy();
     }
 
     public function getTestGetTable()
