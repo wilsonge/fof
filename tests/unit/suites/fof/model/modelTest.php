@@ -693,6 +693,48 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestHit
+     * @group               FOFModel
+     * @covers              FOFModel::hit
+     * @dataProvider        getTestHit
+     */
+    public function testHit($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('hit', 'getError'), $constr_args, '', true, true, true, true);
+        $table->expects($this->any())->method('hit')->will($this->returnValue($test['hit']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('onBeforeHit', 'onAfterHit', 'getTable'), array($config));
+        $model->expects($this->any())->method('onBeforeHit')->will($this->returnValue($test['onBefore']));
+        $model->expects($this->any())->method('onAfterHit')->will($this->returnValue($test['onAfter']));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        if(isset($test['id_list']))
+        {
+            $property = new ReflectionProperty($model, 'id_list');
+            $property->setAccessible(true);
+            $property->setValue($model, $test['id_list']);
+        }
+
+        $return = $model->hit();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::hit returned a wrong value');
+
+        if(!$test['hit'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::hit got the wrong error message when hit fails');
+        }
+    }
+
+    /**
      * In this test I will simply check that the invocation of the _createTable is made with the correct
      * arguments. I will check for the correct table to be returned while testing _createTable.
      *
@@ -1001,6 +1043,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestIsCheckedout()
     {
         return ModelDataprovider::getTestIsCheckedOut();
+    }
+
+    public function getTestHit()
+    {
+        return ModelDataprovider::getTestHit();
     }
 
     public function getTestGetTable()

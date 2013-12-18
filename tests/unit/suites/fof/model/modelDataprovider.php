@@ -849,6 +849,66 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestHit()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'hit'     => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Hit returns an error
+        $data[] = array(
+            array(
+                'hit'      => false,
+                'error'    => 'Hit returned false',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeCopy returns an error
+        $data[] = array(
+            array(
+                'hit'      => false,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeCopy returns an error (copy would be ok)
+        $data[] = array(
+            array(
+                'hit'      => true,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onAfterCopy returns an error (copy would be ok)
+        $data[] = array(
+            array(
+                'hit'      => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => false
+            ),
+            array('return' => true)
+        );
+
+        return $data;
+    }
+
     public static function getTestGetTable()
     {
         $data[] = array(
