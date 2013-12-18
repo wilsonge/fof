@@ -576,6 +576,121 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestDelete()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'id_list'  => array(2),
+                'delete'   => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Empty id_list
+        $data[] = array(
+            array(
+                'id_list'  => array(),
+                'delete'   => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Wrong type id_list
+        $data[] = array(
+            array(
+                'id_list'  => '',
+                'delete'   => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Delete returns an error
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'delete'   => false,
+                'error'    => 'Delete returned false',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeDelete returns an error
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'delete'   => false,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // onBeforeDelete returns an error just once (delete fails)
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'delete'   => false,
+                'beforeFailsOnce' => true,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeDelete returns an error just once (delete works)
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'delete'   => true,
+                'beforeFailsOnce' => true,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // onBeforeDelete returns an error (copy would be ok)
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'delete'   => true,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // onAfterDelete returns an error (copy would be ok)
+        $data[] = array(
+            array(
+                'id_list'  => array(2, 3),
+                'delete'   => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => false
+            ),
+            array('return' => true)
+        );
+
+        return $data;
+    }
+
     public static function getTestGetTable()
     {
         $data[] = array(

@@ -481,6 +481,57 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestDelete
+     * @group               FOFModel
+     * @covers              FOFModel::delete
+     * @dataProvider        getTestDelete
+     */
+    public function testDelete($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('delete', 'getError'), $constr_args, '', true, true, true, true);
+        $table->expects($this->any())->method('delete')->will($this->returnValue($test['delete']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('onBeforeDelete', 'onAfterDelete', 'getTable'), array($config));
+
+        if(isset($test['beforeFailsOnce']))
+        {
+            $model->expects($this->any())->method('onBeforeDelete')->will($this->onConsecutiveCalls(false, true));
+        }
+        else
+        {
+            $model->expects($this->any())->method('onBeforeDelete')->will($this->returnValue($test['onBefore']));
+        }
+
+        $model->expects($this->any())->method('onAfterDelete')->will($this->returnValue($test['onAfter']));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        if(isset($test['id_list']))
+        {
+            $property = new ReflectionProperty($model, 'id_list');
+            $property->setAccessible(true);
+            $property->setValue($model, $test['id_list']);
+        }
+
+        $return = $model->delete();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::delete returned a wrong value');
+
+        if(!$test['delete'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::delete got the wrong error message when delete fails');
+        }
+    }
+
+    /**
      * In this test I will simply check that the invocation of the _createTable is made with the correct
      * arguments. I will check for the correct table to be returned while testing _createTable.
      *
@@ -764,6 +815,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestCopy()
     {
         return ModelDataprovider::getTestCopy();
+    }
+
+    public function getTestDelete()
+    {
+        return ModelDataprovider::getTestDelete();
     }
 
     public function getTestGetTable()
