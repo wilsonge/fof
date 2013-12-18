@@ -729,7 +729,7 @@ abstract class ModelDataprovider
             array('return' => true)
         );
 
-        // Copy returns an error
+        // Publish returns an error
         $data[] = array(
             array(
                 'id_list'  => array(2, 3),
@@ -741,7 +741,7 @@ abstract class ModelDataprovider
             array('return' => false)
         );
 
-        // onBeforeCopy returns an error
+        // onBeforePublish returns an error
         $data[] = array(
             array(
                 'id_list'  => array(2, 3),
@@ -753,7 +753,7 @@ abstract class ModelDataprovider
             array('return' => false)
         );
 
-        // onBeforeCopy returns an error (copy would be ok)
+        // onBeforePublish returns an error (publish would be ok)
         $data[] = array(
             array(
                 'id_list'  => array(2, 3),
@@ -765,7 +765,7 @@ abstract class ModelDataprovider
             array('return' => false)
         );
 
-        // onAfterCopy returns an error (copy would be ok)
+        // onAfterPublish returns an error (publish would be ok)
         $data[] = array(
             array(
                 'id_list'  => array(2, 3),
@@ -873,7 +873,7 @@ abstract class ModelDataprovider
             array('return' => false)
         );
 
-        // onBeforeCopy returns an error
+        // onBeforeHit returns an error
         $data[] = array(
             array(
                 'hit'      => false,
@@ -884,7 +884,7 @@ abstract class ModelDataprovider
             array('return' => false)
         );
 
-        // onBeforeCopy returns an error (copy would be ok)
+        // onBeforeHit returns an error (hit would be ok)
         $data[] = array(
             array(
                 'hit'      => true,
@@ -895,7 +895,7 @@ abstract class ModelDataprovider
             array('return' => false)
         );
 
-        // onAfterCopy returns an error (copy would be ok)
+        // onAfterHit returns an error (hit would be ok)
         $data[] = array(
             array(
                 'hit'      => true,
@@ -904,6 +904,143 @@ abstract class ModelDataprovider
                 'onAfter'  => false
             ),
             array('return' => true)
+        );
+
+        return $data;
+    }
+
+    public static function getTestMove()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'load'     => true,
+                'move'     => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Load returns an error
+        $data[] = array(
+            array(
+                'load'     => false,
+                'move'     => true,
+                'error'    => 'Load returned false',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // Move returns an error
+        $data[] = array(
+            array(
+                'load'     => true,
+                'move'     => false,
+                'error'    => 'Move returned false',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeMove returns an error
+        $data[] = array(
+            array(
+                'load'     => true,
+                'move'     => false,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeMove returns an error (move would be ok)
+        $data[] = array(
+            array(
+                'load'     => true,
+                'move'     => true,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onAfterMove returns an error (move would be ok)
+        $data[] = array(
+            array(
+                'load'     => true,
+                'move'     => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => false
+            ),
+            array('return' => true)
+        );
+
+        return $data;
+    }
+
+    public static function getTestReorder()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'reorder'  => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => true)
+        );
+
+        // Reorder returns an error
+        $data[] = array(
+            array(
+                'reorder'  => false,
+                'error'    => 'Reorder returned false',
+                'onBefore' => true,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeReorder returns an error
+        $data[] = array(
+            array(
+                'reorder'  => false,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onBeforeReorder returns an error (reorder would be ok)
+        $data[] = array(
+            array(
+                'reorder'  => true,
+                'error'    => '',
+                'onBefore' => false,
+                'onAfter'  => true
+            ),
+            array('return' => false)
+        );
+
+        // onAfterReorder returns an error (reorder would be ok)
+        $data[] = array(
+            array(
+                'reorder'  => true,
+                'error'    => '',
+                'onBefore' => true,
+                'onAfter'  => false
+            ),
+            array('return' => false)
         );
 
         return $data;

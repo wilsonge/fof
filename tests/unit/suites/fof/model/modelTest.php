@@ -439,6 +439,9 @@ class FOFModelTest extends FtestCaseDatabase
 
 
     /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
      * @group               modelTestCopy
      * @group               FOFModel
      * @covers              FOFModel::copy
@@ -481,6 +484,9 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
      * @group               modelTestDelete
      * @group               FOFModel
      * @covers              FOFModel::delete
@@ -532,6 +538,9 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
      * @group               modelTestPublish
      * @group               FOFModel
      * @covers              FOFModel::publish
@@ -594,6 +603,9 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
      * @group               modelTestCheckout
      * @group               FOFModel
      * @covers              FOFModel::checkout
@@ -627,6 +639,9 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
      * @group               modelTestCheckin
      * @group               FOFModel
      * @covers              FOFModel::checkin
@@ -660,6 +675,9 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
      * @group               modelTestIsCheckedOut
      * @group               FOFModel
      * @covers              FOFModel::isCheckedOut
@@ -693,6 +711,9 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
      * @group               modelTestHit
      * @group               FOFModel
      * @covers              FOFModel::hit
@@ -731,6 +752,85 @@ class FOFModelTest extends FtestCaseDatabase
         if(!$test['hit'])
         {
             $this->assertEquals($test['error'], $model->getError(), 'FOFModel::hit got the wrong error message when hit fails');
+        }
+    }
+
+    /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
+     * @group               modelTestMove
+     * @group               FOFModel
+     * @covers              FOFModel::move
+     * @dataProvider        getTestMove
+     */
+    public function testMove($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('move', 'load', 'getError'), $constr_args, '', true, true, true, true);
+        $table->expects($this->any())->method('move')->will($this->returnValue($test['move']));
+        $table->expects($this->any())->method('load')->will($this->returnValue($test['load']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('onBeforeMove', 'onAfterMove', 'getTable'), array($config));
+        $model->expects($this->any())->method('onBeforeMove')->will($this->returnValue($test['onBefore']));
+        $model->expects($this->any())->method('onAfterMove')->will($this->returnValue($test['onAfter']));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        // I don't pass any argument since I'm not interested in records being really published, that's table duty.
+        // Here I'm testing how the model reacts vs different scenarios
+        $return = $model->move(1);
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::move returned a wrong value');
+
+        if(!$test['move'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::move got the wrong error message when move fails');
+        }
+    }
+
+    /**
+     * In the following test I'll mock almost everything: this because I don't care about the database interaction,
+     * I just want to test the model in all the possible scenarios.
+     *
+     * @group               modelTestReorder
+     * @group               FOFModel
+     * @covers              FOFModel::reorder
+     * @dataProvider        getTestReorder
+     */
+    public function testReorder($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('reorder', 'getError'), $constr_args, '',	true, true, true, true);
+        $table->expects($this->any())->method('reorder')->will($this->returnValue($test['reorder']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('onBeforeReorder', 'onAfterReorder', 'getTable'), array($config));
+        $model->expects($this->any())->method('onBeforeReorder')->will($this->returnValue($test['onBefore']));
+        $model->expects($this->any())->method('onAfterReorder')->will($this->returnValue($test['onAfter']));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        $return = $model->reorder();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::reorder returned a wrong value');
+
+        if(!$test['reorder'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::reorder got the wrong error message when reorder fails');
         }
     }
 
@@ -1048,6 +1148,16 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestHit()
     {
         return ModelDataprovider::getTestHit();
+    }
+
+    public function getTestMove()
+    {
+        return ModelDataprovider::getTestMove();
+    }
+
+    public function getTestReorder()
+    {
+        return ModelDataprovider::getTestReorder();
     }
 
     public function getTestGetTable()
