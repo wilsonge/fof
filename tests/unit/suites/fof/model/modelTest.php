@@ -446,13 +446,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::copy
      * @dataProvider        getTestCopy
+     * @preventDataLoading
      */
     public function testCopy($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -491,13 +489,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::delete
      * @dataProvider        getTestDelete
+     * @preventDataLoading
      */
     public function testDelete($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -545,13 +541,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::publish
      * @dataProvider        getTestPublish
+     * @preventDataLoading
      */
     public function testPublish($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -610,13 +604,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::checkout
      * @dataProvider        getTestCheckout
+     * @preventDataLoading
      */
     public function testCheckout($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -646,13 +638,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::checkin
      * @dataProvider        getTestCheckin
+     * @preventDataLoading
      */
     public function testCheckin($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -682,13 +672,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::isCheckedOut
      * @dataProvider        getTestIsCheckedOut
+     * @preventDataLoading
      */
     public function testIsCheckedOut($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -718,13 +706,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::hit
      * @dataProvider        getTestHit
+     * @preventDataLoading
      */
     public function testHit($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -763,13 +749,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::move
      * @dataProvider        getTestMove
+     * @preventDataLoading
      */
     public function testMove($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -804,13 +788,11 @@ class FOFModelTest extends FtestCaseDatabase
      * @group               FOFModel
      * @covers              FOFModel::reorder
      * @dataProvider        getTestReorder
+     * @preventDataLoading
      */
     public function testReorder($test, $checks)
     {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => 'foobars'
-        );
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -832,6 +814,25 @@ class FOFModelTest extends FtestCaseDatabase
         {
             $this->assertEquals($test['error'], $model->getError(), 'FOFModel::reorder got the wrong error message when reorder fails');
         }
+    }
+
+    /**
+     * @group               modelTestgetTotal
+     * @group               FOFModel
+     * @covers              FOFModel::getTotal
+     * @dataProvider        getTestgetTotal
+     */
+    public function testGetTotal($test, $checks)
+    {
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
+
+        $model = $this->getMock('FOFModel', array('buildCountQuery', 'buildQuery'), array($config));
+        $model->expects($this->any())->method('buildCountQuery')->will($this->returnValue($test['buildCount']));
+        $model->expects($this->any())->method('buildQuery')->will($this->returnValue($test['buildQuery']));
+
+        $total = $model->getTotal();
+
+        $this->assertEquals($checks['total'], $total, 'FOFModel::getTotal returned wrong total value');
     }
 
     /**
@@ -1158,6 +1159,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestReorder()
     {
         return ModelDataprovider::getTestReorder();
+    }
+
+    public function getTestgetTotal()
+    {
+        return ModelDataprovider::getTestgetTotal();
     }
 
     public function getTestGetTable()

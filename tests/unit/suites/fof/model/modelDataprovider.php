@@ -1046,6 +1046,29 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestgetTotal()
+    {
+        $db = JFactory::getDbo();
+
+        $data[] = array(
+            array(
+                'buildCount' => false,
+                'buildQuery' => $db->getQuery(true)->select('*')->from('#__foftest_foobars')->where('foftest_foobar_id <= 5')
+            ),
+            array('total' => 5)
+        );
+
+        $data[] = array(
+            array(
+                'buildCount' => $db->getQuery(true)->select('COUNT(*)')->from('#__foftest_foobars')->where('foftest_foobar_id <= 2'),
+                'buildQuery' => ''
+            ),
+            array('total' => 2)
+        );
+
+        return $data;
+    }
+
     public static function getTestGetTable()
     {
         $data[] = array(
