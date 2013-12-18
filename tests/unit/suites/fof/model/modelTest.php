@@ -532,6 +532,68 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestPublish
+     * @group               FOFModel
+     * @covers              FOFModel::publish
+     * @dataProvider        getTestPublish
+     */
+    public function testPublish($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('publish', 'getError'), $constr_args, '', true, true, true, true);
+        $table->expects($this->any())->method('publish')->will($this->returnValue($test['publish']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config));
+        $model->expects($this->any())->method('onBeforePublish')->will($this->returnValue($test['onBefore']));
+        $model->expects($this->any())->method('onAfterPublish')->will($this->returnValue($test['onAfter']));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        $model->setInput($config['input']);
+
+        if(isset($test['id_list']))
+        {
+            $property = new ReflectionProperty($model, 'id_list');
+            $property->setAccessible(true);
+            $property->setValue($model, $test['id_list']);
+        }
+
+        if($test['publish'])
+        {
+            $property = new ReflectionProperty($model, 'event_change_state');
+            $property->setAccessible(true);
+            $event = $property->getValue($model);
+
+            // Let's create a mock for the platform and check that plugins are run
+            $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('runPlugins'));
+            $platform->expects($this->any())->method('runPlugins')->with(
+                $event,
+                array('com_foftest.foobars', $test['id_list'], 1)
+            );
+
+            FOFPlatform::forceInstance($platform);
+        }
+
+        // I don't pass any argument since I'm not interested in records being really published, that's table duty.
+        // Here I'm testing how the model reacts vs different scenarios
+        $return = $model->publish();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::publish returned a wrong value');
+
+        if(!$test['publish'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::publish got the wrong error message when publish fails');
+        }
+    }
+
+    /**
      * In this test I will simply check that the invocation of the _createTable is made with the correct
      * arguments. I will check for the correct table to be returned while testing _createTable.
      *
@@ -820,6 +882,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestDelete()
     {
         return ModelDataprovider::getTestDelete();
+    }
+
+    public function getTestPublish()
+    {
+        return ModelDataprovider::getTestPublish();
     }
 
     public function getTestGetTable()

@@ -1455,14 +1455,16 @@ class FOFModel extends JObject
 			}
 			else
 			{
-				// Call our itnernal event
+				// Call our internal event
 				$this->onAfterPublish($table);
 
 				// Call the plugin events
 				FOFPlatform::getInstance()->importPlugin('content');
-				$name = $this->input->getCmd('view', 'cpanel');
+				$name    = $this->input->getCmd('view', 'cpanel');
 				$context = $this->option . '.' . $name;
-				$result = FOFPlatform::getInstance()->runPlugins($this->event_change_state, array($context, $this->id_list, $publish));
+
+                // @TODO should we do anything with this return value?
+				$result  = FOFPlatform::getInstance()->runPlugins($this->event_change_state, array($context, $this->id_list, $publish));
 			}
 		}
 
