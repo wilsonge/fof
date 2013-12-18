@@ -780,6 +780,75 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestCheckout()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'checkout' => true,
+                'error'    => '',
+            ),
+            array('return' => true)
+        );
+
+        // Error
+        $data[] = array(
+            array(
+                'checkout' => false,
+                'error'    => 'Checkout error',
+            ),
+            array('return' => false)
+        );
+
+        return $data;
+    }
+
+    public static function getTestCheckin()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'checkin'  => true,
+                'error'    => '',
+            ),
+            array('return' => true)
+        );
+
+        // Error
+        $data[] = array(
+            array(
+                'checkin'  => false,
+                'error'    => 'Checkin error',
+            ),
+            array('return' => false)
+        );
+
+        return $data;
+    }
+
+    public static function getTestIsCheckedOut()
+    {
+        // Everything fine
+        $data[] = array(
+            array(
+                'isCheckedOut'  => true,
+                'error'         => '',
+            ),
+            array('return' => true)
+        );
+
+        // Error
+        $data[] = array(
+            array(
+                'isCheckedOut'  => false,
+                'error'         => 'isCheckedOut error',
+            ),
+            array('return' => false)
+        );
+
+        return $data;
+    }
+
     public static function getTestGetTable()
     {
         $data[] = array(

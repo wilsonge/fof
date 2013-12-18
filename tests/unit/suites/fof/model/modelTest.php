@@ -594,6 +594,105 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestCheckout
+     * @group               FOFModel
+     * @covers              FOFModel::checkout
+     * @dataProvider        getTestCheckout
+     */
+    public function testCheckout($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('checkout', 'getError'), $constr_args, '',	true, true, true, true);
+        $table->expects($this->any())->method('checkout')->will($this->returnValue($test['checkout']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('getTable'), array($config));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        $return = $model->checkout();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::checkout returned a wrong value');
+
+        if(!$test['checkout'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::checkout got the wrong error message when checkout fails');
+        }
+    }
+
+    /**
+     * @group               modelTestCheckin
+     * @group               FOFModel
+     * @covers              FOFModel::checkin
+     * @dataProvider        getTestCheckin
+     */
+    public function testCheckin($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('checkin', 'getError'), $constr_args, '',	true, true, true, true);
+        $table->expects($this->any())->method('checkin')->will($this->returnValue($test['checkin']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('getTable'), array($config));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        $return = $model->checkin();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::checkin returned a wrong value');
+
+        if(!$test['checkin'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::checkin got the wrong error message when checkin fails');
+        }
+    }
+
+    /**
+     * @group               modelTestIsCheckedOut
+     * @group               FOFModel
+     * @covers              FOFModel::isCheckedOut
+     * @dataProvider        getTestIsCheckedOut
+     */
+    public function testIsCheckedOut($test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => 'foobars'
+        );
+
+        $db = JFactory::getDbo();
+        $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        $table = $this->getMock('FOFTable',	array('isCheckedOut', 'getError'), $constr_args, '', true, true, true, true);
+        $table->expects($this->any())->method('isCheckedOut')->will($this->returnValue($test['isCheckedOut']));
+        $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
+
+        $model = $this->getMock('FOFModel', array('getTable'), array($config));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        $return = $model->isCheckedOut();
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::isCheckedOut returned a wrong value');
+
+        if(!$test['isCheckedOut'])
+        {
+            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::isCheckedOut got the wrong error message when isCheckedOut fails');
+        }
+    }
+
+    /**
      * In this test I will simply check that the invocation of the _createTable is made with the correct
      * arguments. I will check for the correct table to be returned while testing _createTable.
      *
@@ -887,6 +986,21 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestPublish()
     {
         return ModelDataprovider::getTestPublish();
+    }
+
+    public function getTestCheckout()
+    {
+        return ModelDataprovider::getTestCheckout();
+    }
+
+    public function getTestCheckin()
+    {
+        return ModelDataprovider::getTestCheckin();
+    }
+
+    public function getTestIsCheckedout()
+    {
+        return ModelDataprovider::getTestIsCheckedOut();
     }
 
     public function getTestGetTable()

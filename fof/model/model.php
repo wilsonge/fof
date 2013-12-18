@@ -1478,7 +1478,7 @@ class FOFModel extends JObject
 	 */
 	public function checkout()
 	{
-		$table = $this->getTable($this->table);
+		$table  = $this->getTable($this->table);
 		$status = $table->checkout(FOFPlatform::getInstance()->getUser()->id, $this->id);
 
 		if (!$status)
@@ -1496,7 +1496,7 @@ class FOFModel extends JObject
 	 */
 	public function checkin()
 	{
-		$table = $this->getTable($this->table);
+		$table  = $this->getTable($this->table);
 		$status = $table->checkin($this->id);
 
 		if (!$status)
@@ -1514,7 +1514,7 @@ class FOFModel extends JObject
 	 */
 	public function isCheckedOut()
 	{
-		$table = $this->getTable($this->table);
+		$table  = $this->getTable($this->table);
 		$status = $table->isCheckedOut($this->id);
 
 		if (!$status)
