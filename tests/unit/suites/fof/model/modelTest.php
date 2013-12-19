@@ -405,7 +405,6 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals($dummy, $result, 'FOFModel::getItemList failed to use its internal cache');
     }
 
-
     /**
      * In the following test I'll mock almost everything: this because I don't care about the database interaction,
      * I just want to test the model in all the possible scenarios.
@@ -1289,7 +1288,7 @@ class FOFModelTest extends FtestCaseDatabase
 
         $method = new ReflectionMethod($model, 'preprocessForm');
         $method->setAccessible(true);
-        $method->invoke($model, &$form, array());
+        $method->invokeArgs($model, array(&$form, array()));
     }
 
     /**
