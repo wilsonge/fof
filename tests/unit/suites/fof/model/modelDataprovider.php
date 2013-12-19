@@ -1802,6 +1802,83 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestValidateForm()
+    {
+        // Everything ok
+        $data[] = array(
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'validate'   => true,
+                'getErrors'  => '',
+            ),
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'errMsg'     => '',
+                'return'     => array('first' => 2, 'second' => 1)
+            )
+        );
+
+        // Validation returns an exception
+        $data[] = array(
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'validate'   => new Exception('Test exception'),
+                'getErrors'  => '',
+            ),
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'errMsg'     => 'Test exception',
+                'return'     => false
+            )
+        );
+
+        // Validation returns false (form sets no exception)
+        $data[] = array(
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'validate'   => false,
+                'getErrors'  => array('Test exception'),
+            ),
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'errMsg'     => 'Test exception',
+                'return'     => false
+            )
+        );
+
+        // Validation returns false (form sets an exception)
+        $data[] = array(
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'validate'   => false,
+                'getErrors'  => array(new Exception('Test exception')),
+            ),
+            array(
+                'data'       => array('first' => 1, 'second' => 2),
+                'group'      => 'dummy',
+                'filterData' => array('first' => 2, 'second' => 1),
+                'errMsg'     => 'Test exception',
+                'return'     => false
+            )
+        );
+
+        return $data;
+    }
+
     protected static function createArrayDir($paths)
     {
         $tree = array();

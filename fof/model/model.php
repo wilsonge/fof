@@ -2449,7 +2449,7 @@ class FOFModel extends JObject
 	public function validateForm($form, $data, $group = null)
 	{
 		// Filter and validate the form data.
-		$data = $form->filter($data);
+		$data   = $form->filter($data);
 		$return = $form->validate($data, $group);
 
 		// Check for an error.
@@ -2488,7 +2488,8 @@ class FOFModel extends JObject
 	 * @param   string  &$name     The name of the form.
 	 * @param   string  &$source   The form source. Can be XML string if file flag is set to false.
 	 * @param   array   &$options  Optional array of options for the form creation.
-	 *
+	 * @codeCoverageIgnore
+     *
 	 * @return  void
 	 */
 	public function onBeforeLoadForm(&$name, &$source, &$options)
@@ -2502,7 +2503,8 @@ class FOFModel extends JObject
 	 * @param   string   &$name     The name of the form.
 	 * @param   string   &$source   The form source. Can be XML string if file flag is set to false.
 	 * @param   array    &$options  Optional array of options for the form creation.
-	 *
+	 * @codeCoverageIgnore
+     *
 	 * @return  void
 	 */
 	public function onAfterLoadForm(FOFForm &$form, &$name, &$source, &$options)
@@ -2514,7 +2516,8 @@ class FOFModel extends JObject
 	 *
 	 * @param   FOFForm  $form    A FOFForm object.
 	 * @param   array    &$data   The data expected for the form.
-	 *
+	 * @codeCoverageIgnore
+     *
 	 * @return  void
 	 */
 	public function onBeforePreprocessForm(FOFForm &$form, &$data)
@@ -2526,7 +2529,8 @@ class FOFModel extends JObject
 	 *
 	 * @param   FOFForm  $form    A FOFForm object.
 	 * @param   array    &$data   The data expected for the form.
-	 *
+	 * @codeCoverageIgnore
+     *
 	 * @return  void
 	 */
 	public function onAfterPreprocessForm(FOFForm &$form, &$data)

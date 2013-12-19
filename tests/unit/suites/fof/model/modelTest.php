@@ -1292,6 +1292,40 @@ class FOFModelTest extends FtestCaseDatabase
         $method->invoke($model, &$form, array());
     }
 
+    /**
+     * @group               modelTestValidateForm
+     * @group               FOFModel
+     * @covers              FOFModel::validateForm
+     * @dataProvider        getTestValidateForm
+     * @preventDataLoading
+     */
+    public function testValidateForm($test, $checks)
+    {
+        $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+
+        $form = $this->getMock('FOFForm', array('filter', 'validate', 'getErrors'), array('dummy'));
+        $form->expects($this->any())->method('filter')
+             ->with($checks['data'])
+             ->will($this->returnValue($test['filterData']));
+
+        $form->expects($this->any())->method('validate')
+             ->with($checks['filterData'], $checks['group'])
+             ->will($this->returnValue($test['validate']));
+
+        $form->expects($this->any())->method('getErrors')->will($this->returnValue($test['getErrors']));
+
+        $return = $model->validateForm($form, $test['data'], $test['group']);
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::validateForm returned a wrong value');
+
+        if(!$checks['return'])
+        {
+            $this->assertEquals($checks['errMsg'], $model->getError(), 'FOFModel::validateForm set the wrong message when failing');
+        }
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
@@ -1420,5 +1454,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestPreprocessForm()
     {
         return ModelDataprovider::getTestPreprocessForm();
+    }
+
+    public function getTestValidateForm()
+    {
+        return ModelDataprovider::getTestValidateForm();
     }
 }
