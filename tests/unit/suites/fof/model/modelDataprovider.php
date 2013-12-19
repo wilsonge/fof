@@ -1769,6 +1769,39 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestPreprocessForm()
+    {
+        $data[] = array(
+            array(
+                'runPlugin'      => array(true),
+                'throwException' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'runPlugin'      => array(0, true, ''),
+                'throwException' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'runPlugin'      => array(false),
+                'throwException' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'runPlugin'      => array(true, false, false),
+                'throwException' => true
+            )
+        );
+
+        return $data;
+    }
+
     protected static function createArrayDir($paths)
     {
         $tree = array();

@@ -1258,6 +1258,40 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals($checks['data'], $data, 'FOFModel::loadFormData returned the wrong value');
     }
 
+
+    /**
+     * @group               modelTestPreprocessForm
+     * @group               FOFModel
+     * @covers              FOFModel::preprocessForm
+     * @dataProvider        getTestPreprocessForm
+     * @preventDataLoading
+     */
+    public function testPreprocessForm($test)
+    {
+        $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+
+        $form = new FOFForm('dummy');
+
+        $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('importPlugin', 'runPlugins'));
+        $platform->expects($this->any())->method('importPlugin')->with('content');
+        $platform->expects($this->any())->method('runPlugins')
+                 ->with('onContentPrepareForm', array($form, array()))
+                 ->will($this->returnValue($test['runPlugin']));
+
+        if($test['throwException'])
+        {
+            $this->setExpectedException('Exception');
+        }
+
+        FOFPlatform::forceInstance($platform);
+
+        $method = new ReflectionMethod($model, 'preprocessForm');
+        $method->setAccessible(true);
+        $method->invoke($model, &$form, array());
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
@@ -1381,5 +1415,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestLoadFormData()
     {
         return ModelDataprovider::getTestLoadFormData();
+    }
+
+    public function getTestPreprocessForm()
+    {
+        return ModelDataprovider::getTestPreprocessForm();
     }
 }
