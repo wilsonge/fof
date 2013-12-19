@@ -1080,6 +1080,89 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestLoadForm
+     * @group               FOFModel
+     * @covers              FOFModel::LoadForm
+     * @dataProvider        getTestLoadForm
+     * @preventDataLoading
+     */
+    public function testLoadForm($modelinfo, $test, $checks)
+    {
+        $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
+
+        $methods = array('findFormFilename', 'loadFormData', 'onBeforePreprocessForm', 'preprocessForm', 'onAfterPreprocessForm');
+        $model   = $this->getMock('FOFModel', $methods, array($config));
+
+        $model->expects($this->any())->method('findFormFilename')->will($this->returnValue($test['formPath']));
+        $model->expects($this->any())->method('loadFormData')->will($this->returnValue($test['data']));
+
+        $formMock = $this->getMock('FOFForm', array('bind'), array('dummy'));
+        $formMock->expects($this->any())->method('bind')
+                 ->with($checks['bind']['data']);
+
+        $fofform = new ReflectionProperty('FOFForm', 'forms');
+        $fofform->setAccessible(true);
+        $fofform->setValue('FOFForm', array($test['name'] => $formMock));
+
+        // Let's check if the onBeforePreprocessForm is called with the correct arguments
+        // Do I want to modify incoming data in the onBefore event?
+        $model->expects($this->any())->method('onBeforePreprocessForm')
+              ->with($formMock, $checks['onBefore']['data'])
+              ->will($this->returnCallback(
+                function(&$form, &$data) use($test)
+                {
+                    if(isset($test['onBefore']['modify']))
+                    {
+                        $form  = $test['onBefore']['form']($form);
+                        $data  = $test['onBefore']['data'];
+                    }
+                }
+        ));
+
+        // Let's check if the preprocessForm is called with the correct arguments
+        // Do I want to modify incoming data in the onPre event?
+        $model->expects($this->any())->method('preprocessForm')
+            ->with($formMock, $checks['onPre']['data'])
+            ->will($this->returnCallback(
+                function(&$form, &$data) use($test)
+                {
+                    if(isset($test['onPre']['modify']))
+                    {
+                        $form  = $test['onPre']['form']($form);
+                        $data  = $test['onPre']['data'];
+                    }
+                }
+        ));
+
+        // Let's check if the onAfterPreprocessForm is called with the correct arguments
+        // Do I want to modify incoming data in the onPre event?
+        $model->expects($this->any())->method('onAfterPreprocessForm')
+            ->with($formMock, $checks['onAfter']['data'])
+            ->will($this->returnCallback(
+                function(&$form, &$data) use($test)
+                {
+                    if(isset($test['onAfter']['modify']))
+                    {
+                        $form  = $test['onAfter']['form']($form);
+                        $data  = $test['onAfter']['data'];
+                    }
+                }
+        ));
+
+        $method = new ReflectionMethod($model, 'loadForm');
+        $method->setAccessible(true);
+
+        $form = $method->invoke($model, $test['name'], $test['source'], $test['options'], $test['clear'], $test['xpath']);
+
+        if(isset($checks['errMsg']))
+        {
+            $this->assertEquals($checks['errMsg'], $model->getError(), 'FOFModel::loadForm failed to set the correct message while an exception is thrown');
+        }
+
+        $this->assertEquals($checks['form'], (bool)$form, 'FOFModel::loadForm returned a wrong value');
+    }
+
+    /**
      * @group               modelTestFindFormFilename
      * @group               FOFModel
      * @covers              FOFModel::findFormFilename
@@ -1258,6 +1341,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetForm()
     {
         return ModelDataprovider::getTestGetForm();
+    }
+
+    public function getTestLoadForm()
+    {
+        return ModelDataprovider::getTestLoadForm();
     }
 
     public function getTestFindFormFilename()

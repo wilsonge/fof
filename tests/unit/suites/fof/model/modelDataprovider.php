@@ -1384,6 +1384,206 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestLoadForm()
+    {
+        // Standard behavior
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'formPath'  => JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl/form.browse.xml',
+                'data'      => array(2),
+                'name'      => 'com_foftest.foobars',
+                'source'    => 'form.browse',
+                'options'   => array('load_data' => true),
+                'clear'     => false,
+                'xpath'     => false,
+                'onBefore'  => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'data'    => array(2)),
+                'onPre'    => array(
+                    'data'    => array(2)),
+                'onAfter'  => array(
+                    'data'    => array(2)),
+                'bind'     => array(
+                    'data' => array(2)),
+                'form'     => true
+            )
+        );
+
+        // Form filename not found
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'formPath'  => false,
+                'data'      => array(),
+                'name'      => 'com_foftest.foobars',
+                'source'    => 'form.browse',
+                'options'   => array('load_data' => true),
+                'clear'     => false,
+                'xpath'     => false,
+                'onBefore'  => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'data'    => array()),
+                'onPre'    => array(
+                    'data'    => array()),
+                'onAfter'  => array(
+                    'data'    => array()),
+                'bind'     => array(
+                    'data' => array()),
+                'form'     => false
+            )
+        );
+
+        // Don't load form data
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'formPath'  => JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl/form.browse.xml',
+                'data'      => '',
+                'name'      => 'com_foftest.foobars',
+                'source'    => 'form.browse',
+                'options'   => array('load_data' => false),
+                'clear'     => false,
+                'xpath'     => false,
+                'onBefore'  => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'data'    => array()),
+                'onPre'    => array(
+                    'data'    => array()),
+                'onAfter'  => array(
+                    'data'    => array()),
+                'bind'     => array(
+                    'data' => array()),
+                'form'     => true
+            )
+        );
+
+        // onBefore changes stuff
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'formPath'  => JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl/form.browse.xml',
+                'data'      => array(2),
+                'name'      => 'com_foftest.foobars',
+                'source'    => 'form.browse',
+                'options'   => array('load_data' => true),
+                'clear'     => false,
+                'xpath'     => false,
+                'onBefore'  => array(
+                    'modify'   => 1,
+                    'form'     => function($form){$form->dummy += 2; return $form;},
+                    'data'     => array(4)
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'data'    => array(2)),
+                'onPre'    => array(
+                    'data'    => array(4)),
+                'onAfter'  => array(
+                    'data'    => array(4)),
+                'bind'     => array(
+                    'data' => array(4)),
+                'form'     => true
+            )
+        );
+
+        // onAfter changes stuff
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'formPath'  => JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl/form.browse.xml',
+                'data'      => array(2),
+                'name'      => 'com_foftest.foobars',
+                'source'    => 'form.browse',
+                'options'   => array('load_data' => true),
+                'clear'     => false,
+                'xpath'     => false,
+                'onBefore'  => array(
+                    'modify'   => 1,
+                    'form'     => function($form){$form->dummy += 2; return $form;},
+                    'data'     => array(4)
+                ),
+                'onAfter'   => array(
+                    'modify'   => 1,
+                    'form'     => function($form){$form->dummy += 5; return $form;},
+                    'data'     => array(8)
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'data'    => array(2)),
+                'onPre'    => array(
+                    'data'    => array(4)),
+                'onAfter'  => array(
+                    'data'    => array(4)),
+                'bind'     => array(
+                    'data' => array(8)),
+                'form'     => true
+            )
+        );
+
+        // An Exception has been thrown
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'formPath'  => JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl/form.browse.xml',
+                'data'      => array(2),
+                'name'      => 'com_foftest.foobars',
+                'source'    => 'form.browse',
+                'options'   => array('load_data' => true),
+                'clear'     => false,
+                'xpath'     => false,
+                'onBefore'  => array(
+                    'modify'   => 1,
+                    'form'     => function($form){throw new Exception('Test exception');},
+                    'data'     => array(4)
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'data'    => array(2)),
+                'onPre'    => array(
+                    'data'    => array(4)),
+                'onAfter'  => array(
+                    'data'    => array(4)),
+                'bind'     => array(
+                    'data' => array(4)),
+                'form'     => false,
+                'errMsg'   => 'Test exception'
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestFindFormFilename()
     {
         $origpaths = array(
@@ -1407,7 +1607,7 @@ abstract class ModelDataprovider
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1417,11 +1617,11 @@ abstract class ModelDataprovider
         // Form found in several different places
         // --- START ---
         $paths     = $origpaths;
-        $paths[0] .= '/form_browse.xml';
+        $paths[0] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1429,11 +1629,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[1] .= '/form_browse.xml';
+        $paths[1] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1441,11 +1641,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[2] .= '/form_browse.xml';
+        $paths[2] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1453,11 +1653,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[3] .= '/form_browse.xml';
+        $paths[3] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1465,11 +1665,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[4] .= '/form_browse.xml';
+        $paths[4] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1477,11 +1677,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[5] .= '/form_browse.xml';
+        $paths[5] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1489,11 +1689,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[6] .= '/form_browse.xml';
+        $paths[6] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1501,11 +1701,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[7] .= '/form_browse.xml';
+        $paths[7] .= '/form.browse.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths
             ),
@@ -1515,11 +1715,11 @@ abstract class ModelDataprovider
 
         // Form with specific joomla suffix
         $paths     = $origpaths;
-        $paths[2] .= '/form_browse.j32.xml';
+        $paths[2] .= '/form.browse.j32.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths,
                 'suffix'    => array('.j32', '.j3')
@@ -1528,11 +1728,11 @@ abstract class ModelDataprovider
         );
 
         $paths     = $origpaths;
-        $paths[2] .= '/form_browse.j3.xml';
+        $paths[2] .= '/form.browse.j3.xml';
         $data[] = array(
             array('name' => 'Foobars'),
             array(
-                'form_name' => 'form_browse',
+                'form_name' => 'form.browse',
                 'structure' => self::createArrayDir($paths),
                 'paths'     => $paths,
                 'suffix'    => array('.j32', '.j3')

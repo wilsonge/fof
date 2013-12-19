@@ -2186,27 +2186,26 @@ class FOFModel extends JObject
     /**
      * Method to get a form object.
      *
-     * @param   string          $name The name of the form.
-     * @param   string          $source The form source. Can be XML string if file flag is set to false.
-     * @param   array           $options Optional array of options for the form creation.
-     * @param   boolean         $clear Optional argument to force load a new form.
-     * @param   bool|string     $xpath An optional xpath to search for the fields.
+     * @param   string          $name       The name of the form.
+     * @param   string          $source     The form filename (e.g. form.browse)
+     * @param   array           $options    Optional array of options for the form creation.
+     * @param   boolean         $clear      Optional argument to force load a new form.
+     * @param   bool|string     $xpath      An optional xpath to search for the fields.
      *
      * @return  mixed  FOFForm object on success, False on error.
      *
      * @see     FOFForm
      * @since   2.0
      */
-	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
+	protected function loadForm($name, $source, $options = array(), $clear = false, $xpath = false)
 	{
 		// Handle the optional arguments.
-		$options['control'] = JArrayHelper::getValue($options, 'control', false);
+		$options['control'] = isset($options['control']) ? $options['control'] : false;
 
 		// Create a signature hash.
 		$hash = md5($source . serialize($options));
 
 		// Check if we can use a previously loaded form.
-
 		if (isset($this->_forms[$hash]) && !$clear)
 		{
 			return $this->_forms[$hash];
@@ -2216,7 +2215,6 @@ class FOFModel extends JObject
 		$formFilename = $this->findFormFilename($source);
 
 		// No form found? Quit!
-
 		if ($formFilename === false)
 		{
 			return false;
@@ -2227,12 +2225,11 @@ class FOFModel extends JObject
 		FOFForm::addFormPath(dirname($formFilename));
 
 		// Set up field paths
-
-		$option = $this->input->getCmd('option', 'com_foobar');
+		$option         = $this->input->getCmd('option', 'com_foobar');
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
-		$view = $this->input->getCmd('view', 'cpanels');
-		$file_root = $componentPaths['main'];
-		$alt_file_root = $componentPaths['alt'];
+		$view           = $this->input->getCmd('view', 'cpanels');
+		$file_root      = $componentPaths['main'];
+		$alt_file_root  = $componentPaths['alt'];
 
 		FOFForm::addFieldPath($file_root . '/fields');
 		FOFForm::addFieldPath($file_root . '/models/fields');
@@ -2274,9 +2271,17 @@ class FOFModel extends JObject
 		}
 		catch (Exception $e)
 		{
-			$this->setError($e->getMessage());
+            // The above try-catch statement will catch EVERYTHING, even PhpUnit exceptions while testing
+            if(stripos(get_class($e), 'phpunit') !== false)
+            {
+                throw $e;
+            }
+            else
+            {
+                $this->setError($e->getMessage());
 
-			return false;
+                return false;
+            }
 		}
 
 		// Store the form for later.
