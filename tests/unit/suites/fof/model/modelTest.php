@@ -1063,7 +1063,7 @@ class FOFModelTest extends FtestCaseDatabase
         $model->expects($this->any())->method('onAfterLoadForm')
               ->with($checks['onAfter']['form'], $checks['onAfter']['name'], $checks['onAfter']['source'], $checks['onAfter']['options'])
               ->will($this->returnCallback(
-                function($form, &$name, &$source, &$options) use ($test)
+                function(&$form, &$name, &$source, &$options) use ($test)
                 {
                     if(isset($test['onAfter']['modify']))
                     {
