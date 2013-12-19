@@ -1233,6 +1233,31 @@ class FOFModelTest extends FtestCaseDatabase
         $this->assertEquals($checks['form'], $form, 'FOFModel::findFormFilename returned a wrong value');
     }
 
+    /**
+     * @group               modelTestLoadFormData
+     * @group               FOFModel
+     * @covers              FOFModel::loadFormData
+     * @dataProvider        getTestLoadFormData
+     * @preventDataLoading
+     */
+    public function testLoadFormData($test, $checks)
+    {
+        $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
+
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+
+        $property = new ReflectionProperty($model, '_formData');
+        $property->setAccessible(true);
+        $property->setValue($model, $test['data']);
+
+        $method = new ReflectionMethod($model, 'loadFormData');
+        $method->setAccessible(true);
+
+        $data = $method->invoke($model);
+
+        $this->assertEquals($checks['data'], $data, 'FOFModel::loadFormData returned the wrong value');
+    }
+
     public function getTestSetIDsFromRequest()
     {
         return ModelDataprovider::getTestSetIDsFromRequest();
@@ -1351,5 +1376,10 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestFindFormFilename()
     {
         return ModelDataprovider::getTestFindFormFilename();
+    }
+
+    public function getTestLoadFormData()
+    {
+        return ModelDataprovider::getTestLoadFormData();
     }
 }

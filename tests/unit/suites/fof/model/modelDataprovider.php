@@ -1744,6 +1744,31 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestLoadFormData()
+    {
+        $data[] = array(
+            array('data' => array(1, 2, 3)),
+            array('data' => array(1, 2, 3)),
+        );
+
+        $data[] = array(
+            array('data' => array()),
+            array('data' => array()),
+        );
+
+        $data[] = array(
+            array('data' => false),
+            array('data' => array()),
+        );
+
+        $data[] = array(
+            array('data' => null),
+            array('data' => array()),
+        );
+
+        return $data;
+    }
+
     protected static function createArrayDir($paths)
     {
         $tree = array();
