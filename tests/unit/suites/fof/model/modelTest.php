@@ -303,38 +303,6 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
-     * @group               modelTestBuildQuery
-     * @group               FOFModel
-     * @covers              FOFModel::buildQuery
-     * @dataProvider        getTestBuildQuery
-     * @preventDataLoading
-     */
-    public function testBuildQuery($modelinfo, $test, $checks)
-    {
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => $modelinfo['name']
-        );
-
-        // Create a mock so I can test vs different table alias
-        $model = $this->getMock('FOFModel', array('getTableAlias'), array($config), ucfirst($modelinfo['name']).'FoftestModel');
-        $model->expects($this->any())->method('getTableAlias')->will($this->returnValue($test['aliasTable']));
-
-        // Let's create a mocked Behavior, so I can manipulate its behavior (LOL)
-        $behavior = $this->getMock('FOFModelDispatcherBehavior', array('trigger'));
-        $behavior->expects($this->any())->method('trigger')->will($this->returnValue(null));
-
-        // Inject the hacked behavior
-        $property = new ReflectionProperty($model, 'modelDispatcher');
-        $property->setAccessible(true);
-        $property->setValue($model, $behavior);
-
-        $query = $model->buildQuery($test['overrideLimits']);
-
-        $this->assertEquals((string) $checks['query'], (string) $query, 'FOFModel::buildQuery returned a wrong query');
-    }
-
-    /**
      * @group               modelTestGetHash
      * @group               FOFModel
      * @covers              FOFModel::getHash
@@ -942,6 +910,38 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestBuildQuery
+     * @group               FOFModel
+     * @covers              FOFModel::buildQuery
+     * @dataProvider        getTestBuildQuery
+     * @preventDataLoading
+     */
+    public function testBuildQuery($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        // Create a mock so I can test vs different table alias
+        $model = $this->getMock('FOFModel', array('getTableAlias'), array($config), ucfirst($modelinfo['name']).'FoftestModel');
+        $model->expects($this->any())->method('getTableAlias')->will($this->returnValue($test['aliasTable']));
+
+        // Let's create a mocked Behavior, so I can manipulate its behavior (LOL)
+        $behavior = $this->getMock('FOFModelDispatcherBehavior', array('trigger'));
+        $behavior->expects($this->any())->method('trigger')->will($this->returnValue(null));
+
+        // Inject the hacked behavior
+        $property = new ReflectionProperty($model, 'modelDispatcher');
+        $property->setAccessible(true);
+        $property->setValue($model, $behavior);
+
+        $query = $model->buildQuery($test['overrideLimits']);
+
+        $this->assertEquals((string) $checks['query'], (string) $query, 'FOFModel::buildQuery returned a wrong query');
+    }
+
+    /**
      * @group               modelTest__get
      * @group               FOFModel
      * @covers              FOFModel::__get
@@ -949,10 +949,7 @@ class FOFModelTest extends FtestCaseDatabase
      */
     public function test__get()
     {
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => 'foobars'
-        );
+        $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
         $model->setState('dummy', 'test');
@@ -968,10 +965,7 @@ class FOFModelTest extends FtestCaseDatabase
      */
     public function test__set()
     {
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => 'foobars'
-        );
+        $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
         $model->dummy = 'test';
@@ -987,10 +981,7 @@ class FOFModelTest extends FtestCaseDatabase
      */
     public function test__call()
     {
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => 'foobars'
-        );
+        $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
         $model->dummy('test');
@@ -999,20 +990,110 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestGetForm
+     * @group               FOFModel
+     * @covers              FOFModel::getForm
+     * @covers              FOFModel::onBeforeLoadForm
+     * @covers              FOFModel::onAfterLoadForm
+     * @dataProvider        getTestGetForm
+     * @preventDataLoading
+     */
+    public function testGetForm($modelinfo, $test, $checks)
+    {
+        $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
+
+        $methods = array('getState', 'loadForm', 'onBeforeLoadForm', 'onAfterLoadForm');
+        $model   = $this->getMock('FOFModel', $methods, array($config), ucfirst($modelinfo['name']).'FoftestModel');
+
+        // Test vs different form name coming from the request
+        $model->expects($this->any())->method('getState')->will($this->returnCallback(
+            function($namespace, $default) use ($test)
+            {
+                if($namespace == 'form_name')
+                {
+                    return $test['form_name'];
+                }
+                else
+                {
+                    return $default;
+                }
+            }
+        ));
+
+        /*
+         * WARNING! `WITH` and `WILL` mock methods MUST BE CONCATENATED.
+         * These two syntax will return different result:
+         *
+         *      $mock->with()->will() (works)
+         *
+         *      $mock->with();        (nope!)
+         *      $mock->will();
+         *
+         * I think it's a phpUnit bug or something, so DON'T TOUCH IT
+         */
+
+        // Let's check if the onBeforeLoadForm is called with the correct arguments
+        // Do I want to modify incoming data in the onBefore event?
+        $model->expects($this->any())->method('onBeforeLoadForm')
+              ->with($checks['onBefore']['name'], $checks['onBefore']['source'], $checks['onBefore']['options'])
+              ->will($this->returnCallback(
+                function(&$name, &$source, &$options) use($test)
+                {
+                    if(isset($test['onBefore']['modify']))
+                    {
+                        $name    = $test['onBefore']['name'];
+                        $source  = $test['onBefore']['source'];
+                        $options = $test['onBefore']['options'];
+                    }
+                }
+        ));
+
+        // Let's check if loadForm is called with the correct arguments
+        // Force loadForm to return a form we want (or false on error)
+        $model->expects($this->any())->method('loadForm')
+              ->with($checks['loadForm']['name'], $checks['loadForm']['source'], $checks['loadForm']['options'])
+              ->will($this->returnCallback(
+                function() use($test)
+                {
+                    return $test['loadForm'];
+                }
+        ));
+
+        // Let's check if onAfterLoadForm is called with the correct arguments
+        // Force onAfterLoadForm to manipulate the data
+        $model->expects($this->any())->method('onAfterLoadForm')
+              ->with($checks['onAfter']['form'], $checks['onAfter']['name'], $checks['onAfter']['source'], $checks['onAfter']['options']);
+
+              // Sadly I can't test when the onAfter event changes the form, since in the signature it's not passed as reference :(
+              /*->will($this->returnCallback(
+                function($form, &$name, &$source, &$options) use ($test)
+                {
+                    if(isset($test['onAfter']['modify']))
+                    {
+                        $form = $test['onAfter']['form'];
+                    }
+                }
+        ));*/
+
+        $model->setInput($config['input']);
+        $form = $model->getForm($test['data'], $test['loadData'], $test['source']);
+
+        $this->assertEquals($checks['form'], $form, 'FOFModel::getForm returned the wrong value');
+    }
+
+    /**
      * @group               modelTestFindFormFilename
      * @group               FOFModel
      * @covers              FOFModel::findFormFilename
      * @dataProvider        getTestFindFormFilename
      * @preventDataLoading
-     */public function testFindFormFilename($modelinfo, $test, $checks)
+     */
+    public function testFindFormFilename($modelinfo, $test, $checks)
     {
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => strtolower($modelinfo['name'])
-        );
+        $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
         $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
-        $model->setInput(array('option' => 'com_foftest','view'=> strtolower($modelinfo['name'])));
+        $model->setInput($config['input']);
 
         // First of all I stub the filesystem object, so it won't strip out the protocol part
         $filesystem = $this->getMock('FOFPlatformJoomlaFilesystem', array('fileExists'));
@@ -1174,6 +1255,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestCreateTable()
     {
         return ModelDataprovider::getTestCreateTable();
+    }
+
+    public function getTestGetForm()
+    {
+        return ModelDataprovider::getTestGetForm();
     }
 
     public function getTestFindFormFilename()

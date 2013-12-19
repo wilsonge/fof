@@ -1162,6 +1162,228 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestGetForm()
+    {
+        // Standard behavior
+        $form   = new FOFForm('dummy');
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'data'      => array(),
+                'loadData'  => true,
+                'source'    => 'form.foobars',
+                'form_name' => '',
+                'loadForm'  => clone $form,
+                'onBefore'  => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'loadForm' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'onAfter'  => array(
+                    'form'    => clone $form,
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'form'     => clone $form
+            )
+        );
+
+        // Getting the form name from the request
+        $form   = new FOFForm('dummy');
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'data'      => array(),
+                'loadData'  => true,
+                'source'    => null,
+                'form_name' => 'form.fromrequest',
+                'loadForm'  => clone $form,
+                'onBefore'  => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.fromrequest',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'loadForm' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.fromrequest',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'onAfter'  => array(
+                    'form'    => clone $form,
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.fromrequest',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'form'     => clone $form
+            )
+        );
+
+        // Calculating the form name on your own
+        $form   = new FOFForm('dummy');
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'data'      => array(),
+                'loadData'  => true,
+                'source'    => null,
+                'form_name' => null,
+                'loadForm'  => clone $form,
+                'onBefore'  => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'loadForm' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'onAfter'  => array(
+                    'form'    => clone $form,
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'form'     => clone $form
+            )
+        );
+
+        // loadForm returns false
+        $form   = false;
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'data'      => array(),
+                'loadData'  => true,
+                'source'    => null,
+                'form_name' => 'form.foobars',
+                'loadForm'  => false,
+                'onBefore'  => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'loadForm' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'onAfter'  => array(
+                    'form'    => false,
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'form'     => false
+            )
+        );
+
+        // Changing arguments in the onBefore event
+        $form   = new FOFForm('dummy');
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'data'      => array(),
+                'loadData'  => true,
+                'source'    => 'form.foobars',
+                'form_name' => null,
+                'loadForm'  => clone $form,
+                'onBefore'  => array(
+                    'modify'  => 1,
+                    'name'    => 'com_foftest.onbeforemodified',
+                    'source'  => 'form.onbeforemodified',
+                    'options' => array('control' => false, 'load_data' => false)
+                ),
+                'onAfter'   => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'loadForm' => array(
+                    'name'    => 'com_foftest.onbeforemodified',
+                    'source'  => 'form.onbeforemodified',
+                    'options' => array('control' => false, 'load_data' => false)),
+                'onAfter'  => array(
+                    'form'    => clone $form,
+                    'name'    => 'com_foftest.onbeforemodified',
+                    'source'  => 'form.onbeforemodified',
+                    'options' => array('control' => false, 'load_data' => false)),
+                'form'     => clone $form
+            )
+        );
+
+        // Changing arguments in the onAfter event
+        /*$form   = new FOFForm('dummy');
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'data'      => array(),
+                'loadData'  => true,
+                'source'    => 'form.foobars',
+                'form_name' => null,
+                'loadForm'  => clone $form,
+                'onBefore'  => array(
+                    'modify'  => 1,
+                    'name'    => 'com_foftest.onbeforemodified',
+                    'source'  => 'form.onbeforemodified',
+                    'options' => array('control' => false, 'load_data' => false)
+                ),
+                'onAfter'   => array(
+                    'modify'  => 1,
+                    'form'    => false
+                )
+            ),
+            array(
+                'onBefore' => array(
+                    'name'    => 'com_foftest.foobars',
+                    'source'  => 'form.foobars',
+                    'options' => array('control' => false, 'load_data' => true)),
+                'loadForm' => array(
+                    'name'    => 'com_foftest.onbeforemodified',
+                    'source'  => 'form.onbeforemodified',
+                    'options' => array('control' => false, 'load_data' => false)),
+                'onAfter'  => array(
+                    'form'    => clone $form,
+                    'name'    => 'com_foftest.onbeforemodified',
+                    'source'  => 'form.onbeforemodified',
+                    'options' => array('control' => false, 'load_data' => false)),
+                'form'     => false
+            )
+        );*/
+
+        return $data;
+    }
+
     public static function getTestFindFormFilename()
     {
         $origpaths = array(
