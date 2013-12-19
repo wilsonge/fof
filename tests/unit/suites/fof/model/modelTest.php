@@ -1062,10 +1062,8 @@ class FOFModelTest extends FtestCaseDatabase
         // Let's check if onAfterLoadForm is called with the correct arguments
         // Force onAfterLoadForm to manipulate the data
         $model->expects($this->any())->method('onAfterLoadForm')
-              ->with($checks['onAfter']['form'], $checks['onAfter']['name'], $checks['onAfter']['source'], $checks['onAfter']['options']);
-
-              // Sadly I can't test when the onAfter event changes the form, since in the signature it's not passed as reference :(
-              /*->will($this->returnCallback(
+              ->with($checks['onAfter']['form'], $checks['onAfter']['name'], $checks['onAfter']['source'], $checks['onAfter']['options'])
+              ->will($this->returnCallback(
                 function($form, &$name, &$source, &$options) use ($test)
                 {
                     if(isset($test['onAfter']['modify']))
@@ -1073,7 +1071,7 @@ class FOFModelTest extends FtestCaseDatabase
                         $form = $test['onAfter']['form'];
                     }
                 }
-        ));*/
+        ));
 
         $model->setInput($config['input']);
         $form = $model->getForm($test['data'], $test['loadData'], $test['source']);

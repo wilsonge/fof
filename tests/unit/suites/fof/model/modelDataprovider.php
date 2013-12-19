@@ -1343,7 +1343,7 @@ abstract class ModelDataprovider
         );
 
         // Changing arguments in the onAfter event
-        /*$form   = new FOFForm('dummy');
+        $form   = new FOFForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1379,7 +1379,7 @@ abstract class ModelDataprovider
                     'options' => array('control' => false, 'load_data' => false)),
                 'form'     => false
             )
-        );*/
+        );
 
         return $data;
     }

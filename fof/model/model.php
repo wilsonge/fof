@@ -2405,7 +2405,7 @@ class FOFModel extends JObject
 	 * @since   2.0
 	 * @throws  Exception if there is an error in the form event.
 	 */
-	protected function preprocessForm(FOFForm $form, &$data, $group = 'content')
+	protected function preprocessForm(FOFForm &$form, &$data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
 		JLoader::import('joomla.plugin.helper');
@@ -2500,7 +2500,7 @@ class FOFModel extends JObject
 	 *
 	 * @return  void
 	 */
-	public function onAfterLoadForm(FOFForm $form, &$name, &$source, &$options)
+	public function onAfterLoadForm(FOFForm &$form, &$name, &$source, &$options)
 	{
 	}
 
@@ -2512,7 +2512,7 @@ class FOFModel extends JObject
 	 *
 	 * @return  void
 	 */
-	public function onBeforePreprocessForm(FOFForm $form, &$data)
+	public function onBeforePreprocessForm(FOFForm &$form, &$data)
 	{
 	}
 
@@ -2524,7 +2524,7 @@ class FOFModel extends JObject
 	 *
 	 * @return  void
 	 */
-	public function onAfterPreprocessForm(FOFForm $form, &$data)
+	public function onAfterPreprocessForm(FOFForm &$form, &$data)
 	{
 	}
 
