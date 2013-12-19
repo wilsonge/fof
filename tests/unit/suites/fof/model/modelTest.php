@@ -1003,7 +1003,7 @@ class FOFModelTest extends FtestCaseDatabase
         $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
         $methods = array('getState', 'loadForm', 'onBeforeLoadForm', 'onAfterLoadForm');
-        $model   = $this->getMock('FOFModel', $methods, array($config), ucfirst($modelinfo['name']).'FoftestModel');
+        $model   = $this->getMock('FOFModel', $methods, array($config));
 
         // Test vs different form name coming from the request
         $model->expects($this->any())->method('getState')->will($this->returnCallback(
