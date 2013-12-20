@@ -1275,7 +1275,6 @@ class FOFModel extends JObject
 
 			if ($validateResult === false)
 			{
-                // No need to get the error because it is already set in validateForm
 				return false;
 			}
 		}
@@ -1461,7 +1460,7 @@ class FOFModel extends JObject
 
 				// Call the plugin events
 				FOFPlatform::getInstance()->importPlugin('content');
-				$name    = $this->input->getCmd('view', 'cpanel');
+				$name = $this->name;
 				$context = $this->option . '.' . $name;
 
                 // @TODO should we do anything with this return value?
@@ -2154,8 +2153,7 @@ class FOFModel extends JObject
 	{
 		$this->_formData = $data;
 
-		$name = $this->input->getCmd('option', 'com_foobar') . '.'
-			. $this->input->getCmd('view', 'cpanels');
+		$name = $this->input->getCmd('option', 'com_foobar') . '.' . $this->name;
 
 		if (empty($source))
 		{
@@ -2164,7 +2162,7 @@ class FOFModel extends JObject
 
 		if (empty($source))
 		{
-			$source = 'form.' . $this->input->getCmd('view', 'cpanels');
+			$source = 'form.' . $this->name;
 		}
 
 		$options = array(
@@ -2228,7 +2226,7 @@ class FOFModel extends JObject
 		// Set up field paths
 		$option         = $this->input->getCmd('option', 'com_foobar');
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
-		$view           = $this->input->getCmd('view', 'cpanels');
+		$view           = $this->name;
 		$file_root      = $componentPaths['main'];
 		$alt_file_root  = $componentPaths['alt'];
 
@@ -2305,7 +2303,7 @@ class FOFModel extends JObject
 	{
         // TODO Should we read from internal variables instead of the input? With a temp instance we have no input
 		$option = $this->input->getCmd('option', 'com_foobar');
-		$view 	= $this->input->getCmd('view', 'cpanels');
+		$view 	= $this->name;
 
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
 		$file_root      = $componentPaths['main'];
@@ -2695,7 +2693,7 @@ class FOFModel extends JObject
 				return false;
 			}
 
-			$name = $this->input->getCmd('view', 'cpanel');
+			$name = $this->name;
 			$context = $this->option . '.' . $name;
 			$result = FOFPlatform::getInstance()->runPlugins($this->event_before_delete, array($context, $table));
 
@@ -2741,7 +2739,7 @@ class FOFModel extends JObject
 
 		try
 		{
-			$name = $this->input->getCmd('view', 'cpanel');
+			$name = $this->name;
 			$context = $this->option . '.' . $name;
 			$result = FOFPlatform::getInstance()->runPlugins($this->event_after_delete, array($context, $this->_recordForDeletion));
 			unset($this->_recordForDeletion);
