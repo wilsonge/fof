@@ -8,7 +8,7 @@
 
 defined('_JEXEC') or die;
 
-abstract class FOFUtilsObservableEvent
+abstract class FOFUtilsObservableEvent extends FOFUtilsObject
 {
     /**
      * Event object to observe.

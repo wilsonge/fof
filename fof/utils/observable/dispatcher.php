@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * for the event architecture.
  *
  */
-class FOFUtilsObservableDispatcher
+class FOFUtilsObservableDispatcher extends FOFUtilsObject
 {
     /**
      * An array of Observer objects to notify
