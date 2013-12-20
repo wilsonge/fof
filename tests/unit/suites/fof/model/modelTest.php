@@ -512,6 +512,60 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestSave
+     * @group               FOFModel
+     * @covers              FOFModel::save
+     * @dataProvider        getTestSaveSessionWipe
+     */
+    public function testSaveSessionWipe($test, $checks)
+    {
+        $hackedSession = new JSession;
+
+        // Manually set the session as active
+        $property = new ReflectionProperty($hackedSession, '_state');
+        $property->setAccessible(true);
+        $property->setValue($hackedSession, 'active');
+
+        // We're in CLI an no $_SESSION variable? No problem, I'll manually create it!
+        // I'm going to hell for doing this... (again)
+        $_SESSION['__default']['com_foftest.foobars.savedata'] = '';
+
+        JFactory::$session = $hackedSession;
+
+        $db           = JFactory::getDbo();
+        $tableConstr  = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        // FOFTable mock
+        $table = $this->getMock('FOFTable',	array('save', 'getErrors', 'getProperties'), $tableConstr, '', true, true, true, true);
+        $table->expects($this->any())->method('save')->will($this->returnValue($test['table']['save']));
+        $table->expects($this->any())->method('getErrors')->will($this->returnValue($test['table']['error']));
+        $table->expects($this->any())->method('getProperties')->will($this->returnValue($test['table']['properties']));
+
+        // FOFModel mock
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
+        $modelMethods    = array('getTable');
+        $model           = $this->getMock('FOFModel', $modelMethods, array($config));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        $return = $model->save($test['data']);
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::save returned the wrong value');
+
+        if($checks['return'])
+        {
+            $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFModel::save should wipe saved session data');
+        }
+        else
+        {
+            $this->assertArrayHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFModel::save should not wipe saved session data when failing');
+            $this->assertEquals($checks['session'], $_SESSION['__default']['com_foftest.foobars.savedata'], 'FOFModel::save stored the wrong data in the session after failing');
+        }
+
+        // Let's remove any evidence...
+        unset($_SESSION);
+    }
+
+    /**
      * In the following test I'll mock almost everything: this because I don't care about the database interaction,
      * I just want to test the model in all the possible scenarios.
      *
@@ -1479,6 +1533,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestSave()
     {
         return ModelDataprovider::getTestSave();
+    }
+
+    public function getTestSaveSessionWipe()
+    {
+        return ModelDataprovider::getTestSaveSessionWipe();
     }
 
     public function getTestCopy()

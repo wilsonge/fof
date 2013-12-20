@@ -846,6 +846,62 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestSaveSessionWipe()
+    {
+        // SAVE OK - Array data, no table id inside
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'table'    => array(
+                    'save'       => true,
+                    'error'      => array(),
+                    'properties' => array()
+                    ),
+                ),
+            array(
+                'return'  => true
+            )
+        );
+
+        // SAVE ERROR - Array data, no table id inside
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'table'    => array(
+                    'save'       => false,
+                    'error'      => array('Test error'),
+                    'properties' => array(
+                        'title'   => 'Test save',
+                        'enabled' => 1,
+                        'input'   => 'test',
+                        'config'  => array(
+                            'input' => 123,
+                            'db'    => 123,
+                            'dbo'   => 123,
+                            'ok'    => 'ok'
+                        ))
+                ),
+            ),
+            array(
+                'return'     => false,
+                'session'    => serialize(array(
+                    'title'   => 'Test save',
+                    'enabled' => 1,
+                    'config'  => array(
+                        'ok'    => 'ok'
+                    )))
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestCopy()
     {
         // Everything fine
