@@ -303,59 +303,6 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
-     * @group               modelTestGetHash
-     * @group               FOFModel
-     * @covers              FOFModel::getHash
-     * @dataProvider        getTestGetHash
-     * @preventDataLoading
-     */
-    public function testGetHash($modelinfo, $test, $checks)
-    {
-        $config['input'] = array(
-            'option' => 'com_foftest',
-            'view'   => $modelinfo['name']
-        );
-
-        if(isset($test['tmpInstance']) && $test['tmpInstance'])
-        {
-            $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
-        }
-        else
-        {
-            $model = FOFModel::getAnInstance('Foobars', 'FoftestModel', $config);
-        }
-
-        $hash = $model->getHash();
-
-        $this->assertEquals($checks['hash'], $hash, 'FOFModel::getHash created a wrong hash value');
-    }
-
-    /**
-     * @group               modelTestGetList
-     * @group               FOFModel
-     * @covers              FOFModel::_getList
-     * @covers              FOFModel::onProcessList
-     * @dataProvider        getTestGetList
-     */
-    public function testGetList($modelinfo, $test, $checks)
-    {
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => $modelinfo['name']
-        );
-
-        // Create a mock so I can test onProcessList, too
-        $model = $this->getMock('FOFModel', array('onProcessList'), array($config));
-        $model->expects($this->any())->method('onProcessList')->will($this->returnCallback($test['callback']));
-
-        $method = new ReflectionMethod($model, '_getList');
-        $method->setAccessible(true);
-        $list = $method->invoke($model, $test['query'], $test['limitstart'], $test['limit'], $test['group']);
-
-        $this->assertEquals($checks['list'], $list, 'FOFModel::_getList returned a wrong recordset');
-    }
-
-    /**
      * @group               modelTestGetItemList
      * @group               FOFModel
      * @covers              FOFModel::getItemList
@@ -963,6 +910,59 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestGetHash
+     * @group               FOFModel
+     * @covers              FOFModel::getHash
+     * @dataProvider        getTestGetHash
+     * @preventDataLoading
+     */
+    public function testGetHash($modelinfo, $test, $checks)
+    {
+        $config['input'] = array(
+            'option' => 'com_foftest',
+            'view'   => $modelinfo['name']
+        );
+
+        if(isset($test['tmpInstance']) && $test['tmpInstance'])
+        {
+            $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        }
+        else
+        {
+            $model = FOFModel::getAnInstance('Foobars', 'FoftestModel', $config);
+        }
+
+        $hash = $model->getHash();
+
+        $this->assertEquals($checks['hash'], $hash, 'FOFModel::getHash created a wrong hash value');
+    }
+
+    /**
+     * @group               modelTestGetList
+     * @group               FOFModel
+     * @covers              FOFModel::_getList
+     * @covers              FOFModel::onProcessList
+     * @dataProvider        getTestGetList
+     */
+    public function testGetList($modelinfo, $test, $checks)
+    {
+        $config['input']  = array(
+            'option'    => 'com_foftest',
+            'view'      => $modelinfo['name']
+        );
+
+        // Create a mock so I can test onProcessList, too
+        $model = $this->getMock('FOFModel', array('onProcessList'), array($config));
+        $model->expects($this->any())->method('onProcessList')->will($this->returnCallback($test['callback']));
+
+        $method = new ReflectionMethod($model, '_getList');
+        $method->setAccessible(true);
+        $list = $method->invoke($model, $test['query'], $test['limitstart'], $test['limit'], $test['group']);
+
+        $this->assertEquals($checks['list'], $list, 'FOFModel::_getList returned a wrong recordset');
+    }
+
+    /**
      * In this test I will simply check that the invocation of the _createTable is made with the correct
      * arguments. I will check for the correct table to be returned while testing _createTable.
      *
@@ -1515,16 +1515,6 @@ class FOFModelTest extends FtestCaseDatabase
         return ModelDataprovider::getTestBuildQuery();
     }
 
-    public function getTestGetHash()
-    {
-        return ModelDataprovider::getTestGetHash();
-    }
-
-    public function getTestGetList()
-    {
-        return ModelDataprovider::getTestGetList();
-    }
-
     public function getTestGetItemList()
     {
         return ModelDataprovider::getTestGetItemList();
@@ -1588,6 +1578,16 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestgetTotal()
     {
         return ModelDataprovider::getTestgetTotal();
+    }
+
+    public function getTestGetHash()
+    {
+        return ModelDataprovider::getTestGetHash();
+    }
+
+    public function getTestGetList()
+    {
+        return ModelDataprovider::getTestGetList();
     }
 
     public function getTestGetTable()
