@@ -2424,7 +2424,7 @@ class FOFModel extends JObject
 		if (count($results) && in_array(false, $results, true))
 		{
 			// Get the last error.
-			$dispatcher = JDispatcher::getInstance();
+			$dispatcher = FOFUtilsObservableDispatcher::getInstance();
 			$error = $dispatcher->getError();
 
 			if (!($error instanceof Exception))
@@ -2738,8 +2738,6 @@ class FOFModel extends JObject
 			// Behavior failed, return false
 			return false;
 		}
-
-		$dispatcher = JDispatcher::getInstance();
 
 		try
 		{

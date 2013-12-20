@@ -8,14 +8,12 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-JLoader::import('legacy.dispatcher.dispatcher');
-
 /**
  * FrameworkOnFramework model behavior dispatcher class
  *
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFModelDispatcherBehavior extends JDispatcher
+class FOFModelDispatcherBehavior extends FOFUtilsObservableDispatcher
 {
 }
