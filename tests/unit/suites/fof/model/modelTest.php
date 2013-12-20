@@ -406,6 +406,112 @@ class FOFModelTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               modelTestSave
+     * @group               FOFModel
+     * @covers              FOFModel::save
+     * @dataProvider        getTestSave
+     */
+    public function testSave($test, $checks)
+    {
+        $db           = JFactory::getDbo();
+        $tableConstr  = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
+
+        // FOFTable mock
+        $table = $this->getMock('FOFTable',	array('save', 'getErrors'), $tableConstr, '',	true, true, true, true);
+
+        $table->expects($this->any())->method('save')->will($this->returnCallback(
+            function() use(&$table, $test)
+            {
+                if(isset($test['table']['save']['id']))
+                {
+                    // The save method assigns an id to the table, so I have to do the same thing
+                    $table->foftest_foobar_id = $test['table']['save']['id'];
+                }
+
+                return $test['table']['save']['return'];
+            }
+        ));
+
+        // onBefore event changes data, I want to check that the table gets the correct one
+        if(isset($test['onBefore']['modify']))
+        {
+            $table->expects($this->any())->method('save')->with($checks['save']['data']);
+        }
+
+        $table->expects($this->any())->method('getErrors')->will($this->returnValue($test['table']['error']));
+
+        // FOFForm mock
+        if(isset($test['form']['mock']))
+        {
+            $form = $this->getMock('FOFForm', array('getAttribute'), array('dummy'));
+            $form->expects($this->any())->method('getAttribute')->will($this->returnValue($test['form']['validation']));
+        }
+        else
+        {
+            $form = $test['form'];
+        }
+
+        // FOFModel mock
+        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
+        $modelMethods    = array('getForm', 'onBeforeSave', 'onAfterSave', 'getTable', 'validateForm');
+        $model           = $this->getMock('FOFModel', $modelMethods, array($config));
+
+        $model->expects($this->any())->method('getForm')->will($this->returnValue($form));
+
+        if(isset($test['form']['validationResult']))
+        {
+            $model->expects($this->any())->method('validateForm')->will($this->returnValue($test['form']['validationResult']));
+        }
+
+        $model->expects($this->any())->method('onBeforeSave')
+              ->will($this->returnCallback(
+                function(&$allData, &$table) use ($test)
+                {
+                    if(isset($test['onBefore']['modify']))
+                    {
+                        $allData = $test['onBefore']['allData'];
+                        $table   = $test['onBefore']['table']($table);
+                    }
+
+                    return $test['onBefore']['return'];
+                }
+            ));
+
+        $model->expects($this->any())->method('onAfterSave')->will($this->returnValue($test['onAfter']));
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        if(isset($test['loadid']))
+        {
+            $test['data']->load($test['loadid']);
+        }
+
+        $return = $model->save($test['data']);
+
+        $this->assertEquals($checks['return'], $return, 'FOFModel::save returned the wrong value');
+
+        if($checks['return'])
+        {
+            $savedTable = $table;
+
+            $property = new ReflectionProperty($model, 'id');
+            $property->setAccessible(true);
+            $tableId  = $property->getValue($model);
+
+            $this->assertEquals($checks['table']['id'], $tableId, 'FOFModel::save internally saved the wrong table id');
+        }
+        else
+        {
+            $savedTable = null;
+        }
+
+        $otable = new ReflectionProperty($model, 'otable');
+        $otable->setAccessible(true);
+        $otable = $otable->getValue($model);
+
+        $this->assertEquals($savedTable, $otable, 'FOFModel::save internally saved the wrong table');
+    }
+
+    /**
      * In the following test I'll mock almost everything: this because I don't care about the database interaction,
      * I just want to test the model in all the possible scenarios.
      *
@@ -1368,6 +1474,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetItemList()
     {
         return ModelDataprovider::getTestGetItemList();
+    }
+
+    public function getTestSave()
+    {
+        return ModelDataprovider::getTestSave();
     }
 
     public function getTestCopy()

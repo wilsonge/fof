@@ -1275,6 +1275,7 @@ class FOFModel extends JObject
 
 			if ($validateResult === false)
 			{
+                // No need to get the error because it is already set in validateForm
 				return false;
 			}
 		}

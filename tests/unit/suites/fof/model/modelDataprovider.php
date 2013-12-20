@@ -487,6 +487,365 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestSave()
+    {
+        // SAVE OK - Array data, no table id inside - No form
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'id'     => 88,
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 88
+                )
+            )
+        );
+
+        // SAVE OK - Array data, table id inside - No form
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'foftest_foobar_id' => 2,
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 2
+                )
+            )
+        );
+
+        // SAVE OK - Array data, table id inside - No form
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'foftest_foobar_id' => 32,
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'id'     => 40,
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 40
+                )
+            )
+        );
+
+        // SAVE OK - Object data, table id inside - No form
+        $data[] = array(
+            array(
+                'data'     => (object) array(
+                    'foftest_foobar_id' => 2,
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 2
+                )
+            )
+        );
+
+        // SAVE OK - FOFTable data, table id inside - No form
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table = clone FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $data[] = array(
+            array(
+                'data'     => $table,
+                'loadid'   => 3,
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 3
+                )
+            )
+        );
+
+        // SAVE OK - Array data, no table id inside - WITH form validation (TRUE)
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => array(
+                    'mock'    => 1,
+                    'validation' => true,
+                    'validationResult' => true
+                ),
+                'table'    => array(
+                    'save'    => array(
+                        'id'     => 88,
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 88
+                )
+            )
+        );
+
+        // SAVE OK - Array data, no table id inside - WITHOUT form validation
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => array(
+                    'mock'    => 1,
+                    'validation' => false
+                ),
+                'table'    => array(
+                    'save'    => array(
+                        'id'     => 88,
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 88
+                )
+            )
+        );
+
+        // SAVE OK - Array data, no table id inside - No form - onBefore changes $data
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'id'     => 88,
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    'modify'  => 1,
+                    'table'   => function($table){return $table;},
+                    'allData' => array(
+                        'title' => 'Test modified'
+                    ),
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'save'    => array(
+                    'data'   => array(
+                        'title' => 'Test modified'
+                    )
+                ),
+                'return'  => true,
+                'table'   => array(
+                    'id'     => 88
+                )
+            )
+        );
+
+        // ONBEFORESAVE ERROR - Array data, no table id inside - No form
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => false
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => false
+            )
+        );
+
+        // SAVE ERROR - Array data, no table id inside - No form
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => false,
+                'table'    => array(
+                    'save'    => array(
+                        'return' => false
+                    ),
+                    'error' => array('Test error')
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'table'   => array(
+                    'error'  => array('Test error')
+                ),
+                'return'  => false
+            )
+        );
+
+        // SAVE ERROR - Array data, no table id inside - WITH form validation (FALSE)
+        $data[] = array(
+            array(
+                'data'     => array(
+                    'title'   => 'Test save',
+                    'enabled' => 1
+                ),
+                'form'     => array(
+                    'mock'    => 1,
+                    'validation' => true,
+                    'validationResult' => false
+                ),
+                'table'    => array(
+                    'save'    => array(
+                        'id'     => 88,
+                        'return' => true
+                    ),
+                    'error' => array()
+                ),
+                'onBefore' => array(
+                    // I don't want to modify incoming args inside the onBefore event
+                    'return'  => true
+                ),
+                'onAfter'  => array(
+                    // I don't want to modify incoming args inside the onAfter event
+                )
+            ),
+            array(
+                'return'  => false,
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestCopy()
     {
         // Everything fine
