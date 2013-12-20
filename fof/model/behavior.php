@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class FOFModelBehavior extends JEvent
+abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 {
 	/**
 	 * This event runs before saving data in the model

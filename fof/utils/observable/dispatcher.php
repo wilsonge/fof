@@ -62,7 +62,7 @@ class FOFUtilsObservableDispatcher
     }
 
     /**
-     * Get the state of the JEventDispatcher object
+     * Get the state of the FOFUtilsObservableDispatcher object
      *
      * @return  mixed    The state of the object.
      */

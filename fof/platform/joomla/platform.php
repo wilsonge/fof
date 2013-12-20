@@ -463,7 +463,7 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 	{
 		if (!$this->isCli())
 		{
-			$dispatcher = JDispatcher::getInstance();
+			$dispatcher = FOFUtilsObservableDispatcher::getInstance();
 
 			return $dispatcher->trigger($event, $data);
 		}

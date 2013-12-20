@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class FOFTableBehavior extends JEvent
+abstract class FOFTableBehavior extends FOFUtilsObservableEvent
 {
 	/**
 	 * This event runs before binding data to the table
