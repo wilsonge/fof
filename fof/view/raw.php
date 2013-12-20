@@ -71,7 +71,7 @@ class FOFViewRaw extends FOFView
 			$this->config['view'] = $this->input->getCmd('view', 'cpanel');
 		}
 
-		$this->lists = new JObject;
+		$this->lists = new FOFUtilsObject;
 
 		if (!FOFPlatform::getInstance()->isCli())
 		{

@@ -31,7 +31,7 @@ if (!interface_exists('JTableInterface', true))
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFTable extends JObject implements JTableInterface
+class FOFTable extends FOFUtilsObject implements JTableInterface
 {
 	/**
 	 * Cache array for instances

@@ -206,9 +206,9 @@ class FOFTemplateUtils
 	 * enabled, the browser will follow the fake link instead of processing the onSubmit event; so we
 	 * need a fix.
 	 *
-	 * @param   string   $text   Header text
-	 * @param   string   $field  Field used for sorting
-	 * @param   JObject  $list   Object holding the direction and the ordering field
+	 * @param   string          $text   Header text
+	 * @param   string          $field  Field used for sorting
+	 * @param   FOFUtilsObject  $list   Object holding the direction and the ordering field
 	 *
 	 * @return  string  HTML code for sorting
 	 */

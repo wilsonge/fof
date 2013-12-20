@@ -18,7 +18,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFDispatcher extends JObject
+class FOFDispatcher extends FOFUtilsObject
 {
 	/** @var array Configuration variables */
 	protected $config = array();

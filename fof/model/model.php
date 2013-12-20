@@ -19,7 +19,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFModel extends JObject
+class FOFModel extends FOFUtilsObject
 {
 	/**
 	 * Indicates if the internal state has been set
@@ -625,7 +625,7 @@ class FOFModel extends JObject
 		}
 		else
 		{
-			$this->state = new JObject;
+			$this->state = new FOFUtilsObject;
 		}
 
 		// Set the model dbo
@@ -1010,7 +1010,7 @@ class FOFModel extends JObject
 	 */
 	public function clearState()
 	{
-		$this->state = new JObject;
+		$this->state = new FOFUtilsObject;
 
 		return $this;
 	}

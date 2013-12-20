@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-abstract class FOFView extends JObject
+abstract class FOFView extends FOFUtilsObject
 {
 	/**
 	 * The name of the view
@@ -634,7 +634,7 @@ abstract class FOFView extends JObject
 			}
 		}
 
-		// Degrade to JObject::get
+		// Degrade to FOFUtilsObject::get
 		$result = parent::get($property, $default);
 
 		return $result;
