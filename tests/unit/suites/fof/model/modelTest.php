@@ -27,6 +27,7 @@ class FOFModelTest extends FtestCaseDatabase
 
 		// TODO It seems that another test is "polluting" FOFPlatform instance, leaving a Mock Object as current instance
 		FOFPlatform::forceInstance(null);
+        FOFTable::forceInstance(null);
 	}
 
     /**
@@ -628,7 +629,7 @@ class FOFModelTest extends FtestCaseDatabase
         $table->expects($this->any())->method('publish')->will($this->returnValue($test['publish']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config));
+        $model = $this->getMock('FOFModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config), 'FoftestModelFoobars');
         $model->expects($this->any())->method('onBeforePublish')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterPublish')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
