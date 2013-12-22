@@ -23,6 +23,7 @@
 		<folder>hal</folder>
 		<folder>inflector</folder>
 		<folder>input</folder>
+		<folder>layout</folder>
 		<folder>less</folder>
 		<folder>model</folder>
 		<folder>platform</folder>
@@ -32,6 +33,7 @@
 		<folder>table</folder>
 		<folder>template</folder>
 		<folder>toolbar</folder>
+		<folder>utils</folder>
 		<folder>view</folder>
 
 		<file>LICENSE.txt</file>
