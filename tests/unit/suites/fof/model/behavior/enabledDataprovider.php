@@ -62,60 +62,55 @@ class enabledDataprovider
 
     public static function getTestOnAfterGetItem()
     {
-        // User has access
+        // Record enabled
         $data[] = array(
             array('name' => 'foobars'),
             array(
-                'loadid' => 1,
-                'views'  => array(1, 2)
+                'loadid' => 1
             ),
             array('nullify' => false)
         );
 
-        // User has NO access
+        // Record NOT enabled
         $data[] = array(
             array('name' => 'foobars'),
             array(
-                'loadid' => 1,
-                'views'  => array(1)
+                'loadid' => 2
             ),
             array('nullify' => true)
         );
 
-        // User has access - table alias
+        // Record enabled - table alias
         $data[] = array(
             array('name' => 'foobaraliases'),
             array(
                 'loadid' => 1,
-                'views'  => array(1, 2),
                 'aliases' => array(
-                    'tbl_key' => 'id_foobar_aliases',
-                    'access'  => 'fo_access'
+                    'tbl_key'  => 'id_foobar_aliases',
+                    'enabled'  => 'fo_enabled'
                 )
             ),
             array('nullify' => false)
         );
 
-        // User has NO access - table alias
+        // Record NOT enabled - table alias
         $data[] = array(
             array('name' => 'foobaraliases'),
             array(
-                'loadid' => 1,
-                'views'  => array(1),
+                'loadid' => 2,
                 'aliases' => array(
-                    'tbl_key' => 'id_foobar_aliases',
-                    'access'  => 'fo_access'
+                    'tbl_key'  => 'id_foobar_aliases',
+                    'enabled'  => 'fo_enabled'
                 )
             ),
             array('nullify' => true)
         );
 
-        // Table with no access support
+        // Table with no enabled support
         $data[] = array(
             array('name' => 'bares'),
             array(
                 'loadid' => 1,
-                'views'  => array()
             ),
             array('nullify' => false)
         );

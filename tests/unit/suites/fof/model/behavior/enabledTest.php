@@ -72,14 +72,14 @@ class FOFModelBehaviorEnabledTest extends FtestCaseDatabase
     }
 
     /**
-     * @group               accessOnAfterGetItem
+     * @group               enabledOnAfterGetItem
      * @group               FOFModelBehavior
-     * @covers              FOFModelBehaviorAccess::onAfterGetItem
+     * @covers              FOFModelBehaviorEnabled::onAfterGetItem
      * @dataProvider        getTestOnAfterGetItem
      */
     public function testOnAfterGetItem($modelinfo, $test, $checks)
     {
-        /*$config = array();
+        $config = array();
 
         if(isset($test['aliases']['tbl_key']))
         {
@@ -97,19 +97,11 @@ class FOFModelBehaviorEnabledTest extends FtestCaseDatabase
             }
         }
 
-        $user = $this->getMock('JUser', array('getAuthorisedViewLevels'));
-        $user->expects($this->any())->method('getAuthorisedViewLevels')->will($this->returnValue($test['views']));
-
-        $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('getUser'));
-        $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
-
-        FOFPlatform::forceInstance($platform);
-
         $reflection = new ReflectionProperty($model, 'modelDispatcher');
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($model);
 
-        $behavior = new FOFModelBehaviorAccess($dispatcher);
+        $behavior = new FOFModelBehaviorEnabled($dispatcher);
 
         $table->load($test['loadid']);
 
@@ -118,12 +110,12 @@ class FOFModelBehaviorEnabledTest extends FtestCaseDatabase
 
         if($checks['nullify'])
         {
-            $this->assertNull($table, "FOFModelBehaviorAccess::onAfterGetItem should nullify the table record when the user can't access the record");
+            $this->assertNull($table, "FOFModelBehaviorEnabled::onAfterGetItem should nullify the table record when it's not enabled");
         }
         else
         {
-            $this->assertEquals($saved, $table, 'FOFModelBehaviorAccess::onAfterGetItem should leave the record untouched if the user can access the record');
-        }*/
+            $this->assertEquals($saved, $table, "FOFModelBehaviorEnabled::onAfterGetItem should leave the record untouched if it's enabled");
+        }
     }
 
     public function getTestOnAfterBuildQuery()
