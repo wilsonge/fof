@@ -79,8 +79,68 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
         $behavior->onAfterBuildQuery($model, $null);
     }
 
+    /**
+     * @group               accessOnAfterGetItem
+     * @group               FOFModelBehavior
+     * @covers              FOFModelBehaviorAccess::onAfterGetItem
+     * @dataProvider        getTestOnAfterGetItem
+     */
+    public function testOnAfterGetItem($modelinfo, $test, $checks)
+    {
+        $config = array();
+
+        if(isset($test['aliases']['tbl_key']))
+        {
+            $config['tbl_key'] = $test['aliases']['tbl_key'];
+        }
+
+        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel');
+        $table = FOFTable::getAnInstance(ucfirst(FOFInflector::singularize($modelinfo['name'])), 'FoftestTable', $config);
+
+        if(isset($test['aliases']))
+        {
+            foreach($test['aliases'] as $column => $alias)
+            {
+                $table->setColumnAlias($column, $alias);
+            }
+        }
+
+        $user = $this->getMock('JUser', array('getAuthorisedViewLevels'));
+        $user->expects($this->any())->method('getAuthorisedViewLevels')->will($this->returnValue($test['views']));
+
+        $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('getUser'));
+        $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
+
+        FOFPlatform::forceInstance($platform);
+
+        $reflection = new ReflectionProperty($model, 'modelDispatcher');
+        $reflection->setAccessible(true);
+        $dispatcher = $reflection->getValue($model);
+
+        $behavior = new FOFModelBehaviorAccess($dispatcher);
+
+        $table->load($test['loadid']);
+
+        $saved = clone $table;
+        $behavior->onAfterGetItem($model, $table);
+
+        if($checks['nullify'])
+        {
+            $this->assertNull($table, "FOFModelBehaviorAccess::onAfterGetItem should nullify the table record when the user can't access the record");
+        }
+        else
+        {
+            $this->assertEquals($saved, $table, 'FOFModelBehaviorAccess::onAfterGetItem should leave the record untouched if the user can access the record');
+        }
+    }
+
     public function getTestOnAfterBuildQuery()
     {
         return accessDataprovider::getTestOnAfterBuildQuery();
+    }
+
+    public function getTestOnAfterGetItem()
+    {
+        return accessDataprovider::getTestOnAfterGetItem();
     }
 }
