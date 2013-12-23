@@ -1197,19 +1197,19 @@ abstract class TableDataprovider
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => '', 'separator' => ','),
-			array('string' => '"","","","","","","0","","","","","",""')
+			array('string' => '"","","","","","","0","1","","","","","",""')
 		);
 
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => 2, 'separator' => ','),
-			array('string' => '"2","Second row","second-row","0","2","23","0","42","0000-00-00 00:00:00","0","0000-00-00 00:00:00","0","0000-00-00 00:00:00"')
+			array('string' => '"2","Second row","second-row","0","2","23","0","0","42","0000-00-00 00:00:00","0","0000-00-00 00:00:00","0","0000-00-00 00:00:00"')
 		);
 
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => 2, 'separator' => '\t'),
-			array('string' => '"2"\t"Second row"\t"second-row"\t"0"\t"2"\t"23"\t"0"\t"42"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"')
+			array('string' => '"2"\t"Second row"\t"second-row"\t"0"\t"2"\t"23"\t"0"\t"0"\t"42"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"')
 		);
 
 		return $data;
@@ -1228,6 +1228,7 @@ abstract class TableDataprovider
 				'ordering'          => null,
 				'hits'              => null,
 				'asset_id'          => 0,
+				'access'            => 1,
 				'created_by'        => null,
 				'created_on'        => null,
 				'modified_by'       => null,
@@ -1248,6 +1249,7 @@ abstract class TableDataprovider
 				'ordering'          => 2,
 				'hits'              => 23,
 				'asset_id'          => 0,
+				'access'            => 0,
 				'created_by'        => 42,
 				'created_on'        => '0000-00-00 00:00:00',
 				'modified_by'       => 0,
@@ -1265,13 +1267,13 @@ abstract class TableDataprovider
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => '', 'separator' => ','),
-			array('string' => '"foftest_foobar_id","title","slug","enabled","ordering","hits","asset_id","created_by","created_on","modified_by","modified_on","locked_by","locked_on"')
+			array('string' => '"foftest_foobar_id","title","slug","enabled","ordering","hits","asset_id","access","created_by","created_on","modified_by","modified_on","locked_by","locked_on"')
 		);
 
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => 2, 'separator' => '\t'),
-			array('string' => '"foftest_foobar_id"\t"title"\t"slug"\t"enabled"\t"ordering"\t"hits"\t"asset_id"\t"created_by"\t"created_on"\t"modified_by"\t"modified_on"\t"locked_by"\t"locked_on"')
+			array('string' => '"foftest_foobar_id"\t"title"\t"slug"\t"enabled"\t"ordering"\t"hits"\t"asset_id"\t"access"\t"created_by"\t"created_on"\t"modified_by"\t"modified_on"\t"locked_by"\t"locked_on"')
 		);
 
 		return $data;
@@ -1284,7 +1286,7 @@ abstract class TableDataprovider
 			array('table' => 'foobars'),
 			array('use_table_cache' => true),
 			array('fields' => array(
-				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits', 'asset_id', 'access', 'created_by',
 				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
 			)
 		);
@@ -1294,7 +1296,7 @@ abstract class TableDataprovider
 			array('table' => 'foobars'),
 			array('use_table_cache' => true, 'tableCache' => array()),
 			array('fields' => array(
-				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits', 'asset_id', 'access', 'created_by',
 				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
 			)
 		);
@@ -1304,7 +1306,7 @@ abstract class TableDataprovider
 			array('table' => 'foobars'),
 			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array()),
 			array('fields' => array(
-				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits', 'asset_id', 'access', 'created_by',
 				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
 			)
 		);
@@ -1314,7 +1316,7 @@ abstract class TableDataprovider
 			array('table' => 'foobars'),
 			array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true),
 			array('fields' => array(
-				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits', 'asset_id', 'access', 'created_by',
 				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
 			)
 		);
@@ -1324,7 +1326,7 @@ abstract class TableDataprovider
             array('table' => 'foobars'),
             array('use_table_cache' => true, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => false),
             array('fields' => array(
-                'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+                'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits', 'asset_id', 'access', 'created_by',
                 'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
             )
         );
@@ -1334,7 +1336,7 @@ abstract class TableDataprovider
 			array('table' => 'foobars'),
 			array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => true),
 			array('fields' => array(
-				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+				'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits', 'asset_id', 'access', 'created_by',
 				'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
 			)
 		);
@@ -1344,7 +1346,7 @@ abstract class TableDataprovider
             array('table' => 'foobars'),
             array('use_table_cache' => false, 'tableCache' => array(), 'tableFieldCache' => array(), 'joomlaCache' => false),
             array('fields' => array(
-                'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits',	'asset_id',	'created_by',
+                'foftest_foobar_id', 'title', 'slug', 'enabled', 'ordering', 'hits', 'asset_id', 'access', 'created_by',
                 'created_on', 'modified_by', 'modified_on',	'locked_by', 'locked_on')
             )
         );
@@ -1460,6 +1462,7 @@ abstract class TableDataprovider
                     'ordering'          => '',
                     'hits'              => '',
                     'asset_id'          => 0,
+                    'access'            => 1,
                     'created_by'        => 42,
                     'created_on'        => 'NOT NULL',
                     'modified_by'       => '',
@@ -1491,6 +1494,7 @@ abstract class TableDataprovider
                     'ordering'          => '',
                     'hits'              => '',
                     'asset_id'          => 0,
+                    'access'            => 1,
                     'created_by'        => 42,
                     'created_on'        => 'NOT NULL',
                     'modified_by'       => '',
@@ -1524,6 +1528,7 @@ abstract class TableDataprovider
                     'ordering'          => '',
                     'hits'              => '',
                     'asset_id'          => 0,
+                    'access'            => 1,
                     'created_by'        => 22,
                     'created_on'        => '2013-12-06 13:00:00',
                     'modified_by'       => 42,
@@ -1558,6 +1563,7 @@ abstract class TableDataprovider
                     'ordering'          => '',
                     'hits'              => '',
                     'asset_id'          => 0,
+                    'access'            => 1,
                     'created_by'        => 22,
                     'created_on'        => '2013-12-06 13:00:00',
                     'modified_by'       => 42,
@@ -1606,6 +1612,7 @@ abstract class TableDataprovider
                     'fo_ordering'          => '',
                     'fo_hits'              => '',
                     'fo_asset_id'          => 0,
+                    'fo_access'            => 0,
                     'fo_created_by'        => 22,
                     'fo_created_on'        => '2013-12-06 13:00:00',
                     'fo_modified_by'       => 42,
