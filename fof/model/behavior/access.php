@@ -35,7 +35,7 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 		}
 
 		// Get the name of the access field
-		$table = $model->getTable();
+		$table       = $model->getTable();
 		$accessField = $table->getColumnAlias('access');
 
 		// Make sure the field actually exists
