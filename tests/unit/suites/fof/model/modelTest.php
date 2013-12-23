@@ -620,7 +620,9 @@ class FOFModelTest extends FtestCaseDatabase
      */
     public function testPublish($test, $checks)
     {
-        $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
+        $config['option'] = 'com_foftest';
+        $config['name']   = 'foobars';
+        $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
@@ -629,7 +631,7 @@ class FOFModelTest extends FtestCaseDatabase
         $table->expects($this->any())->method('publish')->will($this->returnValue($test['publish']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config), 'FoftestModelFoobars');
+        $model = $this->getMock('FOFModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforePublish')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterPublish')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -980,12 +982,12 @@ class FOFModelTest extends FtestCaseDatabase
         // wrap everything with a try-catch statement since it will prevent PHPUnit from notifing us of errors
         $this->setExpectedException('Exception', 0);
 
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => $modelinfo['name']
-        );
+        $config['option'] = 'com_foftest';
+        $config['name']   = $modelinfo['name'];
+        $config['table']  = FOFInflector::singularize($modelinfo['name']);
+        $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
-        $model = $this->getMock('FOFModel', array('_createTable'), array($config), ucfirst($modelinfo['name']));
+        $model = $this->getMock('FOFModel', array('_createTable'), array($config));
 
         if(!$test['create']['options'])
         {
@@ -1078,13 +1080,13 @@ class FOFModelTest extends FtestCaseDatabase
      */
     public function testBuildQuery($modelinfo, $test, $checks)
     {
-        $config['input']  = array(
-            'option'    => 'com_foftest',
-            'view'      => $modelinfo['name']
-        );
+        $config['option'] = 'com_foftest';
+        $config['name']   = $modelinfo['name'];
+        $config['table']  = FOFInflector::singularize($modelinfo['name']);
+        $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
         // Create a mock so I can test vs different table alias
-        $model = $this->getMock('FOFModel', array('getTableAlias'), array($config), ucfirst($modelinfo['name']).'FoftestModel');
+        $model = $this->getMock('FOFModel', array('getTableAlias'), array($config));
         $model->expects($this->any())->method('getTableAlias')->will($this->returnValue($test['aliasTable']));
 
         // Let's create a mocked Behavior, so I can manipulate its behavior (LOL)
@@ -1160,6 +1162,9 @@ class FOFModelTest extends FtestCaseDatabase
      */
     public function testGetForm($modelinfo, $test, $checks)
     {
+        $config['option'] = 'com_foftest';
+        $config['name']   = $modelinfo['name'];
+        $config['table']  = FOFInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
         $methods = array('getState', 'loadForm', 'onBeforeLoadForm', 'onAfterLoadForm');
