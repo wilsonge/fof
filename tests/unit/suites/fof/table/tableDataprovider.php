@@ -1203,13 +1203,13 @@ abstract class TableDataprovider
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => 2, 'separator' => ','),
-			array('string' => '"2","Second row","second-row","0","2","23","0","0","42","0000-00-00 00:00:00","0","0000-00-00 00:00:00","0","0000-00-00 00:00:00"')
+			array('string' => '"2","Second row","second-row","0","2","23","0","1","42","0000-00-00 00:00:00","0","0000-00-00 00:00:00","0","0000-00-00 00:00:00"')
 		);
 
 		$data[] = array(
 			array('table' => 'foobars'),
 			array('loadid' => 2, 'separator' => '\t'),
-			array('string' => '"2"\t"Second row"\t"second-row"\t"0"\t"2"\t"23"\t"0"\t"0"\t"42"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"')
+			array('string' => '"2"\t"Second row"\t"second-row"\t"0"\t"2"\t"23"\t"0"\t"1"\t"42"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"\t"0"\t"0000-00-00 00:00:00"')
 		);
 
 		return $data;
@@ -1249,7 +1249,7 @@ abstract class TableDataprovider
 				'ordering'          => 2,
 				'hits'              => 23,
 				'asset_id'          => 0,
-				'access'            => 0,
+				'access'            => 1,
 				'created_by'        => 42,
 				'created_on'        => '0000-00-00 00:00:00',
 				'modified_by'       => 0,
