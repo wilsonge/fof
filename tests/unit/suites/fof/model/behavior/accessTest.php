@@ -34,14 +34,14 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
      * @covers              FOFModelBehaviorAccess::onAfterBuildQuery
      * @dataProvider        getTestOnAfterBuildQuery
      */
-    public function testOnAfterBuildQuery($modelinfo, $test)
+    public function testOnAfterBuildQuery($modelinfo, $test, $checks)
     {
         $config['option'] = 'com_foftest';
         $config['name']   = $modelinfo['name'];
         $config['table']  = FOFInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
-        $model = $this->getMock('FOFModel', array('applyAccessFiltering'), array($config));
+        $model = $this->getMock('FOFModel', array('applyAccessFiltering', 'getTable'), array($config));
 
         $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('isFrontend'));
         $platform->expects($this->any())->method('isFrontend')->will($this->returnValue($test['frontend']));
@@ -54,14 +54,29 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
 
         $behavior = new FOFModelBehaviorAccess($dispatcher);
 
-        $table = $model->getTable();
+        $table = FOFTable::getAnInstance(ucfirst(FOFInflector::singularize($modelinfo['name'])), 'FoftestTable');
 
-        if($test['frontend'] && in_array($table->getColumnAlias('access'), $table->getKnownFields()))
+        if(isset($test['aliases']))
         {
-            $model->expects($this->any())->method('applyAccessFiltering')->with(null);
+            foreach($test['aliases'] as $column => $alias)
+            {
+                $table->setColumnAlias($column, $alias);
+            }
         }
 
-        $behavior->onAfterBuildQuery($model, $test['query']);
+        $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
+
+        if($checks['execute'])
+        {
+            $model->expects($this->once())->method('applyAccessFiltering')->with(null);
+        }
+        else
+        {
+            $model->expects($this->never())->method('applyAccessFiltering');
+        }
+
+        $null  = null;
+        $behavior->onAfterBuildQuery($model, $null);
     }
 
     public function getTestOnAfterBuildQuery()
