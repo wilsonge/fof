@@ -75,6 +75,7 @@ class FOFInflector
 			'/people$/i'                                                       => 'person',
 			'/taxa$/i'                                                         => 'taxon',
 			'/databases$/i'                                                    => 'database',
+      '/menus$/i'                                                        => 'menu',
 			'/(quiz)zes$/i'                                                    => '\1',
 			'/(matr|suff)ices$/i'                                              => '\1ix',
 			'/(vert|ind|cod)ices$/i'                                           => '\1ex',

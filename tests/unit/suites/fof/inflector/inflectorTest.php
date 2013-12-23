@@ -266,6 +266,8 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 			array("shoes", "shoe", "Singularise: shoes"),
 			array("backhoe", "backhoe", "Singularise: backhoe"),
 			array("backhoes", "backhoe", "Singularise: backhoes"),
+			array("menu", "menu", "Singularise: menu"),
+			array("menus", "menu", "Singularise: menu"),
 			array("movie", "movie", "Singularise: movie"),
 			array("movies", "movie", "Singularise: movies"),
 			array("vie", "vie", "Singularise: vie"),
