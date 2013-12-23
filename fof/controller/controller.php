@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFController extends JObject
+class FOFController extends FOFUtilsObject
 {
 	/**
 	 * @var int Bit mask to enable JRoute'ing on redirects.
