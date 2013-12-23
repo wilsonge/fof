@@ -64,51 +64,6 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
         $behavior->onAfterBuildQuery($model, $test['query']);
     }
 
-    /**
-     * @group               assetsOnAfterBind
-     * @group               FOFTableBehavior
-     * @covers              FOFTableBehaviorAssets::onAfterBind
-     * @dataProvider        getTestOnAfterBind
-     */
-    public function testOnAfterBind($tableinfo, $test, $check)
-    {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
-
-        if(isset($test['tbl_key']))
-        {
-            $config['tbl_key'] = $test['tbl_key'];
-        }
-
-        $table = FOFTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
-
-        $reflection = new ReflectionProperty($table, 'tableDispatcher');
-        $reflection->setAccessible(true);
-        $dispatcher = $reflection->getValue($table);
-
-        $behavior = new FOFTableBehaviorAssets($dispatcher);
-
-        if(isset($test['alias']))
-        {
-            foreach($test['alias'] as $column => $alias)
-            {
-                $table->setColumnAlias($column, $alias);
-            }
-
-            $table->setAssetsTracked(true);
-        }
-
-        if(isset($test['id']))
-        {
-            $table->load($test['id']);
-        }
-
-        $return = $behavior->onAfterBind($table, $test['bind']);
-        $rules  = $table->getRules();
-
-        $this->assertEquals($check['return'], $return, 'FOFTableBehaviorAssets::onAfterStore returned a wrong value');
-        $this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, 'FOFTableBehaviorAssets::onAfterStore set rules wrong');
-    }
-
     public function getTestOnAfterBuildQuery()
     {
         return accessDataprovider::getTestOnAfterBuildQuery();

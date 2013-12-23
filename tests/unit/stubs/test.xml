@@ -14,6 +14,7 @@
     <column>ordering</column>
     <column>hits</column>
     <column>asset_id</column>
+    <column>access</column>
     <column>created_by</column>
     <column>created_on</column>
     <column>modified_by</column>
@@ -26,6 +27,7 @@
       <value>guinea-pig-row</value>
       <value>1</value>
       <value>1</value>
+      <value>0</value>
       <value>0</value>
       <value>0</value>
       <value>42</value>
@@ -43,6 +45,7 @@
       <value>2</value>
       <value>23</value>
       <value>0</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -56,6 +59,7 @@
       <value>third-row</value>
       <value>1</value>
       <value>3</value>
+      <value>0</value>
       <value>0</value>
       <value>0</value>
       <value>42</value>
@@ -73,6 +77,7 @@
       <value>4</value>
       <value>0</value>
       <value>36</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -86,6 +91,7 @@
       <value>locked-record</value>
       <value>1</value>
       <value>5</value>
+      <value>0</value>
       <value>0</value>
       <value>0</value>
       <value>42</value>
@@ -105,6 +111,7 @@
     <column>fo_ordering</column>
     <column>fo_hits</column>
     <column>fo_asset_id</column>
+    <column>fo_access</column>
     <column>fo_created_by</column>
     <column>fo_created_on</column>
     <column>fo_modified_by</column>
@@ -117,6 +124,7 @@
       <value>aliased-guinea-pig-row</value>
       <value>1</value>
       <value>1</value>
+      <value>0</value>
       <value>0</value>
       <value>0</value>
       <value>42</value>
@@ -134,6 +142,7 @@
       <value>2</value>
       <value>12</value>
       <value>0</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -147,6 +156,7 @@
       <value>third-row</value>
       <value>1</value>
       <value>3</value>
+      <value>0</value>
       <value>0</value>
       <value>0</value>
       <value>42</value>
@@ -164,6 +174,7 @@
       <value>4</value>
       <value>0</value>
       <value>0</value>
+      <value>0</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
       <value>0</value>
@@ -177,6 +188,7 @@
       <value>locked-record</value>
       <value>1</value>
       <value>5</value>
+      <value>0</value>
       <value>0</value>
       <value>0</value>
       <value>42</value>
