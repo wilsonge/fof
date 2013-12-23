@@ -75,7 +75,7 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
 
         $behavior->onAfterBuildQuery($model, $test['query']);
 
-        $this->assertEquals((string)$checks['query'], (string)$test['query'], 'FOFModelBehaviorEnabled::onAfterBuildQuery failed to modify the query object');
+        $this->assertEquals((string)$checks['query'], (string)$test['query'], 'FOFModelBehaviorPrivate::onAfterBuildQuery failed to modify the query object');
     }
 
     /**
@@ -86,12 +86,18 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
      */
     public function testOnAfterGetItem($modelinfo, $test, $checks)
     {
-        /*$config = array();
+        $config = array();
 
         if(isset($test['aliases']['tbl_key']))
         {
             $config['tbl_key'] = $test['aliases']['tbl_key'];
         }
+
+        $user = (object) array('id' => $test['user']);
+        $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('getUser'));
+        $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
+
+        FOFPlatform::forceInstance($platform);
 
         $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel');
         $table = FOFTable::getAnInstance(ucfirst(FOFInflector::singularize($modelinfo['name'])), 'FoftestTable', $config);
@@ -108,21 +114,24 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($model);
 
-        $behavior = new FOFModelBehaviorEnabled($dispatcher);
+        $behavior = new FOFModelBehaviorPrivate($dispatcher);
 
-        $table->load($test['loadid']);
+        if(isset($test['loadid']))
+        {
+            $table->load($test['loadid']);
+        }
 
         $saved = clone $table;
         $behavior->onAfterGetItem($model, $table);
 
         if($checks['nullify'])
         {
-            $this->assertNull($table, "FOFModelBehaviorEnabled::onAfterGetItem should nullify the table record when it's not enabled");
+            $this->assertNull($table, "FOFModelBehaviorPrivate::onAfterGetItem should nullify the table record when it's not enabled");
         }
         else
         {
-            $this->assertEquals($saved, $table, "FOFModelBehaviorEnabled::onAfterGetItem should leave the record untouched if it's enabled");
-        }*/
+            $this->assertEquals($saved, $table, "FOFModelBehaviorPrivate::onAfterGetItem should leave the record untouched if it's enabled");
+        }
     }
 
     public function getTestOnAfterBuildQuery()

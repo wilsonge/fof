@@ -99,55 +99,82 @@ class privateDataprovider
 
     public static function getTestOnAfterGetItem()
     {
-        // Record enabled
+        // Record not loaded
         $data[] = array(
             array('name' => 'foobars'),
             array(
-                'loadid' => 1
+                'user' => 42
             ),
             array('nullify' => false)
         );
 
-        // Record NOT enabled
+        // Record of the creator
         $data[] = array(
             array('name' => 'foobars'),
             array(
-                'loadid' => 2
+                'loadid' => 1,
+                'user'   => 42
+            ),
+            array('nullify' => false)
+        );
+
+        // Not record of the creator
+        $data[] = array(
+            array('name' => 'foobars'),
+            array(
+                'loadid' => 1,
+                'user'   => 43
             ),
             array('nullify' => true)
         );
 
-        // Record enabled - table alias
+        // Record not loaded - table alias
+        $data[] = array(
+            array('name' => 'foobaraliases'),
+            array(
+                'user'   => 42,
+                'aliases' => array(
+                    'tbl_key'     => 'id_foobar_aliases',
+                    'created_by'  => 'fo_created_by'
+                )
+            ),
+            array('nullify' => false)
+        );
+
+        // Record of the creater - table alias
         $data[] = array(
             array('name' => 'foobaraliases'),
             array(
                 'loadid' => 1,
+                'user'   => 42,
                 'aliases' => array(
-                    'tbl_key'  => 'id_foobar_aliases',
-                    'enabled'  => 'fo_enabled'
+                    'tbl_key'     => 'id_foobar_aliases',
+                    'created_by'  => 'fo_created_by'
                 )
             ),
             array('nullify' => false)
         );
 
-        // Record NOT enabled - table alias
+        // Not record of the creator - table alias
         $data[] = array(
             array('name' => 'foobaraliases'),
             array(
-                'loadid' => 2,
+                'loadid' => 1,
+                'user'   => 43,
                 'aliases' => array(
-                    'tbl_key'  => 'id_foobar_aliases',
-                    'enabled'  => 'fo_enabled'
+                    'tbl_key'     => 'id_foobar_aliases',
+                    'created_by'  => 'fo_created_by'
                 )
             ),
             array('nullify' => true)
         );
 
-        // Table with no enabled support
+        // Table with no created_by support
         $data[] = array(
             array('name' => 'bares'),
             array(
                 'loadid' => 1,
+                'user'   => 42,
             ),
             array('nullify' => false)
         );
