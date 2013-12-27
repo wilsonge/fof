@@ -97,14 +97,6 @@ class FOFViewJson extends FOFViewHtml
 			$hasFailed = true;
 		}
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			if ($result instanceof Exception)
-			{
-				$hasFailed = true;
-			}
-		}
-
 		if ($hasFailed)
 		{
 			// Default JSON behaviour in case the template isn't there!
