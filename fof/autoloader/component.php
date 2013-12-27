@@ -774,10 +774,12 @@ class FOFAutoloaderComponent
 		$component_raw  = $parts[0];
 		$component = 'com_' . $parts[0];
 
+        $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+
 		// Get the proper and alternate paths and file names
-		$file = "/components/$component/toolbar.php";
-		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
-		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+		$file    = "/components/$component/toolbar.php";
+		$path    = ($isAdmin || $isCli) ? $platformDirs['admin'] : $platformDirs['public'];
+		$altPath = ($isAdmin || $isCli) ? $platformDirs['public'] : $platformDirs['admin'];
 
 		// Try to find the proper class in the proper path
 

@@ -103,14 +103,15 @@ class FOFTemplateUtils
 		// Get the local LESS file
 		$localFile = self::parsePath($path, true);
 
-		$filesystem = FOFPlatform::getInstance()->getFilesystem();
+		$filesystem   = FOFPlatform::getInstance()->getFilesystem();
+        $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
 
 		if (is_null($sanityCheck))
 		{
 			// Make sure the cache directory exists
-			if (!is_dir(JPATH_SITE . '/media/lib_fof/compiled/'))
+			if (!is_dir($platformDirs['public'] . '/media/lib_fof/compiled/'))
 			{
-				$sanityCheck = $filesystem->folderCreate(JPATH_SITE . '/media/lib_fof/compiled/');
+				$sanityCheck = $filesystem->folderCreate($platformDirs['public'] . '/media/lib_fof/compiled/');
 			}
 			else
 			{
@@ -144,7 +145,7 @@ class FOFTemplateUtils
 		$id = md5(filemtime($localFile) . filectime($localFile) . $localFile);
 
 		// Get the cached file path
-		$cachedPath = JPATH_SITE . '/media/lib_fof/compiled/' . $id . '.css';
+		$cachedPath = $platformDirs['public'] . '/media/lib_fof/compiled/' . $id . '.css';
 
 		// Get the LESS compiler
 		$lessCompiler = new FOFLess;
@@ -239,9 +240,11 @@ class FOFTemplateUtils
 	 */
 	public static function parsePath($path, $localFile = false)
 	{
+        $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+
 		if ($localFile)
 		{
-			$url = rtrim(JPATH_ROOT, DIRECTORY_SEPARATOR) . '/';
+			$url = rtrim($platformDirs['root'], DIRECTORY_SEPARATOR) . '/';
 		}
 		else
 		{
@@ -254,14 +257,14 @@ class FOFTemplateUtils
 		// If JDEBUG is enabled, prefer that path, else prefer an alternate path if present
 		if (defined('JDEBUG') && JDEBUG && isset($altPaths['debug']))
 		{
-			if (file_exists(JPATH_SITE . '/' . $altPaths['debug']))
+			if (file_exists($platformDirs['public'] . '/' . $altPaths['debug']))
 			{
 				$filePath = $altPaths['debug'];
 			}
 		}
 		elseif (isset($altPaths['alternate']))
 		{
-			if (file_exists(JPATH_SITE . '/' . $altPaths['alternate']))
+			if (file_exists($platformDirs['public'] . '/' . $altPaths['alternate']))
 			{
 				$filePath = $altPaths['alternate'];
 			}

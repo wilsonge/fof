@@ -130,6 +130,24 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		return array($isCLI, $isAdmin);
 	}
 
+    /**
+     * Returns absolute path to directories used by the CMS.
+     *
+     * @see FOFPlatformInterface::getPlatformBaseDirs()
+     *
+     * @return  array  A hash array with keys root, public, admin, tmp and log.
+     */
+    public function getPlatformBaseDirs()
+    {
+        return array(
+            'root'   => JPATH_ROOT,
+            'public' => JPATH_SITE,
+            'admin'  => JPATH_ADMINISTRATOR,
+            'tmp'    => JFactory::getConfig()->get('tmp_dir'),
+            'log'    => JFactory::getConfig()->get('log_dir')
+        );
+    }
+
 	/**
 	 * Returns the base (root) directories for a given component.
 	 *
