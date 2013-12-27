@@ -76,10 +76,7 @@ class FOFViewJson extends FOFViewHtml
 			$tpl = 'json';
 		}
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
-		}
+		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
@@ -169,10 +166,7 @@ class FOFViewJson extends FOFViewHtml
 			$tpl = 'json';
 		}
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
-		}
+    	FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
