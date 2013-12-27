@@ -295,6 +295,8 @@ interface FOFPlatformInterface
 
     public function getLanguage();
 
+    public function getDbo();
+
 	/**
 	 * Is this the administrative section of the component?
 	 *
