@@ -128,7 +128,7 @@ class FOFFormFieldMedia extends JFormFieldMedia implements FOFFormField
 
 		if ($this->value && file_exists(JPATH_ROOT . '/' . $this->value))
 		{
-			$src = JURI::root() . $this->value;
+			$src = FOFPlatform::getInstance()->URIroot() . $this->value;
 		}
 		else
 		{

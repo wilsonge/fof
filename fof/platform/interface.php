@@ -369,9 +369,28 @@ interface FOFPlatformInterface
 	 * Logs a deprecated practice. In Joomla! this results in the $message being output in the
 	 * deprecated log file, found in your site's log directory.
 	 *
-	 * @param   $message  The deprecated practice log message
+	 * @param   string  $message  The deprecated practice log message
 	 *
 	 * @return  void
 	 */
 	public function logDeprecated($message);
+
+    /**
+     * Returns the root URI for the request.
+     *
+     * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+     * @param   string   $path      The path
+     *
+     * @return  string  The root URI string.
+     */
+    public function URIroot($pathonly = false, $path = null);
+
+    /**
+     * Returns the base URI for the request.
+     *
+     * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+     * |
+     * @return  string  The base URI string
+     */
+    public function URIbase($pathonly = false);
 }

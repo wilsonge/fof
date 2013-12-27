@@ -354,7 +354,7 @@ class FOFViewJson extends FOFViewHtml
 
 		if (is_null($root))
 		{
-			$root = rtrim(JURI::base(), '/');
+			$root = rtrim(FOFPlatform::getInstance()->URIbase(), '/');
 			$rootlen = strlen($root);
 		}
 

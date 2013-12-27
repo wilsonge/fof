@@ -173,7 +173,7 @@ class FOFTemplateUtils
 		$lessCompiler->checkedCompile($localFile, $cachedPath);
 
 		// Add the compiled CSS to the page
-		$base_url = rtrim(JUri::base(), '/');
+		$base_url = rtrim(FOFPlatform::getInstance()->URIbase(), '/');
 
 		if (substr($base_url, -14) == '/administrator')
 		{
@@ -245,7 +245,7 @@ class FOFTemplateUtils
 		}
 		else
 		{
-			$url = JURI::root();
+			$url = FOFPlatform::getInstance()->URIroot();
 		}
 
 		$altPaths = self::getAltPaths($path);
