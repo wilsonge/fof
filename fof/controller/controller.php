@@ -3204,9 +3204,10 @@ class FOFController extends FOFUtilsObject
 
 	/**
 	 * Applies CSRF protection by means of a standard Joomla! token (nonce) check.
-	 * Raises a 403 Access Forbidden error through JError or an exception
-	 * (depending the Joomla! version) if the check fails.
+	 * Raises a 403 Access Forbidden error through the platform if the check fails.
 	 *
+     * TODO Move this check inside the platform
+     *
 	 * @return  boolean  True if the CSRF check is successful
 	 *
 	 * @throws Exception
@@ -3217,7 +3218,7 @@ class FOFController extends FOFUtilsObject
 
 		if (is_null($isCli))
 		{
-			$isCli = FOFPlatform::getInstance()->isCli();
+			$isCli   = FOFPlatform::getInstance()->isCli();
 			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
@@ -3254,13 +3255,12 @@ class FOFController extends FOFUtilsObject
 		}
 
 		$hasToken = false;
-		$session = JFactory::getSession();
+		$session  = JFactory::getSession();
 
 		// Joomla! 1.5/1.6/1.7/2.5 (classic Joomla! API) method
-
 		if (method_exists('JUtility', 'getToken'))
 		{
-			$token = JUtility::getToken();
+			$token    = JUtility::getToken();
 			$hasToken = $this->input->get($token, false, 'none') == 1;
 
 			if (!$hasToken)
@@ -3270,12 +3270,11 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Joomla! 2.5+ (Platform 12.1+) method
-
 		if (!$hasToken)
 		{
 			if (method_exists($session, 'getToken'))
 			{
-				$token = $session->getToken();
+				$token    = $session->getToken();
 				$hasToken = $this->input->get($token, false, 'none') == 1;
 
 				if (!$hasToken)
@@ -3286,12 +3285,11 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Joomla! 2.5+ formToken method
-
 		if (!$hasToken)
 		{
 			if (method_exists($session, 'getFormToken'))
 			{
-				$token = $session->getFormToken();
+				$token    = $session->getFormToken();
 				$hasToken = $this->input->get($token, false, 'none') == 1;
 
 				if (!$hasToken)
@@ -3303,14 +3301,7 @@ class FOFController extends FOFUtilsObject
 
 		if (!$hasToken)
 		{
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
-			else
-			{
-				JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-			}
+            FOFPlatform::getInstance()->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 
 			return false;
 		}

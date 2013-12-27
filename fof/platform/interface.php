@@ -33,6 +33,17 @@ interface FOFPlatformInterface
 	 * @return  void
 	 */
 	public function setErrorHandling($level, $log_level, $options = array());
+
+    /**
+     * Raises an error, using the logic requested by the CMS (PHP Exception or dedicated class)
+     *
+     * @param   integer  $code
+     * @param   string   $message
+     *
+     * @return mixed
+     */
+    public function raiseError($code, $message);
+
 	/**
 	 * Returns the ordering of the platform class. Files with a lower ordering
 	 * number will be loaded first.

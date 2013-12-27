@@ -1849,14 +1849,7 @@ class FOFModel extends FOFUtilsObject
 			return $table;
 		}
 
-		if (version_compare(JVERSION, '3.0', 'ge'))
-		{
-			throw new Exception(JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name), 0);
-		}
-		else
-		{
-			JError::raiseError(0, JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
-		}
+        FOFPlatform::getInstance()->raiseError(0, JText::sprintf('JLIB_APPLICATION_ERROR_TABLE_NAME_NOT_SUPPORTED', $name));
 
 		return null;
 	}

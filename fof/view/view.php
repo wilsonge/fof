@@ -383,7 +383,7 @@ abstract class FOFView extends FOFUtilsObject
 
 		// Get the paths
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($templateParts['component']);
-		$templatePath = FOFPlatform::getInstance()->getTemplateOverridePath($templateParts['component']);
+		$templatePath   = FOFPlatform::getInstance()->getTemplateOverridePath($templateParts['component']);
 
 		// Get the default paths
 		$paths = array();
@@ -475,7 +475,7 @@ abstract class FOFView extends FOFUtilsObject
 
 		if ($result instanceof Exception)
 		{
-			JError::raiseError($result->getCode(), $result->getMessage());
+            FOFPlatform::getInstance()->raiseError($result->getCode(), $result->getMessage());
 
 			return $result;
 		}
@@ -848,9 +848,9 @@ abstract class FOFView extends FOFUtilsObject
 			}
 		}
 
-		if (version_compare(JVERSION, '3.0', 'lt') && ($result instanceof Exception))
+		if ($result instanceof Exception)
 		{
-			JError::raiseError($result->getCode(), $result->getMessage());
+            FOFPlatform::getInstance()->raiseError($result->getCode(), $result->getMessage());
 		}
 
 		return $result;

@@ -35,6 +35,18 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		$this->version = defined('JVERSION') ? JVERSION : '0.0';
 	}
 
+    public function raiseError($code, $message)
+    {
+        if (version_compare($this->version, '3.0', 'ge'))
+        {
+            throw new Exception($message, $code);
+        }
+        else
+        {
+            return JError::raiseError($code, $message);
+        }
+    }
+
 	/**
 	 * Is this platform enabled?
 	 *

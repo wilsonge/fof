@@ -255,30 +255,25 @@ class FOFDispatcher extends FOFUtilsObject
      *
      * @throws Exception
      *
-     * @return  null|JError
+     * @return  null
      */
 	public function dispatch()
 	{
-		if (!FOFPlatform::getInstance()->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))
+        $platform = FOFPlatform::getInstance();
+
+		if (!$platform->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))
 		{
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
-			else
-			{
-				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-			}
+            return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
 
 		$this->transparentAuthentication();
 
 		// Merge English and local translations
-		FOFPlatform::getInstance()->loadTranslations($this->component);
+		$platform->loadTranslations($this->component);
 
 		$canDispatch = true;
 
-		if (FOFPlatform::getInstance()->isCli())
+		if ($platform->isCli())
 		{
 			$canDispatch = $canDispatch && $this->onBeforeDispatchCLI();
 		}
@@ -289,20 +284,13 @@ class FOFDispatcher extends FOFUtilsObject
 		{
 			JResponse::setHeader('Status', '403 Forbidden', true);
 
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
-			else
-			{
-				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-			}
+            return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
 
 		// Get and execute the controller
 		$option = $this->input->getCmd('option', 'com_foobar');
-		$view = $this->input->getCmd('view', $this->defaultView);
-		$task = $this->input->getCmd('task', null);
+		$view   = $this->input->getCmd('view', $this->defaultView);
+		$task   = $this->input->getCmd('task', null);
 
 		if (empty($task))
 		{
@@ -310,7 +298,6 @@ class FOFDispatcher extends FOFUtilsObject
 		}
 
 		// Pluralise/sungularise the view name for typical tasks
-
 		if (in_array($task, array('edit', 'add', 'read')))
 		{
 			$view = FOFInflector::singularize($view);
@@ -333,14 +320,7 @@ class FOFDispatcher extends FOFUtilsObject
 		{
 			JResponse::setHeader('Status', '403 Forbidden', true);
 
-			if (version_compare(JVERSION, '3.0', 'ge'))
-			{
-				throw new Exception(JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
-			}
-			else
-			{
-				return JError::raiseError('403', JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
-			}
+            return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
 
 		$format = $this->input->get('format', 'html', 'cmd');
