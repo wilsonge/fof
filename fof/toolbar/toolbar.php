@@ -696,8 +696,8 @@ class FOFToolbar
 			}
 		}
 
-		JArrayHelper::sortObjects($to_order, 'ordering');
-		$views = JArrayHelper::getColumn($to_order, 'view');
+        FOFUtilsArray::sortObjects($to_order, 'ordering');
+		$views = FOFUtilsArray::getColumn($to_order, 'view');
 
 		// If not using the metadata file, let's put the cpanel view on top
 		if (!$using_meta)

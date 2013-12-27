@@ -1598,7 +1598,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 			$cid = (array) $cid;
 		}
 
-		JArrayHelper::toInteger($cid);
+        FOFUtilsArray::toInteger($cid);
 		$k = $this->_tbl_key;
 
 		if (count($cid) < 1)
@@ -1696,7 +1696,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 			$cid = (array) $cid;
 		}
 
-		JArrayHelper::toInteger($cid);
+        FOFUtilsArray::toInteger($cid);
 		$user_id = (int) $user_id;
 		$publish = (int) $publish;
 		$k       = $this->_tbl_key;

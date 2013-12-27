@@ -78,7 +78,7 @@ class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
 		{
 			// Only item assigned values
 			$values = (array) $this->value;
-			JArrayHelper::toInteger($values);
+            FOFUtilsArray::toInteger($values);
 			$query->where('a.id IN (' . implode(',', $values) . ')');
 		}
 
@@ -99,7 +99,7 @@ class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
 		}
 		elseif (is_array($published))
 		{
-			JArrayHelper::toInteger($published);
+            FOFUtilsArray::toInteger($published);
 			$query->where('a.published IN (' . implode(',', $published) . ')');
 		}
 
