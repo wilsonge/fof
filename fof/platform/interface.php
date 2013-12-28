@@ -93,6 +93,20 @@ interface FOFPlatformInterface
 	 */
 	public function getPlatformHumanName();
 
+    /**
+     * Returns absolute path to directories used by the CMS.
+     *
+     * The return is a table with the following key:
+     * * root    Path to the site root
+     * * public  Path to the public area of the site
+     * * admin   Path to the administrative area of the site
+     * * tmp     Path to the temp directory
+     * * log     Path to the log directory
+     *
+     * @return  array  A hash array with keys root, public, admin, tmp and log.
+     */
+    public function getPlatformBaseDirs();
+
 	/**
 	 * Returns the base (root) directories for a given component. The
 	 * "component" is used in the sense of what we call "component" in Joomla!,

@@ -3035,11 +3035,12 @@ class FOFModel extends FOFUtilsObject
 	 */
 	protected function cleanCache($group = null, $client_id = 0)
 	{
-		$conf = JFactory::getConfig();
+		$conf         = JFactory::getConfig();
+        $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
 
 		$options = array(
 			'defaultgroup' => ($group) ? $group : (isset($this->option) ? $this->option : JFactory::getApplication()->input->get('option')),
-			'cachebase' => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache'));
+			'cachebase'    => ($client_id) ? $platformDirs['admin'] . '/cache' : $conf->get('cache_path', $platformDirs['public'] . '/cache'));
 
 		$cache = JCache::getInstance('callback', $options);
 		$cache->clean();

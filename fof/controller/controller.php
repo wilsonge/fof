@@ -552,7 +552,8 @@ class FOFController extends FOFUtilsObject
 
 		if (!is_null($altBasePath))
 		{
-			$basePath = JPATH_SITE . '/' . $altBasePath;
+            $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+			$basePath     = $platformDirs['public'] . '/' . $altBasePath;
 		}
 
 		$this->basePath = $basePath;

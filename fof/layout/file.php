@@ -47,8 +47,11 @@ class FOFLayoutFile extends JLayoutFile
 
 			$files[] = $file . '.php';
 
+            $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+            $prefix       = FOFPlatform::getInstance()->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
+
 			$possiblePaths = array(
-				JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,
+				$prefix . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,
 				$this->basePath . '/' . $filePath
 			);
 

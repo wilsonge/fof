@@ -190,8 +190,10 @@ class FOFToolbar
 		// If not in the administrative area, load the JToolbarHelper
 		if (!FOFPlatform::getInstance()->isBackend())
 		{
+            $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+
 			// Pretty ugly require...
-			require_once JPATH_ROOT . '/administrator/includes/toolbar.php';
+			require_once $platformDirs['root'] . '/administrator/includes/toolbar.php';
 
 			// Things to do if we have to render a front-end toolbar
 			if ($this->renderFrontendButtons)
