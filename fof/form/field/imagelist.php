@@ -131,7 +131,7 @@ class FOFFormFieldImagelist extends JFormFieldImageList implements FOFFormField
 
 		if ($this->value && file_exists(JPATH_ROOT . '/' . $path . '/' . $this->value))
 		{
-			$src = JURI::root() . '/' . $path . '/' . $this->value;
+			$src = FOFPlatform::getInstance()->URIroot() . '/' . $path . '/' . $this->value;
 		}
 		else
 		{

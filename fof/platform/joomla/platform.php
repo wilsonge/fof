@@ -771,4 +771,33 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 	{
 		JLog::add($message, JLog::WARNING, 'deprecated');
 	}
+
+    /**
+     * Returns the root URI for the request.
+     *
+     * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+     * @param   string   $path      The path
+     *
+     * @return  string  The root URI string.
+     */
+    public function URIroot($pathonly = false, $path = null)
+    {
+        JLoader::import('joomla.environment.uri');
+
+        return JUri::root($pathonly, $path);
+    }
+
+    /**
+     * Returns the base URI for the request.
+     *
+     * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+     * |
+     * @return  string  The base URI string
+     */
+    public function URIbase($pathonly = false)
+    {
+        JLoader::import('joomla.environment.uri');
+
+        return JUri::base($pathonly);
+    }
 }

@@ -324,7 +324,7 @@ abstract class FOFView extends FOFUtilsObject
 
 		if (!FOFPlatform::getInstance()->isCli())
 		{
-			$this->baseurl = JURI::base(true);
+			$this->baseurl = FOFPlatform::getInstance()->URIbase(true);
 
 			$fallback = FOFPlatform::getInstance()->getTemplateOverridePath($component) . '/' . $this->getName();
 			$this->_addPath('template', $fallback);
