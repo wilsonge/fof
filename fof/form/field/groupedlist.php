@@ -80,7 +80,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
-		$selected = self::getOptionName($this->getOptions(), $this->value);
+		$selected = self::getOptionName($this->getGroups(), $this->value);
 
 		if (is_null($selected))
 		{
@@ -110,7 +110,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
-		$selected = self::getOptionName($this->getOptions(), $this->value);
+		$selected = self::getOptionName($this->getGroups(), $this->value);
 
 		if (is_null($selected))
 		{

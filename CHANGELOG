@@ -1,11 +1,13 @@
 FOF 2.1.2
 ================================================================================
 + Refactored the Platform package to include filesystem abstraction
+~ Abstracting Joomla! Platform dependencies across the entire framework to make it easier to migrate to future Joomla! versions which may not be using the Joomla! Platform
 ~ FOFModel::onAfterLoadForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::onBeforePreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::onAfterPreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::preprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 # [LOW] Notice in render/strapper.php
+# [LOW] #247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error
 
 FOF 2.1.1
 ================================================================================
