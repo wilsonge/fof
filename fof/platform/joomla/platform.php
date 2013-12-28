@@ -712,6 +712,11 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		$cache->store($false, 'cache', 'fof');
 	}
 
+    public function getConfig()
+    {
+        return JFactory::getConfig();
+    }
+
 	/**
 	 * logs in a user
 	 *
