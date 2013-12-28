@@ -275,7 +275,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 		if ($order)
 		{
 			jimport('joomla.utilities.arrayhelper');
-			JArrayHelper::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
+			FOFUtilsArray::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
 		}
 
 		// Initialise the options
