@@ -8,6 +8,11 @@
 
 defined('_JEXEC') or die;
 
+/**
+ * Defines an observable event.
+ *
+ * This class is based on JEvent as found in Joomla! 3.2.0
+ */
 abstract class FOFUtilsObservableEvent extends FOFUtilsObject
 {
     /**

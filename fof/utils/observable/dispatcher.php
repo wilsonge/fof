@@ -14,6 +14,7 @@ defined('_JEXEC') or die;
  * This is the Observable part of the Observer design pattern
  * for the event architecture.
  *
+ * This class is based on JEventDispatcher as found in Joomla! 3.2.0
  */
 class FOFUtilsObservableDispatcher extends FOFUtilsObject
 {

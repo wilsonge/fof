@@ -8,6 +8,11 @@
 
 defined('_JEXEC') or die;
 
+/**
+ * A utility class to handle array manipulation.
+ *
+ * Based on the JArrayHelper class as found in Joomla! 3.2.0
+ */
 abstract class FOFUtilsArray
 {
 	/**
