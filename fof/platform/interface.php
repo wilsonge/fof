@@ -23,6 +23,13 @@ defined('FOF_INCLUDED') or die;
  */
 interface FOFPlatformInterface
 {
+    /**
+     * Checks if the current script is run inside a valid CMS execution
+     *
+     * @return bool
+     */
+    public function checkExecution();
+
 	/**
 	 * Set the error Handling, if possible
 	 *

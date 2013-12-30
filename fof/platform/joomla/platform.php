@@ -35,6 +35,18 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		$this->version = defined('JVERSION') ? JVERSION : '0.0';
 	}
 
+    /**
+     * Checks if the current script is run inside a valid CMS execution
+     *
+     * @see FOFPlatformInterface::checkExecution()
+     *
+     * @return bool
+     */
+    public function checkExecution()
+    {
+        return defined('_JEXEC');
+    }
+
     public function raiseError($code, $message)
     {
         if (version_compare($this->version, '3.0', 'ge'))
