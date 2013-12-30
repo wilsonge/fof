@@ -282,7 +282,7 @@ class FOFDispatcher extends FOFUtilsObject
 
 		if (!$canDispatch)
 		{
-			JResponse::setHeader('Status', '403 Forbidden', true);
+			$platform->setHeader('Status', '403 Forbidden', true);
 
             return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
@@ -318,7 +318,7 @@ class FOFDispatcher extends FOFUtilsObject
 
 		if (!$this->onAfterDispatch())
 		{
-			JResponse::setHeader('Status', '403 Forbidden', true);
+			$platform->setHeader('Status', '403 Forbidden', true);
 
             return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
@@ -339,7 +339,7 @@ class FOFDispatcher extends FOFUtilsObject
 			// In non-HTML views just exit the application with the proper HTTP headers
 			if ($controller->hasRedirect())
 			{
-				$headers = JResponse::sendHeaders();
+				$headers = $platform->sendHeaders();
 				jexit();
 			}
 		}

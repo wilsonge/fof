@@ -924,7 +924,7 @@ class FOFController extends FOFUtilsObject
 
 		if ($result)
 		{
-			$plugin_event = FOFInflector::camelize('on before ' . $this->bareComponent . ' controller ' . $this->view . ' ' . $task);
+			$plugin_event  = FOFInflector::camelize('on before ' . $this->bareComponent . ' controller ' . $this->view . ' ' . $task);
 			$plugin_result = FOFPlatform::getInstance()->runPlugins($plugin_event, array(&$this, &$this->input));
 
 			if (in_array(false, $plugin_result, true))
@@ -956,7 +956,7 @@ class FOFController extends FOFUtilsObject
 
 		if ($doTask == 'display')
 		{
-			JResponse::setHeader('Status', '400 Bad Request', true);
+            FOFPlatform::getInstance()->setHeader('Status', '400 Bad Request', true);
 
 			throw new Exception('Bad Request', 400);
 		}
@@ -1402,7 +1402,7 @@ class FOFController extends FOFUtilsObject
 		}
 		else
 		{
-			JResponse::setHeader('Status', '201 Created', true);
+            FOFPlatform::getInstance()->setHeader('Status', '201 Created', true);
 			$this->setRedirect($url);
 
 			return true;
@@ -2126,7 +2126,7 @@ class FOFController extends FOFUtilsObject
 
 		if ($status && ($id != 0))
 		{
-			JResponse::setHeader('Status', '201 Created', true);
+            FOFPlatform::getInstance()->setHeader('Status', '201 Created', true);
 
 			// Try to check-in the record if it's not a new one
 			$status = $model->checkin();
