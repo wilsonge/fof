@@ -7,7 +7,7 @@
  */
 
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('FOF_INCLUDED') or die;
 
 interface FOFPlatformFilesystemInterface
 {

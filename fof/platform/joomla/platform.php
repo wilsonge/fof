@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * Part of the FOF Platform Abstraction Layer.
@@ -60,8 +60,8 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		{
 			$this->isEnabled = true;
 
-			// Make sure _JEXEC is defined
-			if (!defined('_JEXEC'))
+			// Make sure FOF_INCLUDED is defined
+			if (!defined('FOF_INCLUDED'))
 			{
 				$this->isEnabled = false;
 			}
