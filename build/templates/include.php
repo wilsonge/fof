@@ -8,6 +8,8 @@
  *  Initializes FOF
  */
 
+defined('_JEXEC') or die();
+
 if (!defined('FOF_INCLUDED'))
 {
     define('FOF_INCLUDED', '##VERSION##');
