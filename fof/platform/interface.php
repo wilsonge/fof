@@ -403,6 +403,8 @@ interface FOFPlatformInterface
 	 */
 	public function logoutUser();
 
+    public function logAddLogger($file);
+
 	/**
 	 * Logs a deprecated practice. In Joomla! this results in the $message being output in the
 	 * deprecated log file, found in your site's log directory.
@@ -412,6 +414,8 @@ interface FOFPlatformInterface
 	 * @return  void
 	 */
 	public function logDeprecated($message);
+
+    public function logDebug($message);
 
     /**
      * Returns the root URI for the request.

@@ -787,6 +787,11 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		return $app->triggerEvent('onLogoutUser', array($parameters, $options));
 	}
 
+    public function logAddLogger($file)
+    {
+        JLog::addLogger(array('text_file' => $file), JLog::ALL, array('fof'));
+    }
+
 	/**
 	 * Logs a deprecated practice. In Joomla! this results in the $message being output in the
 	 * deprecated log file, found in your site's log directory.
@@ -799,6 +804,11 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 	{
 		JLog::add($message, JLog::WARNING, 'deprecated');
 	}
+
+    public function logDebug($message)
+    {
+        JLog::add($message, JLog::DEBUG, 'fof');
+    }
 
     /**
      * Returns the root URI for the request.
