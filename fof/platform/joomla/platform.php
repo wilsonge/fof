@@ -404,16 +404,24 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 	}
 
     /**
-     * Return the JDate object
+     * Returns an object to handle dates
      *
-     * @param   mixed  $time      The initial time for the JDate object
-     * @param   mixed  $tzOffset  The timezone offset.
+     * @param   mixed   $time       The initial time
+     * @param   null    $tzOffest   The timezone offset
+     * @param   bool    $locale     Should I try to load a specific class for current language?
      *
      * @return  JDate object
      */
-    public function getDate($time = 'now', $tzOffest = null)
+    public function getDate($time = 'now', $tzOffest = null, $locale = true)
     {
-        return JFactory::getDate($time, $tzOffest);
+        if($locale)
+        {
+            return JFactory::getDate($time, $tzOffest);
+        }
+        else
+        {
+            return new JDate($time, $tzOffest);
+        }
     }
 
     public function getLanguage()

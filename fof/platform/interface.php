@@ -291,7 +291,16 @@ interface FOFPlatformInterface
 	 */
 	public function getDocument();
 
-    public function getDate($time = 'now', $tzOffest = null);
+    /**
+     * Returns an object to handle dates
+     *
+     * @param   mixed   $time       The initial time
+     * @param   null    $tzOffest   The timezone offset
+     * @param   bool    $locale     Should I try to load a specific class for current language?
+     *
+     * @return  JDate object
+     */
+    public function getDate($time = 'now', $tzOffest = null, $locale = true);
 
     public function getLanguage();
 
