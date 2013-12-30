@@ -72,8 +72,8 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		{
 			$this->isEnabled = true;
 
-			// Make sure FOF_INCLUDED is defined
-			if (!defined('FOF_INCLUDED'))
+			// Make sure _JEXEC is defined
+			if (!defined('_JEXEC'))
 			{
 				$this->isEnabled = false;
 			}
