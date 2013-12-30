@@ -124,10 +124,7 @@ class FOFViewCsv extends FOFViewHtml
 			$tpl = 'csv';
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
-		}
+		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
@@ -143,14 +140,6 @@ class FOFViewCsv extends FOFViewHtml
 		catch (Exception $e)
 		{
 			$hasFailed = true;
-		}
-
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			if ($result instanceof Exception)
-			{
-				$hasFailed = true;
-			}
 		}
 
 		if (!$hasFailed)
