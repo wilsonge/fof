@@ -2405,7 +2405,6 @@ class FOFModel extends FOFUtilsObject
 	protected function preprocessForm(FOFForm &$form, &$data, $group = 'content')
 	{
 		// Import the appropriate plugin group.
-		JLoader::import('joomla.plugin.helper');
 		FOFPlatform::getInstance()->importPlugin($group);
 
 		// Trigger the form preparation event.

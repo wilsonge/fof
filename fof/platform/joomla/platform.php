@@ -497,6 +497,7 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 	{
 		if (!$this->isCli())
 		{
+            JLoader::import('joomla.plugin.helper');
 			JPluginHelper::importPlugin($type);
 		}
 	}

@@ -8,8 +8,6 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-JLoader::import('joomla.application.component.view');
-
 /**
  * FrameworkOnFramework JSON View class. Renders the data as a JSON object or
  * array. It can optionally output HAL links as well.

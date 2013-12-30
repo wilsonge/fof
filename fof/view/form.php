@@ -8,8 +8,6 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-JLoader::import('joomla.application.component.view');
-
 /**
  * FrameworkOnFramework Form class. It preferrably renders an XML view template
  * instead of a traditional PHP-based view template.
