@@ -2527,8 +2527,8 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 				{
 					$this->$created_by = FOFPlatform::getInstance()->getUser()->id;
 				}
-				JLoader::import('joomla.utilities.date');
-				$date = new JDate();
+
+				$date = FOFPlatform::getInstance()->getDate('now', null, false);
 
 				$this->$created_on = $date->toSql();
 			}
@@ -2540,8 +2540,8 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 				{
 					$this->$modified_by = FOFPlatform::getInstance()->getUser()->id;
 				}
-				JLoader::import('joomla.utilities.date');
-				$date = new JDate();
+
+                $date = FOFPlatform::getInstance()->getDate('now', null, false);
 
 				$this->$modified_on = $date->toSql();
 			}
