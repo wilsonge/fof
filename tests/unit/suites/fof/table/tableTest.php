@@ -1063,7 +1063,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 		if(isset($test['joomlaCache']))
 		{
-			$mock = $this->getMock('FOFPlatformJoomlaPlatform', array('getCache'));
+			$mock = $this->getMock('FOFIntegrationJoomlaPlatform', array('getCache'));
 
 			if($test['joomlaCache'])
 			{
@@ -1151,7 +1151,7 @@ class FOFTableTest extends FtestCaseDatabase
 
         // Let's mock the platform in order to fake an user
         $user = (object) array('id' => 42);
-        $mock = $this->getMock('FOFPlatformJoomlaPlatform', array('getUser'));
+        $mock = $this->getMock('FOFIntegrationJoomlaPlatform', array('getUser'));
         $mock->expects($this->any())->method('getUser')->will($this->returnValue($user));
         FOFPlatform::forceInstance($mock);
 

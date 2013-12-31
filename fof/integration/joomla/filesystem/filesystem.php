@@ -8,7 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-class FOFPlatformJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
+class FOFIntegrationJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
 {
 	public function __construct()
 	{

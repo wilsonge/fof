@@ -652,7 +652,7 @@ class FOFModelTest extends FtestCaseDatabase
             $event = $property->getValue($model);
 
             // Let's create a mock for the platform and check that plugins are run
-            $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('runPlugins'));
+            $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('runPlugins'));
             $platform->expects($this->any())->method('runPlugins')->with(
                 $event,
                 array('com_foftest.foobars', $test['id_list'], 1)
@@ -1342,7 +1342,7 @@ class FOFModelTest extends FtestCaseDatabase
         $model->setInput($config['input']);
 
         // First of all I stub the filesystem object, so it won't strip out the protocol part
-        $filesystem = $this->getMock('FOFPlatformJoomlaFilesystem', array('fileExists'));
+        $filesystem = $this->getMock('FOFIntegrationJoomlaPlatform', array('fileExists'));
         $filesystem->expects($this->any())
                    ->method('fileExists')
                    ->will($this->returnCallback(function($file){ return is_file($file);}));
@@ -1354,7 +1354,7 @@ class FOFModelTest extends FtestCaseDatabase
             $methods[] = 'getTemplateSuffixes';
         }
 
-        $platform = $this->getMock('FOFPlatformJoomlaPlatform', $methods);
+        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', $methods);
 
         // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())
@@ -1439,7 +1439,7 @@ class FOFModelTest extends FtestCaseDatabase
 
         $form = new FOFForm('dummy');
 
-        $platform = $this->getMock('FOFPlatformJoomlaPlatform', array('importPlugin', 'runPlugins'));
+        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('importPlugin', 'runPlugins'));
         $platform->expects($this->any())->method('importPlugin')->with('content');
         $platform->expects($this->any())->method('runPlugins')
                  ->with('onContentPrepareForm', array($form, array()))

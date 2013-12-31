@@ -16,7 +16,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterface
+class FOFIntegrationJoomlaPlatform extends FOFPlatform implements FOFPlatformInterface
 {
 	/**
 	 * The table and table field cache object, used to speed up database access

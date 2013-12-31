@@ -22,6 +22,7 @@
 		<folder>form</folder>
 		<folder>hal</folder>
 		<folder>inflector</folder>
+		<folder>integration</folder>
 		<folder>input</folder>
 		<folder>layout</folder>
 		<folder>less</folder>
