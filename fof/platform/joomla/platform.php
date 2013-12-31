@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * Part of the FOF Platform Abstraction Layer.
@@ -34,6 +34,18 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 		$this->humanReadableName = 'Joomla!';
 		$this->version = defined('JVERSION') ? JVERSION : '0.0';
 	}
+
+    /**
+     * Checks if the current script is run inside a valid CMS execution
+     *
+     * @see FOFPlatformInterface::checkExecution()
+     *
+     * @return bool
+     */
+    public function checkExecution()
+    {
+        return defined('_JEXEC');
+    }
 
     public function raiseError($code, $message)
     {

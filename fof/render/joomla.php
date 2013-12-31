@@ -5,7 +5,7 @@
  * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * Default Joomla! 1.5, 1.7, 2.5 view renderer class

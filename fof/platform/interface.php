@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * Part of the FOF Platform Abstraction Layer. It implements everything that
@@ -23,6 +23,13 @@ defined('_JEXEC') or die;
  */
 interface FOFPlatformInterface
 {
+    /**
+     * Checks if the current script is run inside a valid CMS execution
+     *
+     * @return bool
+     */
+    public function checkExecution();
+
 	/**
 	 * Set the error Handling, if possible
 	 *
