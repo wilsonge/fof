@@ -277,7 +277,7 @@ class FOFModel extends FOFUtilsObject
 
 		// Get the component directories
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
-        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
+        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		// Try to load the requested model class
 		if (!class_exists($modelClass))
@@ -471,7 +471,7 @@ class FOFModel extends FOFUtilsObject
 
 		if (!empty($path))
 		{
-            $filesystem = FOFPlatform::getInstance()->getFilesystem();
+            $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 			if (!in_array($path, $paths[$prefix]))
 			{
@@ -2346,7 +2346,7 @@ class FOFModel extends FOFUtilsObject
 
 		// Look for all suffixes in all paths
 		$result     = false;
-        $filesystem = FOFPlatform::getInstance()->getFilesystem();
+        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		foreach ($paths as $path)
 		{

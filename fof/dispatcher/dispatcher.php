@@ -157,7 +157,7 @@ class FOFDispatcher extends FOFUtilsObject
 				array_unshift($searchPaths, $config['searchpath']);
 			}
 
-			$filesystem = FOFPlatform::getInstance()->getFilesystem();
+			$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 			$path = $filesystem->pathFind(
 					$searchPaths, 'dispatcher.php'

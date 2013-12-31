@@ -693,7 +693,7 @@ class FOFIntegrationJoomlaPlatform extends FOFPlatform implements FOFPlatformInt
 				// Find the path to the file
 				$cachePath  = JPATH_CACHE . '/fof';
 				$filename   = $cachePath . '/cache.php';
-                $filesystem = $this->getFilesystem();
+                $filesystem = $this->getIntegrationObject('filesystem');
 
 				// Load the cache file if it exists. JRegistryFormatPHP fails
 				// miserably, so I have to work around it.

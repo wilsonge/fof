@@ -112,7 +112,7 @@ class FOFLess
 	protected function fileExists($name)
 	{
 		/** FOF - BEGIN CHANGE * */
-		return FOFPlatform::getInstance()->getFilesystem()->fileExists($name);
+		return FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($name);
 		/** FOF - END CHANGE * */
 	}
 
@@ -2922,7 +2922,7 @@ class FOFLess
 		if ($outFname !== null)
 		{
 			/** FOF - BEGIN CHANGE * */
-			return FOFPlatform::getInstance()->getFilesystem()->fileWrite($outFname, $out);
+			return FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileWrite($outFname, $out);
 			/** FOF - END CHANGE * */
 		}
 

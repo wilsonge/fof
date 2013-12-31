@@ -333,7 +333,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $altPath);
 				}
 
-                $filesystem = FOFPlatform::getInstance()->getFilesystem();
+                $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 				$path = $filesystem->pathFind(
 					$searchPaths, strtolower($type) . '.php'

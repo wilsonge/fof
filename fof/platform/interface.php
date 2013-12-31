@@ -59,14 +59,28 @@ interface FOFPlatformInterface
 	 */
 	public function getOrdering();
 
-    /**
-     * Returns the filesystem associated to the current platform instance
-     *
-     * @return  FOFPlatformFilesystem
+	/**
+	 * Returns a platform integration object
+	 *
+	 * @param   string  $key  The key name of the platform integration object, e.g. 'filesystem'
+	 *
+	 * @return  object
 	 *
 	 * @since  2.1.2
-     */
-    public function getFilesystem();
+	 */
+	public function getIntegrationObject($key);
+
+	/**
+	 * Forces a platform integration object instance
+	 *
+	 * @param   string  $key     The key name of the platform integration object, e.g. 'filesystem'
+	 * @param   object  $object  The object to force for this key
+	 *
+	 * @return  object
+	 *
+	 * @since  2.1.2
+	 */
+	public function setIntegrationObject($key, $object);
 
 	/**
 	 * Is this platform enabled? This is used for automatic platform detection.

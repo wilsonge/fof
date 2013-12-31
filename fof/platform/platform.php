@@ -69,13 +69,13 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	protected $isEnabled = null;
 
     /**
-     * Filesystem platform that will be used by the currenct instance
+     * Filesystem integration objects cache
      *
-     * @var FOFPlatformFilesystem
+     * @var  object
 	 *
 	 * @since  2.1.2
      */
-    protected $filesystem = null;
+    protected $objectCache = array();
 
 	/**
 	 * The list of paths where platform class files will be looked for
@@ -91,22 +91,9 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	 */
 	protected static $instance = null;
 
-	/**
-	 * Set the error Handling, if possible
-	 *
-	 * @param   integer  $level      PHP error level (E_ALL)
-	 * @param   string   $log_level  What to do with the error (ignore, callback)
-	 * @param   array    $options    Options for the error handler
-	 *
-	 * @return  void
-	 */
-	public function setErrorHandling($level, $log_level, $options = array())
-	{
-		if (version_compare(JVERSION, '3.0', 'lt') )
-		{
-			return JError::setErrorHandling($level, $log_level, $options);
-		}
-	}
+	// ========================================================================
+	// Public API for platform integration handling
+	// ========================================================================
 
 	/**
 	 * Register a path where platform files will be looked for. These take
@@ -307,23 +294,71 @@ abstract class FOFPlatform implements FOFPlatformInterface
 	}
 
 	/**
-	 * Returns the filesystem associated to the current platform instance
+	 * Returns a platform integration object
 	 *
-	 * @return  FOFPlatformFilesystem
+	 * @param   string  $key  The key name of the platform integration object, e.g. 'filesystem'
+	 *
+	 * @return  object
 	 *
 	 * @since  2.1.2
 	 */
-    public function getFilesystem()
-    {
-		if (!is_object($this->filesystem))
+	public function getIntegrationObject($key)
+	{
+		$hasObject = false;
+
+		if (array_key_exists($key, $this->objectCache))
 		{
-			// Instantiate a new filesystem platform implementation object
-			$className = 'FOFIntegration' . ucfirst($this->getPlatformName()) . 'Filesystem';
-			$this->filesystem = new $className;
+			if (is_object($this->objectCache[$key]))
+			{
+				$hasObject = true;
+			}
 		}
 
-        return $this->filesystem;
-    }
+		if (!$hasObject)
+		{
+			// Instantiate a new platform integration object
+			$className = 'FOFIntegration' . ucfirst($this->getPlatformName()) . ucfirst($key);
+			$this->objectCache[$key] = new $className;
+		}
+
+		return $this->objectCache[$key];
+	}
+
+	/**
+	 * Forces a platform integration object instance
+	 *
+	 * @param   string  $key     The key name of the platform integration object, e.g. 'filesystem'
+	 * @param   object  $object  The object to force for this key
+	 *
+	 * @return  object
+	 *
+	 * @since  2.1.2
+	 */
+	public function setIntegrationObject($key, $object)
+	{
+		$this->objectCache[$key] = $object;
+	}
+
+	// ========================================================================
+	// Default implementation
+	// ========================================================================
+
+	/**
+	 * Set the error Handling, if possible
+	 *
+	 * @param   integer  $level      PHP error level (E_ALL)
+	 * @param   string   $log_level  What to do with the error (ignore, callback)
+	 * @param   array    $options    Options for the error handler
+	 *
+	 * @return  void
+	 */
+	public function setErrorHandling($level, $log_level, $options = array())
+	{
+		if (version_compare(JVERSION, '3.0', 'lt') )
+		{
+			return JError::setErrorHandling($level, $log_level, $options);
+		}
+	}
 
 	/**
 	 * Returns the base (root) directories for a given component.

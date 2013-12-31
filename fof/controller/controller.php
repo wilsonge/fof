@@ -319,7 +319,7 @@ class FOFController extends FOFUtilsObject
 
 		// Get the path names for the component
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
-        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
+        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		// Look for the best classname match
 		foreach ($classSuffixes as $suffix)
@@ -790,7 +790,7 @@ class FOFController extends FOFUtilsObject
 		// Just force path to array
 		settype($path, 'array');
 
-        $filesystem = FOFPlatform::getInstance()->getFilesystem();
+        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		if (!isset($this->paths[$type]))
 		{
@@ -2610,7 +2610,7 @@ class FOFController extends FOFUtilsObject
 			'default'
 		);
 
-        $filesystem = FOFPlatform::getInstance()->getFilesystem();
+        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		foreach ($suffixes as $suffix)
 		{

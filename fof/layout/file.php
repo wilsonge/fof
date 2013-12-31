@@ -30,7 +30,7 @@ class FOFLayoutFile extends JLayoutFile
 	 */
 	protected function getPath()
 	{
-		$filesystem = FOFPlatform::getInstance()->getFilesystem();
+		$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		if (is_null($this->fullPath) && !empty($this->layoutId))
 		{

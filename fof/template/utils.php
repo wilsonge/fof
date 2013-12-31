@@ -103,7 +103,7 @@ class FOFTemplateUtils
 		// Get the local LESS file
 		$localFile = self::parsePath($path, true);
 
-		$filesystem   = FOFPlatform::getInstance()->getFilesystem();
+		$filesystem   = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
         $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
 
 		if (is_null($sanityCheck))
@@ -336,7 +336,7 @@ class FOFTemplateUtils
 		}
 
 		// For CSS and JS files, add a debug path if the supplied file is compressed
-		$filesystem = FOFPlatform::getInstance()->getFilesystem();
+		$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 		$ext        = $filesystem->getExt($ret['normal']);
 
 		if (in_array($ext, array('css', 'js')))
@@ -359,7 +359,10 @@ class FOFTemplateUtils
 			}
 
 			// Clone the $ret array so we can manipulate the 'normal' path a bit
-			$temp = (array) (clone (object) $ret);
+			$t1 = (object) $ret;
+			$temp = clone $t1;
+			unset($t1);
+			$temp = (array)$temp;
 			$normalPath = explode('/', $temp['normal']);
 			array_pop($normalPath);
 			$normalPath[] = $filename;

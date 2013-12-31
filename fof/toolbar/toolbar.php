@@ -99,7 +99,7 @@ class FOFToolbar
 					array_unshift($searchPaths, $config['searchpath']);
 				}
 
-                $filesystem = FOFPlatform::getInstance()->getFilesystem();
+                $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 				$path = $filesystem->pathFind(
 						$searchPaths, 'toolbar.php'
@@ -628,7 +628,7 @@ class FOFToolbar
 
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->component);
 		$searchPath     = $componentPaths['main'] . '/views';
-        $filesystem     = FOFPlatform::getInstance()->getFilesystem();
+        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		$allFolders = $filesystem->folderFolders($searchPath);
 

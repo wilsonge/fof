@@ -42,7 +42,7 @@ class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 			{
 				$source_file = FOFTemplateUtils::parsePath($source_file, true);
 
-				if (FOFPlatform::getInstance()->getFilesystem()->fileExists($source_file))
+				if (FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
 				{
 					include_once $source_file;
 				}

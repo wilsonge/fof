@@ -1347,7 +1347,7 @@ class FOFModelTest extends FtestCaseDatabase
                    ->method('fileExists')
                    ->will($this->returnCallback(function($file){ return is_file($file);}));
 
-        $methods = array('getTemplateOverridePath', 'getFilesystem');
+        $methods = array('getTemplateOverridePath');
 
         if(isset($test['suffix']))
         {
@@ -1362,9 +1362,7 @@ class FOFModelTest extends FtestCaseDatabase
                  ->will($this->returnValue(JPATH_ROOT.'/administrator/templates/system'));
 
         // Finally, force the platform to return my mocked object
-        $platform->expects($this->any())
-                 ->method('getFilesystem')
-                 ->will($this->returnValue($filesystem));
+        $platform->setIntegrationObject('filesystem', $filesystem);
 
         // Do I want to mock the suffix returned, too?
         if(isset($test['suffix']))
