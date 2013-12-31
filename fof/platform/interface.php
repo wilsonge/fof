@@ -444,4 +444,23 @@ interface FOFPlatformInterface
      * @return  string  The base URI string
      */
     public function URIbase($pathonly = false);
+
+    /**
+     * Method to set a response header.  If the replace flag is set then all headers
+     * with the given name will be replaced by the new one (only if the current platform supports header caching)
+     *
+     * @param   string   $name     The name of the header to set.
+     * @param   string   $value    The value of the header to set.
+     * @param   boolean  $replace  True to replace any headers with the same name.
+     *
+     * @return  void
+     */
+    public function setHeader($name, $value, $replace = false);
+
+    /**
+     * In platforms that perform header caching, send all headers.
+     *
+     * @return  void
+     */
+    public function sendHeaders();
 }

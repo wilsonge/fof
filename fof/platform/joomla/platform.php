@@ -847,4 +847,24 @@ class FOFPlatformJoomlaPlatform extends FOFPlatform implements FOFPlatformInterf
 
         return JUri::base($pathonly);
     }
+
+    /**
+     * Method to set a response header.  If the replace flag is set then all headers
+     * with the given name will be replaced by the new one (only if the current platform supports header caching)
+     *
+     * @param   string   $name     The name of the header to set.
+     * @param   string   $value    The value of the header to set.
+     * @param   boolean  $replace  True to replace any headers with the same name.
+     *
+     * @return  void
+     */
+    public function setHeader($name, $value, $replace = false)
+    {
+        JResponse::setHeader($name, $value, $replace);
+    }
+
+    public function sendHeaders()
+    {
+        JResponse::sendHeaders();
+    }
 }
