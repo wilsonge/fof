@@ -630,8 +630,6 @@ class FOFToolbar
 		$searchPath     = $componentPaths['main'] . '/views';
         $filesystem     = FOFPlatform::getInstance()->getFilesystem();
 
-		JLoader::import('joomla.utilities.arrayhelper');
-
 		$allFolders = $filesystem->folderFolders($searchPath);
 
 		if (!empty($allFolders))

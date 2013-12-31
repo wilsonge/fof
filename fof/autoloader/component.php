@@ -153,7 +153,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_controller($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        FOFPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
@@ -270,7 +270,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_model($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        FOFPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
@@ -386,7 +386,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_view($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        FOFPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
@@ -534,7 +534,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_table($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        FOFPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
@@ -635,7 +635,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_helper($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        FOFPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
@@ -737,7 +737,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_toolbar($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        FOFPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
@@ -812,7 +812,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_field($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        FOFPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		// @todo
 	}

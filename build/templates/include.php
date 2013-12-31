@@ -17,7 +17,7 @@ if (!defined('FOF_INCLUDED'))
 	// Register a debug log
 	if (defined('JDEBUG') && JDEBUG)
 	{
-		JLog::addLogger(array('text_file' => 'fof.log.php'), JLog::ALL, array('fof'));
+        FOFPlatform::getInstance()->logAddLogger('fof.log.php');
 	}
 
 	// Register the FOF autoloader

@@ -20,7 +20,7 @@ defined('_JEXEC') or die;
 class FOFController extends FOFUtilsObject
 {
 	/**
-	 * @var int Bit mask to enable JRoute'ing on redirects.
+	 * @var int Bit mask to enable Routing on redirects.
 	 * 0 = never
 	 * 1 = frontend only
 	 * 2 = backend  only
@@ -316,8 +316,6 @@ class FOFController extends FOFUtilsObject
 			FOFInflector::singularize($config['view']),
 			'default'
 		);
-
-		JLoader::import('joomla.filesystem.path');
 
 		// Get the path names for the component
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);

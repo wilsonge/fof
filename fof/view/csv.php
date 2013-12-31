@@ -8,8 +8,6 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-JLoader::import('joomla.application.component.view');
-
 /**
  * FrameworkOnFramework CSV View class. Automatically renders the data in CSV
  * format.
