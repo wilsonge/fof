@@ -8,6 +8,7 @@ FOF 2.1.2
 ~ FOFModel::preprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 # [LOW] Notice in render/strapper.php
 # [LOW] #247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error
+# [HIGH] The published field is broken
 
 FOF 2.1.1
 ================================================================================
