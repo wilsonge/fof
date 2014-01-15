@@ -1,0 +1,657 @@
+<?php
+/**
+ * @package     FrameworkOnFramework
+ * @subpackage  table
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+// Protect from unauthorized access
+defined('FOF_INCLUDED') or die;
+
+class FOFTableRelations
+{
+	/**
+	 * Holds all known relation definitions
+	 *
+	 * @var   array
+	 */
+	private $relations = array(
+		'child'		=> array(),
+		'parent'	=> array(),
+		'children'	=> array(),
+		'siblings'	=> array(),
+	);
+
+	/**
+	 * Holds the default relations' keys
+	 *
+	 * @var  array
+	 */
+	private $defaultRelation = array(
+		'child'		=> null,
+		'parent'	=> null,
+		'children'	=> null,
+		'siblings'	=> null,
+	);
+
+	/**
+	 * The table these relations are attached to
+	 *
+	 * @var   FOFTable
+	 */
+	private $table = null;
+
+	/**
+	 * The name of the component used by our attached table
+	 *
+	 * @var   string
+	 */
+	private $componentName = 'joomla';
+
+	/**
+	 * The type (table name without prefix and component name) of our attached table
+	 *
+	 * @var   string
+	 */
+	private $tableType = '';
+
+
+	/**
+	 * Create a relations object based on the provided FOFTable instance
+	 *
+	 * @param   FOFTable   $table  The table instance used to initialise the relations
+	 */
+	public function __construct(FOFTable $table)
+	{
+		// Store the table
+		$this->table = $table;
+
+		// Get the table's type from its name
+		$type = explode("_", $table->getTableName());
+
+		if (count($type) == 1)
+		{
+			$this->tableType = array_pop($type);
+		}
+		else
+		{
+			$this->componentName = array_shift($type);
+			$this->tableType = array_pop($type);
+		}
+
+		$this->tableType = FOFInflector::singularize($this->tableType);
+
+		$tableKey = $table->getKeyName();
+
+		unset($type);
+
+		// Scan all table keys and look for foo_bar_id fields. These fields are used to populate parent relations.
+		foreach ($table->getKnownFields() as $field)
+		{
+			// Skip the table key name
+			if ($field == $tableKey)
+			{
+				continue;
+			}
+
+			if (substr($field, -3) != '_id')
+			{
+				continue;
+			}
+
+			$parts = explode('_', $field);
+
+			// If the component type of the field is not set assume 'joomla'
+			if (count($parts) == 2)
+			{
+				array_unshift($parts, 'joomla');
+			}
+
+			// Sanity check
+			if (count($parts) != 3)
+			{
+				continue;
+			}
+
+			// Make sure we skip any references back to ourselves (should be redundant, due to key field check above)
+			if ($parts[1] == $this->tableType)
+			{
+				continue;
+			}
+
+			// Default item name: the name of the table, singular
+			$itemName = FOFInflector::singularize($parts[1]);
+
+			// Prefix the item name with the component name if we refer to a different component
+			if ($parts[0] != $this->componentName)
+			{
+				$itemName = $parts[0] . '_' . $itemName;
+			}
+
+			// @todo Figure out if the key refers to a parent table or a pivot table (∞:∞ relation)
+
+			// Figure out the table class
+			$tableClass = ucfirst($parts[0]) . 'Table' . ucfirst($parts[1]);
+
+			$default = empty($this->relations['parent']);
+
+			$this->addParentRelation($itemName, $tableClass, $field, $field, $default);
+		}
+	}
+
+	/**
+	 * Add a 1:1 forward (child) relation. This adds relations for the getChild() method.
+	 *
+	 * In other words: does a table HAVE ONE child
+	 *
+	 * Parent and child relations works the same way. We have them separated as it makes more sense for us humans to
+	 * read code like $item->getParent() and $item->getChild() than $item->getRelatedObject('someRandomKeyName')
+	 *
+	 * @param   string   $itemName    is how it will be known locally to the getRelatedItem method (singular)
+	 * @param   string   $tableClass  if skipped it is defined automatically as ComponentnameTableItemname
+	 * @param   string   $localKey    is the column containing our side of the FK relation, default: componentname_itemname_id
+	 * @param   string   $remoteKey   is the remote table's FK column, default: componentname_itemname_id
+	 * @param   boolean  $default     add as the default child relation?
+	 *
+	 * @return  void
+	 */
+	public function addChildRelation($itemName, $tableClass = null, $localKey = null, $remoteKey = null, $default = true)
+	{
+		$itemName = $this->normaliseItemName($itemName, false);
+		$this->addBespokeSimpleRelation('child', $itemName, $tableClass, $localKey, $remoteKey, $default);
+	}
+
+	/**
+	 * Defining an inverse 1:1 (parent) relation. You must specify at least the $tableClass or the $localKey.
+	 * This adds relations for the getParent() method.
+	 *
+	 * In other words: does a table BELONG TO ONE parent
+	 *
+	 * Parent and child relations works the same way. We have them separated as it makes more sense for us humans to
+	 * read code like $item->getParent() and $item->getChild() than $item->getRelatedObject('someRandomKeyName')
+	 *
+	 * @param   string   $itemName    is how it will be known locally to the getRelatedItem method (singular)
+	 * @param   string   $tableClass  if skipped it is defined automatically as ComponentnameTableItemname
+	 * @param   string   $localKey    is the column containing our side of the FK relation, default: our primary key
+	 * @param   string   $remoteKey   is the remote table's FK column, default: componentname_itemname_id
+	 * @param   boolean  $default     Is this the default parent relationship?
+	 *
+	 * @return  void
+	 */
+	public function addParentRelation($itemName, $tableClass = null, $localKey = null, $remoteKey = null, $default = true)
+	{
+		$itemName = $this->normaliseItemName($itemName, false);
+		$this->addBespokeSimpleRelation('parent', $itemName, $tableClass, $localKey, $remoteKey, $default);
+	}
+
+	/**
+	 * Defining a forward 1:∞ (children) relation. This adds relations to the getChildren() method.
+	 *
+	 * In other words: does a table HAVE MANY children?
+	 *
+	 * The children relation works very much the same as the parent and child relation. The difference is that the
+	 * parent and child relations return a single table object, whereas the children relation returns an iterator to
+	 * many objects.
+	 *
+	 * @param   string   $itemName    is how it will be known locally to the getRelatedItems method (plural)
+	 * @param   string   $tableClass  if skipped it is defined automatically as ComponentnameTableItemname
+	 * @param   string   $localKey    is the column containing our side of the FK relation, default: componentname_itemname_id
+	 * @param   string   $remoteKey   is the remote table's FK column, default: componentname_itemname_id
+	 * @param   boolean  $default     is this the default children relationship?
+	 *
+	 * @return  void
+	 */
+	public function addChildrenRelation($itemName, $tableClass = null, $localKey = null, $remoteKey = null, $default = true)
+	{
+		$itemName = $this->normaliseItemName($itemName, true);
+		$this->addBespokeSimpleRelation('children', $itemName, $tableClass, $localKey, $remoteKey, $default);
+	}
+
+	/**
+	 * Defining a ∞:∞ (siblings) relation. This adds relations to the getSiblings() method.
+	 *
+	 * In other words: is a table RELATED TO MANY siblings?
+	 *
+	 * @param   string   $itemName       is how it will be known locally to the getRelatedItems method (plural)
+	 * @param   string   $tableClass     if skipped it is defined automatically as ComponentnameTableItemname
+	 * @param   string   $localKey       is the column containing our side of the FK relation, default: our primary key field name
+	 * @param   string   $ourPivotKey    is the column containing our side of the FK relation in the pivot table, default: $localKey
+	 * @param   string   $theirPivotKey  is the column containing the other table's side of the FK relation in the pivot table, default $remoteKey
+	 * @param   string   $remoteKey      is the remote table's FK column, default: componentname_itemname_id
+	 * @param   string   $glueTable      is the name of the glue (pivot) table, default: #__componentname_thisclassname_itemname with plural items (e.g. #__foobar_users_roles)
+	 * @param   boolean  $default        is this the default siblings relation?
+	 */
+	public function addSiblingsRelation($itemName, $tableClass = null, $localKey = null, $ourPivotKey = null, $theirPivotKey = null, $remoteKey = null, $glueTable = null, $default = true)
+	{
+		$itemName = $this->normaliseItemName($itemName, true);
+		$this->addBespokePivotRelation('siblings', $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $glueTable, $default);
+	}
+
+	/**
+	 * Removes a previously defined relation by name. You can optionally specify the relation type.
+	 *
+	 * @param   string  $itemName  The name of the relation to remove
+	 * @param   string  $type      [optional] The relation type (child, parent, children, siblings)
+	 *
+	 * @return  void
+	 */
+	public function removeRelation($itemName, $type = null)
+	{
+		$types = array_keys($this->relations);
+
+		if (in_array($type, $types))
+		{
+			$types = array($type);
+		}
+
+		foreach ($types as $type)
+		{
+			foreach ($this->relations[$type] as $relations)
+			{
+				if (array_key_exists($itemName, $relations))
+				{
+					unset ($this->relations[$type][$itemName]);
+					return;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Removes all existing relations
+	 *
+	 * @param   string  $type  The type or relations to remove, omit to remove all relation types
+	 *
+	 * @return  void
+	 */
+	public function clearRelations($type = null)
+	{
+		$types = array_keys($this->relations);
+
+		if (in_array($type, $types))
+		{
+			$types = array($type);
+		}
+
+		foreach ($types as $type)
+		{
+			$this->relations[$type] = array();
+		}
+	}
+
+	/**
+	 * Does the named relation exist? You can optionally specify the type.
+	 *
+	 * @param   string  $itemName  The name of the relation to check
+	 * @param   string  $type      [optional] The relation type (child, parent, children, siblings)
+	 *
+	 * @return  boolean
+	 */
+	public function hasRelation($itemName, $type = null)
+	{
+		$types = array_keys($this->relations);
+
+		if (in_array($type, $types))
+		{
+			$types = array($type);
+		}
+
+		foreach ($types as $type)
+		{
+			foreach ($this->relations[$type] as $relations)
+			{
+				if (array_key_exists($itemName, $relations))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the definition of a relation
+	 *
+	 * @param   string  $itemName  The name of the relation to check
+	 * @param   string  $type      [optional] The relation type (child, parent, children, siblings)
+	 *
+	 * @return  array
+	 *
+	 * @throws  RuntimeException  When the relation is not found
+	 */
+	public function getRelation($itemName, $type)
+	{
+		$types = array_keys($this->relations);
+
+		if (in_array($type, $types))
+		{
+			$types = array($type);
+		}
+
+		foreach ($types as $type)
+		{
+			foreach ($this->relations[$type] as $relations)
+			{
+				if (array_key_exists($itemName, $relations))
+				{
+					$temp = $relations[$itemName];
+					$temp['type'] = $type;
+
+					return $temp;
+				}
+			}
+		}
+
+		throw new RuntimeException("Relation $itemName not found in table {$this->tableType}", 500);
+	}
+
+	/**
+	 * Gets the item referenced by a named relation. You can optionally specify the type. Only single item relation
+	 * types will be searched.
+	 *
+	 * @param   string  $itemName  The name of the relation to use
+	 * @param   string  $type      [optional] The relation type (child, parent)
+	 *
+	 * @return  FOFTable
+	 *
+	 * @throws  RuntimeException  If the named relation doesn't exist or isn't supposed to return single items
+	 */
+	public function getRelatedItem($itemName, $type = null)
+	{
+		if (empty($type))
+		{
+			$relation = $this->getRelation($itemName, $type);
+			$type = $relation['type'];
+		}
+
+		switch ($type)
+		{
+			case 'parent':
+				return $this->getParent($itemName);
+				break;
+
+			case 'child':
+				return $this->getChild($itemName);
+				break;
+
+			default:
+				throw new RuntimeException("Invalid relation type $type for returning a single related item", 500);
+				break;
+		}
+	}
+
+	/**
+	 * Gets the iterator for the items referenced by a named relation. You can optionally specify the type. Only
+	 * multiple item relation types will be searched.
+	 *
+	 * @param   string  $itemName  The name of the relation to use
+	 * @param   string  $type      [optional] The relation type (children, siblings)
+	 *
+	 * @return  FOFTableIterator
+	 *
+	 * @throws  RuntimeException  If the named relation doesn't exist or isn't supposed to return single items
+	 */
+	public function getRelatedItems($itemName, $type = null)
+	{
+		if (empty($type))
+		{
+			$relation = $this->getRelation($itemName, $type);
+			$type = $relation['type'];
+		}
+
+		switch ($type)
+		{
+			case 'children':
+				return $this->getChildren($itemName);
+				break;
+
+			case 'siblings':
+				return $this->getSiblings($itemName);
+				break;
+
+			default:
+				throw new RuntimeException("Invalid relation type $type for returning a collection of related items", 500);
+				break;
+		}
+	}
+
+	/**
+	 * Gets a parent item
+	 *
+	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default parent relation
+	 *
+	 * @return  FOFTable
+	 */
+	public function getParent($itemName = null)
+	{
+
+	}
+
+	/**
+	 * Gets a child item
+	 *
+	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default child relation
+	 *
+	 * @return  FOFTable
+	 */
+	public function getChild($itemName = null)
+	{
+
+	}
+
+	/**
+	 * Gets an iterator for the children items
+	 *
+	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default children relation
+	 *
+	 * @return  FOFTableIterator
+	 */
+	public function getChildren($itemName = null)
+	{
+
+	}
+
+	/**
+	 * Gets an iterator for the sibling items
+	 *
+	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default siblings relation
+	 *
+	 * @return  FOFTableIterator
+	 */
+	public function getSiblings($itemName = null)
+	{
+
+	}
+
+	/**
+	 * Add any bespoke relation which doesn't involve a pivot table.
+	 *
+	 * @param   string   $relationType  The type of the relationship (parent, child, children)
+	 * @param   string   $itemName      is how it will be known locally to the getRelatedItems method
+	 * @param   string   $tableClass    if skipped it is defined automatically as ComponentnameTableItemname
+	 * @param   string   $localKey      is the column containing our side of the FK relation, default: componentname_itemname_id
+	 * @param   string   $remoteKey     is the remote table's FK column, default: componentname_itemname_id
+	 * @param   boolean  $default       is this the default children relationship?
+	 *
+	 * @return  void
+	 */
+	private function addBespokeSimpleRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $default)
+	{
+		$ourPivotKey = null;
+		$theirPivotKey = null;
+		$pivotTable = null;
+
+		$this->normaliseParameters(false, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
+
+		$this->relations[$relationType][$itemName] = array(
+			'tableClass'	=> $tableClass,
+			'localKey'		=> $localKey,
+			'remoteKey'		=> $remoteKey,
+		);
+
+		if ($default)
+		{
+			$this->defaultRelation[$relationType] = $itemName;
+		}
+	}
+
+	/**
+	 * Add any bespoke relation which involves a pivot table.
+	 *
+	 * @param   string   $relationType   The type of the relationship (siblings)
+	 * @param   string   $itemName       is how it will be known locally to the getRelatedItems method
+	 * @param   string   $tableClass     if skipped it is defined automatically as ComponentnameTableItemname
+	 * @param   string   $localKey       is the column containing our side of the FK relation, default: componentname_itemname_id
+	 * @param   string   $remoteKey      is the remote table's FK column, default: componentname_itemname_id
+	 * @param   string   $ourPivotKey    is the column containing our side of the FK relation in the pivot table, default: $localKey
+	 * @param   string   $theirPivotKey  is the column containing the other table's side of the FK relation in the pivot table, default $remoteKey
+	 * @param   string   $pivotTable     is the name of the glue (pivot) table, default: #__componentname_thisclassname_itemname with plural items (e.g. #__foobar_users_roles)
+	 * @param   boolean  $default       is this the default children relationship?
+	 *
+	 * @return  void
+	 */
+	private function addBespokePivotRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable, $default)
+	{
+		$this->normaliseParameters(false, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
+
+		$this->relations[$relationType][$itemName] = array(
+			'tableClass'	=> $tableClass,
+			'localKey'		=> $localKey,
+			'remoteKey'		=> $remoteKey,
+			'ourPivotKey'	=> $ourPivotKey,
+			'theirPivotKey'	=> $theirPivotKey,
+			'pivotTable'	=> $pivotTable,
+		);
+
+		if ($default)
+		{
+			$this->defaultRelation[$relationType] = $itemName;
+		}
+	}
+
+	/**
+	 * Normalise the parameters of a relation, guessing missing values
+	 *
+	 * @param   boolean  $pivot          Is this a many to many relation involving a pivot table?
+	 * @param   string   $itemName       is how it will be known locally to the getRelatedItems method (plural)
+	 * @param   string   $tableClass     if skipped it is defined automatically as ComponentnameTableItemname
+	 * @param   string   $localKey       is the column containing our side of the FK relation, default: componentname_itemname_id
+	 * @param   string   $remoteKey      is the remote table's FK column, default: componentname_itemname_id
+	 * @param   string   $ourPivotKey    is the column containing our side of the FK relation in the pivot table, default: $localKey
+	 * @param   string   $theirPivotKey  is the column containing the other table's side of the FK relation in the pivot table, default $remoteKey
+	 * @param   string   $pivotTable     is the name of the glue (pivot) table, default: #__componentname_thisclassname_itemname with plural items (e.g. #__foobar_users_roles)
+	 *
+	 * @return  void
+	 */
+	private function normaliseParameters($pivot = false, &$itemName, &$tableClass, &$localKey, &$remoteKey, &$ourPivotKey, &$theirPivotKey, &$pivotTable)
+	{
+		// Get a default table class if none is provided
+		if (empty($tableClass))
+		{
+			$tableClassParts = explode('_', $itemName, 3);
+
+			if (count($tableClassParts) == 1)
+			{
+				array_unshift($tableClassParts, $this->componentName);
+			}
+
+			$tableClass = ucfirst($tableClassParts[0]) . 'Table' . ucfirst($tableClassParts[1]);
+		}
+
+		// Make sure we have both a local and remote key
+		if (empty($localKey) && empty($remoteKey))
+		{
+			$tableClassParts = FOFInflector::explode($tableClass);
+			$localKey = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
+			$remoteKey = $localKey;
+		}
+		elseif (empty($localKey) && !empty($remoteKey))
+		{
+			$localKey = $remoteKey;
+		}
+		elseif (!empty($localKey) && empty($remoteKey))
+		{
+			$remoteKey = $localKey;
+		}
+
+		// If we don't have a pivot table nullify the relevant variables and return
+		if (!$pivot)
+		{
+			$ourPivotKey = null;
+			$theirPivotKey = null;
+			$pivotTable = null;
+
+			return;
+		}
+
+		if (empty($ourPivotKey))
+		{
+			$ourPivotKey = $localKey;
+		}
+
+		if (empty($theirPivotKey))
+		{
+			$theirPivotKey = $remoteKey;
+		}
+
+		if (empty($pivotTable))
+		{
+			$pivotTable = '#__' . strtolower($this->componentName) . '_' .
+							strtolower(FOFInflector::pluralize($this->tableType)) . '_';
+
+			$itemNameParts = explode('_', $itemName);
+			$lastPart = array_pop($itemNameParts);
+			$pivotTable .= strtolower($lastPart);
+		}
+	}
+
+	/**
+	 * Normalises the format of a relation name
+	 *
+	 * @param   string   $itemName   The raw relation name
+	 * @param   boolean  $pluralise  Should I pluralise the name? If not, I will singularise it
+	 *
+	 * @return  string  The normalised relation key name
+	 */
+	private function normaliseItemName($itemName, $pluralise = false)
+	{
+		// Explode the item name
+		$itemNameParts = explode('_', $itemName);
+
+		// If we have multiple parts the first part is considered to be the component name
+		if (count($itemNameParts) > 1)
+		{
+			$prefix = array_shift($itemNameParts);
+		}
+		else
+		{
+			$prefix = null;
+		}
+
+		// If we still have multiple parts we need to pluralise/singularise the last part and join everything in
+		// CamelCase format
+		if (count($itemNameParts) > 1)
+		{
+			$name = array_pop($itemNameParts);
+			$name = $pluralise ? FOFInflector::pluralize($name) : FOFInflector::singularize($name);
+			$itemNameParts[] = $name;
+
+			$itemName = FOFInflector::implode($itemNameParts);
+		}
+		// Otherwise we singularise/pluralise the remaining part
+		else
+		{
+			$name = array_pop($itemNameParts);
+			$itemName = $pluralise ? FOFInflector::pluralize($name) : FOFInflector::singularize($name);
+		}
+
+		if (!empty($prefix))
+		{
+			$itemName = $prefix . '_' . $itemName;
+		}
+
+		return $itemName;
+	}
+}

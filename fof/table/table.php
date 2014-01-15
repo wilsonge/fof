@@ -220,6 +220,13 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	protected $default_behaviors = array('tags', 'assets');
 
 	/**
+	 * The relations object of the table. It's lazy-loaded by getRelations().
+	 *
+	 * @var   FOFTableRelations
+	 */
+	private $_relations = null;
+
+	/**
 	 * Returns a static object instance of a particular table type
 	 *
 	 * @param   string  $type    The table name
@@ -1205,7 +1212,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 			$this->$k = null;
 		}
 
-		// Create the object used for inserting/udpating data to the database
+		// Create the object used for inserting/updating data to the database
 		$fields     = $this->getTableFields();
 		$properties = $this->getKnownFields();
 		$keys       = array();
@@ -3580,5 +3587,20 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		$alias = $component . '.' . $view;
 
 		return $alias;
+	}
+
+	/**
+	 * Returns the table relations object of the current table, lazy-loading it if necessary
+	 *
+	 * @return  FOFTableRelations
+	 */
+	public function getRelations()
+	{
+		if (is_null($this->_relations))
+		{
+			$this->_relations = new FOFTableRelations($this);
+		}
+
+		return $this->_relations;
 	}
 }
