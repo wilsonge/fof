@@ -68,7 +68,9 @@ class FOFTableRelations
 		$this->table = $table;
 
 		// Get the table's type from its name
-		$type = explode("_", $table->getTableName());
+		$tableName = $table->getTableName();
+		$tableName = str_replace('#__', '', $tableName);
+		$type = explode("_", $tableName);
 
 		if (count($type) == 1)
 		{
@@ -389,7 +391,7 @@ class FOFTableRelations
 	 * @param   string  $itemName  The name of the relation to use
 	 * @param   string  $type      [optional] The relation type (children, siblings)
 	 *
-	 * @return  FOFTableIterator
+	 * @return  FOFDatabaseIterator
 	 *
 	 * @throws  RuntimeException  If the named relation doesn't exist or isn't supposed to return single items
 	 */
@@ -423,10 +425,27 @@ class FOFTableRelations
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default parent relation
 	 *
 	 * @return  FOFTable
+	 *
+	 * @throws  RuntimeException  When the relation is not found
 	 */
 	public function getParent($itemName = null)
 	{
+		if (empty($itemName))
+		{
+			$itemName = $this->defaultRelation['parent'];
+		}
 
+		if (empty($itemName))
+		{
+			throw new RuntimeException(sprintf('Default parent relation for %s not found', $this->table->getTableName()), 500);
+		}
+
+		if (isset($this->relations['parent'][$itemName]))
+		{
+			throw new RuntimeException(sprintf('Parent relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
+		}
+
+		return $this->getTableFromRelation($this->relations['parent'][$itemName]);
 	}
 
 	/**
@@ -435,10 +454,27 @@ class FOFTableRelations
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default child relation
 	 *
 	 * @return  FOFTable
+	 *
+	 * @throws  RuntimeException  When the relation is not found
 	 */
 	public function getChild($itemName = null)
 	{
+		if (empty($itemName))
+		{
+			$itemName = $this->defaultRelation['child'];
+		}
 
+		if (empty($itemName))
+		{
+			throw new RuntimeException(sprintf('Default child relation for %s not found', $this->table->getTableName()), 500);
+		}
+
+		if (isset($this->relations['child'][$itemName]))
+		{
+			throw new RuntimeException(sprintf('Child relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
+		}
+
+		return $this->getTableFromRelation($this->relations['child'][$itemName]);
 	}
 
 	/**
@@ -446,11 +482,28 @@ class FOFTableRelations
 	 *
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default children relation
 	 *
-	 * @return  FOFTableIterator
+	 * @return  FOFDatabaseIterator
+	 *
+	 * @throws  RuntimeException  When the relation is not found
 	 */
 	public function getChildren($itemName = null)
 	{
+		if (empty($itemName))
+		{
+			$itemName = $this->defaultRelation['children'];
+		}
 
+		if (empty($itemName))
+		{
+			throw new RuntimeException(sprintf('Default children relation for %s not found', $this->table->getTableName()), 500);
+		}
+
+		if (isset($this->relations['children'][$itemName]))
+		{
+			throw new RuntimeException(sprintf('Children relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
+		}
+
+		return $this->getIteratorFromRelation($this->relations['children'][$itemName]);
 	}
 
 	/**
@@ -458,11 +511,136 @@ class FOFTableRelations
 	 *
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default siblings relation
 	 *
-	 * @return  FOFTableIterator
+	 * @return  FOFDatabaseIterator
+	 *
+	 * @throws  RuntimeException  When the relation is not found
 	 */
 	public function getSiblings($itemName = null)
 	{
+		if (empty($itemName))
+		{
+			$itemName = $this->defaultRelation['siblings'];
+		}
 
+		if (empty($itemName))
+		{
+			throw new RuntimeException(sprintf('Default siblings relation for %s not found', $this->table->getTableName()), 500);
+		}
+
+		if (isset($this->relations['siblings'][$itemName]))
+		{
+			throw new RuntimeException(sprintf('Siblings relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
+		}
+
+		return $this->getIteratorFromRelation($this->relations['siblings'][$itemName]);
+	}
+
+	/**
+	 * Returns a FOFTable object based on a given relation
+	 *
+	 * @param   array    $relation   Relation definition
+	 *
+	 * @return FOFTable
+	 *
+	 * @throws RuntimeException
+	 */
+	private function getTableFromRelation($relation)
+	{
+		// Get a table object from the table class name
+		$tableClass = $relation['tableClass'];
+		$tableClassParts = FOFInflector::explode($tableClass);
+		$table = FOFTable::getInstance($tableClass[2], $tableClass[0]);
+
+		// Get the table name
+		$tableName = $table->getTableName();
+
+		// Get the remote and local key names
+		$remoteKey = $relation['remoteKey'];
+		$localKey = $relation['localKey'];
+
+		// Get the local key's value
+		$value = $this->table->$localKey;
+
+		$db = $this->table->getDbo();
+
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->qn($tableName))
+			->where($db->qn($remoteKey) . ' = ' . $db->q($value));
+		$db->setQuery($query, 0, 1);
+
+		$data = $db->loadObject();
+
+		if (!is_object($data))
+		{
+			throw new RuntimeException(sprintf('Cannot load item from relation against table %s column %s', $tableName, $remoteKey), 500);
+		}
+
+		$table->bind($data);
+
+		return $table;
+	}
+
+	/**
+	 * Returns a FOFDatabaseIterator based on a given relation
+	 *
+	 * @param   array    $relation   Relation definition
+	 *
+	 * @return FOFDatabaseIterator
+	 *
+	 * @throws RuntimeException
+	 */
+	private function getIteratorFromRelation($relation)
+	{
+		// Get a table object from the table class name
+		$tableClass = $relation['tableClass'];
+		$tableClassParts = FOFInflector::explode($tableClass);
+		$table = FOFTable::getInstance($tableClass[2], $tableClass[0]);
+
+		// Get the table name
+		$tableName = $table->getTableName();
+
+		// Get the remote and local key names
+		$remoteKey = $relation['remoteKey'];
+		$localKey = $relation['localKey'];
+
+		// Get the local key's value
+		$value = $this->table->$localKey;
+
+		// Get the reference to the database object
+		$db = $this->table->getDbo();
+
+		// Begin the query
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->qn($tableName));
+
+		// Do we have a pivot table?
+		$hasPivot = array_key_exists('pivotTable', $relation);
+
+		// If we don't have pivot it's a straightforward query
+		if (!$hasPivot)
+		{
+			$query
+				->where($db->qn($remoteKey) . ' = ' . $db->q($value));
+		}
+		// If we have a pivot table we have to do a subquery
+		else
+		{
+			$subQuery = $db->getQuery(true)
+				->select($db->qn($relation['theirPivotKey']))
+				->from($db->qn($relation['pivotTable']))
+				->where($db->qn($relation['ourPivotKey']) . ' = ' . $db->q($value));
+			$query->where($db->qn($remoteKey) . ' IN (' . $subQuery . ')');
+		}
+
+		$db->setQuery($query);
+
+		$cursor = $db->execute();
+
+		$iterator = FOFDatabaseIterator::getIterator($db->name, $cursor, null, $tableClass);
+
+		return $iterator;
 	}
 
 	/**
