@@ -21,6 +21,7 @@ class FOFTableRelations
 		'parent'	=> array(),
 		'children'	=> array(),
 		'siblings'	=> array(),
+		'multiple'	=> array(),
 	);
 
 	/**
@@ -32,7 +33,7 @@ class FOFTableRelations
 		'child'		=> null,
 		'parent'	=> null,
 		'children'	=> null,
-		'siblings'	=> null,
+		'multiple'	=> null,
 	);
 
 	/**
@@ -224,9 +225,9 @@ class FOFTableRelations
 	}
 
 	/**
-	 * Defining a ∞:∞ (siblings) relation. This adds relations to the getSiblings() method.
+	 * Defining a ∞:∞ (multiple) relation. This adds relations to the getMultiple() method.
 	 *
-	 * In other words: is a table RELATED TO MANY siblings?
+	 * In other words: is a table RELATED TO MANY other records?
 	 *
 	 * @param   string   $itemName       is how it will be known locally to the getRelatedItems method (plural)
 	 * @param   string   $tableClass     if skipped it is defined automatically as ComponentnameTableItemname
@@ -235,9 +236,9 @@ class FOFTableRelations
 	 * @param   string   $theirPivotKey  is the column containing the other table's side of the FK relation in the pivot table, default $remoteKey
 	 * @param   string   $remoteKey      is the remote table's FK column, default: componentname_itemname_id
 	 * @param   string   $glueTable      is the name of the glue (pivot) table, default: #__componentname_thisclassname_itemname with plural items (e.g. #__foobar_users_roles)
-	 * @param   boolean  $default        is this the default siblings relation?
+	 * @param   boolean  $default        is this the default multiple relation?
 	 */
-	public function addSiblingsRelation($itemName, $tableClass = null, $localKey = null, $ourPivotKey = null, $theirPivotKey = null, $remoteKey = null, $glueTable = null, $default = true)
+	public function addMultipleRelation($itemName, $tableClass = null, $localKey = null, $ourPivotKey = null, $theirPivotKey = null, $remoteKey = null, $glueTable = null, $default = true)
 	{
 		$itemName = $this->normaliseItemName($itemName, true);
 
@@ -246,14 +247,14 @@ class FOFTableRelations
 			$localKey = $this->table->getKeyName();
 		}
 
-		$this->addBespokePivotRelation('siblings', $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $glueTable, $default);
+		$this->addBespokePivotRelation('multiple', $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $glueTable, $default);
 	}
 
 	/**
 	 * Removes a previously defined relation by name. You can optionally specify the relation type.
 	 *
 	 * @param   string  $itemName  The name of the relation to remove
-	 * @param   string  $type      [optional] The relation type (child, parent, children, siblings)
+	 * @param   string  $type      [optional] The relation type (child, parent, children, ...)
 	 *
 	 * @return  void
 	 */
@@ -305,7 +306,7 @@ class FOFTableRelations
 	 * Does the named relation exist? You can optionally specify the type.
 	 *
 	 * @param   string  $itemName  The name of the relation to check
-	 * @param   string  $type      [optional] The relation type (child, parent, children, siblings)
+	 * @param   string  $type      [optional] The relation type (child, parent, children, ...)
 	 *
 	 * @return  boolean
 	 */
@@ -336,7 +337,7 @@ class FOFTableRelations
 	 * Get the definition of a relation
 	 *
 	 * @param   string  $itemName  The name of the relation to check
-	 * @param   string  $type      [optional] The relation type (child, parent, children, siblings)
+	 * @param   string  $type      [optional] The relation type (child, parent, children, ...)
 	 *
 	 * @return  array
 	 *
@@ -408,7 +409,7 @@ class FOFTableRelations
 	 * multiple item relation types will be searched.
 	 *
 	 * @param   string  $itemName  The name of the relation to use
-	 * @param   string  $type      [optional] The relation type (children, siblings)
+	 * @param   string  $type      [optional] The relation type (children, multiple)
 	 *
 	 * @return  FOFDatabaseIterator
 	 *
@@ -426,6 +427,10 @@ class FOFTableRelations
 		{
 			case 'children':
 				return $this->getChildren($itemName);
+				break;
+
+			case 'multiple':
+				return $this->getMultiple($itemName);
 				break;
 
 			case 'siblings':
@@ -525,9 +530,10 @@ class FOFTableRelations
 	}
 
 	/**
-	 * Gets an iterator for the sibling items
+	 * Gets an iterator for the sibling items. This relation is inferred from the parent relation. It returns all
+	 * elements on the same table which have the same parent.
 	 *
-	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default siblings relation
+	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default children relation
 	 *
 	 * @return  FOFDatabaseIterator
 	 *
@@ -537,20 +543,62 @@ class FOFTableRelations
 	{
 		if (empty($itemName))
 		{
-			$itemName = $this->defaultRelation['siblings'];
+			$itemName = $this->defaultRelation['parent'];
 		}
-
 		if (empty($itemName))
 		{
 			throw new RuntimeException(sprintf('Default siblings relation for %s not found', $this->table->getTableName()), 500);
 		}
 
-		if (!isset($this->relations['siblings'][$itemName]))
+		if (!isset($this->relations['parent'][$itemName]))
 		{
-			throw new RuntimeException(sprintf('Siblings relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
+			throw new RuntimeException(sprintf('Sibling relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
 		}
 
-		return $this->getIteratorFromRelation($this->relations['siblings'][$itemName]);
+		// Get my table class
+		$tableName = $this->table->getTableName();
+		$tableName = str_replace('#__', '', $tableName);
+		$tableNameParts = explode('_', $tableName, 2);
+		$tableClass = ucfirst($tableNameParts[0]) . 'Table' . ucfirst(FOFInflector::singularize($tableNameParts[1]));
+
+		$parentRelation = $this->relations['parent'][$itemName];
+		$relation = array(
+			// @todo Get my table class!!!!
+			'tableClass'	=> $tableClass,
+			'localKey'		=> $parentRelation['localKey'],
+			'remoteKey'		=> $parentRelation['localKey'],
+		);
+
+		return $this->getIteratorFromRelation($relation);
+	}
+
+	/**
+	 * Gets an iterator for the multiple items
+	 *
+	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default multiple relation
+	 *
+	 * @return  FOFDatabaseIterator
+	 *
+	 * @throws  RuntimeException  When the relation is not found
+	 */
+	public function getMultiple($itemName = null)
+	{
+		if (empty($itemName))
+		{
+			$itemName = $this->defaultRelation['multiple'];
+		}
+
+		if (empty($itemName))
+		{
+			throw new RuntimeException(sprintf('Default multiple relation for %s not found', $this->table->getTableName()), 500);
+		}
+
+		if (!isset($this->relations['multiple'][$itemName]))
+		{
+			throw new RuntimeException(sprintf('Multiple relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
+		}
+
+		return $this->getIteratorFromRelation($this->relations['multiple'][$itemName]);
 	}
 
 	/**
@@ -701,7 +749,7 @@ class FOFTableRelations
 	/**
 	 * Add any bespoke relation which involves a pivot table.
 	 *
-	 * @param   string   $relationType   The type of the relationship (siblings)
+	 * @param   string   $relationType   The type of the relationship (multiple)
 	 * @param   string   $itemName       is how it will be known locally to the getRelatedItems method
 	 * @param   string   $tableClass     if skipped it is defined automatically as ComponentnameTableItemname
 	 * @param   string   $localKey       is the column containing our side of the FK relation, default: componentname_itemname_id
