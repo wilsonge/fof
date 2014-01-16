@@ -20,7 +20,6 @@ class FOFTableRelations
 		'child'		=> array(),
 		'parent'	=> array(),
 		'children'	=> array(),
-		'siblings'	=> array(),
 		'multiple'	=> array(),
 	);
 
