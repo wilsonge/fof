@@ -205,7 +205,7 @@ class FOFTableRelations
 	 *
 	 * @param   string   $itemName    is how it will be known locally to the getRelatedItems method (plural)
 	 * @param   string   $tableClass  if skipped it is defined automatically as ComponentnameTableItemname
-	 * @param   string   $localKey    is the column containing our side of the FK relation, default: componentname_itemname_id
+	 * @param   string   $localKey    is the column containing our side of the FK relation, default: our primary key
 	 * @param   string   $remoteKey   is the remote table's FK column, default: componentname_itemname_id
 	 * @param   boolean  $default     is this the default children relationship?
 	 *
@@ -214,6 +214,12 @@ class FOFTableRelations
 	public function addChildrenRelation($itemName, $tableClass = null, $localKey = null, $remoteKey = null, $default = true)
 	{
 		$itemName = $this->normaliseItemName($itemName, true);
+
+		if (empty($localKey))
+		{
+			$localKey = $this->table->getKeyName();
+		}
+
 		$this->addBespokeSimpleRelation('children', $itemName, $tableClass, $localKey, $remoteKey, $default);
 	}
 
@@ -505,7 +511,6 @@ class FOFTableRelations
 		{
 			$itemName = $this->defaultRelation['children'];
 		}
-
 		if (empty($itemName))
 		{
 			throw new RuntimeException(sprintf('Default children relation for %s not found', $this->table->getTableName()), 500);
@@ -753,7 +758,12 @@ class FOFTableRelations
 				array_unshift($tableClassParts, $this->componentName);
 			}
 
-			$tableClass = ucfirst($tableClassParts[0]) . 'Table' . ucfirst($tableClassParts[1]);
+			if ($tableClassParts[0] == 'joomla')
+			{
+				$tableClassParts[0] = 'J';
+			}
+
+			$tableClass = ucfirst($tableClassParts[0]) . 'Table' . ucfirst(FOFInflector::singularize($tableClassParts[1]));
 		}
 
 		// Make sure we have both a local and remote key
