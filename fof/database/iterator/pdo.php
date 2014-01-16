@@ -28,7 +28,7 @@ class FOFDatabaseIteratorPdo extends FOFDatabaseIterator
 	{
 		if (!empty($this->cursor) && $this->cursor instanceof PDOStatement)
 		{
-			return $this->cursor->rowCount();
+			return @$this->cursor->rowCount();
 		}
 		else
 		{
@@ -45,7 +45,7 @@ class FOFDatabaseIteratorPdo extends FOFDatabaseIterator
 	{
 		if (!empty($this->cursor) && $this->cursor instanceof PDOStatement)
 		{
-			return $this->cursor->fetchObject($this->class);
+			return @$this->cursor->fetchObject($this->class);
 		}
 		else
 		{
@@ -62,7 +62,7 @@ class FOFDatabaseIteratorPdo extends FOFDatabaseIterator
 	{
 		if (!empty($this->cursor) && $this->cursor instanceof PDOStatement)
 		{
-			$this->cursor->closeCursor();
+			@$this->cursor->closeCursor();
 		}
 	}
 }

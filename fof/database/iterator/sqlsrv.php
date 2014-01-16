@@ -26,7 +26,7 @@ class FOFDatabaseIteratorSqlsrv extends FOFDatabaseIterator
 	 */
 	public function count()
 	{
-		return sqlsrv_num_rows($this->cursor);
+		return @sqlsrv_num_rows($this->cursor);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class FOFDatabaseIteratorSqlsrv extends FOFDatabaseIterator
 	 */
 	protected function fetchObject()
 	{
-		return sqlsrv_fetch_object($this->cursor, $this->class);
+		return @sqlsrv_fetch_object($this->cursor, $this->class);
 	}
 
 	/**
@@ -46,6 +46,6 @@ class FOFDatabaseIteratorSqlsrv extends FOFDatabaseIterator
 	 */
 	protected function freeResult()
 	{
-		sqlsrv_free_stmt($this->cursor);
+		@sqlsrv_free_stmt($this->cursor);
 	}
 }

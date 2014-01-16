@@ -26,7 +26,7 @@ class FOFDatabaseIteratorPostgresql extends FOFDatabaseIterator
 	 */
 	public function count()
 	{
-		return pg_num_rows($this->cursor);
+		return @pg_num_rows($this->cursor);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class FOFDatabaseIteratorPostgresql extends FOFDatabaseIterator
 	 */
 	protected function fetchObject()
 	{
-		return pg_fetch_object($this->cursor, null, $this->class);
+		return @pg_fetch_object($this->cursor, null, $this->class);
 	}
 
 	/**
@@ -46,6 +46,6 @@ class FOFDatabaseIteratorPostgresql extends FOFDatabaseIterator
 	 */
 	protected function freeResult()
 	{
-		pg_free_result($this->cursor);
+		@pg_free_result($this->cursor);
 	}
 }

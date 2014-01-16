@@ -26,7 +26,7 @@ class FOFDatabaseIteratorMysql extends FOFDatabaseIterator
 	 */
 	public function count()
 	{
-		return mysql_num_rows($this->cursor);
+		return @mysql_num_rows($this->cursor);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class FOFDatabaseIteratorMysql extends FOFDatabaseIterator
 	 */
 	protected function fetchObject()
 	{
-		return mysql_fetch_object($this->cursor, $this->class);
+		return @mysql_fetch_object($this->cursor, $this->class);
 	}
 
 	/**
@@ -46,6 +46,6 @@ class FOFDatabaseIteratorMysql extends FOFDatabaseIterator
 	 */
 	protected function freeResult()
 	{
-		mysql_free_result($this->cursor);
+		@mysql_free_result($this->cursor);
 	}
 }

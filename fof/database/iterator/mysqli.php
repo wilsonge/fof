@@ -26,7 +26,7 @@ class FOFDatabaseIteratorMysqli extends FOFDatabaseIterator
 	 */
 	public function count()
 	{
-		return mysqli_num_rows($this->cursor);
+		return @mysqli_num_rows($this->cursor);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class FOFDatabaseIteratorMysqli extends FOFDatabaseIterator
 	 */
 	protected function fetchObject()
 	{
-		return mysqli_fetch_object($this->cursor, $this->class);
+		return @mysqli_fetch_object($this->cursor, $this->class);
 	}
 
 	/**
@@ -46,6 +46,6 @@ class FOFDatabaseIteratorMysqli extends FOFDatabaseIterator
 	 */
 	protected function freeResult()
 	{
-		mysqli_free_result($this->cursor);
+		@mysqli_free_result($this->cursor);
 	}
 }
