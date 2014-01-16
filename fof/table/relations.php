@@ -131,8 +131,6 @@ class FOFTableRelations
 				$itemName = $parts[0] . '_' . $itemName;
 			}
 
-			// @todo Figure out if the key refers to a parent table or a pivot table (∞:∞ relation)
-
 			// Figure out the table class
 			$tableClass = ucfirst($parts[0]) . 'Table' . ucfirst($parts[1]);
 
@@ -562,7 +560,6 @@ class FOFTableRelations
 
 		$parentRelation = $this->relations['parent'][$itemName];
 		$relation = array(
-			// @todo Get my table class!!!!
 			'tableClass'	=> $tableClass,
 			'localKey'		=> $parentRelation['localKey'],
 			'remoteKey'		=> $parentRelation['localKey'],
