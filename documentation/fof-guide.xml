@@ -2979,6 +2979,39 @@ public function onBeforeReset(&amp;$table)
       </filename>and <filename>form.default.xml</filename> in this
       order.</para>
 
+      <bridgehead>Custom template view file to wrap an XML form</bridgehead>
+
+      <para>An XML form file is a great way to get started developing an
+      application, but what if you want to add messages or render moduels at
+      the top/bottom of the form, add a sidebar or in any other way add your
+      own HTML around the rendered form? The answer is simple: you can use
+      regular PHP-based view templates and XML forms side by side in the same
+      view. Inside your .php file you can use $this-&gt;getRenderedForm() to
+      return the XML form file rendered as HTML. This allows customising the
+      layout (e.g. adding information before/after the form) while still using
+      the XML file to render the actual form. For example, you could insert
+      this code in your custom .php view template file:</para>
+
+      <programlisting>&lt;?php
+
+// Show some stuff before the form
+?&gt;&lt;h1&gt;Hello, world!&lt;/h1&gt;
+&lt;p&gt;This is printed above the form&lt;/p&gt;
+
+&lt;?php
+// Show the rendered form
+echo $this-&gt;getRenderedForm();
+
+// Show some stuff after the form
+?&gt;
+&lt;p&gt;This is printed below the form&lt;/p&gt;</programlisting>
+
+      <para>This works with all forms (browse, edit, read). For example, if
+      you want to customise a browse view template you will need to create
+      both <filename>form.default.xml</filename> and
+      <filename>default.php</filename> in the <filename>tmpl</filename>
+      directory of your view.</para>
+
       <bridgehead>Automatic views and web services</bridgehead>
 
       <para>FOF can automatically render your component's output in JSON and
@@ -2996,6 +3029,31 @@ public function onBeforeReset(&amp;$table)
       either by setting <code>$this-&gt;useHypermedia = true;</code> in your
       specialised JSON view class or, much easier, using the
       <filename>fof.xml</filename> configuration file.</para>
+
+      <bridgehead>Custom render classes ("renderers")</bridgehead>
+
+      <para>FOF uses the Render package to convert XML forms into HTML and
+      handle things such as submenus. It ships with render classes suitable
+      for use on regular Joomla! 2.5, regular Joomla! 3.2 and one for when
+      using Akeeba Strapper. The correct render class is chose automatically,
+      via environment detection. However, you may want to implement a custom
+      render class. Having to put it inside FOF's library directory would be
+      in violation of best coding practices. Even worse, it would affect all
+      views in all FOF-powered components on the site which is a terrible
+      idea. That's why the View constructor allows you to instantiate and
+      attach a custom render class. You will need to specialise the
+      <code>__construct</code> method of your View class like this:</para>
+
+      <programlisting>function __construct($config = array())
+{
+    parent::__construct($config);
+
+    $customRenderer = new YourCustomRenderClass();
+    self::registerRenderer($customRenderer);
+}</programlisting>
+
+      <para>This View will now use the custom renderer to display
+      itself.</para>
     </section>
 
     <section xml:id="fofdispatcher">
@@ -6860,6 +6918,499 @@ echo $viewTemplate;
           </section>
         </section>
       </section>
+    </section>
+  </chapter>
+
+  <chapter xml:id="tips-and-tricks">
+    <title>Tips and tricks</title>
+
+    <para>There are some features in FOF that allow to perform neat time
+    saving tips. As these topics are not exactly library reference we've put
+    them in this chapter. Consider it a grab-bag of FOF tricks!</para>
+
+    <para>You can view all tips and tricks on-line at
+    https://github.com/akeeba/fof/wiki/Tips%20and%20Tricks</para>
+
+    <section xml:id="multicolumn-slug">
+      <title>Creating a slug from multiple columns</title>
+
+      <para>Sometimes, you want to be combine multiple columns from a table to
+      create the default 'slug' for the records. A typical example is a table
+      recording 'people', where you want the slug to be firstname-lastname. to
+      achieve this, simply override the table class for your table, with the
+      following method: </para>
+
+      <programlisting>protected function onBeforeStore($updateNulls)
+{
+    $slug           = $this-&gt;getColumnAlias('slug');
+    $this-&gt;setColumnAlias('title', 'lastname'); // this is needed to trigger the unicity check
+    if (!$this-&gt;$slug)
+    {
+        $this-&gt;$slug = !$this-&gt;firstname ? $this-&gt;lastname : $this-&gt;firstname .' '. $this-&gt;lastname;
+        $this-&gt;$slug = FOFStringUtils::toSlug($this-&gt;$slug);
+    }
+    return parent::onBeforeStore($updateNulls);
+}
+</programlisting>
+    </section>
+
+    <section xml:id="one-to-many-record-delete">
+      <title>One to many database table relationship deletion </title>
+
+      <para>Q: How to delete all rows in a child table when the parent table's
+      record is deleted in FoF? A: Some code in the model file. </para>
+
+      <programlisting>CREATE TABLE IF NOT EXISTS `#__foobar_items` (
+  `foobar_item_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,*
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
+  PRIMARY KEY (`foobar_item_id`)
+) ENGINE = INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#__foobar_childs` (
+  `foobar_child_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `foobar_item_id` bigint(20) unsigned NOT NULL,*
+  `description` mediumtext,
+  PRIMARY KEY (`foobar_child_id`)
+) ENGINE = INNODB DEFAULT CHARSET=utf8;</programlisting>
+
+      <para>You could assume that the way to do delete child records when a
+      parent record is deleted is to use MySQL's "ON DELETE CASCADE". Wrong!
+      You could try using a MySQL trigger to effect the cascade deletion.
+      Wrong (let alone most hosts won't allow you to create a trigger)!
+      </para>
+
+      <para>Assuming your deletion occurs in the front-end, you'll create a
+      new site/components/com_foobar/models/items.php: </para>
+
+      <programlisting>defined('_JEXEC') or die();
+class FoobarModelItems extends FOFModel
+{
+    /***
+    Delete all related records in the child table "#__foobar_childs" when the parent table's record is deleted
+    ***/
+
+    protected function onBeforeDelete($id, $table){
+        $result = parent::onBeforeDelete($id, $table);
+        if($result) {
+            $table-&gt;load($id);
+            $childids = FOFModel::getTmpInstance('childs','FoobarModel')-&gt;limit(0)-&gt;limitstart(0)-&gt;getItemList();
+            if(!empty($childids)){
+                foreach($childids as $childid){
+                    FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($childid-&gt;foobar_child_id)-&gt;delete();
+                }
+            }
+        }
+    return $result;
+    }
+}</programlisting>
+
+      <para>It's easier than you may have thought.</para>
+
+      <para>If you have a one-to-one relationship, then you'll have:</para>
+
+      <programlisting>class FoobarModelItems extends FOFModel
+{
+    /***
+    Delete all related records in the child table "#__foobar_childs"
+    when the parent table's record is deleted
+    ***/
+
+    protected function onBeforeDelete($id, $table){
+        $result = parent::onBeforeDelete($id, $table);
+        if($result) {
+            $table-&gt;load($id);
+            FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($table-&gt;load($id))-&gt;delete();
+        }
+    return $result;
+    }
+}</programlisting>
+    </section>
+
+    <section xml:id="creating-bare-views">
+      <title>Creating a bare view (a view without a database table)</title>
+
+      <para>By default every view needs a corresponding database table. What
+      to do when you have a view with no table associated because it is not a
+      list or edit form? </para>
+
+      <bridgehead>Setup the controller </bridgehead>
+
+      <para>In the controller we force the edit task by adding the following
+      code: </para>
+
+      <programlisting>public function execute($task) {
+    parent::execute('edit');
+}</programlisting>
+
+      <bridgehead>Setup the model </bridgehead>
+
+      <para>In the model we need to add 2 overrides. </para>
+
+      <para>Override the constructor</para>
+
+      <programlisting>public function __construct($config = array()) {
+    // This is a dirty trick to avoid getting warning PHP messages by the
+    // JDatabase layer
+    $config['table'] = 'shops';
+    parent::__construct($config);
+}</programlisting>
+
+      <para>First we override the constructor because we need to specify a
+      table, this to make sure the system can read some table but no data will
+      be taken from the table. </para>
+
+      <para>Override the getItem() method </para>
+
+      <programlisting>public function getItem($id = null) {
+    return null;
+}</programlisting>
+
+      <para>We need to override the getItem() method because we are not
+      actually getting any data. By returning a null value, the system is
+      happy because a value is returned. </para>
+
+      <bridgehead>Setup the view </bridgehead>
+
+      <para>In the view you can do what you like by using the onAdd() method
+      override. </para>
+    </section>
+
+    <section xml:id="transparent_authentication">
+      <title>Transparent authentication</title>
+
+      <para>Transparent authentication allows FOF to authenticate a user using
+      Basic Authentication or URL parameters. This allows you to create web
+      services or directly access pages which require a logged in users
+      without using Joomla! session cookies. </para>
+
+      <para>The authentication credentials can be provided via two methods:
+      Basic Authentication or a URL parameter. The authentication credentials
+      can either be a username and password pair transmitted in plaintext (not
+      recommended unless you are forcibly using HTTPS with a commercially
+      signed SSL certificate) or encrypted. The encrypted information uses
+      Time-Based One Time Passwords (TOTP) to allow you to communicate the
+      credentials securely, without the burden of public key cryptography,
+      while at the same time maintaining an intrinsically very narrrow window
+      of opportunity. Furthermore, since the effective encryption key is
+      modified every few seconds it makes an attack against it slightly harder
+      than using regular symmetric AES-128 cryptography. </para>
+
+      <para>Transparent authentication is enabled by default, but doesn’t use
+      TOTP. </para>
+
+      <bridgehead>Setting it up </bridgehead>
+
+      <para>Setting up transparent authentication requires you to modify your
+      component’s Dispatcher class, namely its __construct(), to change the
+      values of some protected fields. </para>
+
+      <para>The available fields are: </para>
+
+      <variablelist>
+        <varlistentry>
+          <term>$fofAuthtimeStep</term>
+
+          <listitem>
+            <para>The time step, in seconds, for the time based one time
+            passwords (TOTP) used for encryption. The default value is 6
+            seconds. The window of opportunity for an attacker is 2x-3x as
+            much, i.e. 12-18 seconds using the default value. This is
+            adequately high to be practical and too low to allow a realistic
+            attack by a hacker. WARNING! If you change this option you have to
+            notify the consumers of the service to make the same change,
+            otherwise your TOTPs will be vastly different and communication
+            will fail. </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthKey</term>
+
+          <listitem>
+            <para>The Base32 encoded key for TOTP. Please note that this is
+            Base32, not Base64. Only required if you’re going to use
+            encryption. </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthFormats</term>
+
+          <listitem>
+            <para>Which result formats should be handled by the transparent
+            authentication. This is an array, by default array('json', 'csv',
+            'xml', 'raw'). We recommend only using non-HTML formats in here.
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthLogoutOnReturn</term>
+
+          <listitem>
+            <para>By default it’s true and it means that once the component
+            finishes executing, FOF will log out the user it authenticated
+            using transparent authentication. This is a precaution against
+            someone intercepting and abusing the session cookie Joomla! will
+            be sending back to the client, as well as preventing the sessions
+            table from filling up. </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthAuthMethods</term>
+
+          <listitem>
+            <para>An array of supported authentication methods. Only use the
+            ones that make sense for your application. Avoid using the
+            *_Plaintext ones, please. The possible values in the array are:
+            </para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="bold">HTTPBasicAuth_TOTP</emphasis> HTTP
+                Basic Authentication using encrypted information protected
+                with a TOTP (the username must be "fofauth") </para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">QueryString_TOTP</emphasis>
+                Encrypted information protected with a TOTP passed in the
+                _fofauthentication query string parameter </para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">HTTPBasicAuth_Plaintext</emphasis>
+                HTTP Basic Authentication using a username and password pair
+                in plain text </para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">QueryString_Plaintext</emphasis>
+                Plaintext, JSON-encoded username and password pair passed in
+                the _fofauthentication query string parameter </para>
+              </listitem>
+            </itemizedlist>
+
+            <para>When you are using the QueryString_TOTP method you can pass
+            your authentication information as GET or POST variable called
+            _fofauthentication with the value being the URL encoded cryptogram
+            of the authentication credentials (see further down). </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <bridgehead>How to get a TOTP key </bridgehead>
+
+      <para>Any Base32 string can be used as a TOTP key as long as it expands
+      to exactly 10 characters. If you don’t feel like guessing, you can
+      simply do: </para>
+
+      <programlisting>$totp = new FOFEncryptTotp();
+$secret = $totp-&gt;generateSecret();</programlisting>
+
+      <para>You have to share this secret key with all clients wishing to
+      connect to your component via a secure channel. This secret key musy
+      also be set in the fofAuthKey variable. </para>
+
+      <bridgehead>How to construct and supply an authentication set
+      </bridgehead>
+
+      <para>The authentication set is a representation of the username and
+      password of the user you want FOF to log in using transparent
+      authentication. Its format depends on the authentication method. </para>
+
+      <para>Before going into much detail, we should consider an FOF
+      authentication key to be a JSON-encoded object containing the keys
+      username and password. E.g.: </para>
+
+      <programlisting>{ “username”: “sample_user”, “password”: “$3Cr3+” }
+</programlisting>
+
+      <para>This is used with all but one authentication methods. Encryption
+      of the FOF authentication key, used with all *_TOTP methods, is
+      discussed further down this document. </para>
+
+      <para>If you are using HTTPBasicAuth_Plaintext method, you have to
+      supply your username and password using HTTP Basic Authentication. The
+      username is the username of the user you want to log in and the password
+      is the password of the user you want to log in. This is the easiest and
+      most insecure authentication method. </para>
+
+      <para>If you are using the HTTPBasicAuth_TOTP method, you have to supply
+      a username of fofauth (including the leading underscore) and as the
+      password enter the encrypted FOF authentication key. </para>
+
+      <para>If you are using the QueryString_Plaintext method you have to
+      supply a GET or POST query parameter with a name of _fofauthentication
+      (including the leading underscore). Its value must be the URL encoded
+      FOF authentication key. </para>
+
+      <para>If you are using the QueryString_TOTP method you have to supply a
+      GET or POST query parameter with a name of _fofauthentication (including
+      the leading underscore). Its value must be the URL encoded FOF
+      authentication key. </para>
+
+      <bridgehead>Encrypting the FOF authentication key </bridgehead>
+
+      <para>Assuming you are doing this from a FOF-powered component, you can
+      do something like this: </para>
+
+      <programlisting>$timeStep = 6; // Change this if you have a different value in your Dispatcher
+$authKey = json_encode(array(
+  'username' =&gt; $username,
+  'password' =&gt; $password
+));
+$totp = new FOFEncryptTotp($timeStep);
+$otp = $totp-&gt;getCode($secretKey);
+$cryptoKey = hash('sha256', $this-&gt;_fofAuth_Key.$otp);
+$aes = new FOFEncryptAes($cryptoKey);
+$encryptedAuthKey = $aes-&gt;encryptString($authKey);
+</programlisting>
+
+      <para>If you can get your hands on a TOTP and AES-256 implementation for
+      your favourite programming language you can use talk to FOF-powered
+      components through transparent authentication. Tip: TOTP libraries are
+      usually labelled as being Google Authenticator libraries. Google
+      Authenticator simply uses TOTP with a temp step of 30 seconds. Most such
+      libraries are able to change the time step, thus possible to use with
+      FOF. In fact, that's how FOF's TOTP library was derived. </para>
+    </section>
+
+    <section xml:id="creating-a-cpanel-view">
+      <title>Creating a cpanel (control panel) view</title>
+
+      <para>If you want to create an Administrator CPanel view in your
+      component as the Default view follow the following steps: </para>
+
+      <para>Create a controller at
+      &lt;administrator&gt;/controllers/cpanel.php </para>
+
+      <programlisting>class COMPONENT_NAMEControllerCpanel extends FOFController
+
+{
+	public function execute($task)
+	{
+		parent::execute('browse');
+	}
+}
+</programlisting>
+
+      <para>Create a view at
+      &lt;administrator&gt;/views/cpanel/tmpl/default.php. If you use Akeeba
+      Strapper you can easily create icons: </para>
+
+      <programlisting>&lt;?php
+// Protect from unauthorized access
+defined('_JEXEC') or die;
+
+JHtml::_('behavior.framework');
+JHtml::_('behavior.modal');
+
+$option = 'com_COMPONENT_NAME';
+?&gt;
+
+&lt;div id="cpanel" class="span12"&gt;
+	&lt;div class="icon"&gt;
+		&lt;a href="index.php?option=&lt;?php echo $option ?&gt;&amp;view=THE_VIEW"&gt;
+			&lt;img
+				src="&lt;?php echo rtrim(JURI::base(), '/'); ?&gt;/../media/com_COMPONENT_NAME/assets/images/icon_1_48.png"
+				border="0" alt="&lt;?php echo JText::_('COM_COMPONENT_NAME_CPANEL_ICON_1_ALT') ?&gt;"/&gt;
+				&lt;span&gt;
+					&lt;?php echo JText::_('COM_COMPONENT_NAME_CPANEL_ICON_1') ?&gt;&lt;br/&gt;
+				&lt;/span&gt;
+		&lt;/a&gt;
+	&lt;/div&gt;
+	[...]
+&lt;/div&gt;
+</programlisting>
+
+      <para>Customize the Cpanel toolbar creating a
+      &lt;administrator&gt;/toolbar.php file with: </para>
+
+      <programlisting>class COMPONENT_NAMEToolbar extends FOFToolbar
+{
+	/**
+	 * Prepares the toolbar for Cpanel view
+	 *
+	 * @return void
+	 */
+	public function onCpanelsBrowse()
+	{
+		// Set the toolbar title
+		JToolBarHelper::title(JText::_('COM_COMPONENT_NAME_CPANEL_TITLE_DASHBOARD'), 'COMPONENT_NAME');
+
+		// Add Components options (see config.xml)
+		JToolBarHelper::preferences('com_COMPONENT_NAME');
+	}
+}</programlisting>
+    </section>
+
+    <section xml:id="automatic-field-validation">
+      <title>Automatic field validation</title>
+
+      <para>You can perform automatic table checks based on database schema.
+      Let's say you have a table like this: </para>
+
+      <programlisting>CREATE TABLE IF NOT EXISTS `#__foobar_bars` (
+  `foobar_bar_id` int(11) NOT NULL AUTO_INCREMENT,
+  `required_field` varchar(50) NOT NULL,
+  `optional_field` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`foobar_bar_id`)
+);
+</programlisting>
+
+      <para>As you can see, the optional_field is nullable, while the required
+      one is not. To activate this feature, set the _autoChecks flag to true
+      in your table constructor: </para>
+
+      <programlisting>class FoobarTableBar extends FOFTable
+{
+    function __construct($table, $key, $db)
+    {
+        parent::__construct($table, $key, $db);
+
+        $this-&gt;_autoChecks = true;
+    }
+}
+</programlisting>
+
+      <para>In this way, when you're going to save your table, FOF will check
+      every field; if it's not-nullable and it's empty, the check fails and an
+      error message is enqueued. FOF will create a token string that will be
+      parsed by JText, following this convention:
+      COM_&lt;TABLENAME&gt;_ERR_&lt;FIELDNAME&gt; </para>
+
+      <para>If you use the previous table, you'll have something like this:
+      </para>
+
+      <para>COM_FOOBAR_BAR_ERR_REQUIRED_FIELD </para>
+
+      <para>If you want to skip any field from these automatic checks, simply
+      use this syntax in your table constructor: </para>
+
+      <programlisting>$this-&gt;setSkipChecks(array('my_field_1', 'my_field_2'));
+</programlisting>
+    </section>
+
+    <section xml:id="ordering-submenu-items-no-code">
+      <title>Ordering submenu items without writing any code</title>
+
+      <para>In the backend of your component, FoF creates automatically a
+      submenu with links to all your views. </para>
+
+      <para>Normally they are sorted alphabetically, but you can add ordering
+      information by placing a metadata.xml file in each view folder. E.g.
+      /components/com_todo/views/item/metadata.xml </para>
+
+      <para>The xml should be like the following: </para>
+
+      <programlisting>&lt;metadata&gt;
+     &lt;foflib&gt;
+        &lt;ordering&gt;123&lt;/ordering&gt;
+     &lt;/foflib&gt;
+  &lt;/metadata&gt;</programlisting>
     </section>
   </chapter>
 

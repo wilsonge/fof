@@ -1167,6 +1167,72 @@ class FOFModel extends FOFUtilsObject
 	}
 
 	/**
+	 * Returns a FOFDatabaseIterator over a list of items.
+	 *
+	 * THERE BE DRAGONS. Unlike the getItemList() you have a few restrictions:
+	 * - The onProcessList event does not run when you get an iterator
+	 * - The Iterator returns FOFTable instances. By default, $this->table is used. If you have JOINs, GROUPs or a
+	 *   complex query in general you will need to create a custom FOFTable subclass and pass its type in $tableType.
+	 *
+	 * The getIterator() method is a great way to sift through a large amount of records which would otherwise not fit
+	 * in memory since it only keeps one record in PHP memory at a time. It works best with simple models, returning
+	 * all the contents of a single database table.
+	 *
+	 * @param   boolean  $overrideLimits  Should I ignore set limits?
+	 * @param   string   $tableClass      The table class for the iterator, e.g. FoobarTableBar. Leave empty to use
+	 *                                    the default Table class for this Model.
+	 *
+	 * @return  FOFDatabaseIterator
+	 */
+	public function &getIterator($overrideLimits = false, $tableClass = null)
+	{
+		// Get the table name (required by the Iterator)
+		if (empty($tableClass))
+		{
+			$name = $this->table;
+
+			if (empty($name))
+			{
+				$name = FOFInflector::singularize($this->getName());
+			}
+
+			$bareComponent = str_replace('com_', '', $this->option);
+			$prefix        = ucfirst($bareComponent) . 'Table';
+
+			$tableClass = $prefix . ucfirst($name);
+		}
+
+		// Get the query
+		$query = $this->buildQuery($overrideLimits);
+
+		// Apply limits
+		if ($overrideLimits)
+		{
+			$limitStart = 0;
+			$limit = 0;
+		}
+		else
+		{
+			$limitStart = $this->getState('limitstart');
+			$limit = $this->getState('limit');
+		}
+
+		// This is required to prevent one relation from killing the db cursor used in a different relation...
+		$oldDb = $this->getDbo();
+		$oldDb->disconnect(); // YES, WE DO NEED TO DISCONNECT BEFORE WE CLONE THE DB OBJECT. ARGH!
+		$db = clone $oldDb;
+
+		// Execute the query, get a db cursor and return the iterator
+		$db->setQuery($query, $limitStart, $limit);
+
+		$cursor = $db->execute();
+
+		$iterator = FOFDatabaseIterator::getIterator($db->name, $cursor, null, $tableClass);
+
+		return $iterator;
+	}
+
+	/**
 	 * A cross-breed between getItem and getItemList. It runs the complete query,
 	 * like getItemList does. However, instead of returning an array of ad-hoc
 	 * objects, it binds the data from the first item fetched on the list to an

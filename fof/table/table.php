@@ -220,6 +220,21 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	protected $default_behaviors = array('tags', 'assets');
 
 	/**
+	 * The relations object of the table. It's lazy-loaded by getRelations().
+	 *
+	 * @var   FOFTableRelations
+	 */
+	protected $_relations = null;
+
+	/**
+	 * The configuration provider's key for this table, e.g. foobar.tables.bar for the #__foobar_bars table. This is set
+	 * automatically by the constructor
+	 *
+	 * @var  string
+	 */
+	protected $_configProviderKey = '';
+
+	/**
 	 * Returns a static object instance of a particular table type
 	 *
 	 * @param   string  $type    The table name
@@ -560,7 +575,9 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		$type = explode("_", $this->_tbl);
 		$type = $type[count($type) - 1];
 
-		$configKey = $component . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
+		$this->_configProviderKey = $component . '.tables.' . FOFInflector::singularize($type);
+
+		$configKey = $this->_configProviderKey . '.behaviors';
 
 		if (isset($config['behaviors']))
 		{
@@ -593,7 +610,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 			$this->_trackAssets = true;
 		}
 
-		// If the acess property exists, set the default.
+		// If the access property exists, set the default.
 		if (in_array($access_field, $this->getKnownFields()))
 		{
 			$this->$access_field = (int) FOFPlatform::getInstance()->getConfig()->get('access');
@@ -1205,7 +1222,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 			$this->$k = null;
 		}
 
-		// Create the object used for inserting/udpating data to the database
+		// Create the object used for inserting/updating data to the database
 		$fields     = $this->getTableFields();
 		$properties = $this->getKnownFields();
 		$keys       = array();
@@ -3580,5 +3597,40 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		$alias = $component . '.' . $view;
 
 		return $alias;
+	}
+
+	/**
+	 * Returns the table relations object of the current table, lazy-loading it if necessary
+	 *
+	 * @return  FOFTableRelations
+	 */
+	public function getRelations()
+	{
+		if (is_null($this->_relations))
+		{
+			$this->_relations = new FOFTableRelations($this);
+		}
+
+		return $this->_relations;
+	}
+
+	/**
+	 * Gets a reference to the configuration parameters provider for this table
+	 *
+	 * @return  FOFConfigProvider
+	 */
+	public function getConfigProvider()
+	{
+		return $this->configProvider;
+	}
+
+	/**
+	 * Returns the configuration parameters provider's key for this table
+	 *
+	 * @return  string
+	 */
+	public function getConfigProviderKey()
+	{
+		return $this->_configProviderKey;
 	}
 }
