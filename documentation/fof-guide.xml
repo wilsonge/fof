@@ -2867,7 +2867,7 @@ public function onBeforeReset(&amp;$table)
             </row>
 
             <row>
-              <entry align="left"><methodname>read</methodname></entry>
+              <entry align="left"><methodname>edit</methodname></entry>
 
               <entry><filename>item.php</filename> OR
               <filename>form.item.xml</filename></entry>
@@ -2877,7 +2877,7 @@ public function onBeforeReset(&amp;$table)
             </row>
 
             <row>
-              <entry align="left"><methodname>edit</methodname></entry>
+              <entry align="left"><methodname>read</methodname></entry>
 
               <entry><filename>form.php</filename> OR
               <filename>form.form.xml</filename></entry>
