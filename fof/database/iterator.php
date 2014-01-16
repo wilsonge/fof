@@ -90,7 +90,7 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	{
 		$className = 'FOFDatabaseIterator' . ucfirst($dbName);
 
-		$object = new $className($cursor, $config, $column, $class, $config);
+		$object = new $className($cursor, $column, $class, $config);
 
 		return $object;
 	}
@@ -109,10 +109,10 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	{
 		// Figure out the type and prefix of the class by the class name
 		$parts = FOFInflector::explode($class);
-		$this->_tableObject = FOFTable::getInstance($parts[2], $parts[0]);
+		$this->_tableObject = FOFTable::getInstance($parts[2], ucfirst($parts[0]) . ucfirst($parts[1]));
 
 		$this->cursor = $cursor;
-		$this->class = $class;
+		$this->class = 'stdClass';
 		$this->_column = $column;
 		$this->_fetched = 0;
 		$this->next();
