@@ -152,7 +152,7 @@ class FOFTableRelations
 	 *
 	 * @param   string   $itemName    is how it will be known locally to the getRelatedItem method (singular)
 	 * @param   string   $tableClass  if skipped it is defined automatically as ComponentnameTableItemname
-	 * @param   string   $localKey    is the column containing our side of the FK relation, default: componentname_itemname_id
+	 * @param   string   $localKey    is the column containing our side of the FK relation, default: our primary key
 	 * @param   string   $remoteKey   is the remote table's FK column, default: componentname_itemname_id
 	 * @param   boolean  $default     add as the default child relation?
 	 *
@@ -161,6 +161,12 @@ class FOFTableRelations
 	public function addChildRelation($itemName, $tableClass = null, $localKey = null, $remoteKey = null, $default = true)
 	{
 		$itemName = $this->normaliseItemName($itemName, false);
+
+		if (empty($localKey))
+		{
+			$localKey = $this->table->getKeyName();
+		}
+
 		$this->addBespokeSimpleRelation('child', $itemName, $tableClass, $localKey, $remoteKey, $default);
 	}
 
@@ -175,7 +181,7 @@ class FOFTableRelations
 	 *
 	 * @param   string   $itemName    is how it will be known locally to the getRelatedItem method (singular)
 	 * @param   string   $tableClass  if skipped it is defined automatically as ComponentnameTableItemname
-	 * @param   string   $localKey    is the column containing our side of the FK relation, default: our primary key
+	 * @param   string   $localKey    is the column containing our side of the FK relation, default: componentname_itemname_id
 	 * @param   string   $remoteKey   is the remote table's FK column, default: componentname_itemname_id
 	 * @param   boolean  $default     Is this the default parent relationship?
 	 *
@@ -184,6 +190,7 @@ class FOFTableRelations
 	public function addParentRelation($itemName, $tableClass = null, $localKey = null, $remoteKey = null, $default = true)
 	{
 		$itemName = $this->normaliseItemName($itemName, false);
+
 		$this->addBespokeSimpleRelation('parent', $itemName, $tableClass, $localKey, $remoteKey, $default);
 	}
 
@@ -227,6 +234,12 @@ class FOFTableRelations
 	public function addSiblingsRelation($itemName, $tableClass = null, $localKey = null, $ourPivotKey = null, $theirPivotKey = null, $remoteKey = null, $glueTable = null, $default = true)
 	{
 		$itemName = $this->normaliseItemName($itemName, true);
+
+		if (empty($localKey))
+		{
+			$localKey = $this->table->getKeyName();
+		}
+
 		$this->addBespokePivotRelation('siblings', $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $glueTable, $default);
 	}
 
