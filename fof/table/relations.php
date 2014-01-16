@@ -762,7 +762,7 @@ class FOFTableRelations
 	 */
 	private function addBespokePivotRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable, $default)
 	{
-		$this->normaliseParameters(false, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
+		$this->normaliseParameters(true, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
 
 		$this->relations[$relationType][$itemName] = array(
 			'tableClass'	=> $tableClass,
