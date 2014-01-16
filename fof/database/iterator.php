@@ -237,9 +237,8 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 			throw new OutOfBoundsException('Cannot get item past iterator\'s bounds', 500);
 		}
 
-		$newTable = clone $this->_tableObject;
-		$newTable->bind($this->_current);
+		$this->_tableObject->bind($this->_current);
 
-		return $newTable;
+		return $this->_tableObject;
 	}
 }
