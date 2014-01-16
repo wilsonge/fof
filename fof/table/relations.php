@@ -138,6 +138,41 @@ class FOFTableRelations
 
 			$this->addParentRelation($itemName, $tableClass, $field, $field, $default);
 		}
+
+		// Get the relations from the configuration provider
+		$key = $table->getConfigProviderKey() . '.relations';
+		$configRelations = $table->getConfigProvider()->get($key, array());
+
+		if (!empty($configRelations))
+		{
+			foreach ($configRelations as $relation)
+			{
+				if (empty($relation['type']))
+				{
+					continue;
+				}
+
+				if (isset($relation['pivotTable']))
+				{
+					$this->addMultipleRelation($relation['itemName'], $relation['tableClass'],
+						$relation['localKey'], $relation['ourPivotKey'], $relation['theirPivotKey'],
+						$relation['remoteKey'], $relation['pivotTable'], $relation['default']);
+				}
+				else
+				{
+					$method = 'add' . ucfirst($relation['type']). 'Relation';
+
+					if (!method_exists($this, $method))
+					{
+						continue;
+					}
+
+					$this->$method($relation['itemName'], $relation['tableClass'],
+						$relation['localKey'], $relation['remoteKey'], $relation['default']);
+				}
+			}
+		}
+
 	}
 
 	/**

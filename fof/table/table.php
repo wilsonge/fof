@@ -224,7 +224,15 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	 *
 	 * @var   FOFTableRelations
 	 */
-	private $_relations = null;
+	protected $_relations = null;
+
+	/**
+	 * The configuration provider's key for this table, e.g. foobar.tables.bar for the #__foobar_bars table. This is set
+	 * automatically by the constructor
+	 *
+	 * @var  string
+	 */
+	protected $_configProviderKey = '';
 
 	/**
 	 * Returns a static object instance of a particular table type
@@ -567,7 +575,9 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		$type = explode("_", $this->_tbl);
 		$type = $type[count($type) - 1];
 
-		$configKey = $component . '.tables.' . FOFInflector::singularize($type) . '.behaviors';
+		$this->_configProviderKey = $component . '.tables.' . FOFInflector::singularize($type);
+
+		$configKey = $this->_configProviderKey . '.behaviors';
 
 		if (isset($config['behaviors']))
 		{
@@ -600,7 +610,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 			$this->_trackAssets = true;
 		}
 
-		// If the acess property exists, set the default.
+		// If the access property exists, set the default.
 		if (in_array($access_field, $this->getKnownFields()))
 		{
 			$this->$access_field = (int) FOFPlatform::getInstance()->getConfig()->get('access');
@@ -3602,5 +3612,25 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		}
 
 		return $this->_relations;
+	}
+
+	/**
+	 * Gets a reference to the configuration parameters provider for this table
+	 *
+	 * @return  FOFConfigProvider
+	 */
+	public function getConfigProvider()
+	{
+		return $this->configProvider;
+	}
+
+	/**
+	 * Returns the configuration parameters provider's key for this table
+	 *
+	 * @return  string
+	 */
+	public function getConfigProviderKey()
+	{
+		return $this->_configProviderKey;
 	}
 }
