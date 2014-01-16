@@ -453,7 +453,7 @@ class FOFTableRelations
 			throw new RuntimeException(sprintf('Default parent relation for %s not found', $this->table->getTableName()), 500);
 		}
 
-		if (isset($this->relations['parent'][$itemName]))
+		if (!isset($this->relations['parent'][$itemName]))
 		{
 			throw new RuntimeException(sprintf('Parent relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
 		}
@@ -482,7 +482,7 @@ class FOFTableRelations
 			throw new RuntimeException(sprintf('Default child relation for %s not found', $this->table->getTableName()), 500);
 		}
 
-		if (isset($this->relations['child'][$itemName]))
+		if (!isset($this->relations['child'][$itemName]))
 		{
 			throw new RuntimeException(sprintf('Child relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
 		}
@@ -511,7 +511,7 @@ class FOFTableRelations
 			throw new RuntimeException(sprintf('Default children relation for %s not found', $this->table->getTableName()), 500);
 		}
 
-		if (isset($this->relations['children'][$itemName]))
+		if (!isset($this->relations['children'][$itemName]))
 		{
 			throw new RuntimeException(sprintf('Children relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
 		}
@@ -540,7 +540,7 @@ class FOFTableRelations
 			throw new RuntimeException(sprintf('Default siblings relation for %s not found', $this->table->getTableName()), 500);
 		}
 
-		if (isset($this->relations['siblings'][$itemName]))
+		if (!isset($this->relations['siblings'][$itemName]))
 		{
 			throw new RuntimeException(sprintf('Siblings relation %s for %s not found', $itemName, $this->table->getTableName()), 500);
 		}
@@ -562,7 +562,7 @@ class FOFTableRelations
 		// Get a table object from the table class name
 		$tableClass = $relation['tableClass'];
 		$tableClassParts = FOFInflector::explode($tableClass);
-		$table = FOFTable::getInstance($tableClass[2], $tableClass[0]);
+		$table = FOFTable::getInstance($tableClassParts[2], ucfirst($tableClassParts[0]) . ucfirst($tableClassParts[1]));
 
 		// Get the table name
 		$tableName = $table->getTableName();
@@ -574,7 +574,10 @@ class FOFTableRelations
 		// Get the local key's value
 		$value = $this->table->$localKey;
 
-		$db = $this->table->getDbo();
+		// This is required to prevent one relation from killing the db cursor used in a different relation...
+		$oldDb = $this->table->getDbo();
+		$oldDb->disconnect(); // YES, WE DO NEED TO DISCONNECT BEFORE WE CLONE THE DB OBJECT. ARGH!
+		$db = clone $oldDb;
 
 		$query = $db->getQuery(true)
 			->select('*')
@@ -608,7 +611,7 @@ class FOFTableRelations
 		// Get a table object from the table class name
 		$tableClass = $relation['tableClass'];
 		$tableClassParts = FOFInflector::explode($tableClass);
-		$table = FOFTable::getInstance($tableClass[2], $tableClass[0]);
+		$table = FOFTable::getInstance($tableClassParts[2], ucfirst($tableClassParts[0]) . ucfirst($tableClassParts[1]));
 
 		// Get the table name
 		$tableName = $table->getTableName();
@@ -620,8 +623,10 @@ class FOFTableRelations
 		// Get the local key's value
 		$value = $this->table->$localKey;
 
-		// Get the reference to the database object
-		$db = $this->table->getDbo();
+		// This is required to prevent one relation from killing the db cursor used in a different relation...
+		$oldDb = $this->table->getDbo();
+		$oldDb->disconnect(); // YES, WE DO NEED TO DISCONNECT BEFORE WE CLONE THE DB OBJECT. ARGH!
+		$db = clone $oldDb;
 
 		// Begin the query
 		$query = $db->getQuery(true)

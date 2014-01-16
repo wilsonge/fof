@@ -1217,12 +1217,17 @@ class FOFModel extends FOFUtilsObject
 			$limit = $this->getState('limit');
 		}
 
+		// This is required to prevent one relation from killing the db cursor used in a different relation...
+		$oldDb = $this->getDbo();
+		$oldDb->disconnect(); // YES, WE DO NEED TO DISCONNECT BEFORE WE CLONE THE DB OBJECT. ARGH!
+		$db = clone $oldDb;
+
 		// Execute the query, get a db cursor and return the iterator
-		$this->getDbo()->setQuery($query, $limitStart, $limit);
+		$db->setQuery($query, $limitStart, $limit);
 
-		$cursor = $this->getDbo()->execute();
+		$cursor = $db->execute();
 
-		$iterator = FOFDatabaseIterator::getIterator($this->getDbo()->name, $cursor, null, $tableClass);
+		$iterator = FOFDatabaseIterator::getIterator($db->name, $cursor, null, $tableClass);
 
 		return $iterator;
 	}
