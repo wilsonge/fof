@@ -38,14 +38,14 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	 *
 	 * @var    array
 	 */
-	private static $instances = array();
+	protected static $instances = array();
 
 	/**
 	 * Include paths for searching for FOFTable classes.
 	 *
 	 * @var    array
 	 */
-	private static $_includePaths = array();
+	protected static $_includePaths = array();
 
 	/**
 	 * The configuration parameters array
