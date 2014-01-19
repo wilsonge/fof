@@ -835,10 +835,10 @@ function postflight($type, $parent)
       <code>com_todo</code> and a model for the items
       <code>view</code>.</para>
 
-      <section>
+      <section xml:id="fofmodel-behaviours">
         <title>Model Behaviours</title>
 
-        <section>
+        <section xml:id="fofmodel-behaviours-intro">
           <title>Introduction</title>
 
           <para>Model Behaviors are a handy way to alter the workflow of a
@@ -857,7 +857,7 @@ function postflight($type, $parent)
           used by any FOFModel object.</para>
         </section>
 
-        <section>
+        <section xml:id="fofmodel-behaviours-standard">
           <title>FOF standard Behaviors</title>
 
           <para>FOF comes with several built-in model behaviours. They are
@@ -1295,7 +1295,7 @@ function postflight($type, $parent)
           </section>
         </section>
 
-        <section>
+        <section xml:id="fofmodel-behaviours-add">
           <title>Adding an Existing Behavior to a Model</title>
 
           <para>There are 4 ways to add a behavior to a model:</para>
@@ -1362,7 +1362,7 @@ function postflight($type, $parent)
 }</programlisting>
         </section>
 
-        <section>
+        <section xml:id="fofmodel-behaviours-create-new">
           <title>Creating a new Behavior</title>
 
           <para>You can create custom behaviors for your component. It's very
@@ -1396,7 +1396,7 @@ function postflight($type, $parent)
           creating a new class called FoobarModelBehaviorEnabled).</para>
         </section>
 
-        <section>
+        <section xml:id="fofmodel-behaviours-available">
           <title>Available Events for Model Behaviors</title>
 
           <para>In each model behavior you can inject into the workflow using
@@ -1596,7 +1596,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
 }</programlisting>
         </section>
 
-        <section>
+        <section xml:id="fofmodel-behaviours-example">
           <title>New Behavior Example: Published</title>
 
           <para>Let's create a behavior for our component called Published,
@@ -2230,10 +2230,10 @@ class FoobarTableFoo extends FOFTable
       granted) to modify or extend the behaviour of FOF-powered extensions
       with great ease.</para>
 
-      <section>
+      <section xml:id="foftable-behaviors">
         <title>Table Behaviors</title>
 
-        <section>
+        <section xml:id="foftable-behaviors-introduction">
           <title>Introduction</title>
 
           <para>Table Behaviors are an handy way to alter the workflow of a
@@ -2252,7 +2252,7 @@ class FoobarTableFoo extends FOFTable
           used by any FOFTable object.</para>
         </section>
 
-        <section>
+        <section xml:id="foftable-behaviors-standard">
           <title>FOF Standard Behaviors</title>
 
           <variablelist>
@@ -2278,7 +2278,7 @@ class FoobarTableFoo extends FOFTable
           </variablelist>
         </section>
 
-        <section>
+        <section xml:id="foftable-behaviors-add">
           <title>Add an existing Behavior to a Table</title>
 
           <para>There are 4 ways to add a behavior to a table:</para>
@@ -2350,7 +2350,7 @@ class FoobarTableFoo extends FOFTable
           </itemizedlist>
         </section>
 
-        <section>
+        <section xml:id="foftable-behaviors-create-new">
           <title>Creating a new Behavior</title>
 
           <para>You can create custom behaviors for your component. It's very
@@ -2385,7 +2385,7 @@ class FoobarTableFoo extends FOFTable
           FoobarTableehaviorTags).</para>
         </section>
 
-        <section>
+        <section xml:id="foftable-behaviors-available">
           <title>Available Events for Table Behaviors</title>
 
           <para>In each table behavior you can inject into the workflow using
@@ -2622,6 +2622,218 @@ public function onBeforeReset(&amp;$table)
     return true;
 }</programlisting>
         </section>
+      </section>
+
+      <section xml:id="foftable-simpleorm">
+        <title>Simple object relation mapping</title>
+
+        <note>
+          <para>Available since FOF 2.2.0</para>
+        </note>
+
+        <bridgehead>A (very) naïve introduction to ORM – and why this FOF
+        feature is not a proper ORM implementation</bridgehead>
+
+        <para>The most common use case for databases is storing data which is
+        related to one another. This the cornerstone of relational database
+        management systems (RDBMS) such as MySQL, PostgreSQL, Microsoft SQL
+        Server and so on. Due to limitations of the shared hosting model we
+        tend not to make full use of the relational features of modern
+        databases, yet our field naming conventions do denote this aspect of
+        our data. Think about a <database>#__foobar_comments</database> table
+        having a key named <database>foobar_article_id</database>. You
+        immediately understand that each comment record in that table is
+        related to an article in a table called
+        <database>#__foobar_articles</database>. That's why you end up writing
+        code to fetch the comments of an article using FOFModel or the article
+        a comment belongs to using FOFTable.</para>
+
+        <para>By doing that, you are implicitly mapping the raw data in the
+        database to one or more PHP objects. This is a very primitive data
+        mapping operation, as you are mapping scalar values (the raw data)
+        into other scalar values (the PHP object's properties) through
+        explicit mapping. When you want to map non-scalar values (like the
+        comments of an article) you get to do that manually, essentially
+        hardcoding this relation into your PHP code. An object-relational
+        mapping (ORM, for short) does this automatically. It will map your
+        scalar data, what is stored in your database tables, into objects
+        which you can manipulate directly without worrying too much about how
+        this data is actually stored.</para>
+
+        <para>On the flip side, by using a full blown ORM you are abstracting
+        too much. The ORM has to map objects to database tables and the result
+        is often unoptimised database tables. By going to the other extreme,
+        manually handling all mapping, you are writing more code than you
+        should and you make your architecture inflexible.</para>
+
+        <para>FOF follows a middle path. You can tell it how your database
+        tables relate to each other and it will provide you with an interface
+        to get related objects directly from a FOFTable object. It currently
+        supports all three normalised relations:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>1:n (one to many). One record of table A is related to zero
+            or more records in table B. The easiest way to picture this is
+            table A being articles and table B being comments. This relation
+            can be expressed in different directions:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Parent. Given a record in table B you get the record in
+                table A it belongs to.</para>
+              </listitem>
+
+              <listitem>
+                <para>Children. Given a record in table A you get the records
+                in table B that belong to it.</para>
+              </listitem>
+
+              <listitem>
+                <para>Siblings. Given a record in table B you get all the
+                records in table B that belong to the same record of table A
+                that our current record in table B belongs to (it's the
+                children of the parent – that's why they're called
+                siblings)</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>1:1 (one to one). One record of table A is related to
+            exactly zero or one records in table B. It's used mostly to extend
+            a table without changing its schema, e.g. add more fields to the
+            <database>#__users</database> table. This relation has no implicit
+            directionality, but since it's the degenerate case of the 1:n
+            relation for n=1 we consider that table A is the parent of table
+            B, so this is implemented by defining a child relation on table A
+            (or a parent or child relation on table B; it's up to
+            you!).</para>
+          </listitem>
+
+          <listitem>
+            <para>n:n (many to many). One or more records of table A are
+            related to zero or more records in table B. The easiest way to
+            picture this is table A being users and table B being user groups.
+            One user can belong to multiple groups. Many users can belong to
+            the same group. The characteristic of this relation is that you
+            need a pivot (a.k.a. "glue" or "map") table which tells us which
+            record of table A relates to which record of table B. Quite
+            obviously there is no directionality in this relation: given a
+            record in table A you can get all related records in table B.
+            Likewise, given a table in record B you can get all related
+            records in table A through the same relation.</para>
+          </listitem>
+        </itemizedlist>
+
+        <bridgehead>What does it mean to you?</bridgehead>
+
+        <para>Before this feature you would have to write this kind of
+        code:</para>
+
+        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+$article-&gt;load(1);
+
+$model = FOFModel::getTmpInstance('Comments', 'FoobarModel');
+$comments = $model-&gt;foobar_article_id($article-&gt;foobar_article_id)-&gt;getList();
+foreach ($comments as $commentData)
+{
+    $commentTable = $model-&gt;getTable();
+    $commentTable-&gt;bind($commentData);
+    // Work with $commentTable
+}</programlisting>
+
+        <para>You can now write</para>
+
+        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+$article-&gt;load(1);
+
+foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTable)
+{
+    // Work with $commentTable
+}</programlisting>
+
+        <para>All you need to do is define the relation, either in the
+        constructor of your table class or in
+        <filename>fof.xml</filename>.</para>
+
+        <para>Even better, relations returning many items use
+        FOFDatabaseIterator which means that only one record is loaded in
+        memory at a time. When sifting through copious amounts of records this
+        decreases your memory consumption considerably.</para>
+
+        <para>The code savings are even more substantial for many-to-many
+        relations, but we'll leave that as an exercise to the reader to find
+        out why.</para>
+
+        <bridgehead>How do I use it?</bridgehead>
+
+        <para>Each table provides the getRelations() method which returns a
+        FOFTableRelations object. By default it's populated with parent
+        relations based on field names which follow the FOF naming
+        conventions. At any time you can use the add*Relation() methods of
+        FOFTableRelations to add any kind of relations. The docblocks in the
+        methods explain to you exactly what each parameter does and through
+        which method the related tables are made available. We suggest adding
+        relations in the constructor (__construct() method) of your
+        specialised table class. Alternatively, you can define the relations
+        in <filename>fof.xml</filename>.</para>
+
+        <para>From that point you can use the relations anywhere you have an
+        instance of that FOFTable object. The best methods for getting a
+        FOFTable object are:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Using FOFModel's getIterator. <emphasis role="bold">This is
+            the preferred method</emphasis>. Even if you only need the first
+            item fetched by the model it is far better for performance and
+            memory consumption to use:</para>
+
+            <programlisting>// GOOD - Use this!
+$iterator = $model-&gt;getIterator();
+$myRecord = $iterator-&gt;current();</programlisting>
+
+            <para>than using the next method presented below.</para>
+          </listitem>
+
+          <listitem>
+            <para>Using FOFModel's getFirstItem. This method is not
+            recommended for performance / resource usage reasons. Keep in mind
+            that FOFModel will load the ENTIRE record list, based on its
+            state, in memory and return the first item fetched as a FOFTable.
+            This can lead to bad performance and excessive memory consumption
+            unless you are absolutely sure that FOFModel will only fetch one
+            (or, at most, a handful) of items from the database.
+            Example:</para>
+
+            <programlisting>$myRecord = $model-&gt;getFirstItem();</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>Using FOFTable::getAnInstance(). This method is not
+            recommended due to the singleton caveat. Remember that the
+            returned object is a singleton. If you need to load a new record
+            you are required to clone that object, e.g. $table = clone
+            FOFTable::getAnInstance('Items', 'FoobarTable');</para>
+
+            <programlisting>// If you forget the clone you will spend some not-so-fun hours debugging erratic behaviour
+$myRecord = <emphasis role="bold">clone</emphasis> FOFTable::getAnInstance('Items', 'FoobarTable');
+$myRecord-&gt;load(123);</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>Using the getTable() method of a FOFModel object. This
+            method is not recommended due to the singleton caveat. Likewise to
+            FOFTable::getAnInstance() you get a singleton object for that
+            model. Unless you want to operate on the last item fetched / saved
+            in the model you need to clone it.</para>
+
+            <programlisting>// If you forget the clone you will spend some not-so-fun hours debugging erratic behaviour.
+// Also, are you sure that your code actually loaded anything in the table? Hm...
+$myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</programlisting>
+          </listitem>
+        </itemizedlist>
       </section>
     </section>
 
@@ -3588,7 +3800,7 @@ $json = ob_end_clean();
       view. Be warned.</para>
     </section>
 
-    <section>
+    <section xml:id="acl-configuration">
       <title>ACL configuration</title>
 
       <para>Another key feature of FOF are automatic ACL checks: before an
@@ -3732,6 +3944,54 @@ $json = ob_end_clean();
 
       <para>And that's it! Now enjoy the ACL in your extension.</para>
     </section>
+
+    <section xml:id="fofdatabaseiterator">
+      <title>The database cursor iterator (FOFDatabaseIterator)</title>
+
+      <note>
+        <para>Available since FOF 2.2.0</para>
+      </note>
+
+      <para>In many cases you have to sift through a large number of database
+      records and you want to use the magic of FOFTable. The traditional way
+      to do that was to use FOFModel::getItemList to get a big array of
+      stdClass objects, iterate through it with foreach, mapping each stdClass
+      object to your FOFTable instance. This is a performance and resource
+      nightmare. PHP has to retrieve the entire list of records from the
+      database and cast it to stupid stdClass objects, then you have to remap
+      them one by one as FOFTable instances. The time and memory required to
+      do that makes it impractical for lists over a few dozen records.</para>
+
+      <para>Enter the FOFDatabaseIterator. This is a regular, non-resettable
+      and non-seekable PHP iterator. This means that you can only fetch its
+      current record or proceed to the next one. You cannot scroll back to the
+      beginning and you cannot move to an arbitrary location within the
+      iterator (unlike an array). However, it will only load one record in
+      memory at a time and deliver it to you as a FOFTable object. The magic
+      behind it lies in the way it is implemented: it is given a database
+      cursor (pretty much, a resource pointing to the result set of a database
+      query) and it uses standard PHP features to only ever fetch the next
+      item from this cursor. Behind the scenes it will get a new instance of
+      the FOFTable class and use its bind() method to bind the data to it,
+      then return you the table object. Since it's an Iterator you can use it
+      in a foreach statement to iterate through the entire list of records,
+      one FOFTable object at a time.</para>
+
+      <para>Even though you can create a FOFDatabaseIterator directly, you
+      will hardly ever need to do so. A FOFTableIterator is returned by
+      FOFModel's getIterator() method and the FOFTableRelations' methods which
+      return multiple records. You are advised to use the iterator whenever
+      you reasonably expect to deal with large numbers of database records,
+      especially if you need to act upon them.</para>
+
+      <para>The only drawback is that by using FOFModel's getIterator the
+      onProcessList method, which is used for record list post-processing, is
+      never called. This is actually a good thing. You can migrate that logic
+      into the onBeforeBind() method of your table, where it belongs
+      architecturally. After all, you are post-processing a list of records,
+      one record at a time. What is more natural than doing so in the one
+      class dedicated to handling one record at a time?</para>
+    </section>
   </chapter>
 
   <chapter xml:id="features-reference">
@@ -3803,6 +4063,11 @@ $json = ob_end_clean();
         &lt;table name="*"&gt;
             &lt;field name="locked_by"&gt;checked_out&lt;/field&gt;
             &lt;field name="locked_on"&gt;checked_out_time&lt;/field&gt;
+            &lt;relation type="children" name="items" /&gt;
+            &lt;relation type="multiple" name="transactions" localKey="foobar_order_id"
+                      ourPivotKey="foobar_order_id" theirPivotKey="foobar_transaction_id"
+                      remoteKey="foobar_transaction_id"
+                      pivotTable="#__foobar_orders_transactions" default="true" /&gt;
         &lt;/table&gt;
         &lt;!-- Table options for a specific table --&gt;
         &lt;table name="item"&gt;
@@ -3926,6 +4191,130 @@ $json = ob_end_clean();
           <code>&lt;field&gt;</code> tags. The name attribute defines the name
           of the magic (FOF convention) field to map, whereas the content of
           the tag defines the name of the field in your database table.</para>
+
+          <bridgehead>Relation settings</bridgehead>
+
+          <note>
+            <para>Available since FOF 2.2.0</para>
+          </note>
+
+          <para>The relation settings allow you to define the table relations
+          used by the ORM-like feature introduced in FOF 2.2.0.</para>
+
+          <para>One or more <code>&lt;relation&gt;</code> fields are enclosed
+          inside the <code>&lt;table&gt;</code> tag itself. The attributes
+          available are:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>type</term>
+
+              <listitem>
+                <para>One of <option>parent</option>, <option>child</option>,
+                <option>children</option>, <option>multiple</option> and
+                determines the relation type</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>name</term>
+
+              <listitem>
+                <para>How this relation will be known to FOFTable</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>localKey</term>
+
+              <listitem>
+                <para>The key in our table which holds the foreign key value.
+                For the <option>multiple</option> (n:n) relation this is the
+                value of the ourPivotKey field in the pivotTable. For other
+                relations it is the value held by the foreign table's
+                remoteKey field.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>remoteKey</term>
+
+              <listitem>
+                <para>The key in the foreign table which holds the foreign key
+                value. For the <option>multiple</option> (n:n) relation this
+                is the value of the theirPivotKey field in the pivotTable. For
+                other relations it is foreign table's remoteKey field which
+                must match the value of our localKey to satisfy the
+                relationship.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>ourPivotKey</term>
+
+              <listitem>
+                <para>Only valid for <option>multiple</option> (n:n)
+                relations. The field name in the pivotTable which must have
+                the same value as our localKey to satisfy the relation.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>theirPivotKey</term>
+
+              <listitem>
+                <para>Only valid for <option>multiple</option> (n:n)
+                relations. The field name in the pivotTable which must have
+                the same value as the foreign table's remoteKey to satisfy the
+                relation.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>pivotTable</term>
+
+              <listitem>
+                <para>Only valid for <option>multiple</option> (n:n)
+                relations. The name of the pivot (a.k.a. "glue" or "map")
+                table which maps our table's records with the foreign table's
+                records, e.g.
+                <database>#__foobar_articles_comments</database></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>tableClass</term>
+
+              <listitem>
+                <para>The FOFTable class name of the foreign table, e.g.
+                FoobarTableItems. This is not required if remoteKey and the
+                table class follow the FOF naming conventions, i.e.
+                foobar_item_id is understood to belong to #__foobar_items
+                which maps to the FOFTable class FoobarTableItems. The table
+                class doesn't need to exist (you don't need to specialise
+                FOFTable to define a relation). If the class is not found a
+                properly configured FOFTable object is created
+                automatically.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>default</term>
+
+              <listitem>
+                <para><option>0</option> or <option>1</option> (or yes/no, or
+                true/false). If you have multiple relations of the same type
+                in a table, one of them can be set up as the default. If you
+                don't specify a relation name when calling a method to
+                retrieve related item(s) FOF will always the default relation.
+                If you set up multiple default relations of the same type only
+                the LAST relation will become the default. You are advised not
+                to rely on default relations and name them explicitly in your
+                code to avoid "interesting" bugs when refactoring your code a
+                few weeks (or, worse, months) down the line.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
         </section>
 
         <section xml:id="fofxml-view">
@@ -6938,7 +7327,7 @@ echo $viewTemplate;
       create the default 'slug' for the records. A typical example is a table
       recording 'people', where you want the slug to be firstname-lastname. to
       achieve this, simply override the table class for your table, with the
-      following method: </para>
+      following method:</para>
 
       <programlisting>protected function onBeforeStore($updateNulls)
 {
@@ -6955,10 +7344,10 @@ echo $viewTemplate;
     </section>
 
     <section xml:id="one-to-many-record-delete">
-      <title>One to many database table relationship deletion </title>
+      <title>One to many database table relationship deletion</title>
 
       <para>Q: How to delete all rows in a child table when the parent table's
-      record is deleted in FoF? A: Some code in the model file. </para>
+      record is deleted in FoF? A: Some code in the model file.</para>
 
       <programlisting>CREATE TABLE IF NOT EXISTS `#__foobar_items` (
   `foobar_item_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,*
@@ -6977,11 +7366,10 @@ CREATE TABLE IF NOT EXISTS `#__foobar_childs` (
       <para>You could assume that the way to do delete child records when a
       parent record is deleted is to use MySQL's "ON DELETE CASCADE". Wrong!
       You could try using a MySQL trigger to effect the cascade deletion.
-      Wrong (let alone most hosts won't allow you to create a trigger)!
-      </para>
+      Wrong (let alone most hosts won't allow you to create a trigger)!</para>
 
       <para>Assuming your deletion occurs in the front-end, you'll create a
-      new site/components/com_foobar/models/items.php: </para>
+      new site/components/com_foobar/models/items.php:</para>
 
       <programlisting>defined('_JEXEC') or die();
 class FoobarModelItems extends FOFModel
@@ -7032,20 +7420,20 @@ class FoobarModelItems extends FOFModel
 
       <para>By default every view needs a corresponding database table. What
       to do when you have a view with no table associated because it is not a
-      list or edit form? </para>
+      list or edit form?</para>
 
-      <bridgehead>Setup the controller </bridgehead>
+      <bridgehead>Setup the controller</bridgehead>
 
       <para>In the controller we force the edit task by adding the following
-      code: </para>
+      code:</para>
 
       <programlisting>public function execute($task) {
     parent::execute('edit');
 }</programlisting>
 
-      <bridgehead>Setup the model </bridgehead>
+      <bridgehead>Setup the model</bridgehead>
 
-      <para>In the model we need to add 2 overrides. </para>
+      <para>In the model we need to add 2 overrides.</para>
 
       <para>Override the constructor</para>
 
@@ -7058,9 +7446,9 @@ class FoobarModelItems extends FOFModel
 
       <para>First we override the constructor because we need to specify a
       table, this to make sure the system can read some table but no data will
-      be taken from the table. </para>
+      be taken from the table.</para>
 
-      <para>Override the getItem() method </para>
+      <para>Override the getItem() method</para>
 
       <programlisting>public function getItem($id = null) {
     return null;
@@ -7068,12 +7456,12 @@ class FoobarModelItems extends FOFModel
 
       <para>We need to override the getItem() method because we are not
       actually getting any data. By returning a null value, the system is
-      happy because a value is returned. </para>
+      happy because a value is returned.</para>
 
-      <bridgehead>Setup the view </bridgehead>
+      <bridgehead>Setup the view</bridgehead>
 
       <para>In the view you can do what you like by using the onAdd() method
-      override. </para>
+      override.</para>
     </section>
 
     <section xml:id="transparent_authentication">
@@ -7082,7 +7470,7 @@ class FoobarModelItems extends FOFModel
       <para>Transparent authentication allows FOF to authenticate a user using
       Basic Authentication or URL parameters. This allows you to create web
       services or directly access pages which require a logged in users
-      without using Joomla! session cookies. </para>
+      without using Joomla! session cookies.</para>
 
       <para>The authentication credentials can be provided via two methods:
       Basic Authentication or a URL parameter. The authentication credentials
@@ -7094,18 +7482,18 @@ class FoobarModelItems extends FOFModel
       while at the same time maintaining an intrinsically very narrrow window
       of opportunity. Furthermore, since the effective encryption key is
       modified every few seconds it makes an attack against it slightly harder
-      than using regular symmetric AES-128 cryptography. </para>
+      than using regular symmetric AES-128 cryptography.</para>
 
       <para>Transparent authentication is enabled by default, but doesn’t use
-      TOTP. </para>
+      TOTP.</para>
 
-      <bridgehead>Setting it up </bridgehead>
+      <bridgehead>Setting it up</bridgehead>
 
       <para>Setting up transparent authentication requires you to modify your
       component’s Dispatcher class, namely its __construct(), to change the
-      values of some protected fields. </para>
+      values of some protected fields.</para>
 
-      <para>The available fields are: </para>
+      <para>The available fields are:</para>
 
       <variablelist>
         <varlistentry>
@@ -7120,7 +7508,7 @@ class FoobarModelItems extends FOFModel
             attack by a hacker. WARNING! If you change this option you have to
             notify the consumers of the service to make the same change,
             otherwise your TOTPs will be vastly different and communication
-            will fail. </para>
+            will fail.</para>
           </listitem>
         </varlistentry>
 
@@ -7130,7 +7518,7 @@ class FoobarModelItems extends FOFModel
           <listitem>
             <para>The Base32 encoded key for TOTP. Please note that this is
             Base32, not Base64. Only required if you’re going to use
-            encryption. </para>
+            encryption.</para>
           </listitem>
         </varlistentry>
 
@@ -7140,8 +7528,8 @@ class FoobarModelItems extends FOFModel
           <listitem>
             <para>Which result formats should be handled by the transparent
             authentication. This is an array, by default array('json', 'csv',
-            'xml', 'raw'). We recommend only using non-HTML formats in here.
-            </para>
+            'xml', 'raw'). We recommend only using non-HTML formats in
+            here.</para>
           </listitem>
         </varlistentry>
 
@@ -7154,7 +7542,7 @@ class FoobarModelItems extends FOFModel
             using transparent authentication. This is a precaution against
             someone intercepting and abusing the session cookie Joomla! will
             be sending back to the client, as well as preventing the sessions
-            table from filling up. </para>
+            table from filling up.</para>
           </listitem>
         </varlistentry>
 
@@ -7164,98 +7552,98 @@ class FoobarModelItems extends FOFModel
           <listitem>
             <para>An array of supported authentication methods. Only use the
             ones that make sense for your application. Avoid using the
-            *_Plaintext ones, please. The possible values in the array are:
-            </para>
+            *_Plaintext ones, please. The possible values in the array
+            are:</para>
 
             <itemizedlist>
               <listitem>
                 <para><emphasis role="bold">HTTPBasicAuth_TOTP</emphasis> HTTP
                 Basic Authentication using encrypted information protected
-                with a TOTP (the username must be "fofauth") </para>
+                with a TOTP (the username must be "fofauth")</para>
               </listitem>
 
               <listitem>
                 <para><emphasis role="bold">QueryString_TOTP</emphasis>
                 Encrypted information protected with a TOTP passed in the
-                _fofauthentication query string parameter </para>
+                _fofauthentication query string parameter</para>
               </listitem>
 
               <listitem>
                 <para><emphasis role="bold">HTTPBasicAuth_Plaintext</emphasis>
                 HTTP Basic Authentication using a username and password pair
-                in plain text </para>
+                in plain text</para>
               </listitem>
 
               <listitem>
                 <para><emphasis role="bold">QueryString_Plaintext</emphasis>
                 Plaintext, JSON-encoded username and password pair passed in
-                the _fofauthentication query string parameter </para>
+                the _fofauthentication query string parameter</para>
               </listitem>
             </itemizedlist>
 
             <para>When you are using the QueryString_TOTP method you can pass
             your authentication information as GET or POST variable called
             _fofauthentication with the value being the URL encoded cryptogram
-            of the authentication credentials (see further down). </para>
+            of the authentication credentials (see further down).</para>
           </listitem>
         </varlistentry>
       </variablelist>
 
-      <bridgehead>How to get a TOTP key </bridgehead>
+      <bridgehead>How to get a TOTP key</bridgehead>
 
       <para>Any Base32 string can be used as a TOTP key as long as it expands
       to exactly 10 characters. If you don’t feel like guessing, you can
-      simply do: </para>
+      simply do:</para>
 
       <programlisting>$totp = new FOFEncryptTotp();
 $secret = $totp-&gt;generateSecret();</programlisting>
 
       <para>You have to share this secret key with all clients wishing to
       connect to your component via a secure channel. This secret key musy
-      also be set in the fofAuthKey variable. </para>
+      also be set in the fofAuthKey variable.</para>
 
-      <bridgehead>How to construct and supply an authentication set
-      </bridgehead>
+      <bridgehead>How to construct and supply an authentication
+      set</bridgehead>
 
       <para>The authentication set is a representation of the username and
       password of the user you want FOF to log in using transparent
-      authentication. Its format depends on the authentication method. </para>
+      authentication. Its format depends on the authentication method.</para>
 
       <para>Before going into much detail, we should consider an FOF
       authentication key to be a JSON-encoded object containing the keys
-      username and password. E.g.: </para>
+      username and password. E.g.:</para>
 
       <programlisting>{ “username”: “sample_user”, “password”: “$3Cr3+” }
 </programlisting>
 
       <para>This is used with all but one authentication methods. Encryption
       of the FOF authentication key, used with all *_TOTP methods, is
-      discussed further down this document. </para>
+      discussed further down this document.</para>
 
       <para>If you are using HTTPBasicAuth_Plaintext method, you have to
       supply your username and password using HTTP Basic Authentication. The
       username is the username of the user you want to log in and the password
       is the password of the user you want to log in. This is the easiest and
-      most insecure authentication method. </para>
+      most insecure authentication method.</para>
 
       <para>If you are using the HTTPBasicAuth_TOTP method, you have to supply
       a username of fofauth (including the leading underscore) and as the
-      password enter the encrypted FOF authentication key. </para>
+      password enter the encrypted FOF authentication key.</para>
 
       <para>If you are using the QueryString_Plaintext method you have to
       supply a GET or POST query parameter with a name of _fofauthentication
       (including the leading underscore). Its value must be the URL encoded
-      FOF authentication key. </para>
+      FOF authentication key.</para>
 
       <para>If you are using the QueryString_TOTP method you have to supply a
       GET or POST query parameter with a name of _fofauthentication (including
       the leading underscore). Its value must be the URL encoded FOF
-      authentication key. </para>
+      authentication key.</para>
 
-      <bridgehead>Encrypting the FOF authentication key </bridgehead>
+      <bridgehead>Encrypting the FOF authentication key</bridgehead>
 
       <para>Assuming you are doing this from a FOF-powered component, you can
-      do something like this: </para>
+      do something like this:</para>
 
       <programlisting>$timeStep = 6; // Change this if you have a different value in your Dispatcher
 $authKey = json_encode(array(
@@ -7275,17 +7663,17 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       usually labelled as being Google Authenticator libraries. Google
       Authenticator simply uses TOTP with a temp step of 30 seconds. Most such
       libraries are able to change the time step, thus possible to use with
-      FOF. In fact, that's how FOF's TOTP library was derived. </para>
+      FOF. In fact, that's how FOF's TOTP library was derived.</para>
     </section>
 
     <section xml:id="creating-a-cpanel-view">
       <title>Creating a cpanel (control panel) view</title>
 
       <para>If you want to create an Administrator CPanel view in your
-      component as the Default view follow the following steps: </para>
+      component as the Default view follow the following steps:</para>
 
       <para>Create a controller at
-      &lt;administrator&gt;/controllers/cpanel.php </para>
+      &lt;administrator&gt;/controllers/cpanel.php</para>
 
       <programlisting>class COMPONENT_NAMEControllerCpanel extends FOFController
 
@@ -7299,7 +7687,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 
       <para>Create a view at
       &lt;administrator&gt;/views/cpanel/tmpl/default.php. If you use Akeeba
-      Strapper you can easily create icons: </para>
+      Strapper you can easily create icons:</para>
 
       <programlisting>&lt;?php
 // Protect from unauthorized access
@@ -7327,7 +7715,7 @@ $option = 'com_COMPONENT_NAME';
 </programlisting>
 
       <para>Customize the Cpanel toolbar creating a
-      &lt;administrator&gt;/toolbar.php file with: </para>
+      &lt;administrator&gt;/toolbar.php file with:</para>
 
       <programlisting>class COMPONENT_NAMEToolbar extends FOFToolbar
 {
@@ -7351,7 +7739,7 @@ $option = 'com_COMPONENT_NAME';
       <title>Automatic field validation</title>
 
       <para>You can perform automatic table checks based on database schema.
-      Let's say you have a table like this: </para>
+      Let's say you have a table like this:</para>
 
       <programlisting>CREATE TABLE IF NOT EXISTS `#__foobar_bars` (
   `foobar_bar_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -7363,7 +7751,7 @@ $option = 'com_COMPONENT_NAME';
 
       <para>As you can see, the optional_field is nullable, while the required
       one is not. To activate this feature, set the _autoChecks flag to true
-      in your table constructor: </para>
+      in your table constructor:</para>
 
       <programlisting>class FoobarTableBar extends FOFTable
 {
@@ -7380,15 +7768,15 @@ $option = 'com_COMPONENT_NAME';
       every field; if it's not-nullable and it's empty, the check fails and an
       error message is enqueued. FOF will create a token string that will be
       parsed by JText, following this convention:
-      COM_&lt;TABLENAME&gt;_ERR_&lt;FIELDNAME&gt; </para>
+      COM_&lt;TABLENAME&gt;_ERR_&lt;FIELDNAME&gt;</para>
 
-      <para>If you use the previous table, you'll have something like this:
-      </para>
+      <para>If you use the previous table, you'll have something like
+      this:</para>
 
-      <para>COM_FOOBAR_BAR_ERR_REQUIRED_FIELD </para>
+      <para>COM_FOOBAR_BAR_ERR_REQUIRED_FIELD</para>
 
       <para>If you want to skip any field from these automatic checks, simply
-      use this syntax in your table constructor: </para>
+      use this syntax in your table constructor:</para>
 
       <programlisting>$this-&gt;setSkipChecks(array('my_field_1', 'my_field_2'));
 </programlisting>
@@ -7398,13 +7786,13 @@ $option = 'com_COMPONENT_NAME';
       <title>Ordering submenu items without writing any code</title>
 
       <para>In the backend of your component, FoF creates automatically a
-      submenu with links to all your views. </para>
+      submenu with links to all your views.</para>
 
       <para>Normally they are sorted alphabetically, but you can add ordering
       information by placing a metadata.xml file in each view folder. E.g.
-      /components/com_todo/views/item/metadata.xml </para>
+      /components/com_todo/views/item/metadata.xml</para>
 
-      <para>The xml should be like the following: </para>
+      <para>The xml should be like the following:</para>
 
       <programlisting>&lt;metadata&gt;
      &lt;foflib&gt;
