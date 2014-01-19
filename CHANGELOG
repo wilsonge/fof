@@ -1,6 +1,7 @@
-FOF 2.1.2
+FOF 2.2.0
 ================================================================================
 + Refactored the Platform package to include filesystem abstraction
++ Simple ORM-like feature
 ~ Abstracting Joomla! Platform dependencies across the entire framework to make it easier to migrate to future Joomla! versions which may not be using the Joomla! Platform
 ~ FOFModel::onAfterLoadForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::onBeforePreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
