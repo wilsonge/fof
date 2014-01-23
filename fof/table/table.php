@@ -2490,9 +2490,9 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	protected function onAfterLoad(&$result)
 	{
 		// Call the behaviors
-		$eventRistult = $this->tableDispatcher->trigger('onAfterLoad', array(&$this, &$result));
+		$eventResult = $this->tableDispatcher->trigger('onAfterLoad', array(&$this, &$result));
 
-		if (in_array(false, $eventRistult, true))
+		if (in_array(false, $eventResult, true))
 		{
 			// Behavior failed, return false
 			$result = false;
