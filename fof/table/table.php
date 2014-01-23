@@ -930,7 +930,7 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		// Check that we have a result.
 		if (empty($row))
 		{
-			$result = true;
+			$result = false;
 
 			return $this->onAfterLoad($result);
 		}
