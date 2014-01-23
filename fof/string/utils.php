@@ -57,7 +57,7 @@ abstract class FOFStringUtils
 	 */
 	public static function toASCII($value)
 	{
-		$string = htmlentities(utf8_decode($value));
+		$string = htmlentities(utf8_decode($value), null, 'ISO-8859-1');
 		$string = preg_replace(
 			array('/&szlig;/', '/&(..)lig;/', '/&([aouAOU])uml;/', '/&(.)[^;]*;/'), array('ss', "$1", "$1" . 'e', "$1"), $string
 		);
