@@ -9,7 +9,8 @@ FOF 2.2.0
 ~ FOFModel::onAfterPreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::preprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 # [LOW] Notice in render/strapper.php
-# [LOW] #247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error
+# [LOW] gh-247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error
+# [LOW] gh-259 Joomla! 3.x uses labelclass instead of labelClass in JFormField
 # [MEDIUM] FOFTable::load() returns true if the record is not found
 # [HIGH] The published field is broken
 
