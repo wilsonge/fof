@@ -541,6 +541,11 @@ class FOFToolbar
 
 			$parentElement['items'][] = $linkDefinition;
 			$parentElement['dropdown'] = true;
+			
+			if($active)
+			{
+				$parentElement['active'] = true;
+			}
 
 			$this->linkbar[$parent] = $parentElement;
 		}
