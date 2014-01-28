@@ -34,10 +34,11 @@ class FOFFormHeaderModel extends FOFFormHeaderFieldselectable
 		// Initialize some field attributes.
 		$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
 		$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
-		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
 		$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
 		$modelName = (string) $this->element['model'];
 		$nonePlaceholder = (string) $this->element['none'];
+		$translate = empty($this->element['translate']) ? 'true' : (string) $this->element['translate'];
+		$translate = in_array(strtolower($translate), array('true','yes','1','on')) ? true : false;
 
 		if (!empty($nonePlaceholder))
 		{
