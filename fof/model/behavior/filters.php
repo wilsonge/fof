@@ -48,7 +48,7 @@ class FOFModelBehaviorFilters extends FOFModelBehavior
 			if ((is_array($filterState) && (
 					array_key_exists('value', $filterState) ||
 					array_key_exists('from', $filterState) ||
-					array_key_exists('to', $filterState) ||
+					array_key_exists('to', $filterState)
 				)) || is_object($filterState))
 			{
 				$options = new JRegistry($filterState);
