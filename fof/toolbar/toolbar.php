@@ -455,7 +455,12 @@ class FOFToolbar
         }
 
 		JToolBarHelper::save();
-		JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+		
+		if ($this->perms->create)
+		{
+			JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+		}
+		
 		JToolBarHelper::cancel();
 	}
 
