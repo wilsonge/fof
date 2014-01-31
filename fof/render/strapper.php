@@ -257,7 +257,7 @@ ENDJAVASCRIPT;
 
 						if ($item['link'])
 						{
-							echo "<a tabindex=\"-1\" href=\"" . $item['link'] . "\">" . $item['name'] . "</a>";
+							echo "<a href=\"" . $item['link'] . "\">" . $item['name'] . "</a>";
 						}
 						else
 						{
