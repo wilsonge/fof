@@ -16,6 +16,7 @@ FOF 2.2.0
 # [LOW] FOFStringUtils::toASCII didn't specify the character set for htmlentities, leading to unprintable output on PHP 5.4 for certain inputs
 # [LOW] gh-264 Submenu child dropdown didn't set the parent active
 # [LOW] gh-265 Language translation in model header field
+# [LOW] gh-268 Fix navigating submenu sub-items with tab
 # [MEDIUM] gh-262 FOFTable::load() returns true if the record is not found
 # [MEDIUM] gh-266 The between filter wouldn't work
 # [MEDIUM] gh-267 savenew implies that core.create privileges are necessary
