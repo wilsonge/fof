@@ -2801,6 +2801,7 @@ class FOFController extends FOFUtilsObject
 				}
 
 				$resource = FOFInflector::singularize($this->view);
+				$isEditState = ($area == 'core.edit.state');
 
 				foreach ($ids as $id)
 				{
@@ -2813,9 +2814,9 @@ class FOFController extends FOFUtilsObject
 						return true;
 					}
 
-					// Fallback on edit.own. First test if the permission is available.
+					// Fallback on edit.own, if not edit.state. First test if the permission is available.
 
-					if (FOFPlatform::getInstance()->authorise('core.edit.own', $asset))
+					if ((!$isEditState) && (FOFPlatform::getInstance()->authorise('core.edit.own', $asset)))
 					{
 						$table = $this->getThisModel()->getTable();
                         $table->load($id);
@@ -2845,6 +2846,8 @@ class FOFController extends FOFUtilsObject
 				}
 			}
 		}
+		
+		return false;
 	}
 
 	/**
