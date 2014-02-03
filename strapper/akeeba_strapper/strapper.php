@@ -261,7 +261,20 @@ class AkeebaStrapper
 		}
 		$loadBootstrap = self::getPreference('bootstrap_' . $key, $default);
 
-		if (!in_array($loadBootstrap, array('full','lite','none')))
+		if ($loadBootstrap == 'front')
+		{
+			if (in_array($key, array('joomla3', 'joomla32')))
+			{
+				$isFrontend = FOFPlatform::getInstance()->isFrontend();
+
+				$loadBootstrap = $isFrontend ? 'full' : 'lite';
+			}
+			else
+			{
+				$loadBootstrap = 'full';
+			}
+		}
+		elseif (!in_array($loadBootstrap, array('full','lite','none')))
 		{
 			if ($key == 'joomla3')
 			{
