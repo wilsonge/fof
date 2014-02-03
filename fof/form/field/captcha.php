@@ -8,7 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-JFormHelper::loadFieldClass('text');
+JFormHelper::loadFieldClass('captcha');
 
 /**
  * Form Field class for the FOF framework
