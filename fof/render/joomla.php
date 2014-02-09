@@ -52,8 +52,10 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		{
 			// Wrap output in a Joomla-versioned div
 			$version = new JVersion;
-			$version = str_replace('.', '', $version->RELEASE);
-			echo "<div class=\"joomla-version-$version\">\n";
+			$versionParts = explode('.', $version->RELEASE);
+			$minorVersion = str_replace('.', '', $version->RELEASE);
+			$majorVersion = array_shift($versionParts);
+			echo "<div class=\"joomla-version-$majorVersion joomla-version-$minorVersion\">\n";
 		}
 
 		// Render submenu and toolbar (only if asked to)
