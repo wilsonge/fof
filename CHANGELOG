@@ -3,6 +3,7 @@ FOF 2.2.0
 + Refactored the Platform package to include filesystem abstraction
 + gh-261 FOFDatabaseIterator to make it easier to iterate through large lists of records, cast as FOFTable objects
 + gh-261 Simple ORM-like feature
++ Added major Joomla! version class to HTML output
 ~ Abstracting Joomla! Platform dependencies across the entire framework to make it easier to migrate to future Joomla! versions which may not be using the Joomla! Platform (gh-240 gh-241 gh-243 gh-244 gh-245 gh-248 gh-249 gh-250 gh-251 gh-252 gh-253 gh-254 gh-255 gh-256)
 ~ FOFModel::onAfterLoadForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::onBeforePreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
