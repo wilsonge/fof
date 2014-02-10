@@ -1830,7 +1830,8 @@ class FOFController extends FOFUtilsObject
 		if ($this->redirect)
 		{
 			$app = JFactory::getApplication();
-			$app->redirect($this->redirect, $this->message, $this->messageType);
+			$app->enqueueMessage($this->message, $this->messageType);
+			$app->redirect($this->redirect);
 
 			return true;
 		}
