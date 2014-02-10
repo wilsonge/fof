@@ -1634,7 +1634,6 @@ class FOFController extends FOFUtilsObject
 	public function saveorder()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1647,8 +1646,9 @@ class FOFController extends FOFUtilsObject
 			$model->setIDsFromRequest();
 		}
 
-		$ids = $model->getIds();
-		$orders = $this->input->get('order', array(), 'array');
+        $ordering = $model->getTable()->getColumnAlias('ordering');
+		$ids      = $model->getIds();
+		$orders   = $this->input->get('order', array(), 'array');
 
 		if ($n = count($ids))
 		{
@@ -1668,7 +1668,7 @@ class FOFController extends FOFUtilsObject
 
 				if ($item->$key == $ids[$i])
 				{
-					$item->ordering = $neworder;
+					$item->$ordering = $neworder;
 					$model->save($item);
 				}
 			}
@@ -1677,7 +1677,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->reorder();
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
