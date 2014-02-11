@@ -3,12 +3,13 @@ FOF 2.2.0
 + Refactored the Platform package to include filesystem abstraction
 + gh-261 FOFDatabaseIterator to make it easier to iterate through large lists of records, cast as FOFTable objects
 + gh-261 Simple ORM-like feature
-+ Added major Joomla! version class to HTML output
++ gh-274 Added major Joomla! version class to HTML output when using Strapper or Joomla! 3.x
 ~ Abstracting Joomla! Platform dependencies across the entire framework to make it easier to migrate to future Joomla! versions which may not be using the Joomla! Platform (gh-240 gh-241 gh-243 gh-244 gh-245 gh-248 gh-249 gh-250 gh-251 gh-252 gh-253 gh-254 gh-255 gh-256)
 ~ FOFModel::onAfterLoadForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::onBeforePreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::onAfterPreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::preprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
+~ gh-278 Made $app->redirect() not use the deprecated API
 # [LOW] Notice in render/strapper.php
 # [LOW] gh-246 Fix wrong singularize result for word "menus"
 # [LOW] gh-247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error
@@ -19,9 +20,12 @@ FOF 2.2.0
 # [LOW] gh-265 Language translation in model header field
 # [LOW] gh-268 Fix navigating submenu sub-items with tab
 # [LOW] gh-269 core.edit.state != core.edit.own for own records
+# [LOW] gh-271 Wrong requirement for FOFFormFieldTag, FOFFormFieldModel and FOFFormFieldCaptcha
 # [MEDIUM] gh-262 FOFTable::load() returns true if the record is not found
 # [MEDIUM] gh-266 The between filter wouldn't work
 # [MEDIUM] gh-267 savenew implies that core.create privileges are necessary
+# [MEDIUM] gh-280 FOFFormFieldSelectrow shows fields owned by self as locked
+# [MEDIUM] gh-279 The saveorder method in FOFController doesn't respect the 'ordering' field aliases
 # [HIGH] The published field is broken
 
 FOF 2.1.1
