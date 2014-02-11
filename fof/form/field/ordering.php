@@ -140,7 +140,13 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 				$html .= '<span class="sortable-handler ' . $disableClassName . '" title="' . $disabledLabel . '" rel="tooltip">';
 				$html .= '<i class="icon-menu"></i>';
 				$html .= '</span>';
-				$html .= '<input type="text" style="display:none"  name="order[]" size="5"';
+				$html .= '<input type="text" name="order[]" size="5" class="input-mini text-area-order" ';
+
+				if (!$hasAjaxOrderingSupport)
+				{
+					$html .= 'disabled="disabled" ';
+				}
+
 				$html .= 'value="' . $this->value . '"  class="input-mini text-area-order " />';
 			}
 			else

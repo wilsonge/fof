@@ -10,6 +10,7 @@ FOF 2.2.0
 ~ FOFModel::onAfterPreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ FOFModel::preprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
 ~ gh-278 Made $app->redirect() not use the deprecated API
+~ AJAX ordering now shows the ordering value textbox next to the ordering handle
 # [LOW] Notice in render/strapper.php
 # [LOW] gh-246 Fix wrong singularize result for word "menus"
 # [LOW] gh-247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error

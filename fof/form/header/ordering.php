@@ -46,8 +46,8 @@ class FOFFormHeaderOrdering extends FOFFormHeader
 		}
 		else
 		{
-			// The new, drag'n'drop ordering support
-			return JHtml::_(
+			// The new, drag'n'drop ordering support WITH a save order button
+			$html = JHtml::_(
 				'grid.sort',
 				'<i class="icon-menu-2"></i>',
 				'ordering',
@@ -57,6 +57,12 @@ class FOFFormHeaderOrdering extends FOFFormHeader
 				'asc',
 				'JGRID_HEADING_ORDERING'
 			);
+
+			$html .= '<a href="javascript:saveorder(' . (count($model->getList()) - 1) . ', \'saveorder\')" ' .
+				'rel="tooltip" class="btn btn-micro pull-right" title="' . JText::_('JLIB_HTML_SAVE_ORDER') . '">'
+				. '<span class="icon-ok"></span></a>';
+
+			return $html;
 		}
 	}
 }
