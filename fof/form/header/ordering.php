@@ -59,7 +59,7 @@ class FOFFormHeaderOrdering extends FOFFormHeader
 			);
 
 			$html .= '<a href="javascript:saveorder(' . (count($model->getList()) - 1) . ', \'saveorder\')" ' .
-				'rel="tooltip" class="btn btn-micro pull-right" title="' . JText::_('JLIB_HTML_SAVE_ORDER') . '">'
+				'rel="tooltip" class="save-order btn btn-micro pull-right" title="' . JText::_('JLIB_HTML_SAVE_ORDER') . '">'
 				. '<span class="icon-ok"></span></a>';
 
 			return $html;
