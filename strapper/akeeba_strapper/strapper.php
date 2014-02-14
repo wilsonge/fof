@@ -230,7 +230,7 @@ class AkeebaStrapper
 		$theme = self::getPreference('jquery_theme', self::$jqUItheme);
 
 		self::addJSfile('media://akeeba_strapper/js/akeebajqui.js', AKEEBASTRAPPER_MEDIATAG);
-		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.css", AKEEBASTRAPPER_MEDIATAG);
+		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.min.css", AKEEBASTRAPPER_MEDIATAG);
     }
 
     /**
@@ -314,7 +314,7 @@ class AkeebaStrapper
 			$source = 'css';
 		}
 
-        $altCss = array('media://akeeba_strapper/css/strapper.css');
+        $altCss = array('media://akeeba_strapper/css/strapper.min.css');
 
         if ($loadBootstrap == 'full')
         {
@@ -348,7 +348,7 @@ class AkeebaStrapper
 					break;
 			}
 
-            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.css');
+            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.min.css');
 			if ($source == 'less')
 			{
 				self::addLESSfile('media://akeeba_strapper/less/bootstrap' . $qualifier . '.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
