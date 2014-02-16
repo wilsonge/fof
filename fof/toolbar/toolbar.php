@@ -420,7 +420,7 @@ class FOFToolbar
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . $this->input->getCmd('view', 'cpanel') . '_READ');
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ' &ndash; <small>' . JText::_($subtitle_key) . '</small>', $componentName);
+		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		// Set toolbar icons
 		JToolBarHelper::back();
@@ -444,7 +444,7 @@ class FOFToolbar
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . FOFInflector::pluralize($this->input->getCmd('view', 'cpanel'))) . '_EDIT';
-		JToolBarHelper::title(JText::_(strtoupper($option)) . ' &ndash; <small>' . JText::_($subtitle_key) . '</small>', $componentName);
+		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		// Set toolbar icons
         if ($this->perms->edit || $this->perms->editown)
@@ -790,7 +790,6 @@ class FOFToolbar
 		{
 			case 'title':
 				$icon = isset($attributes['icon']) ? $attributes['icon'] : 'generic.png';
-
 				JToolbarHelper::title($value, $icon);
 				break;
 

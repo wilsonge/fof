@@ -12,6 +12,7 @@ FOF 2.2.0
 ~ gh-278 Made $app->redirect() not use the deprecated API
 ~ AJAX ordering now shows the ordering value textbox next to the ordering handle
 ~ Minified Akeeba Strapper stylesheets
+~ Use same markup for toolbar title as Joomla! core
 # [LOW] Notice in render/strapper.php
 # [LOW] gh-246 Fix wrong singularize result for word "menus"
 # [LOW] gh-247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error
