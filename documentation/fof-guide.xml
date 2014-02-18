@@ -3081,8 +3081,8 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
             <row>
               <entry align="left"><methodname>edit</methodname></entry>
 
-              <entry><filename>item.php</filename> OR
-              <filename>form.item.xml</filename></entry>
+              <entry><filename>form.php</filename> OR
+              <filename>form.form.xml</filename></entry>
 
               <entry>This is the file that shows the data of a single record
               without being able to edit the record</entry>
@@ -3091,8 +3091,8 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
             <row>
               <entry align="left"><methodname>read</methodname></entry>
 
-              <entry><filename>form.php</filename> OR
-              <filename>form.form.xml</filename></entry>
+              <entry><filename>item.php</filename> OR
+              <filename>form.item.xml</filename></entry>
 
               <entry>This is the file that shows the edit page</entry>
             </row>
