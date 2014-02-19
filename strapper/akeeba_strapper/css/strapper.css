@@ -1,4 +1,4 @@
-/**
+/*!
  * Akeeba Strapper
  * A handy distribution of namespaced jQuery, jQuery UI and Twitter
  * Bootstrapper for use with Akeeba components.
@@ -35,8 +35,18 @@ div.akeeba-bootstrap td.order a.jgrid span.state {
 div.akeeba-bootstrap td.order a.jgrid span.state span.text {
   line-height: 16px;
 }
-div.akeeba-bootstrap td.order input.text_area {
+div.akeeba-bootstrap td.order input.text-area-order {
+  margin-bottom: 0;
   width: 20px;
+}
+div.akeeba-bootstrap td.order .sortable-handler {
+  display: block;
+  float: left;
+  margin: 1px 0 0 0;
+  padding: 5px 5px;
+}
+div.akeeba-bootstrap th a.save-order {
+  height: 19px;
 }
 div.akeeba-bootstrap div.ak_clr_left {
   clear: left;
