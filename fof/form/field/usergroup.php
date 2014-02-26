@@ -125,8 +125,6 @@ class FOFFormFieldUsergroup extends JFormFieldUsergroup implements FOFFormField
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
-		//$params = $this->getOptions();
-
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
@@ -140,19 +138,6 @@ class FOFFormFieldUsergroup extends JFormFieldUsergroup implements FOFFormField
 		$db->setQuery($query);
 		$options = $db->loadObjectList();
 
-		// If params is an array, push these options to the array
-/*
-		if (is_array($params))
-		{
-			$options = array_merge($params, $options);
-		}
-
-		// If all levels is allowed, push it into the array.
-		elseif ($params)
-		{
-			array_unshift($options, JHtml::_('select.option', '', JText::_('JOPTION_ACCESS_SHOW_ALL_LEVELS')));
-		}
-*/
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
 			htmlspecialchars(FOFFormFieldList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
