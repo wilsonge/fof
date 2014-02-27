@@ -775,6 +775,46 @@ class FOFIntegrationJoomlaPlatform extends FOFPlatform implements FOFPlatformInt
 		$authenticate = JAuthentication::getInstance();
 		$response = $authenticate->authenticate($authInfo, $options);
 
+        // User failed to authenticate: maybe he enabled two factor authentication?
+        // Let's try again "manually", skipping the check vs two factor auth
+        // Due the big mess with encryption algorithms and libraries, we are doing this extra check only
+        // if we're in Joomla 2.5.18+ or 3.2.1+
+        if($response->status != JAuthentication::STATUS_SUCCESS && method_exists('JUserHelper', 'verifyPassword'))
+        {
+            $db    = JFactory::getDbo();
+            $query = $db->getQuery(true)
+                        ->select('id, password')
+                        ->from('#__users')
+                        ->where('username=' . $db->quote($authInfo['username']));
+            $result = $db->setQuery($query)->loadObject();
+
+            if ($result)
+            {
+
+                $match = JUserHelper::verifyPassword($authInfo['password'], $result->password, $result->id);
+
+                if ($match === true)
+                {
+                    // Bring this in line with the rest of the system
+                    $user = JUser::getInstance($result->id);
+                    $response->email = $user->email;
+                    $response->fullname = $user->name;
+
+                    if (JFactory::getApplication()->isAdmin())
+                    {
+                        $response->language = $user->getParam('admin_language');
+                    }
+                    else
+                    {
+                        $response->language = $user->getParam('language');
+                    }
+
+                    $response->status = JAuthentication::STATUS_SUCCESS;
+                    $response->error_message = '';
+                }
+            }
+        }
+
 		if ($response->status == JAuthentication::STATUS_SUCCESS)
 		{
 			$this->importPlugin('user');
