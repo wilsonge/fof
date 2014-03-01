@@ -2234,9 +2234,10 @@ class FOFController extends FOFUtilsObject
 		{
 			$config = (array) $config;
 		}
-		elseif (!is_array($config))
+		elseif (!is_array($config) || empty($config))
 		{
-			$config = array();
+			// array_merge is required to create a copy instead of assigning by reference
+			$config = array_merge($this->config);
 		}
 
 		if (empty($name))
@@ -2292,9 +2293,10 @@ class FOFController extends FOFUtilsObject
 			{
 				$config = (array) $config;
 			}
-			elseif (!is_array($config))
+			elseif (!is_array($config) || empty($config))
 			{
-				$config = array();
+				// array_merge is required to create a copy instead of assigning by reference
+				$config = array_merge($this->config);
 			}
 
 			$prefix = null;
