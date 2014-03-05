@@ -202,7 +202,12 @@ class AkeebaStrapper
             return;
 		}
 
-		if (version_compare(JVERSION, '3.0', 'gt'))
+		if (version_compare(JVERSION, '3.2', 'gt'))
+		{
+			$key = 'joomla32';
+			$default = 'lite';
+		}
+		elseif (version_compare(JVERSION, '3.0', 'gt'))
 		{
 			$key = 'joomla3';
 			$default = 'lite';
@@ -217,6 +222,10 @@ class AkeebaStrapper
 		if (!in_array($loadBootstrap, array('full','lite','none')))
 		{
 			if ($key == 'joomla3')
+			{
+				$loadBootstrap = 'lite';
+			}
+			elseif ($key == 'joomla32')
 			{
 				$loadBootstrap = 'lite';
 			}
@@ -262,10 +271,25 @@ class AkeebaStrapper
         }
         else
         {
-            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.j3.css');
+			switch ($key)
+			{
+				case 'joomla3':
+					$qualifier = '.j3';
+					break;
+
+				case 'joomla32':
+					$qualifier = '.j32';
+					break;
+
+				default:
+					$qualifier = '';
+					break;
+			}
+
+            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.css');
 			if ($source == 'less')
 			{
-				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap.j3.less', $altCss);
+				self::$lessURLs[] = array('media://akeeba_strapper/less/bootstrap' . $qualifier . '.less', $altCss);
 			}
         }
 

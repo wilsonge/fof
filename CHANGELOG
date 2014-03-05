@@ -1,0 +1,46 @@
+FOF 2.1.rc4
+================================================================================
++ Added DTD for XML forms under documentation/form.dtd
++ Add Joomla formatter for FOFLess
++ 'btn' class assigned to buttons of fieldsearchable by default (adheres to Joomla! 3 styling guidelines)
++ Using icons for fieldsearchable's search/reset buttons
+~ Update to lessc 0.3.9
+~ FOF table caching now respects Joomla! caching options (is it enabled, cache handler and cache lifetime).
+# Error when deleting entry of FOFTable which is using assets
+# jquery.ui.tooltip.js in AkeebaStrapper::jQueryUI() breaks Joomla 3 tooltip
+# JHtml::_('behavior.multiselect') must be loaded in Joomla 2.5 and for FOFRenderJoomla
+# Unable to add component-specific behaviours to models
+# Fix loadTemplate behaviour on J3+
+# When the table cache reports a table as non-existent (e.g. the server failed to reply to SHOW TABLES) you had to clean the cache to see the table in FOF
+! JFormField changes in Joomla! 3.2 Beta 1 broke FOF form fields
+
+Backwards compatibility notes
+----------------------------------------
+* Since Joomla! 3.2 Beta 1 JFormField comes with a magic __set method which drops
+  property assignments of any property JFormField is not aware of. This means that
+  in order for your custom fields to work you need to add the following two public
+  variables in your custom field class:
+
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
+	public $item;
+	
+	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
+	public $rowid;
+
+  Failure to include them will result in an error message when trying to use your
+  custom field in a browse form.
+
+Note for older versions
+================================================================================
+ FOF 2.1.rc3 is the first version of FOF shipped with Joomla! itself. Changes
+ prior to this (i.e. changes before October 9th, 2013) were not tracked in this
+ changelog.
+
+*** LEGEND ***
+================================================================================
++ New feature or addition (no b/c issues)
+- Feature removal
+~ Small change (no b/c issues)
+# Bug fix (no b/c or security issues)
+$ Security bug fix (b/c issues possible; check description)
+! Major change or bug fix (b/c issues)

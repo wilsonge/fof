@@ -1,16 +1,17 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  less
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 /**
  * This class is taken near verbatim (changes marked with **FOF** comment markers) from:
  *
- * lessphp v0.3.8
+ * lessphp v0.3.9
  * http://leafo.net/lessphp
  *
  * LESS css compiler, adapted from http://lesscss.org
@@ -26,7 +27,7 @@ defined('_JEXEC') or die();
  */
 class FOFLess
 {
-	public static $VERSION = "v0.3.8";
+	public static $VERSION = "v0.3.9";
 
 	protected static $TRUE = array("keyword", "true");
 
@@ -389,6 +390,7 @@ class FOFLess
 			{
 				break;
 			}
+
 			$scope = $scope->parent;
 		}
 
@@ -456,9 +458,9 @@ class FOFLess
 	 */
 	protected function sortProps($props, $split = false)
 	{
-		$vars = array();
+		$vars    = array();
 		$imports = array();
-		$other = array();
+		$other   = array();
 
 		foreach ($props as $prop)
 		{
@@ -475,10 +477,10 @@ class FOFLess
 					}
 					break;
 				case "import":
-					$id = self::$nextImportId++;
-					$prop[] = $id;
+					$id        = self::$nextImportId++;
+					$prop[]    = $id;
 					$imports[] = $prop;
-					$other[] = array("import_mixin", $id);
+					$other[]   = array("import_mixin", $id);
 					break;
 				default:
 					$other[] = $prop;
@@ -528,6 +530,9 @@ class FOFLess
 							$parts[] = "($q[1])";
 						}
 						break;
+					case "variable":
+						$parts[] = $this->compileValue($this->reduce($q));
+						break;
 				}
 			}
 
@@ -544,6 +549,7 @@ class FOFLess
 			$out .= " " .
 				implode($this->formatter->selectorSeparator, $compiledQueries);
 		}
+
 		return $out;
 	}
 
@@ -557,11 +563,9 @@ class FOFLess
 	 */
 	protected function multiplyMedia($env, $childQueries = null)
 	{
-		if (
-			is_null($env)
+		if (is_null($env)
 			|| !empty($env->block->type)
-			&& $env->block->type != "media"
-		)
+			&& $env->block->type != "media")
 		{
 			return $childQueries;
 		}
@@ -611,6 +615,7 @@ class FOFLess
 			$part = str_replace($this->parentSelector, $replace, $part, $c);
 			$count += $c;
 		}
+
 		$tag = implode($this->parentSelector, $parts);
 
 		return $count;
@@ -633,6 +638,7 @@ class FOFLess
 				$selectors = $env->selectors;
 				break;
 			}
+
 			$env = $env->parent;
 		}
 
@@ -702,7 +708,7 @@ class FOFLess
 			if (is_array($s))
 			{
 				list(, $value) = $s;
-				$out[] = $this->compileValue($this->reduce($value));
+				$out[] = trim($this->compileValue($this->reduce($value)));
 			}
 			else
 			{
@@ -968,6 +974,7 @@ class FOFLess
 				$this->set($a[1], $value);
 				$assignedValues[] = $value;
 			}
+
 			$i++;
 		}
 
@@ -1056,12 +1063,10 @@ class FOFLess
 
 					foreach ($this->sortProps($mixin->props) as $subProp)
 					{
-						if (
-							$suffix !== null
+						if ($suffix !== null
 							&& $subProp[0] == "assign"
 							&& is_string($subProp[1])
-							&& $subProp[1]{0} != $this->vPrefix
-						)
+							&& $subProp[1]{0} != $this->vPrefix)
 						{
 							$subProp[2] = array(
 								'list', ' ',
@@ -1160,6 +1165,7 @@ class FOFLess
 				{
 					return $this->compileValue($this->coerceColor($value));
 				}
+
 				return $value[1];
 			case 'keyword':
 				// [1] - the keyword
@@ -1172,6 +1178,7 @@ class FOFLess
 				{
 					$num = round($num, $this->numberPrecision);
 				}
+
 				return $num . $unit;
 			case 'string':
 				// [1] - contents of string (includes quotes)
@@ -1184,6 +1191,7 @@ class FOFLess
 						$part = $this->compileValue($part);
 					}
 				}
+
 				return $delim . implode($content) . $delim;
 			case 'color':
 				/**
@@ -1314,6 +1322,18 @@ class FOFLess
 	}
 
 	/**
+	 * Lib is rem
+	 *
+	 * @param   type  $value  X
+	 *
+	 * @return  boolean
+	 */
+	protected function lib_isrem($value)
+	{
+		return $this->toBool($value[0] == "number" && $value[2] == "rem");
+	}
+
+	/**
 	 * LIb rgba hex
 	 *
 	 * @param   type  $color  X
@@ -1323,6 +1343,7 @@ class FOFLess
 	protected function lib_rgbahex($color)
 	{
 		$color = $this->coerceColor($color);
+
 		if (is_null($color))
 		{
 			$this->throwError("color expected for rgbahex");
@@ -1464,6 +1485,26 @@ class FOFLess
 	}
 
 	/**
+	 * Lib unit
+	 *
+	 * @param   type  $arg  X
+	 *
+	 * @return  array
+	 */
+	protected function lib_unit($arg)
+	{
+		if ($arg[0] == "list")
+		{
+			list($number, $newUnit) = $arg[2];
+			return array("number", $this->assertNumber($number), $this->compileValue($this->lib_e($newUnit)));
+		}
+		else
+		{
+			return array("number", $this->assertNumber($arg), "");
+		}
+	}
+
+	/**
 	 * Helper function to get arguments for color manipulation functions.
 	 * takes a list that contains a color like thing and a percentage
 	 *
@@ -1477,6 +1518,7 @@ class FOFLess
 		{
 			return array(array('color', 0, 0, 0), 0);
 		}
+
 		list($color, $delta) = $args[2];
 		$color = $this->assertColor($color);
 		$delta = floatval($delta[1]);
@@ -1734,6 +1776,35 @@ class FOFLess
 		}
 
 		return $this->fixColor($new);
+	}
+
+	/**
+	 * Third party code; your guess is as good as mine
+	 *
+	 * @param   array  $arg  Arg
+	 *
+	 * @return  string
+	 */
+	protected function lib_contrast($args)
+	{
+		if ($args[0] != 'list' || count($args[2]) < 3)
+		{
+			return array(array('color', 0, 0, 0), 0);
+		}
+
+		list($inputColor, $darkColor, $lightColor) = $args[2];
+
+		$inputColor = $this->assertColor($inputColor);
+		$darkColor = $this->assertColor($darkColor);
+		$lightColor = $this->assertColor($lightColor);
+		$hsl = $this->toHSL($inputColor);
+
+		if ($hsl[3] > 50)
+		{
+			return $darkColor;
+		}
+
+		return $lightColor;
 	}
 
 	/**
@@ -2033,6 +2104,7 @@ class FOFLess
 
 				$i++;
 			}
+
 			while (count($components) < 3)
 			{
 				$components[] = 0;
@@ -2058,9 +2130,19 @@ class FOFLess
 	{
 		switch ($value[0])
 		{
+			case "interpolate":
+				$reduced = $this->reduce($value[1]);
+				$var     = $this->compileValue($reduced);
+				$res     = $this->reduce(array("variable", $this->vPrefix . $var));
+
+				if (empty($value[2]))
+				{
+					$res = $this->lib_e($res);
+				}
+
+				return $res;
 			case "variable":
 				$key = $value[1];
-
 				if (is_array($key))
 				{
 					$key = $this->reduce($key);
@@ -2084,6 +2166,7 @@ class FOFLess
 				{
 					$item = $this->reduce($item, $forExpression);
 				}
+
 				return $value;
 			case "expression":
 				return $this->evaluate($value);
@@ -2101,6 +2184,7 @@ class FOFLess
 						}
 					}
 				}
+
 				return $value;
 			case "escape":
 				list(, $inner) = $value;
@@ -2229,10 +2313,16 @@ class FOFLess
 
 				if (isset(self::$cssColors[$name]))
 				{
-					list($r, $g, $b) = explode(',', self::$cssColors[$name]);
+					$rgba = explode(',', self::$cssColors[$name]);
 
-					return array('color', $r, $g, $b);
+					if (isset($rgba[3]))
+					{
+						return array('color', $rgba[0], $rgba[1], $rgba[2], $rgba[3]);
+					}
+
+					return array('color', $rgba[0], $rgba[1], $rgba[2]);
 				}
+
 				return null;
 		}
 	}
@@ -2253,6 +2343,7 @@ class FOFLess
 			case "keyword":
 				return array("string", "", array($value[1]));
 		}
+
 		return null;
 	}
 
@@ -2269,6 +2360,7 @@ class FOFLess
 		{
 			return $this->flattenList($value[2][0]);
 		}
+
 		return $value;
 	}
 
@@ -2379,6 +2471,7 @@ class FOFLess
 			{
 				$right[1] = "";
 			}
+
 			$strLeft[2][] = $right;
 
 			return $strLeft;
@@ -2498,7 +2591,65 @@ class FOFLess
 					$this->throwError('evaluate error: color op number failed on op ' . $op);
 			}
 		}
+
 		return $this->fixColor($out);
+	}
+
+	/**
+	 * Lib red
+	 *
+	 * @param   type  $color  X
+	 *
+	 * @return  type
+	 */
+	public function lib_red($color)
+	{
+		$color = $this->coerceColor($color);
+
+		if (is_null($color))
+		{
+			$this->throwError('color expected for red()');
+		}
+
+		return $color[1];
+	}
+
+	/**
+	 * Lib green
+	 *
+	 * @param   type  $color  X
+	 *
+	 * @return  type
+	 */
+	public function lib_green($color)
+	{
+		$color = $this->coerceColor($color);
+
+		if (is_null($color))
+		{
+			$this->throwError('color expected for green()');
+		}
+
+		return $color[2];
+	}
+
+	/**
+	 * Lib blue
+	 *
+	 * @param   type  $color  X
+	 *
+	 * @return  type
+	 */
+	public function lib_blue($color)
+	{
+		$color = $this->coerceColor($color);
+
+		if (is_null($color))
+		{
+			$this->throwError('color expected for blue()');
+		}
+
+		return $color[3];
 	}
 
 	/**
@@ -2535,6 +2686,7 @@ class FOFLess
 				{
 					$this->throwError('parse error: divide by zero');
 				}
+
 				$value = $left[1] / $right[1];
 				break;
 			case '<':
@@ -2656,6 +2808,8 @@ class FOFLess
 	 * Inject array of unparsed strings into environment as variables
 	 *
 	 * @param   type  $args  X
+	 *
+	 * @return  void
 	 *
 	 * @throws  Exception
 	 */
@@ -2795,6 +2949,7 @@ class FOFLess
 
 			return true;
 		}
+
 		return false;
 	}
 
@@ -2985,7 +3140,7 @@ class FOFLess
 	/**
 	 * Set preserve comments
 	 *
-	 * @param   type   $preserve  X
+	 * @param   type  $preserve  X
 	 *
 	 * @return  void
 	 */
@@ -3103,6 +3258,7 @@ class FOFLess
 		{
 			$this->sourceParser->throwError($msg, $this->sourceLoc);
 		}
+
 		throw new exception($msg);
 	}
 
@@ -3122,6 +3278,7 @@ class FOFLess
 		{
 			$less = new self;
 		}
+
 		return $less->checkedCompile($in, $out);
 	}
 
@@ -3140,6 +3297,7 @@ class FOFLess
 		{
 			$less = new self;
 		}
+
 		return $less->cachedCompile($in, $force);
 	}
 
@@ -3284,6 +3442,7 @@ class FOFLess
 		'teal'					 => '0,128,128',
 		'thistle'				 => '216,191,216',
 		'tomato'				 => '255,99,71',
+		'transparent'			 => '0,0,0,0',
 		'turquoise'				 => '64,224,208',
 		'violet'				 => '238,130,238',
 		'wheat'					 => '245,222,179',
@@ -3292,5 +3451,4 @@ class FOFLess
 		'yellow'				 => '255,255,0',
 		'yellowgreen'			 => '154,205,50'
 	);
-
 }

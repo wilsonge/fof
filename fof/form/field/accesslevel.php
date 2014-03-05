@@ -1,11 +1,13 @@
 <?php
 /**
  * @package    FrameworkOnFramework
+ * @subpackage form
+ * @subpackage form
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 if (!class_exists('JFormFieldAccessLevel'))
 {
@@ -24,6 +26,12 @@ class FOFFormFieldAccesslevel extends JFormFieldAccessLevel implements FOFFormFi
 	protected $static;
 
 	protected $repeatable;
+	
+	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
+	public $rowid;
+	
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
+	public $item;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.

@@ -1,11 +1,12 @@
 <?php
 /**
  * @package    FrameworkOnFramework
+ * @subpackage form
  * @copyright  Copyright (C) 2010 - 2013 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 if (!class_exists('JFormFieldList'))
 {
@@ -26,6 +27,12 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 	protected $repeatable;
 
 	public $client_ids = null;
+	
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
+	public $item;
+	
+	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
+	public $rowid;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -169,8 +176,10 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 
 		// Reorder the components array, because the alphabetical
 		// ordering changed due to the JText::_() translation
-		uasort($aComponents, function ($a, $b) {
-			return strcasecmp($a->text, $b->text);
+		uasort(
+			$aComponents,
+			function ($a, $b) {
+				return strcasecmp($a->text, $b->text);
 			}
 		);
 

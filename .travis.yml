@@ -1,0 +1,28 @@
+language: php
+php:
+  - 5.4
+  - 5.3
+
+env:
+  - JVERSION_TEST=3.1
+
+branches:
+  only:
+    - development
+
+before_script:
+  - pear channel-discover pear.phpunit.de
+  - pear install phpunit/DbUnit
+  - mysql -e 'create database fof_test;'
+  - if [[ "$JVERSION_TEST" == "2.5" ]]; then cp tests/environments/2.5/joomla.sql joomla.sql; fi
+  - if [[ "$JVERSION_TEST" == "3.1" ]]; then cp tests/environments/3.1/joomla.sql joomla.sql; fi
+  - mysql fof_test < joomla.sql
+  - cp build/templates/include.php fof/include.php
+
+after_script:
+  - cat tests/debug.txt
+
+notifications:
+  email: false
+
+script: phpunit --bootstrap=tests/unit/bootstrap.php tests

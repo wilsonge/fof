@@ -1,11 +1,12 @@
 <?php
 /**
  * @package    FrameworkOnFramework
+ * @subpackage form
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 JFormHelper::loadFieldClass('text');
 
@@ -18,10 +19,15 @@ JFormHelper::loadFieldClass('text');
  */
 class FOFFormFieldText extends JFormFieldText implements FOFFormField
 {
-
 	protected $static;
 
 	protected $repeatable;
+	
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
+	public $item;
+	
+	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
+	public $rowid;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -111,22 +117,27 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		{
 			$class = (string) $this->element['class'];
 		}
+
 		if ($this->element['format'])
 		{
 			$format_string = (string) $this->element['format'];
 		}
+
 		if ($this->element['show_link'] == 'true')
 		{
 			$show_link = true;
 		}
+
 		if ($this->element['format_if_not_empty'] == 'true')
 		{
 			$format_if_not_empty = true;
 		}
+
 		if ($this->element['parse_value'] == 'true')
 		{
 			$parse_value = true;
 		}
+
 		if ($this->element['url'])
 		{
 			$link_url = $this->element['url'];
@@ -135,6 +146,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		{
 			$show_link = false;
 		}
+
 		if ($show_link && ($this->item instanceof FOFTable))
 		{
 			$link_url = $this->parseFieldTags($link_url);
@@ -151,6 +163,7 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 
 		// Get the (optionally formatted) value
 		$value = $this->value;
+
 		if (!empty($empty_replacement) && empty($this->value))
 		{
 			$value = JText::_($empty_replacement);
@@ -191,6 +204,13 @@ class FOFFormFieldText extends JFormFieldText implements FOFFormField
 		return $html;
 	}
 
+	/**
+	 * Replace string with tags that reference fields
+	 *
+	 * @param   string  $text  Text to process
+	 *
+	 * @return  string         Text with tags replace
+	 */
 	protected function parseFieldTags($text)
 	{
 		$ret = $text;

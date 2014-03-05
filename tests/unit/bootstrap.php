@@ -38,18 +38,26 @@ if(function_exists('date_default_timezone_get') && function_exists('date_default
 // Required by older versions of the CMS
 define('DS', DIRECTORY_SEPARATOR);
 
-// Load configuration
-require_once __DIR__ . '/../config.php';
+//Am I in Travis CI?
+if(getenv('TRAVIS'))
+{
+	require_once __DIR__ . '/../config_travis.php';
+	$siteroot = $fofTestConfig[getenv('JVERSION_TEST')];
+}
+else
+{
+	require_once __DIR__ . '/../config.php';
 
-// Load system defines
-$siteroot = $fofTestConfig['site_root'];
+	// Load system defines
+	$siteroot = $fofTestConfig['site_root'];
+}
 
 if (file_exists($siteroot . '/defines.php')) {
-        include_once $siteroot . '/defines.php';
+	include_once $siteroot . '/defines.php';
 }
 if (!defined('_JDEFINES')) {
-        define('JPATH_BASE', $siteroot);
-        require_once JPATH_BASE . '/includes/defines.php';
+	define('JPATH_BASE', $siteroot);
+	require_once JPATH_BASE . '/includes/defines.php';
 }
 
 if (!defined('JPATH_TESTS'))
@@ -57,15 +65,14 @@ if (!defined('JPATH_TESTS'))
 	define('JPATH_TESTS', realpath(__DIR__ . '/..'));
 }
 
-// Import the platform in legacy mode.
+// In 3.x this file is still here, but if I require the import.php  I get errors with the session table
+// (path not found)
 if (file_exists(JPATH_LIBRARIES . '/import.legacy.php'))
 {
-	// Joomla! 2.5
 	require_once JPATH_LIBRARIES . '/import.legacy.php';
 }
 else
 {
-	// Joomla! 3.x
 	require_once JPATH_LIBRARIES . '/import.php';
 }
 
@@ -79,6 +86,7 @@ $importer->importdb();
 
 // Register the FOF test classes.
 JLoader::registerPrefix('Ftest', JPATH_TESTS . '/unit/core');
+JLoader::import('joomla.filesystem.path');
 
 // Load FOF's autoloader
 jimport('joomla.application.input');

@@ -1,11 +1,12 @@
 <?php
 /**
  * @package    FrameworkOnFramework
+ * @subpackage form
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 /**
  * Form Field class for FOF
@@ -20,11 +21,10 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 
 	protected $repeatable;
 
-	/**
-	 * A monotonically increasing number, denoting the row number in a repeatable view
-	 *
-	 * @var  integer
-	 */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
+	public $item;
+	
+	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
 	/**

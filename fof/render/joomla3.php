@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  render
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
@@ -47,14 +48,6 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 			return;
 		}
 
-		if (!FOFPlatform::getInstance()->isCli())
-		{
-			// Wrap output in a Joomla-versioned div
-			$version = new JVersion;
-			$version = str_replace('.', '', $version->RELEASE);
-			echo "<div class=\"joomla-version-$version\">\n";
-		}
-
 		// Render the submenu and toolbar
 		if ($input->getBool('render_toolbar', true))
 		{
@@ -75,13 +68,44 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
-		$format = $input->getCmd('format', 'html');
+		/*
+		We don't need to do anything here, if we are running Joomla3,
+		so overwrite the default with all the closing div's
 
-		if ($format != 'html' || FOFPlatform::getInstance()->isCli())
+		I added it here because I am not 100% sure if it would break BC
+		when doing it in the default strapper
+		*/
+	}
+
+	/**
+	 * Renders the submenu (link bar)
+	 *
+	 * @param   string    $view    The active view name
+	 * @param   string    $task    The current task
+	 * @param   FOFInput  $input   The input object
+	 * @param   array     $config  Extra configuration variables for the toolbar
+	 *
+	 * @return  void
+	 */
+	protected function renderLinkbar($view, $task, $input, $config = array())
+	{
+		$style = 'joomla';
+
+		if (array_key_exists('linkbar_style', $config))
 		{
-			return;
+			$style = $config['linkbar_style'];
 		}
 
-		echo "</div>\n";
+		switch ($style)
+		{
+			case 'joomla':
+				$this->renderLinkbar_joomla($view, $task, $input);
+				break;
+
+			case 'classic':
+			default:
+				$this->renderLinkbar_classic($view, $task, $input);
+				break;
+		}
 	}
 }

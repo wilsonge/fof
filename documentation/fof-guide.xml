@@ -1453,6 +1453,133 @@ function postflight($type, $parent)
       contains the publish status of the record. This comes in handy when
       you're upgrading a component from POJ (plain old Joomla!) to FOF.</para>
 
+      <bridgehead>Using joined tables</bridgehead>
+
+      <para>Quite often you can have tables that are linked together, while
+      you can setup joins in the list view acting on the
+      <methodname>buildQuery</methodname>, sometimes you need these joined
+      fields while using the table.</para>
+
+      <para>To do that you can simply create the join query, pass it to the
+      <classname>FOFTable</classname> in the construction and you're done! FOF
+      will do the rest.</para>
+
+      <para>Let's see it in action with a real an example. Let's you have the
+      table <database>foo</database> linked to the table
+      <database>bar</database>:</para>
+
+      <table>
+        <title>Table foo</title>
+
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry>foo_id</entry>
+
+              <entry>title</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>1</entry>
+
+              <entry>First row</entry>
+            </row>
+
+            <row>
+              <entry>2</entry>
+
+              <entry>Second row</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <table>
+        <title>Table bar</title>
+
+        <tgroup cols="4">
+          <thead>
+            <row>
+              <entry align="center">bar_id</entry>
+
+              <entry align="center">title</entry>
+
+              <entry align="center">barfield</entry>
+
+              <entry align="center">foo_id</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>1</entry>
+
+              <entry>Bar table title 1</entry>
+
+              <entry>Unique column name field 1</entry>
+
+              <entry>1</entry>
+            </row>
+
+            <row>
+              <entry>2</entry>
+
+              <entry>Bar table title 2</entry>
+
+              <entry>Unique column name field 2</entry>
+
+              <entry>2</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>In plain sql you should do something like this:</para>
+
+      <programlisting>SELECT jos_foo.*, jos_bar.title as bar_title, barfield
+FROM jos_foo
+INNER JOIN jos_bar ON jos_bar.foo_id = jos_foo.foo_id
+WHERE jos_foo.foo_id = 1
+</programlisting>
+
+      <para>When setting up the table, FOF already does a query like
+      this:</para>
+
+      <programlisting>SELECT jos_foo.*
+FROM jos_foo
+WHERE jos_foo.foo_id = 1
+</programlisting>
+
+      <para>So we just have to "inject" the join part. We can do that
+      extending the <classname>FOFTable</classname>, creating a query using
+      Joomla! object and then assigning it to the table:</para>
+
+      <programlisting>&lt;?php
+class FoobarTableFoo extends FOFTable
+{
+  public function __construct($table, $key, &amp;$db)
+  {
+      $query = $db-&gt;getQuery(true)
+                  -&gt;select(array($db-&gt;qn('#__bar').'.'.$db-&gt;qn('title').' as '.$db-&gt;qn('bar_title')))
+                  -&gt;select('barfield')
+                  -&gt;innerJoin('#__bar ON #__bar.foo_id = #__foo.foo_id');
+
+      $this-&gt;setQueryJoin($query);
+
+      parent::__construct($table, $key, $db);
+  }
+}
+</programlisting>
+
+      <para>As you can see, it's quite easy to setup: you just have to create
+      a query with no <database>from</database> clause (FOF will use the
+      current table one) and you are free to compose as you want. You can
+      quote columns names, table names, using column or table alias (and quote
+      them or not) and so on: it's just a regular query. FOF will now
+      automatically know of all fields in your joined table query.</para>
+
       <bridgehead>Customising a specialised class</bridgehead>
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
@@ -1546,7 +1673,7 @@ function postflight($type, $parent)
           <term>onAfterMove<replaceable>TABLENAME</replaceable></term>
 
           <listitem>
-            <para>is triggered before a single record is moved
+            <para>is triggered after a single record is moved
             (reordered)</para>
           </listitem>
         </varlistentry>
@@ -1941,7 +2068,7 @@ function postflight($type, $parent)
       yourself copying code from any FOFView class into your extension's
       specialised table class you're doing it wrong.</para>
 
-      <para>FOF controller can be customised very easily using the
+      <para>FOF view can be customised very easily using the
       <methodname>on<replaceable>Task</replaceable></methodname> methods. The
       <replaceable>Task</replaceable> here is the name of the controller task
       they are related to. For example, <methodname>onBrowse</methodname> runs
@@ -4433,8 +4560,10 @@ echo $viewTemplate;
             <listitem>
               <para><emphasis role="strong">label</emphasis> The language
               string which will be used for the label of the field; this is a
-              language string that will be fed to JText::_() for
-              translation.</para>
+              language string that will be fed to JText::_() for translation.
+              If you leave it empty FOF will automatically generate a language
+              string using the convention
+              <code><replaceable>COMPONENTNAME</replaceable>_<replaceable>VIEWNAME</replaceable>_<replaceable>FIELDNAME</replaceable>_LABEL</code>.</para>
             </listitem>
 
             <listitem>
@@ -4453,7 +4582,8 @@ echo $viewTemplate;
 
             <listitem>
               <para><emphasis role="strong">emptylabel</emphasis> Set this to
-              1 if you intend to have a field without a label</para>
+              1 if you intend to have a field without a label. In this case
+              you must NOT define the <code>label</code> attribute.</para>
             </listitem>
 
             <listitem>
@@ -4814,7 +4944,10 @@ echo $viewTemplate;
 
             <para>This will display a hidden input.</para>
 
-            <para>You can set no attributes other than the common ones.</para>
+            <para>You can set the common attributes. Moreover, to make sure
+            this field is rendered properly, you MUST define the attribute
+            <code>emptylabel="1"</code> and NOT assign a label attribute at
+            all.</para>
           </section>
 
           <section xml:id="image">
@@ -5031,18 +5164,18 @@ echo $viewTemplate;
                 <literal>getSomeFoobarData</literal></para>
               </listitem>
 
+							<listitem>
+								<para><emphasis role="strong">source_format</emphasis>
+									(optional) The format of the returned data of the static
+									method. Set to <literal>optionsobject</literal> if
+									the method returns a pre-generated options object.</para>
+							</listitem>
+
               <listitem>
                 <para><emphasis role="strong">source_key</emphasis> (optional)
                 If you are using an array of indexed arrays, this is the key
                 of the indexed array that contains the key of the drop-down
                 option.</para>
-              </listitem>
-
-              <listitem>
-                <para><emphasis role="strong">source_key</emphasis> (optional)
-                If you are using an array of indexed arrays, this is the key
-                of the indexed array that contains the value (description) of
-                the drop-down option.</para>
               </listitem>
 
               <listitem>

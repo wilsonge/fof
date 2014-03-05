@@ -1,8 +1,9 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  render
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('_JEXEC') or die;
 
@@ -107,6 +108,8 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 */
 	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
+		JHtml::_('behavior.multiselect');
+
 		// Getting all header row elements
 		$headerFields = $form->getHeaderset();
 
@@ -198,6 +201,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 					$filter		 = JHtml::_('select.genericlist', $options, $header->name, $attribs, 'value', 'text', $header->value, false, true);
 					$filter_html .= "\t\t\t\t\t\t$filter" . PHP_EOL;
 				}
+
 				$filter_html .= "\t\t\t\t\t</td>" . PHP_EOL;
 			}
 		}
@@ -237,6 +241,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			foreach ($items as $i => $item)
 			{
 				$table_item = $form->getModel()->getTable();
+				$table_item->reset();
 				$table_item->bind($item);
 
 				$form->bind($item);
@@ -295,7 +300,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for a Read view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
@@ -311,7 +316,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for an Edit view and returns the corresponding HTML
 	 *
 	 * @param   FOFForm   &$form  The form to render
 	 * @param   FOFModel  $model  The model providing our data
@@ -387,10 +392,10 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Renders a raw FOFForm and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   &$form  	 The form to render
-	 * @param   FOFModel  $model  	 The model providing our data
-	 * @param   FOFInput  $input  	 The input object
-	 * @param   string	  $formType  The form type e.g. 'edit' or 'read'
+	 * @param   FOFForm   &$form     The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
+	 * @param   string    $formType  The form type e.g. 'edit' or 'read'
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
@@ -461,16 +466,16 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
 		$js = <<<ENDJAVASCRIPT
-		Joomla.submitbutton = function(task)
-		{
-			if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
-			{
-				Joomla.submitform(task, document.getElementById('adminForm'));
-			}
-			else {
-				alert('$message');
-			}
-		}
+Joomla.submitbutton = function(task)
+{
+	if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
+	{
+		Joomla.submitform(task, document.getElementById('adminForm'));
+	}
+	else {
+		alert('$message');
+	}
+};
 ENDJAVASCRIPT;
 
 		$document = FOFPlatform::getInstance()->getDocument();
@@ -509,6 +514,18 @@ ENDJAVASCRIPT;
 			return;
 		}
 
+		$this->renderLinkbarItems($toolbar);
+	}
+
+	/**
+	 * do the rendering job for the linkbar
+	 *
+	 * @param   FOFToolbar  $toolbar  A toolbar object
+	 *
+	 * @return  void
+	 */
+	protected function renderLinkbarItems($toolbar)
+	{
 		$links = $toolbar->getLinks();
 
 		if (!empty($links))

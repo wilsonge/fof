@@ -1,11 +1,12 @@
 <?php
 /**
- * @package    FrameworkOnFramework
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @package     FrameworkOnFramework
+ * @subpackage  table
+ * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die();
+defined('_JEXEC') or die;
 
 /**
  * Normally this shouldn't be required. Some PHP versions, however, seem to
@@ -303,6 +304,9 @@ class FOFTable extends JObject implements JTableInterface
 		$type       = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
 		$tableClass = $prefix . ucfirst($type);
 
+		$config['_table_type'] = $type;
+		$config['_table_class'] = $tableClass;
+
 		$configProvider = new FOFConfigProvider;
 		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
 
@@ -418,15 +422,23 @@ class FOFTable extends JObject implements JTableInterface
 				$instance->setTriggerEvents($config['trigger_events']);
 			}
 
-			if (array_key_exists('has_tags', $config))
+			if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.1', 'ge'))
 			{
-				$instance->setHasTags($config['has_tags']);
-			}
+				if (array_key_exists('has_tags', $config))
+				{
+					$instance->setHasTags($config['has_tags']);
+				}
 
-			$altHasTags = $configProvider->get($configProviderKey . 'has_tags', null);
-			if ($altHasTags)
+				$altHasTags = $configProvider->get($configProviderKey . 'has_tags', null);
+
+				if ($altHasTags)
+				{
+					$instance->setHasTags($altHasTags);
+				}
+			}
+			else
 			{
-				$instance->setHasTags($altHasTags);
+				$instance->setHasTags(false);
 			}
 
 			$configProviderFieldmapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
@@ -562,8 +574,6 @@ class FOFTable extends JObject implements JTableInterface
 			$behaviors = $this->default_behaviors;
 		}
 
-		$behaviors = $this->configProvider->get($configKey, null);
-
 		if (is_array($behaviors) && count($behaviors))
 		{
 			foreach ($behaviors as $behavior)
@@ -587,6 +597,8 @@ class FOFTable extends JObject implements JTableInterface
 		{
 			$this->$access_field = (int) JFactory::getConfig()->get('access');
 		}
+
+		$this->config = $config;
 	}
 
 	/**
@@ -667,6 +679,32 @@ class FOFTable extends JObject implements JTableInterface
 	 */
 	public function addBehavior($name, $config = array())
 	{
+		// First look for ComponentnameTableViewnameBehaviorName (e.g. FoobarTableItemsBehaviorTags)
+		if (isset($this->config['option']))
+		{
+			$option_name = str_replace('com_', '', $this->config['option']);
+			$behaviorClass = $this->config['_table_class'] . 'Behavior' . ucfirst(strtolower($name));
+
+			if (class_exists($behaviorClass))
+			{
+				$behavior = new $behaviorClass($this->tableDispatcher, $config);
+
+				return true;
+			}
+
+			// Then look for ComponentnameTableBehaviorName (e.g. FoobarTableBehaviorTags)
+			$option_name = str_replace('com_', '', $this->config['option']);
+			$behaviorClass = ucfirst($option_name) . 'TableBehavior' . ucfirst(strtolower($name));
+
+			if (class_exists($behaviorClass))
+			{
+				$behavior = new $behaviorClass($this->tableDispatcher, $config);
+
+				return true;
+			}
+		}
+
+		// Nothing found? Return false.
 
 		$behaviorClass = 'FOFTableBehavior' . ucfirst(strtolower($name));
 
@@ -983,7 +1021,7 @@ class FOFTable extends JObject implements JTableInterface
 	}
 
 	/**
-	 * Generic check for whether dependancies exist for this object in the db schema
+	 * Generic check for whether dependencies exist for this object in the db schema
 	 *
 	 * @param   integer  $oid    The primary key of the record to delete
 	 * @param   array    $joins  Any joins to foreign table, used to determine if dependent records exist
@@ -1199,6 +1237,7 @@ class FOFTable extends JObject implements JTableInterface
 
 		if ($result !== true)
 		{
+			$this->setError($this->_db->getErrorMsg());
 			return false;
 		}
 
@@ -1434,15 +1473,7 @@ class FOFTable extends JObject implements JTableInterface
         }
 
 		$date = JFactory::getDate();
-
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
-		{
-			$time = $date->toSql();
-		}
-		else
-		{
-			$time = $date->toMysql();
-		}
+		$time = $date->toSql();
 
 		$query = $this->_db->getQuery(true)
 			->update($this->_db->qn($this->_tbl))
@@ -1990,7 +2021,6 @@ class FOFTable extends JObject implements JTableInterface
 		}
 
 		// Make sure the cached table fields cache is loaded
-
 		if (empty(self::$tableFieldCache))
 		{
 			if ($useCache)
@@ -2040,7 +2070,10 @@ class FOFTable extends JObject implements JTableInterface
 			$tableName = $this->_tbl;
 		}
 
-		if (!array_key_exists($tableName, self::$tableFieldCache))
+		// Try to load again column specifications if the table is not loaded OR if it's loaded and
+		// the previous call returned an error
+		if (!array_key_exists($tableName, self::$tableFieldCache) ||
+			(isset(self::$tableFieldCache[$tableName]) && !self::$tableFieldCache[$tableName]))
 		{
 			// Lookup the fields for this table only once.
 			$name = $tableName;
@@ -2235,11 +2268,16 @@ class FOFTable extends JObject implements JTableInterface
 			{
 				// I always want the first part, no matter what
 				$parts = explode(' ', $matches[1]);
-				$t_table = $this->_db->qn(trim($parts[0]));
+				$t_table = $parts[0];
+
+				if($this->isQuoted($t_table))
+				{
+					$t_table = substr($t_table, 1, strlen($t_table) - 2);
+				}
 
 				if(!in_array($t_table, $j_tables))
 				{
-					$j_tables[] =  substr($t_table, 1, strlen($t_table) - 2);
+					$j_tables[] =  $t_table;
 				}
 			}
 		}
@@ -2315,21 +2353,28 @@ class FOFTable extends JObject implements JTableInterface
 
 				if(isset($tableField[1]))
 				{
-					$column = $tableField[1];
+					$column = trim($tableField[1]);
 				}
 				else
 				{
-					$column = $tableField[0];
+					$column = trim($tableField[0]);
 				}
 
-				// Always quote it, so I can safely remove the first and last char
-				$column = $db->qn(trim($column));
-				$column = substr($column, 1, strlen($column) - 2);
+				// Is this field quoted? If so, remove the quotes
+				if($this->isQuoted($column))
+				{
+					$column = substr($column, 1, strlen($column) - 2);
+				}
 
 				if(isset($parts[1]))
 				{
-					$alias = $db->qn(trim($parts[1]));
-					$alias = substr($alias, 1, strlen($alias) - 2);
+					$alias = trim($parts[1]);
+
+					// Is this field quoted? If so, remove the quotes
+					if($this->isQuoted($alias))
+					{
+						$alias = substr($alias, 1, strlen($alias) - 2);
+					}
 				}
 				else
 				{
@@ -2337,34 +2382,32 @@ class FOFTable extends JObject implements JTableInterface
 				}
 
 				$return[$column] = $alias;
-
-				/*// Grab the "standard" name
-				// @TODO Check this pattern since it's blind copied from forums
-				preg_match('/([\w]++)`?+(?:\s++as\s++[^,\s]++)?+\s*+($)/i', $t_field, $match);
-				$column = $match[1];
-				$column = preg_replace('#\sas\s?#i', '', $column);
-
-				// Trim whitespace
-				$alias  = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $alias);
-				$column = preg_replace('#^[\s-`]+|[\s-`]+$#', '', $column);
-
-				// Do I want the column name with the original name + alias?
-
-				if ($extended && $alias)
-				{
-					$alias = $column . ' AS ' . $alias;
-				}
-
-				if (!$alias)
-				{
-					$alias = $column;
-				}
-
-				$return[$column] = $alias;*/
 			}
 		}
 
 		return $return;
+	}
+
+	/**
+	 * Is the field quoted?
+	 *
+	 * @param   string  $column     Column, passed by reference, so in later version of Joomla
+	 *                              I can always quote them
+	 *
+	 * @return  bool    Is the field quoted?
+	 */
+	protected function isQuoted(&$column)
+	{
+		// I need some "magic". If the first char is not a letter, a number
+		// an underscore or # (needed for table), then most likely the field is quoted
+		preg_match_all('/^[a-z0-9_#]/i', $column, $matches);
+
+		if(!$matches[0])
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -2487,14 +2530,7 @@ class FOFTable extends JObject implements JTableInterface
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 
-				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
-				{
-					$this->$created_on = $date->toSql();
-				}
-				else
-				{
-					$this->$created_on = $date->toMysql();
-				}
+				$this->$created_on = $date->toSql();
 			}
 			elseif ($hasModifiedOn && $hasModifiedBy)
 			{
@@ -2507,14 +2543,7 @@ class FOFTable extends JObject implements JTableInterface
 				JLoader::import('joomla.utilities.date');
 				$date = new JDate();
 
-				if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'ge'))
-				{
-					$this->$modified_on = $date->toSql();
-				}
-				else
-				{
-					$this->$modified_on = $date->toMysql();
-				}
+				$this->$modified_on = $date->toSql();
 			}
 		}
 
