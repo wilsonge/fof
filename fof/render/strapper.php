@@ -524,6 +524,8 @@ JS;
 
 		if (version_compare(JVERSION, '3.0', 'gt'))
 		{
+			$form_class = '';
+
 			if ($show_filters)
 			{
 				JHtmlSidebar::setAction("index.php?option=" .
@@ -553,6 +555,10 @@ JS;
 
 			$headerFields = $tmpFields;
 			ksort($headerFields, SORT_NUMERIC);
+		}
+		else
+		{
+			$form_class = 'class="form-horizontal"';
 		}
 
 		// Pre-render the header and filter rows
@@ -606,8 +612,6 @@ JS;
 				if (version_compare(JVERSION, '3.0', 'ge'))
 				{
 					// Joomla! 3.0 or later
-					$form_class = '';
-					
 					if (!empty($filter))
 					{
 						$filter_html .= '<div class="filter-search btn-group pull-left">' . "\n";
@@ -643,7 +647,6 @@ JS;
 				else
 				{
 					// Joomla! 2.5
-					$form_class = 'class="form-horizontal"';
 					$filter_html .= "\t\t\t\t\t<td>" . PHP_EOL;
 
 					if (!empty($filter))
