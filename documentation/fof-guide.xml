@@ -1485,7 +1485,7 @@ public function onBeforeReorder(&amp;$model)
  * list in a model
  *
  * @param   FOFModel        &amp;$model  The model which calls this event
- * @param   JDatabaseQuery  &amp;$query  The model which calls this event
+ * @param   JDatabaseQuery  &amp;$query  The query being built
  *
  * @return  void
  */
