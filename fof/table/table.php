@@ -1026,7 +1026,6 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 		foreach ($fields as $k => $v)
 		{
 			// If the property is not the primary key or private, reset it.
-
 			if ($k != $this->_tbl_key && (strpos($k, '_') !== 0))
 			{
 				$this->$k = $v->Default;
@@ -1038,6 +1037,22 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 			return false;
 		}
 	}
+
+    /**
+     * Clones the current object, after resetting it
+     *
+     * @return FOFTable
+     */
+    public function getClone()
+    {
+        $clone = clone $this;
+        $clone->reset();
+
+        $key = $this->getKeyName();
+        $clone->$key = null;
+
+        return $clone;
+    }
 
 	/**
 	 * Generic check for whether dependencies exist for this object in the db schema
