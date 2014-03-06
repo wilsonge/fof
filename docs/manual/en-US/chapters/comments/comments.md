@@ -35,6 +35,7 @@ This view is still relatively similar to the previous restaurants view however w
 In a Joomla component you would generally override the buildQuery method to do this. However in FOF there are two methods in which to manipulate the query - ```onBeforeBuildQuery(&$model, &$query)``` and ```public function onAfterBuildQuery(&$model, &$query)``` which give both the model and the query. So we will simply create a model with the name in the style of ```ComponentModelView``` so in our case ```ReviewsModelComments``` and in this file we place:
 
 ```php
+// Let's put some magic code in here :P
 ```
 
 Note currently we are just magically expecting the $this->config variable to hold our restaurant id that we want to display the comments for. This will need to be injected in when we call the dispatcher from the restaurant view in section 3.5.
