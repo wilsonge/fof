@@ -24,10 +24,25 @@ echo $viewTemplate;
 
 So in form.php we have put in the code above. If you were to install the component then you would see no change between what we had before and now. The next step however is to create the comments and comment view so we can include them into the restaurant view.
 
-3.2 Adding the comment view
+3.2 Adding the Backend
 ------------------------------------------
-The next step is to create the four views for the comments (comments (list) frontend, comment (form) frontend, comments (list) backend, comment (form) backend). The backend forms and frontend comments view were made in a similar method to the backend 'restaurant' view forms and so aren't covered in any more detail in this tutorial.
+The next step is to create the four views for the comments (comments (list) frontend, comment (form) frontend, comments (list) backend, comment (form) backend). The backend forms were made in a similar method to the backend 'restaurant' view forms and so aren't covered in any more detail in this tutorial - we created a simple view for item and list with a select box for restaurants (using the standard Joomla SQL form field), description of restaurant and rating.
 
+3.3 Adding the Frontend Comments View
+------------------------------------------
+This view is still relatively similar to the previous restaurants view however we will look to include this view inside a restaurant and only show the ratings of a given restaurant. To achieve this we will need to edit the query that FOF executes so we will only search for the form field. This will involve having to create a model for this view.
+
+In a Joomla component you would generally override the buildQuery method to do this. However in FOF there are two methods in which to manipulate the query - ```onBeforeBuildQuery(&$model, &$query)``` and ```public function onAfterBuildQuery(&$model, &$query)``` which give both the model and the query. So we will simply create a model with the name in the style of ```ComponentModelView``` so in our case ```ReviewsModelComments``` and in this file we place:
+
+```php
+```
+
+Note currently we are just magically expecting the $this->config variable to hold our restaurant id that we want to display the comments for. This will need to be injected in when we call the dispatcher from the restaurant view in section 3.5.
+
+Other than this query edit we just create a similar XML file to previous views - in this case we choose to turn off the headers and filters as we just wish to display a list of comments. See the XML file for more details.
+
+3.4 Adding the Frontend Comment View
+------------------------------------------
 However the comment view we want to change the layout for so it will fit in with the main restaurant view. So we create our form:
 
 ```php
@@ -109,7 +124,7 @@ These inputs are for specify the component (called option), the view that we are
 
 The visible form fields are then written. Note here we are NOT using JForm as there is no XML form.
 
-3.3 Putting everything together
+3.5 Putting everything together
 ------------------------------------------
 
 So now we need to put the comments and comment view showing all the comments into the restaurant view. We do this as FOF has HMVC. So we now add the following to the restaurant.php file
@@ -125,5 +140,6 @@ $input = new FOFInput($inputvars);
 
 FOFDispatcher::getTmpInstance('com_reviews', 'comments', array('input' => $input))->dispatch();
 FOFDispatcher::getTmpInstance('com_reviews', 'comment', array())->dispatch();
+```
 
-``` 
+Note back in section 3.3 we needed to inject the restaurant that we wanted to see. And you can see this has taken place in the ```$inputvars``` variable, which is then injected into the Dispatcher.
