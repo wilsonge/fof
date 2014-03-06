@@ -101,7 +101,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	 * list in a model
 	 *
 	 * @param   FOFModel        &$model  The model which calls this event
-	 * @param   JDatabaseQuery  &$query  The model which calls this event
+	 * @param   JDatabaseQuery  &$query  The query being built
 	 *
 	 * @return  void
 	 */
