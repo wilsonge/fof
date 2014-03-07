@@ -3,7 +3,7 @@
   <!ELEMENT dataset (table)*>
   <!ELEMENT table (column|row)*>
   <!ATTLIST table
-    name CDATA #IMPLIED>
+    name CDATA #REQUIRED>
   <!ELEMENT column (#PCDATA)>
   <!ELEMENT row (value)*>
   <!ELEMENT value (#PCDATA)>
@@ -290,7 +290,68 @@
       <value>Parent 2 - First children</value>
       <value>0</value>
     </row>
+  </table>
 
+  <table name="jos_foftest_parts">
+    <column>foftest_part_id</column>
+    <column>dummy</column>
+
+    <row>
+      <value>1</value>
+      <value>Part number 1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Part number 2</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>Part number 3</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_groups">
+    <column>foftest_group_id</column>
+    <column>dummy</column>
+
+    <row>
+      <value>1</value>
+      <value>Group number 1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Group number 2</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>Group number 3</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_parts_groups">
+    <column>foftest_group_id</column>
+    <column>foftest_part_id</column>
+
+    <row>
+      <value>1</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>1</value>
+      <value>2</value>
+    </row>
+    <row>
+      <value>1</value>
+      <value>3</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>2</value>
+    </row>
   </table>
 
   <table name="jos_session">

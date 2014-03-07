@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobarjoins` (
 
 -- === ACTUAL TABLES USED FOR TESTING THE NEW ORM FEATURE ===
 -- Parent table 1:n - 1:1 relation
-DROP TABLE if exists `jos_foftest_parents`;
+DROP TABLE IF EXISTS `jos_foftest_parents`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_parents` (
   `foftest_parent_id` INT NOT NULL AUTO_INCREMENT,
   `dummy` varchar (50) NOT NULL ,
@@ -67,12 +67,35 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_parents` (
 );
 
 -- Children table 1:n - 1:1 relation
-DROP TABLE if exists `jos_foftest_children`;
+DROP TABLE IF EXISTS `jos_foftest_children`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_children` (
   `foftest_child_id` INT NOT NULL AUTO_INCREMENT,
   `dummy` varchar (50) NOT NULL ,
   `foftest_parent_id` INT NOT NULL ,
   PRIMARY KEY (`foftest_child_id`)
+);
+
+-- ORM table A
+DROP TABLE IF EXISTS `jos_foftest_parts`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_parts`(
+  `foftest_part_id` INT NOT NULL AUTO_INCREMENT ,
+  `dummy` varchar (50) NOT NULL ,
+  PRIMARY KEY (`foftest_part_id`)
+);
+
+-- ORM table B
+DROP TABLE IF EXISTS `jos_foftest_groups`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_groups`(
+  `foftest_group_id` INT NOT NULL AUTO_INCREMENT ,
+  `dummy` varchar (50) NOT NULL ,
+  PRIMARY KEY (`foftest_group_id`)
+);
+
+-- ORM glue table
+DROP TABLE IF EXISTS `jos_foftest_parts_groups`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_parts_groups`(
+  `foftest_group_id` INT NOT NULL ,
+  `foftest_part_id` INT NOT NULL 
 );
 
 -- Table without any "special" column (ordering, hits etc etc)
