@@ -11,7 +11,7 @@ defined('FOF_INCLUDED') or die;
 /**
  * FrameworkOnFramework dispatcher class
  *
- * FrameworkOnFramework is a set of classes whcih extend Joomla! 1.5 and later's
+ * FrameworkOnFramework is a set of classes which extend Joomla! 1.5 and later's
  * MVC framework with features making maintaining complex software much easier,
  * without tedious repetitive copying of the same code over and over again.
  *
