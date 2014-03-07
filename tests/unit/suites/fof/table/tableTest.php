@@ -344,6 +344,23 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
     /**
+     * @group tempStore
+     */
+    public function testtemp()
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $table->setAssetKey('com_foftest.foobar');
+
+        $table->load(4);
+        $table->title = 'Temp';
+        $table->asset_id = null;
+
+        $table->store();
+    }
+
+    /**
      * @group               tableStore
      * @group               FOFTable
      * @covers              FOFTable::store
