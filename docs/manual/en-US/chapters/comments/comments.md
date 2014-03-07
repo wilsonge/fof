@@ -35,10 +35,52 @@ This view is still relatively similar to the previous restaurants view however w
 In a Joomla component you would generally override the buildQuery method to do this. However in FOF there are two methods in which to manipulate the query - ```onBeforeBuildQuery(&$model, &$query)``` and ```public function onAfterBuildQuery(&$model, &$query)``` which give both the model and the query. So we will simply create a model with the name in the style of ```ComponentModelView``` so in our case ```ReviewsModelComments``` and in this file we place:
 
 ```php
-// Let's put some magic code in here :P
+class ReviewsModelComments extends FOFModel
+{
+	/**
+	 * The ID of the restaurant that the comments should be loaded for
+	 *
+	 * @var    integer
+	 */
+	protected $restaurant = null;
+
+	/**
+	 * Public constructor
+	 *
+	 * @param   array  $config  The configuration variables
+	 */
+    public function __construct($config = array())
+	{
+        parent::__construct($config);
+
+		// Here we 'magically' find the restaurant id from the config
+       	if ($config['input']->get('restaurantid', null))
+		{
+			$this->restaurant = $config['input']->get('restaurantid');
+		}
+    }
+
+	/**
+	 * This event allows us to search for the comments from a specific restaurant
+	 *
+	 * @param   FOFModel        &$model  The model which calls this event
+	 * @param   JDatabaseQuery  &$query  The query being built
+	 *
+	 * @return  void
+	 */
+	public function onAfterBuildQuery(&$model, &$query)
+	{
+		if ($this->restaurant)
+		{
+			$db = $model->getDbo();
+			// Now we inject the check for the restaurant into the SQL Query
+			$query->where($db->quoteName('restaurant') . ' = ' . $this->restaurant);
+		}
+	}
+}
 ```
 
-Note currently we are just magically expecting the $this->config variable to hold our restaurant id that we want to display the comments for. This will need to be injected in when we call the dispatcher from the restaurant view in section 3.5.
+Note currently we are just magically expecting the $config variable in the constructor to hold our restaurant id that we want to display the comments for. This will need to be injected in when we call the dispatcher from the restaurant view in section 3.5.
 
 Other than this query edit we just create a similar XML file to previous views - in this case we choose to turn off the headers and filters as we just wish to display a list of comments. See the XML file for more details.
 
@@ -131,11 +173,8 @@ The visible form fields are then written. Note here we are NOT using JForm as th
 So now we need to put the comments and comment view showing all the comments into the restaurant view. We do this as FOF has HMVC. So we now add the following to the restaurant.php file
 
 ```php
-// Get the comments view from the XML file
 $inputvars = array(
-	'show_filters' => false,
-	'show_pagination' => false,
-	'show_header' => false
+	'restaurantid' => $this->config['input']->get('id'),
 );
 $input = new FOFInput($inputvars);
 
@@ -143,4 +182,4 @@ FOFDispatcher::getTmpInstance('com_reviews', 'comments', array('input' => $input
 FOFDispatcher::getTmpInstance('com_reviews', 'comment', array())->dispatch();
 ```
 
-Note back in section 3.3 we needed to inject the restaurant that we wanted to see. And you can see this has taken place in the ```$inputvars``` variable, which is then injected into the Dispatcher.
+Note back in section 3.3 we needed to inject the restaurant that we wanted to see. And you can see this has taken place in the ```$inputvars``` variable, which is then injected into the Dispatcher. We can then retrieve this anywhere in the Controller, Model or View. Indeed note that the id of the restaurant we are viewing comes out the ```$config``` variable set for the restaurant view!
