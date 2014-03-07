@@ -76,7 +76,7 @@
       <value>0</value>
       <value>4</value>
       <value>0</value>
-      <value>36</value>
+      <value>54</value>
       <value>1</value>
       <value>42</value>
       <value>0000-00-00 00:00:00</value>
@@ -850,6 +850,16 @@
       <value>com_modules.module.86</value>
       <value>Joomla Version</value>
       <value>{&quot;core.delete&quot;:[],&quot;core.edit&quot;:[],&quot;core.edit.state&quot;:[]}</value>
+    </row>
+    <row>
+      <value>54</value>
+      <value>1</value>
+      <value>105</value>
+      <value>106</value>
+      <value>1</value>
+      <value>com_foftest.foobar.4</value>
+      <value>com_foftest.foobar.4</value>
+      <value></value>
     </row>
   </table>
 </dataset>
