@@ -28,4 +28,19 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         FOFPlatform::forceInstance(null);
         FOFTable::forceInstance(null);
     }
+
+    /**
+     * @group               relationsConstruct
+     * @group               FOFTableRelations
+     * @covers              FOFTableRelations::__construct
+     */
+    /*public function test__construct()
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'children'));
+        $table 		     = FOFTable::getAnInstance('Child', 'FoftestTable', $config);
+        $table->load(1);
+
+        $t = $table->getRelations();
+        $children = $t->getParent();
+    }*/
 }

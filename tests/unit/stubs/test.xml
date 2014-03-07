@@ -248,17 +248,49 @@
       </row>
   </table>
 
-  <table>
-    <column>foftest_id_orm</column>
+  <table name="jos_foftest_parents">
+    <column>foftest_parent_id</column>
     <column>dummy</column>
+
     <row>
       <value>1</value>
-      <value>First ORM row</value>
+      <value>First parent row</value>
     </row>
+
     <row>
       <value>2</value>
-      <value>Second ORM row</value>
+      <value>Second parent row</value>
     </row>
+
+    <row>
+      <value>3</value>
+      <value>Parent with no children</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_children">
+    <column>foftest_child_id</column>
+    <column>dummy</column>
+    <column>foftest_parent_id</column>
+
+    <row>
+      <value>1</value>
+      <value>Parent 1 - First children</value>
+      <value>1</value>
+    </row>
+
+    <row>
+      <value>2</value>
+      <value>Parent 1 - Second children</value>
+      <value>1</value>
+    </row>
+
+    <row>
+      <value>3</value>
+      <value>Parent 2 - First children</value>
+      <value>0</value>
+    </row>
+
   </table>
 
   <table name="jos_session">

@@ -57,12 +57,22 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobarjoins` (
   PRIMARY KEY (`foftest_id_foobarjoin`)
 );
 
--- === ACTUAL TABLE USED FOR TESTING THE NEW ORM FEATURE ===
-DROP TABLE if exists `jos_foftest_orms`;
-CREATE TABLE IF NOT EXISTS `jos_foftest_orms` (
-  `foftest_id_orm` INT NOT NULL AUTO_INCREMENT,
+-- === ACTUAL TABLES USED FOR TESTING THE NEW ORM FEATURE ===
+-- Parent table 1:n - 1:1 relation
+DROP TABLE if exists `jos_foftest_parents`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_parents` (
+  `foftest_parent_id` INT NOT NULL AUTO_INCREMENT,
   `dummy` varchar (50) NOT NULL ,
-  PRIMARY KEY (`foftest_id_orm`)
+  PRIMARY KEY (`foftest_parent_id`)
+);
+
+-- Children table 1:n - 1:1 relation
+DROP TABLE if exists `jos_foftest_children`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_children` (
+  `foftest_child_id` INT NOT NULL AUTO_INCREMENT,
+  `dummy` varchar (50) NOT NULL ,
+  `foftest_parent_id` INT NOT NULL ,
+  PRIMARY KEY (`foftest_child_id`)
 );
 
 -- Table without any "special" column (ordering, hits etc etc)
