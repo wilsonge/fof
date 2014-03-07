@@ -16,7 +16,7 @@ class FOFTableRelations
 	 *
 	 * @var   array
 	 */
-	private $relations = array(
+	protected $relations = array(
 		'child'		=> array(),
 		'parent'	=> array(),
 		'children'	=> array(),
@@ -28,7 +28,7 @@ class FOFTableRelations
 	 *
 	 * @var  array
 	 */
-	private $defaultRelation = array(
+	protected $defaultRelation = array(
 		'child'		=> null,
 		'parent'	=> null,
 		'children'	=> null,
@@ -40,21 +40,21 @@ class FOFTableRelations
 	 *
 	 * @var   FOFTable
 	 */
-	private $table = null;
+	protected $table = null;
 
 	/**
 	 * The name of the component used by our attached table
 	 *
 	 * @var   string
 	 */
-	private $componentName = 'joomla';
+	protected $componentName = 'joomla';
 
 	/**
 	 * The type (table name without prefix and component name) of our attached table
 	 *
 	 * @var   string
 	 */
-	private $tableType = '';
+	protected $tableType = '';
 
 
 	/**
@@ -641,7 +641,7 @@ class FOFTableRelations
 	 *
 	 * @throws RuntimeException
 	 */
-	private function getTableFromRelation($relation)
+	protected function getTableFromRelation($relation)
 	{
 		// Get a table object from the table class name
 		$tableClass = $relation['tableClass'];
@@ -690,7 +690,7 @@ class FOFTableRelations
 	 *
 	 * @throws RuntimeException
 	 */
-	private function getIteratorFromRelation($relation)
+	protected function getIteratorFromRelation($relation)
 	{
 		// Get a table object from the table class name
 		$tableClass = $relation['tableClass'];
@@ -757,7 +757,7 @@ class FOFTableRelations
 	 *
 	 * @return  void
 	 */
-	private function addBespokeSimpleRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $default)
+	protected function addBespokeSimpleRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $default)
 	{
 		$ourPivotKey = null;
 		$theirPivotKey = null;
@@ -792,7 +792,7 @@ class FOFTableRelations
 	 *
 	 * @return  void
 	 */
-	private function addBespokePivotRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable, $default)
+	protected function addBespokePivotRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable, $default)
 	{
 		$this->normaliseParameters(true, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
 
@@ -825,7 +825,7 @@ class FOFTableRelations
 	 *
 	 * @return  void
 	 */
-	private function normaliseParameters($pivot = false, &$itemName, &$tableClass, &$localKey, &$remoteKey, &$ourPivotKey, &$theirPivotKey, &$pivotTable)
+	protected function normaliseParameters($pivot = false, &$itemName, &$tableClass, &$localKey, &$remoteKey, &$ourPivotKey, &$theirPivotKey, &$pivotTable)
 	{
 		// Get a default table class if none is provided
 		if (empty($tableClass))
@@ -900,7 +900,7 @@ class FOFTableRelations
 	 *
 	 * @return  string  The normalised relation key name
 	 */
-	private function normaliseItemName($itemName, $pluralise = false)
+	protected function normaliseItemName($itemName, $pluralise = false)
 	{
 		// Explode the item name
 		$itemNameParts = explode('_', $itemName);

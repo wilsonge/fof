@@ -36,11 +36,12 @@ class FOFTableRelationsTest extends FtestCaseDatabase
      */
     /*public function test__construct()
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'children'));
-        $table 		     = FOFTable::getAnInstance('Child', 'FoftestTable', $config);
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'parts'));
+        $table 		     = FOFTable::getAnInstance('Part', 'FoftestTable', $config);
         $table->load(1);
 
-        $t = $table->getRelations();
-        $children = $t->getParent();
+        $relation = $table->getRelations();
+        $relation->addMultipleRelation('partgroups', 'FoftestTableGroup', 'foftest_part_id', 'foftest_part_id', 'foftest_group_id', 'foftest_group_id', '#__foftest_parts_groups');
+        $items = $relation->getMultiple();
     }*/
 }
