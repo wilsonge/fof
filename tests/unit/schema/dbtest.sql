@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   PRIMARY KEY (`id_foobar_aliases`)
 );
 
+-- === THIS TABLE IS USED FOR TESTING THE OLD METHOD OF JOINS (ie no ORM) ===
 -- Table used to test joins
 -- We create a generic "key column" so we can test against different table (with aliases or not)
 -- There are different columns (unique and not), so we can test it when we have to use alias
@@ -54,6 +55,14 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobarjoins` (
   `fj_dummy` varchar(50) NOT NULL,
   `title` varchar(50) NOT NULL,
   PRIMARY KEY (`foftest_id_foobarjoin`)
+);
+
+-- === ACTUAL TABLE USED FOR TESTING THE NEW ORM FEATURE ===
+DROP TABLE if exists `jos_foftest_orms`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_orms` (
+  `foftest_id_orm` INT NOT NULL AUTO_INCREMENT,
+  `dummy` varchar (50) NOT NULL ,
+  PRIMARY KEY (`foftest_id_orm`)
 );
 
 -- Table without any "special" column (ordering, hits etc etc)

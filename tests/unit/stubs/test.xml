@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE dataset [
+  <!ELEMENT dataset (table)*>
+  <!ELEMENT table (column|row)*>
+  <!ATTLIST table
+    name CDATA #IMPLIED>
+  <!ELEMENT column (#PCDATA)>
+  <!ELEMENT row (value)*>
+  <!ELEMENT value (#PCDATA)>
+  ]>
 <!--
     PLEASE PAY ATTENTION IF YOU ADD MORE RECORDS!
     In some tests (ie copy tests) we "cheat" and we check new records directly using the new ID, to simplify testing.
@@ -237,6 +246,19 @@
           <value>Dummy value for row 2</value>
           <value>Second row non-unique colum name</value>
       </row>
+  </table>
+
+  <table>
+    <column>foftest_id_orm</column>
+    <column>dummy</column>
+    <row>
+      <value>1</value>
+      <value>First ORM row</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Second ORM row</value>
+    </row>
   </table>
 
   <table name="jos_session">
