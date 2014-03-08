@@ -1347,7 +1347,7 @@ class FOFModel extends FOFUtilsObject
 					$hash = $this->getHash() . 'savedata';
 					$session->set($hash, serialize($allData));
 				}
-				
+
 				return false;
 			}
 		}
@@ -2721,6 +2721,8 @@ class FOFModel extends FOFUtilsObject
 
 			$name = $this->name;
 			FOFPlatform::getInstance()->runPlugins($this->event_after_save, array($this->option . '.' . $name, &$table, $this->_isNewRecord));
+
+			return true;
 		}
 		catch (Exception $e)
 		{
