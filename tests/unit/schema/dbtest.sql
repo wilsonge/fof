@@ -1,3 +1,7 @@
+-- If you change any table please remember to change the xml file, too. You have to change the
+-- stored cache, too, in order to reflect the correct state of the site while it is cached.
+-- Please run the script named `recreateJoomlaCache.php` to do so
+
 -- Main table used for tests
 DROP TABLE IF EXISTS `jos_foftest_foobars`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_foobars` (
@@ -6,7 +10,9 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobars` (
   `slug` varchar(100) NOT NULL,
   `enabled` tinyint(4) NOT NULL,
   `ordering` tinyint(4) NOT NULL,
+  `hits` int(4) NOT NULL,
   `asset_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
+  `access` int(10) unsigned NOT NULL DEFAULT '0',
   `created_by` int(11) NOT NULL,
   `created_on` datetime NOT NULL,
   `modified_by` int(11) NOT NULL,
@@ -24,7 +30,9 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   `fo_slug` varchar(100) NOT NULL,
   `fo_enabled` tinyint(4) NOT NULL,
   `fo_ordering` tinyint(4) NOT NULL,
+  `fo_hits` int(4) NOT NULL,
   `fo_asset_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'FK to the #__assets table.',
+  `fo_access` int(10) unsigned NOT NULL DEFAULT '0',
   `fo_created_by` int(11) NOT NULL,
   `fo_created_on` datetime NOT NULL,
   `fo_modified_by` int(11) NOT NULL,

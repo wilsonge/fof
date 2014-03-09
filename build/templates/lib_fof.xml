@@ -17,12 +17,15 @@
 		<folder>autoloader</folder>
 		<folder>config</folder>
 		<folder>controller</folder>
+		<folder>database</folder>
 		<folder>dispatcher</folder>
 		<folder>encrypt</folder>
 		<folder>form</folder>
 		<folder>hal</folder>
 		<folder>inflector</folder>
+		<folder>integration</folder>
 		<folder>input</folder>
+		<folder>layout</folder>
 		<folder>less</folder>
 		<folder>model</folder>
 		<folder>platform</folder>
@@ -32,6 +35,7 @@
 		<folder>table</folder>
 		<folder>template</folder>
 		<folder>toolbar</folder>
+		<folder>utils</folder>
 		<folder>view</folder>
 
 		<file>LICENSE.txt</file>

@@ -1,3 +1,79 @@
+FOF 2.2.0
+================================================================================
++ Refactored the Platform package to include filesystem abstraction
++ gh-261 FOFDatabaseIterator to make it easier to iterate through large lists of records, cast as FOFTable objects
++ gh-261 Simple ORM-like feature
++ gh-274 Added major Joomla! version class to HTML output when using Strapper or Joomla! 3.x
+~ Abstracting Joomla! Platform dependencies across the entire framework to make it easier to migrate to future Joomla! versions which may not be using the Joomla! Platform (gh-240 gh-241 gh-243 gh-244 gh-245 gh-248 gh-249 gh-250 gh-251 gh-252 gh-253 gh-254 gh-255 gh-256)
+~ FOFModel::onAfterLoadForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
+~ FOFModel::onBeforePreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
+~ FOFModel::onAfterPreprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
+~ FOFModel::preprocessForm explicitly passes the form object as reference. Please update your method signature to avoid PHP notices
+~ gh-278 Made $app->redirect() not use the deprecated API
+~ AJAX ordering now shows the ordering value textbox next to the ordering handle
+~ Minified Akeeba Strapper stylesheets
+~ Use same markup for toolbar title as Joomla! core
+# [LOW] Notice in render/strapper.php
+# [LOW] gh-246 Fix wrong singularize result for word "menus"
+# [LOW] gh-247 Grouped list field uses getOptions instead of getGroups, leading to a fatal error
+# [LOW] gh-257 Redirection errors when using custom URL
+# [LOW] gh-259 Joomla! 3.x uses labelclass instead of labelClass in JFormField
+# [LOW] FOFStringUtils::toASCII didn't specify the character set for htmlentities, leading to unprintable output on PHP 5.4 for certain inputs
+# [LOW] gh-264 Submenu child dropdown didn't set the parent active
+# [LOW] gh-265 Language translation in model header field
+# [LOW] gh-268 Fix navigating submenu sub-items with tab
+# [LOW] gh-269 core.edit.state != core.edit.own for own records
+# [LOW] gh-271 Wrong requirement for FOFFormFieldTag, FOFFormFieldModel and FOFFormFieldCaptcha
+# [MEDIUM] gh-262 FOFTable::load() returns true if the record is not found
+# [MEDIUM] gh-266 The between filter wouldn't work
+# [MEDIUM] gh-267 savenew implies that core.create privileges are necessary
+# [MEDIUM] gh-280 FOFFormFieldSelectrow shows fields owned by self as locked
+# [MEDIUM] gh-279 The saveorder method in FOFController doesn't respect the 'ordering' field aliases
+# [HIGH] The published field is broken
+
+FOF 2.1.1
+================================================================================
++ gh-210 Custom tags feature for Akeeba Strapper
+~ gh-211 Automatically creates a row-fluid element under joomla 2.5
+~ Removed usages of deprecated view methods `assign` and `assignRef`
+~ Using native version_compare function instead of the FOFPlatform proxy one
+# gh-208 Title toolbar not shown in frontend
+# gh-212 Wrong asset_id (0) saved in table after creating a new item
+# gh-214 Wrong ACL permissions saved when using the rules field type
+# gh-217 Now using the correct ACL privilege (core.create, core.edit, core.edit.own) when creating or modifying an item
+# gh-217 Save toolbar button shows up even when you can't edit an item
+# gh-219 The "rule" field assigns a bad asset parent node, making it impossible to work with a newly created asset-tracked item unless you are Super User
+# gh-222 Fixed toolbar "save" button on record with asset tracking
+# gh-225 Toolbar and View now will honor core.edit.own permission, too
+# FOFTable will throw an exception if we’re trying to get the assetName without a value for the primary key
+# Fixed table asset behavior, now you can delete a record even if there is no asset
+# Fixed FOFTable::hit
+# Fixed FOFTable::check in order to ignore the `hits` field while doing autochecks
+# Fixed FOFTable::getData, only table fields are returned
+# Fixed FOFTable::toCSV, only table fields are returned; plus null fields are returned as empty string
+# FOFModel->name mistakenly contained the component name instead of the model name
+# gh-230 Fatal error on time format if the JavaScript time format is used.
+# gh-231 FOFModel::getHash would return a wrong hash with temp model instances
+# gh-235 Wrong pluralisation / singularilisation by the inflector is specific few cases (also vastly improved Unit Tests for the Inflector)
+# Itemid not respected in the front-end of the site, leading to display and functional issues
+
+FOF 2.1.0
+================================================================================
++ Added required option to FOFFormFieldCheckbox
++ gh-206 Added Table Behavior documentation
++ gh-207 Added Table Behavior search in component folder as in FOFModel
+~ Typos in some LESS compiler files, stating version 0.3.8 instead of 0.3.9
+~ gh-192 Show which form file could not be loaded in the FOFForm::getInstance error message.
+~ Passing arrays to FOFModel::setId() is deprecated. Use the setIds() method instead.
+~ Deprecated messages are now logged using a platform class, for better platform abstraction and forward compatibility
+# gh-188 Typo in FOFController::_csrfProtection()
+# gh-189 Fixed Akeeba Strapper layout under Joomla! 2.5
+# gh-196 FOFModelFieldText constructor would not pass the $table_alias to the parent class
+# Unable to add component-specific behaviours to models (regression)
+# gh-203 Unable to create a new entity with behaviour "private" (frontend)
+# gh-199 J3.2 Fixed form validation Javascript error
+# Fix FOFFormFieldCheckbox (undefined $disabled and $onclick)
+
 FOF 2.1.rc4
 ================================================================================
 + Added DTD for XML forms under documentation/form.dtd
@@ -23,7 +99,7 @@ Backwards compatibility notes
 
 	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 

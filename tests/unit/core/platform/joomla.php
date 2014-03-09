@@ -3,11 +3,11 @@
  * @package    FrameworkOnFramework.UnitTest
  * @subpackage Core
  *
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-class FtestPlatformJoomla extends FOFPlatformJoomla
+class FtestPlatformJoomla extends FOFIntegrationJoomlaPlatform
 {
 	/**
 	 * @var		boolean   Should this platform instance report running under CLI mode?

@@ -8,9 +8,19 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Inflector
  *
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+if(file_exists(__DIR__ . '/../../vendor/autoload.php'))
+{
+    require_once __DIR__ . '/../../vendor/autoload.php';
+}
+else
+{
+    echo 'You need to install Composer and run `composer install` on FOF before running the tests.';
+    die();
+}
 
 define('_JEXEC', 1);
 

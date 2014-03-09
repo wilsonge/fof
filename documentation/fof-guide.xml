@@ -20,17 +20,7 @@
       </affiliation>
     </author>
 
-    <pubdate>July 2013</pubdate>
-
-    <revhistory>
-      <revision>
-        <date>July 2013</date>
-
-        <authorinitials>NKD</authorinitials>
-
-        <revremark>First release</revremark>
-      </revision>
-    </revhistory>
+    <pubdate>December 2013</pubdate>
 
     <copyright>
       <year>2013</year>
@@ -846,437 +836,884 @@ function postflight($type, $parent)
       <code>view</code>.</para>
 
       <section xml:id="fofmodel-behaviours">
-        <title>Built-in Behaviours</title>
+        <title>Model Behaviours</title>
 
-        <para>FOF comes with several built-in model behaviours. They are used
-        to provide core functionality. By default only the "filters" behaviour
-        is attached to a model for performance reasons. In this section we
-        will discuss what each behaviour does.</para>
+        <section xml:id="fofmodel-behaviours-intro">
+          <title>Introduction</title>
 
-        <para>You can combine multiple behaviours at once.</para>
+          <para>Model Behaviors are a handy way to alter the workflow of a
+          FOFModel. It's based upon the standard Joomla Event system.</para>
 
-        <section xml:id="fofmodel-behaviours-access">
-          <title>access</title>
+          <para>Before and After certain actions, the model triggers an
+          "event" which is propagated to each of the registered behaviors for
+          that model. They can then, by registering to these events, alter the
+          way the action itself is performed.</para>
 
-          <para>Adding this behaviour to a model object filters the front-end
-          output by the viewing access levels the user has access to.</para>
+          <para>It's possible to register different behaviors per model; they
+          can be added by default, or even on the fly, after the model is
+          created.</para>
 
-          <important>
-            <para>This behaviour REQUIRES the "filters" behaviour. If you have
-            not added the "filters" behaviour it will not have any effect on
-            browse views. It will, however, work on edit and read
-            views.</para>
-          </important>
+          <para>FOF already provides a list of common behaviors, that can be
+          used by any FOFModel object.</para>
         </section>
 
-        <section xml:id="fofmodel-behaviours-enabled">
-          <title>enabled</title>
+        <section xml:id="fofmodel-behaviours-standard">
+          <title>FOF standard Behaviors</title>
 
-          <para>Adding this behaviour to a model object filters the front-end
-          output to only items which are published (enabled=1).</para>
+          <para>FOF comes with several built-in model behaviours. They are
+          used to provide core functionality. By default only the "filters"
+          behaviour is attached to a model for performance reasons. In this
+          section we will discuss what each behaviour does.</para>
+
+          <para>You can combine multiple behaviours at once.</para>
+
+          <section xml:id="fofmodel-behaviours-access">
+            <title>access</title>
+
+            <para>Adding this behaviour to a model object filters the
+            front-end output by the viewing access levels the user has access
+            to.</para>
+
+            <important>
+              <para>This behaviour REQUIRES the "filters" behaviour. If you
+              have not added the "filters" behaviour it will not have any
+              effect on browse views. It will, however, work on edit and read
+              views.</para>
+            </important>
+          </section>
+
+          <section xml:id="fofmodel-behaviours-enabled">
+            <title>enabled</title>
+
+            <para>Adding this behaviour to a model object filters the
+            front-end output to only items which are published
+            (enabled=1).</para>
+          </section>
+
+          <section xml:id="fofmodel-behaviours-filters">
+            <title>filters</title>
+
+            <important>
+              <para>This behaviour only works on browse views.</para>
+            </important>
+
+            <para>Adding this behaviour to a model object allows FOF to
+            magically apply filters based on the input data. For example, if
+            you pass &amp;foobar=1 in the URL, or –more generally speaking–
+            have a foobar state variable with a value of 1 then the SQL query
+            used to fetch the items list will be filtered by the rows where
+            the foobar column is set to 1.</para>
+
+            <para>The filters behaviour is smart enough to recognise the type
+            of your table fields and apply the correct type filter each time.
+            There are several different filtering methods per field type.
+            Besides the default filtering method which is used when you only
+            use a plain value in the state variable you can select a different
+            method. To do that you need to pass a hash (keyed) array in the
+            state variable like this array('method' =&gt; 'between', 'from'
+            =&gt; 1, 'to' =&gt; 10) or, in URL query format,
+            &amp;foobar[method]=between&amp;foobar[from]=1&amp;foobar[to]=10.</para>
+
+            <para>So, let's discuss the available match types per field
+            type.</para>
+
+            <bridgehead>Number fields</bridgehead>
+
+            <para>For numeric fields you can use the following filtering
+            methods:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>exact</term>
+
+                <listitem>
+                  <para>This is the default method. You can just pass the
+                  value you want to search. If you want to use the hash array
+                  format you have the following keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>exact</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : the value you want to
+                      search</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>partial</term>
+
+                <listitem>
+                  <para>For numeric fields this is just an alias to
+                  <code>exact</code>.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>between</term>
+
+                <listitem>
+                  <para>Returns records whose field value is inside the space
+                  between two numbers, inclusive. You have the following
+                  keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>between</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>from</option> : Left barrier of the number
+                      space</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>to</option> : Right barrier of the number
+                      space</para>
+                    </listitem>
+                  </itemizedlist>
+
+                  <para>For example from=1 and to=10 will search for any value
+                  between 1 to 10, including 1 and 10.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>outside</term>
+
+                <listitem>
+                  <para>Returns records whose field value is outside the space
+                  between two numbers, exclusive. You have the following
+                  keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>outside</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>from</option> : Left barrier of the number
+                      space</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>to</option> : Right barrier of the number
+                      space</para>
+                    </listitem>
+                  </itemizedlist>
+
+                  <para>For example from=1 and to=10 will search for any value
+                  lower than 1 or greater than 10, excluding 1 and 10.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>interval</term>
+
+                <listitem>
+                  <para>Returns records whose field value is following an
+                  interval (arithmetical progression)</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>interval</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : The starting value of the
+                      interval</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>interval</option> : The interval
+                      period</para>
+                    </listitem>
+                  </itemizedlist>
+
+                  <para>For example value=5 interval=2 will search for values
+                  5, 7, 9, 11 and so on.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <bridgehead>Boolean fields</bridgehead>
+
+            <para>For boolean (tiny integer) fields you can use the following
+            methods:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>exact</term>
+
+                <listitem>
+                  <para>This is the default method. You can just pass the
+                  value you want to search. If you want to use the hash array
+                  format you have the following keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>exact</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : the value you want to
+                      search</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <bridgehead>Text fields</bridgehead>
+
+            <para>For text fields you can use the following methods:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>partial</term>
+
+                <listitem>
+                  <para>This is the default method. You can just pass the
+                  value you want to search. The records returned have that
+                  value somewhere in their fields (partial text search). If
+                  you want to use the hash array format you have the following
+                  keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>partial</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : the partial phrase you
+                      want to search</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>exact</term>
+
+                <listitem>
+                  <para>Performs an exact search. The fields' values must be
+                  exactly equal to the value you use here. You have the
+                  following keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>exact</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : the exact phrase you want
+                      to search</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <bridgehead>Date fields</bridgehead>
+
+            <para>For date and date/time fields you can use the following
+            methods:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>exact</term>
+
+                <listitem>
+                  <para>This is the default method. Performs an exact search.
+                  The fields' values must be exactly equal to the value you
+                  use here. You have the following keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>exact</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : the exact phrase you want
+                      to search</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>partial</term>
+
+                <listitem>
+                  <para>You can just pass the value you want to search. The
+                  records returned have that value somewhere in their fields
+                  (partial text search). If you want to use the hash array
+                  format you have the following keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>partial</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : the partial phrase you
+                      want to search</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>between</term>
+
+                <listitem>
+                  <para>Returns records whose field value is inside the space
+                  between two dates, inclusive. You have the following
+                  keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>between</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>from</option> : Left barrier of the date
+                      space</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>to</option> : Right barrier of the date
+                      space</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>outside</term>
+
+                <listitem>
+                  <para>Returns records whose field value is outside the space
+                  between two dates, exclusive. You have the following
+                  keys:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>outside</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>from</option> : Left barrier of the number
+                      space</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>to</option> : Right barrier of the number
+                      space</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>interval</term>
+
+                <listitem>
+                  <warning>
+                    <para>This method currently only works with MySQL.</para>
+                  </warning>
+
+                  <para>Returns records whose field value is following an
+                  interval (arithmetical progression)</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para><option>method</option> :
+                      <parameter>interval</parameter></para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>value</option> : The starting value of the
+                      interval</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><option>interval</option> : The interval period.
+                      The interval can either be a string or an array. As a
+                      string it contains a sign (+ to go to the future or - to
+                      go to the past), the numeric portion of the interval
+                      period and the actual interval (days, months, years,
+                      weeks). For example:</para>
+
+                      <para><parameter>+1 month</parameter> to search for
+                      values every one month in the future or <parameter>-1
+                      month</parameter> to search for values every one month
+                      in the past</para>
+
+                      <para>As an array it can look like this array('sign'
+                      =&gt; '+', 'value' =&gt; '1', 'unit' =&gt;
+                      'month')</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </section>
+
+          <section xml:id="fofmodel-behaviours-language">
+            <title>language</title>
+
+            <para>Adding this behaviour to a model object filters the
+            front-end output by language, displaying only the items whose
+            language matches the currently enabled front-end language.
+            Obviously this only has an effect on multi-lingual sites when the
+            Joomla! language filter plugin is enabled.</para>
+          </section>
+
+          <section xml:id="fofmodel-behaviours-private">
+            <title>private</title>
+
+            <para>Adding this behaviour to a model object filters the
+            front-end output by the created_by user, showing only items that
+            have been created by the currently logged in user. Items not
+            created by the current user will not be displayed.</para>
+          </section>
         </section>
 
-        <section xml:id="fofmodel-behaviours-filters">
-          <title>filters</title>
-
-          <important>
-            <para>This behaviour only works on browse views.</para>
-          </important>
-
-          <para>Adding this behaviour to a model object allows FOF to
-          magically apply filters based on the input data. For example, if you
-          pass &amp;foobar=1 in the URL, or –more generally speaking– have a
-          foobar state variable with a value of 1 then the SQL query used to
-          fetch the items list will be filtered by the rows where the foobar
-          column is set to 1.</para>
-
-          <para>The filters behaviour is smart enough to recognise the type of
-          your table fields and apply the correct type filter each time. There
-          are several different filtering methods per field type. Besides the
-          default filtering method which is used when you only use a plain
-          value in the state variable you can select a different method. To do
-          that you need to pass a hash (keyed) array in the state variable
-          like this array('method' =&gt; 'between', 'from' =&gt; 1, 'to' =&gt;
-          10) or, in URL query format,
-          &amp;foobar[method]=between&amp;foobar[from]=1&amp;foobar[to]=10.</para>
-
-          <para>So, let's discuss the available match types per field
-          type.</para>
-
-          <bridgehead>Number fields</bridgehead>
-
-          <para>For numeric fields you can use the following filtering
-          methods:</para>
-
-          <variablelist>
-            <varlistentry>
-              <term>exact</term>
-
-              <listitem>
-                <para>This is the default method. You can just pass the value
-                you want to search. If you want to use the hash array format
-                you have the following keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>exact</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : the value you want to
-                    search</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>partial</term>
-
-              <listitem>
-                <para>For numeric fields this is just an alias to
-                <code>exact</code>.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>between</term>
-
-              <listitem>
-                <para>Returns records whose field value is inside the space
-                between two numbers, inclusive. You have the following
-                keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>between</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>from</option> : Left barrier of the number
-                    space</para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>to</option> : Right barrier of the number
-                    space</para>
-                  </listitem>
-                </itemizedlist>
-
-                <para>For example from=1 and to=10 will search for any value
-                between 1 to 10, including 1 and 10.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>outside</term>
-
-              <listitem>
-                <para>Returns records whose field value is outside the space
-                between two numbers, exclusive. You have the following
-                keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>outside</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>from</option> : Left barrier of the number
-                    space</para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>to</option> : Right barrier of the number
-                    space</para>
-                  </listitem>
-                </itemizedlist>
-
-                <para>For example from=1 and to=10 will search for any value
-                lower than 1 or greater than 10, excluding 1 and 10.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>interval</term>
-
-              <listitem>
-                <para>Returns records whose field value is following an
-                interval (arithmetical progression)</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>interval</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : The starting value of the
-                    interval</para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>interval</option> : The interval
-                    period</para>
-                  </listitem>
-                </itemizedlist>
-
-                <para>For example value=5 interval=2 will search for values 5,
-                7, 9, 11 and so on.</para>
-              </listitem>
-            </varlistentry>
-          </variablelist>
-
-          <bridgehead>Boolean fields</bridgehead>
-
-          <para>For boolean (tiny integer) fields you can use the following
-          methods:</para>
-
-          <variablelist>
-            <varlistentry>
-              <term>exact</term>
-
-              <listitem>
-                <para>This is the default method. You can just pass the value
-                you want to search. If you want to use the hash array format
-                you have the following keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>exact</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : the value you want to
-                    search</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-          </variablelist>
-
-          <bridgehead>Text fields</bridgehead>
-
-          <para>For text fields you can use the following methods:</para>
-
-          <variablelist>
-            <varlistentry>
-              <term>partial</term>
-
-              <listitem>
-                <para>This is the default method. You can just pass the value
-                you want to search. The records returned have that value
-                somewhere in their fields (partial text search). If you want
-                to use the hash array format you have the following
-                keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>partial</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : the partial phrase you want
-                    to search</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>exact</term>
-
-              <listitem>
-                <para>Performs an exact search. The fields' values must be
-                exactly equal to the value you use here. You have the
-                following keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>exact</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : the exact phrase you want
-                    to search</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-          </variablelist>
-
-          <bridgehead>Date fields</bridgehead>
-
-          <para>For date and date/time fields you can use the following
-          methods:</para>
-
-          <variablelist>
-            <varlistentry>
-              <term>exact</term>
-
-              <listitem>
-                <para>This is the default method. Performs an exact search.
-                The fields' values must be exactly equal to the value you use
-                here. You have the following keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>exact</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : the exact phrase you want
-                    to search</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>partial</term>
-
-              <listitem>
-                <para>You can just pass the value you want to search. The
-                records returned have that value somewhere in their fields
-                (partial text search). If you want to use the hash array
-                format you have the following keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>partial</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : the partial phrase you want
-                    to search</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>between</term>
-
-              <listitem>
-                <para>Returns records whose field value is inside the space
-                between two dates, inclusive. You have the following
-                keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>between</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>from</option> : Left barrier of the date
-                    space</para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>to</option> : Right barrier of the date
-                    space</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>outside</term>
-
-              <listitem>
-                <para>Returns records whose field value is outside the space
-                between two dates, exclusive. You have the following
-                keys:</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>outside</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>from</option> : Left barrier of the number
-                    space</para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>to</option> : Right barrier of the number
-                    space</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>interval</term>
-
-              <listitem>
-                <warning>
-                  <para>This method currently only works with MySQL.</para>
-                </warning>
-
-                <para>Returns records whose field value is following an
-                interval (arithmetical progression)</para>
-
-                <itemizedlist>
-                  <listitem>
-                    <para><option>method</option> :
-                    <parameter>interval</parameter></para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>value</option> : The starting value of the
-                    interval</para>
-                  </listitem>
-
-                  <listitem>
-                    <para><option>interval</option> : The interval period. The
-                    interval can either be a string or an array. As a string
-                    it contains a sign (+ to go to the future or - to go to
-                    the past), the numeric portion of the interval period and
-                    the actual interval (days, months, years, weeks). For
-                    example:</para>
-
-                    <para><parameter>+1 month</parameter> to search for values
-                    every one month in the future or <parameter>-1
-                    month</parameter> to search for values every one month in
-                    the past</para>
-
-                    <para>As an array it can look like this array('sign' =&gt;
-                    '+', 'value' =&gt; '1', 'unit' =&gt; 'month')</para>
-                  </listitem>
-                </itemizedlist>
-              </listitem>
-            </varlistentry>
-          </variablelist>
+        <section xml:id="fofmodel-behaviours-add">
+          <title>Adding an Existing Behavior to a Model</title>
+
+          <para>There are 4 ways to add a behavior to a model:</para>
+
+          <para>1. Using the <property>default_behaviors</property> property
+          of the model. This property is an array of behavior names to load
+          upon the model construction. By default it contains only the filters
+          behavior. You can override it with your preferred behavior in your
+          model class declaration:</para>
+
+          <programlisting>class FoobarModelTodos extends FOFmodel {
+
+    ....
+
+    protected $default_behaviors = array('filters', 'access', 'enabled');
+
+    ....
+
+}
+</programlisting>
+
+          <para>2. Passing it into the <parameter>$config</parameter>
+          parameter for the constructor of your model class:</para>
+
+          <programlisting>class FoobarModelTodos extends FOFmodel {
+
+    ....
+
+    public function __construct($config = array()) {
+        if (!isset($config['behaviors'])) {
+            $config['behaviors'] = array('filters', 'access', 'enabled');
+        }
+
+        parent::__construct($config);
+    }
+
+    ....
+
+}
+</programlisting>
+
+          <para>3. Passing it when you create the model instance through the
+          <parameter>config</parameter> parameter:</para>
+
+          <programlisting>$model = FOFModel::getTmpInstance('Todos', 'FoobarModel', array(
+    'behaviors' =&gt; array('filters', 'access', 'enabled'))
+);</programlisting>
+
+          <para>4. Adding it dinamically using the method
+          <methodname>addBehavior</methodname></para>
+
+          <programlisting>class FoobarModelTodos extends FOFmodel {
+....
+
+    public function __construct($config = array()) {
+        parent::__construct($config);
+
+        if ($iWantToAddIt) {
+            $this-&gt;addBehavior('enabled');
+        }
+    }
+
+    ....
+}</programlisting>
         </section>
 
-        <section xml:id="fofmodel-behaviours-language">
-          <title>language</title>
+        <section xml:id="fofmodel-behaviours-create-new">
+          <title>Creating a new Behavior</title>
 
-          <para>Adding this behaviour to a model object filters the front-end
-          output by language, displaying only the items whose language matches
-          the currently enabled front-end language. Obviously this only has an
-          effect on multi-lingual sites when the Joomla! language filter
-          plugin is enabled.</para>
+          <para>You can create custom behaviors for your component. It's very
+          important how you name it, because FOF will search for your
+          behaviors based on their name.</para>
+
+          <para>If you want to add a foobar behavior, FOF will search for it
+          in the following order:</para>
+
+          <orderedlist>
+            <listitem>
+              <para>First look for ComponentnameModelViewnameBehaviorName (ie:
+              FoobarModelTodosFoobar)</para>
+            </listitem>
+
+            <listitem>
+              <para>Then look for ComponentnameModelBehaviorName (ie:
+              FoobarModelFoobar)</para>
+            </listitem>
+
+            <listitem>
+              <para>Then look for FOFModelBehaviorFoobar</para>
+            </listitem>
+          </orderedlist>
+
+          <para>This allows you to create model specific behaviors and also
+          component-wide ones.</para>
+
+          <para>It's also possible to override already existing behaviors, by
+          naming them correctly (ie: you can override the enabled behavior by
+          creating a new class called FoobarModelBehaviorEnabled).</para>
         </section>
 
-        <section xml:id="fofmodel-behaviours-private">
-          <title>private</title>
+        <section xml:id="fofmodel-behaviours-available">
+          <title>Available Events for Model Behaviors</title>
 
-          <para>Adding this behaviour to a model object filters the front-end
-          output by the created_by user, showing only items that have been
-          created by the currently logged in user. Items not created by the
-          current user will not be displayed.</para>
+          <para>In each model behavior you can inject into the workflow using
+          these methods:</para>
+
+          <programlisting>/**
+ * This event runs before saving data in the model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   array     &amp;$data   The data to save
+ *
+ * @return  void
+ */
+public function onBeforeSave(&amp;$model, &amp;$data)
+{
+}
+
+/**
+ * This event runs before deleting a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onBeforeDelete(&amp;$model)
+{
+}
+
+/**
+ * This event runs before copying a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onBeforeCopy(&amp;$model)
+{
+}
+
+/**
+ * This event runs before publishing a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onBeforePublish(&amp;$model)
+{
+}
+
+/**
+ * This event runs before registering a hit on a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onBeforeHit(&amp;$model)
+{
+}
+
+/**
+ * This event runs before moving a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onBeforeMove(&amp;$model)
+{
+}
+
+/**
+ * This event runs before changing the records' order in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onBeforeReorder(&amp;$model)
+{
+}
+
+/**
+ * This event runs when we are building the query used to fetch a record
+ * list in a model
+ *
+ * @param   FOFModel        &amp;$model  The model which calls this event
+ * @param   JDatabaseQuery  &amp;$query  The query being built
+ *
+ * @return  void
+ */
+public function onBeforeBuildQuery(&amp;$model, &amp;$query)
+{
+}
+
+/**
+ * This event runs after saving a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterSave(&amp;$model)
+{
+}
+
+/**
+ * This event runs after deleting a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterDelete(&amp;$model)
+{
+}
+
+/**
+ * This event runs after copying a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterCopy(&amp;$model)
+{
+}
+
+/**
+ * This event runs after publishing a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterPublish(&amp;$model)
+{
+}
+
+/**
+ * This event runs after registering a hit on a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterHit(&amp;$model)
+{
+}
+
+/**
+ * This event runs after moving a record in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterMove(&amp;$model)
+{
+}
+
+/**
+ * This event runs after reordering records in a model
+ *
+ * @param   FOFModel  &amp;$model  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterReorder(&amp;$model)
+{
+}
+
+/**
+ * This event runs after we have built the query used to fetch a record
+ * list in a model
+ *
+ * @param   FOFModel        &amp;$model  The model which calls this event
+ * @param   JDatabaseQuery  &amp;$query  The model which calls this event
+ *
+ * @return  void
+ */
+public function onAfterBuildQuery(&amp;$model, &amp;$query)
+{
+}
+
+/**
+ * This event runs after getting a single item
+ *
+ * @param   FOFModel  &amp;$model   The model which calls this event
+ * @param   FOFTable  &amp;$record  The record loaded by this model
+ *
+ * @return  void
+ */
+public function onAfterGetItem(&amp;$model, &amp;$record)
+{
+}</programlisting>
+        </section>
+
+        <section xml:id="fofmodel-behaviours-example">
+          <title>New Behavior Example: Published</title>
+
+          <para>Let's create a behavior for our component called Published,
+          that will filter the items based on the publish_up and pulish_down
+          fields of a table.</para>
+
+          <programlisting>class FOFModelBehaviorPublished extends FOFModelBehavior
+{
+    /**
+     * Let's add the filter for the publish_up and publish_down fields here, after the query is built by the model
+     *
+     * @param   FOFModel        &amp;$model  The model which calls this event
+     * @param   JDatabaseQuery  &amp;$query  The model which calls this event
+     *
+     * @return  void
+     */
+    public function onAfterBuildQuery(&amp;$model, &amp;$query)
+    {
+        // This behavior only applies to the front-end.
+        if (!FOFPlatform::getInstance()-&gt;isFrontend())
+        {
+            return;
+        }
+
+        // Get the name of the publish_up field (support for aliases)
+        $table = $model-&gt;getTable();
+        $publishUpField = $table-&gt;getColumnAlias('publish_up');
+
+        // Get the name of the publish_down field (support for aliases)
+        $publishDownField = $table-&gt;getColumnAlias('publish_down');
+
+        // Make sure the fields actually exist
+        $publishUpExists = in_array($publishUpField, $table-&gt;getKnownFields());
+
+        $publishDownExists = in_array($publishDownField, $table-&gt;getKnownFields());
+
+        // If they both do no exist, exit, we cannot apply the behavior
+        if (!$publishUpExists &amp;&amp; !$publishDownExists)
+        {
+            return;
+        }
+
+        // Get the current date
+        $now = new JDate()
+        $now = $now-&gt;toSql();
+
+        $db = JFactory::getDbo();
+
+        // Filter by publish up first
+        if ($publishUpExists) {
+            $query-&gt;where($db-&gt;qn($publishUpField) . ' &lt;= ' . $db-&gt;q($now));
+        }
+
+        // Filter by publish down
+        if ($publishDownExists) {
+            $query-&gt;where($db-&gt;qn($publishDownField) . ' &gt;= ' . $db-&gt;q($now));
+        }
+    }
+
+    /**
+     * Voids the getItem result if the loaded item wasn't published
+     *
+     * @param   FOFModel  &amp;$model   The model which was called
+     * @param   FOFTable  &amp;$record  The record loaded from the databae
+     *
+     * @return  void
+     */
+    public function onAfterGetItem(&amp;$model, &amp;$record)
+    {
+        if ($record instanceof FOFTable)
+        {
+            // This behavior only applies to the front-end.
+            if (!FOFPlatform::getInstance()-&gt;isFrontend())
+            {
+                return;
+            }
+
+            // Get the name of the publish_up field (support for aliases)
+            $publishUpField = $record-&gt;getColumnAlias('publish_up');
+
+            // Get the name of the publish_down field (support for aliases)
+            $publishDownField = $record-&gt;getColumnAlias('publish_down');
+
+            // Make sure the fields actually exist
+            $publishUpExists = in_array($publishUpField, $record-&gt;getKnownFields());
+
+            $publishDownExists = in_array($publishDownField, $record-&gt;getKnownFields());
+
+            // If they both do no exist, exit, we cannot apply the behavior
+            if (!$publishUpExists &amp;&amp; !$publishDownExists)
+            {
+                return;
+            }
+
+            // Get the current date
+            $now = new JDate()
+            $now = $now-&gt;toSql();
+
+            if ($publishUpExists) {
+                $publish_up = new JDate($record-&gt;$publishUpField);
+                if ($publish_up &gt; $now) {
+                    $record = null;
+                    return;
+                }
+            }
+
+            if ($publishDownExists) {
+                $publish_down = new JDate($record-&gt;$publishDownField);
+                if ($publish_down &lt; $now) {
+                    $record = null;
+                    return;
+                }
+            }
+        }
+    }
+}
+</programlisting>
         </section>
       </section>
     </section>
@@ -1442,16 +1879,28 @@ function postflight($type, $parent)
       </variablelist>
 
       <para>You can always customise the magic fields' names in your Table
-      class using the <property>_columnAlias</property> array property. For
-      example, if your column is named <database>published</database> instead
-      of <database>enabled</database>:</para>
+      class using the <property>setColumnAlias</property> method. For example,
+      if your column is named <database>published</database> instead of
+      <database>enabled</database>:</para>
 
-      <programlisting>$this-&gt;_columnAlias['enabled'] = 'published';
-</programlisting>
+      <programlisting>function __construct($table, $key, $db, $config)
+{
+    $this-&gt;setColumnAlias('enabled', 'published');
+        
+    parent::__construct($table, $key, $db, $config);
+}</programlisting>
 
       <para>Now FOF will know that the <database>published</database> column
       contains the publish status of the record. This comes in handy when
       you're upgrading a component from POJ (plain old Joomla!) to FOF.</para>
+
+      <para><important>
+          <para>We strongly suggest to set these alias inside the table
+          constructor and more specifically <emphasis
+          role="bold">before</emphasis> calling the parent constructor. In
+          this way, FOF will know everything about your table and can set some
+          automatic feature, like asset tracking.</para>
+        </important></para>
 
       <bridgehead>Using joined tables</bridgehead>
 
@@ -1780,6 +2229,612 @@ class FoobarTableFoo extends FOFTable
       as it allows end users and site integrators (of a power user level,
       granted) to modify or extend the behaviour of FOF-powered extensions
       with great ease.</para>
+
+      <section xml:id="foftable-behaviors">
+        <title>Table Behaviors</title>
+
+        <section xml:id="foftable-behaviors-introduction">
+          <title>Introduction</title>
+
+          <para>Table Behaviors are an handy way to alter the workflow of a
+          FOFTable. It's based upon the standard Joomla Event system.</para>
+
+          <para>Before and After certain actions, the table triggers an
+          "event" which is propagated to each of the registered behaviors for
+          that table. They can then, by registering to these events, alter the
+          way the action itself is performed.</para>
+
+          <para>It's possible to register different behaviors per table; they
+          can be added by default, or even on the fly, after the table is
+          created.</para>
+
+          <para>FOF already provides a list of common behaviors, that can be
+          used by any FOFTable object.</para>
+        </section>
+
+        <section xml:id="foftable-behaviors-standard">
+          <title>FOF Standard Behaviors</title>
+
+          <variablelist>
+            <varlistentry>
+              <term>assets</term>
+
+              <listitem>
+                <para>This behavior (added by default by FOF) manages the
+                assets for a resource if the asset_id field (or an alias for
+                it) is set for the table</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>tags</term>
+
+              <listitem>
+                <para>This behavior (added by default by FOF) deals with tags
+                related to the current resource. It will be applied only if
+                the hasTags property is set to true.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+
+        <section xml:id="foftable-behaviors-add">
+          <title>Add an existing Behavior to a Table</title>
+
+          <para>There are 4 ways to add a behavior to a table:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Using the <property>default_behaviors</property> property
+              of the table. This property is an array of behavior names to
+              load upon the table construction. By default it contains the
+              tags and the assets behaviors. You can override it with your
+              preferred behavior in your table class declaration:</para>
+
+              <programlisting>class FoobarTableTodo extends FOFtable {
+
+    ....
+
+    protected $default_behaviors = array('tags');
+
+    ....
+
+}</programlisting>
+            </listitem>
+
+            <listitem>
+              <para>Passing it into the <parameter>$config</parameter>
+              parameter for the constructor of your table
+              class:<programlisting>class FoobarTableTodo extends FOFtable {
+
+    ....
+
+    public function __construct($config = array()) {
+        if (!isset($config['behaviors'])) {
+            $config['behaviors'] = array('tags');
+        }
+
+        parent::__construct($config);
+    }
+
+    ....
+
+}</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para>Passing it when you create the table instance through the
+              <parameter>config</parameter> parameter:</para>
+
+              <programlisting>$model = FOFTable::getTmpInstance('Todo', 'FoobarTable', array('behaviors' =&gt; array('tags')));</programlisting>
+            </listitem>
+
+            <listitem>
+              <para>Adding it dynamically using the method
+              <methodname>addBehavior</methodname>:</para>
+
+              <programlisting>class FoobarTableTodo extends FOFtable {
+....
+
+    public function __construct($config = array()) {
+        parent::__construct($config);
+
+        if ($iWantToAddIt) {
+            $this-&gt;addBehavior('tags');
+        }
+    }
+
+    ....
+}</programlisting>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section xml:id="foftable-behaviors-create-new">
+          <title>Creating a new Behavior</title>
+
+          <para>You can create custom behaviors for your component. It's very
+          important how you name it, because FOF will search for your
+          behaviors based on their name.</para>
+
+          <para>If you want to add a <replaceable>foobar</replaceable>
+          behavior, FOF will search for it in the following order:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>First look for ComponentnameTableViewnameBehaviorName (ie:
+              FoobarTableTodosFoobar)</para>
+            </listitem>
+
+            <listitem>
+              <para>Then look for ComponentnameTableBehaviorName (ie:
+              FoobarTableFoobar)</para>
+            </listitem>
+
+            <listitem>
+              <para>Then look for FOFTableBehaviorFoobar</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>This allows you to create table specific behaviors and also
+          component-wide ones.</para>
+
+          <para>It's also possible to override already existing behaviors, by
+          naming them correctly (ie: you can override the <code>tags</code>
+          behavior by creating a new class called
+          FoobarTableehaviorTags).</para>
+        </section>
+
+        <section xml:id="foftable-behaviors-available">
+          <title>Available Events for Table Behaviors</title>
+
+          <para>In each table behavior you can inject into the workflow using
+          these methods:</para>
+
+          <programlisting>/**
+ * This event runs before binding data to the table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   array     &amp;$data   The data to bind
+ *
+ * @return  boolean  True on success
+ */
+public function onBeforeBind(&amp;$table, &amp;$data)
+{
+    return true;
+}
+
+/**
+ * The event which runs after binding data to the table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   object|array  &amp;$src  The data to bind
+ *
+ * @return  boolean  True on success
+ */
+public function onAfterBind(&amp;$table, &amp;$src)
+{
+    return true;
+}
+
+/**
+ * The event which runs after loading a record from the database
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   boolean  &amp;$result  Did the load succeeded?
+ *
+ * @return  void
+ */
+public function onAfterLoad(&amp;$table, &amp;$result)
+{
+
+}
+
+/**
+ * The event which runs before storing (saving) data to the database
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
+ *
+ * @return  boolean  True to allow saving
+ */
+public function onBeforeStore(&amp;$table, $updateNulls)
+{
+    return true;
+}
+
+/**
+ * The event which runs after storing (saving) data to the database
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow saving without an error
+ */
+public function onAfterStore(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The event which runs before moving a record
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
+ *
+ * @return  boolean  True to allow moving
+ */
+public function onBeforeMove(&amp;$table, $updateNulls) 
+{
+    return true;
+}
+
+/**
+ * The event which runs after moving a record
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow moving without an error
+ */
+public function onAfterMove(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The event which runs before reordering a table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   string  $where  The WHERE clause of the SQL query to run on reordering (record filter)
+ *
+ * @return  boolean  True to allow reordering
+ */
+public function onBeforeReorder(&amp;$table, $where = '')
+{
+    return true;
+}
+
+/**
+ * The event which runs after reordering a table
+ *
+ * @param   FOFTable  &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow the reordering to complete without an error
+ */
+public function onAfterReorder(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The event which runs before deleting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record to delete
+ *
+ * @return  boolean  True to allow the deletion
+ */
+public function onBeforeDelete(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The event which runs after deleting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record which was deleted
+ *
+ * @return  boolean  True to allow the deletion without errors
+ */
+public function onAfterDelete(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The event which runs before hitting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record to hit
+ * @param   boolean  $log  Should we log the hit?
+ *
+ * @return  boolean  True to allow the hit
+ */
+public function onBeforeHit(&amp;$table, $oid, $log)
+{
+    return true;
+}
+
+/**
+ * The event which runs after hitting a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record which was hit
+ *
+ * @return  boolean  True to allow the hitting without errors
+ */
+public function onAfterHit(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The even which runs before copying a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record being copied
+ *
+ * @return  boolean  True to allow the copy to take place
+ */
+public function onBeforeCopy(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The even which runs after copying a record
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer  $oid  The PK value of the record which was copied (not the new one)
+ *
+ * @return  boolean  True to allow the copy without errors
+ */
+public function onAfterCopy(&amp;$table, $oid)
+{
+    return true;
+}
+
+/**
+ * The event which runs before a record is (un)published
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   integer|array  &amp;$cid     The PK IDs of the records being (un)published
+ * @param   integer        $publish  1 to publish, 0 to unpublish
+ *
+ * @return  boolean  True to allow the (un)publish to proceed
+ */
+public function onBeforePublish(&amp;$table, &amp;$cid, $publish)
+{
+    return true;
+}
+
+/**
+ * The event which runs after the object is reset to its default values.
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow the reset to complete without errors
+ */
+public function onAfterReset(&amp;$table)
+{
+    return true;
+}
+
+/**
+ * The even which runs before the object is reset to its default values.
+ *
+ * @param   FOFTable &amp;$table  The table which calls this event
+ * 
+ * @return  boolean  True to allow the reset to complete
+ */
+public function onBeforeReset(&amp;$table)
+{
+    return true;
+}</programlisting>
+        </section>
+      </section>
+
+      <section xml:id="foftable-simpleorm">
+        <title>Simple object relation mapping</title>
+
+        <note>
+          <para>Available since FOF 2.2.0</para>
+        </note>
+
+        <bridgehead>A (very) naïve introduction to ORM – and why this FOF
+        feature is not a proper ORM implementation</bridgehead>
+
+        <para>The most common use case for databases is storing data which is
+        related to one another. This the cornerstone of relational database
+        management systems (RDBMS) such as MySQL, PostgreSQL, Microsoft SQL
+        Server and so on. Due to limitations of the shared hosting model we
+        tend not to make full use of the relational features of modern
+        databases, yet our field naming conventions do denote this aspect of
+        our data. Think about a <database>#__foobar_comments</database> table
+        having a key named <database>foobar_article_id</database>. You
+        immediately understand that each comment record in that table is
+        related to an article in a table called
+        <database>#__foobar_articles</database>. That's why you end up writing
+        code to fetch the comments of an article using FOFModel or the article
+        a comment belongs to using FOFTable.</para>
+
+        <para>By doing that, you are implicitly mapping the raw data in the
+        database to one or more PHP objects. This is a very primitive data
+        mapping operation, as you are mapping scalar values (the raw data)
+        into other scalar values (the PHP object's properties) through
+        explicit mapping. When you want to map non-scalar values (like the
+        comments of an article) you get to do that manually, essentially
+        hardcoding this relation into your PHP code. An object-relational
+        mapping (ORM, for short) does this automatically. It will map your
+        scalar data, what is stored in your database tables, into objects
+        which you can manipulate directly without worrying too much about how
+        this data is actually stored.</para>
+
+        <para>On the flip side, by using a full blown ORM you are abstracting
+        too much. The ORM has to map objects to database tables and the result
+        is often unoptimised database tables. By going to the other extreme,
+        manually handling all mapping, you are writing more code than you
+        should and you make your architecture inflexible.</para>
+
+        <para>FOF follows a middle path. You can tell it how your database
+        tables relate to each other and it will provide you with an interface
+        to get related objects directly from a FOFTable object. It currently
+        supports all three normalised relations:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>1:n (one to many). One record of table A is related to zero
+            or more records in table B. The easiest way to picture this is
+            table A being articles and table B being comments. This relation
+            can be expressed in different directions:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Parent. Given a record in table B you get the record in
+                table A it belongs to.</para>
+              </listitem>
+
+              <listitem>
+                <para>Children. Given a record in table A you get the records
+                in table B that belong to it.</para>
+              </listitem>
+
+              <listitem>
+                <para>Siblings. Given a record in table B you get all the
+                records in table B that belong to the same record of table A
+                that our current record in table B belongs to (it's the
+                children of the parent – that's why they're called
+                siblings)</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>1:1 (one to one). One record of table A is related to
+            exactly zero or one records in table B. It's used mostly to extend
+            a table without changing its schema, e.g. add more fields to the
+            <database>#__users</database> table. This relation has no implicit
+            directionality, but since it's the degenerate case of the 1:n
+            relation for n=1 we consider that table A is the parent of table
+            B, so this is implemented by defining a child relation on table A
+            (or a parent or child relation on table B; it's up to
+            you!).</para>
+          </listitem>
+
+          <listitem>
+            <para>n:n (many to many). One or more records of table A are
+            related to zero or more records in table B. The easiest way to
+            picture this is table A being users and table B being user groups.
+            One user can belong to multiple groups. Many users can belong to
+            the same group. The characteristic of this relation is that you
+            need a pivot (a.k.a. "glue" or "map") table which tells us which
+            record of table A relates to which record of table B. Quite
+            obviously there is no directionality in this relation: given a
+            record in table A you can get all related records in table B.
+            Likewise, given a table in record B you can get all related
+            records in table A through the same relation.</para>
+          </listitem>
+        </itemizedlist>
+
+        <bridgehead>What does it mean to you?</bridgehead>
+
+        <para>Before this feature you would have to write this kind of
+        code:</para>
+
+        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+$article-&gt;load(1);
+
+$model = FOFModel::getTmpInstance('Comments', 'FoobarModel');
+$comments = $model-&gt;foobar_article_id($article-&gt;foobar_article_id)-&gt;getList();
+foreach ($comments as $commentData)
+{
+    $commentTable = $model-&gt;getTable();
+    $commentTable-&gt;bind($commentData);
+    // Work with $commentTable
+}</programlisting>
+
+        <para>You can now write</para>
+
+        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+$article-&gt;load(1);
+
+foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTable)
+{
+    // Work with $commentTable
+}</programlisting>
+
+        <para>All you need to do is define the relation, either in the
+        constructor of your table class or in
+        <filename>fof.xml</filename>.</para>
+
+        <para>Even better, relations returning many items use
+        FOFDatabaseIterator which means that only one record is loaded in
+        memory at a time. When sifting through copious amounts of records this
+        decreases your memory consumption considerably.</para>
+
+        <para>The code savings are even more substantial for many-to-many
+        relations, but we'll leave that as an exercise to the reader to find
+        out why.</para>
+
+        <bridgehead>How do I use it?</bridgehead>
+
+        <para>Each table provides the getRelations() method which returns a
+        FOFTableRelations object. By default it's populated with parent
+        relations based on field names which follow the FOF naming
+        conventions. At any time you can use the add*Relation() methods of
+        FOFTableRelations to add any kind of relations. The docblocks in the
+        methods explain to you exactly what each parameter does and through
+        which method the related tables are made available. We suggest adding
+        relations in the constructor (__construct() method) of your
+        specialised table class. Alternatively, you can define the relations
+        in <filename>fof.xml</filename>.</para>
+
+        <para>From that point you can use the relations anywhere you have an
+        instance of that FOFTable object. The best methods for getting a
+        FOFTable object are:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Using FOFModel's getIterator. <emphasis role="bold">This is
+            the preferred method</emphasis>. Even if you only need the first
+            item fetched by the model it is far better for performance and
+            memory consumption to use:</para>
+
+            <programlisting>// GOOD - Use this!
+$iterator = $model-&gt;getIterator();
+$myRecord = $iterator-&gt;current();</programlisting>
+
+            <para>than using the next method presented below.</para>
+          </listitem>
+
+          <listitem>
+            <para>Using FOFModel's getFirstItem. This method is not
+            recommended for performance / resource usage reasons. Keep in mind
+            that FOFModel will load the ENTIRE record list, based on its
+            state, in memory and return the first item fetched as a FOFTable.
+            This can lead to bad performance and excessive memory consumption
+            unless you are absolutely sure that FOFModel will only fetch one
+            (or, at most, a handful) of items from the database.
+            Example:</para>
+
+            <programlisting>$myRecord = $model-&gt;getFirstItem();</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>Using FOFTable::getAnInstance(). This method is not
+            recommended due to the singleton caveat. Remember that the
+            returned object is a singleton. If you need to load a new record
+            you are required to clone that object, e.g. $table = clone
+            FOFTable::getAnInstance('Items', 'FoobarTable');</para>
+
+            <programlisting>// If you forget the clone you will spend some not-so-fun hours debugging erratic behaviour
+$myRecord = <emphasis role="bold">clone</emphasis> FOFTable::getAnInstance('Items', 'FoobarTable');
+$myRecord-&gt;load(123);</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>Using the getTable() method of a FOFModel object. This
+            method is not recommended due to the singleton caveat. Likewise to
+            FOFTable::getAnInstance() you get a singleton object for that
+            model. Unless you want to operate on the last item fetched / saved
+            in the model you need to clone it.</para>
+
+            <programlisting>// If you forget the clone you will spend some not-so-fun hours debugging erratic behaviour.
+// Also, are you sure that your code actually loaded anything in the table? Hm...
+$myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</programlisting>
+          </listitem>
+        </itemizedlist>
+      </section>
     </section>
 
     <section xml:id="fofcontroller">
@@ -1896,7 +2951,7 @@ class FoobarTableFoo extends FOFTable
       <methodname>onBefore<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname>,
       e.g. <methodname>onBeforeFoobarControllerItemsRead</methodname> to
       handle the <methodname>onBefore</methodname> event of
-      <code>com_foobar</code>, items <code>view</code>, <code>read</code>
+      <code>com_foobar</code>, <code>items</code> view, <code>read</code>
       task. Returning <constant>false</constant> will prevent the task from
       firing. You can do the same for the <methodname>onAfter</methodname>
       event. Do note that plugin events run after the code in your controller
@@ -2024,22 +3079,22 @@ class FoobarTableFoo extends FOFTable
             </row>
 
             <row>
-              <entry align="left"><methodname>read</methodname></entry>
+              <entry align="left"><methodname>edit</methodname></entry>
 
               <entry><filename>form.php</filename> OR
               <filename>form.form.xml</filename></entry>
 
-              <entry>This is the file that shows the edit page</entry>
+              <entry>This is the file that shows the data of a single record
+              without being able to edit the record</entry>
             </row>
 
             <row>
-              <entry align="left"><methodname>edit</methodname></entry>
+              <entry align="left"><methodname>read</methodname></entry>
 
               <entry><filename>item.php</filename> OR
               <filename>form.item.xml</filename></entry>
 
-              <entry>This is the file that shows the data of a single record
-              without being able to edit the record</entry>
+              <entry>This is the file that shows the edit page</entry>
             </row>
           </tbody>
         </tgroup>
@@ -2136,6 +3191,39 @@ class FoobarTableFoo extends FOFTable
       </filename>and <filename>form.default.xml</filename> in this
       order.</para>
 
+      <bridgehead>Custom template view file to wrap an XML form</bridgehead>
+
+      <para>An XML form file is a great way to get started developing an
+      application, but what if you want to add messages or render moduels at
+      the top/bottom of the form, add a sidebar or in any other way add your
+      own HTML around the rendered form? The answer is simple: you can use
+      regular PHP-based view templates and XML forms side by side in the same
+      view. Inside your .php file you can use $this-&gt;getRenderedForm() to
+      return the XML form file rendered as HTML. This allows customising the
+      layout (e.g. adding information before/after the form) while still using
+      the XML file to render the actual form. For example, you could insert
+      this code in your custom .php view template file:</para>
+
+      <programlisting>&lt;?php
+
+// Show some stuff before the form
+?&gt;&lt;h1&gt;Hello, world!&lt;/h1&gt;
+&lt;p&gt;This is printed above the form&lt;/p&gt;
+
+&lt;?php
+// Show the rendered form
+echo $this-&gt;getRenderedForm();
+
+// Show some stuff after the form
+?&gt;
+&lt;p&gt;This is printed below the form&lt;/p&gt;</programlisting>
+
+      <para>This works with all forms (browse, edit, read). For example, if
+      you want to customise a browse view template you will need to create
+      both <filename>form.default.xml</filename> and
+      <filename>default.php</filename> in the <filename>tmpl</filename>
+      directory of your view.</para>
+
       <bridgehead>Automatic views and web services</bridgehead>
 
       <para>FOF can automatically render your component's output in JSON and
@@ -2153,6 +3241,31 @@ class FoobarTableFoo extends FOFTable
       either by setting <code>$this-&gt;useHypermedia = true;</code> in your
       specialised JSON view class or, much easier, using the
       <filename>fof.xml</filename> configuration file.</para>
+
+      <bridgehead>Custom render classes ("renderers")</bridgehead>
+
+      <para>FOF uses the Render package to convert XML forms into HTML and
+      handle things such as submenus. It ships with render classes suitable
+      for use on regular Joomla! 2.5, regular Joomla! 3.2 and one for when
+      using Akeeba Strapper. The correct render class is chose automatically,
+      via environment detection. However, you may want to implement a custom
+      render class. Having to put it inside FOF's library directory would be
+      in violation of best coding practices. Even worse, it would affect all
+      views in all FOF-powered components on the site which is a terrible
+      idea. That's why the View constructor allows you to instantiate and
+      attach a custom render class. You will need to specialise the
+      <code>__construct</code> method of your View class like this:</para>
+
+      <programlisting>function __construct($config = array())
+{
+    parent::__construct($config);
+
+    $customRenderer = new YourCustomRenderClass();
+    self::registerRenderer($customRenderer);
+}</programlisting>
+
+      <para>This View will now use the custom renderer to display
+      itself.</para>
     </section>
 
     <section xml:id="fofdispatcher">
@@ -2686,6 +3799,199 @@ $json = ob_end_clean();
       example also screws up the document MIME type if you use it in an HTML
       view. Be warned.</para>
     </section>
+
+    <section xml:id="acl-configuration">
+      <title>ACL configuration</title>
+
+      <para>Another key feature of FOF are automatic ACL checks: before an
+      user is going to do anything, a permission check is made. For example,
+      before browsing a list of records, FOF checks for
+      <classname>core.browse</classname> permission or when we're trying to
+      save a record, permission <classname>core.edit</classname> is
+      checked.</para>
+
+      <para><bridgehead>Adding ACL support in your
+      extension</bridgehead></para>
+
+      <para>In these sections we will analyze our example component To-Do List
+      and we will retrace the steps needed in order to add and manage ACL
+      inside the extension.</para>
+
+      <para>What we want to achieve is a permission system based on two
+      levels: we will define global wide permissions, then we will add
+      "exceptions" to single records. For example, we need that Registered
+      users can always edit records, but we want to prevent them from editing
+      on a single record only because is very important for us.</para>
+
+      <para><bridgehead>Defining the actions</bridgehead></para>
+
+      <para>First of all, we have to define the actions that an user could
+      perform, so create the file <classname>access.xml</classname> inside
+      your extension backend directory and add the following lines:</para>
+
+      <para><programlisting>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;access component="com_todo"&gt;
+  &lt;section name="component"&gt;
+    &lt;action name="core.admin"       title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" /&gt;
+    &lt;action name="core.manage"      title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.create"      title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.delete"      title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit"        title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.own"    title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.state"  title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" /&gt;
+  &lt;/section&gt;
+
+  &lt;section name="unit"&gt;
+    &lt;!-- Actions to be used in for unit --&gt;
+    &lt;action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" /&gt;
+    &lt;action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" /&gt;
+  &lt;/section&gt;
+&lt;/access&gt;</programlisting>As you can see, there are two sections: one
+      for the whole component and another related to single records.</para>
+
+      <para><important>
+          <para>FOF will assume that the following permissions are defined
+          inside your component: <classname>core.admin</classname>,
+          <classname>core.manage</classname>,
+          <classname>core.create</classname>,
+          <classname>core.delete</classname>,
+          <classname>core.edit</classname>,
+          <classname>core.edit.own</classname>,
+          <classname>core.edit.state</classname> .</para>
+
+          <para>In order to fully take advantage of FOF features, we strongly
+          suggest you to define the above actions.</para>
+        </important></para>
+
+      <para><bridgehead>Editing component permissions</bridgehead></para>
+
+      <para>In your <classname>config.xml</classname> file you have to add the
+      following lines:</para>
+
+      <programlisting>&lt;fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC"&gt;
+  &lt;field name="rules" type="rules"
+         label="JCONFIG_PERMISSIONS_LABEL"
+         class="inputbox"
+         filter="rules"
+         component="com_todo"
+         section="component" /&gt;
+&lt;/fieldset&gt;</programlisting>
+
+      <para>In this way Joomla! will render a Permissions tab inside your
+      component options.</para>
+
+      <para><bridgehead>Editing record permissions</bridgehead></para>
+
+      <para>First of all we have to add a column to our table, as per FOF
+      convention its name should be <classname>asset_id</classname> (however
+      you could setup an alias):</para>
+
+      <programlisting>ALTER TABLE `#__todo_items` ADD `asset_id` INT NOT NULL ;</programlisting>
+
+      <para>Then you have to add two fields on your XML form: the saved
+      asset_id and the rule field, that is used to set the permissions to each
+      user group:</para>
+
+      <programlisting>&lt;fieldset name="rules"&gt;
+  &lt;field name="asset_id" type="hidden" emptylabel="true" filter="unset" /&gt;
+
+  &lt;field name="rules"
+         type="rules"
+         emptylabel="true"
+         translate_label="false"
+         filter="rules"
+         validate="rules"
+         class="inputbox"
+         component="com_todo"
+         section="unit" /&gt;
+&lt;/fieldset&gt;</programlisting>
+
+      <para><important>
+          <para>At the timing of this writing (2013-12-03), the Joomla!
+          "rules" field is buggy. If you want add per item ACL privileges you
+          <emphasis>must</emphasis> use FOF XML forms, since we found a
+          workaround for this issue.</para>
+        </important></para>
+
+      <para>Finally, you have update your table class and add new method,
+      named <classname>getAssetParentId</classname>. You have to do that since
+      when we have to tell Joomla! what's the parent of our asset record, in
+      this case it would be the component itself:</para>
+
+      <programlisting>public function getAssetParentId($table = null, $id = null)
+{
+    $db = JFactory::getDbo();
+
+    $query = $db-&gt;getQuery(true)
+                -&gt;select($db-&gt;qn('id'))
+                -&gt;from($db-&gt;qn('#__assets'))
+                -&gt;where($db-&gt;qn('name').' = '.$db-&gt;q('com_todo'))
+                -&gt;where($db-&gt;qn('parent_id').' = 1')
+                -&gt;where($db-&gt;qn('level').' = 1');
+    $parent_id = $db-&gt;setQuery($query)-&gt;loadResult();
+
+    if(!$parent_id)
+    {
+       return parent::getAssetParentId($table, $id);
+    }
+    else
+    {
+        return $parent_id;
+    }
+}</programlisting>
+
+      <para>And that's it! Now enjoy the ACL in your extension.</para>
+    </section>
+
+    <section xml:id="fofdatabaseiterator">
+      <title>The database cursor iterator (FOFDatabaseIterator)</title>
+
+      <note>
+        <para>Available since FOF 2.2.0</para>
+      </note>
+
+      <para>In many cases you have to sift through a large number of database
+      records and you want to use the magic of FOFTable. The traditional way
+      to do that was to use FOFModel::getItemList to get a big array of
+      stdClass objects, iterate through it with foreach, mapping each stdClass
+      object to your FOFTable instance. This is a performance and resource
+      nightmare. PHP has to retrieve the entire list of records from the
+      database and cast it to stupid stdClass objects, then you have to remap
+      them one by one as FOFTable instances. The time and memory required to
+      do that makes it impractical for lists over a few dozen records.</para>
+
+      <para>Enter the FOFDatabaseIterator. This is a regular, non-resettable
+      and non-seekable PHP iterator. This means that you can only fetch its
+      current record or proceed to the next one. You cannot scroll back to the
+      beginning and you cannot move to an arbitrary location within the
+      iterator (unlike an array). However, it will only load one record in
+      memory at a time and deliver it to you as a FOFTable object. The magic
+      behind it lies in the way it is implemented: it is given a database
+      cursor (pretty much, a resource pointing to the result set of a database
+      query) and it uses standard PHP features to only ever fetch the next
+      item from this cursor. Behind the scenes it will get a new instance of
+      the FOFTable class and use its bind() method to bind the data to it,
+      then return you the table object. Since it's an Iterator you can use it
+      in a foreach statement to iterate through the entire list of records,
+      one FOFTable object at a time.</para>
+
+      <para>Even though you can create a FOFDatabaseIterator directly, you
+      will hardly ever need to do so. A FOFTableIterator is returned by
+      FOFModel's getIterator() method and the FOFTableRelations' methods which
+      return multiple records. You are advised to use the iterator whenever
+      you reasonably expect to deal with large numbers of database records,
+      especially if you need to act upon them.</para>
+
+      <para>The only drawback is that by using FOFModel's getIterator the
+      onProcessList method, which is used for record list post-processing, is
+      never called. This is actually a good thing. You can migrate that logic
+      into the onBeforeBind() method of your table, where it belongs
+      architecturally. After all, you are post-processing a list of records,
+      one record at a time. What is more natural than doing so in the one
+      class dedicated to handling one record at a time?</para>
+    </section>
   </chapter>
 
   <chapter xml:id="features-reference">
@@ -2757,6 +4063,11 @@ $json = ob_end_clean();
         &lt;table name="*"&gt;
             &lt;field name="locked_by"&gt;checked_out&lt;/field&gt;
             &lt;field name="locked_on"&gt;checked_out_time&lt;/field&gt;
+            &lt;relation type="children" name="items" /&gt;
+            &lt;relation type="multiple" name="transactions" localKey="foobar_order_id"
+                      ourPivotKey="foobar_order_id" theirPivotKey="foobar_transaction_id"
+                      remoteKey="foobar_transaction_id"
+                      pivotTable="#__foobar_orders_transactions" default="true" /&gt;
         &lt;/table&gt;
         &lt;!-- Table options for a specific table --&gt;
         &lt;table name="item"&gt;
@@ -2880,6 +4191,130 @@ $json = ob_end_clean();
           <code>&lt;field&gt;</code> tags. The name attribute defines the name
           of the magic (FOF convention) field to map, whereas the content of
           the tag defines the name of the field in your database table.</para>
+
+          <bridgehead>Relation settings</bridgehead>
+
+          <note>
+            <para>Available since FOF 2.2.0</para>
+          </note>
+
+          <para>The relation settings allow you to define the table relations
+          used by the ORM-like feature introduced in FOF 2.2.0.</para>
+
+          <para>One or more <code>&lt;relation&gt;</code> fields are enclosed
+          inside the <code>&lt;table&gt;</code> tag itself. The attributes
+          available are:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>type</term>
+
+              <listitem>
+                <para>One of <option>parent</option>, <option>child</option>,
+                <option>children</option>, <option>multiple</option> and
+                determines the relation type</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>name</term>
+
+              <listitem>
+                <para>How this relation will be known to FOFTable</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>localKey</term>
+
+              <listitem>
+                <para>The key in our table which holds the foreign key value.
+                For the <option>multiple</option> (n:n) relation this is the
+                value of the ourPivotKey field in the pivotTable. For other
+                relations it is the value held by the foreign table's
+                remoteKey field.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>remoteKey</term>
+
+              <listitem>
+                <para>The key in the foreign table which holds the foreign key
+                value. For the <option>multiple</option> (n:n) relation this
+                is the value of the theirPivotKey field in the pivotTable. For
+                other relations it is foreign table's remoteKey field which
+                must match the value of our localKey to satisfy the
+                relationship.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>ourPivotKey</term>
+
+              <listitem>
+                <para>Only valid for <option>multiple</option> (n:n)
+                relations. The field name in the pivotTable which must have
+                the same value as our localKey to satisfy the relation.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>theirPivotKey</term>
+
+              <listitem>
+                <para>Only valid for <option>multiple</option> (n:n)
+                relations. The field name in the pivotTable which must have
+                the same value as the foreign table's remoteKey to satisfy the
+                relation.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>pivotTable</term>
+
+              <listitem>
+                <para>Only valid for <option>multiple</option> (n:n)
+                relations. The name of the pivot (a.k.a. "glue" or "map")
+                table which maps our table's records with the foreign table's
+                records, e.g.
+                <database>#__foobar_articles_comments</database></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>tableClass</term>
+
+              <listitem>
+                <para>The FOFTable class name of the foreign table, e.g.
+                FoobarTableItems. This is not required if remoteKey and the
+                table class follow the FOF naming conventions, i.e.
+                foobar_item_id is understood to belong to #__foobar_items
+                which maps to the FOFTable class FoobarTableItems. The table
+                class doesn't need to exist (you don't need to specialise
+                FOFTable to define a relation). If the class is not found a
+                properly configured FOFTable object is created
+                automatically.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>default</term>
+
+              <listitem>
+                <para><option>0</option> or <option>1</option> (or yes/no, or
+                true/false). If you have multiple relations of the same type
+                in a table, one of them can be set up as the default. If you
+                don't specify a relation name when calling a method to
+                retrieve related item(s) FOF will always the default relation.
+                If you set up multiple default relations of the same type only
+                the LAST relation will become the default. You are advised not
+                to rely on default relations and name them explicitly in your
+                code to avoid "interesting" bugs when refactoring your code a
+                few weeks (or, worse, months) down the line.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
         </section>
 
         <section xml:id="fofxml-view">
@@ -3924,9 +5359,11 @@ $json = ob_end_clean();
                 <listitem>
                   <para>Set it to <option>true</option> to have Joomla! load
                   its unobtrusive Javascript validation script. Please note
-                  that FOF does not perform automatic server-side validation
-                  checks. This is the responsibility of your specialised Table
-                  class and its check() method.</para>
+                  that FOF does perform some automatic, generic server-side
+                  validation checks where possible. We strongly recommend you
+                  to implement more thorough, customised validation in your
+                  specialised Table class and its check() method where
+                  possible, especially in front-end facing MVC triads.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -5164,12 +6601,12 @@ echo $viewTemplate;
                 <literal>getSomeFoobarData</literal></para>
               </listitem>
 
-							<listitem>
-								<para><emphasis role="strong">source_format</emphasis>
-									(optional) The format of the returned data of the static
-									method. Set to <literal>optionsobject</literal> if
-									the method returns a pre-generated options object.</para>
-							</listitem>
+              <listitem>
+                <para><emphasis role="strong">source_format</emphasis>
+                (optional) The format of the returned data of the static
+                method. Set to <literal>optionsobject</literal> if the method
+                returns a pre-generated options object.</para>
+              </listitem>
 
               <listitem>
                 <para><emphasis role="strong">source_key</emphasis> (optional)
@@ -5870,6 +7307,498 @@ echo $viewTemplate;
           </section>
         </section>
       </section>
+    </section>
+  </chapter>
+
+  <chapter xml:id="tips-and-tricks">
+    <title>Tips and tricks</title>
+
+    <para>There are some features in FOF that allow to perform neat time
+    saving tips. As these topics are not exactly library reference we've put
+    them in this chapter. Consider it a grab-bag of FOF tricks!</para>
+
+    <para>You can view all tips and tricks on-line at
+    https://github.com/akeeba/fof/wiki/Tips%20and%20Tricks</para>
+
+    <section xml:id="multicolumn-slug">
+      <title>Creating a slug from multiple columns</title>
+
+      <para>Sometimes, you want to be combine multiple columns from a table to
+      create the default 'slug' for the records. A typical example is a table
+      recording 'people', where you want the slug to be firstname-lastname. to
+      achieve this, simply override the table class for your table, with the
+      following method:</para>
+
+      <programlisting>protected function onBeforeStore($updateNulls)
+{
+    $slug           = $this-&gt;getColumnAlias('slug');
+    $this-&gt;setColumnAlias('title', 'lastname'); // this is needed to trigger the unicity check
+    if (!$this-&gt;$slug)
+    {
+        $this-&gt;$slug = !$this-&gt;firstname ? $this-&gt;lastname : $this-&gt;firstname .' '. $this-&gt;lastname;
+        $this-&gt;$slug = FOFStringUtils::toSlug($this-&gt;$slug);
+    }
+    return parent::onBeforeStore($updateNulls);
+}
+</programlisting>
+    </section>
+
+    <section xml:id="one-to-many-record-delete">
+      <title>One to many database table relationship deletion</title>
+
+      <para>Q: How to delete all rows in a child table when the parent table's
+      record is deleted in FoF? A: Some code in the model file.</para>
+
+      <programlisting>CREATE TABLE IF NOT EXISTS `#__foobar_items` (
+  `foobar_item_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,*
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
+  PRIMARY KEY (`foobar_item_id`)
+) ENGINE = INNODB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#__foobar_childs` (
+  `foobar_child_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `foobar_item_id` bigint(20) unsigned NOT NULL,*
+  `description` mediumtext,
+  PRIMARY KEY (`foobar_child_id`)
+) ENGINE = INNODB DEFAULT CHARSET=utf8;</programlisting>
+
+      <para>You could assume that the way to do delete child records when a
+      parent record is deleted is to use MySQL's "ON DELETE CASCADE". Wrong!
+      You could try using a MySQL trigger to effect the cascade deletion.
+      Wrong (let alone most hosts won't allow you to create a trigger)!</para>
+
+      <para>Assuming your deletion occurs in the front-end, you'll create a
+      new site/components/com_foobar/models/items.php:</para>
+
+      <programlisting>defined('_JEXEC') or die();
+class FoobarModelItems extends FOFModel
+{
+    /***
+    Delete all related records in the child table "#__foobar_childs" when the parent table's record is deleted
+    ***/
+
+    protected function onBeforeDelete($id, $table){
+        $result = parent::onBeforeDelete($id, $table);
+        if($result) {
+            $table-&gt;load($id);
+            $childids = FOFModel::getTmpInstance('childs','FoobarModel')-&gt;limit(0)-&gt;limitstart(0)-&gt;getItemList();
+            if(!empty($childids)){
+                foreach($childids as $childid){
+                    FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($childid-&gt;foobar_child_id)-&gt;delete();
+                }
+            }
+        }
+    return $result;
+    }
+}</programlisting>
+
+      <para>It's easier than you may have thought.</para>
+
+      <para>If you have a one-to-one relationship, then you'll have:</para>
+
+      <programlisting>class FoobarModelItems extends FOFModel
+{
+    /***
+    Delete all related records in the child table "#__foobar_childs"
+    when the parent table's record is deleted
+    ***/
+
+    protected function onBeforeDelete($id, $table){
+        $result = parent::onBeforeDelete($id, $table);
+        if($result) {
+            $table-&gt;load($id);
+            FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($table-&gt;load($id))-&gt;delete();
+        }
+    return $result;
+    }
+}</programlisting>
+    </section>
+
+    <section xml:id="creating-bare-views">
+      <title>Creating a bare view (a view without a database table)</title>
+
+      <para>By default every view needs a corresponding database table. What
+      to do when you have a view with no table associated because it is not a
+      list or edit form?</para>
+
+      <bridgehead>Setup the controller</bridgehead>
+
+      <para>In the controller we force the edit task by adding the following
+      code:</para>
+
+      <programlisting>public function execute($task) {
+    parent::execute('edit');
+}</programlisting>
+
+      <bridgehead>Setup the model</bridgehead>
+
+      <para>In the model we need to add 2 overrides.</para>
+
+      <para>Override the constructor</para>
+
+      <programlisting>public function __construct($config = array()) {
+    // This is a dirty trick to avoid getting warning PHP messages by the
+    // JDatabase layer
+    $config['table'] = 'shops';
+    parent::__construct($config);
+}</programlisting>
+
+      <para>First we override the constructor because we need to specify a
+      table, this to make sure the system can read some table but no data will
+      be taken from the table.</para>
+
+      <para>Override the getItem() method</para>
+
+      <programlisting>public function getItem($id = null) {
+    return null;
+}</programlisting>
+
+      <para>We need to override the getItem() method because we are not
+      actually getting any data. By returning a null value, the system is
+      happy because a value is returned.</para>
+
+      <bridgehead>Setup the view</bridgehead>
+
+      <para>In the view you can do what you like by using the onAdd() method
+      override.</para>
+    </section>
+
+    <section xml:id="transparent_authentication">
+      <title>Transparent authentication</title>
+
+      <para>Transparent authentication allows FOF to authenticate a user using
+      Basic Authentication or URL parameters. This allows you to create web
+      services or directly access pages which require a logged in users
+      without using Joomla! session cookies.</para>
+
+      <para>The authentication credentials can be provided via two methods:
+      Basic Authentication or a URL parameter. The authentication credentials
+      can either be a username and password pair transmitted in plaintext (not
+      recommended unless you are forcibly using HTTPS with a commercially
+      signed SSL certificate) or encrypted. The encrypted information uses
+      Time-Based One Time Passwords (TOTP) to allow you to communicate the
+      credentials securely, without the burden of public key cryptography,
+      while at the same time maintaining an intrinsically very narrrow window
+      of opportunity. Furthermore, since the effective encryption key is
+      modified every few seconds it makes an attack against it slightly harder
+      than using regular symmetric AES-128 cryptography.</para>
+
+      <para>Transparent authentication is enabled by default, but doesn’t use
+      TOTP.</para>
+
+      <bridgehead>Setting it up</bridgehead>
+
+      <para>Setting up transparent authentication requires you to modify your
+      component’s Dispatcher class, namely its __construct(), to change the
+      values of some protected fields.</para>
+
+      <para>The available fields are:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>$fofAuthtimeStep</term>
+
+          <listitem>
+            <para>The time step, in seconds, for the time based one time
+            passwords (TOTP) used for encryption. The default value is 6
+            seconds. The window of opportunity for an attacker is 2x-3x as
+            much, i.e. 12-18 seconds using the default value. This is
+            adequately high to be practical and too low to allow a realistic
+            attack by a hacker. WARNING! If you change this option you have to
+            notify the consumers of the service to make the same change,
+            otherwise your TOTPs will be vastly different and communication
+            will fail.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthKey</term>
+
+          <listitem>
+            <para>The Base32 encoded key for TOTP. Please note that this is
+            Base32, not Base64. Only required if you’re going to use
+            encryption.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthFormats</term>
+
+          <listitem>
+            <para>Which result formats should be handled by the transparent
+            authentication. This is an array, by default array('json', 'csv',
+            'xml', 'raw'). We recommend only using non-HTML formats in
+            here.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthLogoutOnReturn</term>
+
+          <listitem>
+            <para>By default it’s true and it means that once the component
+            finishes executing, FOF will log out the user it authenticated
+            using transparent authentication. This is a precaution against
+            someone intercepting and abusing the session cookie Joomla! will
+            be sending back to the client, as well as preventing the sessions
+            table from filling up.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>$fofAuthAuthMethods</term>
+
+          <listitem>
+            <para>An array of supported authentication methods. Only use the
+            ones that make sense for your application. Avoid using the
+            *_Plaintext ones, please. The possible values in the array
+            are:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="bold">HTTPBasicAuth_TOTP</emphasis> HTTP
+                Basic Authentication using encrypted information protected
+                with a TOTP (the username must be "fofauth")</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">QueryString_TOTP</emphasis>
+                Encrypted information protected with a TOTP passed in the
+                _fofauthentication query string parameter</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">HTTPBasicAuth_Plaintext</emphasis>
+                HTTP Basic Authentication using a username and password pair
+                in plain text</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">QueryString_Plaintext</emphasis>
+                Plaintext, JSON-encoded username and password pair passed in
+                the _fofauthentication query string parameter</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>When you are using the QueryString_TOTP method you can pass
+            your authentication information as GET or POST variable called
+            _fofauthentication with the value being the URL encoded cryptogram
+            of the authentication credentials (see further down).</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <bridgehead>How to get a TOTP key</bridgehead>
+
+      <para>Any Base32 string can be used as a TOTP key as long as it expands
+      to exactly 10 characters. If you don’t feel like guessing, you can
+      simply do:</para>
+
+      <programlisting>$totp = new FOFEncryptTotp();
+$secret = $totp-&gt;generateSecret();</programlisting>
+
+      <para>You have to share this secret key with all clients wishing to
+      connect to your component via a secure channel. This secret key musy
+      also be set in the fofAuthKey variable.</para>
+
+      <bridgehead>How to construct and supply an authentication
+      set</bridgehead>
+
+      <para>The authentication set is a representation of the username and
+      password of the user you want FOF to log in using transparent
+      authentication. Its format depends on the authentication method.</para>
+
+      <para>Before going into much detail, we should consider an FOF
+      authentication key to be a JSON-encoded object containing the keys
+      username and password. E.g.:</para>
+
+      <programlisting>{ “username”: “sample_user”, “password”: “$3Cr3+” }
+</programlisting>
+
+      <para>This is used with all but one authentication methods. Encryption
+      of the FOF authentication key, used with all *_TOTP methods, is
+      discussed further down this document.</para>
+
+      <para>If you are using HTTPBasicAuth_Plaintext method, you have to
+      supply your username and password using HTTP Basic Authentication. The
+      username is the username of the user you want to log in and the password
+      is the password of the user you want to log in. This is the easiest and
+      most insecure authentication method.</para>
+
+      <para>If you are using the HTTPBasicAuth_TOTP method, you have to supply
+      a username of fofauth (including the leading underscore) and as the
+      password enter the encrypted FOF authentication key.</para>
+
+      <para>If you are using the QueryString_Plaintext method you have to
+      supply a GET or POST query parameter with a name of _fofauthentication
+      (including the leading underscore). Its value must be the URL encoded
+      FOF authentication key.</para>
+
+      <para>If you are using the QueryString_TOTP method you have to supply a
+      GET or POST query parameter with a name of _fofauthentication (including
+      the leading underscore). Its value must be the URL encoded FOF
+      authentication key.</para>
+
+      <bridgehead>Encrypting the FOF authentication key</bridgehead>
+
+      <para>Assuming you are doing this from a FOF-powered component, you can
+      do something like this:</para>
+
+      <programlisting>$timeStep = 6; // Change this if you have a different value in your Dispatcher
+$authKey = json_encode(array(
+  'username' =&gt; $username,
+  'password' =&gt; $password
+));
+$totp = new FOFEncryptTotp($timeStep);
+$otp = $totp-&gt;getCode($secretKey);
+$cryptoKey = hash('sha256', $this-&gt;_fofAuth_Key.$otp);
+$aes = new FOFEncryptAes($cryptoKey);
+$encryptedAuthKey = $aes-&gt;encryptString($authKey);
+</programlisting>
+
+      <para>If you can get your hands on a TOTP and AES-256 implementation for
+      your favourite programming language you can use talk to FOF-powered
+      components through transparent authentication. Tip: TOTP libraries are
+      usually labelled as being Google Authenticator libraries. Google
+      Authenticator simply uses TOTP with a temp step of 30 seconds. Most such
+      libraries are able to change the time step, thus possible to use with
+      FOF. In fact, that's how FOF's TOTP library was derived.</para>
+    </section>
+
+    <section xml:id="creating-a-cpanel-view">
+      <title>Creating a cpanel (control panel) view</title>
+
+      <para>If you want to create an Administrator CPanel view in your
+      component as the Default view follow the following steps:</para>
+
+      <para>Create a controller at
+      &lt;administrator&gt;/controllers/cpanel.php</para>
+
+      <programlisting>class COMPONENT_NAMEControllerCpanel extends FOFController
+
+{
+	public function execute($task)
+	{
+		parent::execute('browse');
+	}
+}
+</programlisting>
+
+      <para>Create a view at
+      &lt;administrator&gt;/views/cpanel/tmpl/default.php. If you use Akeeba
+      Strapper you can easily create icons:</para>
+
+      <programlisting>&lt;?php
+// Protect from unauthorized access
+defined('_JEXEC') or die;
+
+JHtml::_('behavior.framework');
+JHtml::_('behavior.modal');
+
+$option = 'com_COMPONENT_NAME';
+?&gt;
+
+&lt;div id="cpanel" class="span12"&gt;
+	&lt;div class="icon"&gt;
+		&lt;a href="index.php?option=&lt;?php echo $option ?&gt;&amp;view=THE_VIEW"&gt;
+			&lt;img
+				src="&lt;?php echo rtrim(JURI::base(), '/'); ?&gt;/../media/com_COMPONENT_NAME/assets/images/icon_1_48.png"
+				border="0" alt="&lt;?php echo JText::_('COM_COMPONENT_NAME_CPANEL_ICON_1_ALT') ?&gt;"/&gt;
+				&lt;span&gt;
+					&lt;?php echo JText::_('COM_COMPONENT_NAME_CPANEL_ICON_1') ?&gt;&lt;br/&gt;
+				&lt;/span&gt;
+		&lt;/a&gt;
+	&lt;/div&gt;
+	[...]
+&lt;/div&gt;
+</programlisting>
+
+      <para>Customize the Cpanel toolbar creating a
+      &lt;administrator&gt;/toolbar.php file with:</para>
+
+      <programlisting>class COMPONENT_NAMEToolbar extends FOFToolbar
+{
+	/**
+	 * Prepares the toolbar for Cpanel view
+	 *
+	 * @return void
+	 */
+	public function onCpanelsBrowse()
+	{
+		// Set the toolbar title
+		JToolBarHelper::title(JText::_('COM_COMPONENT_NAME_CPANEL_TITLE_DASHBOARD'), 'COMPONENT_NAME');
+
+		// Add Components options (see config.xml)
+		JToolBarHelper::preferences('com_COMPONENT_NAME');
+	}
+}</programlisting>
+    </section>
+
+    <section xml:id="automatic-field-validation">
+      <title>Automatic field validation</title>
+
+      <para>You can perform automatic table checks based on database schema.
+      Let's say you have a table like this:</para>
+
+      <programlisting>CREATE TABLE IF NOT EXISTS `#__foobar_bars` (
+  `foobar_bar_id` int(11) NOT NULL AUTO_INCREMENT,
+  `required_field` varchar(50) NOT NULL,
+  `optional_field` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`foobar_bar_id`)
+);
+</programlisting>
+
+      <para>As you can see, the optional_field is nullable, while the required
+      one is not. To activate this feature, set the _autoChecks flag to true
+      in your table constructor:</para>
+
+      <programlisting>class FoobarTableBar extends FOFTable
+{
+    function __construct($table, $key, $db)
+    {
+        parent::__construct($table, $key, $db);
+
+        $this-&gt;_autoChecks = true;
+    }
+}
+</programlisting>
+
+      <para>In this way, when you're going to save your table, FOF will check
+      every field; if it's not-nullable and it's empty, the check fails and an
+      error message is enqueued. FOF will create a token string that will be
+      parsed by JText, following this convention:
+      COM_&lt;TABLENAME&gt;_ERR_&lt;FIELDNAME&gt;</para>
+
+      <para>If you use the previous table, you'll have something like
+      this:</para>
+
+      <para>COM_FOOBAR_BAR_ERR_REQUIRED_FIELD</para>
+
+      <para>If you want to skip any field from these automatic checks, simply
+      use this syntax in your table constructor:</para>
+
+      <programlisting>$this-&gt;setSkipChecks(array('my_field_1', 'my_field_2'));
+</programlisting>
+    </section>
+
+    <section xml:id="ordering-submenu-items-no-code">
+      <title>Ordering submenu items without writing any code</title>
+
+      <para>In the backend of your component, FoF creates automatically a
+      submenu with links to all your views.</para>
+
+      <para>Normally they are sorted alphabetically, but you can add ordering
+      information by placing a metadata.xml file in each view folder. E.g.
+      /components/com_todo/views/item/metadata.xml</para>
+
+      <para>The xml should be like the following:</para>
+
+      <programlisting>&lt;metadata&gt;
+     &lt;foflib&gt;
+        &lt;ordering&gt;123&lt;/ordering&gt;
+     &lt;/foflib&gt;
+  &lt;/metadata&gt;</programlisting>
     </section>
   </chapter>
 

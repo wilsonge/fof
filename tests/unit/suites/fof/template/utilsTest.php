@@ -3,7 +3,7 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Template
  *
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -148,29 +148,6 @@ class FOFTemplateUtilsTest extends FtestCase
 		);
 	}
 
-	/**
-	 * Test to addLESS method
-	 */
-	public function testAddLESS()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * Test to sefSort method
-	 */
-	public function testSefSort()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-
     /**
      * Test to parsePath method
      *
@@ -220,17 +197,6 @@ class FOFTemplateUtilsTest extends FtestCase
 			array('media://com_foobar/css/test.css', 'templates/fake_test_template/media/com_foobar/css/test.css', 'alternate', 'media:// alternate link should be changed into templates media path'),
 		);
 	}
-
-    /**
-     * Test to loadPosition method
-     */
-    public function testLoadPosition()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
 
     /**
      * Test to route method

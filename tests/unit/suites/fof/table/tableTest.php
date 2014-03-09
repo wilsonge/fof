@@ -3,7 +3,7 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Table
  *
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -341,6 +341,23 @@ class FOFTableTest extends FtestCaseDatabase
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
         $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
         $table->bind('This is a wrong argument');
+    }
+
+    /**
+     * @group tempStore
+     */
+    public function testtemp()
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $table->setAssetKey('com_foftest.foobar');
+
+        $table->load(4);
+        $table->title = 'Temp';
+        $table->asset_id = null;
+
+        $table->store();
     }
 
     /**
@@ -926,32 +943,323 @@ class FOFTableTest extends FtestCaseDatabase
 		$table->delete();
 	}
 
-	// getUcmCoreAlias has been moved inside the behaviors
-	/*public function testGetUcmCoreAlias()
+	/**
+	 * @group               tableHit
+	 * @group               FOFTable
+	 * @covers              FOFTable::hit
+	 * @dataProvider        getTestHit
+	 */
+	public function testHit($events, $tableinfo, $test, $check)
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+		$db          = JFactory::getDbo();
+		$methods     = array_keys($events);
 
-		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
-		$reflection = new ReflectionClass($table);
+		$id          = max($test['loadid'], $test['cid']);
+		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
+		$table       = $this->getMock('FOFTable', $methods, $constr_args, '', true, true, true, true);
 
-		$method  = $reflection->getMethod('getUcmCoreAlias');
+		foreach($events as $event => $return)
+		{
+			$table->expects($this->any())->method($event)->will($this->returnValue($return));
+		}
+
+		// We have to manually provide this info, since we can't use the getInstance method (we have to mock)
+		if(isset($test['assetkey']))
+		{
+			$table->setAssetKey($test['assetkey']);
+		}
+
+		if(isset($test['alias']))
+		{
+			foreach($test['alias'] as $column => $alias)
+			{
+				$table->setColumnAlias($column, $alias);
+			}
+		}
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$rc = $table->hit($test['cid']);
+		$this->assertEquals($check['return'], $rc, 'FOFTable::hit returned a wrong value');
+
+		if(isset($check['hits']))
+		{
+			$hitField = $table->getColumnAlias('hits');
+
+			$query = $db->getQuery(true)
+						->select($hitField)
+						->from($tableinfo['table'])
+						->where($tableinfo['id'].' = '.$id);
+			$hits = $db->setQuery($query)->loadResult();
+
+			$this->assertEquals($check['hits'], $hits, 'FOFTable::hit saved a wrong value');
+			$this->assertEquals($check['hits'], $table->$hitField, 'FOFTable::hit saved a wrong value inside table object');
+        }
+	}
+
+	/**
+	 * @group               tableToCsv
+	 * @group               FOFTable
+	 * @covers              FOFTable::toCSV
+	 * @dataProvider        getTestToCSV
+	 */
+	public function testToCSV($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$string = $table->toCSV($test['separator']);
+
+		$this->assertEquals($check['string'], $string, 'FOFTable::toCSV returned a wrong value');
+	}
+
+	/**
+	 * @group               tableGetData
+	 * @group               FOFTable
+	 * @covers              FOFTable::getData
+	 * @dataProvider        getTestGetData
+	 */
+	public function testGetData($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$return = $table->getData();
+
+		$this->assertEquals($check['return'], $return, 'FOFTable::getData returned a wrong value');
+	}
+
+	/**
+	 * @group               tableGetCSVHeader
+	 * @group               FOFTable
+	 * @covers              FOFTable::getCSVHeader
+	 * @dataProvider        getCSVHeader
+	 * @preventDataLoading
+	 */
+	public function testGetCSVHeader($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if($test['loadid'])
+		{
+			$table->load($test['loadid']);
+		}
+
+		$string = $table->getCSVHeader($test['separator']);
+
+		$this->assertEquals($check['string'], $string, 'FOFTable::getCSVHeader returned a wrong value');
+	}
+
+	/**
+	 * @group               tableGetTableFields
+	 * @group               FOFTable
+	 * @covers              FOFTable::getTableFields
+	 * @dataProvider        getTableFields
+	 * @preventDataLoading
+	 */
+	public function testGetTableFields($tableinfo, $test, $check)
+	{
+		$config['input']           = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$config['use_table_cache'] = $test['use_table_cache'];
+
+		$table = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		if(isset($test['joomlaCache']))
+		{
+			$mock = $this->getMock('FOFIntegrationJoomlaPlatform', array('getCache'));
+
+			if($test['joomlaCache'])
+			{
+				$raw   = file_get_contents(JPATH_TESTS.'/unit/core/cache/cache_joomla.txt');
+				$cache = unserialize($raw);
+
+                $t = $cache->get('tables');
+
+				$mock->expects($this->any())->method('getCache')->will($this->returnCallback(function($arg) use (&$cache){
+					return $cache->get($arg, null);
+				}));
+			}
+			else
+			{
+				$mock->expects($this->any())->method('getCache')->will($this->returnValue(null));
+			}
+
+			FOFPlatform::forceInstance($mock);
+		}
+
+		if(isset($test['tableCache']))
+		{
+			$property = new ReflectionProperty($table, 'tableCache');
+			$property->setAccessible(true);
+			$property->setValue($table, $test['tableCache']);
+		}
+
+		if(isset($test['tableFieldCache']))
+		{
+			$property = new ReflectionProperty($table, 'tableFieldCache');
+			$property->setAccessible(true);
+			$property->setValue($table, $test['tableFieldCache']);
+		}
+
+		$return = $table->getTableFields(isset($test['table']) ? $test['table'] : null);
+
+		if(is_array($return))
+		{
+			$fields = array_keys($return);
+		}
+		else
+		{
+			$fields = $return;
+		}
+
+
+		$this->assertEquals($check['fields'], $fields, 'FOFTable::getTableFields returned the wrong value');
+	}
+
+	/**
+	 * @group               tableIsQuoted
+	 * @group               FOFTable
+	 * @covers              FOFTable::isQuoted
+	 * @dataProvider        getIsQuoted
+	 * @preventDataLoading
+	 */
+	public function testIsQuoted($tableinfo, $test, $check)
+	{
+		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+		$method = new ReflectionMethod($table, 'isQuoted');
 		$method->setAccessible(true);
+		$return = $method->invoke($table, $test['column']);
 
-		$table->propertyExist = 'dummy';
-		$table->addKnownField('propertyExist');
-		$alias = $method->invokeArgs($table, array('propertyExist'));
-		$this->assertEquals('propertyExist', $alias, 'Invalid value for existing property');
-		$table->removeKnownField('propertyExists');
+		$this->assertEquals($check['return'], $return, 'FOFTable::isQuoted returned a wrong value');
+	}
 
-		$alias = $method->invokeArgs($table, array('propertyDoesNotExist'));
-		$this->assertEquals('null', $alias, 'Invalid value for non-existing property');
+    /**
+     * @group               tableOnBeforeStore
+     * @group               FOFTable
+     * @covers              FOFTable::onBeforeStore
+     * @dataProvider        getTestOnBeforeStore
+     */
+    public function testOnBeforeStore($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
 
-		$table->testalias = 'aliased property';
-		$table->addKnownField('testalias');
-		$table->setColumnAlias('testcolumn', 'testalias');
-		$alias = $method->invokeArgs($table, array('testcolumn'));
-		$this->assertEquals('testalias', $alias, 'Invalid value for aliased property');
-	}*/
+        if(isset($test['tbl_key']))
+        {
+            $config['tbl_key'] = $test['tbl_key'];
+        }
+
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        // Let's mock the platform in order to fake an user
+        $user = (object) array('id' => 42);
+        $mock = $this->getMock('FOFIntegrationJoomlaPlatform', array('getUser'));
+        $mock->expects($this->any())->method('getUser')->will($this->returnValue($user));
+        FOFPlatform::forceInstance($mock);
+
+        if(isset($test['alias']))
+        {
+            foreach($test['alias'] as $column => $alias)
+            {
+                $table->setColumnAlias($column, $alias);
+            }
+        }
+
+        $table->bind($test['bind']);
+
+        $method = new ReflectionMethod($table, 'onBeforeStore');
+        $method->setAccessible(true);
+        $return = $method->invoke($table, $test['updateNulls']);
+
+        $this->assertEquals($check['return'], $return, 'FOFTable::onBeforeStore return a wrong value');
+
+        $fields = $table->getData();
+
+        // Manual checks on datetimes
+        $created_on = $table->getColumnAlias('created_on');
+
+        if(isset($check['fields'][$created_on]) && $check['fields'][$created_on] == 'NOT NULL' )
+        {
+            $this->assertNotEmpty($fields[$created_on], 'FOFTable::onBeforeStore assigned a wrong value to the "'.$created_on.'" field');
+            unset($fields[$created_on]);
+            unset($check['fields'][$created_on]);
+        }
+
+        $modified_on = $table->getColumnAlias('modified_on');
+
+        if(isset($check['fields'][$modified_on]) && $check['fields'][$modified_on] == 'NOT NULL' )
+        {
+            $this->assertNotEmpty($fields[$modified_on], 'FOFTable::onBeforeStore assigned a wrong value to the "'.$modified_on.'" field');
+            unset($fields[$modified_on]);
+            unset($check['fields'][$modified_on]);
+        }
+
+        $this->assertEquals($check['fields'], $fields, 'FOFTable::onBeforeStore assigned a wrong value to a "magic" field');
+    }
+
+    /**
+     * @group               tableGetAssetName
+     * @group               FOFTable
+     * @covers              FOFTable::getAssetName
+     * @dataProvider        getTestGetAssetName
+     */
+    public function testGetAssetName($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+
+        if(isset($test['tbl_key']))
+        {
+            $config['tbl_key'] = $test['tbl_key'];
+        }
+
+        $table = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        if (isset($test['alias']))
+        {
+            foreach($test['alias'] as $column => $alias)
+            {
+                $table->setColumnAlias($column, $alias);
+            }
+
+            $table->setAssetsTracked(true);
+        }
+
+        $table->load($test['loadid']);
+
+        $assetName = $table->getAssetName();
+
+        $this->assertEquals($check['assetName'], $assetName, 'FOFTable::getAssetName return a wrong asset name');
+    }
+
+    /**
+     * @group               tableGetAssetName
+     * @group               FOFTable
+     * @covers              FOFTable::getAssetName
+     */
+    public function testGetAssetNameException()
+    {
+        $this->setExpectedException('UnexpectedValueException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobars'));
+        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+
+        $table->getAssetName();
+    }
 
 	/**
 	 * @covers              FOFTable::getContentType
@@ -1020,6 +1328,46 @@ class FOFTableTest extends FtestCaseDatabase
 	{
 		return TableDataprovider::getTestDelete();
 	}
+
+	public function getTestHit()
+	{
+		return TableDataprovider::getTestHit();
+	}
+
+	public function getTestToCSV()
+	{
+		return TableDataprovider::getTestToCSV();
+	}
+
+	public function getTestGetData()
+	{
+		return TableDataprovider::getTestGetData();
+	}
+
+	public function getCSVHeader()
+	{
+		return TableDataprovider::getCSVHeader();
+	}
+
+	public function getTableFields()
+	{
+		return TableDataprovider::getTableFields();
+	}
+
+	public function getIsQuoted()
+	{
+		return TableDataprovider::getIsQuoted();
+	}
+
+    public function getTestOnBeforeStore()
+    {
+        return TableDataprovider::getTestOnBeforeStore();
+    }
+
+    public function getTestGetAssetName()
+    {
+        return TableDataprovider::getTestGetAssetName();
+    }
 
 	public function getTestGetContentType()
 	{
