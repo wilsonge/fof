@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldCheckbox'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/checkbox.php';
-}
+JFormHelper::loadFieldClass('checkbox');
 
 /**
  * Form Field class for the FOF framework
