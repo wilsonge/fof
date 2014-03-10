@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldUrl'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/url.php';
-}
+JFormHelper::loadFieldClass('url');
 
 /**
  * Form Field class for the FOF framework
