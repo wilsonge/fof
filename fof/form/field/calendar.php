@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldCalendar'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/calendar.php';
-}
+JFormHelper::loadFieldClass('calendar');
 
 /**
  * Form Field class for the FOF framework

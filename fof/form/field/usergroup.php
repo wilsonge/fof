@@ -9,10 +9,7 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-if (!class_exists('JFormFieldUsergroup'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/usergroup.php';
-}
+JFormHelper::loadFieldClass('usergroup');
 
 /**
  * Form Field class for FOF

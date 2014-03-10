@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldTimezone'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/timezone.php';
-}
+JFormHelper::loadFieldClass('timezone');
 
 /**
  * Form Field class for FOF

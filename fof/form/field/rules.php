@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldRules'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/rules.php';
-}
+JFormHelper::loadFieldClass('rules');
 
 /**
  * Form Field class for FOF

@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldUser'))
-{
-	require_once JPATH_LIBRARIES . '/cms/form/field/user.php';
-}
+JFormHelper::loadFieldClass('user');
 
 /**
  * Form Field class for the FOF framework

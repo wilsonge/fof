@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldEMail'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/email.php';
-}
+JFormHelper::loadFieldClass('email');
 
 /**
  * Form Field class for the FOF framework

@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldHidden'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/hidden.php';
-}
+JFormHelper::loadFieldClass('hidden');
 
 /**
  * Form Field class for the FOF framework

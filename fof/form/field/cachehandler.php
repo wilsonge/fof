@@ -9,10 +9,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldCacheHandler'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/cachehandler.php';
-}
+JFormHelper::loadFieldClass('cachehandler');
 
 /**
  * Form Field class for FOF

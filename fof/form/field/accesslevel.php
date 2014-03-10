@@ -9,10 +9,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldAccessLevel'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/accesslevel.php';
-}
+JFormHelper::loadFieldClass('accesslevel');
 
 /**
  * Form Field class for FOF

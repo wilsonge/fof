@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldGroupedList'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/groupedlist.php';
-}
+JFormHelper::loadFieldClass('groupedlist');
 
 /**
  * Form Field class for FOF

@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldRadio'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/radio.php';
-}
+JFormHelper::loadFieldClass('radio');
 
 /**
  * Form Field class for FOF

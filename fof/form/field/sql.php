@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldSql'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/sql.php';
-}
+JFormHelper::loadFieldClass('sql');
 
 /**
  * Form Field class for FOF
