@@ -354,6 +354,30 @@
     </row>
   </table>
 
+  <table name="jos_foftest_joomlachildren">
+    <column>foftest_joomlachild_id</column>
+    <column>dummy</column>
+    <column>user_id</column>
+
+    <row>
+      <value>1</value>
+      <value>First row, first FOF test user</value>
+      <value>998</value>
+    </row>
+
+    <row>
+      <value>2</value>
+      <value>Second row, first FOF test user</value>
+      <value>998</value>
+    </row>
+
+    <row>
+      <value>3</value>
+      <value>Third row, second FOF test user</value>
+      <value>998</value>
+    </row>
+  </table>
+
   <table name="jos_session">
     <column>session_id</column>
     <column>client_id</column>

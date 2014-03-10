@@ -58,6 +58,15 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobarjoins` (
 );
 
 -- === ACTUAL TABLES USED FOR TESTING THE NEW ORM FEATURE ===
+-- Table for Joomla ORM
+DROP TABLE IF EXISTS `jos_foftest_joomlachildren`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_joomlachildren`(
+  `foftest_joomlachild_id` INT NOT NULL AUTO_INCREMENT ,
+  `dummy` VARCHAR (50) NOT NULL ,
+  `user_id` INT NOT NULL ,
+  PRIMARY KEY (`foftest_joomlachild_id`)
+);
+
 -- Parent table 1:n - 1:1 relation
 DROP TABLE IF EXISTS `jos_foftest_parents`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_parents` (
