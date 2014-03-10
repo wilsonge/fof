@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldLanguage'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/language.php';
-}
+JFormHelper::loadFieldClass('language');
 
 /**
  * Form Field class for FOF
