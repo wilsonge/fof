@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldTel'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/tel.php';
-}
+JFormHelper::loadFieldClass('tel');
 
 /**
  * Form Field class for the FOF framework
