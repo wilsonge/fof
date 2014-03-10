@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldList'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/list.php';
-}
+JFormHelper::loadFieldClass('list');
 
 /**
  * Form Field class for FOF
