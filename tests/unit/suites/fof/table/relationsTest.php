@@ -30,18 +30,45 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     }
 
     /**
+     * Let's check if FOFTableReations constructor detects all the parent table
+     *
      * @group               relationsConstruct
      * @group               FOFTableRelations
+     * @dataProvider        getTest__construct
      * @covers              FOFTableRelations::__construct
      */
-    /*public function test__construct()
+    public function test__construct($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'parts'));
-        $table 		     = FOFTable::getAnInstance('Part', 'FoftestTable', $config);
-        $table->load(1);
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
-        $relation->addMultipleRelation('partgroups', 'FoftestTableGroup', 'foftest_part_id', 'foftest_part_id', 'foftest_group_id', 'foftest_group_id', '#__foftest_parts_groups');
-        $items = $relation->getMultiple();
-    }*/
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations = $relations->getValue($relation);
+
+        $defaultRelation = new ReflectionProperty($relation, 'defaultRelation');
+        $defaultRelation->setAccessible(true);
+        $defaultRelation = $defaultRelation->getValue($relation);
+
+        // The table is supposed to have a parent, let's check if it was detected
+        if($check['hasParent'])
+        {
+            $this->assertArrayHasKey($check['relation']['key'], $relations['parent'], 'FOFTableRelations failed to reconize and store the parent relation');
+            $this->assertEquals($check['relation']['content'], $relations['parent'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for this parent relation');
+            $this->assertEquals($check['relation']['key'], $defaultRelation['parent'], 'FOFTableRelation failed to store the parent relation as the default one');
+        }
+        else
+        {
+            $this->assertArrayNotHasKey($check['relation']['key'], $relations['parent'], 'FOFTableRelations failed to reconize and store the parent relation');
+            $this->assertEquals(array(), $relations['parent'], 'FOFTableRelations should contain no parent relation');
+        }
+
+    }
+
+    public static function getTest__construct()
+    {
+        return RelationsDataprovider::getTest__construct();
+    }
 }
