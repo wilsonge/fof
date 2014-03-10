@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldImagelist'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/imagelist.php';
-}
+JFormHelper::loadFieldClass('imagelist');
 
 /**
  * Form Field class for the FOF framework
