@@ -100,6 +100,55 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $this->assertEquals($check['relation']['default'], $defaultRelation['child'], 'FOFTableRelation default relation not stored as expected');
     }
 
+    /**
+     * @group               relationsAddParentRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestAddParentRelation
+     * @covers              FOFTableRelations::addParentRelation
+     */
+    public function testAddParentRelation($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        // To test it properly, I have to clear the relation automatically created by the constructor
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations->setValue($relation, array(
+                'child'		=> array(),
+                'parent'	=> array(),
+                'children'	=> array(),
+                'multiple'	=> array()
+            )
+        );
+
+        $defaultRelation = new ReflectionProperty($relation, 'defaultRelation');
+        $defaultRelation->setAccessible(true);
+        $defaultRelation->setValue($relation, array(
+                'child'		=> null,
+                'parent'	=> null,
+                'children'	=> null,
+                'multiple'	=> null,
+            )
+        );
+
+        $relation->addParentRelation(
+            $test['relation']['itemName'],
+            $test['relation']['tableClass'],
+            $test['relation']['localKey'],
+            $test['relation']['remoteKey'],
+            $test['relation']['default']
+        );
+
+        $relations       = $relations->getValue($relation);
+        $defaultRelation = $defaultRelation->getValue($relation);
+
+        $this->assertEquals($check['relation']['content'], $relations['parent'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for this parent relation');
+        $this->assertEquals($check['relation']['default'], $defaultRelation['parent'], 'FOFTableRelation default relation not stored as expected');
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -108,5 +157,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestAddChildRelation()
     {
         return RelationsDataprovider::getTestAddChildRelation();
+    }
+
+    public static function getTestAddParentRelation()
+    {
+        return RelationsDataprovider::getTestAddParentRelation();
     }
 }
