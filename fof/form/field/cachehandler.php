@@ -9,7 +9,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-JFormHelper::loadFieldClass('cacheHandler');
+JFormHelper::loadFieldClass('cachehandler');
 
 /**
  * Form Field class for FOF
