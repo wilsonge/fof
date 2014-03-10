@@ -115,7 +115,7 @@ class FOFRenderStrapper extends FOFRenderAbstract
 	{
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
-		$js = <<<ENDJAVASCRIPT
+		$js = <<<JS
 Joomla.submitbutton = function(task)
 {
 	if (task == 'cancel' || document.formvalidator.isValid(document.id('adminForm')))
@@ -126,7 +126,7 @@ Joomla.submitbutton = function(task)
 		alert('$message');
 	}
 };
-ENDJAVASCRIPT;
+JS;
 
 		$document = FOFPlatform::getInstance()->getDocument();
 
@@ -491,7 +491,7 @@ ENDJAVASCRIPT;
 			JHtml::_('formbehavior.chosen', 'select');
 			$view	 = $form->getView();
 			$order	 = $view->escape($view->getLists()->order);
-			$html .= <<<JS
+			$html .= <<<HTML
 <script type="text/javascript">
 	Joomla.orderTable = function() {
 		table = document.getElementById("sortTable");
@@ -508,7 +508,7 @@ ENDJAVASCRIPT;
 	}
 </script>
 
-JS;
+HTML;
 		}
 
 		// Getting all header row elements
