@@ -8,13 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldEditor'))
-{
-	if (!include_once JPATH_LIBRARIES . '/joomla/form/fields/editor.php')
-	{
-		require_once JPATH_LIBRARIES . '/cms/form/field/editor.php';
-	}
-}
+JFormHelper::loadFieldClass('editor');
 
 /**
  * Form Field class for the FOF framework
