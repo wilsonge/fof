@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldPassword'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/password.php';
-}
+JFormHelper::loadFieldClass('password');
 
 /**
  * Form Field class for the FOF framework
