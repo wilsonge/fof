@@ -8,10 +8,7 @@
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-if (!class_exists('JFormFieldSessionHandler'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/sessionhandler.php';
-}
+JFormHelper::loadFieldClass('sessionhandler');
 
 /**
  * Form Field class for FOF
