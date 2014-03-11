@@ -276,5 +276,136 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestAddMultipleRelation()
+    {
+        // Default usage of multiple relation, everything is "magically" set - relation name is singular
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'relation' => array(
+                    'itemName'      => 'group',
+                    'tableClass'    => null,
+                    'localKey'      => null,
+                    'ourPivot'      => null,
+                    'theirPivot'    => null,
+                    'remoteKey'     => null,
+                    'glueTable'     => null,
+                    'default'       => true,
+                )
+            ),
+            array(
+                'relation' => array(
+                    'default'   => 'groups',
+                    'key'       => 'groups',
+                    'content'   => array(
+                        'tableClass'    => 'FoftestTableGroup',
+                        'localKey'      => 'foftest_part_id',
+                        'ourPivotKey'   => 'foftest_part_id',
+                        'theirPivotKey' => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_part_id',
+                        'pivotTable'    => '#__foftest_parts_groups',
+                    )
+                )
+
+            )
+        );
+
+        // Default usage of multiple relation, everything is "magically" set - relation name is plural
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'relation' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => null,
+                    'localKey'      => null,
+                    'ourPivot'      => null,
+                    'theirPivot'    => null,
+                    'remoteKey'     => null,
+                    'glueTable'     => null,
+                    'default'       => true,
+                )
+            ),
+            array(
+                'relation' => array(
+                    'default'   => 'groups',
+                    'key'       => 'groups',
+                    'content'   => array(
+                        'tableClass'    => 'FoftestTableGroup',
+                        'localKey'      => 'foftest_part_id',
+                        'ourPivotKey'   => 'foftest_part_id',
+                        'theirPivotKey' => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_part_id',
+                        'pivotTable'    => '#__foftest_parts_groups',
+                    )
+                )
+
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'relation' => array(
+                    'itemName'      => 'group',
+                    'tableClass'    => null,
+                    'localKey'      => null,
+                    'ourPivot'      => null,
+                    'theirPivot'    => null,
+                    'remoteKey'     => null,
+                    'glueTable'     => null,
+                    'default'       => false,
+                )
+            ),
+            array(
+                'relation' => array(
+                    'default'   => null,
+                    'key'       => 'groups',
+                    'content'   => array(
+                        'tableClass'    => 'FoftestTableGroup',
+                        'localKey'      => 'foftest_part_id',
+                        'ourPivotKey'   => 'foftest_part_id',
+                        'theirPivotKey' => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_part_id',
+                        'pivotTable'    => '#__foftest_parts_groups',
+                    )
+                )
+
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'relation' => array(
+                    'itemName'      => 'group',
+                    'tableClass'    => 'FoftestTableTestgroup',
+                    'localKey'      => 'foftest_local_id',
+                    'ourPivot'      => 'foftest_ourpivot_id',
+                    'theirPivot'    => 'foftest_theirpivot_id',
+                    'remoteKey'     => 'foftest_remote_id',
+                    'glueTable'     => '#__foftest_gluetable',
+                    'default'       => false,
+                )
+            ),
+            array(
+                'relation' => array(
+                    'default'   => null,
+                    'key'       => 'groups',
+                    'content'   => array(
+                        'tableClass'    => 'FoftestTableTestgroup',
+                        'localKey'      => 'foftest_local_id',
+                        'ourPivotKey'   => 'foftest_ourpivot_id',
+                        'theirPivotKey' => 'foftest_theirpivot_id',
+                        'remoteKey'     => 'foftest_remote_id',
+                        'pivotTable'    => '#__foftest_gluetable',
+                    )
+                )
+
+            )
+        );
+
+        return $data;
+    }
 }
  

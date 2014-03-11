@@ -759,9 +759,9 @@ class FOFTableRelations
 	 */
 	protected function addBespokeSimpleRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $default)
 	{
-		$ourPivotKey = null;
+		$ourPivotKey   = null;
 		$theirPivotKey = null;
-		$pivotTable = null;
+		$pivotTable    = null;
 
 		$this->normaliseParameters(false, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
 
@@ -864,9 +864,9 @@ class FOFTableRelations
 		// If we don't have a pivot table nullify the relevant variables and return
 		if (!$pivot)
 		{
-			$ourPivotKey = null;
+			$ourPivotKey   = null;
 			$theirPivotKey = null;
-			$pivotTable = null;
+			$pivotTable    = null;
 
 			return;
 		}

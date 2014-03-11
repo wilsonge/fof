@@ -182,6 +182,42 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $this->assertEquals($check['relation']['default'], $defaultRelation['children'], 'FOFTableRelation default relation not stored as expected');
     }
 
+    /**
+     * @group               relationsAddMultipleRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestAddMultipleRelation
+     * @covers              FOFTableRelations::addMultipleRelation
+     */
+    public function testAddMultipleRelation($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        $relation->addMultipleRelation(
+            $test['relation']['itemName'],
+            $test['relation']['tableClass'],
+            $test['relation']['localKey'],
+            $test['relation']['ourPivot'],
+            $test['relation']['theirPivot'],
+            $test['relation']['remoteKey'],
+            $test['relation']['glueTable'],
+            $test['relation']['default']
+        );
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations = $relations->getValue($relation);
+
+        $defaultRelation = new ReflectionProperty($relation, 'defaultRelation');
+        $defaultRelation->setAccessible(true);
+        $defaultRelation = $defaultRelation->getValue($relation);
+
+        $this->assertEquals($check['relation']['content'], $relations['multiple'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for multiple relation');
+        $this->assertEquals($check['relation']['default'], $defaultRelation['multiple'], 'FOFTableRelation default relation not stored as expected');
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -200,5 +236,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestAddChildrenRelation()
     {
         return RelationsDataprovider::getTestAddChildrenRelation();
+    }
+
+    public static function getTestAddMultipleRelation()
+    {
+        return RelationsDataprovider::getTestAddMultipleRelation();
     }
 }
