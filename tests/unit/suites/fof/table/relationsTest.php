@@ -149,6 +149,39 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $this->assertEquals($check['relation']['default'], $defaultRelation['parent'], 'FOFTableRelation default relation not stored as expected');
     }
 
+    /**
+     * @group               relationsAddChildrenRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestAddChildrenRelation
+     * @covers              FOFTableRelations::addChildrenRelation
+     */
+    public function testAddChildrenRelation($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        $relation->addChildrenRelation(
+            $test['relation']['itemName'],
+            $test['relation']['tableClass'],
+            $test['relation']['localKey'],
+            $test['relation']['remoteKey'],
+            $test['relation']['default']
+        );
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations = $relations->getValue($relation);
+
+        $defaultRelation = new ReflectionProperty($relation, 'defaultRelation');
+        $defaultRelation->setAccessible(true);
+        $defaultRelation = $defaultRelation->getValue($relation);
+
+        $this->assertEquals($check['relation']['content'], $relations['children'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for children relation');
+        $this->assertEquals($check['relation']['default'], $defaultRelation['children'], 'FOFTableRelation default relation not stored as expected');
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -162,5 +195,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestAddParentRelation()
     {
         return RelationsDataprovider::getTestAddParentRelation();
+    }
+
+    public static function getTestAddChildrenRelation()
+    {
+        return RelationsDataprovider::getTestAddChildrenRelation();
     }
 }

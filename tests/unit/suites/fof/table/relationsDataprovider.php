@@ -196,5 +196,85 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestAddChildrenRelation()
+    {
+        // Default usage of children relation, everything is "magically" set
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'itemName'   => 'children',
+                    'tableClass' => null,
+                    'localKey'   => null,
+                    'remoteKey'  => null,
+                    'default'    => true
+                )
+            ),
+            array(
+                'relation' => array(
+                    'default'   => 'children',
+                    'key'       => 'children',
+                    'content'   => array(
+                        'tableClass'  => 'FoftestTableChild',
+                        'localKey'    => 'foftest_parent_id',
+                        'remoteKey'   => 'foftest_parent_id',
+                    )
+                )
+            )
+        );
+
+        // Relation is not the default one
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'itemName'   => 'children',
+                    'tableClass' => null,
+                    'localKey'   => null,
+                    'remoteKey'  => null,
+                    'default'    => false
+                )
+            ),
+            array(
+                'relation' => array(
+                    'default'   => null,
+                    'key'       => 'children',
+                    'content'   => array(
+                        'tableClass'  => 'FoftestTableChild',
+                        'localKey'    => 'foftest_parent_id',
+                        'remoteKey'   => 'foftest_parent_id',
+                    )
+                )
+            )
+        );
+
+        // Force relation parameters
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'itemName'   => 'children',
+                    'tableClass' => 'FoftestTableTestchildren',
+                    'localKey'   => 'foftest_local_id',
+                    'remoteKey'  => 'foftest_remote_id',
+                    'default'    => false
+                )
+            ),
+            array(
+                'relation' => array(
+                    'default'   => null,
+                    'key'       => 'children',
+                    'content'   => array(
+                        'tableClass'  => 'FoftestTableTestchildren',
+                        'localKey'    => 'foftest_local_id',
+                        'remoteKey'   => 'foftest_remote_id',
+                    )
+                )
+            )
+        );
+
+        return $data;
+    }
 }
  
