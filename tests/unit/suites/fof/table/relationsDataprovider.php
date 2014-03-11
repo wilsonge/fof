@@ -407,5 +407,182 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestRemoveRelation()
+    {
+        // Try to remove only one relation, without supplying the type
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            )
+        );
+
+        // Try to remove only one relation, supplying the type
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => 'parent',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            )
+        );
+
+        // Try to remove only one relation, supplying the (wrong) type
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => 'child',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            )
+        );
+
+        // Try to remove only one relation, without supplying the type, but it's marked as the default one
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => 'foftest_parent',
+                    'children'  => null,
+                    'multiple'  => null
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            )
+        );
+
+        // Try to remove only one relation, without supplying the type, but it's NOT marked as the default one
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => 'another_relation',
+                    'children'  => null,
+                    'multiple'  => null
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => 'another_relation',
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            )
+        );
+
+
+        return $data;
+    }
 }
  

@@ -301,11 +301,18 @@ class FOFTableRelations
 
 		foreach ($types as $type)
 		{
-			foreach ($this->relations[$type] as $relations)
+			foreach ($this->relations[$type] as $key => $relations)
 			{
-				if (array_key_exists($itemName, $relations))
+				if ($itemName == $key)
 				{
 					unset ($this->relations[$type][$itemName]);
+
+                    // If it's the default one, remove it from the default array, too
+                    if($this->defaultRelation[$type] == $itemName)
+                    {
+                        $this->defaultRelation[$type] = null;
+                    }
+
 					return;
 				}
 			}
