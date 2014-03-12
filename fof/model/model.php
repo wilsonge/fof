@@ -1354,6 +1354,13 @@ class FOFModel extends FOFUtilsObject
 
 		if (!$this->onBeforeSave($allData, $table))
 		{
+			if ($this->_savestate)
+			{
+				$session = JFactory::getSession();
+				$hash = $this->getHash() . 'savedata';
+				$session->set($hash, serialize($allData));
+			}
+
 			return false;
 		}
 		else
