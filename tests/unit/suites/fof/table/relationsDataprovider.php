@@ -761,5 +761,97 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestHasRelation()
+    {
+        // Check if this relation exists at all
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_child',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Check if this relation exists at all (NO!)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'im_not_here',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // Check if this relation exists in the child namespace
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_child',
+                'type'      => 'child',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Check if this relation exists in the wrong namespace
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_child',
+                'type'      => 'parent',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }
- 

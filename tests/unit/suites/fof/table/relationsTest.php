@@ -296,6 +296,29 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         }
     }
 
+    /**
+     * @group               relationsHasRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestHasRelation
+     * @covers              FOFTableRelations::hasRelation
+     */
+    public function testHasRelation($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations->setValue($relation, $test['relations']);
+
+        $result = $relation->hasRelation($test['itemName'], $test['type']);
+
+        $this->assertEquals($check['result'], $result, 'FOFTableRelations::hasRelation failed to detect the relation');
+
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -329,5 +352,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestClearRelations()
     {
         return RelationsDataprovider::getTestClearRelations();
+    }
+
+    public static function getTestHasRelation()
+    {
+        return RelationsDataprovider::getTestHasRelation();
     }
 }
