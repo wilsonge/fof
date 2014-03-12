@@ -257,6 +257,45 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         }
     }
 
+    /**
+     * @group               relationsClearRelations
+     * @group               FOFTableRelations
+     * @dataProvider        getTestClearRelations
+     * @covers              FOFTableRelations::clearRelations
+     */
+    public function testClearRelations($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations->setValue($relation, $test['relations']);
+
+        // Do I have a default relation?
+        if(isset($test['default']))
+        {
+            $defaultRelation = new ReflectionProperty($relation, 'defaultRelation');
+            $defaultRelation->setAccessible(true);
+            $defaultRelation->setValue($relation, $test['default']);
+        }
+
+        $relation->clearRelations($test['type']);
+
+        $relations = $relations->getValue($relation);
+
+        $this->assertEquals($check['relations'], $relations, 'FOFTableRelations::removeRelation failed to remove the relation(s)');
+
+        if(isset($check['default']))
+        {
+            $defaultRelation = $defaultRelation->getValue($relation);
+
+            $this->assertEquals($check['default'], $defaultRelation, 'FOFTableRelations::removeRelation failed to remove the default relation');
+        }
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -285,5 +324,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestRemoveRelation()
     {
         return RelationsDataprovider::getTestRemoveRelation();
+    }
+
+    public static function getTestClearRelations()
+    {
+        return RelationsDataprovider::getTestClearRelations();
     }
 }

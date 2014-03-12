@@ -584,5 +584,150 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestClearRelations()
+    {
+        // Try to remove relations only from the parent group
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'type'      => 'parent',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            )
+        );
+
+        // Try to remove relations only from the "wrong" type
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'type'      => 'children',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            )
+        );
+
+        // Remove a relations that is the default one
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'type'      => 'parent',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => 'foftest_parent',
+                    'children'  => null,
+                    'multiple'  => null
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            )
+        );
+
+        // Remove a relations that is NOT the default one
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'type'      => 'children',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => 'foftest_parent',
+                    'children'  => null,
+                    'multiple'  => null
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default'   => array(
+                    'child'     => null,
+                    'parent'    => 'foftest_parent',
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            )
+        );
+
+        return $data;
+    }
 }
  

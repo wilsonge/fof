@@ -338,6 +338,9 @@ class FOFTableRelations
 		foreach ($types as $type)
 		{
 			$this->relations[$type] = array();
+
+            // Remove the relation from the default stack, too
+            $this->defaultRelation[$type] = null;
 		}
 	}
 
