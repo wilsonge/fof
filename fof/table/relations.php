@@ -396,11 +396,11 @@ class FOFTableRelations
 
 		foreach ($types as $type)
 		{
-			foreach ($this->relations[$type] as $relations)
+			foreach ($this->relations[$type] as $key => $relations)
 			{
-				if (array_key_exists($itemName, $relations))
+				if ($itemName == $key)
 				{
-					$temp = $relations[$itemName];
+					$temp         = $relations;
 					$temp['type'] = $type;
 
 					return $temp;
