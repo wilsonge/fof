@@ -468,6 +468,38 @@ abstract class RelationsDataprovider
             )
         );
 
+        // Try to remove only one relation from the whole array, supplying the type
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => 'parent',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array(),        // I can simply ignore the contents, since they're not used
+                        'foftest_parent_second' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent_second' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            )
+        );
+
         // Try to remove only one relation, supplying the (wrong) type
         $data[] = array(
             array('table' => 'parent'),
