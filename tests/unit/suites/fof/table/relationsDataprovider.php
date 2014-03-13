@@ -1425,4 +1425,109 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetChildren()
+    {
+        // Existing relation
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_children',
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Existing default relation
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => 'foftest_children',
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Non-Existing relation
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'wrong_children',
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // Non-Existing default parent relation
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }
