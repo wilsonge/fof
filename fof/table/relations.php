@@ -922,7 +922,7 @@ class FOFTableRelations
 		if (empty($localKey) && empty($remoteKey))
 		{
 			$tableClassParts = FOFInflector::explode($tableClass);
-			$localKey = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
+			$localKey  = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
 			$remoteKey = $localKey;
 		}
 		elseif (empty($localKey) && !empty($remoteKey))
@@ -931,7 +931,8 @@ class FOFTableRelations
 		}
 		elseif (!empty($localKey) && empty($remoteKey))
 		{
-			$remoteKey = $localKey;
+            $tableClassParts = FOFInflector::explode($tableClass);
+			$remoteKey = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
 		}
 
 		// If we don't have a pivot table nullify the relevant variables and return

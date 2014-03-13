@@ -301,10 +301,10 @@ abstract class RelationsDataprovider
                     'content'   => array(
                         'tableClass'    => 'FoftestTableGroup',
                         'localKey'      => 'foftest_part_id',
-                        'ourPivotKey'   => 'foftest_part_id',
-                        'theirPivotKey' => 'foftest_part_id',
-                        'remoteKey'     => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_group_id',
                         'pivotTable'    => '#__foftest_parts_groups',
+                        'theirPivotKey' => 'foftest_group_id',
+                        'ourPivotKey'   => 'foftest_part_id'
                     )
                 )
 
@@ -333,10 +333,10 @@ abstract class RelationsDataprovider
                     'content'   => array(
                         'tableClass'    => 'FoftestTableGroup',
                         'localKey'      => 'foftest_part_id',
-                        'ourPivotKey'   => 'foftest_part_id',
-                        'theirPivotKey' => 'foftest_part_id',
-                        'remoteKey'     => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_group_id',
                         'pivotTable'    => '#__foftest_parts_groups',
+                        'theirPivotKey' => 'foftest_group_id',
+                        'ourPivotKey'   => 'foftest_part_id'
                     )
                 )
 
@@ -364,10 +364,10 @@ abstract class RelationsDataprovider
                     'content'   => array(
                         'tableClass'    => 'FoftestTableGroup',
                         'localKey'      => 'foftest_part_id',
-                        'ourPivotKey'   => 'foftest_part_id',
-                        'theirPivotKey' => 'foftest_part_id',
-                        'remoteKey'     => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_group_id',
                         'pivotTable'    => '#__foftest_parts_groups',
+                        'theirPivotKey' => 'foftest_group_id',
+                        'ourPivotKey'   => 'foftest_part_id'
                     )
                 )
 
@@ -1844,7 +1844,7 @@ abstract class RelationsDataprovider
                     'remoteKey'     => 'foftest_group_id',
                     'pivotTable'    => '#__foftest_parts_groups',
                     'theirPivotKey' => 'foftest_group_id',
-                    'ourPivotKey'   => 'foftest_part_id',
+                    'ourPivotKey'   => 'foftest_part_id'
                 )
             ),
             array(
