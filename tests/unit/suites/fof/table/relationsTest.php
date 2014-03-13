@@ -514,6 +514,36 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $relation->getSiblings($test['itemName']);
     }
 
+    /**
+     * @group               relationsGetMultiple
+     * @group               FOFTableRelations
+     * @dataProvider        getTestGetMultiple
+     * @covers              FOFTableRelations::getMultiple
+     */
+    public function testGetMultiple($tableinfo, $test, $check)
+    {
+        if(!$check['result'])
+        {
+            $this->setExpectedException('RuntimeException');
+        }
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $this->getMock('FOFTableRelations', array('getIteratorFromRelation'), array($table));
+        $relation->expects($this->any())->method('getIteratorFromRelation')->will($this->returnValue(true));
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations->setValue($relation, $test['relations']);
+
+        $defaultRelation = new ReflectionProperty($relation, 'defaultRelation');
+        $defaultRelation->setAccessible(true);
+        $defaultRelation->setValue($relation, $test['default']);
+
+        $relation->getMultiple($test['itemName']);
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -587,5 +617,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetSiblings()
     {
         return RelationsDataprovider::getTestGetSiblings();
+    }
+
+    public static function getTestGetMultiple()
+    {
+        return RelationsDataprovider::getTestGetMultiple();
     }
 }

@@ -1587,4 +1587,109 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetMultiple()
+    {
+        // Existing relation
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'itemName'  => 'foftest_multiple',
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Existing default relation
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'itemName'  => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => 'foftest_multiple',
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Non-Existing relation
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'itemName'  => 'wrong_multiple',
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // Non-Existing default relation
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'itemName'  => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }
