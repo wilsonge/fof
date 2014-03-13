@@ -571,6 +571,53 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $this->assertEquals($check['id'], $relatedTable->$pk, 'FOFTableRelations::getTableFromRelation loaded the wrong linked table');
     }
 
+    /**
+     * @group               relationsGetTableFromRelationNoLoad
+     * @group               FOFTableRelations
+     * @covers              FOFTableRelations::getTableFromRelation
+     */
+    public function testGetTableFromRelationNoLoad()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'child'));
+        $table 		     = FOFTable::getAnInstance('child', 'FoftestTable', $config);
+
+        $relationArg = array(
+            'tableClass' => 'FoftestTableParent',
+            'localKey'   => 'foftest_parent_id',
+            'remoteKey'  => 'foftest_parent_id'
+        );
+
+        $relation = $table->getRelations();
+
+        $getTable = new ReflectionMethod($relation, 'getTableFromRelation');
+        $getTable->setAccessible(true);
+
+        $getTable->invoke($relation, $relationArg);
+    }
+
+    /**
+     * @group               relationsGetTableFromRelationInvalidArgs
+     * @group               FOFTableRelations
+     * @dataProvider        getTestGetTableFromRelationInvalidArgs
+     * @covers              FOFTableRelations::getTableFromRelation
+     */
+    public function testGetTableFromRelationInvalidArgs($tableinfo, $test)
+    {
+        $this->setExpectedException('InvalidArgumentException');
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        $getTable = new ReflectionMethod($relation, 'getTableFromRelation');
+        $getTable->setAccessible(true);
+
+        $getTable->invoke($relation, $test['relation']);
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -654,5 +701,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetTableFromRelation()
     {
         return RelationsDataprovider::getTestGetTableFromRelation();
+    }
+
+    public static function getTestGetTableFromRelationInvalidArgs()
+    {
+        return RelationsDataprovider::getTestGetTableFromRelationInvalidArgs();
     }
 }

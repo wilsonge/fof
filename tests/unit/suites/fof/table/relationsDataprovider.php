@@ -1745,4 +1745,57 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetTableFromRelationInvalidArgs()
+    {
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'relation' => array()
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'relation' => array(
+                    'tableClass' => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'relation' => array(
+                    'tableClass' => '',
+                    'localKey'   => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'relation' => array(
+                    'tableClass' => '',
+                    'localKey'   => '',
+                    'remoteKey'  => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'relation' => array(
+                    'tableClass' => 'SimplyWrong',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id'
+                )
+            )
+        );
+
+        return $data;
+    }
 }
