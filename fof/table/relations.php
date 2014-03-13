@@ -719,17 +719,50 @@ class FOFTableRelations
 	/**
 	 * Returns a FOFDatabaseIterator based on a given relation
 	 *
-	 * @param   array    $relation   Relation definition
+	 * @param   array    $relation   Indexed array holding relation definition.
+     *                                  tableClass => name of the related table class
+     *                                  localKey   => name of the local key
+     *                                  remoteKey  => name of the remote key
+     *                                  pivotTable    => name of the pivot table (optional)
+     *                                  theirPivotKey => name of the remote key in the pivot table (mandatory if pivotTable is set)
+     *                                  ourPivotKey   => name of our key in the pivot table (mandatory if pivotTable is set)
 	 *
 	 * @return FOFDatabaseIterator
 	 *
 	 * @throws RuntimeException
+	 * @throws InvalidArgumentException
 	 */
 	protected function getIteratorFromRelation($relation)
 	{
+        // Sanity checks
+        if(
+            !isset($relation['tableClass']) || !isset($relation['remoteKey']) || !isset($relation['localKey']) ||
+            !$relation['tableClass'] || !$relation['remoteKey'] || !$relation['localKey']
+        )
+        {
+            throw new InvalidArgumentException('Missing array index for the '.__METHOD__.' method. Please check method signature', 500);
+        }
+
+        if(array_key_exists('pivotTable', $relation))
+        {
+            if(
+                !isset($relation['theirPivotKey']) || !isset($relation['ourPivotKey']) ||
+                !$relation['pivotTable'] || !$relation['theirPivotKey'] || !$relation['ourPivotKey']
+            )
+            {
+                throw new InvalidArgumentException('Missing array index for the '.__METHOD__.' method. Please check method signature', 500);
+            }
+        }
+
 		// Get a table object from the table class name
-		$tableClass = $relation['tableClass'];
+		$tableClass      = $relation['tableClass'];
 		$tableClassParts = FOFInflector::explode($tableClass);
+
+        if(count($tableClassParts) < 3)
+        {
+            throw new InvalidArgumentException('Invalid table class named. It should be something like FooTableBar');
+        }
+
 		$table = FOFTable::getInstance($tableClassParts[2], ucfirst($tableClassParts[0]) . ucfirst($tableClassParts[1]));
 
 		// Get the table name
@@ -737,10 +770,16 @@ class FOFTableRelations
 
 		// Get the remote and local key names
 		$remoteKey = $relation['remoteKey'];
-		$localKey = $relation['localKey'];
+		$localKey  = $relation['localKey'];
 
 		// Get the local key's value
 		$value = $this->table->$localKey;
+
+        // If there's no value for the primary key, let's stop here
+        if(!$value)
+        {
+            throw new RuntimeException('Missing value for the primary key of the table '.$this->table->getTableName(), 500);
+        }
 
 		// This is required to prevent one relation from killing the db cursor used in a different relation...
 		$oldDb = $this->table->getDbo();
@@ -758,8 +797,7 @@ class FOFTableRelations
 		// If we don't have pivot it's a straightforward query
 		if (!$hasPivot)
 		{
-			$query
-				->where($db->qn($remoteKey) . ' = ' . $db->q($value));
+			$query->where($db->qn($remoteKey) . ' = ' . $db->q($value));
 		}
 		// If we have a pivot table we have to do a subquery
 		else
