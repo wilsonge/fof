@@ -618,6 +618,30 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $getTable->invoke($relation, $test['relation']);
     }
 
+    /**
+     * @group               relationsGetIteratorFromRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestGetIteratorFromRelation
+     * @covers              FOFTableRelations::getIteratorFromRelation
+     */
+    public function testGetIteratorFromRelation($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $table->load($test['loadid']);
+
+        $relation = $table->getRelations();
+
+        $getTable = new ReflectionMethod($relation, 'getIteratorFromRelation');
+        $getTable->setAccessible(true);
+
+        $items = $getTable->invoke($relation, $test['relation']);
+
+        $this->assertInstanceOf('FOFDatabaseIterator', $items, 'FOFTableRelations::getIteratorFromRelation should return an instance of the FOFDatabaseIterator');
+        $this->assertEquals($check['count'], count($items), 'FOFTableRelations::getIteratorFromRelation returned the wrong number of items');
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -706,5 +730,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetTableFromRelationInvalidArgs()
     {
         return RelationsDataprovider::getTestGetTableFromRelationInvalidArgs();
+    }
+
+    public static function getTestGetIteratorFromRelation()
+    {
+        return RelationsDataprovider::getTestGetIteratorFromRelation();
     }
 }

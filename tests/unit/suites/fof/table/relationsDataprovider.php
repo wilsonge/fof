@@ -1798,4 +1798,60 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetIteratorFromRelation()
+    {
+        // Try to load the children
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'loadid' => 1,
+                'relation' => array(
+                    'tableClass' => 'FoftestTableChild',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'count' => 2
+            )
+        );
+
+        // Parent with no children
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'loadid' => 3,
+                'relation' => array(
+                    'tableClass' => 'FoftestTableChild',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'count' => 0
+            )
+        );
+
+        // Pivot table - Parts and groups
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'loadid' => 1,
+                'relation' => array(
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_part_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_part_id',
+                )
+            ),
+            array(
+                'count' => 2
+            )
+        );
+
+        return $data;
+    }
 }
