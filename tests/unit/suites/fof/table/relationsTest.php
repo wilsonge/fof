@@ -401,6 +401,36 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $relation->getRelatedItems($test['itemName'], $test['type']);
     }
 
+    /**
+     * @group               relationsGetParent
+     * @group               FOFTableRelations
+     * @dataProvider        getTestGetParent
+     * @covers              FOFTableRelations::getParent
+     */
+    public function testGetParent($tableinfo, $test, $check)
+    {
+        if(!$check['result'])
+        {
+            $this->setExpectedException('RuntimeException');
+        }
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $this->getMock('FOFTableRelations', array('getTableFromRelation'), array($table));
+        $relation->expects($this->any())->method('getTableFromRelation')->will($this->returnValue(true));
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations->setValue($relation, $test['relations']);
+
+        $defaultRelation = new ReflectionProperty($relation, 'defaultRelation');
+        $defaultRelation->setAccessible(true);
+        $defaultRelation->setValue($relation, $test['default']);
+
+        $relation->getParent($test['itemName']);
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -454,5 +484,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetRelatedItems()
     {
         return RelationsDataprovider::getTestGetRelatedItems();
+    }
+
+    public static function getTestGetParent()
+    {
+        return RelationsDataprovider::getTestGetParent();
     }
 }

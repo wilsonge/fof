@@ -1215,4 +1215,109 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetParent()
+    {
+        // Existing parent relation
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Existing default parent relation
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => 'foftest_parent',
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Non-Existing parent relation
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'itemName'  => 'wrong_parent',
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // Non-Existing default parent relation
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'itemName'  => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                ),
+                'default' => array(
+                    'child'     => null,
+                    'parent'    => null,
+                    'children'  => null,
+                    'multiple'  => null,
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }
