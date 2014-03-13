@@ -947,4 +947,101 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetRelatedItem()
+    {
+        // Get existing related item (child)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_child',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Get existing related item (parent)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Get existing related item - wrong type (plural instead of singular)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_children',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // Get existing related item - wrong type (plural instead of singular)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_children',
+                'type'      => 'children',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()  // I can simply ignore the contents, since they're not used
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array() // I can simply ignore the contents, since they're not used
+                    ),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }
