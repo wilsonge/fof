@@ -1854,4 +1854,96 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetIteratorFromRelationInvalidArgs()
+    {
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array()
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'tableClass' => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'tableClass' => '',
+                    'localKey'   => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'tableClass' => '',
+                    'localKey'   => '',
+                    'remoteKey'  => ''
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'tableClass' => 'SimplyWrong',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id'
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'tableClass'  => 'SimplyWrong',
+                    'localKey'    => 'foftest_parent_id',
+                    'remoteKey'   => 'foftest_parent_id',
+                    'pivotTable'  => '',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'tableClass'  => 'SimplyWrong',
+                    'localKey'    => 'foftest_parent_id',
+                    'remoteKey'   => 'foftest_parent_id',
+                    'pivotTable'  => '',
+                    'theirPivotKey'  => '',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'relation' => array(
+                    'tableClass'  => 'SimplyWrong',
+                    'localKey'    => 'foftest_parent_id',
+                    'remoteKey'   => 'foftest_parent_id',
+                    'pivotTable'  => '',
+                    'theirPivotKey'  => '',
+                    'ourPivotKey'    => '',
+                )
+            )
+        );
+
+        return $data;
+    }
 }
