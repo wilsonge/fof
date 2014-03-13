@@ -1044,4 +1044,175 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetRelatedItems()
+    {
+        // Get existing related item (children)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_children',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Get existing related item (children)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_children',
+                'type'      => 'children',
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Get existing related item (multiple)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_multiple',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Get existing related item (multiple)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_child',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()
+                    ),
+                    'parent'    => array(),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // Get existing related item (multiple)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => null,
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array()
+                    ),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => 'parent',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array()
+                    ),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName'  => 'foftest_parent',
+                'type'      => 'child',
+                'relations' => array(
+                    'child'     => array(
+                        'foftest_child' => array()
+                    ),
+                    'parent'    => array(
+                        'foftest_parent' => array()
+                    ),
+                    'children'  => array(
+                        'foftest_children' => array()
+                    ),
+                    'multiple'  => array(
+                        'foftest_multiple' => array()
+                    ),
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }
