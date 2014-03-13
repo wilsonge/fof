@@ -544,6 +544,33 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $relation->getMultiple($test['itemName']);
     }
 
+
+    /**
+     * @group               relationsGetTableFromRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestGetTableFromRelation
+     * @covers              FOFTableRelations::getTableFromRelation
+     */
+    public function testGetTableFromRelation($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $table->load($test['loadid']);
+
+        $relation = $table->getRelations();
+
+        $getTable = new ReflectionMethod($relation, 'getTableFromRelation');
+        $getTable->setAccessible(true);
+
+        $relatedTable = $getTable->invoke($relation, $test['relation']);
+
+        $pk = $relatedTable->getKeyName();
+
+        $this->assertInstanceOf('FOFTable', $relatedTable, 'FOFTableRelations::getTableFromRelation should return an instance of the FOFTable');
+        $this->assertEquals($check['id'], $relatedTable->$pk, 'FOFTableRelations::getTableFromRelation loaded the wrong linked table');
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -622,5 +649,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetMultiple()
     {
         return RelationsDataprovider::getTestGetMultiple();
+    }
+
+    public static function getTestGetTableFromRelation()
+    {
+        return RelationsDataprovider::getTestGetTableFromRelation();
     }
 }

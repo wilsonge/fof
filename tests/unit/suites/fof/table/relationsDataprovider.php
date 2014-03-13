@@ -1692,4 +1692,57 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetTableFromRelation()
+    {
+        // Try to load the parent
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'loadid' => 2,
+                'relation' => array(
+                    'tableClass' => 'FoftestTableParent',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'id' => 1
+            )
+        );
+
+        // Try to load the first child (parent with only 1 child)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'loadid' => 2,
+                'relation' => array(
+                    'tableClass' => 'FoftestTableChild',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'id' => 3
+            )
+        );
+
+        // Try to load the first child (parent with several children)
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'loadid' => 1,
+                'relation' => array(
+                    'tableClass' => 'FoftestTableChild',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'id' => 1
+            )
+        );
+
+        return $data;
+    }
 }
