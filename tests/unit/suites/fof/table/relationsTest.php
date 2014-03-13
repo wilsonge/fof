@@ -491,6 +491,29 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $relation->getChildren($test['itemName']);
     }
 
+    /**
+     * @group               relationsGetSiblings
+     * @group               FOFTableRelations
+     * @dataProvider        getTestGetSiblings
+     * @covers              FOFTableRelations::getSiblings
+     */
+    public function testGetSiblings($tableinfo, $test, $check)
+    {
+        if(!$check['result'])
+        {
+            $this->setExpectedException('RuntimeException');
+        }
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $this->getMock('FOFTableRelations', array('getIteratorFromRelation'), array($table));
+        $relation->expects($this->any())->method('getIteratorFromRelation')->with($this->equalTo($check['iterator']));
+        $relation->expects($this->any())->method('getIteratorFromRelation')->will($this->returnValue(true));
+
+        $relation->getSiblings($test['itemName']);
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -559,5 +582,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetChildren()
     {
         return RelationsDataprovider::getTestGetChildren();
+    }
+
+    public static function getTestGetSiblings()
+    {
+        return RelationsDataprovider::getTestGetSiblings();
     }
 }

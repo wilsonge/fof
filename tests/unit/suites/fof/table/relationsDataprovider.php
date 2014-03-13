@@ -1530,4 +1530,61 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestGetSiblings()
+    {
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'itemName' => null
+            ),
+            array(
+                'result' => true,
+                'iterator' => array(
+                    'tableClass' => 'FoftestTableChild',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'itemName' => 'parent'
+            ),
+            array(
+                'result' => true,
+                'iterator' => array(
+                    'tableClass' => 'FoftestTableChild',
+                    'localKey'   => 'foftest_parent_id',
+                    'remoteKey'  => 'foftest_parent_id',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'itemName' => 'wrong_parent'
+            ),
+            array(
+                'result'   => false,
+                'iterator' => array()
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'bare'),
+            array(
+                'itemName' => null
+            ),
+            array(
+                'result'   => false,
+                'iterator' => array()
+            )
+        );
+
+        return $data;
+    }
 }
