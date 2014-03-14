@@ -861,7 +861,7 @@ class FOFTableRelations
 	 * @param   string   $ourPivotKey    is the column containing our side of the FK relation in the pivot table, default: $localKey
 	 * @param   string   $theirPivotKey  is the column containing the other table's side of the FK relation in the pivot table, default $remoteKey
 	 * @param   string   $pivotTable     is the name of the glue (pivot) table, default: #__componentname_thisclassname_itemname with plural items (e.g. #__foobar_users_roles)
-	 * @param   boolean  $default       is this the default children relationship?
+	 * @param   boolean  $default        is this the default children relationship?
 	 *
 	 * @return  void
 	 */

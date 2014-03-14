@@ -740,6 +740,62 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     }
 
     /**
+     * This is a simple test to check if the data is actually stored inside the correct array and if this
+     * method considers the modifications made by normaliseParameters
+     *
+     * @group               relationsAddBespokePivotRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestAddBespokePivotRelation
+     * @covers              FOFTableRelations::addBespokePivotRelation
+     */
+    public function testAddBespokePivotRelation($tableinfo, $test, $check)
+    {
+        $invoke  = $test['invoke'];
+        $process = $test['process'];
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $this->getMock('FOFTableRelations', array('normaliseParameters'), array($table));
+        $relation->expects($this->any())->method('normaliseParameters')->will(
+            $this->returnCallback(function($a1, &$a2, &$a3, &$a4, &$a5, &$a6, &$a7, &$a8) use ($process){
+                $a3 = $process['tableClass'];
+                $a4 = $process['localKey'];
+                $a5 = $process['remoteKey'];
+                $a6 = $process['ourPivotKey'];
+                $a7 = $process['theirPivotKey'];
+                $a8 = $process['pivotTable'];
+            })
+        );
+
+        $method = new ReflectionMethod($relation, 'addBespokePivotRelation');
+        $method->setAccessible(true);
+
+        $method->invoke($relation,
+            $invoke['relationType'],
+            $invoke['itemName'],
+            $invoke['tableClass'],
+            $invoke['localKey'],
+            $invoke['remoteKey'],
+            $invoke['ourPivotKey'],
+            $invoke['theirPivotKey'],
+            $invoke['pivotTable'],
+            $invoke['default']
+        );
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations = $relations->getValue($relation);
+
+        $default = new ReflectionProperty($relation, 'defaultRelation');
+        $default->setAccessible(true);
+        $default = $default->getValue($relation);
+
+        $this->assertEquals($check['relations'], $relations[$invoke['relationType']], 'FOFTableRelations::addBespokePivotRelation failed to store the relation');
+        $this->assertEquals($check['default'], $default[$invoke['relationType']], 'FOFTableRelations::addBespokePivotRelation failed to store the default relation');
+    }
+
+    /**
      * @group               relationsNormaliseItemName
      * @group               FOFTableRelations
      * @dataProvider        getTestNormaliseItemName
@@ -863,6 +919,11 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestAddBespokeSimpleRelation()
     {
         return RelationsDataprovider::getTestAddBespokeSimpleRelation();
+    }
+
+    public function getTestAddBespokePivotRelation()
+    {
+        return RelationsDataprovider::getTestAddBespokePivotRelation();
     }
 
     public static function getTestNormaliseItemName()

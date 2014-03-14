@@ -2042,6 +2042,128 @@ abstract class RelationsDataprovider
         return $data;
     }
 
+    public static function getTestAddBespokePivotRelation()
+    {
+        // Data remains the same
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'invoke' => array(
+                    'relationType'  => 'multiple',
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableChild',
+                    'localKey'      => 'foftest_parent_id',
+                    'remoteKey'     => 'foftest_parent_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_part_id',
+                    'default'       => false,
+                ),
+                'process' => array(
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_part_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_part_id'
+                )
+            ),
+            array(
+                'relations' => array(
+                    'groups' => array(
+                        'tableClass'    => 'FoftestTableGroup',
+                        'localKey'      => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_group_id',
+                        'pivotTable'    => '#__foftest_parts_groups',
+                        'theirPivotKey' => 'foftest_group_id',
+                        'ourPivotKey'   => 'foftest_part_id'
+                    )
+                ),
+                'default' => null
+            )
+        );
+
+        // Data is the same and it's the default
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'invoke' => array(
+                    'relationType'  => 'multiple',
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableChild',
+                    'localKey'      => 'foftest_parent_id',
+                    'remoteKey'     => 'foftest_parent_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_part_id',
+                    'default'       => true,
+                ),
+                'process' => array(
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_part_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_part_id'
+                )
+            ),
+            array(
+                'relations' => array(
+                    'groups' => array(
+                        'tableClass'    => 'FoftestTableGroup',
+                        'localKey'      => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_group_id',
+                        'pivotTable'    => '#__foftest_parts_groups',
+                        'theirPivotKey' => 'foftest_group_id',
+                        'ourPivotKey'   => 'foftest_part_id'
+                    )
+                ),
+                'default' => 'groups'
+            )
+        );
+
+        // Data gets changed
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'invoke' => array(
+                    'relationType' => 'multiple',
+                    'itemName'     => 'groups',
+                    'tableClass'   => 'wrong_table',
+                    'localKey'     => 'wrong',
+                    'remoteKey'    => 'wrong',
+                    'ourPivotKey'  => 'wrong',
+                    'theirPivotKey'=> 'wrong',
+                    'pivotTable'   => 'wrong',
+                    'default'      => false,
+                ),
+                'process' => array(
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_part_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_part_id'
+                )
+            ),
+            array(
+                'relations' => array(
+                    'groups' => array(
+                        'tableClass'    => 'FoftestTableGroup',
+                        'localKey'      => 'foftest_part_id',
+                        'remoteKey'     => 'foftest_group_id',
+                        'pivotTable'    => '#__foftest_parts_groups',
+                        'theirPivotKey' => 'foftest_group_id',
+                        'ourPivotKey'   => 'foftest_part_id'
+                    )
+                ),
+                'default' => null
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestNormaliseItemName()
     {
         $data[] = array(
