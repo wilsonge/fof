@@ -2234,7 +2234,7 @@ abstract class RelationsDataprovider
                     'itemName'      => 'parent',
                     'tableClass'    => 'FoftestTableCustom',
                     'localKey'      => 'foftest_customkey_id',
-                    'remoteKey'     => 'foftest_custom_id',
+                    'remoteKey'     => 'foftest_customkey_id',
                     'ourPivotKey'   => null,
                     'theirPivotKey' => null,
                     'pivotTable'    => null,
