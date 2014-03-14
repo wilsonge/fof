@@ -1946,4 +1946,108 @@ abstract class RelationsDataprovider
 
         return $data;
     }
+
+    public static function getTestNormaliseItemName()
+    {
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'parent',
+                'plural'   => false,
+            ),
+            array(
+                'itemname' => 'parent'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'parents',
+                'plural'   => false,
+            ),
+            array(
+                'itemname' => 'parent'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'child',
+                'plural'   => true,
+            ),
+            array(
+                'itemname' => 'children'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'children',
+                'plural'   => true,
+            ),
+            array(
+                'itemname' => 'children'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'foftest_child',
+                'plural'   => true,
+            ),
+            array(
+                'itemname' => 'foftest_children'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'foftest_children',
+                'plural'   => false,
+            ),
+            array(
+                'itemname' => 'foftest_child'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'foftest_children',
+                'plural'   => true,
+            ),
+            array(
+                'itemname' => 'foftest_children'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'foftest_part_group',
+                'plural'   => true,
+            ),
+            array(
+                'itemname' => 'foftest_PartGroups'
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'itemName' => 'foftest_part_groups',
+                'plural'   => false,
+            ),
+            array(
+                'itemname' => 'foftest_PartGroup'
+            )
+        );
+
+        return $data;
+    }
 }

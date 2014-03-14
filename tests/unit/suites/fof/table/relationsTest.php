@@ -689,6 +689,27 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $getTable->invoke($relation, $test['relation']);
     }
 
+    /**
+     * @group               relationsNormaliseItemName
+     * @group               FOFTableRelations
+     * @dataProvider        getTestNormaliseItemName
+     * @covers              FOFTableRelations::normaliseItemName
+     */
+    public function testNormaliseItemName($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        $getTable = new ReflectionMethod($relation, 'normaliseItemName');
+        $getTable->setAccessible(true);
+
+        $itemname = $getTable->invoke($relation, $test['itemName'], $test['plural']);
+
+        $this->assertEquals($check['itemname'], $itemname, 'FOFTableRelations::normaliseItemName created a wrong itemname string');
+    }
+
     public static function getTest__construct()
     {
         return RelationsDataprovider::getTest__construct();
@@ -787,5 +808,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetIteratorFromRelationInvalidArgs()
     {
         return RelationsDataprovider::getTestGetIteratorFromRelationInvalidArgs();
+    }
+
+    public static function getTestNormaliseItemName()
+    {
+        return RelationsDataprovider::getTestNormaliseItemName();
     }
 }
