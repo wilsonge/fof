@@ -1947,6 +1947,101 @@ abstract class RelationsDataprovider
         return $data;
     }
 
+    public static function getTestAddBespokeSimpleRelation()
+    {
+        // Data remains the same
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'invoke' => array(
+                   'relationType' => 'child',
+                   'itemName'     => 'child',
+                   'tableClass'   => 'FoftestTableChild',
+                   'localKey'     => 'foftest_parent_id',
+                   'remoteKey'    => 'foftest_parent_id',
+                   'default'      => false,
+                ),
+                'process' => array(
+                    'tableClass'   => 'FoftestTableChild',
+                    'localKey'     => 'foftest_parent_id',
+                    'remoteKey'    => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child' => array(
+                        'tableClass'   => 'FoftestTableChild',
+                        'localKey'     => 'foftest_parent_id',
+                        'remoteKey'    => 'foftest_parent_id'
+                    )
+                ),
+                'default' => null
+            )
+        );
+
+        // Data is the same and it's the default
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'invoke' => array(
+                    'relationType' => 'child',
+                    'itemName'     => 'child',
+                    'tableClass'   => 'FoftestTableChild',
+                    'localKey'     => 'foftest_parent_id',
+                    'remoteKey'    => 'foftest_parent_id',
+                    'default'      => true,
+                ),
+                'process' => array(
+                    'tableClass'   => 'FoftestTableChild',
+                    'localKey'     => 'foftest_parent_id',
+                    'remoteKey'    => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child' => array(
+                        'tableClass'   => 'FoftestTableChild',
+                        'localKey'     => 'foftest_parent_id',
+                        'remoteKey'    => 'foftest_parent_id'
+                    )
+                ),
+                'default' => 'child'
+            )
+        );
+
+        // Data gets changed
+        $data[] = array(
+            array('table' => 'parent'),
+            array(
+                'invoke' => array(
+                    'relationType' => 'child',
+                    'itemName'     => 'child',
+                    'tableClass'   => 'wrong_table',
+                    'localKey'     => 'wrong_local',
+                    'remoteKey'    => 'wrong_remote',
+                    'default'      => false,
+                ),
+                'process' => array(
+                    'tableClass'   => 'FoftestTableChild',
+                    'localKey'     => 'foftest_parent_id',
+                    'remoteKey'    => 'foftest_parent_id'
+                )
+            ),
+            array(
+                'relations' => array(
+                    'child' => array(
+                        'tableClass'   => 'FoftestTableChild',
+                        'localKey'     => 'foftest_parent_id',
+                        'remoteKey'    => 'foftest_parent_id'
+                    )
+                ),
+                'default' => null
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestNormaliseItemName()
     {
         $data[] = array(

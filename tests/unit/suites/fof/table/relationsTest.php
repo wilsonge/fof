@@ -560,10 +560,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relation = $table->getRelations();
 
-        $getTable = new ReflectionMethod($relation, 'getTableFromRelation');
-        $getTable->setAccessible(true);
+        $method = new ReflectionMethod($relation, 'getTableFromRelation');
+        $method->setAccessible(true);
 
-        $relatedTable = $getTable->invoke($relation, $test['relation']);
+        $relatedTable = $method->invoke($relation, $test['relation']);
 
         $pk = $relatedTable->getKeyName();
 
@@ -591,10 +591,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relation = $table->getRelations();
 
-        $getTable = new ReflectionMethod($relation, 'getTableFromRelation');
-        $getTable->setAccessible(true);
+        $method = new ReflectionMethod($relation, 'getTableFromRelation');
+        $method->setAccessible(true);
 
-        $getTable->invoke($relation, $relationArg);
+        $method->invoke($relation, $relationArg);
     }
 
     /**
@@ -612,10 +612,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relation = $table->getRelations();
 
-        $getTable = new ReflectionMethod($relation, 'getTableFromRelation');
-        $getTable->setAccessible(true);
+        $method = new ReflectionMethod($relation, 'getTableFromRelation');
+        $method->setAccessible(true);
 
-        $getTable->invoke($relation, $test['relation']);
+        $method->invoke($relation, $test['relation']);
     }
 
     /**
@@ -633,10 +633,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relation = $table->getRelations();
 
-        $getTable = new ReflectionMethod($relation, 'getIteratorFromRelation');
-        $getTable->setAccessible(true);
+        $method = new ReflectionMethod($relation, 'getIteratorFromRelation');
+        $method->setAccessible(true);
 
-        $items = $getTable->invoke($relation, $test['relation']);
+        $items = $method->invoke($relation, $test['relation']);
 
         $this->assertInstanceOf('FOFDatabaseIterator', $items, 'FOFTableRelations::getIteratorFromRelation should return an instance of the FOFDatabaseIterator');
         $this->assertEquals($check['count'], count($items), 'FOFTableRelations::getIteratorFromRelation returned the wrong number of items');
@@ -662,10 +662,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relation = $table->getRelations();
 
-        $getTable = new ReflectionMethod($relation, 'getIteratorFromRelation');
-        $getTable->setAccessible(true);
+        $method = new ReflectionMethod($relation, 'getIteratorFromRelation');
+        $method->setAccessible(true);
 
-        $getTable->invoke($relation, $relationArg);
+        $method->invoke($relation, $relationArg);
     }
 
     /**
@@ -683,10 +683,60 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relation = $table->getRelations();
 
-        $getTable = new ReflectionMethod($relation, 'getIteratorFromRelation');
-        $getTable->setAccessible(true);
+        $method = new ReflectionMethod($relation, 'getIteratorFromRelation');
+        $method->setAccessible(true);
 
-        $getTable->invoke($relation, $test['relation']);
+        $method->invoke($relation, $test['relation']);
+    }
+
+    /**
+     * This is a simple test to check if the data is actually stored inside the correct array and if this
+     * method considers the modifications made by normaliseParameters
+     *
+     * @group               relationsAddBespokeSimpleRelation
+     * @group               FOFTableRelations
+     * @dataProvider        getTestAddBespokeSimpleRelation
+     * @covers              FOFTableRelations::addBespokeSimpleRelation
+     */
+    public function testAddBespokeSimpleRelation($tableinfo, $test, $check)
+    {
+        $invoke  = $test['invoke'];
+        $process = $test['process'];
+
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $this->getMock('FOFTableRelations', array('normaliseParameters'), array($table));
+        $relation->expects($this->any())->method('normaliseParameters')->will(
+            $this->returnCallback(function($a1, &$a2, &$a3, &$a4, &$a5) use ($process){
+                $a3 = $process['tableClass'];
+                $a4 = $process['localKey'];
+                $a5 = $process['remoteKey'];
+            })
+        );
+
+        $method = new ReflectionMethod($relation, 'addBespokeSimpleRelation');
+        $method->setAccessible(true);
+
+        $method->invoke($relation,
+            $invoke['relationType'],
+            $invoke['itemName'],
+            $invoke['tableClass'],
+            $invoke['localKey'],
+            $invoke['remoteKey'],
+            $invoke['default']
+        );
+
+        $relations = new ReflectionProperty($relation, 'relations');
+        $relations->setAccessible(true);
+        $relations = $relations->getValue($relation);
+
+        $default = new ReflectionProperty($relation, 'defaultRelation');
+        $default->setAccessible(true);
+        $default = $default->getValue($relation);
+
+        $this->assertEquals($check['relations'], $relations[$invoke['relationType']], 'FOFTableRelations::addBespokeSimpleRelation failed to store the relation');
+        $this->assertEquals($check['default'], $default[$invoke['relationType']], 'FOFTableRelations::addBespokeSimpleRelation failed to store the default relation');
     }
 
     /**
@@ -808,6 +858,11 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public static function getTestGetIteratorFromRelationInvalidArgs()
     {
         return RelationsDataprovider::getTestGetIteratorFromRelationInvalidArgs();
+    }
+
+    public static function getTestAddBespokeSimpleRelation()
+    {
+        return RelationsDataprovider::getTestAddBespokeSimpleRelation();
     }
 
     public static function getTestNormaliseItemName()
