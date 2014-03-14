@@ -921,6 +921,10 @@ class FOFTableRelations
 		// Make sure we have both a local and remote key
 		if (empty($localKey) && empty($remoteKey))
 		{
+            // WARNING! If we have a pivot table, this behavior is wrong!
+            // Infact if we have `parts` and `groups` the local key should be foobar_part_id and the remote one foobar_group_id.
+            // However, this scenario never happens, since in this class if we're adding a multiple relation
+            // we always supply the local key
 			$tableClassParts = FOFInflector::explode($tableClass);
 			$localKey  = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
 			$remoteKey = $localKey;

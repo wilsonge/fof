@@ -2164,6 +2164,337 @@ abstract class RelationsDataprovider
         return $data;
     }
 
+    public static function getTestNormaliseParameters()
+    {
+        // Supply nothin, everything is "magically" set
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'pivot'         => false,
+                'itemName'      => 'parent',
+                'tableClass'    => null,
+                'localKey'      => null,
+                'remoteKey'     => null,
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'parent',
+                    'tableClass'    => 'FoftestTableParent',
+                    'localKey'      => 'foftest_parent_id',
+                    'remoteKey'     => 'foftest_parent_id',
+                    'ourPivotKey'   => null,
+                    'theirPivotKey' => null,
+                    'pivotTable'    => null,
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'pivot'         => false,
+                'itemName'      => 'parent',
+                'tableClass'    => 'FoftestTableCustom',
+                'localKey'      => null,
+                'remoteKey'     => null,
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'parent',
+                    'tableClass'    => 'FoftestTableCustom',
+                    'localKey'      => 'foftest_custom_id',
+                    'remoteKey'     => 'foftest_custom_id',
+                    'ourPivotKey'   => null,
+                    'theirPivotKey' => null,
+                    'pivotTable'    => null,
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'pivot'         => false,
+                'itemName'      => 'parent',
+                'tableClass'    => 'FoftestTableCustom',
+                'localKey'      => 'foftest_customkey_id',
+                'remoteKey'     => null,
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'parent',
+                    'tableClass'    => 'FoftestTableCustom',
+                    'localKey'      => 'foftest_customkey_id',
+                    'remoteKey'     => 'foftest_custom_id',
+                    'ourPivotKey'   => null,
+                    'theirPivotKey' => null,
+                    'pivotTable'    => null,
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'pivot'         => false,
+                'itemName'      => 'parent',
+                'tableClass'    => 'FoftestTableCustom',
+                'localKey'      => null,
+                'remoteKey'     => 'foftest_customremote_id',
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'parent',
+                    'tableClass'    => 'FoftestTableCustom',
+                    'localKey'      => 'foftest_customremote_id',
+                    'remoteKey'     => 'foftest_customremote_id',
+                    'ourPivotKey'   => null,
+                    'theirPivotKey' => null,
+                    'pivotTable'    => null,
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'child'),
+            array(
+                'pivot'         => false,
+                'itemName'      => 'parent',
+                'tableClass'    => 'FoftestTableCustom',
+                'localKey'      => 'foftest_customlocal_id',
+                'remoteKey'     => 'foftest_customremote_id',
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'parent',
+                    'tableClass'    => 'FoftestTableCustom',
+                    'localKey'      => 'foftest_customlocal_id',
+                    'remoteKey'     => 'foftest_customremote_id',
+                    'ourPivotKey'   => null,
+                    'theirPivotKey' => null,
+                    'pivotTable'    => null,
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => null,
+                'localKey'      => null,
+                'remoteKey'     => null,
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_group_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_group_id',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => 'FoftestTableGroup',
+                'localKey'      => null,
+                'remoteKey'     => null,
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_group_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_group_id',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => 'FoftestTableGroup',
+                'localKey'      => 'foftest_part_id',
+                'remoteKey'     => null,
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_part_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_part_id',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => 'FoftestTableGroup',
+                'localKey'      => null,
+                'remoteKey'     => 'foftest_group_id',
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_group_id',
+                    'remoteKey'     => 'foftest_group_id',
+                    'ourPivotKey'   => 'foftest_group_id',
+                    'theirPivotKey' => 'foftest_group_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => 'FoftestTableGroup',
+                'localKey'      => 'foftest_local_id',
+                'remoteKey'     => 'foftest_remote_id',
+                'ourPivotKey'   => null,
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_local_id',
+                    'remoteKey'     => 'foftest_remote_id',
+                    'ourPivotKey'   => 'foftest_local_id',
+                    'theirPivotKey' => 'foftest_remote_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => 'FoftestTableGroup',
+                'localKey'      => 'foftest_local_id',
+                'remoteKey'     => 'foftest_remote_id',
+                'ourPivotKey'   => 'foftest_ourkey_id',
+                'theirPivotKey' => null,
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_local_id',
+                    'remoteKey'     => 'foftest_remote_id',
+                    'ourPivotKey'   => 'foftest_ourkey_id',
+                    'theirPivotKey' => 'foftest_remote_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => 'FoftestTableGroup',
+                'localKey'      => 'foftest_local_id',
+                'remoteKey'     => 'foftest_remote_id',
+                'ourPivotKey'   => 'foftest_ourkey_id',
+                'theirPivotKey' => 'foftest_theirkey_id',
+                'pivotTable'    => null,
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_local_id',
+                    'remoteKey'     => 'foftest_remote_id',
+                    'ourPivotKey'   => 'foftest_ourkey_id',
+                    'theirPivotKey' => 'foftest_theirkey_id',
+                    'pivotTable'    => '#__foftest_parts_groups',
+                )
+            )
+        );
+
+        $data[] = array(
+            array('table' => 'part'),
+            array(
+                'pivot'         => true,
+                'itemName'      => 'groups',
+                'tableClass'    => 'FoftestTableGroup',
+                'localKey'      => 'foftest_local_id',
+                'remoteKey'     => 'foftest_remote_id',
+                'ourPivotKey'   => 'foftest_ourkey_id',
+                'theirPivotKey' => 'foftest_theirkey_id',
+                'pivotTable'    => '#__pivot_table',
+            ),
+            array(
+                'parameters' => array(
+                    'itemName'      => 'groups',
+                    'tableClass'    => 'FoftestTableGroup',
+                    'localKey'      => 'foftest_local_id',
+                    'remoteKey'     => 'foftest_remote_id',
+                    'ourPivotKey'   => 'foftest_ourkey_id',
+                    'theirPivotKey' => 'foftest_theirkey_id',
+                    'pivotTable'    => '#__pivot_table',
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestNormaliseItemName()
     {
         $data[] = array(

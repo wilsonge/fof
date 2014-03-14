@@ -796,6 +796,41 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               relationsNormaliseParameters
+     * @group               FOFTableRelations
+     * @dataProvider        getTestNormaliseParameters
+     * @covers              FOFTableRelations::normaliseParameters
+     */
+    public function testNormaliseParameters($tableinfo, $test, $check)
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+
+        $relation = $table->getRelations();
+
+        $method = new ReflectionMethod($relation, 'normaliseParameters');
+        $method->setAccessible(true);
+
+        $method->invoke($relation,
+            $test['pivot'],
+            &$test['itemName'],
+            &$test['tableClass'],
+            &$test['localKey'],
+            &$test['remoteKey'],
+            &$test['ourPivotKey'],
+            &$test['theirPivotKey'],
+            &$test['pivotTable']
+        );
+
+        // Let's copy the processed test data and unset the keys we're not interested in, so we
+        // can directly check it the array is the correct one
+        $processed = $test;
+        unset($processed['pivot']);
+
+        $this->assertEquals($check['parameters'], $processed, 'FOFTableRelations::normaliseParameters failed to set all the parameters');
+    }
+
+    /**
      * @group               relationsNormaliseItemName
      * @group               FOFTableRelations
      * @dataProvider        getTestNormaliseItemName
@@ -808,10 +843,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relation = $table->getRelations();
 
-        $getTable = new ReflectionMethod($relation, 'normaliseItemName');
-        $getTable->setAccessible(true);
+        $method = new ReflectionMethod($relation, 'normaliseItemName');
+        $method->setAccessible(true);
 
-        $itemname = $getTable->invoke($relation, $test['itemName'], $test['plural']);
+        $itemname = $method->invoke($relation, $test['itemName'], $test['plural']);
 
         $this->assertEquals($check['itemname'], $itemname, 'FOFTableRelations::normaliseItemName created a wrong itemname string');
     }
@@ -924,6 +959,11 @@ class FOFTableRelationsTest extends FtestCaseDatabase
     public function getTestAddBespokePivotRelation()
     {
         return RelationsDataprovider::getTestAddBespokePivotRelation();
+    }
+
+    public function getTestNormaliseParameters()
+    {
+        return RelationsDataprovider::getTestNormaliseParameters();
     }
 
     public static function getTestNormaliseItemName()
