@@ -921,11 +921,25 @@ class FOFIntegrationJoomlaPlatform extends FOFPlatform implements FOFPlatformInt
      */
     public function setHeader($name, $value, $replace = false)
     {
-        JResponse::setHeader($name, $value, $replace);
+	if (version_compare($this->version, '3.2', 'ge'))
+	{
+		JFactory::getApplication()->setHeader($name, $value, $replace);
+	}
+	else
+	{
+		JResponse::setHeader($name, $value, $replace);
+	}
     }
 
     public function sendHeaders()
     {
-        JResponse::sendHeaders();
+    	if (version_compare($this->version, '3.2', 'ge'))
+	{
+		JFactory::getApplication()->sendHeaders();
+	}
+	else
+	{
+		JResponse::sendHeaders();
+	}
     }
 }
