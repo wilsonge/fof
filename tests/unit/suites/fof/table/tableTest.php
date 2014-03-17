@@ -1257,6 +1257,20 @@ class FOFTableTest extends FtestCaseDatabase
 		$this->assertEquals($expected, $table->getContentType(), $message);
 	}
 
+    /**
+     * @covers              FOFTable::getRelations
+     * @group               FOFTable
+     */
+    public function testGetRelations()
+    {
+        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+
+        $table = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $relations = $table->getRelations();
+
+        $this->assertInstanceOf('FOFTableRelations', $relations, '');
+    }
+
 	public function getTestLoadJoined()
 	{
 		return TableDataprovider::getTestLoadJoined();
