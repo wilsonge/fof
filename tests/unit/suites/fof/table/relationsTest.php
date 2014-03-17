@@ -8,7 +8,7 @@
  */
 
 require_once 'relationsDataprovider.php';
-//require_once JPATH_TESTS.'/unit/core/table/table.php';
+require_once JPATH_TESTS.'/unit/core/table/relations.php';
 
 class FOFTableRelationsTest extends FtestCaseDatabase
 {
@@ -806,20 +806,17 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
         $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $table->getRelations();
+        $relation = new FtestTableRelations($table);
 
-        $method = new ReflectionMethod($relation, 'normaliseParameters');
-        $method->setAccessible(true);
-
-        $method->invoke($relation,
+        $relation->normaliseParameters(
             $test['pivot'],
-            &$test['itemName'],
-            &$test['tableClass'],
-            &$test['localKey'],
-            &$test['remoteKey'],
-            &$test['ourPivotKey'],
-            &$test['theirPivotKey'],
-            &$test['pivotTable']
+            $test['itemName'],
+            $test['tableClass'],
+            $test['localKey'],
+            $test['remoteKey'],
+            $test['ourPivotKey'],
+            $test['theirPivotKey'],
+            $test['pivotTable']
         );
 
         // Let's copy the processed test data and unset the keys we're not interested in, so we
