@@ -9,6 +9,7 @@
 
 use org\bovigo\vfs\vfsStream;
 require_once 'modelDataprovider.php';
+require_once JPATH_TESTS.'/unit/core/table/custom.php';
 
 class FOFModelTest extends FtestCaseDatabase
 {
@@ -351,6 +352,32 @@ class FOFModelTest extends FtestCaseDatabase
         $result = $model->getItemList();
 
         $this->assertEquals($dummy, $result, 'FOFModel::getItemList failed to use its internal cache');
+    }
+
+    /**
+     * @group               modelTestGetIterator
+     * @group               FOFModel
+     * @covers              FOFModel::getIterator
+     * @dataProvider        getTestGetIterator
+     */
+    public function testGetIterator($test, $checks)
+    {
+        $config['option'] = 'com_foftest';
+        $config['view']   = 'foobars';
+        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+
+        if($test['limit'] && $test['limitstart'])
+        {
+            $model->setState('limit', $test['limit']);
+            $model->setState('limitstart', $test['limitstart']);
+        }
+
+        $iterator = $model->getIterator($test['override'], $test['tableClass']);
+        $item     = $iterator->current();
+
+        $this->assertInstanceOf('FOFDatabaseIterator', $iterator, 'FOFModel::getIterator should return an instance of FOFDatabaseIterator');
+        $this->assertEquals($checks['count'], count($iterator), 'FOFModel::getIterator did not respect the limits');
+        $this->assertInstanceOf($checks['tableClass'], $item, 'FOFModel::getIterator used the wrong class for record loading');
     }
 
     /**
@@ -1522,6 +1549,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetItemList()
     {
         return ModelDataprovider::getTestGetItemList();
+    }
+
+    public function getTestGetIterator()
+    {
+        return ModelDataprovider::getTestGetIterator();
     }
 
     public function getTestSave()

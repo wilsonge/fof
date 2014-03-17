@@ -1268,7 +1268,7 @@ class FOFTableTest extends FtestCaseDatabase
         $table = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
         $relations = $table->getRelations();
 
-        $this->assertInstanceOf('FOFTableRelations', $relations, '');
+        $this->assertInstanceOf('FOFTableRelations', $relations, 'FOFTable::getRelations should return an instance of FOFTableRelations');
     }
 
 	public function getTestLoadJoined()

@@ -487,6 +487,63 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestGetIterator()
+    {
+        $data[] = array(
+            array(
+                'override'   => false,
+                'tableClass' => null,
+                'limit'      => 3,
+                'limitstart' => 1
+            ),
+            array(
+                'count'      => 3,
+                'tableClass' => 'FOFTable'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'override'   => false,
+                'tableClass' => null,
+                'limit'      => 3,
+                'limitstart' => 4
+            ),
+            array(
+                'count' => 1,
+                'tableClass' => 'FOFTable'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'override'   => true,
+                'tableClass' => null,
+                'limit'      => 3,
+                'limitstart' => 4
+            ),
+            array(
+                'count' => 5,
+                'tableClass' => 'FOFTable'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'override'   => false,
+                'tableClass' => 'FofcustomTableFoobar',
+                'limit'      => 3,
+                'limitstart' => 1
+            ),
+            array(
+                'count'      => 3,
+                'tableClass' => 'FofcustomTableFoobar'
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestSave()
     {
         // SAVE OK - Array data, no table id inside - No form

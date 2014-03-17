@@ -1214,7 +1214,7 @@ class FOFModel extends FOFUtilsObject
 		else
 		{
 			$limitStart = $this->getState('limitstart');
-			$limit = $this->getState('limit');
+			$limit      = $this->getState('limit');
 		}
 
 		// This is required to prevent one relation from killing the db cursor used in a different relation...
@@ -1347,7 +1347,7 @@ class FOFModel extends FOFUtilsObject
 					$hash = $this->getHash() . 'savedata';
 					$session->set($hash, serialize($allData));
 				}
-				
+
 				return false;
 			}
 		}
