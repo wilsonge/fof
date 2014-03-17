@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE dataset [
+  <!ELEMENT dataset (table)*>
+  <!ELEMENT table (column|row)*>
+  <!ATTLIST table
+    name CDATA #REQUIRED>
+  <!ELEMENT column (#PCDATA)>
+  <!ELEMENT row (value)*>
+  <!ELEMENT value (#PCDATA)>
+  ]>
 <!--
     PLEASE PAY ATTENTION IF YOU ADD MORE RECORDS!
     In some tests (ie copy tests) we "cheat" and we check new records directly using the new ID, to simplify testing.
@@ -239,6 +248,136 @@
       </row>
   </table>
 
+  <table name="jos_foftest_parents">
+    <column>foftest_parent_id</column>
+    <column>dummy</column>
+
+    <row>
+      <value>1</value>
+      <value>First parent row</value>
+    </row>
+
+    <row>
+      <value>2</value>
+      <value>Second parent row</value>
+    </row>
+
+    <row>
+      <value>3</value>
+      <value>Parent with no children</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_children">
+    <column>foftest_child_id</column>
+    <column>dummy</column>
+    <column>foftest_parent_id</column>
+
+    <row>
+      <value>1</value>
+      <value>Parent 1 - First children</value>
+      <value>1</value>
+    </row>
+
+    <row>
+      <value>2</value>
+      <value>Parent 1 - Second children</value>
+      <value>1</value>
+    </row>
+
+    <row>
+      <value>3</value>
+      <value>Parent 2 - First children</value>
+      <value>2</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_parts">
+    <column>foftest_part_id</column>
+    <column>dummy</column>
+
+    <row>
+      <value>1</value>
+      <value>Part number 1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Part number 2</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>Part number 3</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_groups">
+    <column>foftest_group_id</column>
+    <column>dummy</column>
+
+    <row>
+      <value>1</value>
+      <value>Group number 1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>Group number 2</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>Group number 3</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_parts_groups">
+    <column>foftest_group_id</column>
+    <column>foftest_part_id</column>
+
+    <row>
+      <value>1</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>1</value>
+      <value>2</value>
+    </row>
+    <row>
+      <value>1</value>
+      <value>3</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>1</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>2</value>
+    </row>
+  </table>
+
+  <table name="jos_foftest_joomlachildren">
+    <column>foftest_joomlachild_id</column>
+    <column>dummy</column>
+    <column>user_id</column>
+
+    <row>
+      <value>1</value>
+      <value>First row, first FOF test user</value>
+      <value>998</value>
+    </row>
+
+    <row>
+      <value>2</value>
+      <value>Second row, first FOF test user</value>
+      <value>998</value>
+    </row>
+
+    <row>
+      <value>3</value>
+      <value>Third row, second FOF test user</value>
+      <value>999</value>
+    </row>
+  </table>
+
   <table name="jos_session">
     <column>session_id</column>
     <column>client_id</column>
@@ -255,6 +394,99 @@
         <value>__default|a:8:{s:15:"session.counter";i:1;s:19:"session.timer.start";i:1372346275;s:18:"session.timer.last";i:1372346275;s:17:"session.timer.now";i:1372346275;s:22:"session.client.browser";s:72:"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20100101 Firefox/21.0";s:8:"registry";O:9:"JRegistry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":0:{}}s:4:"user";O:5:"JUser":24:{s:9:"\\0\\0\\0isRoot";b:0;s:2:"id";i:0;s:4:"name";N;s:8:"username";N;s:5:"email";N;s:8:"password";N;s:14:"password_clear";s:0:"";s:5:"block";N;s:9:"sendEmail";i:0;s:12:"registerDate";N;s:13:"lastvisitDate";N;s:10:"activation";N;s:6:"params";N;s:6:"groups";a:1:{i:0;s:1:"9";}s:5:"guest";i:1;s:13:"lastResetTime";N;s:10:"resetCount";N;s:10:"\\0\\0\\0_params";O:9:"JRegistry":1:{s:7:"\\0\\0\\0data";O:8:"stdClass":0:{}}s:14:"\\0\\0\\0_authGroups";a:2:{i:0;i:1;i:1;i:9;}s:14:"\\0\\0\\0_authLevels";a:3:{i:0;i:1;i:1;i:1;i:2;i:5;}s:15:"\\0\\0\\0_authActions";N;s:12:"\\0\\0\\0_errorMsg";N;s:10:"\\0\\0\\0_errors";a:0:{}s:3:"aid";i:0;}s:13:"session.token";s:32:"ce1f6e2722f22e7f26a40ded25e87100";}</value>
         <value>99</value>
         <value>FakeUser</value>
+    </row>
+  </table>
+
+  <!-- The password for all users is "foftest" -->
+  <table name="jos_users">
+    <column>id</column>
+    <column>name</column>
+    <column>username</column>
+    <column>email</column>
+    <column>password</column>
+    <column>block</column>
+    <column>sendEmail</column>
+    <column>registerDate</column>
+    <column>lastvisitDate</column>
+    <column>activation</column>
+    <column>params</column>
+    <column>lastResetTime</column>
+    <column>resetCount</column>
+    <column>otpKey</column>
+    <column>otep</column>
+
+    <row>
+      <value>37</value>
+      <value>Super User</value>
+      <value>admin</value>
+      <value>admin@example.com</value>
+      <value>0127d5044a06dfb33a4e299537a6a629</value>
+      <value>0</value>
+      <value>1</value>
+      <value>2014-03-10 08:57:19</value>
+      <value>2014-03-10 08:57:34</value>
+      <value>0</value>
+      <value></value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value></value>
+      <value></value>
+    </row>
+
+    <row>
+      <value>998</value>
+      <value>FOFTest user 1</value>
+      <value>foftest1</value>
+      <value>foftest1@example.com</value>
+      <value>0127d5044a06dfb33a4e299537a6a629</value>
+      <value>0</value>
+      <value>1</value>
+      <value>2014-03-10 08:57:19</value>
+      <value>2014-03-10 08:57:34</value>
+      <value>0</value>
+      <value></value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value></value>
+      <value></value>
+    </row>
+
+    <row>
+      <value>999</value>
+      <value>FOFTest user 2</value>
+      <value>foftest2</value>
+      <value>foftest2@example.com</value>
+      <value>0127d5044a06dfb33a4e299537a6a629</value>
+      <value>0</value>
+      <value>1</value>
+      <value>2014-03-10 08:57:19</value>
+      <value>2014-03-10 08:57:34</value>
+      <value>0</value>
+      <value></value>
+      <value>0000-00-00 00:00:00</value>
+      <value>0</value>
+      <value></value>
+      <value></value>
+    </row>
+  </table>
+
+  <table name="jos_user_usergroup_map">
+    <column>user_id</column>
+    <column>group_id</column>
+
+    <row>
+      <value>37</value>
+      <value>8</value>
+    </row>
+
+    <row>
+      <value>998</value>
+      <value>8</value>
+    </row>
+
+    <row>
+      <value>999</value>
+      <value>8</value>
     </row>
   </table>
 

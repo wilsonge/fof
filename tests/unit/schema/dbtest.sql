@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   PRIMARY KEY (`id_foobar_aliases`)
 );
 
+-- === THIS TABLE IS USED FOR TESTING THE OLD METHOD OF JOINS (ie no ORM) ===
 -- Table used to test joins
 -- We create a generic "key column" so we can test against different table (with aliases or not)
 -- There are different columns (unique and not), so we can test it when we have to use alias
@@ -54,6 +55,56 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobarjoins` (
   `fj_dummy` varchar(50) NOT NULL,
   `title` varchar(50) NOT NULL,
   PRIMARY KEY (`foftest_id_foobarjoin`)
+);
+
+-- === ACTUAL TABLES USED FOR TESTING THE NEW ORM FEATURE ===
+-- Table for Joomla ORM
+DROP TABLE IF EXISTS `jos_foftest_joomlachildren`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_joomlachildren`(
+  `foftest_joomlachild_id` INT NOT NULL AUTO_INCREMENT ,
+  `dummy` VARCHAR (50) NOT NULL ,
+  `user_id` INT NOT NULL ,
+  PRIMARY KEY (`foftest_joomlachild_id`)
+);
+
+-- Parent table 1:n - 1:1 relation
+DROP TABLE IF EXISTS `jos_foftest_parents`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_parents` (
+  `foftest_parent_id` INT NOT NULL AUTO_INCREMENT,
+  `dummy` varchar (50) NOT NULL ,
+  PRIMARY KEY (`foftest_parent_id`)
+);
+
+-- Children table 1:n - 1:1 relation
+DROP TABLE IF EXISTS `jos_foftest_children`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_children` (
+  `foftest_child_id` INT NOT NULL AUTO_INCREMENT,
+  `dummy` varchar (50) NOT NULL ,
+  `foftest_parent_id` INT NOT NULL ,
+  PRIMARY KEY (`foftest_child_id`)
+);
+
+-- ORM table A
+DROP TABLE IF EXISTS `jos_foftest_parts`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_parts`(
+  `foftest_part_id` INT NOT NULL AUTO_INCREMENT ,
+  `dummy` varchar (50) NOT NULL ,
+  PRIMARY KEY (`foftest_part_id`)
+);
+
+-- ORM table B
+DROP TABLE IF EXISTS `jos_foftest_groups`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_groups`(
+  `foftest_group_id` INT NOT NULL AUTO_INCREMENT ,
+  `dummy` varchar (50) NOT NULL ,
+  PRIMARY KEY (`foftest_group_id`)
+);
+
+-- ORM glue table
+DROP TABLE IF EXISTS `jos_foftest_parts_groups`;
+CREATE TABLE IF NOT EXISTS `jos_foftest_parts_groups`(
+  `foftest_group_id` INT NOT NULL ,
+  `foftest_part_id` INT NOT NULL 
 );
 
 -- Table without any "special" column (ordering, hits etc etc)
