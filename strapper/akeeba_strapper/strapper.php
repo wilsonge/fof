@@ -509,7 +509,14 @@ function AkeebaStrapperLoader()
 
 	if ($preload)
     {
-        $buffer = JResponse::getBody();
+		if (version_compare(JVERSION, '3.2', 'ge'))
+		{
+			$buffer = JFactory::getApplication()->getBody();
+		}
+		else
+		{
+			$buffer = JResponse::getBody();
+		}
     }
 	else
 	{
@@ -674,7 +681,15 @@ function AkeebaStrapperLoader()
         if ($pos > 0)
         {
             $buffer = substr($buffer, 0, $pos + 6) . $myscripts . substr($buffer, $pos + 6);
-            JResponse::setBody($buffer);
+
+			if (version_compare(JVERSION, '3.2', 'ge'))
+			{
+				JFactory::getApplication()->setBody($buffer);
+			}
+			else
+			{
+				JResponse::setBody($buffer);
+			}
         }
     }
 }
