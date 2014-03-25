@@ -190,10 +190,12 @@ class FOFToolbar
 		// If not in the administrative area, load the JToolbarHelper
 		if (!FOFPlatform::getInstance()->isBackend())
 		{
-            $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
-
-			// Pretty ugly require...
-			require_once $platformDirs['root'] . '/administrator/includes/toolbar.php';
+            // Needed for tests, so we can inject our "special" helper class
+            if(!class_exists('JToolbarHelper'))
+            {
+                $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+                require_once $platformDirs['root'] . '/administrator/includes/toolbar.php';
+            }
 
 			// Things to do if we have to render a front-end toolbar
 			if ($this->renderFrontendButtons)
@@ -455,12 +457,12 @@ class FOFToolbar
         }
 
 		JToolBarHelper::save();
-		
+
 		if ($this->perms->create)
 		{
 			JToolBarHelper::custom('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
-		
+
 		JToolBarHelper::cancel();
 	}
 
@@ -546,7 +548,7 @@ class FOFToolbar
 
 			$parentElement['items'][] = $linkDefinition;
 			$parentElement['dropdown'] = true;
-			
+
 			if($active)
 			{
 				$parentElement['active'] = true;
