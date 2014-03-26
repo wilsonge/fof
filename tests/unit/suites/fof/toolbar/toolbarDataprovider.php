@@ -441,4 +441,179 @@ class ToolbarDataprovider
 
         return $data;
     }
+
+    public static function getTestOnAdd()
+    {
+        // With default view
+        $data[] = array(
+            array(
+                'view'        => null,
+                'isBackend'   => true,
+                'buttons'     => true,
+                'perms'       => array(
+                    'create'    => true,
+                    'edit'      => true,
+                    'editown'   => true
+                )
+            ),
+            array(
+                'methods' => array(
+                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANELS_EDIT', 'foftests')),
+                    'apply'    => array(array()),
+                    'save'     => array(array()),
+                    'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
+                    'cancel'   => array(array())
+                )
+            )
+        );
+
+        // Passing a view
+        // Start testing for backend/showbuttons combinations
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => true,
+                'buttons'     => true,
+                'perms'       => array(
+                    'create'    => true,
+                    'edit'      => true,
+                    'editown'   => true
+                )
+            ),
+            array(
+                'methods' => array(
+                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'apply'    => array(array()),
+                    'save'     => array(array()),
+                    'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
+                    'cancel'   => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => false,
+                'buttons'     => true,
+                'perms'       => array(
+                    'create'    => true,
+                    'edit'      => true,
+                    'editown'   => true
+                )
+            ),
+            array(
+                'methods' => array(
+                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'apply'    => array(array()),
+                    'save'     => array(array()),
+                    'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
+                    'cancel'   => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => true,
+                'buttons'     => false,
+                'perms'       => array(
+                    'create'    => true,
+                    'edit'      => true,
+                    'editown'   => true
+                )
+            ),
+            array(
+                'methods' => array(
+                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'apply'    => array(array()),
+                    'save'     => array(array()),
+                    'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
+                    'cancel'   => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => false,
+                'buttons'     => false,
+                'perms'       => array()
+            ),
+            array(
+                'methods' => array()
+            )
+        );
+
+        // End testing for backend/showbuttons combinations
+
+        // Start testing with different permissions
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => true,
+                'buttons'     => true,
+                'perms'       => array(
+                    'create'    => false,
+                    'edit'      => true,
+                    'editown'   => true
+                )
+            ),
+            array(
+                'methods' => array(
+                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'apply'    => array(array()),
+                    'save'     => array(array()),
+                    'cancel'   => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => true,
+                'buttons'     => true,
+                'perms'       => array(
+                    'create'    => false,
+                    'edit'      => false,
+                    'editown'   => false
+                )
+            ),
+            array(
+                'methods' => array(
+                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'save'     => array(array()),
+                    'cancel'   => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => true,
+                'buttons'     => true,
+                'perms'       => array(
+                    'create'    => false,
+                    'edit'      => false,
+                    'editown'   => true
+                )
+            ),
+            array(
+                'methods' => array(
+                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'apply'    => array(array()),
+                    'save'     => array(array()),
+                    'cancel'   => array(array())
+                )
+            )
+        );
+
+        // End testing with different permissions
+
+        return $data;
+    }
 }

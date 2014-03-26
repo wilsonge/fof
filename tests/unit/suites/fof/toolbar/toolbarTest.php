@@ -140,6 +140,35 @@ class FOFToolbarTest extends FtestCase
         $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onRead called the wrong methods');
     }
 
+    /**
+     * @group           FOFToolbar
+     * @group           toolbarOnAdd
+     * @dataProvider    getTestOnAdd
+     * @covers          FOFToolbar::onAdd
+     */
+    public function testOnAdd($test, $check)
+    {
+        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+        $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
+
+        FOFPlatform::forceInstance($platform);
+
+        $config = array(
+            'renderFrontendButtons' => $test['buttons'],
+            'input' => new FOFInput(array('option' => 'com_foftests', 'view' => $test['view']))
+        );
+
+        $toolbar = new FOFToolbar($config);
+
+        $toolbar->perms = (object)$test['perms'];
+
+        $toolbar->onAdd();
+
+        $invokedMethods = JToolbarHelper::getStack();
+
+        $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onAdd called the wrong methods');
+    }
+
     public function getTestOnCpanelsBrowse()
     {
         return ToolbarDataprovider::getTestOnCpanelsBrowse();
@@ -153,5 +182,10 @@ class FOFToolbarTest extends FtestCase
     public function getTestOnRead()
     {
         return ToolbarDataprovider::getTestOnRead();
+    }
+
+    public function getTestOnAdd()
+    {
+        return ToolbarDataprovider::getTestOnAdd();
     }
 }
