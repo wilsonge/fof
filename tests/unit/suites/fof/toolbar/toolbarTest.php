@@ -62,8 +62,53 @@ class FOFToolbarTest extends FtestCase
         $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onCpanelsBrowse called the wrong methods');
     }
 
+    /**
+     * @group           FOFToolbar
+     * @group           toolbarOnBrowse
+     * @dataProvider    getTestOnBrowse
+     * @covers          FOFToolbar::onBrowse
+     */
+    public function testOnBrowse($test, $check)
+    {
+        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+        $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
+
+        FOFPlatform::forceInstance($platform);
+
+        $config = array(
+            'renderFrontendSubmenu' => $test['submenu'],
+            'renderFrontendButtons' => $test['buttons'],
+            'input' => new FOFInput(array('option' => 'com_foftests', 'view' => $test['view']))
+        );
+
+        $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
+        $toolbar->expects($this->any())->method('renderSubmenu')->will($this->returnValue(null));
+
+        $toolbar->perms = (object)$test['perms'];
+
+        if($test['callSubmenu'])
+        {
+            $toolbar->expects($this->any())->method('renderSubmenu');
+        }
+        else
+        {
+            $toolbar->expects($this->never())->method('renderSubmenu');
+        }
+
+        $toolbar->onBrowse();
+
+        $invokedMethods = JToolbarHelper::getStack();
+
+        $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onBrowse called the wrong methods');
+    }
+
     public function getTestOnCpanelsBrowse()
     {
         return ToolbarDataprovider::getTestOnCpanelsBrowse();
+    }
+
+    public function getTestOnBrowse()
+    {
+        return ToolbarDataprovider::getTestOnBrowse();
     }
 }

@@ -341,7 +341,6 @@ class FOFToolbar
 	public function onBrowse()
 	{
 		// On frontend, buttons must be added specifically
-
 		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
@@ -358,7 +357,6 @@ class FOFToolbar
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), str_replace('com_', '', $option));
 
 		// Add toolbar buttons
-
 		if ($this->perms->create)
 		{
 			if (version_compare(JVERSION, '3.0', 'ge'))
@@ -398,7 +396,7 @@ class FOFToolbar
 		if ($this->perms->delete)
 		{
 			$msg = JText::_($this->input->getCmd('option', 'com_foobar') . '_CONFIRM_DELETE');
-			JToolBarHelper::deleteList($msg);
+			JToolBarHelper::deleteList(strtoupper($msg));
 		}
 	}
 
