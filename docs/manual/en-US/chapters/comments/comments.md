@@ -154,7 +154,9 @@ However the comment view we want to change the layout for so it will fit in with
 </form>
 ```
 
-As you can see here we have inserted all the code to get the inputs. This should look familiar if you have ever coded a Joomla component before
+As you can see here we have inserted all the code to get the inputs. This should look familiar if you have ever coded a Joomla extension before without using XML markup
+
+Note for now for the Restaurant ID we are just going to let users select the restaurant they wish to review from a dropdown. Later we can investigate injecting this via a hidden form field in a similar manner to the way we are only showing the comments specific to the restaurant.
 
 ```php
 	<input type="hidden" name="option" value="com_reviews" />
