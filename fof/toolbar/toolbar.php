@@ -408,7 +408,6 @@ class FOFToolbar
 	public function onRead()
 	{
 		// On frontend, buttons must be added specifically
-
 		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();

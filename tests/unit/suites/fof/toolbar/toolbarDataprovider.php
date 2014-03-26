@@ -358,4 +358,87 @@ class ToolbarDataprovider
 
         return $data;
     }
+
+    public static function getTestOnRead()
+    {
+        $data[] = array(
+            array(
+                'view'        => null,
+                'isBackend'   => true,
+                'submenu'     => false,
+                'callSubmenu' => true,
+                'buttons'     => true
+            ),
+            array(
+                'methods' => array(
+                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANEL_READ', 'foftests')),
+                    'back'  => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => true,
+                'submenu'     => false,
+                'callSubmenu' => true,
+                'buttons'     => false
+            ),
+            array(
+                'methods' => array(
+                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR_READ', 'foftests')),
+                    'back'  => array(array())
+                )
+            )
+        );
+
+        // Submenu should not be called
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => false,
+                'submenu'     => false,
+                'callSubmenu' => false,
+                'buttons'     => true
+            ),
+            array(
+                'methods' => array(
+                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR_READ', 'foftests')),
+                    'back'  => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => false,
+                'submenu'     => true,
+                'callSubmenu' => true,
+                'buttons'     => true
+            ),
+            array(
+                'methods' => array(
+                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR_READ', 'foftests')),
+                    'back'  => array(array())
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'view'        => 'foobar',
+                'isBackend'   => false,
+                'submenu'     => true,
+                'callSubmenu' => true,
+                'buttons'     => false
+            ),
+            array(
+                'methods' => array()
+            )
+        );
+
+        return $data;
+    }
 }
