@@ -22,6 +22,7 @@ class FOFToolbarTest extends FtestCase
         parent::setUp();
 
         FOFPlatform::forceInstance(null);
+        JToolbarHelper::resetStack();
     }
 
     /**
@@ -44,6 +45,15 @@ class FOFToolbarTest extends FtestCase
 
         $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
         $toolbar->expects($this->any())->method('renderSubmenu')->will($this->returnValue(null));
+
+        if($test['callSubmenu'])
+        {
+            $toolbar->expects($this->any())->method('renderSubmenu');
+        }
+        else
+        {
+            $toolbar->expects($this->never())->method('renderSubmenu');
+        }
 
         $toolbar->onCpanelsBrowse();
 

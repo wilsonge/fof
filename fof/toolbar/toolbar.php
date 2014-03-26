@@ -203,8 +203,12 @@ class FOFToolbar
 				// Load back-end toolbar language files in front-end
 				FOFPlatform::getInstance()->loadTranslations('');
 
-				// Load the core Javascript
-				JHtml::_('behavior.framework', true);
+                // Needed for tests (we can fake we're not in the backend, but we are still in CLI!)
+                if(!FOFPlatform::getInstance()->isCli())
+                {
+                    // Load the core Javascript
+                    JHtml::_('behavior.framework', true);
+                }
 			}
 		}
 
