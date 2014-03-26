@@ -7,6 +7,8 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+use org\bovigo\vfs\vfsStream;
+
 /*
  * Since Joomla is using static calls to JToolbarHelper, it would be impossible to test. However we have created
  * a stub that will replace the original class and intercept all the function calls. In this way we can check if
@@ -169,6 +171,60 @@ class FOFToolbarTest extends FtestCase
         $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onAdd called the wrong methods');
     }
 
+    /**
+     * @group           FOFToolbar
+     * @group           toolbarGetMyViews
+     * @dataProvider    getTestGetMyViews
+     * @covers          FOFToolbar::getMyViews
+     */
+    public function testGetMyViews($test)
+    {
+        // First of all I stub the filesystem object, so it won't strip out the protocol part
+        $filesystem = $this->getMock('FOFIntegrationJoomlaPlatform', array('fileExists'));
+        $filesystem->expects($this->any())
+                   ->method('fileExists')
+                   ->will($this->returnCallback(function($file){ return is_file($file);}));
+
+        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getComponentBaseDirs'));
+
+        // Then I have to trick the platform, providing a template path
+        $platform->expects($this->any())
+                 ->method('getComponentBaseDirs')
+                 ->will($this->returnValue(JPATH_ROOT.'/administrator/com_foftest/views'));
+
+        // Finally, force the platform to return my mocked object
+        $platform->setIntegrationObject('filesystem', $filesystem);
+
+        FOFPlatform::forceInstance($platform);
+
+        $paths = array();
+
+        foreach($test['paths'] as $path)
+        {
+            $parts = explode('/', $path);
+            $last = array_pop($parts);
+
+            if(strpos($last, '.') === false)
+            {
+                $parts[] = $last;
+            }
+
+            $paths[] = vfsStream::url('root/'.implode('/', $parts));
+        }
+
+        vfsStream::setup('root', null, $test['structure']);
+
+        $config = array(
+            'input' => new FOFInput(array('option' => 'com_foftests'))
+        );
+
+        $toolbar = new FOFToolbar($config);
+        $method  = new ReflectionMethod($toolbar, 'getMyViews');
+        $method->setAccessible(true);
+
+        $views = $method->invoke($toolbar);
+    }
+
     public function getTestOnCpanelsBrowse()
     {
         return ToolbarDataprovider::getTestOnCpanelsBrowse();
@@ -187,5 +243,10 @@ class FOFToolbarTest extends FtestCase
     public function getTestOnAdd()
     {
         return ToolbarDataprovider::getTestOnAdd();
+    }
+
+    public function getTestGetMyViews()
+    {
+        return ToolbarDataprovider::getTestGetMyViews();
     }
 }

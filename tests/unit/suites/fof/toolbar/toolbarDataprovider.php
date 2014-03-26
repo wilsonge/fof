@@ -1,5 +1,7 @@
 <?php
 
+use org\bovigo\vfs\vfsStream;
+
 class ToolbarDataprovider
 {
     public static function getTestOnCpanelsBrowse()
@@ -615,5 +617,48 @@ class ToolbarDataprovider
         // End testing with different permissions
 
         return $data;
+    }
+
+    public static function getTestGetMyViews()
+    {
+        $origpaths = array(
+            JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl',
+            JPATH_ROOT.'/administrator/components/com_foftest/views/foobar/tmpl',
+        );
+
+        foreach($origpaths as &$path)
+        {
+            $path  = trim(str_replace('\\', '/', $path), '/');
+        }
+
+        $paths = $origpaths;
+        $data[] = array(
+            array(
+                'structure' => self::createArrayDir($paths)
+            )
+        );
+
+        return $data;
+    }
+
+    protected static function createArrayDir($paths)
+    {
+        $tree = array();
+        foreach ($paths as $path) {
+            $pathParts = explode('/', $path);
+            $subTree   = array(array_pop($pathParts));
+
+            if(strpos($subTree[0], '.') !== false)
+            {
+                $subTree = array($subTree[0] => '');
+            }
+
+            foreach (array_reverse($pathParts) as $dir) {
+                $subTree = array($dir => $subTree);
+            }
+            $tree = array_merge_recursive($tree, $subTree);
+        }
+
+        return $tree;
     }
 }
