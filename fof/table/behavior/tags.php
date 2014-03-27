@@ -41,7 +41,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 			$tagsTable = clone($table);
 
 			$tagsHelper = new JHelperTags();
-			$tagsHelper->typeAlias = $table->getAssetKey();
+			$tagsHelper->typeAlias = $table->getContentType();
 
 			// TODO: This little guy here fails because JHelperTags
 			// need a JTable object to work, while our is FOFTable
@@ -70,7 +70,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 		if ($table->hasTags())
 		{
 			$tagsHelper = new JHelperTags();
-			$tagsHelper->typeAlias = $table->getAssetKey();
+			$tagsHelper->typeAlias = $table->getContentType();
 
 			// TODO: JHelperTags sucks in Joomla! 3.1, it requires that tags are
 			// stored in the metadata property. Not our case, therefore we need
@@ -96,7 +96,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 		if ($table->hasTags())
 		{
 			$tagsHelper = new JHelperTags();
-			$tagsHelper->typeAlias = $table->getAssetKey();
+			$tagsHelper->typeAlias = $table->getContentType();
 
 			if (!$tagsHelper->deleteTagData($table, $oid))
 			{
@@ -114,16 +114,11 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 	{
 		$contentType = new JTableContenttype($table->getDbo());
 
-		$alias = $table->getAssetKey();
-
-		// Override default view option because if done with content history we get the history review instead :( 
-		$aliasParts = explode('.', $table->getAssetKey());
-		$options = array(
-			'view'			=> $aliasParts[1],
-		);
+		$alias = $table->getContentType();
+		$aliasParts = explode('.', $alias);
 
 		// Fetch the extension name
-		$component = $options['component'];
+		$component = $aliasParts[0];
 		$component = JComponentHelper::getComponent($component);
 
 		// Fetch the name using the menu item
@@ -132,7 +127,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 		$table->getDbo()->setQuery($query);
 		$component_name = JText::_($table->getDbo()->loadResult());
 
-		$name = $component_name . ' ' . ucfirst($options['view']);
+		$name = $component_name . ' ' . ucfirst($aliasParts[1]);
 
 		// Create a new content type for our resource
 		if (!$contentType->load(array('type_alias' => $alias)))
