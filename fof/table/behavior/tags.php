@@ -114,7 +114,13 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 	{
 		$contentType = new JTableContenttype($table->getDbo());
 
-		$alias = $table->getContentType();
+		$alias = $table->getAssetKey();
+
+		// Override default view option because if done with content history we get the history review instead :( 
+		$aliasParts = explode('.', $table->getAssetKey());
+		$options = array(
+			'view'			=> $aliasParts[1],
+		);
 
 		// Fetch the extension name
 		$component = $options['component'];
