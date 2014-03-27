@@ -25,14 +25,8 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 	 */
 	public function onAfterStore(&$table)
 	{
-		$options = array(
-			'component' 	=> $table->input->get('option'),
-			'view'			=> $table->input->get('view'),
-			'table_prefix'	=> $table->_tablePrefix
-		);
-
-		$this->checkContentType($table, $options);
 		$aliasParts = explode('.', $table->getAssetKey());
+		$this->checkContentType($table);
 
 		if (JComponentHelper::getParams($aliasParts[0])->get('save_history', 0))
 		{
@@ -69,14 +63,21 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 	 * create it if it does not
 	 *
 	 * @param   FOFTable   &$table  	The table which calls this event
-	 * @param  	array      $options 	The options of the table
 	 *
 	 */
-	protected function checkContentType(&$table, $options)
+	protected function checkContentType(&$table)
 	{
 		$contentType = new JTableContenttype($table->getDbo());
 
 		$alias = $table->getContentType();
+
+		$aliasParts = explode('.', $table->getAssetKey());
+		$input = new FOFInput;
+		$options = array(
+			'component' 	=> $input->get('option'),
+			'view'			=> $input->get('view'),
+			'table_prefix'	=> ucfirst(FOFInflector::pluralize(substr($aliasParts[0], strpos($aliasParts[0], "_")  + 1)) . 'Table')
+		);
 
 		// Fetch the extension name
 		$component = $options['component'];
@@ -177,5 +178,4 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 
 		return "null";
 	}
-
 }
