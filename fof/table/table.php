@@ -235,6 +235,13 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	protected $_configProviderKey = '';
 
 	/**
+	 * The content type of the table. Required if using tags or content history behaviour
+	 * 
+	 * @var  string
+	 */
+	protected $contentType = null;
+
+	/**
 	 * Returns a static object instance of a particular table type
 	 *
 	 * @param   string  $type    The table name
@@ -3606,6 +3613,16 @@ class FOFTable extends FOFUtilsObject implements JTableInterface
 	 */
 	public function getContentType()
 	{
+		if ($this->contentType)
+		{
+			return $this->contentType;
+		}
+
+		/**
+		 * When tags was first introduced contentType variable didn't exist - so we guess one
+		 * This will fail if content history behvaiour is enabled. This code is deprecated
+		 * and will be removed in FOF 3.0 in favour of the content type class variable
+		 */
 		$component = $this->input->get('option');
 
 		$view = FOFInflector::singularize($this->input->get('view'));
