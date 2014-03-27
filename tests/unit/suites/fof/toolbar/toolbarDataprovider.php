@@ -621,22 +621,59 @@ class ToolbarDataprovider
 
     public static function getTestGetMyViews()
     {
-        $origpaths = array(
-            JPATH_ROOT.'/administrator/components/com_foftest/views/foobars/tmpl',
-            JPATH_ROOT.'/administrator/components/com_foftest/views/foobar/tmpl',
-        );
+	    $origpaths = array(
+		    'administrator/components/com_foftest/views/bare',
+		    'administrator/components/com_foftest/views/bares',
+		    'administrator/components/com_foftest/views/foobar',
+		    'administrator/components/com_foftest/views/foobars'
+	    );
 
-        foreach($origpaths as &$path)
-        {
-            $path  = trim(str_replace('\\', '/', $path), '/');
-        }
+	    foreach($origpaths as &$path)
+	    {
+		    $path  = trim(str_replace('\\', '/', $path), '/');
+	    }
 
-        $paths = $origpaths;
+	    // Standard folders, no cpanel view
+	    $paths = $origpaths;
         $data[] = array(
             array(
-                'structure' => self::createArrayDir($paths)
-            )
+                'structure' => self::createArrayDir($paths),
+                'folders'   => array(
+	                'bare',
+	                'bares',
+	                'foobar',
+	                'foobars'
+                )
+            ),
+	        array(
+		        'views' => array(
+			        'bares',
+			        'foobars'
+		        )
+	        )
         );
+
+	    // If cpanel is here, it should be the first one
+        $paths = $origpaths;
+	    $data[] = array(
+		    array(
+                'structure' => self::createArrayDir($paths),
+			    'folders' => array(
+				    'bare',
+				    'bares',
+				    'cpanel',
+				    'foobar',
+				    'foobars',
+			    )
+		    ),
+		    array(
+			    'views' => array(
+				    'cpanels',
+				    'bares',
+				    'foobars'
+			    )
+		    )
+	    );
 
         return $data;
     }
@@ -650,8 +687,12 @@ class ToolbarDataprovider
 
             if(strpos($subTree[0], '.') !== false)
             {
-                $subTree = array($subTree[0] => '');
+                $subTree = array($subTree[0] => 'dummy');
             }
+	        else
+	        {
+		        $subTree = array($subTree[0] => array());
+	        }
 
             foreach (array_reverse($pathParts) as $dir) {
                 $subTree = array($dir => $subTree);

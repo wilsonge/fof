@@ -177,40 +177,38 @@ class FOFToolbarTest extends FtestCase
      * @dataProvider    getTestGetMyViews
      * @covers          FOFToolbar::getMyViews
      */
-    public function testGetMyViews($test)
+    public function testGetMyViews($test, $check)
     {
         // First of all I stub the filesystem object, so it won't strip out the protocol part
-        $filesystem = $this->getMock('FOFIntegrationJoomlaPlatform', array('fileExists'));
+        $filesystem = $this->getMock('FOFIntegrationJoomlaFilesystem', array('folderFolders', 'folderFiles'));
         $filesystem->expects($this->any())
-                   ->method('fileExists')
-                   ->will($this->returnCallback(function($file){ return is_file($file);}));
+                   ->method('folderFolders')
+                   ->will($this->returnValue($test['folders']));
+
+	    $filesystem->expects($this->any())
+				   ->method('folderFiles')
+				   ->will($this->returnCallback(function($path, $file){
+			    // In theory, folderFiles should return a list of files, however inside the toolbar we're
+			    // using it only to check if a specific file exists, so we can simply use is_file
+			    $file = str_replace(array('^', '\\', '$'), '', $file);
+
+			    return is_file($path.'/'.$file);
+		    }));
 
         $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getComponentBaseDirs'));
 
         // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())
                  ->method('getComponentBaseDirs')
-                 ->will($this->returnValue(JPATH_ROOT.'/administrator/com_foftest/views'));
+                 ->will($this->returnValue(array(
+		            'main' => vfsStream::url('root/administrator/components/com_foftest')
+		        )
+	        ));
 
         // Finally, force the platform to return my mocked object
         $platform->setIntegrationObject('filesystem', $filesystem);
 
         FOFPlatform::forceInstance($platform);
-
-        $paths = array();
-
-        foreach($test['paths'] as $path)
-        {
-            $parts = explode('/', $path);
-            $last = array_pop($parts);
-
-            if(strpos($last, '.') === false)
-            {
-                $parts[] = $last;
-            }
-
-            $paths[] = vfsStream::url('root/'.implode('/', $parts));
-        }
 
         vfsStream::setup('root', null, $test['structure']);
 
@@ -223,6 +221,8 @@ class FOFToolbarTest extends FtestCase
         $method->setAccessible(true);
 
         $views = $method->invoke($toolbar);
+
+	    $this->assertEquals($check['views'], $views, 'FOFToolbar::getMyViews returned a wrong list of views');
     }
 
     public function getTestOnCpanelsBrowse()
