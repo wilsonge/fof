@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.2.0
  */
-class FOFTableContentHistory extends FOFTableBehavior
+class FOFTableBehaviorContenthistory extends FOFTableBehavior
 {
 	/**
 	 * The event which runs after storing (saving) data to the database
@@ -177,4 +177,5 @@ class FOFTableContentHistory extends FOFTableBehavior
 
 		return "null";
 	}
+
 }
