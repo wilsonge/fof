@@ -25,12 +25,12 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 	 */
 	public function onAfterStore(&$table)
 	{
-		$aliasParts = explode('.', $table->getAssetKey());
+		$aliasParts = explode('.', $table->getContentType());
 		$this->checkContentType($table);
 
 		if (JComponentHelper::getParams($aliasParts[0])->get('save_history', 0))
 		{
-			$historyHelper = new JHelperContenthistory($table->getAssetKey());
+			$historyHelper = new JHelperContenthistory($table->getContentType());
 			$historyHelper->store($table);
 		}
 
@@ -47,11 +47,11 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 	 */
 	public function onBeforeDelete(&$table, $oid)
 	{
-		$aliasParts = explode('.', $table->getAssetKey());
+		$aliasParts = explode('.', $table->getContentType());
 
 		if (JComponentHelper::getParams($aliasParts[0])->get('save_history', 0))
 		{
-			$historyHelper = new JHelperContenthistory($table->getAssetKey());
+			$historyHelper = new JHelperContenthistory($table->getContentType());
 			$historyHelper->deleteHistory($table);
 		}
 
@@ -71,11 +71,11 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 
 		$alias = $table->getContentType();
 
-		$aliasParts = explode('.', $table->getAssetKey());
+		$aliasParts = explode('.', $table->getContentType());
 		$input = new FOFInput;
 		$options = array(
 			'component' 	=> $aliasParts[0],
-			'view'			=> $aliasParts[1],
+			'view'		=> $aliasParts[1],
 			'table_prefix'	=> ucfirst(FOFInflector::pluralize(substr($aliasParts[0], strpos($aliasParts[0], "_")  + 1)) . 'Table')
 		);
 
