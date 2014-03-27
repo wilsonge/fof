@@ -192,7 +192,12 @@ class FOFToolbarTest extends FtestCase
 			    // using it only to check if a specific file exists, so we can simply use is_file
 			    $file = str_replace(array('^', '\\', '$'), '', $file);
 
-			    return is_file($path.'/'.$file);
+			    if(is_file($path.'/'.$file)){
+				    return array($path.'/'.$file);
+			    }
+			    else{
+				    return array();
+			    }
 		    }));
 
         $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getComponentBaseDirs'));

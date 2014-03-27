@@ -628,11 +628,6 @@ class ToolbarDataprovider
 		    'administrator/components/com_foftest/views/foobars'
 	    );
 
-	    foreach($origpaths as &$path)
-	    {
-		    $path  = trim(str_replace('\\', '/', $path), '/');
-	    }
-
 	    // Standard folders, no cpanel view
 	    $paths = $origpaths;
         $data[] = array(
@@ -675,10 +670,59 @@ class ToolbarDataprovider
 		    )
 	    );
 
+	    // Skip file in both plural and singular view => view should be skipped
+	    $paths = $origpaths;
+	    $paths[0] .= '/skip.xml';
+	    $paths[1] .= '/skip.xml';
+	    $data[] = array(
+		    array(
+			    'structure' => self::createArrayDir($paths),
+			    'folders' => array(
+				    'bare',
+				    'bares',
+				    'cpanel',
+				    'foobar',
+				    'foobars',
+			    )
+		    ),
+		    array(
+			    'views' => array(
+				    'cpanels',
+				    'foobars'
+			    )
+		    )
+	    );
+
+	    // Metadata with ordering
+	    // Sadly vfsStream does not support simplexml_load_file function
+	   /* $paths = $origpaths;
+	    $paths[3] .= '/metadata.xml';
+
+	    $contents['metadata.xml'] = '<?xml version="1.0" encoding="UTF-8"?><foflib><ordering>0</ordering></foflib>';
+
+	    $data[] = array(
+		    array(
+			    'structure' => self::createArrayDir($paths, $contents),
+			    'folders' => array(
+				    'bare',
+				    'bares',
+				    'cpanel',
+				    'foobar',
+				    'foobars',
+			    )
+		    ),
+		    array(
+			    'views' => array(
+				    'cpanels',
+				    'foobars'
+			    )
+		    )
+	    );*/
+
         return $data;
     }
 
-    protected static function createArrayDir($paths)
+    protected static function createArrayDir($paths, $contents = array())
     {
         $tree = array();
         foreach ($paths as $path) {
@@ -687,7 +731,14 @@ class ToolbarDataprovider
 
             if(strpos($subTree[0], '.') !== false)
             {
-                $subTree = array($subTree[0] => 'dummy');
+	            $content = '';
+
+	            if(isset($contents[$subTree[0]]))
+	            {
+		            $content = $contents[$subTree[0]];
+	            }
+
+                $subTree = array($subTree[0] => $content);
             }
 	        else
 	        {
