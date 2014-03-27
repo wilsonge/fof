@@ -74,8 +74,8 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 		$aliasParts = explode('.', $table->getAssetKey());
 		$input = new FOFInput;
 		$options = array(
-			'component' 	=> $input->get('option'),
-			'view'			=> $input->get('view'),
+			'component' 	=> $aliasParts[0],
+			'view'			=> $aliasParts[1],
 			'table_prefix'	=> ucfirst(FOFInflector::pluralize(substr($aliasParts[0], strpos($aliasParts[0], "_")  + 1)) . 'Table')
 		);
 
@@ -103,6 +103,7 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 						'key'     => $table->getKeyName(),
 						'type'    => $name,
 						'prefix'  => $options['table_prefix'],
+						'class'   => 'FOFTable',
 						'config'  => 'array()'
 					),
 					'common' => array(
