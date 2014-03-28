@@ -173,6 +173,28 @@ class FOFToolbarTest extends FtestCase
 
     /**
      * @group           FOFToolbar
+     * @group           toolbarRenderSubmenu
+     * @dataProvider    getTestRenderSubmenu
+     * @covers          FOFToolbar::renderSubmenu
+     */
+    public function testRenderSubmenu($test, $check)
+    {
+        $config = array(
+            'input' => new FOFInput(array('option' => 'com_foftests', 'view' => $test['view']))
+        );
+
+        $toolbar = $this->getMock('FOFToolbar', array('getMyViews'), array($config));
+        $toolbar->expects($this->any())->method('getMyViews')->will($this->returnValue($test['views']));
+
+        $toolbar->renderSubmenu();
+
+        $links = $toolbar->getLinks();
+
+        $this->assertEquals($check['links'], $links, 'FOFToolbar::renderSubmenu created wrong submenu links');
+    }
+
+    /**
+     * @group           FOFToolbar
      * @group           toolbarGetMyViews
      * @dataProvider    getTestGetMyViews
      * @covers          FOFToolbar::getMyViews
@@ -248,6 +270,11 @@ class FOFToolbarTest extends FtestCase
     public function getTestOnAdd()
     {
         return ToolbarDataprovider::getTestOnAdd();
+    }
+
+    public function getTestRenderSubmenu()
+    {
+        return ToolbarDataprovider::getTestRenderSubmenu();
     }
 
     public function getTestGetMyViews()

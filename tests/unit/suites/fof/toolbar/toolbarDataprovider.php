@@ -619,6 +619,77 @@ class ToolbarDataprovider
         return $data;
     }
 
+    public static function getTestRenderSubmenu()
+    {
+        $data[]= array(
+            array(
+                'view' => 'cpanel',
+                'views' => array(
+                    'cpanel',
+                    'bares',
+                    'foobars',
+                )
+            ),
+            array(
+                'links' => array(
+                    'Cpanel' => array(
+                        'name'   => 'Cpanel',
+                        'link'   => 'index.php?option=com_foftests&view=cpanel',
+                        'active' => true,
+                        'icon'   => null
+                    ),
+                    'Bares' => array(
+                        'name'   => 'Bares',
+                        'link'   => 'index.php?option=com_foftests&view=bares',
+                        'active' => false,
+                        'icon'   => null
+                    ),
+                    'Foobars' => array(
+                        'name'   => 'Foobars',
+                        'link'   => 'index.php?option=com_foftests&view=foobars',
+                        'active' => false,
+                        'icon'   => null
+                    )
+                )
+            )
+        );
+
+        $data[]= array(
+            array(
+                'view' => 'foobars',
+                'views' => array(
+                    'cpanel',
+                    'bares',
+                    'foobars',
+                )
+            ),
+            array(
+                'links' => array(
+                    'Cpanel' => array(
+                        'name'   => 'Cpanel',
+                        'link'   => 'index.php?option=com_foftests&view=cpanel',
+                        'active' => false,
+                        'icon'   => null
+                    ),
+                    'Bares' => array(
+                        'name'   => 'Bares',
+                        'link'   => 'index.php?option=com_foftests&view=bares',
+                        'active' => false,
+                        'icon'   => null
+                    ),
+                    'Foobars' => array(
+                        'name'   => 'Foobars',
+                        'link'   => 'index.php?option=com_foftests&view=foobars',
+                        'active' => true,
+                        'icon'   => null
+                    )
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestGetMyViews()
     {
 	    $origpaths = array(

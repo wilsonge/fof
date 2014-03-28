@@ -601,13 +601,16 @@ class FOFToolbar
 			// Get the view name
 			$key = strtoupper($this->component) . '_TITLE_' . strtoupper($view);
 
+            //Do we have a translation for this key?
 			if (strtoupper(JText::_($key)) == $key)
 			{
 				$altview = FOFInflector::isPlural($view) ? FOFInflector::singularize($view) : FOFInflector::pluralize($view);
 				$key2 = strtoupper($this->component) . '_TITLE_' . strtoupper($altview);
 
+                // Maybe we have for the alternative view?
 				if (strtoupper(JText::_($key2)) == $key2)
 				{
+                    // Nope, let's use the raw name
 					$name = ucfirst($view);
 				}
 				else
