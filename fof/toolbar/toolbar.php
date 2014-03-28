@@ -525,13 +525,27 @@ class FOFToolbar
 
 		if (empty($parent))
 		{
-			$this->linkbar[$name] = $linkDefinition;
+            if(array_key_exists($name, $this->linkbar))
+            {
+                $this->linkbar[$name] = array_merge($this->linkbar[$name], $linkDefinition);
+
+                // If there already are some children, I have to put this view link in the "items" array in the first place
+                if(array_key_exists('items', $this->linkbar[$name]))
+                {
+                    array_unshift($this->linkbar[$name]['items'], $linkDefinition);
+                }
+            }
+            else
+            {
+                $this->linkbar[$name] = $linkDefinition;
+            }
 		}
 		else
 		{
 			if (!array_key_exists($parent, $this->linkbar))
 			{
 				$parentElement = $linkDefinition;
+                $parentElement['name'] = $parent;
 				$parentElement['link'] = null;
 				$this->linkbar[$parent] = $parentElement;
 				$parentElement['items'] = array();

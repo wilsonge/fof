@@ -173,6 +173,30 @@ class FOFToolbarTest extends FtestCase
 
     /**
      * @group           FOFToolbar
+     * @group           toolbarAppendLink
+     * @dataProvider    getTestAppendLink
+     * @covers          FOFToolbar::appendLink
+     */
+    public function testAppendLink($test, $check)
+    {
+        $config = array(
+            'input' => new FOFInput(array('option' => 'com_foftest'))
+        );
+
+        $toolbar = new FOFToolbar($config);
+
+        foreach($test['links'] as $link)
+        {
+            $toolbar->appendLink($link['name'], $link['link'], $link['active'], $link['icon'], $link['parent']);
+        }
+
+        $links = $toolbar->getLinks();
+
+        $this->assertEquals($check['links'], $links, 'FOFToolbar::prefixLink failed to append the link');
+    }
+
+    /**
+     * @group           FOFToolbar
      * @group           toolbarPrefixLink
      * @covers          FOFToolbar::prefixLink
      */
@@ -306,6 +330,11 @@ class FOFToolbarTest extends FtestCase
     public function getTestOnAdd()
     {
         return ToolbarDataprovider::getTestOnAdd();
+    }
+
+    public function getTestAppendLink()
+    {
+        return ToolbarDataprovider::getTestAppendLink();
     }
 
     public function getTestRenderSubmenu()

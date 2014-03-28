@@ -619,6 +619,209 @@ class ToolbarDataprovider
         return $data;
     }
 
+    public static function getTestAppendLink()
+    {
+        // Normal link structure
+        $data[] = array(
+            array(
+                'links' => array(
+                    array(
+                        'name'   => 'Cpanel',
+                        'link'   => 'index.php?option=com_foftest&view=cpanel',
+                        'active' => true,
+                        'icon'   => null,
+                        'parent' => '',
+                    ),
+                    array(
+                        'name'   => 'Foobars',
+                        'link'   => 'index.php?option=com_foftest&view=foobars',
+                        'active' => false,
+                        'icon'   => null,
+                        'parent' => '',
+                    )
+                )
+            ),
+            array(
+                'links' => array(
+                    'Cpanel' => array(
+                        'name'   => 'Cpanel',
+                        'link'   => 'index.php?option=com_foftest&view=cpanel',
+                        'active' => true,
+                        'icon'   => null,
+                    ),
+                    'Foobars' => array(
+                        'name'   => 'Foobars',
+                        'link'   => 'index.php?option=com_foftest&view=foobars',
+                        'active' => false,
+                        'icon'   => null,
+                    )
+                )
+            )
+        );
+
+        // Nested links (parent link is already there)
+        $data[] = array(
+            array(
+                'links' => array(
+                    array(
+                        'name'   => 'Cpanel',
+                        'link'   => 'index.php?option=com_foftest&view=cpanel',
+                        'active' => true,
+                        'icon'   => null,
+                        'parent' => '',
+                    ),
+                    array(
+                        'name'   => 'Foobars',
+                        'link'   => 'index.php?option=com_foftest&view=foobars',
+                        'active' => false,
+                        'icon'   => null,
+                        'parent' => 'Cpanel',
+                    )
+                )
+            ),
+            array(
+                'links' => array(
+                    'Cpanel' => array(
+                        'name'     => 'Cpanel',
+                        'link'     => 'index.php?option=com_foftest&view=cpanel',
+                        'active'   => true,
+                        'icon'     => null,
+                        'dropdown' => 1,
+                        'items'    => array(
+                            array(
+                                'name'   => 'Cpanel',
+                                'link'   => 'index.php?option=com_foftest&view=cpanel',
+                                'active' => true,
+                                'icon'   => null,
+
+                            ),
+                            array(
+                                'name'   => 'Foobars',
+                                'link'   => 'index.php?option=com_foftest&view=foobars',
+                                'active' => false,
+                                'icon'   => null,
+                            )
+
+                        )
+                    )
+                )
+            )
+        );
+
+        // Nested links (parent link is already there) with several parents
+        $data[] = array(
+            array(
+                'links' => array(
+                    array(
+                        'name'   => 'Cpanel',
+                        'link'   => 'index.php?option=com_foftest&view=cpanel',
+                        'active' => true,
+                        'icon'   => null,
+                        'parent' => '',
+                    ),
+                    array(
+                        'name'   => 'Foobars',
+                        'link'   => 'index.php?option=com_foftest&view=foobars',
+                        'active' => false,
+                        'icon'   => null,
+                        'parent' => 'Cpanel',
+                    ),
+                    array(
+                        'name'   => 'Bares',
+                        'link'   => 'index.php?option=com_foftest&view=bares',
+                        'active' => false,
+                        'icon'   => null,
+                        'parent' => '',
+                    )
+                )
+            ),
+            array(
+                'links' => array(
+                    'Cpanel' => array(
+                        'name'     => 'Cpanel',
+                        'link'     => 'index.php?option=com_foftest&view=cpanel',
+                        'active'   => true,
+                        'icon'     => null,
+                        'dropdown' => 1,
+                        'items'    => array(
+                            array(
+                                'name'   => 'Cpanel',
+                                'link'   => 'index.php?option=com_foftest&view=cpanel',
+                                'active' => true,
+                                'icon'   => null,
+
+                            ),
+                            array(
+                                'name'   => 'Foobars',
+                                'link'   => 'index.php?option=com_foftest&view=foobars',
+                                'active' => false,
+                                'icon'   => null,
+                            )
+
+                        )
+                    ),
+                    'Bares' => array(
+                        'name'   => 'Bares',
+                        'link'   => 'index.php?option=com_foftest&view=bares',
+                        'active' => false,
+                        'icon'   => null,
+                    )
+                )
+            )
+        );
+
+        // Nested links (parent link is NOT already there)
+        $data[] = array(
+            array(
+                'links' => array(
+                    array(
+                        'name'   => 'Foobars',
+                        'link'   => 'index.php?option=com_foftest&view=foobars',
+                        'active' => false,
+                        'icon'   => null,
+                        'parent' => 'Cpanel',
+                    ),
+                    array(
+                        'name'   => 'Cpanel',
+                        'link'   => 'index.php?option=com_foftest&view=cpanel',
+                        'active' => true,
+                        'icon'   => null,
+                        'parent' => '',
+                    )
+                )
+            ),
+            array(
+                'links' => array(
+                    'Cpanel' => array(
+                        'name'     => 'Cpanel',
+                        'link'     => 'index.php?option=com_foftest&view=cpanel',
+                        'active'   => true,
+                        'icon'     => null,
+                        'dropdown' => 1,
+                        'items'    => array(
+                            array(
+                                'name'   => 'Cpanel',
+                                'link'   => 'index.php?option=com_foftest&view=cpanel',
+                                'active' => true,
+                                'icon'   => null,
+
+                            ),
+                            array(
+                                'name'   => 'Foobars',
+                                'link'   => 'index.php?option=com_foftest&view=foobars',
+                                'active' => false,
+                                'icon'   => null,
+                            )
+
+                        )
+                    )
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestRenderSubmenu()
     {
         $data[]= array(
