@@ -267,7 +267,7 @@ class FOFToolbar
 		$this->view = $view;
 		$this->task = $task;
 		$view = FOFInflector::pluralize($view);
-		$component = $input->get('option', 'com_foobar', 'cmd');
+		$component = $this->input->get('option', 'com_foobar', 'cmd');
 
 		$configProvider = new FOFConfigProvider;
 		$toolbar = $configProvider->get(
@@ -802,6 +802,7 @@ class FOFToolbar
 	 *
 	 * @return  void
 	 *
+     * @codeCoverageIgnore
 	 * @throws  InvalidArgumentException
 	 */
 	private function renderToolbarElement($type, $value = null, array $attributes = array())

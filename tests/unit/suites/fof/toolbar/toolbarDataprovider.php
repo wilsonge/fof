@@ -1,9 +1,215 @@
 <?php
 
-use org\bovigo\vfs\vfsStream;
-
 class ToolbarDataprovider
 {
+    public static function getTestRenderToolbar()
+    {
+        // Test for built-in method --- START
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'cpanels',
+                'task'    => 'browse',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods' => array('onCpanelsBrowse')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobars',
+                'task'    => 'browse',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods' => array('onBrowse')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'read',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods' => array('onRead')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'add',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods' => array('onAdd')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'edit',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods' => array('onEdit')
+            )
+        );
+        // Test for built-in method --- END
+
+        // tmpl=component, I don't want any toolbar
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'edit',
+                'tmpl'    => 'component',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods'   => array(),
+                'nomethods' => 'onEdit'
+            )
+        );
+
+        // render_toolbar=0, I don't want any toolbar
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'edit',
+                'tmpl'    => '',
+                'render'  => 0,
+                'input'   => ''
+            ),
+            array(
+                'methods'   => array(),
+                'nomethods' => 'onEdit'
+            )
+        );
+
+        // However, if I set render_toolbar=1, I REALLY want a toolbar
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'edit',
+                'tmpl'    => 'tmpl',
+                'render'  => 1,
+                'input'   => ''
+            ),
+            array(
+                'methods'   => array('onEdit')
+            )
+        );
+
+        // Check for method name construction
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'edit',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods'   => array('onFoobarsEdit')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'edit',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods'   => array('onFoobars')
+            )
+        );
+
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => 'foobar',
+                'task'    => 'dummy',
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => ''
+            ),
+            array(
+                'methods'   => array('onDummy')
+            )
+        );
+
+        // If no arguments are passed, view and task should be read from the input
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => null,
+                'task'    => null,
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => '',
+                'config_input'   => array(
+                        'view'   => 'foo',
+                        'task'   => 'dummy'
+                    )
+            ),
+            array(
+                'methods'   => array('onFoosDummy')
+            )
+        );
+
+        // If an input is passed, view and task should be read from it
+        $data[] = array(
+            array(
+                'methods' => array(),
+                'view'    => null,
+                'task'    => null,
+                'tmpl'    => '',
+                'render'  => null,
+                'input'   => new FOFInput(array(
+                        'view' => 'bar',
+                        'task' => 'render'
+                    )),
+                'config_input'   => array(
+                    'view'   => 'foo',
+                    'task'   => 'dummy'
+                )
+            ),
+            array(
+                'methods'   => array('onBarsRender')
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestOnCpanelsBrowse()
     {
         $data[] = array(

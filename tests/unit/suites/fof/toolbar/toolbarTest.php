@@ -29,6 +29,55 @@ class FOFToolbarTest extends FtestCase
 
     /**
      * @group           FOFToolbar
+     * @group           toolbarRenderToolbar
+     * @dataProvider    getTestRenderToolbar
+     * @covers          FOFToolbar::renderToolbar
+     */
+    public function testRenderToolbar($test, $check)
+    {
+        $methods = array_merge($check['methods'], (array) $test['methods'], array('clearLinks'));
+
+        if(isset($check['nomethods']))
+        {
+            $methods = array_merge($methods, (array) $check['nomethods']);
+        }
+
+        $config = array(
+            'input' => new FOFInput()
+        );
+
+        $input = array(
+            'option' => 'com_foftest',
+            'tmpl'   => $test['tmpl'],
+            'render_toolbar' => $test['render']
+        );
+
+        if(isset($test['config_input']))
+        {
+            $input = array_merge($input, $test['config_input']);
+        }
+
+        $config['input'] = new FOFInput($input);
+
+        $toolbar = $this->getMock('FOFToolbar', $methods, array($config));
+
+        // Let's check if the expected methods are really invoked
+        foreach($check['methods'] as $method)
+        {
+            $toolbar->expects($this->once())->method($method);
+        }
+
+        // No check methods? It means that we want the execution to stop
+        if(isset($check['nomethods']))
+        {
+            $toolbar->expects($this->never())->method($check['nomethods']);
+        }
+
+        $toolbar->renderToolbar($test['view'], $test['task'], $test['input']);
+    }
+
+    /**
+     * @group           FOFToolbar
      * @dataProvider    getTestOnCpanelsBrowse
      * @covers          FOFToolbar::onCpanelsBrowse
      */
@@ -310,6 +359,11 @@ class FOFToolbarTest extends FtestCase
         $views = $method->invoke($toolbar);
 
 	    $this->assertEquals($check['views'], $views, 'FOFToolbar::getMyViews returned a wrong list of views');
+    }
+
+    public function getTestRenderToolbar()
+    {
+        return ToolbarDataprovider::getTestRenderToolbar();
     }
 
     public function getTestOnCpanelsBrowse()
