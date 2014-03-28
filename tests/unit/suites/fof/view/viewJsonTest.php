@@ -16,6 +16,8 @@ class FOFViewJsonTest extends FtestCaseDatabase
 
 	public function setUp()
 	{
+        FOFPlatform::forceInstance(null);
+
 		parent::setUp();
 
 		// Force a JDocumentHTML instance
@@ -384,7 +386,7 @@ class FOFViewJsonTest extends FtestCaseDatabase
 
 	protected function getView()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
 		$view = new FOFViewRaw($config);
@@ -397,7 +399,7 @@ class FOFViewJsonTest extends FtestCaseDatabase
 	 */
 	public function testContructorWithHyperMedia()
 	{
-		$config = array();				
+		$config = array();
 		$config['use_hypermedia'] = true;
 		$view = new FOFViewJson($config);
 	}
@@ -427,8 +429,8 @@ class FOFViewJsonTest extends FtestCaseDatabase
 		$model = new FtestModel(array('table' => 'Ftest', 'option' => ''));
 		$model->setState('task', $task);
 		$model->setState('limit', $limit);
-		
-		$config = array();		
+
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $view, 'callback' => $callback));
 		$config['use_hypermedia'] = $use_hypermedia;
 
@@ -463,7 +465,7 @@ class FOFViewJsonTest extends FtestCaseDatabase
 
 		$pag = $model->getPagination();
 
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foo', 'callback'));
 		$config['use_hypermedia'] = true;
 

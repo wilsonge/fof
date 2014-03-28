@@ -20,7 +20,9 @@ class FOFViewTest extends FtestCase
 
 	public function setUp()
 	{
-		$this->view = $this->getView();	
+		$this->view = $this->getView();
+
+        FOFPlatform::forceInstance(null);
 	}
 
 	/**
@@ -41,17 +43,17 @@ class FOFViewTest extends FtestCase
 	public function testDisplayError()
 	{
 		$this->view->setLayout('error');
-		
-		try 
+
+		try
 		{
 			$error = $this->view->display();
-			
-			if ($error instanceof Exception) 
+
+			if ($error instanceof Exception)
 			{
 				return;
 			}
-		} 
-		catch (Exception $e) 
+		}
+		catch (Exception $e)
 		{
 			return;
 		}
@@ -64,7 +66,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testLoadAnyTemplate()
 	{
-		$this->view->error = 'foobar';	
+		$this->view->error = 'foobar';
 		echo $this->view->loadAnyTemplate('site:com_search/search/default_error');
 
 		$this->expectOutputRegex('/(.)*foobar(.)*/');
@@ -160,7 +162,7 @@ class FOFViewTest extends FtestCase
 	 * @cover 	FOFView::assignRef()
 	 */
 	public function testAssignRef()
-	{	
+	{
 		$foo = 'foo';
 		$this->view->assignRef('foo', $foo);
 		$foo = 'bar';
@@ -172,7 +174,7 @@ class FOFViewTest extends FtestCase
 	 * @cover 	FOFView::assignRef()
 	 */
 	public function testAssignRefWrong()
-	{	
+	{
 		$foo = 'foo';
 		$result = $this->view->assignRef('_foo', $foo);
 
@@ -223,7 +225,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testGetFromView()
 	{
-		
+
 		$this->view->foo = 'bar';
 
 		$this->assertEquals($this->view->get('foo', ''), 'bar', 'get should return bar');
@@ -235,7 +237,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testSetModel()
 	{
-		
+
 		$model = new FtestModel();
 		$this->view->setModel($model, true);
 
@@ -248,7 +250,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testSetRenderer()
 	{
-		
+
 		$renderer = new FtestRenderer();
 		$this->view->setRenderer($renderer);
 
@@ -260,7 +262,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testRegisterRenderer()
 	{
-		
+
 		$renderer = new FtestRenderer();
 		$this->view->registerRenderer($renderer);
 
@@ -274,7 +276,7 @@ class FOFViewTest extends FtestCase
 		$this->assertEquals($this->view->escape($string), '&amp;', 'escape should encode & to &amp;');
 	}
 
-	public function exampleEscape($value) 
+	public function exampleEscape($value)
 	{
 		return htmlentities($value);
 	}
@@ -284,7 +286,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testSetPreRenderTrue()
 	{
-		
+
 		$this->view->setPreRender(true);
 
 		$this->assertAttributeEquals(
@@ -299,7 +301,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testSetPreRenderFalse()
 	{
-		
+
 		$this->view->setPreRender(false);
 
 		$this->assertAttributeEquals(
@@ -314,7 +316,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testSetPostRenderTrue()
 	{
-		
+
 		$this->view->setPostRender(true);
 
 		$this->assertAttributeEquals(
@@ -330,7 +332,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testLoadHelper()
 	{
-		
+
 		$this->view->addHelperPath(JPATH_TESTS . '/unit/core/helper/');
 		$this->view->loadHelper('helper');
 
@@ -358,7 +360,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testSetPostRenderFalse()
 	{
-		
+
 		$this->view->setPostRender(false);
 
 		$this->assertAttributeEquals(
@@ -368,14 +370,14 @@ class FOFViewTest extends FtestCase
         );
 	}
 
-	
+
 
 	/**
 	 * @covers FOFView::__construct
 	 */
 	public function testViewWithConfigArray()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 		$view = new FtestView($config);
 
@@ -387,7 +389,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testViewWithConfigObject()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 		$view = new FtestView((object)$config);
 	}
@@ -430,12 +432,12 @@ class FOFViewTest extends FtestCase
 	public function testViewWithoutNameAndView()
 	{
 		$config = array();
-		
-		try 
+
+		try
 		{
 			$view = new FtestFake($config);
 			$view->getName();
-		} 
+		}
 		catch(Exception $e)
 		{
 			return;
@@ -449,7 +451,7 @@ class FOFViewTest extends FtestCase
 	 */
 	public function testViewWithCustomConfig()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = array('option' => 'com_foftest', 'view' => 'Ftest');
 		$config['option'] = 'com_foftest';
 		$config['view'] = null;
