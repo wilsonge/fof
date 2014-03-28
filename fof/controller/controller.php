@@ -470,7 +470,7 @@ class FOFController extends FOFUtilsObject
 		$iMethods = array('accesspublic', 'accessregistered', 'accessspecial',
 			'add', 'apply', 'browse', 'cancel', 'copy', 'edit', 'orderdown',
 			'orderup', 'publish', 'read', 'remove', 'save', 'savenew',
-			'saveorder', 'unpublish', 'display', 'archive', 'trash');
+			'saveorder', 'unpublish', 'display', 'archive', 'trash', 'loadhistory');
 
 		// Get the public methods in this class using reflection.
 		$r = new ReflectionClass($this);
@@ -1501,6 +1501,71 @@ class FOFController extends FOFUtilsObject
 
 		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view) . $this->getItemidURLSuffix();
 		$this->setRedirect($url);
+
+		return true;
+	}
+
+	/**
+	 * Method to load a row from version history
+	 *
+	 * @return   boolean  True if the content history is reverted, false otherwise
+	 *
+	 * @since   2.2
+	 */
+	public function loadhistory()
+	{
+		$app = JFactory::getApplication();
+		$lang  = JFactory::getLanguage();
+		$model = $this->getThisModel();
+		$table = $model->getTable();
+		$historyId = $app->input->get('version_id', null, 'integer');
+		$status = $model->checkout();
+		$alias = $this->component . '.' . $this->view;
+
+		if (!$model->loadhistory($historyId, $table, $alias))
+		{
+			$this->setMessage($model->getError(), 'error');
+
+			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view) . $this->getItemidURLSuffix();
+			$this->setRedirect($url);
+
+			return false;
+		}
+
+		// Determine the name of the primary key for the data.
+		if (empty($key))
+		{
+			$key = $table->getKeyName();
+		}
+
+		$recordId = $table->$key;
+
+		// To avoid data collisions the urlVar may be different from the primary key.
+		$urlVar = empty($this->urlVar) ? $key : $this->urlVar;
+
+		// Access check.
+		$privilege = $this->configProvider->get(
+			$this->component . '.views.' .
+			FOFInflector::singularize($this->view) . '.acl.edit', 'core.edit'
+		);
+
+		if (!$this->checkACL($privilege))
+		{
+			$this->setError(JText::_('JLIB_APPLICATION_ERROR_EDIT_NOT_PERMITTED'));
+			$this->setMessage($this->getError(), 'error');
+
+			$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view) . $this->getItemidURLSuffix();
+			$this->setRedirect($url);
+			$table->checkin();
+
+			return false;
+		}
+
+		$table->store();
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->component . '&view=' . FOFInflector::pluralize($this->view) . $this->getItemidURLSuffix();
+		$this->setRedirect($url);
+
+		$this->setMessage(JText::sprintf('JLIB_APPLICATION_SUCCESS_LOAD_HISTORY', $model->getState('save_date'), $model->getState('version_note')));
 
 		return true;
 	}

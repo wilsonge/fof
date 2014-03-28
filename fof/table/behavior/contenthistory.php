@@ -9,116 +9,78 @@
 defined('FOF_INCLUDED') or die;
 
 /**
- * FrameworkOnFramework table behavior class for tags
+ * FrameworkOnFramework table behavior class for content History
  *
  * @package  FrameworkOnFramework
- * @since    2.1
+ * @since    2.2.0
  */
-class FOFTableBehaviorTags extends FOFTableBehavior
+class FOFTableBehaviorContenthistory extends FOFTableBehavior
 {
 	/**
-	 * The event which runs after binding data to the table
+	 * The event which runs after storing (saving) data to the database
 	 *
-	 * @param   FOFTable  		&$table  	The table which calls this event
-	 * @param   object|array  	&$src  		The data to bind
-	 * @param  	array 			$options 	The options of the table
+	 * @param   FOFTable  &$table  The table which calls this event
 	 *
-	 * @return  boolean  True on success
+	 * @return  boolean  True to allow saving without an error
 	 */
-	public function onAfterBind(&$table, &$src, $options = array())
+	public function onAfterStore(&$table)
 	{
-		// Bind tags
-		if ($table->hasTags())
+		$aliasParts = explode('.', $table->getContentType());
+		$this->checkContentType($table);
+
+		if (JComponentHelper::getParams($aliasParts[0])->get('save_history', 0))
 		{
-			if ((!empty($src['tags']) && $src['tags'][0] != ''))
-			{
-				$table->newTags = $src['tags'];
-			}
-
-			// Check if the content type exists, and create it if it does not
-			$this->checkContentType($table, $options);
-
-			$tagsTable = clone($table);
-
-			$tagsHelper = new JHelperTags();
-			$tagsHelper->typeAlias = $table->getContentType();
-
-			// TODO: This little guy here fails because JHelperTags
-			// need a JTable object to work, while our is FOFTable
-			// Need probably to write our own FOFHelperTags
-			// Thank you com_tags
-			if (!$tagsHelper->postStoreProcess($tagsTable))
-			{
-				$table->setError('Error storing tags');
-				return false;
-			}
+			$historyHelper = new JHelperContenthistory($table->getContentType());
+			$historyHelper->store($table);
 		}
 
 		return true;
 	}
 
 	/**
-	 * The event which runs before storing (saving) data to the database
-	 *
-	 * @param   FOFTable  &$table  The table which calls this event
-	 * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
-	 *
-	 * @return  boolean  True to allow saving
-	 */
-	public function onBeforeStore(&$table, $updateNulls)
-	{
-		if ($table->hasTags())
-		{
-			$tagsHelper = new JHelperTags();
-			$tagsHelper->typeAlias = $table->getContentType();
-
-			// TODO: JHelperTags sucks in Joomla! 3.1, it requires that tags are
-			// stored in the metadata property. Not our case, therefore we need
-			// to add it in a fake object. We sent a PR to Joomla! CMS to fix
-			// that. Once it's accepted, we'll have to remove the attrocity
-			// here...
-			$tagsTable = clone($table);
-			$tagsHelper->preStoreProcess($tagsTable);
-		}
-	}
-
-	/**
-	 * The event which runs after deleting a record
+	 * The event which runs before deleting a record
 	 *
 	 * @param   FOFTable &$table  The table which calls this event
-	 * @param   integer  $oid  The PK value of the record which was deleted
+	 * @param   integer  $oid  The PK value of the record to delete
 	 *
-	 * @return  boolean  True to allow the deletion without errors
+	 * @return  boolean  True to allow the deletion
 	 */
-	public function onAfterDelete(&$table, $oid)
+	public function onBeforeDelete(&$table, $oid)
 	{
-		// If this resource has tags, delete the tags first
-		if ($table->hasTags())
-		{
-			$tagsHelper = new JHelperTags();
-			$tagsHelper->typeAlias = $table->getContentType();
+		$aliasParts = explode('.', $table->getContentType());
 
-			if (!$tagsHelper->deleteTagData($table, $oid))
-			{
-				$table->setError('Error deleting Tags');
-				return false;
-			}
+		if (JComponentHelper::getParams($aliasParts[0])->get('save_history', 0))
+		{
+			$historyHelper = new JHelperContenthistory($table->getContentType());
+			$historyHelper->deleteHistory($table);
 		}
+
+		return true;
 	}
 
 	/**
 	 * Check if a UCM content type exists for this resource, and
 	 * create it if it does not
+	 *
+	 * @param   FOFTable   &$table  	The table which calls this event
+	 *
 	 */
-	protected function checkContentType(&$table, $options)
+	protected function checkContentType(&$table)
 	{
 		$contentType = new JTableContenttype($table->getDbo());
 
 		$alias = $table->getContentType();
-		$aliasParts = explode('.', $alias);
+
+		$aliasParts = explode('.', $table->getContentType());
+		$input = new FOFInput;
+		$options = array(
+			'component' 	=> $aliasParts[0],
+			'view'		=> $aliasParts[1],
+			'table_prefix'	=> ucfirst(FOFInflector::pluralize(substr($aliasParts[0], strpos($aliasParts[0], "_")  + 1)) . 'Table')
+		);
 
 		// Fetch the extension name
-		$component = $aliasParts[0];
+		$component = $options['component'];
 		$component = JComponentHelper::getComponent($component);
 
 		// Fetch the name using the menu item
@@ -127,7 +89,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 		$table->getDbo()->setQuery($query);
 		$component_name = JText::_($table->getDbo()->loadResult());
 
-		$name = $component_name . ' ' . ucfirst($aliasParts[1]);
+		$name = $component_name . ' ' . ucfirst($options['view']);
 
 		// Create a new content type for our resource
 		if (!$contentType->load(array('type_alias' => $alias)))
@@ -141,6 +103,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 						'key'     => $table->getKeyName(),
 						'type'    => $name,
 						'prefix'  => $options['table_prefix'],
+						'class'   => 'FOFTable',
 						'config'  => 'array()'
 					),
 					'common' => array(
@@ -199,6 +162,9 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 	/**
 	 * Utility methods that fetches the column name for the field.
 	 * If it does not exists, returns a "null" string
+	 *
+	 * @param   FOFTable   $table  	The table which calls this event
+	 * @param   string     $alias   The alias of the content type
 	 *
 	 * @return string The column name
 	 */
