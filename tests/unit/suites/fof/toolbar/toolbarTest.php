@@ -42,7 +42,7 @@ class FOFToolbarTest extends FtestCase
         $config = array(
             'renderFrontendSubmenu' => $test['submenu'],
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftests'))
+            'input' => new FOFInput(array('option' => 'com_foftest'))
         );
 
         $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
@@ -80,7 +80,7 @@ class FOFToolbarTest extends FtestCase
         $config = array(
             'renderFrontendSubmenu' => $test['submenu'],
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftests', 'view' => $test['view']))
+            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
         $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
@@ -120,7 +120,7 @@ class FOFToolbarTest extends FtestCase
         $config = array(
             'renderFrontendSubmenu' => $test['submenu'],
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftests', 'view' => $test['view']))
+            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
         $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
@@ -157,7 +157,7 @@ class FOFToolbarTest extends FtestCase
 
         $config = array(
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftests', 'view' => $test['view']))
+            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
         $toolbar = new FOFToolbar($config);
@@ -203,25 +203,25 @@ class FOFToolbarTest extends FtestCase
     public function testPrefixLink()
     {
         $config = array(
-            'input' => new FOFInput(array('option' => 'com_foftests'))
+            'input' => new FOFInput(array('option' => 'com_foftest'))
         );
 
         $toolbar = new FOFToolbar($config);
 
-        $toolbar->prefixLink('Cpanel', 'index.php?option=com_foftests&view=cpanel', true, null);
-        $toolbar->prefixLink('Foobars', 'index.php?option=com_foftests&view=foobars', false, null);
+        $toolbar->prefixLink('Cpanel', 'index.php?option=com_foftest&view=cpanel', true, null);
+        $toolbar->prefixLink('Foobars', 'index.php?option=com_foftest&view=foobars', false, null);
 
         $links = $toolbar->getLinks();
         $check = array(
             '0' => array(
                 'name'   => 'Foobars',
-                'link'   => 'index.php?option=com_foftests&view=foobars',
+                'link'   => 'index.php?option=com_foftest&view=foobars',
                 'active' => false,
                 'icon'   => null
             ),
             '1' => array(
                 'name'   => 'Cpanel',
-                'link'   => 'index.php?option=com_foftests&view=cpanel',
+                'link'   => 'index.php?option=com_foftest&view=cpanel',
                 'active' => true,
                 'icon'   => null
             )
@@ -240,7 +240,7 @@ class FOFToolbarTest extends FtestCase
     public function testRenderSubmenu($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array('option' => 'com_foftests', 'view' => $test['view']))
+            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
         $toolbar = $this->getMock('FOFToolbar', array('getMyViews'), array($config));
@@ -300,7 +300,7 @@ class FOFToolbarTest extends FtestCase
         vfsStream::setup('root', null, $test['structure']);
 
         $config = array(
-            'input' => new FOFInput(array('option' => 'com_foftests'))
+            'input' => new FOFInput(array('option' => 'com_foftest'))
         );
 
         $toolbar = new FOFToolbar($config);

@@ -15,8 +15,8 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS', 'foftests')),
-                    'preferences' => array(array('com_foftests', 550, 875))
+                    'title' => array(array('COM_FOFTEST', 'foftest')),
+                    'preferences' => array(array('com_foftest', 550, 875))
                 )
             )
         );
@@ -30,8 +30,8 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS', 'foftests')),
-                    'preferences' => array(array('com_foftests', 550, 875))
+                    'title' => array(array('COM_FOFTEST', 'foftest')),
+                    'preferences' => array(array('com_foftest', 550, 875))
                 )
             )
         );
@@ -46,8 +46,8 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS', 'foftests')),
-                    'preferences' => array(array('com_foftests', 550, 875))
+                    'title' => array(array('COM_FOFTEST', 'foftest')),
+                    'preferences' => array(array('com_foftest', 550, 875))
                 )
             )
         );
@@ -61,8 +61,8 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS', 'foftests')),
-                    'preferences' => array(array('com_foftests', 550, 875))
+                    'title' => array(array('COM_FOFTEST', 'foftest')),
+                    'preferences' => array(array('com_foftest', 550, 875))
                 )
             )
         );
@@ -100,13 +100,13 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANEL', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_CPANEL', 'foftest')),
                     'addNew'        => array(array()),
                     'editList'      => array(array()),
                     'divider'       => array(array(), array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -127,13 +127,13 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR', 'foftest')),
                     'addNew'        => array(array()),
                     'editList'      => array(array()),
                     'divider'       => array(array(), array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -155,12 +155,12 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR', 'foftest')),
                     'editList'      => array(array()),
                     'divider'       => array(array(), array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -182,12 +182,12 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR', 'foftest')),
                     'addNew'        => array(array()),
                     'divider'       => array(array(), array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -209,11 +209,11 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR', 'foftest')),
                     'divider'       => array(array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -235,8 +235,8 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR', 'foftests')),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR', 'foftest')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -258,7 +258,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR', 'foftests'))
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR', 'foftest'))
                 )
             )
         );
@@ -279,13 +279,13 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANEL', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_CPANEL', 'foftest')),
                     'addNew'        => array(array()),
                     'editList'      => array(array()),
                     'divider'       => array(array(), array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -306,13 +306,13 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANEL', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_CPANEL', 'foftest')),
                     'addNew'        => array(array()),
                     'editList'      => array(array()),
                     'divider'       => array(array(), array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -333,13 +333,13 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'         => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANEL', 'foftests')),
+                    'title'         => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_CPANEL', 'foftest')),
                     'addNew'        => array(array()),
                     'editList'      => array(array()),
                     'divider'       => array(array(), array()),
                     'publishList'   => array(array()),
                     'unpublishList' => array(array()),
-                    'deleteList'    => array(array('COM_FOFTESTS_CONFIRM_DELETE')),
+                    'deleteList'    => array(array('COM_FOFTEST_CONFIRM_DELETE')),
                 )
             )
         );
@@ -373,7 +373,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANEL_READ', 'foftests')),
+                    'title' => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_CPANEL_READ', 'foftest')),
                     'back'  => array(array())
                 )
             )
@@ -389,7 +389,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR_READ', 'foftests')),
+                    'title' => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR_READ', 'foftest')),
                     'back'  => array(array())
                 )
             )
@@ -406,7 +406,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR_READ', 'foftests')),
+                    'title' => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR_READ', 'foftest')),
                     'back'  => array(array())
                 )
             )
@@ -422,7 +422,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title' => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBAR_READ', 'foftests')),
+                    'title' => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBAR_READ', 'foftest')),
                     'back'  => array(array())
                 )
             )
@@ -460,7 +460,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_CPANELS_EDIT', 'foftests')),
+                    'title'    => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_CPANELS_EDIT', 'foftest')),
                     'apply'    => array(array()),
                     'save'     => array(array()),
                     'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
@@ -484,7 +484,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'title'    => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBARS_EDIT', 'foftest')),
                     'apply'    => array(array()),
                     'save'     => array(array()),
                     'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
@@ -506,7 +506,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'title'    => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBARS_EDIT', 'foftest')),
                     'apply'    => array(array()),
                     'save'     => array(array()),
                     'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
@@ -528,7 +528,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'title'    => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBARS_EDIT', 'foftest')),
                     'apply'    => array(array()),
                     'save'     => array(array()),
                     'custom'   => array(array('savenew', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false)),
@@ -565,7 +565,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'title'    => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBARS_EDIT', 'foftest')),
                     'apply'    => array(array()),
                     'save'     => array(array()),
                     'cancel'   => array(array())
@@ -586,7 +586,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'title'    => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBARS_EDIT', 'foftest')),
                     'save'     => array(array()),
                     'cancel'   => array(array())
                 )
@@ -606,7 +606,7 @@ class ToolbarDataprovider
             ),
             array(
                 'methods' => array(
-                    'title'    => array(array('COM_FOFTESTS: COM_FOFTESTS_TITLE_FOOBARS_EDIT', 'foftests')),
+                    'title'    => array(array('COM_FOFTEST: COM_FOFTEST_TITLE_FOOBARS_EDIT', 'foftest')),
                     'apply'    => array(array()),
                     'save'     => array(array()),
                     'cancel'   => array(array())
@@ -837,19 +837,19 @@ class ToolbarDataprovider
                 'links' => array(
                     'Cpanel' => array(
                         'name'   => 'Cpanel',
-                        'link'   => 'index.php?option=com_foftests&view=cpanel',
+                        'link'   => 'index.php?option=com_foftest&view=cpanel',
                         'active' => true,
                         'icon'   => null
                     ),
                     'Bares' => array(
                         'name'   => 'Bares',
-                        'link'   => 'index.php?option=com_foftests&view=bares',
+                        'link'   => 'index.php?option=com_foftest&view=bares',
                         'active' => false,
                         'icon'   => null
                     ),
                     'Foobars' => array(
                         'name'   => 'Foobars',
-                        'link'   => 'index.php?option=com_foftests&view=foobars',
+                        'link'   => 'index.php?option=com_foftest&view=foobars',
                         'active' => false,
                         'icon'   => null
                     )
@@ -870,19 +870,19 @@ class ToolbarDataprovider
                 'links' => array(
                     'Cpanel' => array(
                         'name'   => 'Cpanel',
-                        'link'   => 'index.php?option=com_foftests&view=cpanel',
+                        'link'   => 'index.php?option=com_foftest&view=cpanel',
                         'active' => false,
                         'icon'   => null
                     ),
                     'Bares' => array(
                         'name'   => 'Bares',
-                        'link'   => 'index.php?option=com_foftests&view=bares',
+                        'link'   => 'index.php?option=com_foftest&view=bares',
                         'active' => false,
                         'icon'   => null
                     ),
                     'Foobars' => array(
                         'name'   => 'Foobars',
-                        'link'   => 'index.php?option=com_foftests&view=foobars',
+                        'link'   => 'index.php?option=com_foftest&view=foobars',
                         'active' => true,
                         'icon'   => null
                     )
