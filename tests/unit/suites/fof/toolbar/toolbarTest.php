@@ -173,6 +173,42 @@ class FOFToolbarTest extends FtestCase
 
     /**
      * @group           FOFToolbar
+     * @group           toolbarPrefixLink
+     * @covers          FOFToolbar::prefixLink
+     */
+    public function testPrefixLink()
+    {
+        $config = array(
+            'input' => new FOFInput(array('option' => 'com_foftests'))
+        );
+
+        $toolbar = new FOFToolbar($config);
+
+        $toolbar->prefixLink('Cpanel', 'index.php?option=com_foftests&view=cpanel', true, null);
+        $toolbar->prefixLink('Foobars', 'index.php?option=com_foftests&view=foobars', false, null);
+
+        $links = $toolbar->getLinks();
+        $check = array(
+            '0' => array(
+                'name'   => 'Foobars',
+                'link'   => 'index.php?option=com_foftests&view=foobars',
+                'active' => false,
+                'icon'   => null
+            ),
+            '1' => array(
+                'name'   => 'Cpanel',
+                'link'   => 'index.php?option=com_foftests&view=cpanel',
+                'active' => true,
+                'icon'   => null
+            )
+        );
+
+        $this->assertEquals($check, $links, 'FOFToolbar::prefixLink failed to prepend the link');
+
+    }
+
+    /**
+     * @group           FOFToolbar
      * @group           toolbarRenderSubmenu
      * @dataProvider    getTestRenderSubmenu
      * @covers          FOFToolbar::renderSubmenu
