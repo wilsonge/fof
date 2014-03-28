@@ -193,7 +193,7 @@ class FOFToolbarTest extends FtestCase
 			    $file = str_replace(array('^', '\\', '$'), '', $file);
 
 			    if(is_file($path.'/'.$file)){
-				    return array($path.'/'.$file);
+				    return array($file);
 			    }
 			    else{
 				    return array();

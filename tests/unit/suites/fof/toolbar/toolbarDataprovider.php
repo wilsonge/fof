@@ -694,11 +694,10 @@ class ToolbarDataprovider
 	    );
 
 	    // Metadata with ordering
-	    // Sadly vfsStream does not support simplexml_load_file function
-	   /* $paths = $origpaths;
+	    $paths = $origpaths;
 	    $paths[3] .= '/metadata.xml';
 
-	    $contents['metadata.xml'] = '<?xml version="1.0" encoding="UTF-8"?><foflib><ordering>0</ordering></foflib>';
+	    $contents['metadata.xml'] = '<?xml version="1.0" encoding="UTF-8"?><metadata><foflib><ordering>-10</ordering></foflib></metadata>';
 
 	    $data[] = array(
 		    array(
@@ -713,11 +712,12 @@ class ToolbarDataprovider
 		    ),
 		    array(
 			    'views' => array(
-				    'cpanels',
-				    'foobars'
+                    'foobars',
+                    'bares',
+                    'cpanels'
 			    )
 		    )
-	    );*/
+	    );
 
         return $data;
     }
