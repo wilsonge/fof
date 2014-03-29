@@ -141,6 +141,7 @@ class FOFTableBehaviorTags extends FOFTableBehavior
 						'key'     => $table->getKeyName(),
 						'type'    => $name,
 						'prefix'  => $options['table_prefix'],
+						'class'   => 'FOFTable',
 						'config'  => 'array()'
 					),
 					'common' => array(
