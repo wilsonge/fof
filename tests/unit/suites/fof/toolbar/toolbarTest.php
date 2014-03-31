@@ -27,7 +27,7 @@ class FOFToolbarTest extends FtestCase
         JToolbarHelper::resetStack();
     }
 
-    /** 
+    /**
      * @group           FOFToolbar
      * @group           toolbarRenderToolbar
      * @dataProvider    getTestRenderToolbar
