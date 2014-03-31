@@ -475,7 +475,6 @@ class FOFDispatcher extends FOFUtilsObject
 	public function onAfterDispatch()
 	{
 		// If we have to log out the user, please do so now
-
 		if ($this->fofAuth_LogoutOnReturn && $this->_fofAuth_isLoggedIn)
 		{
 			FOFPlatform::getInstance()->logoutUser();
@@ -492,7 +491,6 @@ class FOFDispatcher extends FOFUtilsObject
 	public function transparentAuthentication()
 	{
 		// Only run when there is no logged in user
-
 		if (!FOFPlatform::getInstance()->getUser()->guest)
 		{
 			return;
@@ -629,6 +627,7 @@ class FOFDispatcher extends FOFUtilsObject
 	 *
 	 * @param   string  $encryptedData  The encrypted data
 	 *
+     * @codeCoverageIgnore
 	 * @return  array  The decrypted data
 	 */
 	private function _decryptWithTOTP($encryptedData)
@@ -686,6 +685,7 @@ class FOFDispatcher extends FOFUtilsObject
 	 *
 	 * @param   integer  $time  The timestamp used for TOTP calculation, leave empty to use current timestamp
 	 *
+     * @codeCoverageIgnore
 	 * @return  string  THe encryption key
 	 */
 	private function _createDecryptionKey($time = null)

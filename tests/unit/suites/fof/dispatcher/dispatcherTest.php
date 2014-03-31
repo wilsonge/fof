@@ -1,14 +1,27 @@
 <?php
 /**
  * @package	    FrameworkOnFramework.UnitTest
- * @subpackage  Inflector
+ * @subpackage  Dispatcher
  *
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+require_once 'dispatcherDataprovider.php';
+
 class FOFDispatcherTest extends FtestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        FOFPlatform::forceInstance(null);
+    }
+
+    /**
+     * @group           FOFDispatcher
+     * @covers          FOFDispatcher::onBeforeDispatch
+     */
 	public function testOnBeforeDispatch()
 	{
 		$dispatcher = FOFDispatcher::getTmpInstance();
@@ -16,6 +29,10 @@ class FOFDispatcherTest extends FtestCase
 		$this->assertTrue($dispatcher->onBeforeDispatch(), 'onBeforeDispatch should return TRUE');
 	}
 
+    /**
+     * @group           FOFDispatcher
+     * @covers          FOFDispatcher::onBeforeDispatchCLI
+     */
 	public function testOnBeforeDispatchCli()
 	{
 		$dispatcher = FOFDispatcher::getTmpInstance();
@@ -23,32 +40,11 @@ class FOFDispatcherTest extends FtestCase
 		$this->assertTrue($dispatcher->onBeforeDispatchCLI(), 'onBeforeDispatchCLI should return TRUE');
 	}
 
-	public function getTestGetTask()
-	{
-		$message = 'Incorrect task';
-
-		// Should we test for ids on other cases, too?
-		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'read'  , $message);
-		$data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , false,  'GET' 	 , 'edit'  , $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'read'  , $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , false, 'GET' 	 , 'edit'  , $message);
-		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'GET'  	 , 'add'   , $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'POST'	 , 'save'  , $message);
-		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'POST'	 , 'edit'  , $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'PUT' 	 , 'save'  , $message);
-		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'PUT' 	 , 'edit'  , $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'DELETE' , 'delete'  , $message);
-		$data[] = array(new FOFInput(array())           , 'foobar' , true,  'DELETE' , 'edit'  , $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'GET' 	 , 'browse', $message);
-		$data[] = array(new FOFInput(array())           , 'foobars', true,  'GET' 	 , 'browse', $message);
-		$data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'POST'	 , 'save'  , $message);
-		$data[] = array(new FOFInput(array())           , 'foobars', true,  'POST'	 , 'browse', $message);
-
-		return $data;
-	}
-
 	/**
-	 * @dataProvider getTestGetTask
+     * @group           FOFDispatcher
+     * @group           dispatcherGetTak
+     * @covers          FOFDispatcher::getTask
+	 * @dataProvider    getTestGetTask
 	 */
 	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
 	{
@@ -74,7 +70,15 @@ class FOFDispatcherTest extends FtestCase
 		$this->assertEquals($expected, $task, $message);
 	}
 
-	public function test_createDecryptionKey()
+    /**
+     * @TODO This test should be removed, since the tested function is no longer used and it's a private
+     * method, so we should not test it.
+     *
+     * @group           FOFDispatcher
+     * @group           dispatchercreateDecryptionKey
+     * @covers          FOFDispatcher::_createDecryptionKey
+     */
+    public function test_createDecryptionKey()
 	{
 		$dispatcher = FOFDispatcher::getTmpInstance();
 		$reflection = new ReflectionClass($dispatcher);
@@ -96,4 +100,9 @@ class FOFDispatcherTest extends FtestCase
 							$key,
 							'Decryption key is not the expected one');
 	}
+
+    public function getTestGetTask()
+    {
+        return DispatcherDataprovider::getTestGetTask();
+    }
 }
