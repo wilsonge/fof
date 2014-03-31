@@ -50,4 +50,40 @@ class FOFDatabaseIteratorTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $iterator = FOFDatabaseIterator::getIterator('Mysql', $db, null, 'WrongTable');
     }
+
+    /**
+     * @group   FOFDatabaseIterator
+     * @group   iteratorNext
+     * @covers  FOFDatabaseIterator::next
+     */
+    public function testNext()
+    {
+        $db = JFactory::getDbo();
+
+        $query = $db->getQuery(true)
+                    ->select('title, foftest_foobar_id')
+                    ->from('#__foftest_foobars')
+                    ->order('foftest_foobar_id DESC');
+        $check = $db->setQuery($query)->loadAssocList();
+
+        $db->disconnect();
+        $newDb = clone $db;
+
+        $newDb->setQuery($query);
+        $cursor = $newDb->execute();
+
+        $iterator = FOFDatabaseIterator::getIterator('Mysql', $cursor, null, 'FoftestTableFoobar');
+
+        $items = array();
+
+        foreach($iterator as $row)
+        {
+            $items[] = array(
+                'title' => $row->title,
+                'foftest_foobar_id' => $row->foftest_foobar_id
+            );
+        }
+
+        $this->assertEquals($check, $items, '');
+    }
 }
