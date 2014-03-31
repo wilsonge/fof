@@ -71,6 +71,56 @@ class FOFDispatcherTest extends FtestCase
 	}
 
     /**
+     * @group           FOFDispatcher
+     * @group           dispatcherTransparentAuthentication
+     * @covers          FOFDispatcher::transparentAuthentication
+     * @dataProvider    getTestTransparentAuthentication
+     */
+    public function testTransparentAuthentication($test, $check)
+    {
+        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getUser', 'loginUser'));
+        $platform->expects($this->any())->method('getUser')->will($this->returnValue((object) array('guest' => $test['guest'])));
+
+        if($check['login'])
+        {
+            $platform->expects($this->atLeastOnce())->method('loginUser')->will($this->returnValue(true));
+        }
+        else
+        {
+            $platform->expects($this->never())->method('loginUser');
+        }
+
+        FOFPlatform::forceInstance($platform);
+
+        if(isset($test['server']))
+        {
+            $_SERVER = array_merge($_SERVER, $test['server']);
+        }
+
+        $input = array('format' => $test['format']);
+
+        if(isset($test['input']))
+        {
+            $input = array_merge($input, $test['input']);
+        }
+
+        $config = array(
+            'input' => new FOFInput($input)
+        );
+
+        $dispatcher = new FOFDispatcher($config);
+
+        if(isset($test['authKey']))
+        {
+            $property = new ReflectionProperty($dispatcher, 'fofAuth_Key');
+            $property->setAccessible(true);
+            $property->setValue($dispatcher, $test['authKey']);
+        }
+
+        $dispatcher->transparentAuthentication();
+    }
+
+    /**
      * @TODO This test should be removed, since the tested function is no longer used and it's a private
      * method, so we should not test it.
      *
@@ -104,5 +154,10 @@ class FOFDispatcherTest extends FtestCase
     public function getTestGetTask()
     {
         return DispatcherDataprovider::getTestGetTask();
+    }
+
+    public function getTestTransparentAuthentication()
+    {
+        return DispatcherDataprovider::getTestTransparentAuthentication();
     }
 }

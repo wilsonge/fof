@@ -507,7 +507,6 @@ class FOFDispatcher extends FOFUtilsObject
 		foreach ($this->fofAuth_AuthMethods as $method)
 		{
 			// If we're already logged in, don't bother
-
 			if ($this->_fofAuth_isLoggedIn)
 			{
 				continue;
