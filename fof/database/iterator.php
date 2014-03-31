@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
 /**
  * Database iterator
  */
-abstract class FOFDatabaseIterator implements Countable, Iterator
+    abstract class FOFDatabaseIterator implements Countable, Iterator
 {
 	/**
 	 * The database cursor.
@@ -109,12 +109,19 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	{
 		// Figure out the type and prefix of the class by the class name
 		$parts = FOFInflector::explode($class);
+
+        if(count($parts) != 3)
+        {
+            throw new InvalidArgumentException('Invalid table name, expected a pattern like ComponentTableFoobar got '.$class);
+        }
+
 		$this->_tableObject = FOFTable::getInstance($parts[2], ucfirst($parts[0]) . ucfirst($parts[1]));
 
-		$this->cursor = $cursor;
-		$this->class = 'stdClass';
-		$this->_column = $column;
+		$this->cursor   = $cursor;
+		$this->class    = 'stdClass';
+		$this->_column  = $column;
 		$this->_fetched = 0;
+
 		$this->next();
 	}
 
