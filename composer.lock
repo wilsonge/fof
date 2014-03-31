@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4e753169745549fa9e14b91617cb5ac9",
+    "hash": "8410cbebaafba49c00960a5dfd8b28f4",
     "packages": [
         {
             "name": "mikey179/vfsStream",

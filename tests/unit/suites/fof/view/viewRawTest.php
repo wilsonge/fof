@@ -20,6 +20,8 @@ class FOFViewRawTest extends FtestCase
 
 	public function setUp()
 	{
+        FOFPlatform::forceInstance(null);
+
 		parent::setUp();
 
 		// Force a JDocumentHTML instance
@@ -72,7 +74,7 @@ class FOFViewRawTest extends FtestCase
 
 	protected function getView()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
 		$view = new FOFViewRaw($config);
@@ -96,7 +98,7 @@ class FOFViewRawTest extends FtestCase
 	{
 		$model = new FtestModel();
 		$this->view->setModel($model, true);
-		
+
 		$this->assertEquals($this->view->hasAjaxOrderingSupport(), false, 'hasAjaxOrderingSupport should return false');
 	}
 
@@ -107,7 +109,7 @@ class FOFViewRawTest extends FtestCase
 	{
 		$model = new FtestModel(array('table' => 'Ftest', 'option' => ''));
 		$this->view->setModel($model, true);
-		
+
 		$info = $this->view->hasAjaxOrderingSupport();
 
 		$this->assertInternalType('array', $info, 'hasAjaxOrderingSupport should return an array');
@@ -129,12 +131,12 @@ class FOFViewRawTest extends FtestCase
 	{
 		$model = new FtestFakeModel();
 		$this->view->setModel($model, true);
-		
+
 		$this->assertEquals($this->view->hasAjaxOrderingSupport(), false, 'hasAjaxOrderingSupport should return false');
 
 		$model = new FtestFakeModel2();
 		$this->view->setModel($model, true);
-		
+
 		$this->assertEquals($this->view->hasAjaxOrderingSupport(), false, 'hasAjaxOrderingSupport should return false');
 	}
 
@@ -152,7 +154,7 @@ class FOFViewRawTest extends FtestCase
 	 */
 	public function testContructorWithConfigObject()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
 		$view = new FOFViewRaw((object)$config);
@@ -171,7 +173,7 @@ class FOFViewRawTest extends FtestCase
 	 */
 	public function testContructorWithoutInput()
 	{
-		$config = array();				
+		$config = array();
 		$view = new FOFViewRaw($config);
 	}
 
@@ -234,8 +236,8 @@ class FOFViewRawTest extends FtestCase
 	{
 		$model = new FtestModel(array('table' => 'Ftest', 'option' => ''));
 		$model->setState('task', $task);
-		
-		$config = array();		
+
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $view));
 
 		$view = new FOFViewRaw($config);

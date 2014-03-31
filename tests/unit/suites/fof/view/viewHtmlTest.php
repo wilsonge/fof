@@ -8,6 +8,8 @@ class FOFViewHtmlTest extends FtestCase
 
 	public function setUp()
 	{
+        FOFPlatform::forceInstance(null);
+
 		parent::setUp();
 
 		// Force a JDocumentHTML instance
@@ -64,7 +66,7 @@ class FOFViewHtmlTest extends FtestCase
 
 	protected function getView()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
 		$view = new FOFViewHtml($config);
@@ -85,7 +87,7 @@ class FOFViewHtmlTest extends FtestCase
 	 */
 	public function testContructorWithConfigObject()
 	{
-		$config = array();		
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
 		$view = new FOFViewHtml((object)$config);
@@ -104,7 +106,7 @@ class FOFViewHtmlTest extends FtestCase
 	 */
 	public function testContructorWithoutInput()
 	{
-		$config = array();				
+		$config = array();
 		$view = new FOFViewHtml($config);
 	}
 
@@ -133,8 +135,8 @@ class FOFViewHtmlTest extends FtestCase
 	{
 		$model = new FtestModel(array('table' => 'Ftest', 'option' => ''));
 		$model->setState('task', $task);
-		
-		$config = array();		
+
+		$config = array();
 		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $view));
 		$config['view']	= $view;
 		$config['option']	= 'com_foftest';
