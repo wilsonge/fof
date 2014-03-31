@@ -282,7 +282,11 @@ class FOFDispatcher extends FOFUtilsObject
 
 		if (!$canDispatch)
 		{
-			$platform->setHeader('Status', '403 Forbidden', true);
+            // We can set header only if we're not in CLI
+            if(!$platform->isCli())
+            {
+                $platform->setHeader('Status', '403 Forbidden', true);
+            }
 
             return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
@@ -318,7 +322,11 @@ class FOFDispatcher extends FOFUtilsObject
 
 		if (!$this->onAfterDispatch())
 		{
-			$platform->setHeader('Status', '403 Forbidden', true);
+            // We can set header only if we're not in CLI
+            if(!$platform->isCli())
+            {
+                $platform->setHeader('Status', '403 Forbidden', true);
+            }
 
             return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}

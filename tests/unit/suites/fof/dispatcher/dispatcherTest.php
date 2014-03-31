@@ -20,6 +20,43 @@ class FOFDispatcherTest extends FtestCase
 
     /**
      * @group           FOFDispatcher
+     * @group           dispatcherDispatch
+     * @covers          FOFDispatcher::dispatch
+     * @dataProvider    getTestDispatch
+     */
+    public function testDispatch($test, $check)
+    {
+        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isCli', 'raiseError', 'authorizeAdmin', 'setHeader'));
+        $platform->expects($this->any())->method('isCli')->will($this->returnValue($test['isCli']));
+        $platform->expects($this->any())->method('authorizeAdmin')->will($this->returnValue($test['auth']));
+
+        $matcher = $check['result'] ? $this->never() : $this->once();
+        $platform->expects($matcher)->method('raiseError');
+
+        FOFPlatform::forceInstance($platform);
+
+        $input = array_merge(array('option' => 'com_foftest'), $test['input']);
+
+        $config = array(
+            'input' => new FOFInput($input)
+        );
+
+        $dispatcher = $this->getMock('FOFDispatcher', array('onBeforeDispatch', 'onBeforeDispatchCLI', 'onAfterDispatch'), array($config));
+        $dispatcher->expects($this->any())->method('onBeforeDispatch')->will($this->returnValue($test['before']));
+        $dispatcher->expects($this->any())->method('onBeforeDispatchCLI')->will($this->returnValue($test['beforeCli']));
+        $dispatcher->expects($this->any())->method('onAfterDispatch')->will($this->returnValue($test['after']));
+
+        // I will ask to phpUnit to create a mock with a fixed name, in this way FOFController::getTmpInstance
+        // will find the object and initialize it, using the mocked one
+        // The only downside is that we can't controll it (eg stubbing and mocking)
+        $view = FOFInflector::pluralize($input['view']);
+        $this->getMock('FOFController', array('execute'), array(), 'FoftestController'.ucfirst($view));
+
+        $dispatcher->dispatch();
+    }
+
+    /**
+     * @group           FOFDispatcher
      * @covers          FOFDispatcher::onBeforeDispatch
      */
 	public function testOnBeforeDispatch()
@@ -150,6 +187,11 @@ class FOFDispatcherTest extends FtestCase
 							$key,
 							'Decryption key is not the expected one');
 	}
+
+    public function getTestDispatch()
+    {
+        return DispatcherDataprovider::getTestDispatch();
+    }
 
     public function getTestGetTask()
     {

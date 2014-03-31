@@ -2,6 +2,99 @@
 
 class DispatcherDataprovider
 {
+    public static function getTestDispatch()
+    {
+        // we are not authorized to perform the actions
+        $data[] = array(
+            array(
+                'auth'      => false,
+                'isCli'     => false,
+                'before'    => true,
+                'after'     => true,
+                'beforeCli' => false,
+                'input'     => array(
+                    'view'  => 'foobars',
+                    'task'  => 'browse'
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // onBeforeDispatch returned false
+        $data[] = array(
+            array(
+                'auth'      => true,
+                'isCli'     => false,
+                'before'    => false,
+                'after'     => true,
+                'beforeCli' => true,
+                'input'     => array(
+                    'view'  => 'foobars',
+                    'task'  => 'browse'
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // onBeforeDispatchCLI returned false
+        $data[] = array(
+            array(
+                'auth'      => true,
+                'isCli'     => true,
+                'before'    => true,
+                'after'     => true,
+                'beforeCli' => false,
+                'input'     => array(
+                    'view'  => 'foobars',
+                    'task'  => 'browse'
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'auth'      => true,
+                'isCli'     => false,
+                'before'    => true,
+                'after'     => true,
+                'beforeCli' => false,
+                'input'     => array(
+                    'view'  => 'stubcontroller',
+                    'task'  => 'browse'
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'auth'      => true,
+                'isCli'     => false,
+                'before'    => true,
+                'after'     => false,
+                'beforeCli' => false,
+                'input'     => array(
+                    'view'  => 'stubcontroller',
+                    'task'  => 'browse'
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestGetTask()
     {
         $message = 'Incorrect task';
