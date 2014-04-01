@@ -9,13 +9,32 @@
 
 require_once 'controllerDataprovider.php';
 
-class FOFControllerTest extends FtestCase
+class FOFControllerTest extends FtestCaseDatabase
 {
+    protected function setUp()
+    {
+        $loadDataset = true;
+        $annotations = $this->getAnnotations();
+
+        // Do I need a dataset for this set or not?
+        if(isset($annotations['method']) && isset($annotations['method']['preventDataLoading']))
+        {
+            $loadDataset = false;
+        }
+
+        parent::setUp($loadDataset);
+
+        FOFPlatform::forceInstance(null);
+        FOFTable::forceInstance(null);
+    }
+
     /**
      * @group           FOFController
      * @group           controllerCreateFilename
      * @covers          FOFController::createFilename
      * @dataProvider    getTestCreateFilename
+     *
+     * @preventDataLoading
      */
     public function testCreateFilename($test, $check)
     {
@@ -31,6 +50,8 @@ class FOFControllerTest extends FtestCase
      * @group           controllerBrowse
      * @covers          FOFController::browse
      * @dataProvider    getTestBrowse
+     *
+     * @preventDataLoading
      */
     public function testBrowse($test, $check)
     {
@@ -50,7 +71,46 @@ class FOFControllerTest extends FtestCase
 
         $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
 
-        $controller->browse();
+        $return = $controller->browse();
+
+        $this->assertEquals($check['return'], $return, 'FOFController::browse returned the wrong value');
+    }
+
+    /**
+     * @group           FOFController
+     * @group           controllerRead
+     * @covers          FOFController::read
+     * @dataProvider    getTestRead
+     */
+    public function testRead($test, $check)
+    {
+        $controller = $this->getMock('FOFController', array('display', 'getModel'));
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
+
+        $taskCache = new ReflectionProperty($controller, 'cacheableTasks');
+        $taskCache->setAccessible(true);
+        $taskCache->setValue($controller, $test['cache']);
+
+        $layout = new ReflectionProperty($controller, 'layout');
+        $layout->setAccessible(true);
+        $layout->setValue($controller, $test['layout']);
+
+        // I have to load the record here since in the dataprovider the table is not populated yet
+        if($test['loadid'])
+        {
+            $test['item']->load($test['loadid']);
+        }
+
+        $model      = $this->getMock('FOFModel', array('setState', 'getId', 'getItem'));
+        $model->expects($this->any())->method('getId')->will($this->returnValue($test['id']));
+        $model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
+        $model->expects($this->any())->method('setState')->with($this->equalTo('form_name'), $this->equalTo($check['form_name']));
+
+        $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+        $return = $controller->read();
+
+        $this->assertEquals($check['return'], $return, 'FOFController::read returned the wrong value');
     }
 
     public function getTestCreateFilename()
@@ -61,5 +121,10 @@ class FOFControllerTest extends FtestCase
     public function getTestBrowse()
     {
         return ControllerDataprovider::getTestBrowse();
+    }
+
+    public function getTestRead()
+    {
+        return ControllerDataprovider::getTestRead();
     }
 }

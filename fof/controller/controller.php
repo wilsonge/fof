@@ -1176,7 +1176,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Set the layout to item, if it's not set in the URL
-
 		if (is_null($this->layout))
 		{
 			$this->layout = 'item';
@@ -2913,7 +2912,7 @@ class FOFController extends FOFUtilsObject
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
