@@ -26,8 +26,40 @@ class FOFControllerTest extends FtestCase
         $this->assertEquals($check['filename'], $filename, 'FOFController::createFilename created the wrong filename');
     }
 
+    /**
+     * @group           FOFController
+     * @group           controllerBrowse
+     * @covers          FOFController::browse
+     * @dataProvider    getTestBrowse
+     */
+    public function testBrowse($test, $check)
+    {
+        $controller = $this->getMock('FOFController', array('display', 'getModel'));
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
+
+        $taskCache = new ReflectionProperty($controller, 'cacheableTasks');
+        $taskCache->setAccessible(true);
+        $taskCache->setValue($controller, $test['cache']);
+
+        $layout = new ReflectionProperty($controller, 'layout');
+        $layout->setAccessible(true);
+        $layout->setValue($controller, $test['layout']);
+
+        $model      = $this->getMock('FOFModel', array('setState'));
+        $model->expects($this->any())->method('setState')->with($this->equalTo('form_name'), $this->equalTo($check['form_name']));
+
+        $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+        $controller->browse();
+    }
+
     public function getTestCreateFilename()
     {
         return ControllerDataprovider::getTestCreateFilename();
+    }
+
+    public function getTestBrowse()
+    {
+        return ControllerDataprovider::getTestBrowse();
     }
 }

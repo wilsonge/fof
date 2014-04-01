@@ -70,4 +70,42 @@ class ControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestBrowse()
+    {
+        $data[] = array(
+            array(
+                'cache'  => array('browse', 'read'),
+                'layout' => ''
+            ),
+            array(
+                'cache'     => true,
+                'form_name' => 'form.default'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => array('browse', 'read'),
+                'layout' => 'dummy'
+            ),
+            array(
+                'cache'     => true,
+                'form_name' => 'form.dummy'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => array('read'),
+                'layout' => ''
+            ),
+            array(
+                'cache'     => false,
+                'form_name' => 'form.default'
+            )
+        );
+
+        return $data;
+    }
 }
