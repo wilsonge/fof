@@ -2060,7 +2060,7 @@ class FOFController extends FOFUtilsObject
 	 *
 	 * @return  bool
 	 */
-	final protected function setstate($state = 0)
+	protected function setstate($state = 0)
 	{
 		$model = $this->getThisModel();
 
@@ -2099,7 +2099,7 @@ class FOFController extends FOFUtilsObject
 	 *
 	 * @return  bool
 	 */
-	final protected function setaccess($level = 0)
+	protected function setaccess($level = 0)
 	{
 		$model = $this->getThisModel();
 
@@ -2156,7 +2156,7 @@ class FOFController extends FOFUtilsObject
 	 *
 	 * @return  boolean  Returns true on success
 	 */
-	final protected function applySave()
+	final private function applySave()
 	{
 		// Load the model
 		$model = $this->getThisModel();
