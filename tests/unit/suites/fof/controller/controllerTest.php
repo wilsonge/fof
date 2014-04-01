@@ -146,6 +146,65 @@ class FOFControllerTest extends FtestCaseDatabase
         $this->assertEquals($check['return'], $return, 'FOFController::add returned the wrong value');
     }
 
+    /**
+     * @group           FOFController
+     * @group           controllerEdit
+     * @covers          FOFController::edit
+     * @dataProvider    getTestEdit
+     */
+    public function testEdit($test, $check)
+    {
+        $config = array(
+            'input' => new FOFInput(array(
+                    'option'    => 'com_foftest',
+                    'view'      => 'foobar',
+                    'returnurl' => $test['returnurl']
+                ))
+        );
+
+        $controller = $this->getMock('FOFController', array('display', 'getModel', 'setRedirect'), array($config));
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
+
+        if($test['checkout'])
+        {
+            $controller->expects($this->never())->method('setRedirect');
+        }
+        else
+        {
+            $controller->expects($this->once())->method('setRedirect')->with(
+                $this->equalTo($check['returnUrl']),
+                $this->equalTo(''),
+                $this->equalTo('error')
+            );
+        }
+
+        $taskCache = new ReflectionProperty($controller, 'cacheableTasks');
+        $taskCache->setAccessible(true);
+        $taskCache->setValue($controller, $test['cache']);
+
+        $layout = new ReflectionProperty($controller, 'layout');
+        $layout->setAccessible(true);
+        $layout->setValue($controller, $test['layout']);
+
+        // I have to load the record here since in the dataprovider the table is not populated yet
+        if($test['loadid'])
+        {
+            $test['item']->load($test['loadid']);
+        }
+
+        $model      = $this->getMock('FOFModel', array('setState', 'getId', 'getItem', 'checkout'));
+        $model->expects($this->any())->method('getId')->will($this->returnValue($test['id']));
+        $model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
+        $model->expects($this->any())->method('checkout')->will($this->returnValue($test['checkout']));
+        $model->expects($this->any())->method('setState')->with($this->equalTo('form_name'), $this->equalTo($check['form_name']));
+
+        $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+        $return = $controller->edit();
+
+        $this->assertEquals($check['return'], $return, 'FOFController::edit returned the wrong value');
+    }
+
     public function getTestCreateFilename()
     {
         return ControllerDataprovider::getTestCreateFilename();
@@ -164,5 +223,10 @@ class FOFControllerTest extends FtestCaseDatabase
     public function getTestAdd()
     {
         return ControllerDataprovider::getTestAdd();
+    }
+
+    public function getTestEdit()
+    {
+        return ControllerDataprovider::getTestEdit();
     }
 }
