@@ -192,4 +192,62 @@ class ControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestAdd()
+    {
+        $item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
+        $data[] = array(
+            array(
+                'cache'  => array('browse', 'read'),
+                'layout' => null,
+                'item'   => $item,
+            ),
+            array(
+                'cache'     => false,
+                'form_name' => 'form.form',
+                'return'    => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => array('browse', 'read'),
+                'layout' => 'dummy',
+                'item'   => $item,
+            ),
+            array(
+                'cache'     => false,
+                'form_name' => 'form.dummy',
+                'return'    => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => array('browse', 'add'),
+                'layout' => null,
+                'item'   => $item
+            ),
+            array(
+                'cache'     => true,
+                'form_name' => 'form.form',
+                'return'    => null
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => array('browse', 'read'),
+                'layout' => null,
+                'item'   => new stdClass(),
+            ),
+            array(
+                'cache'     => true,
+                'form_name' => 'form.form',
+                'return'    => false
+            )
+        );
+
+        return $data;
+    }
 }

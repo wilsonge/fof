@@ -113,6 +113,39 @@ class FOFControllerTest extends FtestCaseDatabase
         $this->assertEquals($check['return'], $return, 'FOFController::read returned the wrong value');
     }
 
+    /**
+     * @group           FOFController
+     * @group           controllerAdd
+     * @covers          FOFController::add
+     * @dataProvider    getTestAdd
+     *
+     * @preventDataLoading
+     */
+    public function testAdd($test, $check)
+    {
+        $controller = $this->getMock('FOFController', array('display', 'getModel'));
+        $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
+
+        $taskCache = new ReflectionProperty($controller, 'cacheableTasks');
+        $taskCache->setAccessible(true);
+        $taskCache->setValue($controller, $test['cache']);
+
+        $layout = new ReflectionProperty($controller, 'layout');
+        $layout->setAccessible(true);
+        $layout->setValue($controller, $test['layout']);
+
+
+        $model      = $this->getMock('FOFModel', array('setState', 'getItem'));
+        $model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
+        $model->expects($this->any())->method('setState')->with($this->equalTo('form_name'), $this->equalTo($check['form_name']));
+
+        $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+        $return = $controller->add();
+
+        $this->assertEquals($check['return'], $return, 'FOFController::add returned the wrong value');
+    }
+
     public function getTestCreateFilename()
     {
         return ControllerDataprovider::getTestCreateFilename();
@@ -126,5 +159,10 @@ class FOFControllerTest extends FtestCaseDatabase
     public function getTestRead()
     {
         return ControllerDataprovider::getTestRead();
+    }
+
+    public function getTestAdd()
+    {
+        return ControllerDataprovider::getTestAdd();
     }
 }
