@@ -377,4 +377,42 @@ class ControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestCopy()
+    {
+        $data[] = array(
+            array(
+                'copy'      => true,
+                'returnurl' => '',
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'copy'      => true,
+                'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl'),
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=returnurl'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'copy'      => false,
+                'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl'),
+            ),
+            array(
+                'return'    => false,
+                'returnUrl' => 'index.php?option=com_foftest&view=returnurl'
+            )
+        );
+
+        return $data;
+    }
 }

@@ -205,6 +205,51 @@ class FOFControllerTest extends FtestCaseDatabase
         $this->assertEquals($check['return'], $return, 'FOFController::edit returned the wrong value');
     }
 
+    /**
+     * @group           FOFController
+     * @group           controllerCopy
+     * @covers          FOFController::copy
+     * @dataProvider    getTestCopy
+     */
+    public function testCopy($test, $check)
+    {
+        $config = array(
+            'input' => new FOFInput(array(
+                    'option'    => 'com_foftest',
+                    'view'      => 'foobar',
+                    'returnurl' => $test['returnurl']
+                ))
+        );
+
+        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
+        $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
+
+        if($test['copy'])
+        {
+            $controller->expects($this->once())->method('setRedirect')->with(
+                $this->equalTo($check['returnUrl'])
+            );
+        }
+        else
+        {
+            $controller->expects($this->once())->method('setRedirect')->with(
+                $this->equalTo($check['returnUrl']),
+                $this->equalTo(''),
+                $this->equalTo('error')
+            );
+        }
+
+        $model = $this->getMock('FOFModel', array('getId', 'copy'));
+        $model->expects($this->any())->method('getId')->will($this->returnValue(true));
+        $model->expects($this->any())->method('copy')->will($this->returnValue($test['copy']));
+
+        $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+        $return = $controller->copy();
+
+        $this->assertEquals($check['return'], $return, 'FOFController::copy returned the wrong value');
+    }
+
     public function getTestCreateFilename()
     {
         return ControllerDataprovider::getTestCreateFilename();
@@ -228,5 +273,10 @@ class FOFControllerTest extends FtestCaseDatabase
     public function getTestEdit()
     {
         return ControllerDataprovider::getTestEdit();
+    }
+
+    public function getTestCopy()
+    {
+        return ControllerDataprovider::getTestCopy();
     }
 }

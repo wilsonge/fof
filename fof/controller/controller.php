@@ -1331,7 +1331,6 @@ class FOFController extends FOFUtilsObject
 	public function apply()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1341,7 +1340,6 @@ class FOFController extends FOFUtilsObject
 		$result = $this->applySave();
 
 		// Redirect to the edit task
-
 		if ($result)
 		{
 			$id = $this->input->get('id', 0, 'int');
@@ -1367,7 +1365,6 @@ class FOFController extends FOFUtilsObject
 	public function copy()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1383,7 +1380,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->copy();
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
@@ -1399,7 +1395,11 @@ class FOFController extends FOFUtilsObject
 		}
 		else
 		{
-            FOFPlatform::getInstance()->setHeader('Status', '201 Created', true);
+            if(!FOFPlatform::getInstance()->isCli())
+            {
+                FOFPlatform::getInstance()->setHeader('Status', '201 Created', true);
+            }
+
 			$this->setRedirect($url);
 
 			return true;
