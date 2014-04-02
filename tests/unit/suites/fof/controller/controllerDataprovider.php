@@ -529,4 +529,42 @@ class ControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestRemove()
+    {
+        $data[] = array(
+            array(
+                'remove'   => true,
+                'returnurl' => ''
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'remove'   => false,
+                'returnurl' => ''
+            ),
+            array(
+                'return'    => false,
+                'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'remove'   => true,
+                'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl')
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=returnurl'
+            )
+        );
+
+        return $data;
+    }
 }

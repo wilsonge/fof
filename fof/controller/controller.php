@@ -1843,7 +1843,6 @@ class FOFController extends FOFUtilsObject
 	public function remove()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1859,7 +1858,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->delete();
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
