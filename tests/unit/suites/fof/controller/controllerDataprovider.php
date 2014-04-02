@@ -415,4 +415,42 @@ class ControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestCancel()
+    {
+        $data[] = array(
+            array(
+                'checkin'   => true,
+                'returnurl' => ''
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'checkin'   => false,
+                'returnurl' => ''
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'checkin'   => false,
+                'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl')
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=returnurl'
+            )
+        );
+
+        return $data;
+    }
 }

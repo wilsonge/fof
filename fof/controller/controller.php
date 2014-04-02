@@ -1422,7 +1422,6 @@ class FOFController extends FOFUtilsObject
 		$result = $this->applySave();
 
 		// Redirect to the display task
-
 		if ($result)
 		{
 			$textkey = strtoupper($this->component) . '_LBL_' . strtoupper($this->view) . '_SAVED';

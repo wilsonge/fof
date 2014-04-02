@@ -250,6 +250,60 @@ class FOFControllerTest extends FtestCaseDatabase
         $this->assertEquals($check['return'], $return, 'FOFController::copy returned the wrong value');
     }
 
+    /**
+     * @group           FOFController
+     * @group           controllerCancel
+     * @covers          FOFController::cancel
+     * @dataProvider    getTestCancel
+     */
+    public function testCancel($test, $check)
+    {
+        $config = array(
+            'input' => new FOFInput(array(
+                    'option'    => 'com_foftest',
+                    'view'      => 'foobar',
+                    'returnurl' => $test['returnurl']
+                ))
+        );
+
+        $hackedSession = new JSession;
+
+        // Manually set the session as active
+        $property = new ReflectionProperty($hackedSession, '_state');
+        $property->setAccessible(true);
+        $property->setValue($hackedSession, 'active');
+
+        $session = serialize(array('foftest_foobar_id' => 2, 'title' => 'Title from session'));
+
+        // We're in CLI and no $_SESSION variable? No problem, I'll manually create it!
+        // I'm going to hell for doing this...
+        $_SESSION['__default']['com_foftest.foobars.savedata'] = $session;
+
+        JFactory::$session = $hackedSession;
+
+        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect'), array($config));
+        $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
+
+        $controller->expects($this->once())->method('setRedirect')->with(
+            $this->equalTo($check['returnUrl'])
+        );
+
+        $model = $this->getMock('FOFModel', array('getId', 'copy'), array($config));
+        $model->expects($this->any())->method('getId')->will($this->returnValue(true));
+        $model->expects($this->any())->method('checkin')->will($this->returnValue($test['checkin']));
+
+        $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+        $return = $controller->cancel();
+
+        $this->assertEquals($check['return'], $return, 'FOFController::cancel returned the wrong value');
+
+        $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFController::cancel should wipe saved session data');
+
+        // Let's remove any evidence...
+        unset($_SESSION);
+    }
+
     public function getTestCreateFilename()
     {
         return ControllerDataprovider::getTestCreateFilename();
@@ -278,5 +332,10 @@ class FOFControllerTest extends FtestCaseDatabase
     public function getTestCopy()
     {
         return ControllerDataprovider::getTestCopy();
+    }
+
+    public function getTestCancel()
+    {
+        return ControllerDataprovider::getTestCancel();
     }
 }
