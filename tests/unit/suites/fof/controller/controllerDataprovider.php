@@ -491,4 +491,42 @@ class ControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestOrderUp()
+    {
+        $data[] = array(
+            array(
+                'move'   => true,
+                'returnurl' => ''
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'move'   => false,
+                'returnurl' => ''
+            ),
+            array(
+                'return'    => false,
+                'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'move'   => true,
+                'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl')
+            ),
+            array(
+                'return'    => true,
+                'returnUrl' => 'index.php?option=com_foftest&view=returnurl'
+            )
+        );
+
+        return $data;
+    }
 }

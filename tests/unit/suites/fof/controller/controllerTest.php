@@ -347,7 +347,52 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->orderdown();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::move returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'FOFController::orderdown returned the wrong value');
+    }
+
+    /**
+     * @group           FOFController
+     * @group           controllerOrderup
+     * @covers          FOFController::orderup
+     * @dataProvider    getTestOrderUp
+     */
+    public function testOrderup($test, $check)
+    {
+        $config = array(
+            'input' => new FOFInput(array(
+                    'option'    => 'com_foftest',
+                    'view'      => 'foobar',
+                    'returnurl' => $test['returnurl']
+                ))
+        );
+
+        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
+        $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
+
+        if($test['move'])
+        {
+            $controller->expects($this->once())->method('setRedirect')->with(
+                $this->equalTo($check['returnUrl'])
+            );
+        }
+        else
+        {
+            $controller->expects($this->once())->method('setRedirect')->with(
+                $this->equalTo($check['returnUrl']),
+                $this->equalTo(''),
+                $this->equalTo('error')
+            );
+        }
+
+        $model = $this->getMock('FOFModel', array('getId', 'move'));
+        $model->expects($this->any())->method('getId')->will($this->returnValue(true));
+        $model->expects($this->any())->method('move')->will($this->returnValue($test['move']));
+
+        $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+        $return = $controller->orderup();
+
+        $this->assertEquals($check['return'], $return, 'FOFController::orderdup returned the wrong value');
     }
 
     public function getTestCreateFilename()
@@ -388,5 +433,10 @@ class FOFControllerTest extends FtestCaseDatabase
     public function getTestOrderDown()
     {
         return ControllerDataprovider::getTestOrderDown();
+    }
+
+    public function getTestOrderUp()
+    {
+        return ControllerDataprovider::getTestOrderUp();
     }
 }
