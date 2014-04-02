@@ -1759,7 +1759,6 @@ class FOFController extends FOFUtilsObject
 	public function orderdown()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1775,7 +1774,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->move(1);
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
