@@ -604,6 +604,55 @@ class FOFControllerTest extends FtestCaseDatabase
 		$this->assertEquals($check['level'], $test['item']->$access, 'FOFController::setaccess didn\'t set the access level to the table');
 	}
 
+	/**
+	 * @group           FOFController
+	 * @group           controllerGetModel
+	 * @covers          FOFController::getModel
+	 * @dataProvider    getTestGetModel
+	 *
+	 * @preventDataLoading
+	 */
+	public function testGetModel($test, $check)
+	{
+		$config = array(
+			'input' => new FOFInput(array(
+					'option'    => 'com_foftest',
+					'view'      => 'foobar',
+					'task'      => 'test'
+				))
+		);
+
+		$controller = $this->getMock('FOFController', array('createModel', 'setRedirect'), array($config));
+		$controller->expects($this->any())->method('createModel')->with(
+			$this->equalTo($check['name']),
+			$this->equalTo($check['prefix']),
+			$this->equalTo($check['$config'])
+		);
+
+		if($test['model'])
+		{
+			$model = $this->getMock('FOFModel', array('setState'));
+			$model->expects($this->any())->method('setState')->with(
+				$this->equalTo('task'),
+				$this->equalTo('test')
+			);
+		}
+		else
+		{
+			$model = false;
+		}
+
+
+		$controller->expects($this->any())->method('createModel')->will($this->returnValue($model));
+
+		$return = $controller->getModel($test['name'], $test['prefix'], $test['config']);
+
+		if(!$check['return'])
+		{
+			//$this->assertEquals()
+		}
+	}
+
     public function getTestCreateFilename()
     {
         return ControllerDataprovider::getTestCreateFilename();
@@ -667,5 +716,10 @@ class FOFControllerTest extends FtestCaseDatabase
 	public function getTestSetAccess()
 	{
 		return ControllerDataprovider::getTestSetAccess();
+	}
+
+	public function getTestGetModel()
+	{
+		return ControllerDataprovider::getTestGetModel();
 	}
 }

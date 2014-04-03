@@ -2279,7 +2279,6 @@ class FOFController extends FOFUtilsObject
 	public function getModel($name = '', $prefix = '', $config = array())
 	{
 		// Make sure $config is an array
-
 		if (is_object($config))
 		{
 			$config = (array) $config;

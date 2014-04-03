@@ -857,4 +857,13 @@ class ControllerDataprovider
 
 		return $data;
 	}
+
+	public static function getTestGetModel()
+	{
+		$data[] = array(
+
+		);
+
+		return $data;
+	}
 }
