@@ -571,7 +571,7 @@ class ControllerDataprovider
 	public static function getTestSetRedirect()
 	{
 		// No routing at all
-		/*$data[] = array(
+		$data[] = array(
 			array(
 				'route'     => 0,
 				'backend'   => false,
@@ -600,7 +600,7 @@ class ControllerDataprovider
 				'type'     => 'message',
 				'message'  => ''
 			)
-		);*/
+		);
 
 		// Backend and I want routing on frontend
 		$data[] = array(
@@ -728,6 +728,44 @@ class ControllerDataprovider
 				'redirect' => 'index.php?option=com_foftest&view=foobar',
 				'type'     => 'notice',
 				'message'  => 'Test message'
+			)
+		);
+
+		return $data;
+	}
+
+	public static function getTestSetState()
+	{
+		$data[] = array(
+			array(
+				'publish'   => true,
+				'returnurl' => ''
+			),
+			array(
+				'return'    => true,
+				'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+			)
+		);
+
+		$data[] = array(
+			array(
+				'publish'   => false,
+				'returnurl' => ''
+			),
+			array(
+				'return'    => false,
+				'returnUrl' => 'index.php?option=com_foftest&view=foobars'
+			)
+		);
+
+		$data[] = array(
+			array(
+				'publish'   => true,
+				'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl')
+			),
+			array(
+				'return'    => true,
+				'returnUrl' => 'index.php?option=com_foftest&view=returnurl'
 			)
 		);
 

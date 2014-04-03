@@ -2059,7 +2059,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->publish($state);
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
