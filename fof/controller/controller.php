@@ -614,7 +614,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Set the default view search path
-
 		if (array_key_exists('view_path', $config))
 		{
 			// User-defined dirs
@@ -656,7 +655,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Set the CSRF protection
-
 		if (array_key_exists('csrf_protection', $config))
 		{
 			$this->csrfProtection = $config['csrf_protection'];
@@ -668,7 +666,6 @@ class FOFController extends FOFUtilsObject
 		);
 
 		// Set any model/view name overrides
-
 		if (array_key_exists('viewName', $config))
 		{
 			$this->setThisViewName($config['viewName']);
@@ -704,7 +701,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Caching
-
 		if (array_key_exists('cacheableTasks', $config))
 		{
 			if (is_array($config['cacheableTasks']))
@@ -2035,7 +2031,6 @@ class FOFController extends FOFUtilsObject
 				$this->messageType = 'message';
 			}
 		}
-
 		// If the type is explicitly set, set it.
 		else
 		{

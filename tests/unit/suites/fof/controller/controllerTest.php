@@ -8,6 +8,7 @@
  */
 
 require_once 'controllerDataprovider.php';
+require_once JPATH_TESTS.'/unit/core/application/route.php';
 
 class FOFControllerTest extends FtestCaseDatabase
 {
@@ -210,6 +211,8 @@ class FOFControllerTest extends FtestCaseDatabase
      * @group           controllerCopy
      * @covers          FOFController::copy
      * @dataProvider    getTestCopy
+     *
+     * @preventDataLoading
      */
     public function testCopy($test, $check)
     {
@@ -255,6 +258,8 @@ class FOFControllerTest extends FtestCaseDatabase
      * @group           controllerCancel
      * @covers          FOFController::cancel
      * @dataProvider    getTestCancel
+     *
+     * @preventDataLoading
      */
     public function testCancel($test, $check)
     {
@@ -310,6 +315,8 @@ class FOFControllerTest extends FtestCaseDatabase
      * @group           controllerOrderdown
      * @covers          FOFController::orderdown
      * @dataProvider    getTestOrderDown
+     *
+     * @preventDataLoading
      */
     public function testOrderdown($test, $check)
     {
@@ -355,6 +362,8 @@ class FOFControllerTest extends FtestCaseDatabase
      * @group           controllerOrderup
      * @covers          FOFController::orderup
      * @dataProvider    getTestOrderUp
+     *
+     * @preventDataLoading
      */
     public function testOrderup($test, $check)
     {
@@ -400,6 +409,8 @@ class FOFControllerTest extends FtestCaseDatabase
      * @group           controllerRemove
      * @covers          FOFController::remove
      * @dataProvider    getTestRemove
+     *
+     * @preventDataLoading
      */
     public function testRemove($test, $check)
     {
@@ -439,6 +450,55 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $this->assertEquals($check['return'], $return, 'FOFController::remove returned the wrong value');
     }
+
+	/**
+	 * @group           FOFController
+	 * @group           controllerSetRedirect
+	 * @covers          FOFController::setRedirect
+	 * @dataProvider    getTestSetRedirect
+	 *
+	 * @preventDataLoading
+	 */
+	public function testSetRedirect($test, $check)
+	{
+		$config = array(
+			'autoRouting' => $test['route'],
+			'input' => new FOFInput(array(
+					'option'    => 'com_foftest',
+					'view'      => 'foobar'
+				))
+		);
+
+		$platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+		$platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['backend']));
+
+		FOFPlatform::forceInstance($platform);
+
+		$controller = new FOFController($config);
+
+		$type = new ReflectionProperty($controller, 'messageType');
+		$type->setAccessible(true);
+
+		if(isset($test['previousType']))
+		{
+			$type->setValue($controller, $test['previousType']);
+		}
+
+		$return = $controller->setRedirect($test['url'], $test['msg'], $test['type']);
+
+		$this->assertInstanceOf('FOFController', $return, 'FOFController::setRedirect should return an instance of FOFController');
+
+		$redirect = new ReflectionProperty($controller, 'redirect');
+		$redirect->setAccessible(true);
+		$this->assertEquals($check['redirect'], $redirect->getValue($controller), 'FOFController::setController created the wrong redirect URL');
+
+
+		$this->assertEquals($check['type'], $type->getValue($controller), 'FOFController::setController set the wrong message type');
+
+		$message = new ReflectionProperty($controller, 'message');
+		$message->setAccessible(true);
+		$this->assertEquals($check['message'], $message->getValue($controller), 'FOFController::setController set the wrong message');
+	}
 
     public function getTestCreateFilename()
     {
@@ -489,4 +549,9 @@ class FOFControllerTest extends FtestCaseDatabase
     {
         return ControllerDataprovider::getTestRemove();
     }
+
+	public function getTestSetRedirect()
+	{
+		return ControllerDataprovider::getTestSetRedirect();
+	}
 }

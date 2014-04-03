@@ -567,4 +567,170 @@ class ControllerDataprovider
 
         return $data;
     }
+
+	public static function getTestSetRedirect()
+	{
+		// No routing at all
+		/*$data[] = array(
+			array(
+				'route'     => 0,
+				'backend'   => false,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'index.php?option=com_foftest&view=foobar',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);
+
+		// Fronten and I want routing on frontend
+		$data[] = array(
+			array(
+				'route'     => 1,
+				'backend'   => false,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'url-routed',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);*/
+
+		// Backend and I want routing on frontend
+		$data[] = array(
+			array(
+				'route'     => 1,
+				'backend'   => true,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'index.php?option=com_foftest&view=foobar',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);
+
+		// Frontend and I want routing on backend
+		$data[] = array(
+			array(
+				'route'     => 2,
+				'backend'   => false,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'index.php?option=com_foftest&view=foobar',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);
+
+		// Backend and I want routing on backend
+		$data[] = array(
+			array(
+				'route'     => 2,
+				'backend'   => true,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'url-routed',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);
+
+		// Backend and I always want routing
+		$data[] = array(
+			array(
+				'route'     => 3,
+				'backend'   => false,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'url-routed',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);
+
+		// Frontend and I always want routing
+		$data[] = array(
+			array(
+				'route'     => 3,
+				'backend'   => true,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'url-routed',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);
+
+		// SEF url should not be routed
+		$data[] = array(
+			array(
+				'route'     => 3,
+				'backend'   => false,
+				'url'       => 'already-sef-url',
+				'msg'       => '',
+				'type'      => ''
+			),
+			array(
+				'redirect' => 'already-sef-url',
+				'type'     => 'message',
+				'message'  => ''
+			)
+		);
+
+		// Check for message and type
+		$data[] = array(
+			array(
+				'route'     => 0,
+				'backend'   => false,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => 'Test message',
+				'type'      => 'error'
+			),
+			array(
+				'redirect' => 'index.php?option=com_foftest&view=foobar',
+				'type'     => 'error',
+				'message'  => 'Test message'
+			)
+		);
+
+		// Empty type, but I already had a type previously set
+		$data[] = array(
+			array(
+				'route'     => 0,
+				'backend'   => false,
+				'url'       => 'index.php?option=com_foftest&view=foobar',
+				'msg'       => 'Test message',
+				'type'      => '',
+				'previousType' => 'notice'
+			),
+			array(
+				'redirect' => 'index.php?option=com_foftest&view=foobar',
+				'type'     => 'notice',
+				'message'  => 'Test message'
+			)
+		);
+
+		return $data;
+	}
 }
