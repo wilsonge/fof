@@ -2094,8 +2094,7 @@ class FOFController extends FOFUtilsObject
 			$model->setIDsFromRequest();
 		}
 
-		$id = $model->getId();
-
+		$id   = $model->getId();
 		$item = $model->getItem();
 
 		if (!($item instanceof FOFTable))
@@ -2103,12 +2102,13 @@ class FOFController extends FOFUtilsObject
 			return false;
 		}
 
-		$key = $item->getKeyName();
-		$loadedid = $item->$key;
+		$accessField = $item->getColumnAlias('access');
+		$key         = $item->getKeyName();
+		$loadedid    = $item->$key;
 
 		if ($id == $loadedid)
 		{
-			$item->access = $level;
+			$item->$accessField = $level;
 			$status = $model->save($item);
 		}
 		else
@@ -2117,7 +2117,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);

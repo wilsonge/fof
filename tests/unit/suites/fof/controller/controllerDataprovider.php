@@ -771,4 +771,90 @@ class ControllerDataprovider
 
 		return $data;
 	}
+
+	public static function getTestSetAccess()
+	{
+		$item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
+		$data[] = array(
+			array(
+				'save'      => true,
+				'returnurl' => '',
+				'id'        => 2,
+				'item'      => $item,
+				'loadid'    => 2,
+				'level'     => 3
+			),
+			array(
+				'return'    => true,
+				'returnUrl' => 'index.php?option=com_foftest&view=foobars',
+				'level'     => 3
+			)
+		);
+
+		$data[] = array(
+			array(
+				'save'      => false,
+				'returnurl' => '',
+				'id'        => 2,
+				'item'      => $item,
+				'loadid'    => 2,
+				'level'     => 3
+			),
+			array(
+				'return'    => false,
+				'returnUrl' => 'index.php?option=com_foftest&view=foobars',
+				'level'     => 3
+			)
+		);
+
+		$data[] = array(
+			array(
+				'save'      => false,
+				'returnurl' => '',
+				'id'        => 2,
+				'item'      => $item,
+				'loadid'    => 3,
+				'level'     => 3
+			),
+			array(
+				'return'    => false,
+				'returnUrl' => 'index.php?option=com_foftest&view=foobars',
+				'level'     => 1
+			)
+		);
+
+		$data[] = array(
+			array(
+				'save'      => true,
+				'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl'),
+				'id'        => 2,
+				'item'      => $item,
+				'loadid'    => 2,
+				'level'     => 3
+			),
+			array(
+				'return'    => true,
+				'returnUrl' => 'index.php?option=com_foftest&view=returnurl',
+				'level'     => 3
+			)
+		);
+
+		$data[] = array(
+			array(
+				'save'      => false,
+				'returnurl' => base64_encode('index.php?option=com_foftest&view=returnurl'),
+				'id'        => 2,
+				'item'      => $item,
+				'loadid'    => 2,
+				'level'     => 3
+			),
+			array(
+				'return'    => false,
+				'returnUrl' => 'index.php?option=com_foftest&view=returnurl',
+				'level'     => 3
+			)
+		);
+
+		return $data;
+	}
 }

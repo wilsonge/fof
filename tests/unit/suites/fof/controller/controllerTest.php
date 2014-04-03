@@ -549,6 +549,61 @@ class FOFControllerTest extends FtestCaseDatabase
 		$this->assertEquals($check['return'], $return, 'FOFController::setstate returned the wrong value');
 	}
 
+	/**
+	 * @group           FOFController
+	 * @group           controllerSetaccess
+	 * @covers          FOFController::setaccess
+	 * @dataProvider    getTestSetAccess
+	 */
+	public function testSetaccess($test, $check)
+	{
+		$config = array(
+			'input' => new FOFInput(array(
+					'option'    => 'com_foftest',
+					'view'      => 'foobar',
+					'returnurl' => $test['returnurl']
+				))
+		);
+
+		$controller = $this->getMock('FOFController', array('getModel', 'setRedirect'), array($config));
+
+		if($test['save'])
+		{
+			$controller->expects($this->once())->method('setRedirect')->with($this->equalTo($check['returnUrl']));
+		}
+		else
+		{
+			$controller->expects($this->once())->method('setRedirect')->with(
+				$this->equalTo($check['returnUrl']),
+				$this->equalTo(''),
+				$this->equalTo('error')
+			);
+		}
+
+		// I have to load the record here since in the dataprovider the table is not populated yet
+		if($test['loadid'])
+		{
+			$test['item']->load($test['loadid']);
+		}
+
+		$model      = $this->getMock('FOFModel', array('getId', 'getItem', 'save'));
+		$model->expects($this->any())->method('getId')->will($this->returnValue($test['id']));
+		$model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
+		$model->expects($this->any())->method('save')->will($this->returnValue($test['save']));
+
+		$controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
+
+		$setaccess = new ReflectionMethod($controller, 'setaccess');
+		$setaccess->setAccessible(true);
+
+		$return = $setaccess->invoke($controller, $test['level']);
+
+		$access = $test['item']->getColumnAlias('access');
+
+		$this->assertEquals($check['return'], $return, 'FOFController::setaccess returned the wrong value');
+		$this->assertEquals($check['level'], $test['item']->$access, 'FOFController::setaccess didn\'t set the access level to the table');
+	}
+
     public function getTestCreateFilename()
     {
         return ControllerDataprovider::getTestCreateFilename();
@@ -607,5 +662,10 @@ class FOFControllerTest extends FtestCaseDatabase
 	public function getTestSetState()
 	{
 		return ControllerDataprovider::getTestSetState();
+	}
+
+	public function getTestSetAccess()
+	{
+		return ControllerDataprovider::getTestSetAccess();
 	}
 }
