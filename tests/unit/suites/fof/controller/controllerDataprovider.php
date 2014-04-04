@@ -973,4 +973,128 @@ class ControllerDataprovider
 
         return $data;
     }
+
+    public static function getTestGetView()
+    {
+        $data[] = array(
+            array(
+                'cache'  => false,
+                'name'   => '',
+                'type'   => '',
+                'prefix' => '',
+                'config' => ''
+            ),
+            array(
+                'name'   => 'foftest',
+                'type'   => '',
+                'prefix' => 'foftestView',
+                'config' => array(),
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => false,
+                'name'   => 'dummy',
+                'type'   => '',
+                'prefix' => '',
+                'config' => ''
+            ),
+            array(
+                'name'   => 'dummy',
+                'type'   => '',
+                'prefix' => 'foftestView',
+                'config' => array(),
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => false,
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => '',
+                'config' => ''
+            ),
+            array(
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => 'foftestView',
+                'config' => array(),
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => false,
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => 'foobarView',
+                'config' => ''
+            ),
+            array(
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => 'foobarView',
+                'config' => array(),
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => false,
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => 'foobarView',
+                'config' => array('test' => 123)
+            ),
+            array(
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => 'foobarView',
+                'config' => array('test' => 123),
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => false,
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => 'foobarView',
+                'config' => (object)array('test' => 123)
+            ),
+            array(
+                'name'   => 'dummy',
+                'type'   => 'html',
+                'prefix' => 'foobarView',
+                'config' => array('test' => 123),
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'cache'  => true,
+                'name'   => '',
+                'type'   => '',
+                'prefix' => '',
+                'config' => ''
+            ),
+            array(
+                'name'   => 'foftest',
+                'type'   => '',
+                'prefix' => 'foftestView',
+                'config' => array(),
+                'return' => 'cache'
+            )
+        );
+
+        return $data;
+    }
 }

@@ -712,7 +712,52 @@ class FOFControllerTest extends FtestCaseDatabase
         $component->setAccessible(true);
         $component->setValue($controller, '');
 
-        $controllerName = $controller->getName();
+        $controller->getName();
+    }
+
+    /**
+     * @group           FOFController
+     * @group           controllerGetView
+     * @covers          FOFController::getView
+     * @dataProvider    getTestGetView
+     *
+     * @preventDataLoading
+     */
+    public function testGetView($test, $check)
+    {
+        $config = array(
+            'input' => new FOFInput(array(
+                    'option'    => 'com_foftest',
+                    'view'      => 'foobar'
+                ))
+        );
+
+        $controller = $this->getMock('FOFController', array('createView'), array($config));
+
+        if($test['cache'])
+        {
+            $controller->expects($this->never())->method('createView');
+
+            $cache = new ReflectionProperty($controller, 'viewsCache');
+            $cache->setAccessible(true);
+            $cache->setValue($controller, array(
+                md5($check['name'] . $check['type'] . $check['prefix'] . serialize($check['config'])) => 'cache'
+            ));
+        }
+        else
+        {
+            $controller->expects($this->any())->method('createView')->will($this->returnValue(true));
+            $controller->expects($this->any())->method('createView')->with(
+                $this->equalTo($check['name']),
+                $this->equalTo($check['prefix']),
+                $this->equalTo($check['type']),
+                $this->equalTo($check['config'])
+            );
+        }
+
+        $return = $controller->getView($test['name'], $test['type'], $test['prefix'], $test['config']);
+
+        $this->assertEquals($check['return'], $return, 'FOFController::getView returned a wrong value');
     }
 
     public function getTestCreateFilename()
@@ -788,5 +833,10 @@ class FOFControllerTest extends FtestCaseDatabase
     public function getTestGetName()
     {
         return ControllerDataprovider::getTestGetName();
+    }
+
+    public function getTestGetView()
+    {
+        return ControllerDataprovider::getTestGetView();
     }
 }
