@@ -622,12 +622,15 @@ class FOFControllerTest extends FtestCaseDatabase
 				))
 		);
 
-		$controller = $this->getMock('FOFController', array('createModel', 'setRedirect'), array($config));
-		$controller->expects($this->any())->method('createModel')->with(
-			$this->equalTo($check['name']),
-			$this->equalTo($check['prefix']),
-			$this->equalTo($check['$config'])
-		);
+        if(!$test['config'])
+        {
+            $check['config'] = $config;
+        }
+
+		$controller = $this->getMock('FOFController', array('createModel'), array($config));
+        $task = new ReflectionProperty($controller, 'task');
+        $task->setAccessible(true);
+        $task->setValue($controller, 'test');
 
 		if($test['model'])
 		{
@@ -642,15 +645,24 @@ class FOFControllerTest extends FtestCaseDatabase
 			$model = false;
 		}
 
-
 		$controller->expects($this->any())->method('createModel')->will($this->returnValue($model));
+        $controller->expects($this->any())->method('createModel')->with(
+            $this->equalTo($check['name']),
+            $this->equalTo($check['prefix']),
+            $this->equalTo($check['config'])
+        );
 
 		$return = $controller->getModel($test['name'], $test['prefix'], $test['config']);
 
 		if(!$check['return'])
 		{
-			//$this->assertEquals()
+			$this->assertEquals($check['return'], $return, 'FOFController::getModel returned a wrong value');
 		}
+        else
+        {
+            $this->assertInstanceOf('FOFModel', $return, 'FOFController::getModel returned a wrong value');
+        }
+
 	}
 
     public function getTestCreateFilename()

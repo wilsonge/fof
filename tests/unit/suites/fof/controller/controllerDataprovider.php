@@ -860,9 +860,81 @@ class ControllerDataprovider
 
 	public static function getTestGetModel()
 	{
+        // Everything is automatically set
 		$data[] = array(
-
+            array(
+                'name'   => '',
+                'prefix' => '',
+                'config' => '',
+                'model'  => true
+            ),
+            array(
+                'name'   => 'foftest',
+                'prefix' => 'foftestModel',
+                'config' => '',
+                'return' => true
+            )
 		);
+
+        $data[] = array(
+            array(
+                'name'   => 'Foobar',
+                'prefix' => '',
+                'config' => '',
+                'model'  => true
+            ),
+            array(
+                'name'   => 'Foobar',
+                'prefix' => 'foftestModel',
+                'config' => '',
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name'   => 'Foobar',
+                'prefix' => 'DummyModel',
+                'config' => '',
+                'model'  => true
+            ),
+            array(
+                'name'   => 'Foobar',
+                'prefix' => 'DummyModel',
+                'config' => '',
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name'   => 'Foobar',
+                'prefix' => 'DummyModel',
+                'config' => array('input' => new FOFInput(array('test' => 'test'))),
+                'model'  => true
+            ),
+            array(
+                'name'   => 'Foobar',
+                'prefix' => 'DummyModel',
+                'config' => array('input' => new FOFInput(array('test' => 'test'))),
+                'return' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name'   => '',
+                'prefix' => '',
+                'config' => '',
+                'model'  => false
+            ),
+            array(
+                'name'   => 'foftest',
+                'prefix' => 'foftestModel',
+                'config' => '',
+                'return' => false
+            )
+        );
 
 		return $data;
 	}
