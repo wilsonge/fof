@@ -938,4 +938,39 @@ class ControllerDataprovider
 
 		return $data;
 	}
+
+    public static function getTestGetName()
+    {
+        $data[] = array(
+            array(
+                'name'      => '',
+                'component' => ''
+            ),
+            array(
+                'name' => 'fof'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name'      => 'dummy',
+                'component' => ''
+            ),
+            array(
+                'name' => 'dummy'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'name'      => '',
+                'component' => 'dummy'
+            ),
+            array(
+                'name' => 'dummy'
+            )
+        );
+
+        return $data;
+    }
 }

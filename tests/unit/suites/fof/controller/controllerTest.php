@@ -662,8 +662,58 @@ class FOFControllerTest extends FtestCaseDatabase
         {
             $this->assertInstanceOf('FOFModel', $return, 'FOFController::getModel returned a wrong value');
         }
-
 	}
+
+
+    /**
+     * @group           FOFController
+     * @group           controllerGetName
+     * @covers          FOFController::getName
+     * @dataProvider    getTestGetName
+     *
+     * @preventDataLoading
+     */
+    public function testGetName($test, $check)
+    {
+        //$controller = $this->getMock('FOFController', null, array(), $test['classname']);
+        $controller = new FOFController();
+
+        $name = new ReflectionProperty($controller, 'name');
+        $name->setAccessible(true);
+        $name->setValue($controller, $test['name']);
+
+        $component = new ReflectionProperty($controller, 'bareComponent');
+        $component->setAccessible(true);
+        $component->setValue($controller, $test['component']);
+
+        $controllerName = $controller->getName();
+
+        $this->assertEquals($check['name'], $controllerName, 'FOFController::getName returned the wrong controller name');
+    }
+
+    /**
+     * @group           FOFController
+     * @group           controllerGetName
+     * @covers          FOFController::getName
+     *
+     * @preventDataLoading
+     */
+    public function testGetNameException()
+    {
+        $this->setExpectedException('Exception');
+
+        $controller = $this->getMock('FOFController', null, array(), 'WrongClassname');
+
+        $name = new ReflectionProperty($controller, 'name');
+        $name->setAccessible(true);
+        $name->setValue($controller, '');
+
+        $component = new ReflectionProperty($controller, 'bareComponent');
+        $component->setAccessible(true);
+        $component->setValue($controller, '');
+
+        $controllerName = $controller->getName();
+    }
 
     public function getTestCreateFilename()
     {
@@ -734,4 +784,9 @@ class FOFControllerTest extends FtestCaseDatabase
 	{
 		return ControllerDataprovider::getTestGetModel();
 	}
+
+    public function getTestGetName()
+    {
+        return ControllerDataprovider::getTestGetName();
+    }
 }
