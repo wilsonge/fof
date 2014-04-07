@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Generic field header, with text input (search) filter
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderFieldsearchable extends FOFFormHeaderField
+class F0FFormHeaderFieldsearchable extends F0FFormHeaderField
 {
 	/**
 	 * Get the filter field

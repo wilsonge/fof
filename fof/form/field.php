@@ -6,15 +6,15 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * Generic interface that a FOF form field class must implement
+ * Generic interface that a F0F form field class must implement
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-interface FOFFormField
+interface F0FFormField
 {
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single

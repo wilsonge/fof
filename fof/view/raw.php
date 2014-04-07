@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework raw output class. It works like an HTML view, but the
@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFViewRaw extends FOFView
+class F0FViewRaw extends F0FView
 {
 	/** @var array Data lists */
 	protected $lists = null;
@@ -47,18 +47,18 @@ class FOFViewRaw extends FOFView
 		// Get the input
 		if (array_key_exists('input', $config))
 		{
-			if ($config['input'] instanceof FOFInput)
+			if ($config['input'] instanceof F0FInput)
 			{
 				$this->input = $config['input'];
 			}
 			else
 			{
-				$this->input = new FOFInput($config['input']);
+				$this->input = new F0FInput($config['input']);
 			}
 		}
 		else
 		{
-			$this->input = new FOFInput;
+			$this->input = new F0FInput;
 		}
 
 		if (!array_key_exists('option', $this->config))
@@ -71,11 +71,11 @@ class FOFViewRaw extends FOFView
 			$this->config['view'] = $this->input->getCmd('view', 'cpanel');
 		}
 
-		$this->lists = new FOFUtilsObject;
+		$this->lists = new F0FUtilsObject;
 
-		if (!FOFPlatform::getInstance()->isCli())
+		if (!F0FPlatform::getInstance()->isCli())
 		{
-			$platform = FOFPlatform::getInstance();
+			$platform = F0FPlatform::getInstance();
 			$perms = (object) array(
 					'create'	 => $platform->authorise('core.create'     , $this->input->getCmd('option', 'com_foobar')),
 					'edit'		 => $platform->authorise('core.edit'       , $this->input->getCmd('option', 'com_foobar')),
@@ -196,7 +196,7 @@ class FOFViewRaw extends FOFView
 		$this->pagination = $model->getPagination();
 
 		// Pass page params on frontend only
-		if (FOFPlatform::getInstance()->isFrontend())
+		if (F0FPlatform::getInstance()->isFrontend())
 		{
 			$params = JFactory::getApplication()->getParams();
 			$this->params = $params;
@@ -244,7 +244,7 @@ class FOFViewRaw extends FOFView
                 // Ok, record is tracked, let's see if I can this record
                 if($table->isAssetsTracked())
                 {
-                    $platform = FOFPlatform::getInstance();
+                    $platform = F0FPlatform::getInstance();
 
                     if(!$this->perms->edit)
                     {
@@ -333,7 +333,7 @@ class FOFViewRaw extends FOFView
 
 	/**
 	 * Returns the internal list of useful variables to the benefit of
-	 * FOFFormHeader fields.
+	 * F0FFormHeader fields.
 	 *
 	 * @return array
 	 *

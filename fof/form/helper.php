@@ -6,20 +6,20 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 JLoader::import('joomla.form.helper');
 
 /**
- * FOFForm's helper class.
- * Provides a storage for filesystem's paths where FOFForm's entities reside and
+ * F0FForm's helper class.
+ * Provides a storage for filesystem's paths where F0FForm's entities reside and
  * methods for creating those entities. Also stores objects with entities'
  * prototypes for further reusing.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHelper extends JFormHelper
+class F0FFormHelper extends JFormHelper
 {
 	/**
 	 * Method to load a form field object given a type.
@@ -108,7 +108,7 @@ class FOFFormHelper extends JFormHelper
 	}
 
 	/**
-	 * Attempt to import the FOFFormHeader class file if it isn't already imported.
+	 * Attempt to import the F0FFormHeader class file if it isn't already imported.
 	 * You can use this method outside of JForm for loading a field for inheritance or composition.
 	 *
 	 * @param   string  $type  Type of a field whose class should be loaded.
@@ -143,7 +143,7 @@ class FOFFormHelper extends JFormHelper
 		}
 		else
 		{
-			$prefix = 'FOF';
+			$prefix = 'F0F';
 			$altPrefix = 'J';
 		}
 
@@ -184,7 +184,7 @@ class FOFFormHelper extends JFormHelper
 
 		// Try to find the class file.
 		$type       = strtolower($type) . '.php';
-        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		foreach ($paths as $path)
 		{

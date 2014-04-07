@@ -6,16 +6,16 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * An interface for FOFFormHeader fields, used to define the filters and the
+ * An interface for F0FFormHeader fields, used to define the filters and the
  * elements of the header row in repeatable (browse) views
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-abstract class FOFFormHeader
+abstract class F0FFormHeader
 {
 	/**
 	 * The description text for the form field.  Usually used in tooltips.
@@ -34,9 +34,9 @@ abstract class FOFFormHeader
 	protected $element;
 
 	/**
-	 * The FOFForm object of the form attached to the header field.
+	 * The F0FForm object of the form attached to the header field.
 	 *
-	 * @var    FOFForm
+	 * @var    F0FForm
 	 * @since  2.0
 	 */
 	protected $form;
@@ -148,14 +148,14 @@ abstract class FOFFormHeader
 	/**
 	 * Method to instantiate the form field object.
 	 *
-	 * @param   FOFForm  $form  The form to attach to the form field object.
+	 * @param   F0FForm  $form  The form to attach to the form field object.
 	 *
 	 * @since   2.0
 	 */
-	public function __construct(FOFForm $form = null)
+	public function __construct(F0FForm $form = null)
 	{
 		// If there is a form passed into the constructor set the form and form control properties.
-		if ($form instanceof FOFForm)
+		if ($form instanceof F0FForm)
 		{
 			$this->form = $form;
 		}
@@ -252,13 +252,13 @@ abstract class FOFFormHeader
 	/**
 	 * Method to attach a JForm object to the field.
 	 *
-	 * @param   FOFForm  $form  The JForm object to attach to the form field.
+	 * @param   F0FForm  $form  The JForm object to attach to the form field.
 	 *
-	 * @return  FOFFormHeader  The form field object so that the method can be used in a chain.
+	 * @return  F0FFormHeader  The form field object so that the method can be used in a chain.
 	 *
 	 * @since   2.0
 	 */
-	public function setForm(FOFForm $form)
+	public function setForm(F0FForm $form)
 	{
 		$this->form = $form;
 
@@ -266,7 +266,7 @@ abstract class FOFFormHeader
 	}
 
 	/**
-	 * Method to attach a FOFForm object to the field.
+	 * Method to attach a F0FForm object to the field.
 	 *
 	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
 	 * @param   mixed             $value    The form field value to validate.
@@ -456,7 +456,7 @@ abstract class FOFFormHeader
 			$view = $this->form->getView();
 			$params = $view->getViewOptionAndName();
 			$title = $params['option'] . '_' .
-				FOFInflector::pluralize($params['view']) . '_FIELD_' .
+				F0FInflector::pluralize($params['view']) . '_FIELD_' .
 				(string) $this->element['name'];
 			$title = strtoupper($title);
 			$result = JText::_($title);

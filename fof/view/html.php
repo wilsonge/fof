@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework HTML output class. Together with PHP-based view tempalates
@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFViewHtml extends FOFViewRaw
+class F0FViewHtml extends F0FViewRaw
 {
 	/**
 	 * Class constructor
@@ -50,9 +50,9 @@ class FOFViewHtml extends FOFViewRaw
 
 		// Don't load the toolbar on CLI
 
-		if (!FOFPlatform::getInstance()->isCli())
+		if (!F0FPlatform::getInstance()->isCli())
 		{
-			$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
+			$toolbar = F0FToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 			$toolbar->perms = $this->perms;
 			$toolbar->renderToolbar($view, $task, $this->input);
 		}
@@ -74,7 +74,7 @@ class FOFViewHtml extends FOFViewRaw
 
 		$renderer = $this->getRenderer();
 
-		if ($renderer instanceof FOFRenderAbstract)
+		if ($renderer instanceof F0FRenderAbstract)
 		{
 			$renderer->postRender($view, $task, $this->input, $this->config);
 		}

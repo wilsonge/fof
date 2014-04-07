@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework table behavior class for content History
@@ -14,12 +14,12 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.2.0
  */
-class FOFTableBehaviorContenthistory extends FOFTableBehavior
+class F0FTableBehaviorContenthistory extends F0FTableBehavior
 {
 	/**
 	 * The event which runs after storing (saving) data to the database
 	 *
-	 * @param   FOFTable  &$table  The table which calls this event
+	 * @param   F0FTable  &$table  The table which calls this event
 	 *
 	 * @return  boolean  True to allow saving without an error
 	 */
@@ -40,7 +40,7 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 	/**
 	 * The event which runs before deleting a record
 	 *
-	 * @param   FOFTable &$table  The table which calls this event
+	 * @param   F0FTable &$table  The table which calls this event
 	 * @param   integer  $oid  The PK value of the record to delete
 	 *
 	 * @return  boolean  True to allow the deletion
@@ -62,7 +62,7 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 	 * Check if a UCM content type exists for this resource, and
 	 * create it if it does not
 	 *
-	 * @param   FOFTable   &$table  	The table which calls this event
+	 * @param   F0FTable   &$table  	The table which calls this event
 	 *
 	 */
 	protected function checkContentType(&$table)
@@ -72,11 +72,11 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 		$alias = $table->getContentType();
 
 		$aliasParts = explode('.', $table->getContentType());
-		$input = new FOFInput;
+		$input = new F0FInput;
 		$options = array(
 			'component' 	=> $aliasParts[0],
 			'view'		=> $aliasParts[1],
-			'table_prefix'	=> ucfirst(FOFInflector::pluralize(substr($aliasParts[0], strpos($aliasParts[0], "_")  + 1)) . 'Table')
+			'table_prefix'	=> ucfirst(F0FInflector::pluralize(substr($aliasParts[0], strpos($aliasParts[0], "_")  + 1)) . 'Table')
 		);
 
 		// Fetch the extension name
@@ -103,7 +103,7 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 						'key'     => $table->getKeyName(),
 						'type'    => $name,
 						'prefix'  => $options['table_prefix'],
-						'class'   => 'FOFTable',
+						'class'   => 'F0FTable',
 						'config'  => 'array()'
 					),
 					'common' => array(
@@ -163,7 +163,7 @@ class FOFTableBehaviorContenthistory extends FOFTableBehavior
 	 * Utility methods that fetches the column name for the field.
 	 * If it does not exists, returns a "null" string
 	 *
-	 * @param   FOFTable   $table  	The table which calls this event
+	 * @param   F0FTable   $table  	The table which calls this event
 	 * @param   string     $alias   The alias of the content type
 	 *
 	 * @return string The column name

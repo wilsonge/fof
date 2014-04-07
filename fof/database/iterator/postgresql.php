@@ -5,17 +5,17 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  *
- * This file is adapted from the Joomla! Platform. It is used to iterate a database cursor returning FOFTable objects
+ * This file is adapted from the Joomla! Platform. It is used to iterate a database cursor returning F0FTable objects
  * instead of plain stdClass objects
  */
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * PostgreSQL database iterator.
  */
-class FOFDatabaseIteratorPostgresql extends FOFDatabaseIterator
+class F0FDatabaseIteratorPostgresql extends F0FDatabaseIterator
 {
 	/**
 	 * Get the number of rows in the result set for the executed SQL given by the cursor.

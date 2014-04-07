@@ -6,29 +6,29 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * FOFForm is an extension to JForm which support not only edit views but also
+ * F0FForm is an extension to JForm which support not only edit views but also
  * browse (record list) and read (single record display) views based on XML
  * forms.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFForm extends JForm
+class F0FForm extends JForm
 {
 	/**
 	 * The model attached to this view
 	 *
-	 * @var FOFModel
+	 * @var F0FModel
 	 */
 	protected $model;
 
 	/**
 	 * The view used to render this form
 	 *
-	 * @var FOFView
+	 * @var F0FView
 	 */
 	protected $view;
 
@@ -42,7 +42,7 @@ class FOFForm extends JForm
 	 *                      	      	already exists with the same group/name.
 	 * @param   bool|string $xpath		An optional xpath to search for the fields.
 	 *
-	 * @return  object  FOFForm instance.
+	 * @return  object  F0FForm instance.
 	 *
 	 * @since   2.0
 	 * @throws  InvalidArgumentException if no data provided.
@@ -60,25 +60,25 @@ class FOFForm extends JForm
 
 			if (empty($data))
 			{
-				throw new InvalidArgumentException(sprintf('FOFForm::getInstance(name, *%s*)', gettype($data)));
+				throw new InvalidArgumentException(sprintf('F0FForm::getInstance(name, *%s*)', gettype($data)));
 			}
 
 			// Instantiate the form.
-			$forms[$name] = new FOFForm($name, $options);
+			$forms[$name] = new F0FForm($name, $options);
 
 			// Load the data.
 			if (substr(trim($data), 0, 1) == '<')
 			{
 				if ($forms[$name]->load($data, $replace, $xpath) == false)
 				{
-					throw new RuntimeException('FOFForm::getInstance could not load form');
+					throw new RuntimeException('F0FForm::getInstance could not load form');
 				}
 			}
 			else
 			{
 				if ($forms[$name]->loadFile($data, $replace, $xpath) == false)
 				{
-					throw new RuntimeException('FOFForm::getInstance could not load file ' . $data . '.xml');
+					throw new RuntimeException('F0FForm::getInstance could not load file ' . $data . '.xml');
 				}
 			}
 		}
@@ -128,7 +128,7 @@ class FOFForm extends JForm
 
 			foreach ($cssfiles as $cssfile)
 			{
-				FOFTemplateUtils::addCSS(trim($cssfile));
+				F0FTemplateUtils::addCSS(trim($cssfile));
 			}
 		}
 
@@ -144,7 +144,7 @@ class FOFForm extends JForm
 				$parts = explode('||', $def, 2);
 				$lessfile = $parts[0];
 				$alt = (count($parts) > 1) ? trim($parts[1]) : null;
-				FOFTemplateUtils::addLESS(trim($lessfile), $alt);
+				F0FTemplateUtils::addLESS(trim($lessfile), $alt);
 			}
 		}
 	}
@@ -169,7 +169,7 @@ class FOFForm extends JForm
 
 		foreach ($jsfiles as $jsfile)
 		{
-			FOFTemplateUtils::addJS(trim($jsfile));
+			F0FTemplateUtils::addJS(trim($jsfile));
 		}
 	}
 
@@ -187,21 +187,21 @@ class FOFForm extends JForm
 	}
 
 	/**
-	 * Attaches a FOFModel to this form
+	 * Attaches a F0FModel to this form
 	 *
-	 * @param   FOFModel  &$model  The model to attach to the form
+	 * @param   F0FModel  &$model  The model to attach to the form
 	 *
 	 * @return  void
 	 */
-	public function setModel(FOFModel &$model)
+	public function setModel(F0FModel &$model)
 	{
 		$this->model = $model;
 	}
 
 	/**
-	 * Returns the FOFModel attached to this form
+	 * Returns the F0FModel attached to this form
 	 *
-	 * @return FOFModel
+	 * @return F0FModel
 	 */
 	public function &getModel()
 	{
@@ -209,21 +209,21 @@ class FOFForm extends JForm
 	}
 
 	/**
-	 * Attaches a FOFView to this form
+	 * Attaches a F0FView to this form
 	 *
-	 * @param   FOFView  &$view  The view to attach to the form
+	 * @param   F0FView  &$view  The view to attach to the form
 	 *
 	 * @return  void
 	 */
-	public function setView(FOFView &$view)
+	public function setView(F0FView &$view)
 	{
 		$this->view = $view;
 	}
 
 	/**
-	 * Returns the FOFView attached to this form
+	 * Returns the F0FView attached to this form
 	 *
-	 * @return FOFView
+	 * @return F0FView
 	 */
 	public function &getView()
 	{
@@ -231,9 +231,9 @@ class FOFForm extends JForm
 	}
 
 	/**
-	 * Method to get an array of FOFFormHeader objects in the headerset.
+	 * Method to get an array of F0FFormHeader objects in the headerset.
 	 *
-	 * @return  array  The array of FOFFormHeader objects in the headerset.
+	 * @return  array  The array of F0FFormHeader objects in the headerset.
 	 *
 	 * @since   2.0
 	 */
@@ -347,19 +347,19 @@ class FOFForm extends JForm
 	}
 
 	/**
-	 * Method to get a header field represented as a FOFFormHeader object.
+	 * Method to get a header field represented as a F0FFormHeader object.
 	 *
 	 * @param   string  $name   The name of the header field.
 	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
 	 * @param   mixed   $value  The optional value to use as the default for the field.
 	 *
-	 * @return  mixed  The FOFFormHeader object for the field or boolean false on error.
+	 * @return  mixed  The F0FFormHeader object for the field or boolean false on error.
 	 *
 	 * @since   2.0
 	 */
 	public function getHeader($name, $group = null, $value = null)
 	{
-		// Make sure there is a valid FOFForm XML document.
+		// Make sure there is a valid F0FForm XML document.
 		if (!($this->xml instanceof SimpleXMLElement))
 		{
 			return false;
@@ -470,13 +470,13 @@ class FOFForm extends JForm
 	}
 
 	/**
-	 * Method to load, setup and return a FOFFormHeader object based on field data.
+	 * Method to load, setup and return a F0FFormHeader object based on field data.
 	 *
 	 * @param   string  $element  The XML element object representation of the form field.
 	 * @param   string  $group    The optional dot-separated form group path on which to find the field.
 	 * @param   mixed   $value    The optional value to use as the default for the field.
 	 *
-	 * @return  mixed  The FOFFormHeader object for the field or boolean false on error.
+	 * @return  mixed  The F0FFormHeader object for the field or boolean false on error.
 	 *
 	 * @since   2.0
 	 */
@@ -500,7 +500,7 @@ class FOFForm extends JForm
 			$field = $this->loadHeaderType('field');
 		}
 
-		// Setup the FOFFormHeader object.
+		// Setup the F0FFormHeader object.
 		$field->setForm($this);
 
 		if ($field->setup($element, $value, $group))
@@ -514,53 +514,53 @@ class FOFForm extends JForm
 	}
 
 	/**
-	 * Proxy for {@link FOFFormHelper::loadFieldType()}.
+	 * Proxy for {@link F0FFormHelper::loadFieldType()}.
 	 *
 	 * @param   string   $type  The field type.
 	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
 	 *
-	 * @return  mixed  FOFFormField object on success, false otherwise.
+	 * @return  mixed  F0FFormField object on success, false otherwise.
 	 *
 	 * @since   2.0
 	 */
 	protected function loadFieldType($type, $new = true)
 	{
-		return FOFFormHelper::loadFieldType($type, $new);
+		return F0FFormHelper::loadFieldType($type, $new);
 	}
 
 	/**
-	 * Proxy for {@link FOFFormHelper::loadHeaderType()}.
+	 * Proxy for {@link F0FFormHelper::loadHeaderType()}.
 	 *
 	 * @param   string   $type  The field type.
 	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
 	 *
-	 * @return  mixed  FOFFormHeader object on success, false otherwise.
+	 * @return  mixed  F0FFormHeader object on success, false otherwise.
 	 *
 	 * @since   2.0
 	 */
 	protected function loadHeaderType($type, $new = true)
 	{
-		return FOFFormHelper::loadHeaderType($type, $new);
+		return F0FFormHelper::loadHeaderType($type, $new);
 	}
 
 	/**
-	 * Proxy for {@link FOFFormHelper::loadRuleType()}.
+	 * Proxy for {@link F0FFormHelper::loadRuleType()}.
 	 *
 	 * @param   string   $type  The rule type.
 	 * @param   boolean  $new   Flag to toggle whether we should get a new instance of the object.
 	 *
 	 * @return  mixed  JFormRule object on success, false otherwise.
 	 *
-	 * @see     FOFFormHelper::loadRuleType()
+	 * @see     F0FFormHelper::loadRuleType()
 	 * @since   2.0
 	 */
 	protected function loadRuleType($type, $new = true)
 	{
-		return FOFFormHelper::loadRuleType($type, $new);
+		return F0FFormHelper::loadRuleType($type, $new);
 	}
 
 	/**
-	 * Proxy for {@link FOFFormHelper::addFieldPath()}.
+	 * Proxy for {@link F0FFormHelper::addFieldPath()}.
 	 *
 	 * @param   mixed  $new  A path or array of paths to add.
 	 *
@@ -570,11 +570,11 @@ class FOFForm extends JForm
 	 */
 	public static function addFieldPath($new = null)
 	{
-		return FOFFormHelper::addFieldPath($new);
+		return F0FFormHelper::addFieldPath($new);
 	}
 
 	/**
-	 * Proxy for {@link FOFFormHelper::addHeaderPath()}.
+	 * Proxy for {@link F0FFormHelper::addHeaderPath()}.
 	 *
 	 * @param   mixed  $new  A path or array of paths to add.
 	 *
@@ -584,36 +584,36 @@ class FOFForm extends JForm
 	 */
 	public static function addHeaderPath($new = null)
 	{
-		return FOFFormHelper::addHeaderPath($new);
+		return F0FFormHelper::addHeaderPath($new);
 	}
 
 	/**
-	 * Proxy for FOFFormHelper::addFormPath().
+	 * Proxy for F0FFormHelper::addFormPath().
 	 *
 	 * @param   mixed  $new  A path or array of paths to add.
 	 *
 	 * @return  array  The list of paths that have been added.
 	 *
-	 * @see     FOFFormHelper::addFormPath()
+	 * @see     F0FFormHelper::addFormPath()
 	 * @since   2.0
 	 */
 	public static function addFormPath($new = null)
 	{
-		return FOFFormHelper::addFormPath($new);
+		return F0FFormHelper::addFormPath($new);
 	}
 
 	/**
-	 * Proxy for FOFFormHelper::addRulePath().
+	 * Proxy for F0FFormHelper::addRulePath().
 	 *
 	 * @param   mixed  $new  A path or array of paths to add.
 	 *
 	 * @return  array  The list of paths that have been added.
 	 *
-	 * @see FOFFormHelper::addRulePath()
+	 * @see F0FFormHelper::addRulePath()
 	 * @since   2.0
 	 */
 	public static function addRulePath($new = null)
 	{
-		return FOFFormHelper::addRulePath($new);
+		return F0FFormHelper::addRulePath($new);
 	}
 }

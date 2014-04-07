@@ -6,26 +6,26 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 JFormHelper::loadFieldClass('timezone');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Supports a generic list of options.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
+class F0FFormFieldTimezone extends JFormFieldTimezone implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -77,7 +77,7 @@ class FOFFormFieldTimezone extends JFormFieldTimezone implements FOFFormField
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
-		$selected = FOFFormFieldGroupedlist::getOptionName($this->getOptions(), $this->value);
+		$selected = F0FFormFieldGroupedlist::getOptionName($this->getOptions(), $this->value);
 
 		if (is_null($selected))
 		{

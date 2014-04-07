@@ -5,7 +5,7 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Implementation of the Hypertext Application Language document in PHP. It can
@@ -14,12 +14,12 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFHalDocument
+class F0FHalDocument
 {
 	/**
 	 * The collection of links of this document
 	 *
-	 * @var   FOFHalLinks
+	 * @var   F0FHalLinks
 	 */
 	private $_links = null;
 
@@ -32,7 +32,7 @@ class FOFHalDocument
 	private $_data = null;
 
 	/**
-	 * Embedded documents. This is an array of FOFHalDocument instances.
+	 * Embedded documents. This is an array of F0FHalDocument instances.
 	 *
 	 * @var   array
 	 */
@@ -54,7 +54,7 @@ class FOFHalDocument
 	public function __construct($data = null)
 	{
 		$this->_data = $data;
-		$this->_links = new FOFHalLinks;
+		$this->_links = new F0FHalLinks;
 	}
 
 	/**
@@ -63,15 +63,15 @@ class FOFHalDocument
 	 * @param   string      $rel        The relation of the link to the document.
 	 *                                  See RFC 5988 http://tools.ietf.org/html/rfc5988#section-6.2.2 A document MUST always have
 	 *                                  a "self" link.
-	 * @param   FOFHalLink  $link       The actual link object
+	 * @param   F0FHalLink  $link       The actual link object
 	 * @param   boolean     $overwrite  When false and a link of $rel relation exists, an array of links is created. Otherwise the
 	 *                                  existing link is overwriten with the new one
 	 *
-	 * @see FOFHalLinks::addLink
+	 * @see F0FHalLinks::addLink
 	 *
 	 * @return  boolean  True if the link was added to the collection
 	 */
-	public function addLink($rel, FOFHalLink $link, $overwrite = true)
+	public function addLink($rel, F0FHalLink $link, $overwrite = true)
 	{
 		return $this->_links->addLink($rel, $link, $overwrite);
 	}
@@ -80,12 +80,12 @@ class FOFHalDocument
 	 * Add links to the document
 	 *
 	 * @param   string   $rel        The relation of the link to the document. See RFC 5988
-	 * @param   array    $links      An array of FOFHalLink objects
+	 * @param   array    $links      An array of F0FHalLink objects
 	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array of
 	 *                               links is created. Otherwise the existing link is overwriten
 	 *                               with the new one
 	 *
-	 * @see FOFHalLinks::addLinks
+	 * @see F0FHalLinks::addLinks
 	 *
 	 * @return  boolean
 	 */
@@ -128,12 +128,12 @@ class FOFHalDocument
 	 * Add an embedded document
 	 *
 	 * @param   string          $rel        The relation of the embedded document to its container document
-	 * @param   FOFHalDocument  $document   The document to add
+	 * @param   F0FHalDocument  $document   The document to add
 	 * @param   boolean         $overwrite  Should I overwrite existing data with the same relation?
 	 *
 	 * @return  boolean
 	 */
-	public function addEmbedded($rel, FOFHalDocument $document, $overwrite = true)
+	public function addEmbedded($rel, F0FHalDocument $document, $overwrite = true)
 	{
 		if (!array_key_exists($rel, $this->_embedded) || !$overwrite)
 		{
@@ -171,7 +171,7 @@ class FOFHalDocument
 	 *
 	 * @param   string  $rel  Optional; the relation to return the embedded documents for
 	 *
-	 * @return  array|FOFHalDocument
+	 * @return  array|F0FHalDocument
 	 */
 	public function getEmbedded($rel = null)
 	{
@@ -211,7 +211,7 @@ class FOFHalDocument
 	 */
 	public function render($format = 'json')
 	{
-		$class_name = 'FOFHalRender' . ucfirst($format);
+		$class_name = 'F0FHalRender' . ucfirst($format);
 
 		if (!class_exists($class_name, true))
 		{

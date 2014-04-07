@@ -5,7 +5,7 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Default Joomla! 1.5, 1.7, 2.5 view renderer class
@@ -13,7 +13,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFRenderJoomla extends FOFRenderAbstract
+class F0FRenderJoomla extends F0FRenderAbstract
 {
 	/**
 	 * Public constructor. Determines the priority of this class and if it should be enabled
@@ -29,7 +29,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   F0FInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -48,7 +48,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 			return;
 		}
 
-		if (!FOFPlatform::getInstance()->isCli())
+		if (!F0FPlatform::getInstance()->isCli())
 		{
 			// Wrap output in a Joomla-versioned div
 			$version = new JVersion;
@@ -71,7 +71,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   F0FInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -91,7 +91,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		}
 
 		// Closing tag only if we're not in CLI
-		if (FOFPlatform::getInstance()->isCli())
+		if (F0FPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -100,15 +100,15 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
+	 * Renders a F0FForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   &$form  The form to render
-	 * @param   FOFModel  $model  The model providing our data
-	 * @param   FOFInput  $input  The input object
+	 * @param   F0FForm   &$form  The form to render
+	 * @param   F0FModel  $model  The model providing our data
+	 * @param   F0FInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
+	protected function renderFormBrowse(F0FForm &$form, F0FModel $model, F0FInput $input)
 	{
 		JHtml::_('behavior.multiselect');
 
@@ -122,14 +122,14 @@ class FOFRenderJoomla extends FOFRenderAbstract
 
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="view" value="' . F0FInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
 
-		if (FOFPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
+		if (F0FPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
 		{
 			$html .= "\t" . '<input type="hidden" name="Itemid" value="' . $input->getCmd('Itemid', 0) . '" />' . PHP_EOL;
 		}
@@ -309,15 +309,15 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a FOFForm for a Read view and returns the corresponding HTML
+	 * Renders a F0FForm for a Read view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   &$form  The form to render
-	 * @param   FOFModel  $model  The model providing our data
-	 * @param   FOFInput  $input  The input object
+	 * @param   F0FForm   &$form  The form to render
+	 * @param   F0FModel  $model  The model providing our data
+	 * @param   F0FInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
+	protected function renderFormRead(F0FForm &$form, F0FModel $model, F0FInput $input)
 	{
 		$html = $this->renderFormRaw($form, $model, $input, 'read');
 
@@ -325,15 +325,15 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a FOFForm for an Edit view and returns the corresponding HTML
+	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   &$form  The form to render
-	 * @param   FOFModel  $model  The model providing our data
-	 * @param   FOFInput  $input  The input object
+	 * @param   F0FForm   &$form  The form to render
+	 * @param   F0FModel  $model  The model providing our data
+	 * @param   F0FInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
+	protected function renderFormEdit(F0FForm &$form, F0FModel $model, F0FInput $input)
 	{
 		// Get the key for this model's table
 		$key		 = $model->getTable()->getKeyName();
@@ -390,7 +390,7 @@ class FOFRenderJoomla extends FOFRenderAbstract
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . PHP_EOL;
 
-		if (FOFPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
+		if (F0FPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
 		{
 			$html .= "\t" . '<input type="hidden" name="Itemid" value="' . $input->getCmd('Itemid', 0) . '" />' . PHP_EOL;
 		}
@@ -404,16 +404,16 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	}
 
 	/**
-	 * Renders a raw FOFForm and returns the corresponding HTML
+	 * Renders a raw F0FForm and returns the corresponding HTML
 	 *
-	 * @param   FOFForm   &$form     The form to render
-	 * @param   FOFModel  $model     The model providing our data
-	 * @param   FOFInput  $input     The input object
+	 * @param   F0FForm   &$form     The form to render
+	 * @param   F0FModel  $model     The model providing our data
+	 * @param   F0FInput  $input     The input object
 	 * @param   string    $formType  The form type e.g. 'edit' or 'read'
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormRaw(FOFForm &$form, FOFModel $model, FOFInput $input, $formType)
+	protected function renderFormRaw(F0FForm &$form, F0FModel $model, F0FInput $input, $formType)
 	{
 		$html = '';
 
@@ -471,11 +471,11 @@ class FOFRenderJoomla extends FOFRenderAbstract
 	/**
 	 * Loads the validation script for an edit form
 	 *
-	 * @param   FOFForm  &$form  The form we are rendering
+	 * @param   F0FForm  &$form  The form we are rendering
 	 *
 	 * @return  void
 	 */
-	protected function loadValidationScript(FOFForm &$form)
+	protected function loadValidationScript(F0FForm &$form)
 	{
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
@@ -492,7 +492,7 @@ Joomla.submitbutton = function(task)
 };
 JS;
 
-		$document = FOFPlatform::getInstance()->getDocument();
+		$document = F0FPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -505,7 +505,7 @@ JS;
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input object
+	 * @param   F0FInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
 	 *
 	 * @return  void
@@ -514,16 +514,16 @@ JS;
 	{
 		// On command line don't do anything
 
-		if (FOFPlatform::getInstance()->isCli())
+		if (F0FPlatform::getInstance()->isCli())
 		{
 			return;
 		}
 
 		// Do not render a submenu unless we are in the the admin area
-		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+		$toolbar				 = F0FToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendSubmenu	 = $toolbar->getRenderFrontendSubmenu();
 
-		if (!FOFPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
+		if (!F0FPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
 		{
 			return;
 		}
@@ -534,7 +534,7 @@ JS;
 	/**
 	 * do the rendering job for the linkbar
 	 *
-	 * @param   FOFToolbar  $toolbar  A toolbar object
+	 * @param   F0FToolbar  $toolbar  A toolbar object
 	 *
 	 * @return  void
 	 */
@@ -556,7 +556,7 @@ JS;
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input object
+	 * @param   F0FInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
 	 *
 	 * @return  void
@@ -565,23 +565,23 @@ JS;
 	{
 		// On command line don't do anything
 
-		if (FOFPlatform::getInstance()->isCli())
+		if (F0FPlatform::getInstance()->isCli())
 		{
 			return;
 		}
 
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
-		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+		$toolbar				 = F0FToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendButtons	 = $toolbar->getRenderFrontendButtons();
 
-		if (FOFPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
+		if (F0FPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
 		{
 			return;
 		}
 
 		// Load main backend language, in order to display toolbar strings
 		// (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
-		FOFPlatform::getInstance()->loadTranslations('joomla');
+		F0FPlatform::getInstance()->loadTranslations('joomla');
 
 		$title	 = JFactory::getApplication()->get('JComponentTitle');
 		$bar	 = JToolBar::getInstance('toolbar');
@@ -589,6 +589,6 @@ JS;
 		// Delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
 		$bar_content = str_replace('href="#"', '', $bar->render());
 
-		echo '<div id="FOFHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';
+		echo '<div id="F0FHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';
 	}
 }

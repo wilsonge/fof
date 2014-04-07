@@ -6,18 +6,18 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Generic list from a model's results
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
+class F0FFormFieldModel extends F0FFormFieldList implements F0FFormField
 {
 	protected $static;
 
@@ -72,7 +72,7 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -117,7 +117,7 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 			$show_link = false;
 		}
 
-		if ($show_link && ($this->item instanceof FOFTable))
+		if ($show_link && ($this->item instanceof F0FTable))
 		{
 			// Replace [ITEM:ID] in the URL with the item's key value (usually:
 			// the auto-incrementing numeric ID)
@@ -155,7 +155,7 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
 
-		$value = FOFFormFieldList::getOptionName($this->getOptions(), $this->value);
+		$value = F0FFormFieldList::getOptionName($this->getOptions(), $this->value);
 
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($value))
@@ -219,13 +219,13 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 		// Explode model name into model name and prefix
-		$parts = FOFInflector::explode($modelName);
+		$parts = F0FInflector::explode($modelName);
 		$mName = ucfirst(array_pop($parts));
-		$mPrefix = FOFInflector::implode($parts);
+		$mPrefix = F0FInflector::implode($parts);
 
 		// Get the model object
 		$config = array('savestate' => 0);
-		$model = FOFModel::getTmpInstance($mName, $mPrefix, $config);
+		$model = F0FModel::getTmpInstance($mName, $mPrefix, $config);
 
 		if ($applyAccess)
 		{

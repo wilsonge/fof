@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework table behavior dispatcher class
@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFTableDispatcherBehavior extends FOFUtilsObservableDispatcher
+class F0FTableDispatcherBehavior extends F0FUtilsObservableDispatcher
 {
 
 }

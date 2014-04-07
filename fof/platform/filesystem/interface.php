@@ -7,9 +7,9 @@
  */
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-interface FOFPlatformFilesystemInterface
+interface F0FPlatformFilesystemInterface
 {
     /**
      * Does the file exists?
