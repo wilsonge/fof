@@ -193,7 +193,7 @@ class ToolbarDataprovider
                 'task'    => null,
                 'tmpl'    => '',
                 'render'  => null,
-                'input'   => new FOFInput(array(
+                'input'   => new F0FInput(array(
                         'view' => 'bar',
                         'task' => 'render'
                     )),

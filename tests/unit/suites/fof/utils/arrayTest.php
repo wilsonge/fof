@@ -7,7 +7,7 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-class FOFUtilsArrayTest extends FtestCase
+class F0FUtilsArrayTest extends FtestCase
 {
 	public function seedTestArrayUnique()
 	{
@@ -1268,20 +1268,20 @@ class FOFUtilsArrayTest extends FtestCase
 	}
 
 	/**
-	 * Tests the FOFUtilsArray::arrayUnique method.
+	 * Tests the F0FUtilsArray::arrayUnique method.
 	 *
 	 * @param   array   $input     The array being input.
 	 * @param   string  $expected  The expected return value.
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestArrayUnique
-	 * @covers        FOFUtilsArray::arrayUnique
+	 * @covers        F0FUtilsArray::arrayUnique
 	 */
 	public function testArrayUnique($input, $expected)
 	{
-		$this->assertThat(FOFUtilsArray::arrayUnique($input), $this->equalTo($expected));
+		$this->assertThat(F0FUtilsArray::arrayUnique($input), $this->equalTo($expected));
 	}
 
 	/**
@@ -1295,20 +1295,20 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestFromObject
-	 * @covers        FOFUtilsArray::fromObject
-	 * @covers        FOFUtilsArray::arrayFromObject
+	 * @covers        F0FUtilsArray::fromObject
+	 * @covers        F0FUtilsArray::arrayFromObject
 	 */
 	public function testFromObject($input, $recurse, $regex, $expect, $defaults)
 	{
 		if ($defaults)
 		{
-			$output = FOFUtilsArray::fromObject($input);
+			$output = F0FUtilsArray::fromObject($input);
 		}
 		else
 		{
-			$output = FOFUtilsArray::fromObject($input, $recurse, $regex);
+			$output = F0FUtilsArray::fromObject($input, $recurse, $regex);
 		}
 
 		$this->assertEquals($expect, $output);
@@ -1324,13 +1324,13 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestGetColumn
-	 * @covers        FOFUtilsArray::getColumn
+	 * @covers        F0FUtilsArray::getColumn
 	 */
 	public function testGetColumn($input, $index, $expect, $message)
 	{
-		$this->assertEquals($expect, FOFUtilsArray::getColumn($input, $index), $message);
+		$this->assertEquals($expect, F0FUtilsArray::getColumn($input, $index), $message);
 	}
 
 	/**
@@ -1346,55 +1346,55 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestGetValue
-	 * @covers        FOFUtilsArray::getValue
+	 * @covers        F0FUtilsArray::getValue
 	 */
 	public function testGetValue($input, $index, $default, $type, $expect, $message, $defaults)
 	{
 		if ($defaults)
 		{
-			$output = FOFUtilsArray::getValue($input, $index);
+			$output = F0FUtilsArray::getValue($input, $index);
 		}
 		else
 		{
-			$output = FOFUtilsArray::getValue($input, $index, $default, $type);
+			$output = F0FUtilsArray::getValue($input, $index, $default, $type);
 		}
 
 		$this->assertEquals($expect, $output, $message);
 	}
 
 	/**
-	 * Tests the FOFUtilsArray::invert method.
+	 * Tests the F0FUtilsArray::invert method.
 	 *
 	 * @param   array   $input     The array being input.
 	 * @param   string  $expected  The expected return value.
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestInvert
 	 */
 	public function testInvert($input, $expected)
 	{
 		$this->assertThat(
-			FOFUtilsArray::invert($input),
+			F0FUtilsArray::invert($input),
 			$this->equalTo($expected)
 		);
 	}
 
 	/**
-	 * Test the FOFUtilsArray::isAssociate method.
+	 * Test the F0FUtilsArray::isAssociate method.
 	 *
 	 * @return  void
 	 *
-     * @group   FOFUtilsArray
-	 * @covers  FOFUtilsArray::isAssociative
+     * @group   F0FUtilsArray
+	 * @covers  F0FUtilsArray::isAssociative
 	 */
 	public function testIsAssociative()
 	{
 		$this->assertThat(
-			FOFUtilsArray::isAssociative(
+			F0FUtilsArray::isAssociative(
 				array(
 					1, 2, 3
 				)
@@ -1404,7 +1404,7 @@ class FOFUtilsArrayTest extends FtestCase
 		);
 
 		$this->assertThat(
-			FOFUtilsArray::isAssociative(
+			F0FUtilsArray::isAssociative(
 				array(
 					'a' => 1, 'b' => 2, 'c' => 3
 				)
@@ -1414,7 +1414,7 @@ class FOFUtilsArrayTest extends FtestCase
 		);
 
 		$this->assertThat(
-			FOFUtilsArray::isAssociative(
+			F0FUtilsArray::isAssociative(
 				array(
 					'a' => 1, 2, 'c' => 3
 				)
@@ -1425,7 +1425,7 @@ class FOFUtilsArrayTest extends FtestCase
 	}
 
 	/**
-	 * Tests the FOFUtilsArray::pivot method.
+	 * Tests the F0FUtilsArray::pivot method.
 	 *
 	 * @param   array   $source    The source array.
 	 * @param   string  $key       Where the elements of the source array are objects or arrays, the key to pivot on.
@@ -1433,15 +1433,15 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestPivot
-	 * @covers        FOFUtilsArray::pivot
+	 * @covers        F0FUtilsArray::pivot
 
 	 */
 	public function testPivot($source, $key, $expected)
 	{
 		$this->assertThat(
-			FOFUtilsArray::pivot($source, $key),
+			F0FUtilsArray::pivot($source, $key),
 			$this->equalTo($expected)
 		);
 	}
@@ -1460,9 +1460,9 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestSortObject
-	 * @covers        FOFUtilsArray::sortObjects
+	 * @covers        F0FUtilsArray::sortObjects
 	 */
 	public function testSortObjects($input, $key, $direction, $casesensitive, $locale, $expect, $message, $defaults, $swappable_keys = array())
 	{
@@ -1488,11 +1488,11 @@ class FOFUtilsArrayTest extends FtestCase
 
 		if ($defaults)
 		{
-			$output = FOFUtilsArray::sortObjects($input, $key);
+			$output = F0FUtilsArray::sortObjects($input, $key);
 		}
 		else
 		{
-			$output = FOFUtilsArray::sortObjects($input, $key, $direction, $casesensitive, $locale);
+			$output = F0FUtilsArray::sortObjects($input, $key, $direction, $casesensitive, $locale);
 		}
 
 		// The ordering of elements that compare equal according to
@@ -1518,13 +1518,13 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestToInteger
-	 * @covers        FOFUtilsArray::toInteger
+	 * @covers        F0FUtilsArray::toInteger
 	 */
 	public function testToInteger($input, $default, $expect, $message)
 	{
-		FOFUtilsArray::toInteger($input, $default);
+		F0FUtilsArray::toInteger($input, $default);
 		$this->assertEquals(
 			$expect,
             $input,
@@ -1542,15 +1542,15 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestToObject
-	 * @covers        FOFUtilsArray::toObject
+	 * @covers        F0FUtilsArray::toObject
 	 */
 	public function testToObject($input, $className, $expect, $message)
 	{
 		$this->assertEquals(
 			$expect,
-			FOFUtilsArray::toObject($input),
+			F0FUtilsArray::toObject($input),
 			$message
 		);
 	}
@@ -1568,19 +1568,19 @@ class FOFUtilsArrayTest extends FtestCase
 	 *
 	 * @return  void
 	 *
-     * @group         FOFUtilsArray
+     * @group         F0FUtilsArray
 	 * @dataProvider  seedTestToString
-	 * @covers        FOFUtilsArray::toString
+	 * @covers        F0FUtilsArray::toString
 	 */
 	public function testToString($input, $inner, $outer, $keepKey, $expect, $message, $defaults)
 	{
 		if ($defaults)
 		{
-			$output = FOFUtilsArray::toString($input);
+			$output = F0FUtilsArray::toString($input);
 		}
 		else
 		{
-			$output = FOFUtilsArray::toString($input, $inner, $outer, $keepKey);
+			$output = F0FUtilsArray::toString($input, $inner, $outer, $keepKey);
 		}
 
 		$this->assertEquals($expect, $output, $message);

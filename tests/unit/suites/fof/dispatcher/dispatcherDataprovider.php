@@ -100,21 +100,21 @@ class DispatcherDataprovider
         $message = 'Incorrect task';
 
         // Should we test for ids on other cases, too?
-        $data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'read'  , $message);
-        $data[] = array(new FOFInput(array('ids' => array(999))), 'foobar' , false,  'GET' 	 , 'edit'  , $message);
-        $data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'read'  , $message);
-        $data[] = array(new FOFInput(array('id' => 999)), 'foobar' , false, 'GET' 	 , 'edit'  , $message);
-        $data[] = array(new FOFInput(array())           , 'foobar' , true,  'GET'  	 , 'add'   , $message);
-        $data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'POST'	 , 'save'  , $message);
-        $data[] = array(new FOFInput(array())           , 'foobar' , true,  'POST'	 , 'edit'  , $message);
-        $data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'PUT' 	 , 'save'  , $message);
-        $data[] = array(new FOFInput(array())           , 'foobar' , true,  'PUT' 	 , 'edit'  , $message);
-        $data[] = array(new FOFInput(array('id' => 999)), 'foobar' , true,  'DELETE' , 'delete'  , $message);
-        $data[] = array(new FOFInput(array())           , 'foobar' , true,  'DELETE' , 'edit'  , $message);
-        $data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'GET' 	 , 'browse', $message);
-        $data[] = array(new FOFInput(array())           , 'foobars', true,  'GET' 	 , 'browse', $message);
-        $data[] = array(new FOFInput(array('id' => 999)), 'foobars', true,  'POST'	 , 'save'  , $message);
-        $data[] = array(new FOFInput(array())           , 'foobars', true,  'POST'	 , 'browse', $message);
+        $data[] = array(new F0FInput(array('ids' => array(999))), 'foobar' , true,  'GET' 	 , 'read'  , $message);
+        $data[] = array(new F0FInput(array('ids' => array(999))), 'foobar' , false,  'GET' 	 , 'edit'  , $message);
+        $data[] = array(new F0FInput(array('id' => 999)), 'foobar' , true,  'GET' 	 , 'read'  , $message);
+        $data[] = array(new F0FInput(array('id' => 999)), 'foobar' , false, 'GET' 	 , 'edit'  , $message);
+        $data[] = array(new F0FInput(array())           , 'foobar' , true,  'GET'  	 , 'add'   , $message);
+        $data[] = array(new F0FInput(array('id' => 999)), 'foobar' , true,  'POST'	 , 'save'  , $message);
+        $data[] = array(new F0FInput(array())           , 'foobar' , true,  'POST'	 , 'edit'  , $message);
+        $data[] = array(new F0FInput(array('id' => 999)), 'foobar' , true,  'PUT' 	 , 'save'  , $message);
+        $data[] = array(new F0FInput(array())           , 'foobar' , true,  'PUT' 	 , 'edit'  , $message);
+        $data[] = array(new F0FInput(array('id' => 999)), 'foobar' , true,  'DELETE' , 'delete'  , $message);
+        $data[] = array(new F0FInput(array())           , 'foobar' , true,  'DELETE' , 'edit'  , $message);
+        $data[] = array(new F0FInput(array('id' => 999)), 'foobars', true,  'GET' 	 , 'browse', $message);
+        $data[] = array(new F0FInput(array())           , 'foobars', true,  'GET' 	 , 'browse', $message);
+        $data[] = array(new F0FInput(array('id' => 999)), 'foobars', true,  'POST'	 , 'save'  , $message);
+        $data[] = array(new F0FInput(array())           , 'foobars', true,  'POST'	 , 'browse', $message);
 
         return $data;
     }
@@ -248,15 +248,15 @@ class DispatcherDataprovider
         );
 
         // HTTPBasicAuth_TOTP
-        $encrypt = new FOFEncryptBase32;
-        $key     = $encrypt->encode('FOF rocks!');
+        $encrypt = new F0FEncryptBase32;
+        $key     = $encrypt->encode('F0F rocks!');
         $plain   = json_encode(array('username' => 'foftest', 'password' => 'dummy'));
 
-        $totp      = new FOFEncryptTotp(6);
+        $totp      = new F0FEncryptTotp(6);
         $otp       = $totp->getCode($key);
         $cryptoKey = hash('sha256', $key.$otp);
 
-        $aes       = new FOFEncryptAes($cryptoKey);
+        $aes       = new F0FEncryptAes($cryptoKey);
         $encrypted = $aes->encryptString($plain);
 
         $data[] = array(
@@ -275,15 +275,15 @@ class DispatcherDataprovider
         );
 
         // QueryString_TOTP
-        $encrypt = new FOFEncryptBase32;
-        $key     = $encrypt->encode('FOF rocks!');
+        $encrypt = new F0FEncryptBase32;
+        $key     = $encrypt->encode('F0F rocks!');
         $plain   = json_encode(array('username' => 'foftest', 'password' => 'dummy'));
 
-        $totp      = new FOFEncryptTotp(6);
+        $totp      = new F0FEncryptTotp(6);
         $otp       = $totp->getCode($key);
         $cryptoKey = hash('sha256', $key.$otp);
 
-        $aes       = new FOFEncryptAes($cryptoKey);
+        $aes       = new F0FEncryptAes($cryptoKey);
         $encrypted = $aes->encryptString($plain);
 
         $data[] = array(

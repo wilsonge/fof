@@ -498,7 +498,7 @@ abstract class ModelDataprovider
             ),
             array(
                 'count'      => 3,
-                'tableClass' => 'FOFTable'
+                'tableClass' => 'F0FTable'
             )
         );
 
@@ -511,7 +511,7 @@ abstract class ModelDataprovider
             ),
             array(
                 'count' => 1,
-                'tableClass' => 'FOFTable'
+                'tableClass' => 'F0FTable'
             )
         );
 
@@ -524,7 +524,7 @@ abstract class ModelDataprovider
             ),
             array(
                 'count' => 5,
-                'tableClass' => 'FOFTable'
+                'tableClass' => 'F0FTable'
             )
         );
 
@@ -671,9 +671,9 @@ abstract class ModelDataprovider
             )
         );
 
-        // SAVE OK - FOFTable data, table id inside - No form
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
-        $table = clone FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        // SAVE OK - F0FTable data, table id inside - No form
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table = clone F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
         $data[] = array(
             array(
@@ -1637,7 +1637,7 @@ abstract class ModelDataprovider
     public static function getTestGetForm()
     {
         // Standard behavior
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1672,7 +1672,7 @@ abstract class ModelDataprovider
         );
 
         // Getting the form name from the request
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1707,7 +1707,7 @@ abstract class ModelDataprovider
         );
 
         // Calculating the form name on your own
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1777,7 +1777,7 @@ abstract class ModelDataprovider
         );
 
         // Changing arguments in the onBefore event
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1815,7 +1815,7 @@ abstract class ModelDataprovider
         );
 
         // Changing arguments in the onAfter event
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(

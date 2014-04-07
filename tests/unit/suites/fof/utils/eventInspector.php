@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-class FOFUtilsObservableEventInspector extends FOFUtilsObservableEvent
+class F0FUtilsObservableEventInspector extends F0FUtilsObservableEvent
 {
 	/**
 	 * Mock Event Method
@@ -48,7 +48,7 @@ class FOFUtilsObservableEventInspector extends FOFUtilsObservableEvent
  *
  * @since 11.3
  */
-function FOFUtilsObservableEventMockFunction()
+function F0FUtilsObservableEventMockFunction()
 {
-	return 'FOFUtilsObservableDispatcherMockFunction executed';
+	return 'F0FUtilsObservableDispatcherMockFunction executed';
 }

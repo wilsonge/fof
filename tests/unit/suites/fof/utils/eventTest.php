@@ -4,15 +4,15 @@
 require_once __DIR__ . '/eventInspector.php';
 require_once __DIR__ . '/eventStub.php';
 
-class FOFUtilsObservableEventTest extends FtestCase
+class F0FUtilsObservableEventTest extends FtestCase
 {
 	/**
-	 * @group FOFUtilsObservableEvent
+	 * @group F0FUtilsObservableEvent
 	 */
 	public function test__construct()
 	{
-		$dispatcher = new FOFUtilsObservableDispatcher;
-		$event = new FOFUtilsObservableEventInspector($dispatcher);
+		$dispatcher = new F0FUtilsObservableDispatcher;
+		$event = new F0FUtilsObservableEventInspector($dispatcher);
 
 		$this->assertThat(
 			TestReflection::getValue($event, '_subject'),
@@ -21,12 +21,12 @@ class FOFUtilsObservableEventTest extends FtestCase
 	}
 
 	/**
-	 * @group FOFUtilsObservableEvent
+	 * @group F0FUtilsObservableEvent
 	 */
 	public function testUpdate()
 	{
-		$dispatcher = new FOFUtilsObservableDispatcher;
-		$event = new FOFUtilsObservableEventInspector($dispatcher);
+		$dispatcher = new F0FUtilsObservableDispatcher;
+		$event = new F0FUtilsObservableEventInspector($dispatcher);
 
 		$args = array('event' => 'onTestEvent');
 
@@ -65,7 +65,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 	}
 
 	/**
-     * @group FOFUtilsObservableEvent
+     * @group F0FUtilsObservableEvent
 	 */
 	public function testUpdateNoArgs()
 	{
@@ -78,7 +78,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 			->method('attach');
 
 		// We create our object and pass our mock
-		$object = new FOFUtilsObservableEventStub($observable);
+		$object = new F0FUtilsObservableEventStub($observable);
 
 		// We reset the calls property.  Our stub method will populate this when it gets called
 		$object->calls = array();
@@ -114,7 +114,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 	}
 
 	/**
-     * @group FOFUtilsObservableEvent
+     * @group F0FUtilsObservableEvent
 	 */
 	public function testUpdateOneArg()
 	{
@@ -127,7 +127,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 			->method('attach');
 
 		// We create our object and pass our mock
-		$object = new FOFUtilsObservableEventStub($observable);
+		$object = new F0FUtilsObservableEventStub($observable);
 
 		// We reset the calls property.  Our stub method will populate this when it gets called
 		$object->calls = array();
@@ -162,7 +162,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 	}
 
 	/**
-	 * @group FOFUtilsObservableEvent
+	 * @group F0FUtilsObservableEvent
 	 */
 	public function testUpdateMultipleArgs()
 	{
@@ -175,7 +175,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 			->method('attach');
 
 		// We create our object and pass our mock
-		$object = new FOFUtilsObservableEventStub($observable);
+		$object = new F0FUtilsObservableEventStub($observable);
 
 		// We reset the calls property.  Our stub method will populate this when it gets called
 		$object->calls = array();
@@ -210,7 +210,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 	}
 
 	/**
-	 * @group FOFUtilsObservableEvent
+	 * @group F0FUtilsObservableEvent
 	 */
 	public function testUpdateBadEvent()
 	{
@@ -223,7 +223,7 @@ class FOFUtilsObservableEventTest extends FtestCase
 			->method('attach');
 
 		// We create our object and pass our mock
-		$object = new FOFUtilsObservableEventStub($observable);
+		$object = new F0FUtilsObservableEventStub($observable);
 
 		// We reset the calls property.  Our stub method will populate this when it gets called
 		$object->calls = array();

@@ -1,7 +1,7 @@
 <?php
 
-class FtestModel extends FOFModel {
-	
+class FtestModel extends F0FModel {
+
 	public function getFoo()
 	{
 		return 'foo';

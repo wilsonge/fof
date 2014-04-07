@@ -8,9 +8,9 @@
  */
 
 /**
- * Test class for FOFHalLink
+ * Test class for F0FHalLink
  */
-class FOFHalLinkTest extends PHPUnit_Framework_TestCase
+class F0FHalLinkTest extends PHPUnit_Framework_TestCase
 {
 	public function getTestCreateNoExceptionData()
 	{
@@ -28,13 +28,13 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider	getTestCreateNoExceptionData
-	 * @covers			FOFHalLink::__construct
+	 * @covers			F0FHalLink::__construct
 	 */
 	public function testCreateNoException($href, $templated, $name, $hreflang, $title, $message)
 	{
 		try
 		{
-			$result = new FOFHalLink($href, $templated, $name, $hreflang, $title);
+			$result = new F0FHalLink($href, $templated, $name, $hreflang, $title);
 		}
 		catch (Exception $exc)
 		{
@@ -52,13 +52,13 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider				getTestCreateExceptionData
-	 * @covers						FOFHalLink::__construct
+	 * @covers						F0FHalLink::__construct
 	 * @expectedException			RuntimeException
 	 * @expectedExceptionMessage	A HAL link must always have a non-empty href
 	 */
 	public function testCreateException($href, $templated, $name, $hreflang, $title, $message)
 	{
-		$result = new FOFHalLink($href, $templated, $name, $hreflang, $title);
+		$result = new F0FHalLink($href, $templated, $name, $hreflang, $title);
 	}
 
 
@@ -74,11 +74,11 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider	getTestCheckData
-	 * @covers			FOFHalLink::check
+	 * @covers			F0FHalLink::check
 	 */
 	public function testCheck($href, $templated, $expect, $message)
 	{
-		$halLink = new FOFHalLink($href, $templated);
+		$halLink = new F0FHalLink($href, $templated);
 		$this->assertEquals($halLink->check(), $expect, $message);
 	}
 
@@ -96,11 +96,11 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider	getTestMagicGetterData
-	 * @covers			FOFHalLink::__get
+	 * @covers			F0FHalLink::__get
 	 */
 	public function testMagicGetter($property, $expect, $message)
 	{
-		$link = new FOFHalLink('http://www.example.com/nada.json', false, 'My name', 'en-GB', 'My title');
+		$link = new F0FHalLink('http://www.example.com/nada.json', false, 'My name', 'en-GB', 'My title');
 
 		$this->assertEquals($link->$property, $expect, $message);
 	}
@@ -119,11 +119,11 @@ class FOFHalLinkTest extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @dataProvider	getTestMagicGetterData
-	 * @covers			FOFHalLink::__set
+	 * @covers			F0FHalLink::__set
 	 */
 	public function testMagicSetter($property, $expect, $message)
 	{
-		$link = new FOFHalLink('http://www.example.com/nada.json', false, 'My name', 'en-GB', 'My title');
+		$link = new F0FHalLink('http://www.example.com/nada.json', false, 'My name', 'en-GB', 'My title');
 
 		$link->$property = $expect;
 

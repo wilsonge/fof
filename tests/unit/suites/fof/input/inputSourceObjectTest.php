@@ -10,12 +10,12 @@
 require_once 'inputBaseTest.php';
 
 /**
- * Test class for FOFString
+ * Test class for F0FString
  *
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class FOFInputObjTest extends FOFInputTestBase
+class F0FInputObjTest extends F0FInputTestBase
 {
 	/**
 	 * [setUp description]
@@ -33,7 +33,7 @@ class FOFInputObjTest extends FOFInputTestBase
 		$data->var3 = 'three';
 		$data->var4 = 'four';
 
-		$this->FOFInput = new FOFInput($data);
+		$this->F0FInput = new F0FInput($data);
 	}
 
 }

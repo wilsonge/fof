@@ -10,16 +10,16 @@
 require_once __DIR__ . '/eventInspector.php';
 require_once JPATH_TESTS.'/unit/core/reflection/reflection.php';
 
-class FOFUtilsObservableDispatcherTest extends FtestCase
+class F0FUtilsObservableDispatcherTest extends FtestCase
 {
 	/**
-	 * @var FOFUtilsObservableDispatcher
+	 * @var F0FUtilsObservableDispatcher
 	 */
 	protected $object;
 
 	protected function setUp()
 	{
-		$this->object = new FOFUtilsObservableDispatcher;
+		$this->object = new F0FUtilsObservableDispatcher;
 		TestReflection::setValue($this->object, 'instance', $this->object);
 	}
 
@@ -35,43 +35,43 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 	}
 
 	/**
-     * @group   FOFUtilsObservableDispatcher
-     * @covers  FOFUtilsObservableDispatcher::getInstance
+     * @group   F0FUtilsObservableDispatcher
+     * @covers  F0FUtilsObservableDispatcher::getInstance
 	 */
 	public function testGetInstance()
 	{
-		$mock = FOFUtilsObservableDispatcher::getInstance();
+		$mock = F0FUtilsObservableDispatcher::getInstance();
 
 		$this->assertInstanceOf(
-			'FOFUtilsObservableDispatcher',
+			'F0FUtilsObservableDispatcher',
 			$mock
 		);
 
 		TestReflection::setValue($this->object, 'instance', null);
 
-		$instance = FOFUtilsObservableDispatcher::getInstance();
+		$instance = F0FUtilsObservableDispatcher::getInstance();
 
 		$this->assertInstanceOf(
-			'FOFUtilsObservableDispatcher',
+			'F0FUtilsObservableDispatcher',
 			$instance,
-			'Tests that getInstance returns a FOFUtilsObservableDispatcher object.'
+			'Tests that getInstance returns a F0FUtilsObservableDispatcher object.'
 		);
 
 		// Push a new instance into the class.
 		TestReflection::setValue($this->object, 'instance', 'foo');
 
 		$this->assertThat(
-			FOFUtilsObservableDispatcher::getInstance(),
+			F0FUtilsObservableDispatcher::getInstance(),
 			$this->equalTo('foo'),
-			'Tests that a subsequent call to FOFUtilsObservableDispatcher::getInstance returns the cached singleton.'
+			'Tests that a subsequent call to F0FUtilsObservableDispatcher::getInstance returns the cached singleton.'
 		);
 
 		TestReflection::setValue($this->object, 'instance', $mock);
 	}
 
 	/**
-     * @group   FOFUtilsObservableDispatcher
-     * @covers  FOFUtilsObservableDispatcher::getState()
+     * @group   F0FUtilsObservableDispatcher
+     * @covers  F0FUtilsObservableDispatcher::getState()
 	 */
 	public function testGetState()
 	{
@@ -89,8 +89,8 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 	}
 
 	/**
-     * @group   FOFUtilsObservableDispatcher
-     * @covers  FOFUtilsObservableDispatcher::register()
+     * @group   F0FUtilsObservableDispatcher
+     * @covers  F0FUtilsObservableDispatcher::register()
 	 */
 	public function testRegister()
 	{
@@ -106,13 +106,13 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 		);
 
 		// We register a function on the event 'onTestEvent'
-		$this->object->register('onTestEvent', 'FOFUtilsObservableEventMockFunction');
+		$this->object->register('onTestEvent', 'F0FUtilsObservableEventMockFunction');
 
 		$this->assertThat(
 			TestReflection::getValue($this->object, '_observers'),
 			$this->equalTo(
 				array(
-					array('event' => 'onTestEvent', 'handler' => 'FOFUtilsObservableEventMockFunction')
+					array('event' => 'onTestEvent', 'handler' => 'F0FUtilsObservableEventMockFunction')
 				)
 			)
 		);
@@ -125,14 +125,14 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 		);
 
 		// We register the same function on a different event 'onTestOtherEvent'
-		$this->object->register('onTestOtherEvent', 'FOFUtilsObservableEventMockFunction');
+		$this->object->register('onTestOtherEvent', 'F0FUtilsObservableEventMockFunction');
 
 		$this->assertThat(
 			TestReflection::getValue($this->object, '_observers'),
 			$this->equalTo(
 				array(
-					array('event' => 'onTestEvent', 'handler' => 'FOFUtilsObservableEventMockFunction'),
-					array('event' => 'onTestOtherEvent', 'handler' => 'FOFUtilsObservableEventMockFunction')
+					array('event' => 'onTestEvent', 'handler' => 'F0FUtilsObservableEventMockFunction'),
+					array('event' => 'onTestOtherEvent', 'handler' => 'F0FUtilsObservableEventMockFunction')
 				)
 			)
 		);
@@ -148,7 +148,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 		);
 
 		// Now we attach a class to the dispatcher
-		$this->object->register('', 'FOFUtilsObservableEventInspector');
+		$this->object->register('', 'F0FUtilsObservableEventInspector');
 
 		$observers = TestReflection::getValue($this->object, '_observers');
 		$object = $observers[2];
@@ -157,14 +157,14 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 			TestReflection::getValue($this->object, '_observers'),
 			$this->equalTo(
 				array(
-					array('event' => 'onTestEvent', 'handler' => 'FOFUtilsObservableEventMockFunction'),
-					array('event' => 'onTestOtherEvent', 'handler' => 'FOFUtilsObservableEventMockFunction'),
+					array('event' => 'onTestEvent', 'handler' => 'F0FUtilsObservableEventMockFunction'),
+					array('event' => 'onTestOtherEvent', 'handler' => 'F0FUtilsObservableEventMockFunction'),
 					$object
 				)
 			)
 		);
 
-        // Since I am using a super-class of FOFUtilsObservableEvent which extends FOFUtilsObject, I have to exclude
+        // Since I am using a super-class of F0FUtilsObservableEvent which extends F0FUtilsObject, I have to exclude
         // the methods of the last one
         $ignoreMethods = array('__construct', '__toString', 'def', 'get', 'getProperties', 'getError', 'getErrors',
             'set', 'setProperties', 'setError', 'update');
@@ -191,8 +191,8 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 	}
 
 	/**
-	 * @group   FOFUtilsObservableDispatcher
-     * @covers  FOFUtilsObservableDispatcher::register()
+	 * @group   F0FUtilsObservableDispatcher
+     * @covers  F0FUtilsObservableDispatcher::register()
      *
 	 * @expectedException  InvalidArgumentException
 	 */
@@ -202,13 +202,13 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 	}
 
 	/**
-     * @group   FOFUtilsObservableDispatcher
-     * @covers  FOFUtilsObservableDispatcher::trigger()
+     * @group   F0FUtilsObservableDispatcher
+     * @covers  F0FUtilsObservableDispatcher::trigger()
 	 */
 	public function testTrigger()
 	{
-		$this->object->register('onTestEvent', 'FOFUtilsObservableEventMockFunction');
-		$this->object->register('', 'FOFUtilsObservableEventInspector');
+		$this->object->register('onTestEvent', 'F0FUtilsObservableEventMockFunction');
+		$this->object->register('', 'F0FUtilsObservableEventInspector');
 
 		// We check a non-existing event
 		$this->assertThat(
@@ -221,7 +221,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 			$this->object->trigger('onTestEvent'),
 			$this->equalTo(
 				array(
-					'FOFUtilsObservableDispatcherMockFunction executed',
+					'F0FUtilsObservableDispatcherMockFunction executed',
 					''
 				)
 			)
@@ -232,7 +232,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 			$this->object->trigger('onTestEvent', array('one', 'two')),
 			$this->equalTo(
 				array(
-					'FOFUtilsObservableDispatcherMockFunction executed',
+					'F0FUtilsObservableDispatcherMockFunction executed',
 					'onetwo'
 				)
 			)
@@ -248,8 +248,8 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 	}
 
 	/**
-	 * @group   FOFUtilsObservableDispatcher
-	 * @covers  FOFUtilsObservableDispatcher::attach()
+	 * @group   F0FUtilsObservableDispatcher
+	 * @covers  F0FUtilsObservableDispatcher::attach()
 	 */
 	public function testAttach()
 	{
@@ -284,7 +284,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 		);
 
 		// Let's test a callable function observer
-		$observer = array('handler' => 'FOFUtilsObservableEventMockFunction', 'event' => 'onTestEvent');
+		$observer = array('handler' => 'F0FUtilsObservableEventMockFunction', 'event' => 'onTestEvent');
 		$observers = array($observer);
 
 		$this->object->attach($observer);
@@ -304,7 +304,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 		);
 
 		// Let's test that an observer is not attached twice
-		$observer = array('handler' => 'FOFUtilsObservableEventMockFunction', 'event' => 'onTestEvent');
+		$observer = array('handler' => 'F0FUtilsObservableEventMockFunction', 'event' => 'onTestEvent');
 		$observers = array($observer);
 
 		$this->object->attach($observer);
@@ -343,12 +343,12 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 		);
 
 		// Let's test a valid event object
-		$observer = new FOFUtilsObservableEventInspector($this->object);
+		$observer = new F0FUtilsObservableEventInspector($this->object);
 		$observers[] = $observer;
 
 		$this->object->attach($observer);
 
-        // Since I am using a super-class of FOFUtilsObservableEvent which extends FOFUtilsObject, I have to exclude
+        // Since I am using a super-class of F0FUtilsObservableEvent which extends F0FUtilsObject, I have to exclude
         // the methods of the last one
         $ignoreMethods = array('__construct', '__toString', 'def', 'get', 'getProperties', 'getError', 'getErrors',
             'set', 'setProperties', 'setError', 'update');
@@ -378,11 +378,11 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 		);
 
 		// Let's test that an object observer is not attached twice
-		$observer = new FOFUtilsObservableEventInspector($this->object);
+		$observer = new F0FUtilsObservableEventInspector($this->object);
 
 		$this->object->attach($observer);
 
-        // Since I am using a super-class of FOFUtilsObservableEvent which extends FOFUtilsObject, I have to exclude
+        // Since I am using a super-class of F0FUtilsObservableEvent which extends F0FUtilsObject, I have to exclude
         // the methods of the last one
         $ignoreMethods = array('__construct', '__toString', 'def', 'get', 'getProperties', 'getError', 'getErrors',
             'set', 'setProperties', 'setError', 'update');
@@ -413,21 +413,21 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 	}
 
 	/**
-     * @group   FOFUtilsObservableDispatcher
-     * @covers  FOFUtilsObservableDispatcher::detach()
+     * @group   F0FUtilsObservableDispatcher
+     * @covers  F0FUtilsObservableDispatcher::detach()
 	 */
 	public function testDetach()
 	{
 		// Adding 3 events to detach later
 		$observer1 = array('handler' => 'fakefunction', 'event' => 'onTestEvent');
-		$observer2 = array('handler' => 'FOFUtilsObservableEventMockFunction', 'event' => 'onTestEvent');
+		$observer2 = array('handler' => 'F0FUtilsObservableEventMockFunction', 'event' => 'onTestEvent');
 		$this->object->attach($observer2);
-		$observer3 = new FOFUtilsObservableEventInspector($this->object);
+		$observer3 = new F0FUtilsObservableEventInspector($this->object);
 		$this->object->attach($observer3);
 
 		// Test removing a non-existing observer
 
-        // Since I am using a super-class of FOFUtilsObservableEvent which extends FOFUtilsObject, I have to exclude
+        // Since I am using a super-class of F0FUtilsObservableEvent which extends F0FUtilsObject, I have to exclude
         // the methods of the last one
         $ignoreMethods = array('__construct', '__toString', 'def', 'get', 'getProperties', 'getError', 'getErrors',
             'set', 'setProperties', 'setError', 'update');
@@ -465,7 +465,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 
 		$this->assertFalse($return);
 
-        // Since I am using a super-class of FOFUtilsObservableEvent which extends FOFUtilsObject, I have to exclude
+        // Since I am using a super-class of F0FUtilsObservableEvent which extends F0FUtilsObject, I have to exclude
         // the methods of the last one
         $ignoreMethods = array('__construct', '__toString', 'def', 'get', 'getProperties', 'getError', 'getErrors',
             'set', 'setProperties', 'setError', 'update');
@@ -504,7 +504,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 
 		$this->assertTrue($return);
 
-        // Since I am using a super-class of FOFUtilsObservableEvent which extends FOFUtilsObject, I have to exclude
+        // Since I am using a super-class of F0FUtilsObservableEvent which extends F0FUtilsObject, I have to exclude
         // the methods of the last one
         $ignoreMethods = array('__construct', '__toString', 'def', 'get', 'getProperties', 'getError', 'getErrors',
             'set', 'setProperties', 'setError', 'update');
@@ -542,7 +542,7 @@ class FOFUtilsObservableDispatcherTest extends FtestCase
 
 		$this->assertTrue($return);
 
-        // Since I am using a super-class of FOFUtilsObservableEvent which extends FOFUtilsObject, I have to exclude
+        // Since I am using a super-class of F0FUtilsObservableEvent which extends F0FUtilsObject, I have to exclude
         // the methods of the last one
         $ignoreMethods = array('__construct', '__toString', 'def', 'get', 'getProperties', 'getError', 'getErrors',
             'set', 'setProperties', 'setError', 'update');

@@ -8,9 +8,9 @@
  */
 
 /**
- * Test class for FOFInflector
+ * Test class for F0FInflector
  */
-class FOFInflectorTest extends PHPUnit_Framework_TestCase
+class F0FInflectorTest extends PHPUnit_Framework_TestCase
 {
 	public function getTestPluralizeData()
 	{
@@ -369,12 +369,12 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testAddWord()
 	{
-		FOFInflector::addWord('xoxosingular', 'xoxoplural');
+		F0FInflector::addWord('xoxosingular', 'xoxoplural');
 
-		$res = FOFInflector::singularize('xoxoplural');
+		$res = F0FInflector::singularize('xoxoplural');
 		$this->assertEquals($res, 'xoxosingular', 'Custom word could not be singularized');
 
-		$res = FOFInflector::pluralize('xoxosingular');
+		$res = F0FInflector::pluralize('xoxosingular');
 		$this->assertEquals($res, 'xoxoplural', 'Custom word could not be pluralized');
 	}
 
@@ -385,8 +385,8 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testPluralize($word, $expect, $message)
 	{
-		FOFInflector::deleteCache();
-		$res = FOFInflector::pluralize($word);
+		F0FInflector::deleteCache();
+		$res = F0FInflector::pluralize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -401,8 +401,8 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testSingularize($word, $expect, $message)
 	{
-		FOFInflector::deleteCache();
-		$res = FOFInflector::singularize($word);
+		F0FInflector::deleteCache();
+		$res = F0FInflector::singularize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -417,7 +417,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testCamelize($word, $expect, $message)
 	{
-		$res = FOFInflector::camelize($word);
+		$res = F0FInflector::camelize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -432,7 +432,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testUnderscore($word, $expect, $message)
 	{
-		$res = FOFInflector::underscore($word);
+		$res = F0FInflector::underscore($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -447,7 +447,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testExplode($word, $expect, $message)
 	{
-		$res = FOFInflector::explode($word);
+		$res = F0FInflector::explode($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -462,7 +462,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testImplode($word, $expect, $message)
 	{
-		$res = FOFInflector::implode($word);
+		$res = F0FInflector::implode($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -477,7 +477,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testHumanize($word, $expect, $message)
 	{
-		$res = FOFInflector::humanize($word);
+		$res = F0FInflector::humanize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -492,7 +492,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testTableize($word, $expect, $message)
 	{
-		$res = FOFInflector::tableize($word);
+		$res = F0FInflector::tableize($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -507,7 +507,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testClassify($word, $expect, $message)
 	{
-		$res = FOFInflector::classify($word);
+		$res = F0FInflector::classify($word);
 		$this->assertEquals(
 			$res,
 			$expect,
@@ -522,7 +522,7 @@ class FOFInflectorTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testVariableize($word, $expect, $message)
 	{
-		$res = FOFInflector::variablize($word);
+		$res = F0FInflector::variablize($word);
 		$this->assertEquals(
 			$res,
 			$expect,

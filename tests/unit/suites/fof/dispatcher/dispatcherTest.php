@@ -9,91 +9,91 @@
 
 require_once 'dispatcherDataprovider.php';
 
-class FOFDispatcherTest extends FtestCase
+class F0FDispatcherTest extends FtestCase
 {
     public function setUp()
     {
         parent::setUp();
 
-        FOFPlatform::forceInstance(null);
+        F0FPlatform::forceInstance(null);
     }
 
     /**
-     * @group           FOFDispatcher
+     * @group           F0FDispatcher
      * @group           dispatcherDispatch
-     * @covers          FOFDispatcher::dispatch
+     * @covers          F0FDispatcher::dispatch
      * @dataProvider    getTestDispatch
      */
     public function testDispatch($test, $check)
     {
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isCli', 'raiseError', 'authorizeAdmin', 'setHeader'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isCli', 'raiseError', 'authorizeAdmin', 'setHeader'));
         $platform->expects($this->any())->method('isCli')->will($this->returnValue($test['isCli']));
         $platform->expects($this->any())->method('authorizeAdmin')->will($this->returnValue($test['auth']));
 
         $matcher = $check['result'] ? $this->never() : $this->once();
         $platform->expects($matcher)->method('raiseError');
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $input = array_merge(array('option' => 'com_foftest'), $test['input']);
 
         $config = array(
-            'input' => new FOFInput($input)
+            'input' => new F0FInput($input)
         );
 
-        $dispatcher = $this->getMock('FOFDispatcher', array('onBeforeDispatch', 'onBeforeDispatchCLI', 'onAfterDispatch'), array($config));
+        $dispatcher = $this->getMock('F0FDispatcher', array('onBeforeDispatch', 'onBeforeDispatchCLI', 'onAfterDispatch'), array($config));
         $dispatcher->expects($this->any())->method('onBeforeDispatch')->will($this->returnValue($test['before']));
         $dispatcher->expects($this->any())->method('onBeforeDispatchCLI')->will($this->returnValue($test['beforeCli']));
         $dispatcher->expects($this->any())->method('onAfterDispatch')->will($this->returnValue($test['after']));
 
-        // I will ask to phpUnit to create a mock with a fixed name, in this way FOFController::getTmpInstance
+        // I will ask to phpUnit to create a mock with a fixed name, in this way F0FController::getTmpInstance
         // will find the object and initialize it, using the mocked one
         // The only downside is that we can't controll it (eg stubbing and mocking)
-        $view = FOFInflector::pluralize($input['view']);
-        $this->getMock('FOFController', array('execute'), array(), 'FoftestController'.ucfirst($view));
+        $view = F0FInflector::pluralize($input['view']);
+        $this->getMock('F0FController', array('execute'), array(), 'FoftestController'.ucfirst($view));
 
         $dispatcher->dispatch();
     }
 
     /**
-     * @group           FOFDispatcher
-     * @covers          FOFDispatcher::onBeforeDispatch
+     * @group           F0FDispatcher
+     * @covers          F0FDispatcher::onBeforeDispatch
      */
 	public function testOnBeforeDispatch()
 	{
-		$dispatcher = FOFDispatcher::getTmpInstance();
+		$dispatcher = F0FDispatcher::getTmpInstance();
 
 		$this->assertTrue($dispatcher->onBeforeDispatch(), 'onBeforeDispatch should return TRUE');
 	}
 
     /**
-     * @group           FOFDispatcher
-     * @covers          FOFDispatcher::onBeforeDispatchCLI
+     * @group           F0FDispatcher
+     * @covers          F0FDispatcher::onBeforeDispatchCLI
      */
 	public function testOnBeforeDispatchCli()
 	{
-		$dispatcher = FOFDispatcher::getTmpInstance();
+		$dispatcher = F0FDispatcher::getTmpInstance();
 
 		$this->assertTrue($dispatcher->onBeforeDispatchCLI(), 'onBeforeDispatchCLI should return TRUE');
 	}
 
 	/**
-     * @group           FOFDispatcher
+     * @group           F0FDispatcher
      * @group           dispatcherGetTak
-     * @covers          FOFDispatcher::getTask
+     * @covers          F0FDispatcher::getTask
 	 * @dataProvider    getTestGetTask
 	 */
 	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
 	{
-		$mockPlatform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isFrontend'));
+		$mockPlatform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isFrontend'));
 		$mockPlatform->expects($this->any())
 					 ->method('isFrontend')
 					 ->will($this->returnValue($frontend));
 
-		FOFPlatform::forceInstance($mockPlatform);
+		F0FPlatform::forceInstance($mockPlatform);
 
 		$_SERVER['REQUEST_METHOD'] = $method;
-		$dispatcher = FOFDispatcher::getTmpInstance();
+		$dispatcher = F0FDispatcher::getTmpInstance();
 		$reflection = new ReflectionClass($dispatcher);
 
 		$property = $reflection->getProperty('input');
@@ -108,14 +108,14 @@ class FOFDispatcherTest extends FtestCase
 	}
 
     /**
-     * @group           FOFDispatcher
+     * @group           F0FDispatcher
      * @group           dispatcherTransparentAuthentication
-     * @covers          FOFDispatcher::transparentAuthentication
+     * @covers          F0FDispatcher::transparentAuthentication
      * @dataProvider    getTestTransparentAuthentication
      */
     public function testTransparentAuthentication($test, $check)
     {
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getUser', 'loginUser'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getUser', 'loginUser'));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue((object) array('guest' => $test['guest'])));
 
         if($check['login'])
@@ -127,7 +127,7 @@ class FOFDispatcherTest extends FtestCase
             $platform->expects($this->never())->method('loginUser');
         }
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         if(isset($test['server']))
         {
@@ -142,10 +142,10 @@ class FOFDispatcherTest extends FtestCase
         }
 
         $config = array(
-            'input' => new FOFInput($input)
+            'input' => new F0FInput($input)
         );
 
-        $dispatcher = new FOFDispatcher($config);
+        $dispatcher = new F0FDispatcher($config);
 
         if(isset($test['authKey']))
         {
@@ -161,16 +161,16 @@ class FOFDispatcherTest extends FtestCase
      * @TODO This test should be removed, since the tested function is no longer used and it's a private
      * method, so we should not test it.
      *
-     * @group           FOFDispatcher
+     * @group           F0FDispatcher
      * @group           dispatchercreateDecryptionKey
-     * @covers          FOFDispatcher::_createDecryptionKey
+     * @covers          F0FDispatcher::_createDecryptionKey
      */
     public function test_createDecryptionKey()
 	{
-		$dispatcher = FOFDispatcher::getTmpInstance();
+		$dispatcher = F0FDispatcher::getTmpInstance();
 		$reflection = new ReflectionClass($dispatcher);
 
-		$encrypt = new FOFEncryptBase32;
+		$encrypt = new F0FEncryptBase32;
 		$base32  = $encrypt->encode('FOF rocks!');
 
 		$property = $reflection->getProperty('fofAuth_Key');

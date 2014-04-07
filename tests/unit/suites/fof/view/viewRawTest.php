@@ -14,13 +14,13 @@ require_once JPATH_TESTS . '/unit/core/model/fakemodel.php';
 /**
  * @group 	View
  */
-class FOFViewRawTest extends FtestCase
+class F0FViewRawTest extends FtestCase
 {
 	protected $view = null;
 
 	public function setUp()
 	{
-        FOFPlatform::forceInstance(null);
+        F0FPlatform::forceInstance(null);
 
 		parent::setUp();
 
@@ -49,9 +49,9 @@ class FOFViewRawTest extends FtestCase
 
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 
-		// Replace the FOFPlatform with our fake one
-		$this->saveFOFPlatform();
-		$this->replaceFOFPlatform();
+		// Replace the F0FPlatform with our fake one
+		$this->saveF0FPlatform();
+		$this->replaceF0FPlatform();
 
 		$this->view = $this->getView();
 	}
@@ -61,8 +61,8 @@ class FOFViewRawTest extends FtestCase
 		// Restore the JFactory
 		$this->restoreFactoryState();
 
-		// Restore the FOFPlatform object instance
-		$this->restoreFOFPlatform();
+		// Restore the F0FPlatform object instance
+		$this->restoreF0FPlatform();
 
 		// Restore the $_SERVER global
 		global $_SERVER;
@@ -75,15 +75,15 @@ class FOFViewRawTest extends FtestCase
 	protected function getView()
 	{
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
-		$view = new FOFViewRaw($config);
+		$view = new F0FViewRaw($config);
 
 		return $view;
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::getLists()
+	 * @cover  	F0FViewRaw::getLists()
 	 */
 	public function testGetLists()
 	{
@@ -92,7 +92,7 @@ class FOFViewRawTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::hasAjaxOrderingSupport()
+	 * @cover  	F0FViewRaw::hasAjaxOrderingSupport()
 	 */
 	public function testHasAjaxOrderingSupportFalse()
 	{
@@ -103,7 +103,7 @@ class FOFViewRawTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::hasAjaxOrderingSupport()
+	 * @cover  	F0FViewRaw::hasAjaxOrderingSupport()
 	 */
 	public function testHasAjaxOrderingSupport()
 	{
@@ -125,7 +125,7 @@ class FOFViewRawTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::hasAjaxOrderingSupport()
+	 * @cover  	F0FViewRaw::hasAjaxOrderingSupport()
 	 */
 	public function testBadHasAjaxOrderingSupportFalse()
 	{
@@ -141,7 +141,7 @@ class FOFViewRawTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::getPerms()
+	 * @cover  	F0FViewRaw::getPerms()
 	 */
 	public function testGetPerms()
 	{
@@ -150,35 +150,35 @@ class FOFViewRawTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::__construct()
+	 * @cover  	F0FViewRaw::__construct()
 	 */
 	public function testContructorWithConfigObject()
 	{
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
-		$view = new FOFViewRaw((object)$config);
+		$view = new F0FViewRaw((object)$config);
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::__construct()
+	 * @cover  	F0FViewRaw::__construct()
 	 */
 	public function testContructorWithConfigWrong()
 	{
-		$view = new FOFViewRaw(0);
+		$view = new F0FViewRaw(0);
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::__construct()
+	 * @cover  	F0FViewRaw::__construct()
 	 */
 	public function testContructorWithoutInput()
 	{
 		$config = array();
-		$view = new FOFViewRaw($config);
+		$view = new F0FViewRaw($config);
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::display()
+	 * @cover  	F0FViewRaw::display()
 	 */
 	public function testDisplay()
 	{
@@ -194,7 +194,7 @@ class FOFViewRawTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFViewRaw::display()
+	 * @cover  	F0FViewRaw::display()
 	 */
 	public function testDisplayWithFakeTask()
 	{
@@ -229,7 +229,7 @@ class FOFViewRawTest extends FtestCase
 	}
 
 	/**
-	 * @cover  			FOFViewRaw::display()
+	 * @cover  			F0FViewRaw::display()
 	 * @dataProvider	getViewsAndTasks
 	 */
 	public function testDisplayWithTasksAndViews($view, $task)
@@ -238,9 +238,9 @@ class FOFViewRawTest extends FtestCase
 		$model->setState('task', $task);
 
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $view));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $view));
 
-		$view = new FOFViewRaw($config);
+		$view = new F0FViewRaw($config);
 
 		$view->setModel($model, true);
 
