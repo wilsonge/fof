@@ -614,7 +614,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Set the default view search path
-
 		if (array_key_exists('view_path', $config))
 		{
 			// User-defined dirs
@@ -656,7 +655,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Set the CSRF protection
-
 		if (array_key_exists('csrf_protection', $config))
 		{
 			$this->csrfProtection = $config['csrf_protection'];
@@ -668,7 +666,6 @@ class FOFController extends FOFUtilsObject
 		);
 
 		// Set any model/view name overrides
-
 		if (array_key_exists('viewName', $config))
 		{
 			$this->setThisViewName($config['viewName']);
@@ -704,7 +701,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Caching
-
 		if (array_key_exists('cacheableTasks', $config))
 		{
 			if (is_array($config['cacheableTasks']))
@@ -1176,7 +1172,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Set the layout to item, if it's not set in the URL
-
 		if (is_null($this->layout))
 		{
 			$this->layout = 'item';
@@ -1332,7 +1327,6 @@ class FOFController extends FOFUtilsObject
 	public function apply()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1342,7 +1336,6 @@ class FOFController extends FOFUtilsObject
 		$result = $this->applySave();
 
 		// Redirect to the edit task
-
 		if ($result)
 		{
 			$id = $this->input->get('id', 0, 'int');
@@ -1368,7 +1361,6 @@ class FOFController extends FOFUtilsObject
 	public function copy()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1384,7 +1376,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->copy();
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
@@ -1400,7 +1391,11 @@ class FOFController extends FOFUtilsObject
 		}
 		else
 		{
-            FOFPlatform::getInstance()->setHeader('Status', '201 Created', true);
+            if(!FOFPlatform::getInstance()->isCli())
+            {
+                FOFPlatform::getInstance()->setHeader('Status', '201 Created', true);
+            }
+
 			$this->setRedirect($url);
 
 			return true;
@@ -1423,7 +1418,6 @@ class FOFController extends FOFUtilsObject
 		$result = $this->applySave();
 
 		// Redirect to the display task
-
 		if ($result)
 		{
 			$textkey = strtoupper($this->component) . '_LBL_' . strtoupper($this->view) . '_SAVED';
@@ -1761,7 +1755,6 @@ class FOFController extends FOFUtilsObject
 	public function orderdown()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1777,7 +1770,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->move(1);
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
@@ -1805,7 +1797,6 @@ class FOFController extends FOFUtilsObject
 	public function orderup()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1821,7 +1812,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->move(-1);
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
@@ -1849,7 +1839,6 @@ class FOFController extends FOFUtilsObject
 	public function remove()
 	{
 		// CSRF prevention
-
 		if ($this->csrfProtection)
 		{
 			$this->_csrfProtection();
@@ -1865,7 +1854,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->delete();
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
@@ -2043,7 +2031,6 @@ class FOFController extends FOFUtilsObject
 				$this->messageType = 'message';
 			}
 		}
-
 		// If the type is explicitly set, set it.
 		else
 		{
@@ -2072,7 +2059,6 @@ class FOFController extends FOFUtilsObject
 		$status = $model->publish($state);
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
@@ -2108,8 +2094,7 @@ class FOFController extends FOFUtilsObject
 			$model->setIDsFromRequest();
 		}
 
-		$id = $model->getId();
-
+		$id   = $model->getId();
 		$item = $model->getItem();
 
 		if (!($item instanceof FOFTable))
@@ -2117,12 +2102,13 @@ class FOFController extends FOFUtilsObject
 			return false;
 		}
 
-		$key = $item->getKeyName();
-		$loadedid = $item->$key;
+		$accessField = $item->getColumnAlias('access');
+		$key         = $item->getKeyName();
+		$loadedid    = $item->$key;
 
 		if ($id == $loadedid)
 		{
-			$item->access = $level;
+			$item->$accessField = $level;
 			$status = $model->save($item);
 		}
 		else
@@ -2131,7 +2117,6 @@ class FOFController extends FOFUtilsObject
 		}
 
 		// Redirect
-
 		if ($customURL = $this->input->get('returnurl', '', 'string'))
 		{
 			$customURL = base64_decode($customURL);
@@ -2294,7 +2279,6 @@ class FOFController extends FOFUtilsObject
 	public function getModel($name = '', $prefix = '', $config = array())
 	{
 		// Make sure $config is an array
-
 		if (is_object($config))
 		{
 			$config = (array) $config;
@@ -2913,7 +2897,7 @@ class FOFController extends FOFUtilsObject
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
