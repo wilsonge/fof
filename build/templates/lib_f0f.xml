@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="library" version="2.5" method="upgrade">
-    <name>F0F</name>
+    <name>FOF</name>
 	<libraryname>f0f</libraryname>
-	<description>Framework-on-Framework (F0F) - A rapid component development framework for Joomla!</description>
+	<description>Framework-on-Framework (FOF) - The rapid component development framework for Joomla!. This package is the newer version of FOF, not the one shipped with Joomla! as the official Joomla! RAD Layer. The Joomla! RAD Layer has ceased development in March 2014.</description>
 	<creationDate>##DATE##</creationDate>
 	<author>Nicholas K. Dionysopoulos / Akeeba Ltd</author>
 	<authorEmail>nicholas@akeebabackup.com</authorEmail>
@@ -13,7 +13,7 @@
 	<packager>Akeeba Ltd</packager>
 	<packagerurl>https://www.AkeebaBackup.com/download.html</packagerurl>
 
-	<files folder="f0f">
+	<files folder="fof">
 		<folder>autoloader</folder>
 		<folder>config</folder>
 		<folder>controller</folder>

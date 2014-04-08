@@ -1,5 +1,6 @@
-FOF 2.2.2
+FOF 2.3.0
 ================================================================================
+~ All class prefixes changed from FOF to F0F (the letter o was changed to number 0) to avoid naming conflicts with Joomla!'s outdated copy of FOF
 + Automatically set the front-end page title in FOFViewHtml
 
 FOF 2.2.1
