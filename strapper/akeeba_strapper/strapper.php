@@ -13,7 +13,7 @@ defined('_JEXEC') or die();
 
 if (!defined('F0F_INCLUDED'))
 {
-    include_once JPATH_SITE . '/libraries/f0f/include.php';
+    include_once JPATH_LIBRARIES . '/f0f/include.php';
 }
 
 if (!@include_once(JPATH_SITE . '/media/akeeba_strapper/version.php') && !defined('AKEEBASTRAPPER_VERSION'))
