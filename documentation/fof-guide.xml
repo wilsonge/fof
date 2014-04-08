@@ -4538,6 +4538,18 @@ $json = ob_end_clean();
           </varlistentry>
 
           <varlistentry>
+            <term>defaultPageTitle</term>
+
+            <listitem>
+              <para>Only taken into account when setFrontendPageTitle is also
+              enabled. This is the translation key of the page's title which
+              will be used in the front-end. You can override this behaviour
+              by specialising the setPageTitle method of your
+              <classname>FOFView</classname> class.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>event_after_delete</term>
 
             <listitem>
@@ -4712,6 +4724,24 @@ $json = ob_end_clean();
                   relative to the component's root directory.</para>
                 </listitem>
               </itemizedlist>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>setFrontendPageTitle</term>
+
+            <listitem>
+              <para>When enabled, FOF will set the page title and metadata in
+              the front-end. You can enable this option by setting it to
+              <option>1</option>, <option>yes</option>, <option>true</option>
+              or <option>on</option>. When this setting is not set, the
+              default behaviour of Joomla! is to set the page title to the
+              name of the currently active menu item. The default Joomla!
+              behaviour ignores the <guilabel>Include Site Name in Page
+              Titles</guilabel> setting in the site's Global Configuration
+              (it's a Joomla! bug), but the code in FOF which runs when this
+              setting is enabled does honour that Global Configuration
+              setting.</para>
             </listitem>
           </varlistentry>
 
