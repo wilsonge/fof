@@ -2745,8 +2745,23 @@ class FOFController extends FOFUtilsObject
 			$config['helper_path'][] = $componentPaths['main'] . '/' . $extraHelperPath;
 		}
 
-		// Set the use_hypermedia flag in $config if it's not already set
+		// Set up the page title
+		$setFrontendPageTitle = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.setFrontendPageTitle', null);
 
+		if ($setFrontendPageTitle)
+		{
+			$setFrontendPageTitle = strtolower($setFrontendPageTitle);
+			$config['setFrontendPageTitle'][] = in_array($setFrontendPageTitle, array('1', 'yes', 'true', 'on'));
+		}
+
+		$defaultPageTitle = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.defaultPageTitle', null);
+
+		if ($defaultPageTitle)
+		{
+			$config['defaultPageTitle'][] = in_array($defaultPageTitle, array('1', 'yes', 'true', 'on'));
+		}
+
+		// Set the use_hypermedia flag in $config if it's not already set
 		if (!isset($config['use_hypermedia']))
 		{
 			$config['use_hypermedia'] = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.use_hypermedia', false);

@@ -1,3 +1,7 @@
+FOF 2.2.2
+================================================================================
++ Automatically set the front-end page title in FOFViewHtml
+
 FOF 2.2.1
 ================================================================================
 ! runPlugins was broken due to erroneous use of a custom behaviour dispatcher instead of the correct JDispatcher
