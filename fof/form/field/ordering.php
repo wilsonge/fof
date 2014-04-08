@@ -6,24 +6,24 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Renders the row ordering interface checkbox in browse views
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldOrdering extends JFormField implements FOFFormField
+class F0FFormFieldOrdering extends JFormField implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -98,9 +98,9 @@ class FOFFormFieldOrdering extends JFormField implements FOFFormField
 	 */
 	public function getRepeatable()
 	{
-		if (!($this->item instanceof FOFTable))
+		if (!($this->item instanceof F0FTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new Exception(__CLASS__ . ' needs a F0FTable to act upon');
 		}
 
 		$html = '';

@@ -6,15 +6,15 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * Form Field class for the FOF framework
+ * Form Field class for the F0F framework
  * Media selection field. This is an alias of the "media" field type.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldImage extends FOFFormFieldMedia
+class F0FFormFieldImage extends F0FFormFieldMedia
 {
 }

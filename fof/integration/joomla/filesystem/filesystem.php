@@ -6,9 +6,9 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-class FOFIntegrationJoomlaFilesystem extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
+class F0FIntegrationJoomlaFilesystem extends F0FPlatformFilesystem implements F0FPlatformFilesystemInterface
 {
 	public function __construct()
 	{

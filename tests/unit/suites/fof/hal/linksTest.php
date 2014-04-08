@@ -8,18 +8,18 @@
  */
 
 /**
- * Test class for FOFHalLinks
+ * Test class for F0FHalLinks
  */
-class FOFHalLinksTest extends PHPUnit_Framework_TestCase
+class F0FHalLinksTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers FOFHalLinks::addLink
+	 * @covers F0FHalLinks::addLink
 	 */
 	function testAddLink()
 	{
 		// Create a sample link
-		$link = new FOFHalLink('http://www.example.com/nada.json');
-		$linkset = new FOFHalLinks();
+		$link = new F0FHalLink('http://www.example.com/nada.json');
+		$linkset = new F0FHalLinks();
 
 		// ==== Add a link to a link set ====
 		$result = $linkset->addLink('custom', $link);
@@ -33,7 +33,7 @@ class FOFHalLinksTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($link, $links['custom'], 'The link item is not present in the link set');
 
 		// ==== Replace a link in the link set ====
-		$newlink = new FOFHalLink('http://www.example.com/yeah.json', false, 'Something');
+		$newlink = new F0FHalLink('http://www.example.com/yeah.json', false, 'Something');
 		$result = $linkset->addLink('custom', $newlink, true);
 
 		$links = $this->readAttribute($linkset, '_links');
@@ -46,7 +46,7 @@ class FOFHalLinksTest extends PHPUnit_Framework_TestCase
 
 		// ==== Add a link in the link set ====
 
-		$anotherlink = new FOFHalLink('http://www.example.com/another.json', false, 'Something else');
+		$anotherlink = new F0FHalLink('http://www.example.com/another.json', false, 'Something else');
 		$result = $linkset->addLink('custom', $anotherlink, false);
 
 		$links = $this->readAttribute($linkset, '_links');
@@ -60,21 +60,21 @@ class FOFHalLinksTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers FOFHalLinks::addLinks
+	 * @covers F0FHalLinks::addLinks
 	 */
 	function testAddLinks()
 	{
 		// Create a sample link
-		$link = new FOFHalLink('http://www.example.com/nada.json');
-		$linkset = new FOFHalLinks();
+		$link = new F0FHalLink('http://www.example.com/nada.json');
+		$linkset = new F0FHalLinks();
 
 		// ==== Add a link to a link set ====
 		$result = $linkset->addLink('custom', $link);
 
 		// ==== Replace the link in the link set ====
 		$newlinks = array(
-			new FOFHalLink('http://www.example.com/yeah.json', false, 'Something'),
-			new FOFHalLink('http://www.example.com/another.json', false, 'Something else')
+			new F0FHalLink('http://www.example.com/yeah.json', false, 'Something'),
+			new F0FHalLink('http://www.example.com/another.json', false, 'Something else')
 		);
 
 		$result = $linkset->addLinks('custom', $newlinks, true);
@@ -109,16 +109,16 @@ class FOFHalLinksTest extends PHPUnit_Framework_TestCase
 		// Create a sample link
 		$newlinks = array(
 			'foo' => array(
-				new FOFHalLink('http://www.example.com/yeah.json', false, 'Something'),
-				new FOFHalLink('http://www.example.com/another.json', false, 'Something else')
+				new F0FHalLink('http://www.example.com/yeah.json', false, 'Something'),
+				new F0FHalLink('http://www.example.com/another.json', false, 'Something else')
 			),
 			'bar' => array(
-				new FOFHalLink('http://www.example.com/foo{?id}.json', true, 'Foo link'),
-				new FOFHalLink('http://www.example.com/bar{?id}.json', true, 'Bar link')
+				new F0FHalLink('http://www.example.com/foo{?id}.json', true, 'Foo link'),
+				new F0FHalLink('http://www.example.com/bar{?id}.json', true, 'Bar link')
 			),
 		);
 
-		$linkset = new FOFHalLinks();
+		$linkset = new F0FHalLinks();
 
 		$linkset->addLinks('foo', $newlinks['foo']);
 		$linkset->addLinks('bar', $newlinks['bar']);

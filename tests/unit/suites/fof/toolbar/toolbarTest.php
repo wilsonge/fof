@@ -17,21 +17,21 @@ use org\bovigo\vfs\vfsStream;
 require_once 'toolbarHerlperStub.php';
 require_once 'toolbarDataprovider.php';
 
-class FOFToolbarTest extends FtestCase
+class F0FToolbarTest extends FtestCase
 {
     protected function setUp()
     {
         parent::setUp();
 
-        FOFPlatform::forceInstance(null);
+        F0FPlatform::forceInstance(null);
         JToolbarHelper::resetStack();
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarRenderToolbar
      * @dataProvider    getTestRenderToolbar
-     * @covers          FOFToolbar::renderToolbar
+     * @covers          F0FToolbar::renderToolbar
      */
     public function testRenderToolbar($test, $check)
     {
@@ -43,7 +43,7 @@ class FOFToolbarTest extends FtestCase
         }
 
         $config = array(
-            'input' => new FOFInput()
+            'input' => new F0FInput()
         );
 
         $input = array(
@@ -57,9 +57,9 @@ class FOFToolbarTest extends FtestCase
             $input = array_merge($input, $test['config_input']);
         }
 
-        $config['input'] = new FOFInput($input);
+        $config['input'] = new F0FInput($input);
 
-        $toolbar = $this->getMock('FOFToolbar', $methods, array($config));
+        $toolbar = $this->getMock('F0FToolbar', $methods, array($config));
 
         // Let's check if the expected methods are really invoked
         foreach($check['methods'] as $method)
@@ -77,24 +77,24 @@ class FOFToolbarTest extends FtestCase
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @dataProvider    getTestOnCpanelsBrowse
-     * @covers          FOFToolbar::onCpanelsBrowse
+     * @covers          F0FToolbar::onCpanelsBrowse
      */
     public function testOnCpanelsBrowse($test, $check)
     {
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $config = array(
             'renderFrontendSubmenu' => $test['submenu'],
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftest'))
+            'input' => new F0FInput(array('option' => 'com_foftest'))
         );
 
-        $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
+        $toolbar = $this->getMock('F0FToolbar', array('renderSubmenu'), array($config));
         $toolbar->expects($this->any())->method('renderSubmenu')->will($this->returnValue(null));
 
         if($test['callSubmenu'])
@@ -110,29 +110,29 @@ class FOFToolbarTest extends FtestCase
 
         $invokedMethods = JToolbarHelper::getStack();
 
-        $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onCpanelsBrowse called the wrong methods');
+        $this->assertEquals($check['methods'], $invokedMethods, 'F0FToolbar::onCpanelsBrowse called the wrong methods');
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarOnBrowse
      * @dataProvider    getTestOnBrowse
-     * @covers          FOFToolbar::onBrowse
+     * @covers          F0FToolbar::onBrowse
      */
     public function testOnBrowse($test, $check)
     {
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $config = array(
             'renderFrontendSubmenu' => $test['submenu'],
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
+            'input' => new F0FInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
-        $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
+        $toolbar = $this->getMock('F0FToolbar', array('renderSubmenu'), array($config));
         $toolbar->expects($this->any())->method('renderSubmenu')->will($this->returnValue(null));
 
         $toolbar->perms = (object)$test['perms'];
@@ -150,29 +150,29 @@ class FOFToolbarTest extends FtestCase
 
         $invokedMethods = JToolbarHelper::getStack();
 
-        $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onBrowse called the wrong methods');
+        $this->assertEquals($check['methods'], $invokedMethods, 'F0FToolbar::onBrowse called the wrong methods');
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarOnRead
      * @dataProvider    getTestOnRead
-     * @covers          FOFToolbar::onRead
+     * @covers          F0FToolbar::onRead
      */
     public function testOnRead($test, $check)
     {
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $config = array(
             'renderFrontendSubmenu' => $test['submenu'],
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
+            'input' => new F0FInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
-        $toolbar = $this->getMock('FOFToolbar', array('renderSubmenu'), array($config));
+        $toolbar = $this->getMock('F0FToolbar', array('renderSubmenu'), array($config));
         $toolbar->expects($this->any())->method('renderSubmenu')->will($this->returnValue(null));
 
         if($test['callSubmenu'])
@@ -188,28 +188,28 @@ class FOFToolbarTest extends FtestCase
 
         $invokedMethods = JToolbarHelper::getStack();
 
-        $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onRead called the wrong methods');
+        $this->assertEquals($check['methods'], $invokedMethods, 'F0FToolbar::onRead called the wrong methods');
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarOnAdd
      * @dataProvider    getTestOnAdd
-     * @covers          FOFToolbar::onAdd
+     * @covers          F0FToolbar::onAdd
      */
     public function testOnAdd($test, $check)
     {
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $config = array(
             'renderFrontendButtons' => $test['buttons'],
-            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
+            'input' => new F0FInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
-        $toolbar = new FOFToolbar($config);
+        $toolbar = new F0FToolbar($config);
 
         $toolbar->perms = (object)$test['perms'];
 
@@ -217,22 +217,22 @@ class FOFToolbarTest extends FtestCase
 
         $invokedMethods = JToolbarHelper::getStack();
 
-        $this->assertEquals($check['methods'], $invokedMethods, 'FOFToolbar::onAdd called the wrong methods');
+        $this->assertEquals($check['methods'], $invokedMethods, 'F0FToolbar::onAdd called the wrong methods');
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarAppendLink
      * @dataProvider    getTestAppendLink
-     * @covers          FOFToolbar::appendLink
+     * @covers          F0FToolbar::appendLink
      */
     public function testAppendLink($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array('option' => 'com_foftest'))
+            'input' => new F0FInput(array('option' => 'com_foftest'))
         );
 
-        $toolbar = new FOFToolbar($config);
+        $toolbar = new F0FToolbar($config);
 
         foreach($test['links'] as $link)
         {
@@ -241,21 +241,21 @@ class FOFToolbarTest extends FtestCase
 
         $links = $toolbar->getLinks();
 
-        $this->assertEquals($check['links'], $links, 'FOFToolbar::prefixLink failed to append the link');
+        $this->assertEquals($check['links'], $links, 'F0FToolbar::prefixLink failed to append the link');
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarPrefixLink
-     * @covers          FOFToolbar::prefixLink
+     * @covers          F0FToolbar::prefixLink
      */
     public function testPrefixLink()
     {
         $config = array(
-            'input' => new FOFInput(array('option' => 'com_foftest'))
+            'input' => new F0FInput(array('option' => 'com_foftest'))
         );
 
-        $toolbar = new FOFToolbar($config);
+        $toolbar = new F0FToolbar($config);
 
         $toolbar->prefixLink('Cpanel', 'index.php?option=com_foftest&view=cpanel', true, null);
         $toolbar->prefixLink('Foobars', 'index.php?option=com_foftest&view=foobars', false, null);
@@ -276,42 +276,42 @@ class FOFToolbarTest extends FtestCase
             )
         );
 
-        $this->assertEquals($check, $links, 'FOFToolbar::prefixLink failed to prepend the link');
+        $this->assertEquals($check, $links, 'F0FToolbar::prefixLink failed to prepend the link');
 
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarRenderSubmenu
      * @dataProvider    getTestRenderSubmenu
-     * @covers          FOFToolbar::renderSubmenu
+     * @covers          F0FToolbar::renderSubmenu
      */
     public function testRenderSubmenu($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array('option' => 'com_foftest', 'view' => $test['view']))
+            'input' => new F0FInput(array('option' => 'com_foftest', 'view' => $test['view']))
         );
 
-        $toolbar = $this->getMock('FOFToolbar', array('getMyViews'), array($config));
+        $toolbar = $this->getMock('F0FToolbar', array('getMyViews'), array($config));
         $toolbar->expects($this->any())->method('getMyViews')->will($this->returnValue($test['views']));
 
         $toolbar->renderSubmenu();
 
         $links = $toolbar->getLinks();
 
-        $this->assertEquals($check['links'], $links, 'FOFToolbar::renderSubmenu created wrong submenu links');
+        $this->assertEquals($check['links'], $links, 'F0FToolbar::renderSubmenu created wrong submenu links');
     }
 
     /**
-     * @group           FOFToolbar
+     * @group           F0FToolbar
      * @group           toolbarGetMyViews
      * @dataProvider    getTestGetMyViews
-     * @covers          FOFToolbar::getMyViews
+     * @covers          F0FToolbar::getMyViews
      */
     public function testGetMyViews($test, $check)
     {
         // First of all I stub the filesystem object, so it won't strip out the protocol part
-        $filesystem = $this->getMock('FOFIntegrationJoomlaFilesystem', array('folderFolders', 'folderFiles'));
+        $filesystem = $this->getMock('F0FIntegrationJoomlaFilesystem', array('folderFolders', 'folderFiles'));
         $filesystem->expects($this->any())
                    ->method('folderFolders')
                    ->will($this->returnValue($test['folders']));
@@ -331,7 +331,7 @@ class FOFToolbarTest extends FtestCase
 			    }
 		    }));
 
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getComponentBaseDirs'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getComponentBaseDirs'));
 
         // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())
@@ -344,21 +344,21 @@ class FOFToolbarTest extends FtestCase
         // Finally, force the platform to return my mocked object
         $platform->setIntegrationObject('filesystem', $filesystem);
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         vfsStream::setup('root', null, $test['structure']);
 
         $config = array(
-            'input' => new FOFInput(array('option' => 'com_foftest'))
+            'input' => new F0FInput(array('option' => 'com_foftest'))
         );
 
-        $toolbar = new FOFToolbar($config);
+        $toolbar = new F0FToolbar($config);
         $method  = new ReflectionMethod($toolbar, 'getMyViews');
         $method->setAccessible(true);
 
         $views = $method->invoke($toolbar);
 
-	    $this->assertEquals($check['views'], $views, 'FOFToolbar::getMyViews returned a wrong list of views');
+	    $this->assertEquals($check['views'], $views, 'F0FToolbar::getMyViews returned a wrong list of views');
     }
 
     public function getTestRenderToolbar()

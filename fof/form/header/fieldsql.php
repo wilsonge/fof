@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Generic field header, with drop down filters based on a SQL query
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderFieldsql extends FOFFormHeaderFieldselectable
+class F0FFormHeaderFieldsql extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Create objects for the options
@@ -32,7 +32,7 @@ class FOFFormHeaderFieldsql extends FOFFormHeaderFieldselectable
 		$query     = (string) $this->element['query'];
 
 		// Get the database object.
-		$db = FOFPlatform::getInstance()->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// Set the query and get the result list.
 		$db->setQuery($query);

@@ -7,7 +7,7 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-class FOFDatabaseIteratorTest extends FtestCaseDatabase
+class F0FDatabaseIteratorTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
@@ -22,39 +22,39 @@ class FOFDatabaseIteratorTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+        F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
     }
 
     /**
-     * @group   FOFDatabaseIterator
+     * @group   F0FDatabaseIterator
      * @group   iteratorConstruct
-     * @covers  FOFDatabaseIterator::__construct
+     * @covers  F0FDatabaseIterator::__construct
      */
     public function test__construct()
     {
         $db = JFactory::getDbo();
 
-        $iterator = FOFDatabaseIterator::getIterator('Mysql', $db, null, 'FoftestTableFoobar');
-        $this->assertInstanceOf('FOFDatabaseIteratorMysql', $iterator, 'FOFDatabaseIterator loaded the wrong class');
+        $iterator = F0FDatabaseIterator::getIterator('Mysql', $db, null, 'FoftestTableFoobar');
+        $this->assertInstanceOf('F0FDatabaseIteratorMysql', $iterator, 'F0FDatabaseIterator loaded the wrong class');
     }
 
     /**
-     * @group   FOFDatabaseIterator
+     * @group   F0FDatabaseIterator
      * @group   iteratorConstruct
-     * @covers  FOFDatabaseIterator::__construct
+     * @covers  F0FDatabaseIterator::__construct
      * @expectedException InvalidArgumentException
      */
     public function test__constructException()
     {
         $db = JFactory::getDbo();
-        $iterator = FOFDatabaseIterator::getIterator('Mysql', $db, null, 'WrongTable');
+        $iterator = F0FDatabaseIterator::getIterator('Mysql', $db, null, 'WrongTable');
     }
 
     /**
-     * @group   FOFDatabaseIterator
+     * @group   F0FDatabaseIterator
      * @group   iteratorNext
-     * @covers  FOFDatabaseIterator::next
+     * @covers  F0FDatabaseIterator::next
      */
     public function testNext()
     {
@@ -72,7 +72,7 @@ class FOFDatabaseIteratorTest extends FtestCaseDatabase
         $newDb->setQuery($query);
         $cursor = $newDb->execute();
 
-        $iterator = FOFDatabaseIterator::getIterator('Mysql', $cursor, null, 'FoftestTableFoobar');
+        $iterator = F0FDatabaseIterator::getIterator('Mysql', $cursor, null, 'FoftestTableFoobar');
 
         $items = array();
 

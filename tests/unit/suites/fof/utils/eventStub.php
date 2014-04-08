@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
-class FOFUtilsObservableEventStub extends FOFUtilsObservableEvent
+class F0FUtilsObservableEventStub extends F0FUtilsObservableEvent
 {
 	/**
 	 * @var array Record of calls made to myEvent

@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * The Toolbar class renders the back-end component title area and the back-
@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFToolbar
+class F0FToolbar
 {
 	/** @var array Configuration parameters */
 	protected $config = array();
@@ -41,7 +41,7 @@ class FOFToolbar
 	 * @param   string  $option  The name of the component
 	 * @param   array   $config  The configuration array for the component
 	 *
-	 * @return  FOFToolbar  The toolbar instance for the component
+	 * @return  F0FToolbar  The toolbar instance for the component
 	 */
 	public static function &getAnInstance($option = null, $config = array())
 	{
@@ -63,18 +63,18 @@ class FOFToolbar
 		{
 			if (array_key_exists('input', $config))
 			{
-				if ($config['input'] instanceof FOFInput)
+				if ($config['input'] instanceof F0FInput)
 				{
 					$input = $config['input'];
 				}
 				else
 				{
-					$input = new FOFInput($config['input']);
+					$input = new F0FInput($config['input']);
 				}
 			}
 			else
 			{
-				$input = new FOFInput;
+				$input = new F0FInput;
 			}
 
 			$config['option'] = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
@@ -85,7 +85,7 @@ class FOFToolbar
 
 			if (!class_exists($className))
 			{
-				$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
+				$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 				$searchPaths = array(
 					$componentPaths['main'],
@@ -99,7 +99,7 @@ class FOFToolbar
 					array_unshift($searchPaths, $config['searchpath']);
 				}
 
-                $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+                $filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 				$path = $filesystem->pathFind(
 						$searchPaths, 'toolbar.php'
@@ -113,7 +113,7 @@ class FOFToolbar
 
 			if (!class_exists($className))
 			{
-				$className = 'FOFToolbar';
+				$className = 'F0FToolbar';
 			}
 
 			$instance = new $className($config);
@@ -151,7 +151,7 @@ class FOFToolbar
 		}
 		else
 		{
-			$this->input = new FOFInput;
+			$this->input = new F0FInput;
 		}
 
 		// Get the default values for the component and view names
@@ -167,7 +167,7 @@ class FOFToolbar
 		$this->input->set('option', $this->component);
 
 		// Get default permissions (can be overriden by the view)
-		$platform = FOFPlatform::getInstance();
+		$platform = F0FPlatform::getInstance();
 		$perms = (object) array(
 				'manage'	 => $platform->authorise('core.manage', $this->input->getCmd('option', 'com_foobar')),
 				'create'	 => $platform->authorise('core.create', $this->input->getCmd('option', 'com_foobar')),
@@ -188,12 +188,12 @@ class FOFToolbar
 		}
 
 		// If not in the administrative area, load the JToolbarHelper
-		if (!FOFPlatform::getInstance()->isBackend())
+		if (!F0FPlatform::getInstance()->isBackend())
 		{
             // Needed for tests, so we can inject our "special" helper class
             if(!class_exists('JToolbarHelper'))
             {
-                $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+                $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
                 require_once $platformDirs['root'] . '/administrator/includes/toolbar.php';
             }
 
@@ -201,10 +201,10 @@ class FOFToolbar
 			if ($this->renderFrontendButtons)
 			{
 				// Load back-end toolbar language files in front-end
-				FOFPlatform::getInstance()->loadTranslations('');
+				F0FPlatform::getInstance()->loadTranslations('');
 
                 // Needed for tests (we can fake we're not in the backend, but we are still in CLI!)
-                if(!FOFPlatform::getInstance()->isCli())
+                if(!F0FPlatform::getInstance()->isCli())
                 {
                     // Load the core Javascript
                     JHtml::_('behavior.framework', true);
@@ -221,7 +221,7 @@ class FOFToolbar
 	 *
 	 * @param   string    $view   The view of the component
 	 * @param   string    $task   The exact task of the view
-	 * @param   FOFInput  $input  An optional input object used to determine the defaults
+	 * @param   F0FInput  $input  An optional input object used to determine the defaults
 	 *
 	 * @return  void
 	 */
@@ -266,10 +266,10 @@ class FOFToolbar
 
 		$this->view = $view;
 		$this->task = $task;
-		$view = FOFInflector::pluralize($view);
+		$view = F0FInflector::pluralize($view);
 		$component = $this->input->get('option', 'com_foobar', 'cmd');
 
-		$configProvider = new FOFConfigProvider;
+		$configProvider = new F0FConfigProvider;
 		$toolbar = $configProvider->get(
 			$component . '.views.' . '.toolbar'
 		);
@@ -317,12 +317,12 @@ class FOFToolbar
 	 */
 	public function onCpanelsBrowse()
 	{
-		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -341,12 +341,12 @@ class FOFToolbar
 	public function onBrowse()
 	{
 		// On frontend, buttons must be added specifically
-		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -408,12 +408,12 @@ class FOFToolbar
 	public function onRead()
 	{
 		// On frontend, buttons must be added specifically
-		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -437,7 +437,7 @@ class FOFToolbar
 	public function onAdd()
 	{
 		// On frontend, buttons must be added specifically
-		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -446,7 +446,7 @@ class FOFToolbar
 		$componentName = str_replace('com_', '', $option);
 
 		// Set toolbar title
-		$subtitle_key = strtoupper($option . '_TITLE_' . FOFInflector::pluralize($this->input->getCmd('view', 'cpanel'))) . '_EDIT';
+		$subtitle_key = strtoupper($option . '_TITLE_' . F0FInflector::pluralize($this->input->getCmd('view', 'cpanel'))) . '_EDIT';
 		JToolBarHelper::title(JText::_(strtoupper($option)) . ': ' . JText::_($subtitle_key), $componentName);
 
 		// Set toolbar icons
@@ -475,7 +475,7 @@ class FOFToolbar
 	public function onEdit()
 	{
 		// On frontend, buttons must be added specifically
-		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -618,7 +618,7 @@ class FOFToolbar
             //Do we have a translation for this key?
 			if (strtoupper(JText::_($key)) == $key)
 			{
-				$altview = FOFInflector::isPlural($view) ? FOFInflector::singularize($view) : FOFInflector::pluralize($view);
+				$altview = F0FInflector::isPlural($view) ? F0FInflector::singularize($view) : F0FInflector::pluralize($view);
 				$key2 = strtoupper($this->component) . '_TITLE_' . strtoupper($altview);
 
                 // Maybe we have for the alternative view?
@@ -656,9 +656,9 @@ class FOFToolbar
 		$t_views    = array();
 		$using_meta = false;
 
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->component);
+		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($this->component);
 		$searchPath     = $componentPaths['main'] . '/views';
-        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem     = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		$allFolders = $filesystem->folderFolders($searchPath);
 
@@ -669,7 +669,7 @@ class FOFToolbar
 				$view = $folder;
 
 				// View already added
-				if (in_array(FOFInflector::pluralize($view), $t_views))
+				if (in_array(F0FInflector::pluralize($view), $t_views))
 				{
 					continue;
 				}
@@ -688,7 +688,7 @@ class FOFToolbar
 				// Not found, do we have it inside the plural one?
 				if (!$meta)
 				{
-					$plural = FOFInflector::pluralize($view);
+					$plural = F0FInflector::pluralize($view);
 
 					if (in_array($plural, $allFolders))
 					{
@@ -715,7 +715,7 @@ class FOFToolbar
 					$order = count($to_order);
 				}
 
-				$view = FOFInflector::pluralize($view);
+				$view = F0FInflector::pluralize($view);
 
 				$t_view = new stdClass;
 				$t_view->ordering = $order;
@@ -726,8 +726,8 @@ class FOFToolbar
 			}
 		}
 
-        FOFUtilsArray::sortObjects($to_order, 'ordering');
-		$views = FOFUtilsArray::getColumn($to_order, 'view');
+        F0FUtilsArray::sortObjects($to_order, 'ordering');
+		$views = F0FUtilsArray::getColumn($to_order, 'view');
 
 		// If not using the metadata file, let's put the cpanel view on top
 		if (!$using_meta)
@@ -773,12 +773,12 @@ class FOFToolbar
 	 */
 	private function renderFromConfig(array $toolbar)
 	{
-		if (FOFPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
+		if (F0FPlatform::getInstance()->isBackend() || $this->renderFrontendSubmenu)
 		{
 			$this->renderSubmenu();
 		}
 
-		if (!FOFPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
+		if (!F0FPlatform::getInstance()->isBackend() && !$this->renderFrontendButtons)
 		{
 			return;
 		}
@@ -824,7 +824,7 @@ class FOFToolbar
 				$iconOver = isset($attributes['icon_over']) ? $attributes['icon_over'] : '';
 				$alt = isset($attributes['alt']) ? $attributes['alt'] : '';
 				$listSelect = isset($attributes['list_select']) ?
-					FOFStringUtils::toBool($attributes['list_select']) : true;
+					F0FStringUtils::toBool($attributes['list_select']) : true;
 
 				JToolbarHelper::custom($task, $icon, $iconOver, $alt, $listSelect);
 				break;
@@ -832,7 +832,7 @@ class FOFToolbar
 			case 'preview':
 				$url = isset($attributes['url']) ? $attributes['url'] : '';
 				$update_editors = isset($attributes['update_editors']) ?
-					FOFStringUtils::toBool($attributes['update_editors']) : false;
+					F0FStringUtils::toBool($attributes['update_editors']) : false;
 
 				JToolbarHelper::preview($url, $update_editors);
 				break;
@@ -846,7 +846,7 @@ class FOFToolbar
 				}
 
 				$ref = $attributes['help'];
-				$com = isset($attributes['com']) ? FOFStringUtils::toBool($attributes['com']) : false;
+				$com = isset($attributes['com']) ? F0FStringUtils::toBool($attributes['com']) : false;
 				$override = isset($attributes['override']) ? $attributes['override'] : null;
 				$component = isset($attributes['component']) ? $attributes['component'] : null;
 
@@ -880,7 +880,7 @@ class FOFToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'add';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_NEW';
 					$check = isset($attributes['check']) ?
-						FOFStringUtils::toBool($attributes['check']) : false;
+						F0FStringUtils::toBool($attributes['check']) : false;
 
 					JToolbarHelper::addNew($task, $alt, $check);
 				}
@@ -893,7 +893,7 @@ class FOFToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
 					$check = isset($attributes['check']) ?
-						FOFStringUtils::toBool($attributes['check']) : false;
+						F0FStringUtils::toBool($attributes['check']) : false;
 
 					JToolbarHelper::publish($task, $alt, $check);
 				}
@@ -917,7 +917,7 @@ class FOFToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
 					$check = isset($attributes['check']) ?
-						FOFStringUtils::toBool($attributes['check']) : false;
+						F0FStringUtils::toBool($attributes['check']) : false;
 
 					JToolbarHelper::unpublish($task, $alt, $check);
 				}
@@ -1000,7 +1000,7 @@ class FOFToolbar
 					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
 					$check = isset($attributes['check']) ?
-						FOFStringUtils::toBool($attributes['check']) : true;
+						F0FStringUtils::toBool($attributes['check']) : true;
 
 					JToolbarHelper::trash($task, $alt, $check);
 				}
@@ -1038,7 +1038,7 @@ class FOFToolbar
 				$task = isset($attributes['task']) ? $attributes['task'] : 'checkin';
 				$alt = isset($attributes['alt']) ? $attributes['alt'] :'JTOOLBAR_CHECKIN';
 				$check = isset($attributes['check']) ?
-					FOFStringUtils::toBool($attributes['check']) : true;
+					F0FStringUtils::toBool($attributes['check']) : true;
 
 				JToolbarHelper::checkin($task, $alt, $check);
 				break;

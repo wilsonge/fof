@@ -10,7 +10,7 @@
 require_once 'relationsDataprovider.php';
 require_once JPATH_TESTS.'/unit/core/table/relations.php';
 
-class FOFTableRelationsTest extends FtestCaseDatabase
+class F0FTableRelationsTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
@@ -25,22 +25,22 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+        F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
     }
 
     /**
-     * Let's check if FOFTableReations constructor detects the parent table relation
+     * Let's check if F0FTableReations constructor detects the parent table relation
      *
      * @group               relationsConstruct
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTest__construct
-     * @covers              FOFTableRelations::__construct
+     * @covers              F0FTableRelations::__construct
      */
     public function test__construct($tableinfo, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -55,28 +55,28 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         // The table is supposed to have a parent, let's check if it was detected
         if($check['hasParent'])
         {
-            $this->assertArrayHasKey($check['relation']['key'], $relations['parent'], 'FOFTableRelations failed to reconize and store the parent relation');
-            $this->assertEquals($check['relation']['content'], $relations['parent'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for this parent relation');
-            $this->assertEquals($check['relation']['key'], $defaultRelation['parent'], 'FOFTableRelation failed to store the parent relation as the default one');
+            $this->assertArrayHasKey($check['relation']['key'], $relations['parent'], 'F0FTableRelations failed to reconize and store the parent relation');
+            $this->assertEquals($check['relation']['content'], $relations['parent'][$check['relation']['key']], 'F0FTableRelations stored the wrong info for this parent relation');
+            $this->assertEquals($check['relation']['key'], $defaultRelation['parent'], 'F0FTableRelation failed to store the parent relation as the default one');
         }
         else
         {
-            $this->assertArrayNotHasKey($check['relation']['key'], $relations['parent'], 'FOFTableRelations failed to reconize and store the parent relation');
-            $this->assertEquals(array(), $relations['parent'], 'FOFTableRelations should contain no parent relation');
+            $this->assertArrayNotHasKey($check['relation']['key'], $relations['parent'], 'F0FTableRelations failed to reconize and store the parent relation');
+            $this->assertEquals(array(), $relations['parent'], 'F0FTableRelations should contain no parent relation');
         }
 
     }
 
     /**
      * @group               relationsAddChildRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestAddChildRelation
-     * @covers              FOFTableRelations::addChildRelation
+     * @covers              F0FTableRelations::addChildRelation
      */
     public function testAddChildRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -96,20 +96,20 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $defaultRelation->setAccessible(true);
         $defaultRelation = $defaultRelation->getValue($relation);
 
-        $this->assertEquals($check['relation']['content'], $relations['child'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for this child relation');
-        $this->assertEquals($check['relation']['default'], $defaultRelation['child'], 'FOFTableRelation default relation not stored as expected');
+        $this->assertEquals($check['relation']['content'], $relations['child'][$check['relation']['key']], 'F0FTableRelations stored the wrong info for this child relation');
+        $this->assertEquals($check['relation']['default'], $defaultRelation['child'], 'F0FTableRelation default relation not stored as expected');
     }
 
     /**
      * @group               relationsAddParentRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestAddParentRelation
-     * @covers              FOFTableRelations::addParentRelation
+     * @covers              F0FTableRelations::addParentRelation
      */
     public function testAddParentRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -145,20 +145,20 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $relations       = $relations->getValue($relation);
         $defaultRelation = $defaultRelation->getValue($relation);
 
-        $this->assertEquals($check['relation']['content'], $relations['parent'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for this parent relation');
-        $this->assertEquals($check['relation']['default'], $defaultRelation['parent'], 'FOFTableRelation default relation not stored as expected');
+        $this->assertEquals($check['relation']['content'], $relations['parent'][$check['relation']['key']], 'F0FTableRelations stored the wrong info for this parent relation');
+        $this->assertEquals($check['relation']['default'], $defaultRelation['parent'], 'F0FTableRelation default relation not stored as expected');
     }
 
     /**
      * @group               relationsAddChildrenRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestAddChildrenRelation
-     * @covers              FOFTableRelations::addChildrenRelation
+     * @covers              F0FTableRelations::addChildrenRelation
      */
     public function testAddChildrenRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -178,20 +178,20 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $defaultRelation->setAccessible(true);
         $defaultRelation = $defaultRelation->getValue($relation);
 
-        $this->assertEquals($check['relation']['content'], $relations['children'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for children relation');
-        $this->assertEquals($check['relation']['default'], $defaultRelation['children'], 'FOFTableRelation default relation not stored as expected');
+        $this->assertEquals($check['relation']['content'], $relations['children'][$check['relation']['key']], 'F0FTableRelations stored the wrong info for children relation');
+        $this->assertEquals($check['relation']['default'], $defaultRelation['children'], 'F0FTableRelation default relation not stored as expected');
     }
 
     /**
      * @group               relationsAddMultipleRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestAddMultipleRelation
-     * @covers              FOFTableRelations::addMultipleRelation
+     * @covers              F0FTableRelations::addMultipleRelation
      */
     public function testAddMultipleRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -214,20 +214,20 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $defaultRelation->setAccessible(true);
         $defaultRelation = $defaultRelation->getValue($relation);
 
-        $this->assertEquals($check['relation']['content'], $relations['multiple'][$check['relation']['key']], 'FOFTableRelations stored the wrong info for multiple relation');
-        $this->assertEquals($check['relation']['default'], $defaultRelation['multiple'], 'FOFTableRelation default relation not stored as expected');
+        $this->assertEquals($check['relation']['content'], $relations['multiple'][$check['relation']['key']], 'F0FTableRelations stored the wrong info for multiple relation');
+        $this->assertEquals($check['relation']['default'], $defaultRelation['multiple'], 'F0FTableRelation default relation not stored as expected');
     }
 
     /**
      * @group               relationsRemoveRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestRemoveRelation
-     * @covers              FOFTableRelations::removeRelation
+     * @covers              F0FTableRelations::removeRelation
      */
     public function testRemoveRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -247,26 +247,26 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relations = $relations->getValue($relation);
 
-        $this->assertEquals($check['relations'], $relations, 'FOFTableRelations::removeRelation failed to remove the relation(s)');
+        $this->assertEquals($check['relations'], $relations, 'F0FTableRelations::removeRelation failed to remove the relation(s)');
 
         if(isset($check['default']))
         {
             $defaultRelation = $defaultRelation->getValue($relation);
 
-            $this->assertEquals($check['default'], $defaultRelation, 'FOFTableRelations::removeRelation failed to remove the default relation');
+            $this->assertEquals($check['default'], $defaultRelation, 'F0FTableRelations::removeRelation failed to remove the default relation');
         }
     }
 
     /**
      * @group               relationsClearRelations
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestClearRelations
-     * @covers              FOFTableRelations::clearRelations
+     * @covers              F0FTableRelations::clearRelations
      */
     public function testClearRelations($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -286,26 +286,26 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $relations = $relations->getValue($relation);
 
-        $this->assertEquals($check['relations'], $relations, 'FOFTableRelations::removeRelation failed to remove the relation(s)');
+        $this->assertEquals($check['relations'], $relations, 'F0FTableRelations::removeRelation failed to remove the relation(s)');
 
         if(isset($check['default']))
         {
             $defaultRelation = $defaultRelation->getValue($relation);
 
-            $this->assertEquals($check['default'], $defaultRelation, 'FOFTableRelations::removeRelation failed to remove the default relation');
+            $this->assertEquals($check['default'], $defaultRelation, 'F0FTableRelations::removeRelation failed to remove the default relation');
         }
     }
 
     /**
      * @group               relationsHasRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestHasRelation
-     * @covers              FOFTableRelations::hasRelation
+     * @covers              F0FTableRelations::hasRelation
      */
     public function testHasRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -315,15 +315,15 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $result = $relation->hasRelation($test['itemName'], $test['type']);
 
-        $this->assertEquals($check['result'], $result, 'FOFTableRelations::hasRelation failed to detect the relation');
+        $this->assertEquals($check['result'], $result, 'F0FTableRelations::hasRelation failed to detect the relation');
 
     }
 
     /**
      * @group               relationsGetRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetRelation
-     * @covers              FOFTableRelations::getRelation
+     * @covers              F0FTableRelations::getRelation
      */
     public function testGetRelation($tableinfo, $test, $check)
     {
@@ -332,8 +332,8 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -343,14 +343,14 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $result = $relation->getRelation($test['itemName'], $test['type']);
 
-        $this->assertArrayHasKey('type', $result, 'FOFTableRelations::getRelation should set the "type" key');
+        $this->assertArrayHasKey('type', $result, 'F0FTableRelations::getRelation should set the "type" key');
     }
 
     /**
      * @group               relationsGetRelatedItem
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetRelatedItem
-     * @covers              FOFTableRelations::getRelatedItem
+     * @covers              F0FTableRelations::getRelatedItem
      */
     public function testGetRelatedItem($tableinfo, $test, $check)
     {
@@ -359,10 +359,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('getParent', 'getChild'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('getParent', 'getChild'), array($table));
         $relation->expects($this->any())->method('getParent')->will($this->returnValue(true));
         $relation->expects($this->any())->method('getChild')->will($this->returnValue(true));
 
@@ -375,9 +375,9 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetRelatedItems
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetRelatedItems
-     * @covers              FOFTableRelations::getRelatedItems
+     * @covers              F0FTableRelations::getRelatedItems
      */
     public function testGetRelatedItems($tableinfo, $test, $check)
     {
@@ -386,10 +386,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('getChildren', 'getMultiple', 'getSiblings'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('getChildren', 'getMultiple', 'getSiblings'), array($table));
         $relation->expects($this->any())->method('getChildren')->will($this->returnValue(true));
         $relation->expects($this->any())->method('getMultiple')->will($this->returnValue(true));
         $relation->expects($this->any())->method('getSiblings')->will($this->returnValue(true));
@@ -403,9 +403,9 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetParent
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetParent
-     * @covers              FOFTableRelations::getParent
+     * @covers              F0FTableRelations::getParent
      */
     public function testGetParent($tableinfo, $test, $check)
     {
@@ -414,10 +414,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('getTableFromRelation'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('getTableFromRelation'), array($table));
         $relation->expects($this->any())->method('getTableFromRelation')->will($this->returnValue(true));
 
         $relations = new ReflectionProperty($relation, 'relations');
@@ -433,9 +433,9 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetChild
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetChild
-     * @covers              FOFTableRelations::getChild
+     * @covers              F0FTableRelations::getChild
      */
     public function testGetChild($tableinfo, $test, $check)
     {
@@ -444,10 +444,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('getTableFromRelation'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('getTableFromRelation'), array($table));
         $relation->expects($this->any())->method('getTableFromRelation')->will($this->returnValue(true));
 
         $relations = new ReflectionProperty($relation, 'relations');
@@ -463,9 +463,9 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetChildren
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetChildren
-     * @covers              FOFTableRelations::getChildren
+     * @covers              F0FTableRelations::getChildren
      */
     public function testGetChildren($tableinfo, $test, $check)
     {
@@ -474,10 +474,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('getIteratorFromRelation'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('getIteratorFromRelation'), array($table));
         $relation->expects($this->any())->method('getIteratorFromRelation')->will($this->returnValue(true));
 
         $relations = new ReflectionProperty($relation, 'relations');
@@ -493,9 +493,9 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetSiblings
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetSiblings
-     * @covers              FOFTableRelations::getSiblings
+     * @covers              F0FTableRelations::getSiblings
      */
     public function testGetSiblings($tableinfo, $test, $check)
     {
@@ -504,10 +504,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('getIteratorFromRelation'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('getIteratorFromRelation'), array($table));
         $relation->expects($this->any())->method('getIteratorFromRelation')->with($this->equalTo($check['iterator']));
         $relation->expects($this->any())->method('getIteratorFromRelation')->will($this->returnValue(true));
 
@@ -516,9 +516,9 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetMultiple
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetMultiple
-     * @covers              FOFTableRelations::getMultiple
+     * @covers              F0FTableRelations::getMultiple
      */
     public function testGetMultiple($tableinfo, $test, $check)
     {
@@ -527,10 +527,10 @@ class FOFTableRelationsTest extends FtestCaseDatabase
             $this->setExpectedException('RuntimeException');
         }
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('getIteratorFromRelation'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('getIteratorFromRelation'), array($table));
         $relation->expects($this->any())->method('getIteratorFromRelation')->will($this->returnValue(true));
 
         $relations = new ReflectionProperty($relation, 'relations');
@@ -547,14 +547,14 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetTableFromRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetTableFromRelation
-     * @covers              FOFTableRelations::getTableFromRelation
+     * @covers              F0FTableRelations::getTableFromRelation
      */
     public function testGetTableFromRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $table->load($test['loadid']);
 
@@ -567,21 +567,21 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $pk = $relatedTable->getKeyName();
 
-        $this->assertInstanceOf('FOFTable', $relatedTable, 'FOFTableRelations::getTableFromRelation should return an instance of the FOFTable');
-        $this->assertEquals($check['id'], $relatedTable->$pk, 'FOFTableRelations::getTableFromRelation loaded the wrong linked table');
+        $this->assertInstanceOf('F0FTable', $relatedTable, 'F0FTableRelations::getTableFromRelation should return an instance of the F0FTable');
+        $this->assertEquals($check['id'], $relatedTable->$pk, 'F0FTableRelations::getTableFromRelation loaded the wrong linked table');
     }
 
     /**
      * @group               relationsGetTableFromRelationNoLoad
-     * @group               FOFTableRelations
-     * @covers              FOFTableRelations::getTableFromRelation
+     * @group               F0FTableRelations
+     * @covers              F0FTableRelations::getTableFromRelation
      */
     public function testGetTableFromRelationNoLoad()
     {
         $this->setExpectedException('RuntimeException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'child'));
-        $table 		     = FOFTable::getAnInstance('child', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'child'));
+        $table 		     = F0FTable::getAnInstance('child', 'FoftestTable', $config);
 
         $relationArg = array(
             'tableClass' => 'FoftestTableParent',
@@ -599,16 +599,16 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetTableFromRelationInvalidArgs
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetTableFromRelationInvalidArgs
-     * @covers              FOFTableRelations::getTableFromRelation
+     * @covers              F0FTableRelations::getTableFromRelation
      */
     public function testGetTableFromRelationInvalidArgs($tableinfo, $test)
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -620,14 +620,14 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetIteratorFromRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetIteratorFromRelation
-     * @covers              FOFTableRelations::getIteratorFromRelation
+     * @covers              F0FTableRelations::getIteratorFromRelation
      */
     public function testGetIteratorFromRelation($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $table->load($test['loadid']);
 
@@ -638,21 +638,21 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $items = $method->invoke($relation, $test['relation']);
 
-        $this->assertInstanceOf('FOFDatabaseIterator', $items, 'FOFTableRelations::getIteratorFromRelation should return an instance of the FOFDatabaseIterator');
-        $this->assertEquals($check['count'], count($items), 'FOFTableRelations::getIteratorFromRelation returned the wrong number of items');
+        $this->assertInstanceOf('F0FDatabaseIterator', $items, 'F0FTableRelations::getIteratorFromRelation should return an instance of the F0FDatabaseIterator');
+        $this->assertEquals($check['count'], count($items), 'F0FTableRelations::getIteratorFromRelation returned the wrong number of items');
     }
 
     /**
      * @group               relationsGetIteratorFromRelationNoLoad
-     * @group               FOFTableRelations
-     * @covers              FOFTableRelations::getIteratorFromRelation
+     * @group               F0FTableRelations
+     * @covers              F0FTableRelations::getIteratorFromRelation
      */
     public function testGetIteratorFromRelationNoLoad()
     {
         $this->setExpectedException('RuntimeException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'parent'));
-        $table 		     = FOFTable::getAnInstance('child', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'parent'));
+        $table 		     = F0FTable::getAnInstance('child', 'FoftestTable', $config);
 
         $relationArg = array(
             'tableClass' => 'FoftestTableChild',
@@ -670,16 +670,16 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
     /**
      * @group               relationsGetIteratorFromRelationInvalidArgs
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestGetIteratorFromRelationInvalidArgs
-     * @covers              FOFTableRelations::getIteratorFromRelation
+     * @covers              F0FTableRelations::getIteratorFromRelation
      */
     public function testGetIteratorFromRelationInvalidArgs($tableinfo, $test)
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -694,19 +694,19 @@ class FOFTableRelationsTest extends FtestCaseDatabase
      * method considers the modifications made by normaliseParameters
      *
      * @group               relationsAddBespokeSimpleRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestAddBespokeSimpleRelation
-     * @covers              FOFTableRelations::addBespokeSimpleRelation
+     * @covers              F0FTableRelations::addBespokeSimpleRelation
      */
     public function testAddBespokeSimpleRelation($tableinfo, $test, $check)
     {
         $invoke  = $test['invoke'];
         $process = $test['process'];
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('normaliseParameters'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('normaliseParameters'), array($table));
         $relation->expects($this->any())->method('normaliseParameters')->will(
             $this->returnCallback(function($a1, &$a2, &$a3, &$a4, &$a5) use ($process){
                 $a3 = $process['tableClass'];
@@ -735,8 +735,8 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $default->setAccessible(true);
         $default = $default->getValue($relation);
 
-        $this->assertEquals($check['relations'], $relations[$invoke['relationType']], 'FOFTableRelations::addBespokeSimpleRelation failed to store the relation');
-        $this->assertEquals($check['default'], $default[$invoke['relationType']], 'FOFTableRelations::addBespokeSimpleRelation failed to store the default relation');
+        $this->assertEquals($check['relations'], $relations[$invoke['relationType']], 'F0FTableRelations::addBespokeSimpleRelation failed to store the relation');
+        $this->assertEquals($check['default'], $default[$invoke['relationType']], 'F0FTableRelations::addBespokeSimpleRelation failed to store the default relation');
     }
 
     /**
@@ -744,19 +744,19 @@ class FOFTableRelationsTest extends FtestCaseDatabase
      * method considers the modifications made by normaliseParameters
      *
      * @group               relationsAddBespokePivotRelation
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestAddBespokePivotRelation
-     * @covers              FOFTableRelations::addBespokePivotRelation
+     * @covers              F0FTableRelations::addBespokePivotRelation
      */
     public function testAddBespokePivotRelation($tableinfo, $test, $check)
     {
         $invoke  = $test['invoke'];
         $process = $test['process'];
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
-        $relation = $this->getMock('FOFTableRelations', array('normaliseParameters'), array($table));
+        $relation = $this->getMock('F0FTableRelations', array('normaliseParameters'), array($table));
         $relation->expects($this->any())->method('normaliseParameters')->will(
             $this->returnCallback(function($a1, &$a2, &$a3, &$a4, &$a5, &$a6, &$a7, &$a8) use ($process){
                 $a3 = $process['tableClass'];
@@ -791,20 +791,20 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $default->setAccessible(true);
         $default = $default->getValue($relation);
 
-        $this->assertEquals($check['relations'], $relations[$invoke['relationType']], 'FOFTableRelations::addBespokePivotRelation failed to store the relation');
-        $this->assertEquals($check['default'], $default[$invoke['relationType']], 'FOFTableRelations::addBespokePivotRelation failed to store the default relation');
+        $this->assertEquals($check['relations'], $relations[$invoke['relationType']], 'F0FTableRelations::addBespokePivotRelation failed to store the relation');
+        $this->assertEquals($check['default'], $default[$invoke['relationType']], 'F0FTableRelations::addBespokePivotRelation failed to store the default relation');
     }
 
     /**
      * @group               relationsNormaliseParameters
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestNormaliseParameters
-     * @covers              FOFTableRelations::normaliseParameters
+     * @covers              F0FTableRelations::normaliseParameters
      */
     public function testNormaliseParameters($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = new FtestTableRelations($table);
 
@@ -824,19 +824,19 @@ class FOFTableRelationsTest extends FtestCaseDatabase
         $processed = $test;
         unset($processed['pivot']);
 
-        $this->assertEquals($check['parameters'], $processed, 'FOFTableRelations::normaliseParameters failed to set all the parameters');
+        $this->assertEquals($check['parameters'], $processed, 'F0FTableRelations::normaliseParameters failed to set all the parameters');
     }
 
     /**
      * @group               relationsNormaliseItemName
-     * @group               FOFTableRelations
+     * @group               F0FTableRelations
      * @dataProvider        getTestNormaliseItemName
-     * @covers              FOFTableRelations::normaliseItemName
+     * @covers              F0FTableRelations::normaliseItemName
      */
     public function testNormaliseItemName($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         $relation = $table->getRelations();
 
@@ -845,7 +845,7 @@ class FOFTableRelationsTest extends FtestCaseDatabase
 
         $itemname = $method->invoke($relation, $test['itemName'], $test['plural']);
 
-        $this->assertEquals($check['itemname'], $itemname, 'FOFTableRelations::normaliseItemName created a wrong itemname string');
+        $this->assertEquals($check['itemname'], $itemname, 'F0FTableRelations::normaliseItemName created a wrong itemname string');
     }
 
     public static function getTest__construct()

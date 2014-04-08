@@ -6,19 +6,19 @@
  *  @license     GNU General Public License version 2, or later
  */
 
-defined('FOF_INCLUDED') or die();
+defined('F0F_INCLUDED') or die();
 
 /**
- * Reads and parses the fof.xml file in the back-end of a FOF-powered component,
- * provisioning the data to the rest of the FOF framework
+ * Reads and parses the fof.xml file in the back-end of a F0F-powered component,
+ * provisioning the data to the rest of the F0F framework
  *
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFConfigProvider
+class F0FConfigProvider
 {
 	/**
-	 * Cache of FOF components' configuration variables
+	 * Cache of F0F components' configuration variables
 	 *
 	 * @var array
 	 */
@@ -39,11 +39,11 @@ class FOFConfigProvider
 			return;
 		}
 
-		if (FOFPlatform::getInstance()->isCli())
+		if (F0FPlatform::getInstance()->isCli())
 		{
 			$order = array('cli', 'backend');
 		}
-		elseif (FOFPlatform::getInstance()->isBackend())
+		elseif (F0FPlatform::getInstance()->isBackend())
 		{
 			$order = array('backend');
 		}
@@ -95,7 +95,7 @@ class FOFConfigProvider
 			return $default;
 		}
 
-		$class = 'FOFConfigDomain' . ucfirst($domain);
+		$class = 'F0FConfigDomain' . ucfirst($domain);
 		$o = new $class;
 
 		return $o->get(self::$configurations[$component], $var, $default);
@@ -115,8 +115,8 @@ class FOFConfigProvider
 		$ret = array();
 
 		// Get the folders of the component
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
-        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
+        $filesystem     = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		// Check that the path exists
 		$path = $componentPaths['admin'];
@@ -160,7 +160,7 @@ class FOFConfigProvider
 
 		foreach ($domains as $dom)
 		{
-			$class = 'FOFConfigDomain' . ucfirst($dom);
+			$class = 'F0FConfigDomain' . ucfirst($dom);
 
 			if (class_exists($class, true))
 			{
@@ -184,7 +184,7 @@ class FOFConfigProvider
 
 		if (empty($domains))
 		{
-			$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+			$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 			$files = $filesystem->folderFiles(__DIR__ . '/domain', '.php');
 

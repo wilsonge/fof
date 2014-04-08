@@ -1,19 +1,19 @@
 <?php
 /**
  * @package     FrameworkOnFramework.UnitTest
- * @subpackage  FOFEncryptBase32
+ * @subpackage  F0FEncryptBase32
  *
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
- * Test class for FOFEncryptBase32
+ * Test class for F0FEncryptBase32
  *
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class FOFEncryptBase32Test extends PHPUnit_Framework_TestCase
+class F0FEncryptBase32Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * [setUp description]
@@ -23,7 +23,7 @@ class FOFEncryptBase32Test extends PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 
-		$this->theThing = new FOFEncryptBase32;
+		$this->theThing = new F0FEncryptBase32;
 	}
 
 	/**

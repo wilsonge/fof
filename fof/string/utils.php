@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Helper class with utilitarian functions concerning strings
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-abstract class FOFStringUtils
+abstract class F0FStringUtils
 {
 	/**
 	 * Convert a string into a slug (alias), suitable for use in URLs. Please

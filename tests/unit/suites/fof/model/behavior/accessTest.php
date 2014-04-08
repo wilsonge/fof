@@ -9,7 +9,7 @@
 
 require_once 'accessDataprovider.php';
 
-class FOFModelBehaviorAccessTest extends FtestCaseDatabase
+class F0FModelBehaviorAccessTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
@@ -24,37 +24,37 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+        F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
     }
 
     /**
      * @group               accessOnAfterBuildQuery
-     * @group               FOFModelBehavior
-     * @covers              FOFModelBehaviorAccess::onAfterBuildQuery
+     * @group               F0FModelBehavior
+     * @covers              F0FModelBehaviorAccess::onAfterBuildQuery
      * @dataProvider        getTestOnAfterBuildQuery
      */
     public function testOnAfterBuildQuery($modelinfo, $test, $checks)
     {
         $config['option'] = 'com_foftest';
         $config['name']   = $modelinfo['name'];
-        $config['table']  = FOFInflector::singularize($modelinfo['name']);
+        $config['table']  = F0FInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
-        $model = $this->getMock('FOFModel', array('applyAccessFiltering', 'getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('applyAccessFiltering', 'getTable'), array($config));
 
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isFrontend'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isFrontend'));
         $platform->expects($this->any())->method('isFrontend')->will($this->returnValue($test['frontend']));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $reflection = new ReflectionProperty($model, 'modelDispatcher');
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($model);
 
-        $behavior = new FOFModelBehaviorAccess($dispatcher);
+        $behavior = new F0FModelBehaviorAccess($dispatcher);
 
-        $table = FOFTable::getAnInstance(ucfirst(FOFInflector::singularize($modelinfo['name'])), 'FoftestTable');
+        $table = F0FTable::getAnInstance(ucfirst(F0FInflector::singularize($modelinfo['name'])), 'FoftestTable');
 
         if(isset($test['aliases']))
         {
@@ -81,8 +81,8 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
 
     /**
      * @group               accessOnAfterGetItem
-     * @group               FOFModelBehavior
-     * @covers              FOFModelBehaviorAccess::onAfterGetItem
+     * @group               F0FModelBehavior
+     * @covers              F0FModelBehaviorAccess::onAfterGetItem
      * @dataProvider        getTestOnAfterGetItem
      */
     public function testOnAfterGetItem($modelinfo, $test, $checks)
@@ -94,8 +94,8 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
             $config['tbl_key'] = $test['aliases']['tbl_key'];
         }
 
-        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel');
-        $table = FOFTable::getAnInstance(ucfirst(FOFInflector::singularize($modelinfo['name'])), 'FoftestTable', $config);
+        $model = F0FModel::getTmpInstance($modelinfo['name'], 'FoftestModel');
+        $table = F0FTable::getAnInstance(ucfirst(F0FInflector::singularize($modelinfo['name'])), 'FoftestTable', $config);
 
         if(isset($test['aliases']))
         {
@@ -108,16 +108,16 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
         $user = $this->getMock('JUser', array('getAuthorisedViewLevels'));
         $user->expects($this->any())->method('getAuthorisedViewLevels')->will($this->returnValue($test['views']));
 
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getUser'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getUser'));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $reflection = new ReflectionProperty($model, 'modelDispatcher');
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($model);
 
-        $behavior = new FOFModelBehaviorAccess($dispatcher);
+        $behavior = new F0FModelBehaviorAccess($dispatcher);
 
         $table->load($test['loadid']);
 
@@ -126,11 +126,11 @@ class FOFModelBehaviorAccessTest extends FtestCaseDatabase
 
         if($checks['nullify'])
         {
-            $this->assertNull($table, "FOFModelBehaviorAccess::onAfterGetItem should nullify the table record when the user can't access the record");
+            $this->assertNull($table, "F0FModelBehaviorAccess::onAfterGetItem should nullify the table record when the user can't access the record");
         }
         else
         {
-            $this->assertEquals($saved, $table, 'FOFModelBehaviorAccess::onAfterGetItem should leave the record untouched if the user can access the record');
+            $this->assertEquals($saved, $table, 'F0FModelBehaviorAccess::onAfterGetItem should leave the record untouched if the user can access the record');
         }
     }
 

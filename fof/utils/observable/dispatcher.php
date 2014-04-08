@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Class to handle dispatching of events.
@@ -16,7 +16,7 @@ defined('FOF_INCLUDED') or die;
  *
  * This class is based on JEventDispatcher as found in Joomla! 3.2.0
  */
-class FOFUtilsObservableDispatcher extends FOFUtilsObject
+class F0FUtilsObservableDispatcher extends F0FUtilsObject
 {
     /**
      * An array of Observer objects to notify
@@ -42,7 +42,7 @@ class FOFUtilsObservableDispatcher extends FOFUtilsObject
     /**
      * Stores the singleton instance of the dispatcher.
      *
-     * @var    FOFUtilsObservableDispatcher
+     * @var    F0FUtilsObservableDispatcher
      */
     protected static $instance = null;
 
@@ -50,7 +50,7 @@ class FOFUtilsObservableDispatcher extends FOFUtilsObject
      * Returns the global Event Dispatcher object, only creating it
      * if it doesn't already exist.
      *
-     * @return  FOFUtilsObservableDispatcher  The EventDispatcher object.
+     * @return  F0FUtilsObservableDispatcher  The EventDispatcher object.
      */
     public static function getInstance()
     {
@@ -63,7 +63,7 @@ class FOFUtilsObservableDispatcher extends FOFUtilsObject
     }
 
     /**
-     * Get the state of the FOFUtilsObservableDispatcher object
+     * Get the state of the F0FUtilsObservableDispatcher object
      *
      * @return  mixed    The state of the object.
      */
@@ -191,7 +191,7 @@ class FOFUtilsObservableDispatcher extends FOFUtilsObject
         }
         else
         {
-            if (!($observer instanceof FOFUtilsObservableEvent))
+            if (!($observer instanceof F0FUtilsObservableEvent))
             {
                 return;
             }

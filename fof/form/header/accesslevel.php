@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Access level field header
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderAccesslevel extends FOFFormHeaderFieldselectable
+class F0FFormHeaderAccesslevel extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Method to get the list of access levels
@@ -25,7 +25,7 @@ class FOFFormHeaderAccesslevel extends FOFFormHeaderFieldselectable
 	 */
 	protected function getOptions()
 	{
-		$db    = FOFPlatform::getInstance()->getDbo();
+		$db    = F0FPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select('a.id AS value, a.title AS text');

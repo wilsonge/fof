@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="library" version="2.5" method="upgrade">
-    <name>FOF</name>
-	<libraryname>fof</libraryname>
-	<description>Framework-on-Framework (FOF) - A rapid component development framework for Joomla!</description>
+    <name>F0F</name>
+	<libraryname>f0f</libraryname>
+	<description>Framework-on-Framework (F0F) - A rapid component development framework for Joomla!</description>
 	<creationDate>##DATE##</creationDate>
 	<author>Nicholas K. Dionysopoulos / Akeeba Ltd</author>
 	<authorEmail>nicholas@akeebabackup.com</authorEmail>
@@ -12,8 +12,8 @@
 	<version>##VERSION##</version>
 	<packager>Akeeba Ltd</packager>
 	<packagerurl>https://www.AkeebaBackup.com/download.html</packagerurl>
-	
-	<files folder="fof">
+
+	<files folder="f0f">
 		<folder>autoloader</folder>
 		<folder>config</folder>
 		<folder>controller</folder>

@@ -6,9 +6,9 @@
 * @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-abstract class FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
+abstract class F0FPlatformFilesystem implements F0FPlatformFilesystemInterface
 {
     /**
      * The list of paths where platform class files will be looked for
@@ -51,7 +51,7 @@ abstract class FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
 
             $return[] = array(
                 'fullpath'  => $file,
-                'classname' => 'FOFPlatform'.ucfirst($parts[0]).ucfirst(basename($parts[1], '.php'))
+                'classname' => 'F0FPlatform'.ucfirst($parts[0]).ucfirst(basename($parts[1], '.php'))
             );
         }
 

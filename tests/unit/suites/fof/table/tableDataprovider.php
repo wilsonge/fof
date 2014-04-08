@@ -1449,15 +1449,15 @@ abstract class TableDataprovider
             array(
                 'updateNulls' => false,
                 'bind'        => array(
-                    'title' => 'FOFTest title'
+                    'title' => 'F0FTest title'
                 )
             ),
             array(
                 'return' => true,
                 'fields' => array(
                     'foftest_foobar_id' => null,
-                    'title'             => 'FOFTest title',
-                    'slug'              => 'foftest-title',
+                    'title'             => 'F0FTest title',
+                    'slug'              => 'f0ftest-title',
                     'enabled'           => '',
                     'ordering'          => '',
                     'hits'              => '',
@@ -1480,7 +1480,7 @@ abstract class TableDataprovider
             array(
                 'updateNulls' => false,
                 'bind'        => array(
-                    'title' => 'FOFTest title',
+                    'title' => 'F0FTest title',
                     'slug'  => 'foftest.. .title'
                 )
             ),
@@ -1488,7 +1488,7 @@ abstract class TableDataprovider
                 'return' => true,
                 'fields' => array(
                     'foftest_foobar_id' => null,
-                    'title'             => 'FOFTest title',
+                    'title'             => 'F0FTest title',
                     'slug'              => 'foftest-title',
                     'enabled'           => '',
                     'ordering'          => '',
@@ -1630,14 +1630,14 @@ abstract class TableDataprovider
             array(
                 'updateNulls' => false,
                 'bind'        => array(
-                    'title' => 'FOFTest title'
+                    'title' => 'F0FTest title'
                 )
             ),
             array(
                 'return' => true,
                 'fields' => array(
                     'foftest_bare_id' => null,
-                    'title' => 'FOFTest title',
+                    'title' => 'F0FTest title',
                 )
             )
         );

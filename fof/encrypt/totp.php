@@ -5,7 +5,7 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * This class provides an RFC6238-compliant Time-based One Time Passwords,
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFEncryptTotp
+class F0FEncryptTotp
 {
 	private $_passCodeLength = 6;
 
@@ -46,7 +46,7 @@ class FOFEncryptTotp
 
 		if (is_null($base32))
 		{
-			$this->_base32 = new FOFEncryptBase32;
+			$this->_base32 = new F0FEncryptBase32;
 		}
 		else
 		{
@@ -174,7 +174,7 @@ class FOFEncryptTotp
 			$c = rand(0, 255);
 			$secret .= pack("c", $c);
 		}
-		$base32 = new FOFEncryptBase32;
+		$base32 = new F0FEncryptBase32;
 
 		return $this->_base32->encode($secret);
 	}

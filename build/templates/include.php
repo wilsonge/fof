@@ -5,22 +5,22 @@
  *  @copyright   Copyright (c)2010-2014 Nicholas K. Dionysopoulos
  *  @license     GNU General Public License version 2, or later
  *
- *  Initializes FOF
+ *  Initializes F0F
  */
 
 defined('_JEXEC') or die();
 
-if (!defined('FOF_INCLUDED'))
+if (!defined('F0F_INCLUDED'))
 {
-    define('FOF_INCLUDED', '##VERSION##');
+    define('F0F_INCLUDED', '##VERSION##');
 
-	// Register the FOF autoloader
+	// Register the F0F autoloader
     require_once __DIR__ . '/autoloader/fof.php';
-	FOFAutoloaderFof::init();
+	F0FAutoloaderFof::init();
 
 	// Register a debug log
 	if (defined('JDEBUG') && JDEBUG)
 	{
-		FOFPlatform::getInstance()->logAddLogger('fof.log.php');
+		F0FPlatform::getInstance()->logAddLogger('fof.log.php');
 	}
 }

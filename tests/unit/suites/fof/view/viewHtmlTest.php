@@ -2,13 +2,13 @@
 /**
  * @group 	View
  */
-class FOFViewHtmlTest extends FtestCase
+class F0FViewHtmlTest extends FtestCase
 {
 	protected $view = null;
 
 	public function setUp()
 	{
-        FOFPlatform::forceInstance(null);
+        F0FPlatform::forceInstance(null);
 
 		parent::setUp();
 
@@ -26,7 +26,7 @@ class FOFViewHtmlTest extends FtestCase
 		// Fake the session
 		JFactory::$session = $this->getMockSession();
 		$application = JFactory::getApplication('site');
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.2.0', 'ge'))
+		if (F0FPlatform::getInstance()->checkVersion(JVERSION, '3.2.0', 'ge'))
 		{
 			$application->initialise();
 		}
@@ -41,9 +41,9 @@ class FOFViewHtmlTest extends FtestCase
 
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 
-		// Replace the FOFPlatform with our fake one
-		$this->saveFOFPlatform();
-		$this->replaceFOFPlatform();
+		// Replace the F0FPlatform with our fake one
+		$this->saveF0FPlatform();
+		$this->replaceF0FPlatform();
 
 		$this->view = $this->getView();
 	}
@@ -53,8 +53,8 @@ class FOFViewHtmlTest extends FtestCase
 		// Restore the JFactory
 		$this->restoreFactoryState();
 
-		// Restore the FOFPlatform object instance
-		$this->restoreFOFPlatform();
+		// Restore the F0FPlatform object instance
+		$this->restoreF0FPlatform();
 
 		// Restore the $_SERVER global
 		global $_SERVER;
@@ -67,15 +67,15 @@ class FOFViewHtmlTest extends FtestCase
 	protected function getView()
 	{
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
-		$view = new FOFViewHtml($config);
+		$view = new F0FViewHtml($config);
 
 		return $view;
 	}
 
 	/**
-	 *	@cover 	FOFViewHtml::__costruct()
+	 *	@cover 	F0FViewHtml::__costruct()
 	 */
 	public function testConstructor()
 	{
@@ -83,31 +83,31 @@ class FOFViewHtmlTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFViewHtml::__construct()
+	 * @cover  	F0FViewHtml::__construct()
 	 */
 	public function testContructorWithConfigObject()
 	{
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 
-		$view = new FOFViewHtml((object)$config);
+		$view = new F0FViewHtml((object)$config);
 	}
 
 	/**
-	 * @cover  	FOFViewHtml::__construct()
+	 * @cover  	F0FViewHtml::__construct()
 	 */
 	public function testContructorWithConfigWrong()
 	{
-		$view = new FOFViewHtml(0);
+		$view = new F0FViewHtml(0);
 	}
 
 	/**
-	 * @cover  	FOFViewHtml::__construct()
+	 * @cover  	F0FViewHtml::__construct()
 	 */
 	public function testContructorWithoutInput()
 	{
 		$config = array();
-		$view = new FOFViewHtml($config);
+		$view = new F0FViewHtml($config);
 	}
 
 	public function getViewsAndTasks()
@@ -128,7 +128,7 @@ class FOFViewHtmlTest extends FtestCase
 	}
 
 	/**
-	 * @cover  			FOFViewHtml::display()
+	 * @cover  			F0FViewHtml::display()
 	 * @dataProvider	getViewsAndTasks
 	 */
 	public function testDisplayWithTasksAndViews($view, $task)
@@ -137,11 +137,11 @@ class FOFViewHtmlTest extends FtestCase
 		$model->setState('task', $task);
 
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $view));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $view));
 		$config['view']	= $view;
 		$config['option']	= 'com_foftest';
 
-		$view = new FOFViewHtml($config);
+		$view = new F0FViewHtml($config);
 
 		$view->setModel($model, true);
 

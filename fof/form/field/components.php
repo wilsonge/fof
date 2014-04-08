@@ -6,28 +6,28 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Components installed on the site
  *
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
+class F0FFormFieldComponents extends JFormFieldList implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
 	public $client_ids = null;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -80,7 +80,7 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -97,7 +97,7 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -114,7 +114,7 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 	 */
 	protected function getOptions()
 	{
-		$db = FOFPlatform::getInstance()->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// Check for client_ids override
 		if ($this->client_ids !== null)
@@ -197,7 +197,7 @@ class FOFFormFieldComponents extends JFormFieldList implements FOFFormField
 	 */
 	public function translate($item, $type)
 	{
-        $platform = FOFPlatform::getInstance();
+        $platform = F0FPlatform::getInstance();
 
 		// Map the manifest cache to $item. This is needed to get the name from the
 		// manifest_cache and NOT from the name column, else some JText::_() translations fails.

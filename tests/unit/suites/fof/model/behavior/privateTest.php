@@ -9,7 +9,7 @@
 
 require_once 'privateDataprovider.php';
 
-class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
+class F0FModelBehaviorPrivateTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
@@ -24,39 +24,39 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+        F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
     }
 
     /**
      * @group               privateOnAfterBuildQuery
-     * @group               FOFModelBehavior
-     * @covers              FOFModelBehaviorPrivate::onAfterBuildQuery
+     * @group               F0FModelBehavior
+     * @covers              F0FModelBehaviorPrivate::onAfterBuildQuery
      * @dataProvider        getTestOnAfterBuildQuery
      */
     public function testOnAfterBuildQuery($modelinfo, $test, $checks)
     {
         $config['option'] = 'com_foftest';
         $config['name']   = $modelinfo['name'];
-        $config['table']  = FOFInflector::singularize($modelinfo['name']);
+        $config['table']  = F0FInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
-        $model = $this->getMock('FOFModel', array('getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('getTable'), array($config));
 
         $user = (object) array('id' => $test['user']);
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isFrontend', 'getUser'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isFrontend', 'getUser'));
         $platform->expects($this->any())->method('isFrontend')->will($this->returnValue($test['frontend']));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $reflection = new ReflectionProperty($model, 'modelDispatcher');
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($model);
 
-        $behavior = new FOFModelBehaviorPrivate($dispatcher);
+        $behavior = new F0FModelBehaviorPrivate($dispatcher);
 
-        $table = FOFTable::getAnInstance(ucfirst(FOFInflector::singularize($modelinfo['name'])), 'FoftestTable');
+        $table = F0FTable::getAnInstance(ucfirst(F0FInflector::singularize($modelinfo['name'])), 'FoftestTable');
 
         if(isset($test['aliases']))
         {
@@ -75,13 +75,13 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
 
         $behavior->onAfterBuildQuery($model, $test['query']);
 
-        $this->assertEquals((string)$checks['query'], (string)$test['query'], 'FOFModelBehaviorPrivate::onAfterBuildQuery failed to modify the query object');
+        $this->assertEquals((string)$checks['query'], (string)$test['query'], 'F0FModelBehaviorPrivate::onAfterBuildQuery failed to modify the query object');
     }
 
     /**
      * @group               privateOnAfterGetItem
-     * @group               FOFModelBehavior
-     * @covers              FOFModelBehaviorPrivate::onAfterGetItem
+     * @group               F0FModelBehavior
+     * @covers              F0FModelBehaviorPrivate::onAfterGetItem
      * @dataProvider        getTestOnAfterGetItem
      */
     public function testOnAfterGetItem($modelinfo, $test, $checks)
@@ -94,13 +94,13 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
         }
 
         $user = (object) array('id' => $test['user']);
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('getUser'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getUser'));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
-        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel');
-        $table = FOFTable::getAnInstance(ucfirst(FOFInflector::singularize($modelinfo['name'])), 'FoftestTable', $config);
+        $model = F0FModel::getTmpInstance($modelinfo['name'], 'FoftestModel');
+        $table = F0FTable::getAnInstance(ucfirst(F0FInflector::singularize($modelinfo['name'])), 'FoftestTable', $config);
 
         if(isset($test['aliases']))
         {
@@ -114,7 +114,7 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($model);
 
-        $behavior = new FOFModelBehaviorPrivate($dispatcher);
+        $behavior = new F0FModelBehaviorPrivate($dispatcher);
 
         if(isset($test['loadid']))
         {
@@ -126,11 +126,11 @@ class FOFModelBehaviorPrivateTest extends FtestCaseDatabase
 
         if($checks['nullify'])
         {
-            $this->assertNull($table, "FOFModelBehaviorPrivate::onAfterGetItem should nullify the table record when it's not enabled");
+            $this->assertNull($table, "F0FModelBehaviorPrivate::onAfterGetItem should nullify the table record when it's not enabled");
         }
         else
         {
-            $this->assertEquals($saved, $table, "FOFModelBehaviorPrivate::onAfterGetItem should leave the record untouched if it's enabled");
+            $this->assertEquals($saved, $table, "F0FModelBehaviorPrivate::onAfterGetItem should leave the record untouched if it's enabled");
         }
     }
 

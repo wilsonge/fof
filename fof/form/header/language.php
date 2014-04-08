@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Language field header
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderLanguage extends FOFFormHeaderFieldselectable
+class F0FFormHeaderLanguage extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Method to get the filter options.

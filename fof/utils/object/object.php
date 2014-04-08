@@ -6,19 +6,19 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Temporary class for backwards compatibility. You should not be using this
  * in your code. It is currently present to handle the validation error stack
- * for FOFTable::check() and will be removed in an upcoming version.
+ * for F0FTable::check() and will be removed in an upcoming version.
  *
  * This class is based on JObject as found in Joomla! 3.2.1
  *
  * @deprecated  2.1
  * @codeCoverageIgnore
  */
-class FOFUtilsObject
+class F0FUtilsObject
 {
     /**
      * An array of error messages or Exception objects.

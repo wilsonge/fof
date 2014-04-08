@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Field header for Published (enabled) columns
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderPublished extends FOFFormHeaderFieldselectable
+class F0FFormHeaderPublished extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Create objects for the options

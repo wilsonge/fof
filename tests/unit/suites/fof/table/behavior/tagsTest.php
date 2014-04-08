@@ -9,7 +9,7 @@
 
 require_once 'tagsDataprovider.php';
 
-class FOFTableBehaviorTagsTest extends FtestCaseDatabase
+class F0FTableBehaviorTagsTest extends FtestCaseDatabase
 {
 	protected function setUp()
 	{
@@ -24,14 +24,14 @@ class FOFTableBehaviorTagsTest extends FtestCaseDatabase
 
 		parent::setUp($loadDataset);
 
-		FOFPlatform::forceInstance(null);
-		FOFTable::forceInstance(null);
+		F0FPlatform::forceInstance(null);
+		F0FTable::forceInstance(null);
 	}
 
 	/**
 	 * @group               tagsOnAfterBind
-	 * @group               FOFTableBehavior
-	 * @covers              FOFTableBehaviorTags::onAfterBind
+	 * @group               F0FTableBehavior
+	 * @covers              F0FTableBehaviorTags::onAfterBind
 	 * @dataProvider        getTestOnAfterBind
 	 */
 	public function testOnAfterBind()

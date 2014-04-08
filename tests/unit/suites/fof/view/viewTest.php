@@ -14,7 +14,7 @@ require_once JPATH_TESTS . '/unit/core/renderer/renderer.php';
 /**
  * @group 	View
  */
-class FOFViewTest extends FtestCase
+class F0FViewTest extends FtestCase
 {
 	protected $view = null;
 
@@ -22,11 +22,11 @@ class FOFViewTest extends FtestCase
 	{
 		$this->view = $this->getView();
 
-        FOFPlatform::forceInstance(null);
+        F0FPlatform::forceInstance(null);
 	}
 
 	/**
-	 * @cover FOFView::display
+	 * @cover F0FView::display
 	 */
 	public function testDisplay()
 	{
@@ -38,7 +38,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover FOFView::display
+	 * @cover F0FView::display
 	 */
 	public function testDisplayError()
 	{
@@ -62,7 +62,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover FOFView::testLoadAnyTemplate
+	 * @cover F0FView::testLoadAnyTemplate
 	 */
 	public function testLoadAnyTemplate()
 	{
@@ -73,7 +73,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::getName()
+	 * @cover 	F0FView::getName()
 	 */
 	public function testGetName()
 	{
@@ -81,8 +81,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::setLayout()
-	 * @cover 	FOFView::getLayout()
+	 * @cover 	F0FView::setLayout()
+	 * @cover 	F0FView::getLayout()
 	 */
 	public function testSetLayout()
 	{
@@ -91,7 +91,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::getLayoutTemplate()
+	 * @cover 	F0FView::getLayoutTemplate()
 	 */
 	public function testGetLayoutTemplate()
 	{
@@ -100,7 +100,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::setLayoutExt()
+	 * @cover 	F0FView::setLayoutExt()
 	 */
 	public function testSetLayoutExt()
 	{
@@ -114,7 +114,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::assign()
+	 * @cover 	F0FView::assign()
 	 */
 	public function testAssign()
 	{
@@ -123,7 +123,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::assign()
+	 * @cover 	F0FView::assign()
 	 */
 	public function testAssignEmpty()
 	{
@@ -131,7 +131,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::assign()
+	 * @cover 	F0FView::assign()
 	 */
 	public function testAssignObject()
 	{
@@ -145,7 +145,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::assign()
+	 * @cover 	F0FView::assign()
 	 */
 	public function testAssignArray()
 	{
@@ -159,7 +159,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::assignRef()
+	 * @cover 	F0FView::assignRef()
 	 */
 	public function testAssignRef()
 	{
@@ -171,7 +171,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::assignRef()
+	 * @cover 	F0FView::assignRef()
 	 */
 	public function testAssignRefWrong()
 	{
@@ -186,7 +186,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::escape()
+	 * @cover 	F0FView::escape()
 	 */
 	public function testEscape()
 	{
@@ -195,7 +195,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::get
+	 * @covers F0FView::get
 	 */
 	public function testGetFromModel()
 	{
@@ -207,7 +207,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover  	FOFView::_parseTemplatePath
+	 * @cover  	F0FView::_parseTemplatePath
 	 */
 	public function testParseTemplatePath()
 	{
@@ -221,7 +221,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover FOFView::get
+	 * @cover F0FView::get
 	 */
 	public function testGetFromView()
 	{
@@ -232,8 +232,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @cover 	FOFView::setModel()
-	 * @cover 	FOFView::getModel()
+	 * @cover 	F0FView::setModel()
+	 * @cover 	F0FView::getModel()
 	 */
 	public function testSetModel()
 	{
@@ -245,8 +245,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::setRenderer
-	 * @covers FOFView::getRenderer
+	 * @covers F0FView::setRenderer
+	 * @covers F0FView::getRenderer
 	 */
 	public function testSetRenderer()
 	{
@@ -258,7 +258,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::registerRenderer
+	 * @covers F0FView::registerRenderer
 	 */
 	public function testRegisterRenderer()
 	{
@@ -282,7 +282,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::setPreRender
+	 * @covers F0FView::setPreRender
 	 */
 	public function testSetPreRenderTrue()
 	{
@@ -297,7 +297,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::setPreRender
+	 * @covers F0FView::setPreRender
 	 */
 	public function testSetPreRenderFalse()
 	{
@@ -312,7 +312,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::setPostRender
+	 * @covers F0FView::setPostRender
 	 */
 	public function testSetPostRenderTrue()
 	{
@@ -327,8 +327,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::loadHelper
-	 * @covers FOFView::addHelperPath
+	 * @covers F0FView::loadHelper
+	 * @covers F0FView::addHelperPath
 	 */
 	public function testLoadHelper()
 	{
@@ -340,7 +340,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::loadHelper
+	 * @covers F0FView::loadHelper
 	 */
 	public function testLoadNonExistingHelper()
 	{
@@ -348,7 +348,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::getViewOptionAndName
+	 * @covers F0FView::getViewOptionAndName
 	 */
 	public function testGetViewOptionAndName()
 	{
@@ -356,7 +356,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::setPostRender
+	 * @covers F0FView::setPostRender
 	 */
 	public function testSetPostRenderFalse()
 	{
@@ -373,29 +373,29 @@ class FOFViewTest extends FtestCase
 
 
 	/**
-	 * @covers FOFView::__construct
+	 * @covers F0FView::__construct
 	 */
 	public function testViewWithConfigArray()
 	{
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 		$view = new FtestView($config);
 
 		return $view;
 	}
 
 	/**
-	 * @covers FOFView::__construct
+	 * @covers F0FView::__construct
 	 */
 	public function testViewWithConfigObject()
 	{
 		$config = array();
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
 		$view = new FtestView((object)$config);
 	}
 
 	/**
-	 * @covers FOFView::__construct
+	 * @covers F0FView::__construct
 	 */
 	public function testViewWithoutConfig()
 	{
@@ -403,8 +403,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::__construct()
-	 * @covers FOFView::getName()
+	 * @covers F0FView::__construct()
+	 * @covers F0FView::getName()
 	 */
 	public function testViewWithoutName()
 	{
@@ -414,8 +414,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::__construct()
-	 * @covers FOFView::getName()
+	 * @covers F0FView::__construct()
+	 * @covers F0FView::getName()
 	 */
 	public function testViewWithViewName()
 	{
@@ -426,8 +426,8 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::__construct()
-	 * @covers FOFView::getName()
+	 * @covers F0FView::__construct()
+	 * @covers F0FView::getName()
 	 */
 	public function testViewWithoutNameAndView()
 	{
@@ -447,7 +447,7 @@ class FOFViewTest extends FtestCase
 	}
 
 	/**
-	 * @covers FOFView::__construct
+	 * @covers F0FView::__construct
 	 */
 	public function testViewWithCustomConfig()
 	{

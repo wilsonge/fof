@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * This class is taken verbatim from:
@@ -22,7 +22,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFLessFormatterCompressed extends FOFLessFormatterClassic
+class F0FLessFormatterCompressed extends F0FLessFormatterClassic
 {
 	public $disableSingle = true;
 

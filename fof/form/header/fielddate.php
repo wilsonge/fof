@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Generic field header, with text input (search) filter
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderFielddate extends FOFFormHeaderField
+class F0FFormHeaderFielddate extends F0FFormHeaderField
 {
 	/**
 	 * Get the filter field
@@ -79,7 +79,7 @@ class FOFFormHeaderFielddate extends FOFFormHeaderField
 		}
 
 		// Get some system objects.
-		$config = FOFPlatform::getInstance()->getConfig();
+		$config = F0FPlatform::getInstance()->getConfig();
 		$user   = JFactory::getUser();
 
 		// If a known filter is given use it.
@@ -90,7 +90,7 @@ class FOFFormHeaderFielddate extends FOFFormHeaderField
 				if ((int) $this->value)
 				{
 					// Get a date object based on the correct timezone.
-					$date = FOFPlatform::getInstance()->getDate($searchvalue, 'UTC');
+					$date = F0FPlatform::getInstance()->getDate($searchvalue, 'UTC');
 					$date->setTimezone(new DateTimeZone($config->get('offset')));
 
 					// Transform the date string.
@@ -103,7 +103,7 @@ class FOFFormHeaderFielddate extends FOFFormHeaderField
 				if ((int) $searchvalue)
 				{
 					// Get a date object based on the correct timezone.
-					$date = FOFPlatform::getInstance()->getDate($this->value, 'UTC');
+					$date = F0FPlatform::getInstance()->getDate($this->value, 'UTC');
 					$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
 
 					// Transform the date string.
