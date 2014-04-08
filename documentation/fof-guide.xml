@@ -109,11 +109,11 @@
       <section xml:id="preface-to-doc">
         <title>Preface to this documentation</title>
 
-        <para>FOF is a rapid application development framework for the Joomla!
-        CMS. Instead of trying to completely replace Joomla!’s own API
-        (formerly known as the Joomla! Platform) it builds upon it and extends
-        it both in scope and features. In the end of the day it enables
-        agony-free extension development for the Joomla! CMS.</para>
+        <para>FOF is a rapid application development framework for Joomla!.
+        Instead of trying to completely replace Joomla!’s own API (formerly
+        known as the Joomla! Platform) it builds upon it and extends it both
+        in scope and features. In the end of the day it enables agony-free
+        extension development for the Joomla! CMS.</para>
 
         <para>In order to exploit the time-saving capabilities of the FOF
         framework to the maximum you need to understand how it's organized,
@@ -182,14 +182,14 @@
         module or plugin is using this short code snippet right after your
         defined('_JEXEC') or die() statement (Joomla! 2.x and later):</para>
 
-        <programlisting>if (!defined('FOF_INCLUDED'))
+        <programlisting>if (!defined('F0F_INCLUDED'))
 {
-    include_once JPATH_LIBRARIES . '/fof/include.php';
+    include_once JPATH_LIBRARIES . '/f0f/include.php';
 }</programlisting>
 
         <para>Alternatively, you can use the one-liner:</para>
 
-        <programlisting>require_once JPATH_LIBRARIES . '/fof/include.php';
+        <programlisting>require_once JPATH_LIBRARIES . '/f0f/include.php';
 </programlisting>
 
         <para>From that point onwards you can use FOF in your
@@ -198,14 +198,6 @@
 
       <section xml:id="install-fof-with-your-component">
         <title>Installing FOF with your component</title>
-
-        <important>
-          <para>Joomla! 3.2 will ship with FOF pre-installed. Developers must
-          make sure that they do not accidentally overwrite the FOF library
-          shipped with Joomla!. You can do that with an
-          if(version_compare(JVERSION, '3.2.0', 'ge')) return; in your FOF
-          installation code.</para>
-        </important>
 
         <para>Unfortunately, Joomla! doesn't allow us to version checking
         before installing a library package. This means that it's your
@@ -221,7 +213,7 @@
         method:</para>
 
         <programlisting>/**
- * Check if FoF is already installed and install if not
+ * Check if FOF is already installed and install if not
  *
  * @param   object  $parent  class calling this method
  *
@@ -238,11 +230,11 @@ private function _installFOF($parent)
 
     if (!defined('JPATH_LIBRARIES'))
     {
-        $target = JPATH_ROOT . '/libraries/fof';
+        $target = JPATH_ROOT . '/libraries/f0f';
     }
     else
     {
-        $target = JPATH_LIBRARIES . '/fof';
+        $target = JPATH_LIBRARIES . '/f0f';
     }
     $haveToInstallFOF = false;
 
@@ -408,7 +400,7 @@ function postflight($type, $parent)
       how to write components? Yes, it's possible with FOF. It has been
       possible since September 2011, actually. And for those who mumble their
       words and spread FUD, yes, it IS HMVC by any definition. The very
-      existence of the FOFDispatcher class proves the point.</para>
+      existence of the F0FDispatcher class proves the point.</para>
 
       <bridgehead>Easy reuse of view template files without ugly
       include().</bridgehead>
@@ -416,7 +408,7 @@ function postflight($type, $parent)
       <para>More often than not you want to reuse view template files across
       views. The "traditional" way was by using include() or require()
       statements. This meant, however, that template overrides ceased working.
-      Not any more! Using FOFView's loadAnyTemplate() you can load any view
+      Not any more! Using F0FView's loadAnyTemplate() you can load any view
       template file from the front- or back-end of your component or any other
       component, automatically respecting template overrides.</para>
 
@@ -436,7 +428,7 @@ function postflight($type, $parent)
       This usually required the users to "hack core", i.e. modify your views'
       PHP files, ending up in an unmaintainable, non-upgradeable and
       potentially insecure solution. Not any more! Using FOF's
-      FOFTemplateUtils::addCSS and FOFTemplateUtils::addJS you can load your
+      F0FTemplateUtils::addCSS and F0FTemplateUtils::addJS you can load your
       CSS and JS files directly from the view template file. Even better? You
       can use the equivalent of template overrides to let your users and
       template designers override them with their own implementations. They
@@ -610,7 +602,7 @@ function postflight($type, $parent)
     has to do with views being rendered as HTML. It's what renders the title
     in the back-end, the actions toolbar in the front- or back-end and the
     navigation links / menu in the back-end. In case you missed the subtle
-    reference: FOFToolbar allows you to render an actions toolbar even in the
+    reference: F0FToobar allows you to render an actions toolbar even in the
     front-end of your component, something that's not possible with plain old
     Joomla!. You will simply need to add some CSS to do it.</para>
 
@@ -670,7 +662,7 @@ function postflight($type, $parent)
         <listitem>
           <para>If a default model is not found, FOF will fall back to
           creating a suitably configured instance of
-          <classname>FOFModel</classname>, using convention over configuration
+          <classname>F0FModel</classname>, using convention over configuration
           (explained below) to determine what the model object should
           do.</para>
         </listitem>
@@ -733,8 +725,8 @@ function postflight($type, $parent)
       plural.</para>
 
       <para>If the view-specific model behaviour class is not found, FOF will
-      fall back to <classname>FOFModelBehaviorName</classname>, e.g.
-      <classname>FOFModelBehaviorFilter</classname> if you are using the
+      fall back to <classname>F0FModelBehaviorName</classname>, e.g.
+      <classname>F0FModelBehaviorFilter</classname> if you are using the
       "filters" behaviour name. The built-in behaviours are discussed further
       down in the Built-in Behaviours section.</para>
 
@@ -742,7 +734,7 @@ function postflight($type, $parent)
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from FOFModel into your extension's specialised
+      yourself copying code from F0FModel into your extension's specialised
       model class you're doing it wrong.</para>
 
       <para>FOF models can be customised very easily using the
@@ -842,7 +834,7 @@ function postflight($type, $parent)
           <title>Introduction</title>
 
           <para>Model Behaviors are a handy way to alter the workflow of a
-          FOFModel. It's based upon the standard Joomla Event system.</para>
+          F0FModel. It's based upon the standard Joomla Event system.</para>
 
           <para>Before and After certain actions, the model triggers an
           "event" which is propagated to each of the registered behaviors for
@@ -854,7 +846,7 @@ function postflight($type, $parent)
           created.</para>
 
           <para>FOF already provides a list of common behaviors, that can be
-          used by any FOFModel object.</para>
+          used by any F0FModel object.</para>
         </section>
 
         <section xml:id="fofmodel-behaviours-standard">
@@ -1306,7 +1298,7 @@ function postflight($type, $parent)
           behavior. You can override it with your preferred behavior in your
           model class declaration:</para>
 
-          <programlisting>class FoobarModelTodos extends FOFmodel {
+          <programlisting>class FoobarModelTodos extends F0FModel {
 
     ....
 
@@ -1320,7 +1312,7 @@ function postflight($type, $parent)
           <para>2. Passing it into the <parameter>$config</parameter>
           parameter for the constructor of your model class:</para>
 
-          <programlisting>class FoobarModelTodos extends FOFmodel {
+          <programlisting>class FoobarModelTodos extends F0FModel {
 
     ....
 
@@ -1340,14 +1332,14 @@ function postflight($type, $parent)
           <para>3. Passing it when you create the model instance through the
           <parameter>config</parameter> parameter:</para>
 
-          <programlisting>$model = FOFModel::getTmpInstance('Todos', 'FoobarModel', array(
+          <programlisting>$model = F0FModel::getTmpInstance('Todos', 'FoobarModel', array(
     'behaviors' =&gt; array('filters', 'access', 'enabled'))
 );</programlisting>
 
           <para>4. Adding it dinamically using the method
           <methodname>addBehavior</methodname></para>
 
-          <programlisting>class FoobarModelTodos extends FOFmodel {
+          <programlisting>class FoobarModelTodos extends F0FModel {
 ....
 
     public function __construct($config = array()) {
@@ -1384,7 +1376,7 @@ function postflight($type, $parent)
             </listitem>
 
             <listitem>
-              <para>Then look for FOFModelBehaviorFoobar</para>
+              <para>Then look for F0FModelBehaviorFoobar</para>
             </listitem>
           </orderedlist>
 
@@ -1405,7 +1397,7 @@ function postflight($type, $parent)
           <programlisting>/**
  * This event runs before saving data in the model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  * @param   array     &amp;$data   The data to save
  *
  * @return  void
@@ -1417,7 +1409,7 @@ public function onBeforeSave(&amp;$model, &amp;$data)
 /**
  * This event runs before deleting a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1428,7 +1420,7 @@ public function onBeforeDelete(&amp;$model)
 /**
  * This event runs before copying a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1439,7 +1431,7 @@ public function onBeforeCopy(&amp;$model)
 /**
  * This event runs before publishing a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1450,7 +1442,7 @@ public function onBeforePublish(&amp;$model)
 /**
  * This event runs before registering a hit on a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1461,7 +1453,7 @@ public function onBeforeHit(&amp;$model)
 /**
  * This event runs before moving a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1472,7 +1464,7 @@ public function onBeforeMove(&amp;$model)
 /**
  * This event runs before changing the records' order in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1484,7 +1476,7 @@ public function onBeforeReorder(&amp;$model)
  * This event runs when we are building the query used to fetch a record
  * list in a model
  *
- * @param   FOFModel        &amp;$model  The model which calls this event
+ * @param   F0FModel        &amp;$model  The model which calls this event
  * @param   JDatabaseQuery  &amp;$query  The query being built
  *
  * @return  void
@@ -1496,7 +1488,7 @@ public function onBeforeBuildQuery(&amp;$model, &amp;$query)
 /**
  * This event runs after saving a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1507,7 +1499,7 @@ public function onAfterSave(&amp;$model)
 /**
  * This event runs after deleting a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1518,7 +1510,7 @@ public function onAfterDelete(&amp;$model)
 /**
  * This event runs after copying a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1529,7 +1521,7 @@ public function onAfterCopy(&amp;$model)
 /**
  * This event runs after publishing a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1540,7 +1532,7 @@ public function onAfterPublish(&amp;$model)
 /**
  * This event runs after registering a hit on a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1551,7 +1543,7 @@ public function onAfterHit(&amp;$model)
 /**
  * This event runs after moving a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1562,7 +1554,7 @@ public function onAfterMove(&amp;$model)
 /**
  * This event runs after reordering records in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1574,7 +1566,7 @@ public function onAfterReorder(&amp;$model)
  * This event runs after we have built the query used to fetch a record
  * list in a model
  *
- * @param   FOFModel        &amp;$model  The model which calls this event
+ * @param   F0FModel        &amp;$model  The model which calls this event
  * @param   JDatabaseQuery  &amp;$query  The model which calls this event
  *
  * @return  void
@@ -1586,8 +1578,8 @@ public function onAfterBuildQuery(&amp;$model, &amp;$query)
 /**
  * This event runs after getting a single item
  *
- * @param   FOFModel  &amp;$model   The model which calls this event
- * @param   FOFTable  &amp;$record  The record loaded by this model
+ * @param   F0FModel  &amp;$model   The model which calls this event
+ * @param   F0FTable  &amp;$record  The record loaded by this model
  *
  * @return  void
  */
@@ -1603,12 +1595,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
           that will filter the items based on the publish_up and pulish_down
           fields of a table.</para>
 
-          <programlisting>class FOFModelBehaviorPublished extends FOFModelBehavior
+          <programlisting>class F0FModelBehaviorPublished extends F0FModelBehavior
 {
     /**
      * Let's add the filter for the publish_up and publish_down fields here, after the query is built by the model
      *
-     * @param   FOFModel        &amp;$model  The model which calls this event
+     * @param   F0FModel        &amp;$model  The model which calls this event
      * @param   JDatabaseQuery  &amp;$query  The model which calls this event
      *
      * @return  void
@@ -1616,7 +1608,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
     public function onAfterBuildQuery(&amp;$model, &amp;$query)
     {
         // This behavior only applies to the front-end.
-        if (!FOFPlatform::getInstance()-&gt;isFrontend())
+        if (!F0FPlatform::getInstance()-&gt;isFrontend())
         {
             return;
         }
@@ -1659,17 +1651,17 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
     /**
      * Voids the getItem result if the loaded item wasn't published
      *
-     * @param   FOFModel  &amp;$model   The model which was called
-     * @param   FOFTable  &amp;$record  The record loaded from the databae
+     * @param   F0FModel  &amp;$model   The model which was called
+     * @param   F0FTable  &amp;$record  The record loaded from the databae
      *
      * @return  void
      */
     public function onAfterGetItem(&amp;$model, &amp;$record)
     {
-        if ($record instanceof FOFTable)
+        if ($record instanceof F0FTable)
         {
             // This behavior only applies to the front-end.
-            if (!FOFPlatform::getInstance()-&gt;isFrontend())
+            if (!F0FPlatform::getInstance()-&gt;isFrontend())
             {
                 return;
             }
@@ -1746,7 +1738,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
       <para>All Table files are located in your component's
       <filename>tables</filename> directories in the back-end. If the Table
       class is not loaded and a suitable file cannot be found FOF will fall
-      back to creating a suitable configure instance of FOFTable, using
+      back to creating a suitable configure instance of F0FTable, using
       convention over configuration (explained below) to determine what the
       table object should do.</para>
 
@@ -1910,7 +1902,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
       fields while using the table.</para>
 
       <para>To do that you can simply create the join query, pass it to the
-      <classname>FOFTable</classname> in the construction and you're done! FOF
+      <classname>F0FTable</classname> in the construction and you're done! FOF
       will do the rest.</para>
 
       <para>Let's see it in action with a real an example. Let's you have the
@@ -2002,11 +1994,11 @@ WHERE jos_foo.foo_id = 1
 </programlisting>
 
       <para>So we just have to "inject" the join part. We can do that
-      extending the <classname>FOFTable</classname>, creating a query using
+      extending the <classname>F0FTable</classname>, creating a query using
       Joomla! object and then assigning it to the table:</para>
 
       <programlisting>&lt;?php
-class FoobarTableFoo extends FOFTable
+class FoobarTableFoo extends F0FTable
 {
   public function __construct($table, $key, &amp;$db)
   {
@@ -2033,7 +2025,7 @@ class FoobarTableFoo extends FOFTable
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from <classname>FOFTable</classname> into your
+      yourself copying code from <classname>F0FTable</classname> into your
       extension's specialised table class you're doing it wrong.</para>
 
       <para>FOF tables can be customised very easily using the
@@ -2051,7 +2043,7 @@ class FoobarTableFoo extends FOFTable
       <bridgehead>Customising using plugins</bridgehead>
 
       <para>You can customise the actions of tables by using standard
-      "<filename>system</filename>" plugins. <classname>FOFTable</classname>
+      "<filename>system</filename>" plugins. <classname>F0FTable</classname>
       will automatically create plugin events using a fixed naming prefix and
       appending them with the last part of the table's name. For example, if
       you have a table called <classname>TodoTableItem</classname> FOF will
@@ -2237,7 +2229,7 @@ class FoobarTableFoo extends FOFTable
           <title>Introduction</title>
 
           <para>Table Behaviors are an handy way to alter the workflow of a
-          FOFTable. It's based upon the standard Joomla Event system.</para>
+          F0FTable. It's based upon the standard Joomla Event system.</para>
 
           <para>Before and After certain actions, the table triggers an
           "event" which is propagated to each of the registered behaviors for
@@ -2249,7 +2241,7 @@ class FoobarTableFoo extends FOFTable
           created.</para>
 
           <para>FOF already provides a list of common behaviors, that can be
-          used by any FOFTable object.</para>
+          used by any F0FTable object.</para>
         </section>
 
         <section xml:id="foftable-behaviors-standard">
@@ -2326,7 +2318,7 @@ class FoobarTableFoo extends FOFTable
               <para>Passing it when you create the table instance through the
               <parameter>config</parameter> parameter:</para>
 
-              <programlisting>$model = FOFTable::getTmpInstance('Todo', 'FoobarTable', array('behaviors' =&gt; array('tags')));</programlisting>
+              <programlisting>$model = F0FTable::getTmpInstance('Todo', 'FoobarTable', array('behaviors' =&gt; array('tags')));</programlisting>
             </listitem>
 
             <listitem>
@@ -2372,7 +2364,7 @@ class FoobarTableFoo extends FOFTable
             </listitem>
 
             <listitem>
-              <para>Then look for FOFTableBehaviorFoobar</para>
+              <para>Then look for F0FTableBehaviorFoobar</para>
             </listitem>
           </itemizedlist>
 
@@ -2394,7 +2386,7 @@ class FoobarTableFoo extends FOFTable
           <programlisting>/**
  * This event runs before binding data to the table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   array     &amp;$data   The data to bind
  *
  * @return  boolean  True on success
@@ -2407,7 +2399,7 @@ public function onBeforeBind(&amp;$table, &amp;$data)
 /**
  * The event which runs after binding data to the table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   object|array  &amp;$src  The data to bind
  *
  * @return  boolean  True on success
@@ -2420,7 +2412,7 @@ public function onAfterBind(&amp;$table, &amp;$src)
 /**
  * The event which runs after loading a record from the database
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   boolean  &amp;$result  Did the load succeeded?
  *
  * @return  void
@@ -2433,7 +2425,7 @@ public function onAfterLoad(&amp;$table, &amp;$result)
 /**
  * The event which runs before storing (saving) data to the database
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
  *
  * @return  boolean  True to allow saving
@@ -2446,7 +2438,7 @@ public function onBeforeStore(&amp;$table, $updateNulls)
 /**
  * The event which runs after storing (saving) data to the database
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow saving without an error
  */
@@ -2458,7 +2450,7 @@ public function onAfterStore(&amp;$table)
 /**
  * The event which runs before moving a record
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
  *
  * @return  boolean  True to allow moving
@@ -2471,7 +2463,7 @@ public function onBeforeMove(&amp;$table, $updateNulls)
 /**
  * The event which runs after moving a record
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow moving without an error
  */
@@ -2483,7 +2475,7 @@ public function onAfterMove(&amp;$table)
 /**
  * The event which runs before reordering a table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   string  $where  The WHERE clause of the SQL query to run on reordering (record filter)
  *
  * @return  boolean  True to allow reordering
@@ -2496,7 +2488,7 @@ public function onBeforeReorder(&amp;$table, $where = '')
 /**
  * The event which runs after reordering a table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow the reordering to complete without an error
  */
@@ -2508,7 +2500,7 @@ public function onAfterReorder(&amp;$table)
 /**
  * The event which runs before deleting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record to delete
  *
  * @return  boolean  True to allow the deletion
@@ -2521,7 +2513,7 @@ public function onBeforeDelete(&amp;$table, $oid)
 /**
  * The event which runs after deleting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record which was deleted
  *
  * @return  boolean  True to allow the deletion without errors
@@ -2534,7 +2526,7 @@ public function onAfterDelete(&amp;$table, $oid)
 /**
  * The event which runs before hitting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record to hit
  * @param   boolean  $log  Should we log the hit?
  *
@@ -2548,7 +2540,7 @@ public function onBeforeHit(&amp;$table, $oid, $log)
 /**
  * The event which runs after hitting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record which was hit
  *
  * @return  boolean  True to allow the hitting without errors
@@ -2561,7 +2553,7 @@ public function onAfterHit(&amp;$table, $oid)
 /**
  * The even which runs before copying a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record being copied
  *
  * @return  boolean  True to allow the copy to take place
@@ -2574,7 +2566,7 @@ public function onBeforeCopy(&amp;$table, $oid)
 /**
  * The even which runs after copying a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record which was copied (not the new one)
  *
  * @return  boolean  True to allow the copy without errors
@@ -2587,7 +2579,7 @@ public function onAfterCopy(&amp;$table, $oid)
 /**
  * The event which runs before a record is (un)published
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer|array  &amp;$cid     The PK IDs of the records being (un)published
  * @param   integer        $publish  1 to publish, 0 to unpublish
  *
@@ -2601,7 +2593,7 @@ public function onBeforePublish(&amp;$table, &amp;$cid, $publish)
 /**
  * The event which runs after the object is reset to its default values.
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow the reset to complete without errors
  */
@@ -2613,7 +2605,7 @@ public function onAfterReset(&amp;$table)
 /**
  * The even which runs before the object is reset to its default values.
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow the reset to complete
  */
@@ -2645,8 +2637,8 @@ public function onBeforeReset(&amp;$table)
         immediately understand that each comment record in that table is
         related to an article in a table called
         <database>#__foobar_articles</database>. That's why you end up writing
-        code to fetch the comments of an article using FOFModel or the article
-        a comment belongs to using FOFTable.</para>
+        code to fetch the comments of an article using F0FModel or the article
+        a comment belongs to using F0FTable.</para>
 
         <para>By doing that, you are implicitly mapping the raw data in the
         database to one or more PHP objects. This is a very primitive data
@@ -2668,7 +2660,7 @@ public function onBeforeReset(&amp;$table)
 
         <para>FOF follows a middle path. You can tell it how your database
         tables relate to each other and it will provide you with an interface
-        to get related objects directly from a FOFTable object. It currently
+        to get related objects directly from a F0FTable object. It currently
         supports all three normalised relations:</para>
 
         <itemizedlist>
@@ -2731,10 +2723,10 @@ public function onBeforeReset(&amp;$table)
         <para>Before this feature you would have to write this kind of
         code:</para>
 
-        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+        <programlisting>$article = F0FTable::getTmpInstance('Article', 'FoobarTable');
 $article-&gt;load(1);
 
-$model = FOFModel::getTmpInstance('Comments', 'FoobarModel');
+$model = F0FModel::getTmpInstance('Comments', 'FoobarModel');
 $comments = $model-&gt;foobar_article_id($article-&gt;foobar_article_id)-&gt;getList();
 foreach ($comments as $commentData)
 {
@@ -2745,7 +2737,7 @@ foreach ($comments as $commentData)
 
         <para>You can now write</para>
 
-        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+        <programlisting>$article = F0FTable::getTmpInstance('Article', 'FoobarTable');
 $article-&gt;load(1);
 
 foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTable)
@@ -2758,7 +2750,7 @@ foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTabl
         <filename>fof.xml</filename>.</para>
 
         <para>Even better, relations returning many items use
-        FOFDatabaseIterator which means that only one record is loaded in
+        F0FDatabaseIterator which means that only one record is loaded in
         memory at a time. When sifting through copious amounts of records this
         decreases your memory consumption considerably.</para>
 
@@ -2769,10 +2761,10 @@ foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTabl
         <bridgehead>How do I use it?</bridgehead>
 
         <para>Each table provides the getRelations() method which returns a
-        FOFTableRelations object. By default it's populated with parent
+        F0FTableRelations object. By default it's populated with parent
         relations based on field names which follow the FOF naming
         conventions. At any time you can use the add*Relation() methods of
-        FOFTableRelations to add any kind of relations. The docblocks in the
+        F0FTableRelations to add any kind of relations. The docblocks in the
         methods explain to you exactly what each parameter does and through
         which method the related tables are made available. We suggest adding
         relations in the constructor (__construct() method) of your
@@ -2780,12 +2772,12 @@ foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTabl
         in <filename>fof.xml</filename>.</para>
 
         <para>From that point you can use the relations anywhere you have an
-        instance of that FOFTable object. The best methods for getting a
-        FOFTable object are:</para>
+        instance of that F0FTable object. The best methods for getting a
+        F0FTable object are:</para>
 
         <itemizedlist>
           <listitem>
-            <para>Using FOFModel's getIterator. <emphasis role="bold">This is
+            <para>Using F0FModel's getIterator. <emphasis role="bold">This is
             the preferred method</emphasis>. Even if you only need the first
             item fetched by the model it is far better for performance and
             memory consumption to use:</para>
@@ -2798,12 +2790,12 @@ $myRecord = $iterator-&gt;current();</programlisting>
           </listitem>
 
           <listitem>
-            <para>Using FOFModel's getFirstItem. This method is not
+            <para>Using F0FModel's getFirstItem. This method is not
             recommended for performance / resource usage reasons. Keep in mind
-            that FOFModel will load the ENTIRE record list, based on its
-            state, in memory and return the first item fetched as a FOFTable.
+            that F0FModel will load the ENTIRE record list, based on its
+            state, in memory and return the first item fetched as a F0FTable.
             This can lead to bad performance and excessive memory consumption
-            unless you are absolutely sure that FOFModel will only fetch one
+            unless you are absolutely sure that F0FModel will only fetch one
             (or, at most, a handful) of items from the database.
             Example:</para>
 
@@ -2811,21 +2803,21 @@ $myRecord = $iterator-&gt;current();</programlisting>
           </listitem>
 
           <listitem>
-            <para>Using FOFTable::getAnInstance(). This method is not
+            <para>Using F0FTable::getAnInstance(). This method is not
             recommended due to the singleton caveat. Remember that the
             returned object is a singleton. If you need to load a new record
             you are required to clone that object, e.g. $table = clone
-            FOFTable::getAnInstance('Items', 'FoobarTable');</para>
+            F0FTable::getAnInstance('Items', 'FoobarTable');</para>
 
             <programlisting>// If you forget the clone you will spend some not-so-fun hours debugging erratic behaviour
-$myRecord = <emphasis role="bold">clone</emphasis> FOFTable::getAnInstance('Items', 'FoobarTable');
+$myRecord = <emphasis role="bold">clone</emphasis> F0FTable::getAnInstance('Items', 'FoobarTable');
 $myRecord-&gt;load(123);</programlisting>
           </listitem>
 
           <listitem>
-            <para>Using the getTable() method of a FOFModel object. This
+            <para>Using the getTable() method of a F0FModel object. This
             method is not recommended due to the singleton caveat. Likewise to
-            FOFTable::getAnInstance() you get a singleton object for that
+            F0FTable::getAnInstance() you get a singleton object for that
             model. Unless you want to operate on the last item fetched / saved
             in the model you need to clone it.</para>
 
@@ -2885,7 +2877,7 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
         <listitem>
           <para>If a default controller is not found, FOF will fall back to
           creating a suitably configured instance of
-          <classname>FOFController</classname>, using convention over
+          <classname>F0FController</classname>, using convention over
           configuration to determine what the controller object should
           do.</para>
         </listitem>
@@ -2910,7 +2902,7 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from FOFController into your extension's
+      yourself copying code from F0FController into your extension's
       specialised table class you're doing it wrong.</para>
 
       <para>FOF controller can be customised very easily using the
@@ -2962,18 +2954,18 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
       <para>The signature for these plugins methods is like this:</para>
 
-      <programlisting><methodname>onBefore<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (FOFController &amp;$controller, FOFInput &amp;$input)</programlisting>
+      <programlisting><methodname>onBefore<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (F0FController &amp;$controller, F0FInput &amp;$input)</programlisting>
 
       <para>Both parameters are passed by reference, meaning that you can
       modify them from your plugin. There's a caveat: by the time the
       <methodname>onBefore</methodname> plugin event is called the model and
       view instances have already been created with the previously existing
-      <classname>FOFInput</classname> instance. If you need to modify the
+      <classname>F0FInput</classname> instance. If you need to modify the
       model's state you will have to do something like
       <code>$controller-&gt;getThisModel()-&gt;setState('foo', $myNewFooValue)
       </code></para>
 
-      <programlisting><methodname>onAfter<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (FOFController &amp;$controller, FOFInput &amp;$input, &amp;$ret)</programlisting>
+      <programlisting><methodname>onAfter<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (F0FController &amp;$controller, F0FInput &amp;$input, &amp;$ret)</programlisting>
 
       <para>The <parameter>$ret</parameter> parameter contains the return
       value of the task method. It is passed by reference and you can modify
@@ -3037,11 +3029,11 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
         <listitem>
           <para>If a default view is not found, FOF will fall back to creating
-          a suitably configured instance of a <classname>FOFView</classname>
+          a suitably configured instance of a <classname>F0FView</classname>
           format-specific class, using convention over configuration to
           determine what the model object should do. For example, if the
           current format is <option>html</option> FOF will create an instance
-          of <classname>FOFViewHtml</classname>. If there is no suitable class
+          of <classname>F0FViewHtml</classname>. If there is no suitable class
           found you will get an error as FOF has no idea what to
           render.</para>
         </listitem>
@@ -3120,7 +3112,7 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from any FOFView class into your extension's
+      yourself copying code from any F0FView class into your extension's
       specialised table class you're doing it wrong.</para>
 
       <para>FOF view can be customised very easily using the
@@ -3237,7 +3229,7 @@ echo $this-&gt;getRenderedForm();
 
       <para>The JSON format can be used to provide web services with
       integrated hypermedia (following the HAL specification). All you need to
-      do is to tell <classname>FOFViewJson</classname> to use hypermedia,
+      do is to tell <classname>F0FViewJson</classname> to use hypermedia,
       either by setting <code>$this-&gt;useHypermedia = true;</code> in your
       specialised JSON view class or, much easier, using the
       <filename>fof.xml</filename> configuration file.</para>
@@ -3294,7 +3286,7 @@ echo $this-&gt;getRenderedForm();
       not present in the front-end, it will be attempted to be loaded from the
       back-end but NOT vice versa. If the Dispatcher class is not loaded and a
       suitable file cannot be found FOF will fall back to creating a suitably
-      configured instance of <classname>FOFDispatcher</classname>, using
+      configured instance of <classname>F0FDispatcher</classname>, using
       convention over configuration to determine what the Dispatcher object
       should do.</para>
 
@@ -3302,7 +3294,7 @@ echo $this-&gt;getRenderedForm();
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from FOFDispatcher into your extension's
+      yourself copying code from F0FDispatcher into your extension's
       specialised table class you're doing it wrong.</para>
 
       <para>FOF dispatcher can be customised very easily using the
@@ -3456,7 +3448,7 @@ echo $this-&gt;getRenderedForm();
         expands to exactly 10 characters. If you don’t feel like guessing, you
         can simply do:</para>
 
-        <programlisting>$totp = new FOFEncryptTotp();
+        <programlisting>$totp = new F0FEncryptTotp();
 $secret = $totp-&gt;generateSecret();
 </programlisting>
 
@@ -3516,10 +3508,10 @@ $authKey = json_encode(array(
   'username' =&gt; $username,
   'password' =&gt; $password
 ));
-$totp = new FOFEncryptTotp($timeStep);
+$totp = new F0FEncryptTotp($timeStep);
 $otp = $totp-&gt;getCode($secretKey);
 $cryptoKey = hash('sha256', $this-&gt;_fofAuth_Key.$otp);
-$aes = new FOFEncryptAes($cryptoKey);
+$aes = new F0FEncryptAes($cryptoKey);
 $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 </programlisting>
 
@@ -3558,7 +3550,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       front-end and back-end. If a file is not present in the front-end, it
       will be attempted to be loaded from the back-end. If the Toolbar class
       is not loaded and a suitable file cannot be found FOF will fall back to
-      creating a suitably configured instance of FOFToolbar, using convention
+      creating a suitably configured instance of F0FToobar, using convention
       over configuration to determine what the controller object should
       do.</para>
 
@@ -3666,7 +3658,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       sometimes you want a more complex presentation. For example, you want to
       show different link bars depending on a configuration setting (e.g. a
       "Power user" switch in your component's options), or a drop-down menu.
-      To this end, <classname>FOFToolbar</classname> provides the following
+      To this end, <classname>F0FToobar</classname> provides the following
       methods.</para>
 
       <programlisting>public function <methodname>clearLinks</methodname>()</programlisting>
@@ -3693,7 +3685,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 
       <para>In order to use these methods you will have to override the
       <methodname>renderSubmenu</methodname> method in
-      <classname>FOFToolbar</classname>.</para>
+      <classname>F0FToobar</classname>.</para>
 
       <bridgehead>When the link bar is rendered</bridgehead>
 
@@ -3745,7 +3737,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       <para>You already know it, you just didn't realise it. Here's the secret
       sauce:</para>
 
-      <programlisting>FOFDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
+      <programlisting>F0FDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
 </programlisting>
 
       <para>You are simply creating an instance of the dispatcher of the
@@ -3757,18 +3749,18 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       something like this:</para>
 
       <programlisting>@ob_start();
-FOFDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
+F0FDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
 $result = ob_end_clean();
 </programlisting>
 
       <para>If you need to pass input variables to the dispatcher you can do
       something like this:</para>
 
-      <programlisting>FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
+      <programlisting>F0FDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
 </programlisting>
 
       <para>where <varname>$input</varname> can be an indexed array, a
-      stdClass object or –preferred– a <classname>FOFInput</classname> or
+      stdClass object or –preferred– a <classname>F0FInput</classname> or
       <classname>JInput</classname> instance. For example:</para>
 
       <programlisting>$inputvars = array(
@@ -3776,8 +3768,8 @@ $result = ob_end_clean();
     'limitstart'    =&gt; 0,
     'foobar'        =&gt; 'baz'
 );
-$input = new FOFInput($inputvars);
-FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
+$input = new F0FInput($inputvars);
+F0FDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
 </programlisting>
 
       <para>And, of course, you can mix and match all of the above ideas to
@@ -3788,9 +3780,9 @@ FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input)
     'limitstart'    =&gt; 0,
     'format'        =&gt; 'json'
 );
-$input = new FOFInput($inputvars);
+$input = new F0FInput($inputvars);
 @ob_start();
-FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
+F0FDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
 $json = ob_end_clean();
 </programlisting>
 
@@ -3946,45 +3938,45 @@ $json = ob_end_clean();
     </section>
 
     <section xml:id="fofdatabaseiterator">
-      <title>The database cursor iterator (FOFDatabaseIterator)</title>
+      <title>The database cursor iterator (F0FDatabaseIterator)</title>
 
       <note>
         <para>Available since FOF 2.2.0</para>
       </note>
 
       <para>In many cases you have to sift through a large number of database
-      records and you want to use the magic of FOFTable. The traditional way
-      to do that was to use FOFModel::getItemList to get a big array of
+      records and you want to use the magic of F0FTable. The traditional way
+      to do that was to use F0FModel::getItemList to get a big array of
       stdClass objects, iterate through it with foreach, mapping each stdClass
-      object to your FOFTable instance. This is a performance and resource
+      object to your F0FTable instance. This is a performance and resource
       nightmare. PHP has to retrieve the entire list of records from the
       database and cast it to stupid stdClass objects, then you have to remap
-      them one by one as FOFTable instances. The time and memory required to
+      them one by one as F0FTable instances. The time and memory required to
       do that makes it impractical for lists over a few dozen records.</para>
 
-      <para>Enter the FOFDatabaseIterator. This is a regular, non-resettable
+      <para>Enter the F0FDatabaseIterator. This is a regular, non-resettable
       and non-seekable PHP iterator. This means that you can only fetch its
       current record or proceed to the next one. You cannot scroll back to the
       beginning and you cannot move to an arbitrary location within the
       iterator (unlike an array). However, it will only load one record in
-      memory at a time and deliver it to you as a FOFTable object. The magic
+      memory at a time and deliver it to you as a F0FTable object. The magic
       behind it lies in the way it is implemented: it is given a database
       cursor (pretty much, a resource pointing to the result set of a database
       query) and it uses standard PHP features to only ever fetch the next
       item from this cursor. Behind the scenes it will get a new instance of
-      the FOFTable class and use its bind() method to bind the data to it,
+      the F0FTable class and use its bind() method to bind the data to it,
       then return you the table object. Since it's an Iterator you can use it
       in a foreach statement to iterate through the entire list of records,
-      one FOFTable object at a time.</para>
+      one F0FTable object at a time.</para>
 
-      <para>Even though you can create a FOFDatabaseIterator directly, you
-      will hardly ever need to do so. A FOFTableIterator is returned by
-      FOFModel's getIterator() method and the FOFTableRelations' methods which
+      <para>Even though you can create a F0FDatabaseIterator directly, you
+      will hardly ever need to do so. A F0FTableIterator is returned by
+      F0FModel's getIterator() method and the F0FTableRelations' methods which
       return multiple records. You are advised to use the iterator whenever
       you reasonably expect to deal with large numbers of database records,
       especially if you need to act upon them.</para>
 
-      <para>The only drawback is that by using FOFModel's getIterator the
+      <para>The only drawback is that by using F0FModel's getIterator the
       onProcessList method, which is used for record list post-processing, is
       never called. This is actually a good thing. You can migrate that logic
       into the onBeforeBind() method of your table, where it belongs
@@ -4220,7 +4212,7 @@ $json = ob_end_clean();
               <term>name</term>
 
               <listitem>
-                <para>How this relation will be known to FOFTable</para>
+                <para>How this relation will be known to F0FTable</para>
               </listitem>
             </varlistentry>
 
@@ -4286,14 +4278,14 @@ $json = ob_end_clean();
               <term>tableClass</term>
 
               <listitem>
-                <para>The FOFTable class name of the foreign table, e.g.
+                <para>The F0FTable class name of the foreign table, e.g.
                 FoobarTableItems. This is not required if remoteKey and the
                 table class follow the FOF naming conventions, i.e.
                 foobar_item_id is understood to belong to #__foobar_items
-                which maps to the FOFTable class FoobarTableItems. The table
+                which maps to the F0FTable class FoobarTableItems. The table
                 class doesn't need to exist (you don't need to specialise
-                FOFTable to define a relation). If the class is not found a
-                properly configured FOFTable object is created
+                F0FTable to define a relation). If the class is not found a
+                properly configured F0FTable object is created
                 automatically.</para>
               </listitem>
             </varlistentry>
@@ -4461,7 +4453,7 @@ $json = ob_end_clean();
             <term>behaviors</term>
 
             <listitem>
-              <para>Add model behaviours. See the FOFModel documentation for
+              <para>Add model behaviours. See the F0FModel documentation for
               more information on behaviours.</para>
 
               <itemizedlist>
@@ -4545,7 +4537,7 @@ $json = ob_end_clean();
               enabled. This is the translation key of the page's title which
               will be used in the front-end. You can override this behaviour
               by specialising the setPageTitle method of your
-              <classname>FOFView</classname> class.</para>
+              <classname>F0FView</classname> class.</para>
             </listitem>
           </varlistentry>
 
@@ -4917,7 +4909,7 @@ $json = ob_end_clean();
         </listitem>
       </itemizedlist>
 
-      <para>FOF takes this concept further with the FOFForm package. Not only
+      <para>FOF takes this concept further with the F0FForm package. Not only
       can you create edit views, but you can also create browse (records
       listing) and read (single record display) views out of XML forms.
       Moreover, the forms are handled automatically by the FOF base MVC
@@ -5865,7 +5857,7 @@ echo $viewTemplate;
             <title>model</title>
 
             <para>Similar to the fieldselectable header, but gets the options
-            from a FOFModel descendant.</para>
+            from a F0FModel descendant.</para>
 
             <para>You can set the following attributes on top of those of the
             'fieldselectable' field type's:</para>
@@ -6756,7 +6748,7 @@ echo $viewTemplate;
             <title>model</title>
 
             <para>Similar to the list field, but gets the options from a
-            FOFModel descendant.</para>
+            F0FModel descendant.</para>
 
             <para>You can set the following attributes on top of those of the
             'list' field type's:</para>
@@ -7366,7 +7358,7 @@ echo $viewTemplate;
     if (!$this-&gt;$slug)
     {
         $this-&gt;$slug = !$this-&gt;firstname ? $this-&gt;lastname : $this-&gt;firstname .' '. $this-&gt;lastname;
-        $this-&gt;$slug = FOFStringUtils::toSlug($this-&gt;$slug);
+        $this-&gt;$slug = F0FStringUtils::toSlug($this-&gt;$slug);
     }
     return parent::onBeforeStore($updateNulls);
 }
@@ -7402,7 +7394,7 @@ CREATE TABLE IF NOT EXISTS `#__foobar_childs` (
       new site/components/com_foobar/models/items.php:</para>
 
       <programlisting>defined('_JEXEC') or die();
-class FoobarModelItems extends FOFModel
+class FoobarModelItems extends F0FModel
 {
     /***
     Delete all related records in the child table "#__foobar_childs" when the parent table's record is deleted
@@ -7412,10 +7404,10 @@ class FoobarModelItems extends FOFModel
         $result = parent::onBeforeDelete($id, $table);
         if($result) {
             $table-&gt;load($id);
-            $childids = FOFModel::getTmpInstance('childs','FoobarModel')-&gt;limit(0)-&gt;limitstart(0)-&gt;getItemList();
+            $childids = F0FModel::getTmpInstance('childs','FoobarModel')-&gt;limit(0)-&gt;limitstart(0)-&gt;getItemList();
             if(!empty($childids)){
                 foreach($childids as $childid){
-                    FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($childid-&gt;foobar_child_id)-&gt;delete();
+                    F0FModel::getTmpInstance('childs','FoobarModel')-&gt;setId($childid-&gt;foobar_child_id)-&gt;delete();
                 }
             }
         }
@@ -7427,7 +7419,7 @@ class FoobarModelItems extends FOFModel
 
       <para>If you have a one-to-one relationship, then you'll have:</para>
 
-      <programlisting>class FoobarModelItems extends FOFModel
+      <programlisting>class FoobarModelItems extends F0FModel
 {
     /***
     Delete all related records in the child table "#__foobar_childs"
@@ -7438,7 +7430,7 @@ class FoobarModelItems extends FOFModel
         $result = parent::onBeforeDelete($id, $table);
         if($result) {
             $table-&gt;load($id);
-            FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($table-&gt;load($id))-&gt;delete();
+            F0FModel::getTmpInstance('childs','FoobarModel')-&gt;setId($table-&gt;load($id))-&gt;delete();
         }
     return $result;
     }
@@ -7625,7 +7617,7 @@ class FoobarModelItems extends FOFModel
       to exactly 10 characters. If you don’t feel like guessing, you can
       simply do:</para>
 
-      <programlisting>$totp = new FOFEncryptTotp();
+      <programlisting>$totp = new F0FEncryptTotp();
 $secret = $totp-&gt;generateSecret();</programlisting>
 
       <para>You have to share this secret key with all clients wishing to
@@ -7680,10 +7672,10 @@ $authKey = json_encode(array(
   'username' =&gt; $username,
   'password' =&gt; $password
 ));
-$totp = new FOFEncryptTotp($timeStep);
+$totp = new F0FEncryptTotp($timeStep);
 $otp = $totp-&gt;getCode($secretKey);
 $cryptoKey = hash('sha256', $this-&gt;_fofAuth_Key.$otp);
-$aes = new FOFEncryptAes($cryptoKey);
+$aes = new F0FEncryptAes($cryptoKey);
 $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 </programlisting>
 
@@ -7705,7 +7697,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       <para>Create a controller at
       &lt;administrator&gt;/controllers/cpanel.php</para>
 
-      <programlisting>class COMPONENT_NAMEControllerCpanel extends FOFController
+      <programlisting>class COMPONENT_NAMEControllerCpanel extends F0FController
 
 {
 	public function execute($task)
@@ -7747,7 +7739,7 @@ $option = 'com_COMPONENT_NAME';
       <para>Customize the Cpanel toolbar creating a
       &lt;administrator&gt;/toolbar.php file with:</para>
 
-      <programlisting>class COMPONENT_NAMEToolbar extends FOFToolbar
+      <programlisting>class COMPONENT_NAMEToolbar extends F0FToobar
 {
 	/**
 	 * Prepares the toolbar for Cpanel view
@@ -7783,7 +7775,7 @@ $option = 'com_COMPONENT_NAME';
       one is not. To activate this feature, set the _autoChecks flag to true
       in your table constructor:</para>
 
-      <programlisting>class FoobarTableBar extends FOFTable
+      <programlisting>class FoobarTableBar extends F0FTable
 {
     function __construct($table, $key, $db)
     {
