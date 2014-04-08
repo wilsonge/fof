@@ -3,6 +3,16 @@ FOF 2.3.0
 ~ All class prefixes changed from FOF to F0F (the letter o was changed to number 0) to avoid naming conflicts with Joomla!'s outdated copy of FOF
 + Automatically set the front-end page title in FOFViewHtml
 
+Backwards compatibility notes:
+----------------------------------------
+* FOF is now being developed separately from Joomla!. In order to avoid naming clashes we have changed the prefix of all
+  FOF classes from FOF to F0F (F-zero-F). Moreover, the installation path changed from JPATH_LIBRARIES . '/fof' to
+  JPATH_LIBRARIES . '/f0f' (again: that's f-zero-f). The same goes for the FOF_INCLUDED constant which is now called
+  F0F_INCLUDED (again: that's f-zero-f). If you want to use this new version please remember to change these instances
+  from FOF to F0F.
+* Important: The fof.xml file HAS NOT changed its name!
+* Important: You must install FOF with your extension as described in the documentation.
+
 FOF 2.2.1
 ================================================================================
 ! runPlugins was broken due to erroneous use of a custom behaviour dispatcher instead of the correct JDispatcher
