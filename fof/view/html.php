@@ -73,7 +73,7 @@ class F0FViewHtml extends F0FViewRaw
 			$toolbar->renderToolbar($view, $task, $this->input);
 		}
 
-		if (FOFPlatform::getInstance()->isFrontend())
+		if (F0FPlatform::getInstance()->isFrontend())
 		{
 			if ($this->setFrontendPageTitle)
 			{
