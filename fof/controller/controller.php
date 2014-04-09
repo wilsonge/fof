@@ -1391,9 +1391,9 @@ class F0FController extends F0FUtilsObject
 		}
 		else
 		{
-			if(!FOFPlatform::getInstance()->isCli())
+			if(!F0FPlatform::getInstance()->isCli())
 			{
-				FOFPlatform::getInstance()->setHeader('Status', '201 Created', true);
+				F0FPlatform::getInstance()->setHeader('Status', '201 Created', true);
 			}
 
 			$this->setRedirect($url);
