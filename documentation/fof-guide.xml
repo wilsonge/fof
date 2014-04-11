@@ -3984,6 +3984,142 @@ $json = ob_end_clean();
       one record at a time. What is more natural than doing so in the one
       class dedicated to handling one record at a time?</para>
     </section>
+
+    <section xml:id="utility-classes">
+      <title>Utility classes</title>
+
+      <para>FOF comes with certain classes that are designed to make your life
+      as a Joomla! extensions developer much easier.</para>
+
+      <section xml:id="utils-update">
+        <title>The update model helper</title>
+
+        <para>Joomla! comes with an extensions updater feature. That said, its
+        API is hard to use and leads to a lot of code repetition. Even worse,
+        trying to use the support for commercial extensions is even worse.
+        This is why FOF comes with the <classname>F0FUtilsUpdate</classname>
+        model class.</para>
+
+        <para>This class is not designed to be used on its own. You will need
+        to create a Model in your extension extending from this class. For
+        example:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {}</programlisting>
+
+        <para>As is it won't help you much. At the very least you have to tell
+        it which component this model refers to. You can do so in your
+        constructor. For example:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
+
+  public function __construct($config = array())
+  {
+    $config['update_component'] = 'com_foobar';
+
+    parent::__construct($config);
+  }
+}</programlisting>
+
+        <para>You can now get the updates to your component by doing</para>
+
+        <programlisting>$updateInfo = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getUpdates();</programlisting>
+
+        <para>This will return an array with the following keys:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>hasUpdate</term>
+
+            <listitem>
+              <para>Boolean. True if there is an updated version
+              available.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>version</term>
+
+            <listitem>
+              <para>String. The version number of the updated version
+              available.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>infoURL</term>
+
+            <listitem>
+              <para>String. The optional information URL as found in the
+              extension's update XML stream.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>If you want to find out the current version of your extension
+        you can do:</para>
+
+        <para><programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getVersion();</programlisting>And
+        now you have all the update information you might need.</para>
+
+        <para>In order to modify the update site and/or use the Joomla! 3.2 or
+        later support for paid extensions you need to first define a few
+        things in your constructor:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
+
+  public function __construct($config = array())
+  {
+    $config['update_component'] = 'com_foobar';
+    $config['update_sitename'] = 'Foobar updates';
+    $config['update_site'] = 'http://www.example.com/updates/com_foobar.xml';
+    $config['update_extraquery'] = 'authorisation=mySuperSecretCode';
+
+    parent::__construct($config);
+  }
+}</programlisting>
+
+        <para>The parameters you are setting are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>update_sitename</term>
+
+            <listitem>
+              <para>The name of the update site, as stored in Joomla!'s
+              #__update_sites table and used... nowhere at all (typical
+              Joomla)!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>update_site</term>
+
+            <listitem>
+              <para>The URL to the update XML file for this extension</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>update_extraquery</term>
+
+            <listitem>
+              <para>Something to be appended to the download URL. The idea is
+              that you'll be using this to authenticate your clients to your
+              site and allow them to download your commercial extension. It's
+              a good idea to never hardcode this parameter but read it from
+              your component's configuration.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Then, somewhere in your component, you need to run:</para>
+
+        <programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;refreshUpdateSite();</programlisting>
+
+        <para>It's a good idea to put that in your component's control panel
+        controller, in the onBeforeBrowse() method.</para>
+      </section>
+    </section>
   </chapter>
 
   <chapter xml:id="features-reference">
