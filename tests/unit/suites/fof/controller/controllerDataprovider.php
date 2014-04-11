@@ -947,7 +947,7 @@ class ControllerDataprovider
                 'component' => ''
             ),
             array(
-                'name' => 'fof'
+                'name' => 'f0f'
             )
         );
 
