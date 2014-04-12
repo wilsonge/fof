@@ -291,6 +291,17 @@ class F0FUtilsUpdate extends F0FModel
 				$db->setQuery($query);
 				$aSite = $db->loadObject();
 
+				if (empty($aSite))
+				{
+					// Update site not defined. Create a new one.
+					$update_site['update_site_id'] = $id;
+					$newSite = (object)$update_site;
+					$db->insertObject('#__update_sites', $newSite);
+
+					// Update site is now up-to-date, don't need to refresh it anymore.
+					continue;
+				}
+
 				// Does the name and location match?
 				if (($aSite->name == $update_site['name']) && ($aSite->location == $update_site['location']))
 				{
