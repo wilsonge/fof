@@ -10,7 +10,7 @@
 require_once 'controllerDataprovider.php';
 require_once JPATH_TESTS.'/unit/core/application/route.php';
 
-class FOFControllerTest extends FtestCaseDatabase
+class F0FControllerTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
@@ -25,38 +25,38 @@ class FOFControllerTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+        F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerCreateFilename
-     * @covers          FOFController::createFilename
+     * @covers          F0FController::createFilename
      * @dataProvider    getTestCreateFilename
      *
      * @preventDataLoading
      */
     public function testCreateFilename($test, $check)
     {
-        $method = new ReflectionMethod('FOFController', 'createFilename');
+        $method = new ReflectionMethod('F0FController', 'createFilename');
         $method->setAccessible(true);
         $filename = $method->invoke(null, $test['type'], $test['parts']);
 
-        $this->assertEquals($check['filename'], $filename, 'FOFController::createFilename created the wrong filename');
+        $this->assertEquals($check['filename'], $filename, 'F0FController::createFilename created the wrong filename');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerBrowse
-     * @covers          FOFController::browse
+     * @covers          F0FController::browse
      * @dataProvider    getTestBrowse
      *
      * @preventDataLoading
      */
     public function testBrowse($test, $check)
     {
-        $controller = $this->getMock('FOFController', array('display', 'getModel'));
+        $controller = $this->getMock('F0FController', array('display', 'getModel'));
         $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
 
         $taskCache = new ReflectionProperty($controller, 'cacheableTasks');
@@ -67,25 +67,25 @@ class FOFControllerTest extends FtestCaseDatabase
         $layout->setAccessible(true);
         $layout->setValue($controller, $test['layout']);
 
-        $model      = $this->getMock('FOFModel', array('setState'));
+        $model      = $this->getMock('F0FModel', array('setState'));
         $model->expects($this->any())->method('setState')->with($this->equalTo('form_name'), $this->equalTo($check['form_name']));
 
         $controller->expects($this->any())->method('getModel')->will($this->returnValue($model));
 
         $return = $controller->browse();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::browse returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::browse returned the wrong value');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerRead
-     * @covers          FOFController::read
+     * @covers          F0FController::read
      * @dataProvider    getTestRead
      */
     public function testRead($test, $check)
     {
-        $controller = $this->getMock('FOFController', array('display', 'getModel'));
+        $controller = $this->getMock('F0FController', array('display', 'getModel'));
         $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
 
         $taskCache = new ReflectionProperty($controller, 'cacheableTasks');
@@ -102,7 +102,7 @@ class FOFControllerTest extends FtestCaseDatabase
             $test['item']->load($test['loadid']);
         }
 
-        $model      = $this->getMock('FOFModel', array('setState', 'getId', 'getItem'));
+        $model      = $this->getMock('F0FModel', array('setState', 'getId', 'getItem'));
         $model->expects($this->any())->method('getId')->will($this->returnValue($test['id']));
         $model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
         $model->expects($this->any())->method('setState')->with($this->equalTo('form_name'), $this->equalTo($check['form_name']));
@@ -111,20 +111,20 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->read();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::read returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::read returned the wrong value');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerAdd
-     * @covers          FOFController::add
+     * @covers          F0FController::add
      * @dataProvider    getTestAdd
      *
      * @preventDataLoading
      */
     public function testAdd($test, $check)
     {
-        $controller = $this->getMock('FOFController', array('display', 'getModel'));
+        $controller = $this->getMock('F0FController', array('display', 'getModel'));
         $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
 
         $taskCache = new ReflectionProperty($controller, 'cacheableTasks');
@@ -136,7 +136,7 @@ class FOFControllerTest extends FtestCaseDatabase
         $layout->setValue($controller, $test['layout']);
 
 
-        $model      = $this->getMock('FOFModel', array('setState', 'getItem'));
+        $model      = $this->getMock('F0FModel', array('setState', 'getItem'));
         $model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
         $model->expects($this->any())->method('setState')->with($this->equalTo('form_name'), $this->equalTo($check['form_name']));
 
@@ -144,26 +144,26 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->add();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::add returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::add returned the wrong value');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerEdit
-     * @covers          FOFController::edit
+     * @covers          F0FController::edit
      * @dataProvider    getTestEdit
      */
     public function testEdit($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new F0FInput(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
                 ))
         );
 
-        $controller = $this->getMock('FOFController', array('display', 'getModel', 'setRedirect'), array($config));
+        $controller = $this->getMock('F0FController', array('display', 'getModel', 'setRedirect'), array($config));
         $controller->expects($this->any())->method('display')->with($this->equalTo($check['cache']));
 
         if($test['checkout'])
@@ -193,7 +193,7 @@ class FOFControllerTest extends FtestCaseDatabase
             $test['item']->load($test['loadid']);
         }
 
-        $model      = $this->getMock('FOFModel', array('setState', 'getId', 'getItem', 'checkout'));
+        $model      = $this->getMock('F0FModel', array('setState', 'getId', 'getItem', 'checkout'));
         $model->expects($this->any())->method('getId')->will($this->returnValue($test['id']));
         $model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
         $model->expects($this->any())->method('checkout')->will($this->returnValue($test['checkout']));
@@ -203,13 +203,13 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->edit();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::edit returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::edit returned the wrong value');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerCopy
-     * @covers          FOFController::copy
+     * @covers          F0FController::copy
      * @dataProvider    getTestCopy
      *
      * @preventDataLoading
@@ -217,14 +217,14 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testCopy($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new F0FInput(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
                 ))
         );
 
-        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
+        $controller = $this->getMock('F0FController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
         $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
 
         if($test['copy'])
@@ -242,7 +242,7 @@ class FOFControllerTest extends FtestCaseDatabase
             );
         }
 
-        $model = $this->getMock('FOFModel', array('getId', 'copy'));
+        $model = $this->getMock('F0FModel', array('getId', 'copy'));
         $model->expects($this->any())->method('getId')->will($this->returnValue(true));
         $model->expects($this->any())->method('copy')->will($this->returnValue($test['copy']));
 
@@ -250,13 +250,13 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->copy();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::copy returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::copy returned the wrong value');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerCancel
-     * @covers          FOFController::cancel
+     * @covers          F0FController::cancel
      * @dataProvider    getTestCancel
      *
      * @preventDataLoading
@@ -264,7 +264,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testCancel($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new F0FInput(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
@@ -286,14 +286,14 @@ class FOFControllerTest extends FtestCaseDatabase
 
         JFactory::$session = $hackedSession;
 
-        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect'), array($config));
+        $controller = $this->getMock('F0FController', array('getModel', 'setRedirect'), array($config));
         $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
 
         $controller->expects($this->once())->method('setRedirect')->with(
             $this->equalTo($check['returnUrl'])
         );
 
-        $model = $this->getMock('FOFModel', array('getId', 'copy'), array($config));
+        $model = $this->getMock('F0FModel', array('getId', 'copy'), array($config));
         $model->expects($this->any())->method('getId')->will($this->returnValue(true));
         $model->expects($this->any())->method('checkin')->will($this->returnValue($test['checkin']));
 
@@ -301,9 +301,9 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->cancel();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::cancel returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::cancel returned the wrong value');
 
-        $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFController::cancel should wipe saved session data');
+        $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'F0FController::cancel should wipe saved session data');
 
         // Let's remove any evidence...
         unset($_SESSION);
@@ -311,9 +311,9 @@ class FOFControllerTest extends FtestCaseDatabase
 
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerOrderdown
-     * @covers          FOFController::orderdown
+     * @covers          F0FController::orderdown
      * @dataProvider    getTestOrderDown
      *
      * @preventDataLoading
@@ -321,14 +321,14 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testOrderdown($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new F0FInput(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
                 ))
         );
 
-        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
+        $controller = $this->getMock('F0FController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
         $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
 
         if($test['move'])
@@ -346,7 +346,7 @@ class FOFControllerTest extends FtestCaseDatabase
             );
         }
 
-        $model = $this->getMock('FOFModel', array('getId', 'move'));
+        $model = $this->getMock('F0FModel', array('getId', 'move'));
         $model->expects($this->any())->method('getId')->will($this->returnValue(true));
         $model->expects($this->any())->method('move')->will($this->returnValue($test['move']));
 
@@ -354,13 +354,13 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->orderdown();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::orderdown returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::orderdown returned the wrong value');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerOrderup
-     * @covers          FOFController::orderup
+     * @covers          F0FController::orderup
      * @dataProvider    getTestOrderUp
      *
      * @preventDataLoading
@@ -368,14 +368,14 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testOrderup($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new F0FInput(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
                 ))
         );
 
-        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
+        $controller = $this->getMock('F0FController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
         $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
 
         if($test['move'])
@@ -393,7 +393,7 @@ class FOFControllerTest extends FtestCaseDatabase
             );
         }
 
-        $model = $this->getMock('FOFModel', array('getId', 'move'));
+        $model = $this->getMock('F0FModel', array('getId', 'move'));
         $model->expects($this->any())->method('getId')->will($this->returnValue(true));
         $model->expects($this->any())->method('move')->will($this->returnValue($test['move']));
 
@@ -401,13 +401,13 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->orderup();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::orderdup returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::orderdup returned the wrong value');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerRemove
-     * @covers          FOFController::remove
+     * @covers          F0FController::remove
      * @dataProvider    getTestRemove
      *
      * @preventDataLoading
@@ -415,14 +415,14 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testRemove($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new F0FInput(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
                 ))
         );
 
-        $controller = $this->getMock('FOFController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
+        $controller = $this->getMock('F0FController', array('getModel', 'setRedirect', '_csrfProtection'), array($config));
         $controller->expects($this->any())->method('_csrfProtection')->will($this->returnValue(null));
 
         if($test['remove'])
@@ -440,7 +440,7 @@ class FOFControllerTest extends FtestCaseDatabase
             );
         }
 
-        $model = $this->getMock('FOFModel', array('getId', 'delete'));
+        $model = $this->getMock('F0FModel', array('getId', 'delete'));
         $model->expects($this->any())->method('getId')->will($this->returnValue(true));
         $model->expects($this->any())->method('delete')->will($this->returnValue($test['remove']));
 
@@ -448,13 +448,13 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->remove();
 
-        $this->assertEquals($check['return'], $return, 'FOFController::remove returned the wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::remove returned the wrong value');
     }
 
 	/**
-	 * @group           FOFController
+	 * @group           F0FController
 	 * @group           controllerSetRedirect
-	 * @covers          FOFController::setRedirect
+	 * @covers          F0FController::setRedirect
 	 * @dataProvider    getTestSetRedirect
 	 *
 	 * @preventDataLoading
@@ -463,18 +463,18 @@ class FOFControllerTest extends FtestCaseDatabase
 	{
 		$config = array(
 			'autoRouting' => $test['route'],
-			'input' => new FOFInput(array(
+			'input' => new F0FInput(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar'
 				))
 		);
 
-		$platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('isBackend'));
+		$platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
 		$platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['backend']));
 
-		FOFPlatform::forceInstance($platform);
+		F0FPlatform::forceInstance($platform);
 
-		$controller = new FOFController($config);
+		$controller = new F0FController($config);
 
 		$type = new ReflectionProperty($controller, 'messageType');
 		$type->setAccessible(true);
@@ -486,24 +486,24 @@ class FOFControllerTest extends FtestCaseDatabase
 
 		$return = $controller->setRedirect($test['url'], $test['msg'], $test['type']);
 
-		$this->assertInstanceOf('FOFController', $return, 'FOFController::setRedirect should return an instance of FOFController');
+		$this->assertInstanceOf('F0FController', $return, 'F0FController::setRedirect should return an instance of F0FController');
 
 		$redirect = new ReflectionProperty($controller, 'redirect');
 		$redirect->setAccessible(true);
-		$this->assertEquals($check['redirect'], $redirect->getValue($controller), 'FOFController::setController created the wrong redirect URL');
+		$this->assertEquals($check['redirect'], $redirect->getValue($controller), 'F0FController::setController created the wrong redirect URL');
 
 
-		$this->assertEquals($check['type'], $type->getValue($controller), 'FOFController::setController set the wrong message type');
+		$this->assertEquals($check['type'], $type->getValue($controller), 'F0FController::setController set the wrong message type');
 
 		$message = new ReflectionProperty($controller, 'message');
 		$message->setAccessible(true);
-		$this->assertEquals($check['message'], $message->getValue($controller), 'FOFController::setController set the wrong message');
+		$this->assertEquals($check['message'], $message->getValue($controller), 'F0FController::setController set the wrong message');
 	}
 
 	/**
-	 * @group           FOFController
+	 * @group           F0FController
 	 * @group           controllerSetstate
-	 * @covers          FOFController::setstate
+	 * @covers          F0FController::setstate
 	 * @dataProvider    getTestSetState
 	 *
 	 * @preventDataLoading
@@ -511,14 +511,14 @@ class FOFControllerTest extends FtestCaseDatabase
 	public function testSetstate($test, $check)
 	{
 		$config = array(
-			'input' => new FOFInput(array(
+			'input' => new F0FInput(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar',
 					'returnurl' => $test['returnurl']
 				))
 		);
 
-		$controller = $this->getMock('FOFController', array('getModel', 'setRedirect'), array($config));
+		$controller = $this->getMock('F0FController', array('getModel', 'setRedirect'), array($config));
 
 		if($test['publish'])
 		{
@@ -535,7 +535,7 @@ class FOFControllerTest extends FtestCaseDatabase
 			);
 		}
 
-		$model = $this->getMock('FOFModel', array('getId', 'publish'));
+		$model = $this->getMock('F0FModel', array('getId', 'publish'));
 		$model->expects($this->any())->method('getId')->will($this->returnValue(true));
 		$model->expects($this->any())->method('publish')->will($this->returnValue($test['publish']));
 
@@ -546,26 +546,26 @@ class FOFControllerTest extends FtestCaseDatabase
 
 		$return = $setstate->invoke($controller, 0);
 
-		$this->assertEquals($check['return'], $return, 'FOFController::setstate returned the wrong value');
+		$this->assertEquals($check['return'], $return, 'F0FController::setstate returned the wrong value');
 	}
 
 	/**
-	 * @group           FOFController
+	 * @group           F0FController
 	 * @group           controllerSetaccess
-	 * @covers          FOFController::setaccess
+	 * @covers          F0FController::setaccess
 	 * @dataProvider    getTestSetAccess
 	 */
 	public function testSetaccess($test, $check)
 	{
 		$config = array(
-			'input' => new FOFInput(array(
+			'input' => new F0FInput(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar',
 					'returnurl' => $test['returnurl']
 				))
 		);
 
-		$controller = $this->getMock('FOFController', array('getModel', 'setRedirect'), array($config));
+		$controller = $this->getMock('F0FController', array('getModel', 'setRedirect'), array($config));
 
 		if($test['save'])
 		{
@@ -586,7 +586,7 @@ class FOFControllerTest extends FtestCaseDatabase
 			$test['item']->load($test['loadid']);
 		}
 
-		$model      = $this->getMock('FOFModel', array('getId', 'getItem', 'save'));
+		$model      = $this->getMock('F0FModel', array('getId', 'getItem', 'save'));
 		$model->expects($this->any())->method('getId')->will($this->returnValue($test['id']));
 		$model->expects($this->any())->method('getItem')->will($this->returnValue($test['item']));
 		$model->expects($this->any())->method('save')->will($this->returnValue($test['save']));
@@ -600,14 +600,14 @@ class FOFControllerTest extends FtestCaseDatabase
 
 		$access = $test['item']->getColumnAlias('access');
 
-		$this->assertEquals($check['return'], $return, 'FOFController::setaccess returned the wrong value');
-		$this->assertEquals($check['level'], $test['item']->$access, 'FOFController::setaccess didn\'t set the access level to the table');
+		$this->assertEquals($check['return'], $return, 'F0FController::setaccess returned the wrong value');
+		$this->assertEquals($check['level'], $test['item']->$access, 'F0FController::setaccess didn\'t set the access level to the table');
 	}
 
 	/**
-	 * @group           FOFController
+	 * @group           F0FController
 	 * @group           controllerGetModel
-	 * @covers          FOFController::getModel
+	 * @covers          F0FController::getModel
 	 * @dataProvider    getTestGetModel
 	 *
 	 * @preventDataLoading
@@ -615,7 +615,7 @@ class FOFControllerTest extends FtestCaseDatabase
 	public function testGetModel($test, $check)
 	{
 		$config = array(
-			'input' => new FOFInput(array(
+			'input' => new F0FInput(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar',
 					'task'      => 'test'
@@ -627,14 +627,14 @@ class FOFControllerTest extends FtestCaseDatabase
             $check['config'] = $config;
         }
 
-		$controller = $this->getMock('FOFController', array('createModel'), array($config));
+		$controller = $this->getMock('F0FController', array('createModel'), array($config));
         $task = new ReflectionProperty($controller, 'task');
         $task->setAccessible(true);
         $task->setValue($controller, 'test');
 
 		if($test['model'])
 		{
-			$model = $this->getMock('FOFModel', array('setState'));
+			$model = $this->getMock('F0FModel', array('setState'));
 			$model->expects($this->any())->method('setState')->with(
 				$this->equalTo('task'),
 				$this->equalTo('test')
@@ -656,27 +656,27 @@ class FOFControllerTest extends FtestCaseDatabase
 
 		if(!$check['return'])
 		{
-			$this->assertEquals($check['return'], $return, 'FOFController::getModel returned a wrong value');
+			$this->assertEquals($check['return'], $return, 'F0FController::getModel returned a wrong value');
 		}
         else
         {
-            $this->assertInstanceOf('FOFModel', $return, 'FOFController::getModel returned a wrong value');
+            $this->assertInstanceOf('F0FModel', $return, 'F0FController::getModel returned a wrong value');
         }
 	}
 
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerGetName
-     * @covers          FOFController::getName
+     * @covers          F0FController::getName
      * @dataProvider    getTestGetName
      *
      * @preventDataLoading
      */
     public function testGetName($test, $check)
     {
-        //$controller = $this->getMock('FOFController', null, array(), $test['classname']);
-        $controller = new FOFController();
+        //$controller = $this->getMock('F0FController', null, array(), $test['classname']);
+        $controller = new F0FController();
 
         $name = new ReflectionProperty($controller, 'name');
         $name->setAccessible(true);
@@ -688,13 +688,13 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $controllerName = $controller->getName();
 
-        $this->assertEquals($check['name'], $controllerName, 'FOFController::getName returned the wrong controller name');
+        $this->assertEquals($check['name'], $controllerName, 'F0FController::getName returned the wrong controller name');
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerGetName
-     * @covers          FOFController::getName
+     * @covers          F0FController::getName
      *
      * @preventDataLoading
      */
@@ -702,7 +702,7 @@ class FOFControllerTest extends FtestCaseDatabase
     {
         $this->setExpectedException('Exception');
 
-        $controller = $this->getMock('FOFController', null, array(), 'WrongClassname');
+        $controller = $this->getMock('F0FController', null, array(), 'WrongClassname');
 
         $name = new ReflectionProperty($controller, 'name');
         $name->setAccessible(true);
@@ -716,9 +716,9 @@ class FOFControllerTest extends FtestCaseDatabase
     }
 
     /**
-     * @group           FOFController
+     * @group           F0FController
      * @group           controllerGetView
-     * @covers          FOFController::getView
+     * @covers          F0FController::getView
      * @dataProvider    getTestGetView
      *
      * @preventDataLoading
@@ -726,13 +726,13 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testGetView($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new F0FInput(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar'
                 ))
         );
 
-        $controller = $this->getMock('FOFController', array('createView'), array($config));
+        $controller = $this->getMock('F0FController', array('createView'), array($config));
 
         if($test['cache'])
         {
@@ -757,7 +757,7 @@ class FOFControllerTest extends FtestCaseDatabase
 
         $return = $controller->getView($test['name'], $test['type'], $test['prefix'], $test['config']);
 
-        $this->assertEquals($check['return'], $return, 'FOFController::getView returned a wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FController::getView returned a wrong value');
     }
 
     public function getTestCreateFilename()

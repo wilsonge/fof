@@ -114,7 +114,7 @@ class ControllerDataprovider
 
     public static function getTestRead()
     {
-        $item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
+        $item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
         $data[] = array(
             array(
                 'cache'  => array('browse', 'read'),
@@ -195,7 +195,7 @@ class ControllerDataprovider
 
     public static function getTestAdd()
     {
-        $item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
+        $item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
         $data[] = array(
             array(
                 'cache'  => array('browse', 'read'),
@@ -253,7 +253,7 @@ class ControllerDataprovider
 
     public static function getTestEdit()
     {
-        $item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
+        $item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
         $data[] = array(
             array(
                 'cache'     => array('browse', 'read'),
@@ -774,7 +774,7 @@ class ControllerDataprovider
 
 	public static function getTestSetAccess()
 	{
-		$item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
+		$item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
 		$data[] = array(
 			array(
 				'save'      => true,
@@ -910,13 +910,13 @@ class ControllerDataprovider
             array(
                 'name'   => 'Foobar',
                 'prefix' => 'DummyModel',
-                'config' => array('input' => new FOFInput(array('test' => 'test'))),
+                'config' => array('input' => new F0FInput(array('test' => 'test'))),
                 'model'  => true
             ),
             array(
                 'name'   => 'Foobar',
                 'prefix' => 'DummyModel',
-                'config' => array('input' => new FOFInput(array('test' => 'test'))),
+                'config' => array('input' => new F0FInput(array('test' => 'test'))),
                 'return' => true
             )
         );
@@ -947,7 +947,7 @@ class ControllerDataprovider
                 'component' => ''
             ),
             array(
-                'name' => 'fof'
+                'name' => 'f0f'
             )
         );
 
