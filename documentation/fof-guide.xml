@@ -5550,6 +5550,49 @@ $json = ob_end_clean();
           Joomla! 1.5.0. It's up to you to decide which method is best for
           your project!</para>
 
+          <section xml:id="format-forms-with-bs-tabs">
+            <title>Using Bootstrap-powered tabs</title>
+
+            <important>
+              <para>Available since FOF 2.3.0.</para>
+
+              <para>This feature simply emits Bootstrap 2.x compatible HTML
+              markup, therefore only works with Bootstrap-powered templates.
+              This means that you will need to be using Akeeba Strapper
+              (Joomla! 2.5 and 3.x are supported) or Joomla! 3.x with a
+              Bootstrap-powered template.</para>
+            </important>
+
+            <para>If you have a long form you may want to provide tabs to let
+            the user access different sections of the form. In order to do
+            that, you first have to set the <parameter>tabbed</parameter>
+            attribute of your form to <option>true</option>,
+            <option>yes</option>, <option>1</option> or <option>on</option>.
+            For example:</para>
+
+            <programlisting>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;form tabbed="1"&gt;
+</programlisting>
+
+            <para>Each <tag>fieldset</tag> which will be part of the tab set
+            must include <option>tab-pane</option> in its
+            <parameter>class</parameter> attribute. Moreover, it MUST have
+            non-empty <parameter>label</parameter> and
+            <parameter>name</parameter> attributes. For example:</para>
+
+            <programlisting>&lt;fieldset name="basic_configuration"
+label="COM_FOOBAR_ITEMS_GROUP_BASIC"
+class="tab-pane active another-class"
+&gt;</programlisting>
+
+            <para>Please note that <emphasis>exactly one</emphasis> of your
+            <tag>fieldset</tag>s must have <option>active</option> added to
+            its <parameter>class</parameter> attribute. This will be the tab
+            which will be open by default. If you forget to set an active tab
+            the tab pane will render with no tab active by default which is
+            confusing for your users!</para>
+          </section>
+
           <section xml:id="format-forms-with-classes">
             <title>Assigning classes and IDs to &lt;fieldset&gt;s</title>
 
