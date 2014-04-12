@@ -3994,6 +3994,10 @@ $json = ob_end_clean();
       <section xml:id="utils-update">
         <title>The update model helper</title>
 
+        <note>
+          <para>Available since FOF 2.3.0</para>
+        </note>
+
         <para>Joomla! comes with an extensions updater feature. That said, its
         API is hard to use and leads to a lot of code repetition. Even worse,
         trying to use the support for commercial extensions is even worse.
@@ -4118,6 +4122,415 @@ $json = ob_end_clean();
 
         <para>It's a good idea to put that in your component's control panel
         controller, in the onBeforeBrowse() method.</para>
+      </section>
+
+      <section xml:id="utils-databaseinstaller">
+        <title>The database schema installer / updater / removal class</title>
+
+        <note>
+          <para>Available since FOF 2.3.0</para>
+        </note>
+
+        <para>One of the most important operations in managing a component is
+        being able to install, update and remove its database schema. Normally
+        you do that using the relevant sections in your extension's manifest
+        file. The big problem with this approach is that you are using the
+        short-sighted code in Joomla!'s own extensions installer. The
+        Achilles' heel in Joomla!'s code is that database installation and
+        updates depend solely on the contents of the
+        <database>#__schemas</database> table. If no version is recorded
+        there, Joomla! is using your installation SQL file. If it contains a
+        version it will try to run all SQL scripts with a name which indicates
+        a version later than the one recorded in the schemas table. This
+        leaves a lot of room for spectacular failures in the following cases,
+        which happen far more frequently than you'd imagine:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The #__schemas entry is empty but (some of) the database
+            tables already exist, for example is the user is transferring
+            tables manually, upgrading from an earlier Joomla! version using a
+            third party tool, a previous installation has gone wrong
+            etc</para>
+          </listitem>
+
+          <listitem>
+            <para>The #__schemas entry is out of date, e.g. the installer
+            timed out before updating it</para>
+          </listitem>
+
+          <listitem>
+            <para>A previous installation resulted in a SQL error</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>In all of the above cases Joomla! will throw a SQL error and
+        your clients will think that you are a moron who can't even install
+        their own component's database properly. Well, it's time to claim your
+        power over Joomla! thanks to FOF!</para>
+
+        <para>FOF 2.3.0 and later comes with the
+        <classname>F0FDatabaseInstaller</classname> class. Unlike Joomla!, it
+        doesn't base its actions on unreliable version numbers. Instead, it
+        will run SQL commands based on whether tables / fields exist, the
+        reported type of fields or the result of custom SQL commands. It goes
+        even further than that by letting YOU, the developer, to choose if the
+        failure of executing a particular SQL command should raise a blocking
+        SQL error or be silently ignored. This is database schema management
+        on steroids.</para>
+
+        <para>The schema files are provided in XML format. You only need one
+        XML file per database technology. By default these files are stored in
+        the back-end of your component, under the <filename>sql/xml</filename>
+        directory. This is something you can override through the
+        <parameter>$config</parameter> array you pass to the class
+        constructor. The recognised parameters are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>input</term>
+
+            <listitem>
+              <para>The F0FInput object, used only when
+              <parameter>option</parameter> is not specified to figure out
+              which component we are referring to. You are advised to use the
+              <parameter>dbinstaller_directory</parameter> parameter
+              instead.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>db</term>
+
+            <listitem>
+              <para>The database object used to execute the SQL commands. If
+              none is specified the default system-wide database object will
+              be used.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>option</term>
+
+            <listitem>
+              <para>The name of the component, e.g
+              <option>com_foobar</option>. This is used to determine the
+              default location of the XML schema files if
+              <parameter>dbinstaller_directory</parameter> is not defined. If
+              not specified it will be read from the
+              <parameter>option</parameter> key of the
+              <parameter>input</parameter> object.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>dbinstaller_directory</term>
+
+            <listitem>
+              <para>The absolute filesystem path where the XML schema files
+              are located. If not specified we will use the
+              <filename>sql/xml</filename> directory at the back-end of the
+              component. </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>dbinstaller_files</term>
+
+            <listitem>
+              <para>A comma-separated list or array of the base names of the
+              schema files we will be looking for. The default value is:
+              <option>array('mysql', 'mysqli', 'postgresql', 'sqlsrv',
+              'mssql')</option> Please note that the name of the file doesn't
+              have to be the same as the database technology you are using.
+              See further below for the format of the SQL file.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>The class provides two methods you can use <emphasis>anywhere in
+        your component</emphasis>:</para>
+
+        <programlisting>public function updateSchema()</programlisting>
+
+        <para>It creates or updates the tables of your component in the
+        database. You are suggested to call this in two places: in your
+        installation script and in the main back-end page of your component.
+        The latter place is not very obvious, but it allows your component to
+        update its tables even without going through the installer. You will
+        thank yourself for doing that when an installation fails due to a
+        timeout error (resulting in an inconsistency between schema and code)
+        and when you pull a Git repository on a test server. No need to run
+        SQL commands manually, just visit your component's back-end page and
+        presto! The database schema is updated. You're welcome.</para>
+
+        <programlisting>public function removeSchema()</programlisting>
+
+        <para>It removes (drops) the tables of your component. You are
+        recommended to only use it in the uninstallation script of your
+        component. Beware! It really does what it says on the tin. It will
+        remove all database tables you mention in your XML schema file without
+        any further warning. One line and the data dies, permanently.</para>
+
+        <bridgehead>Format of the XML schema files</bridgehead>
+
+        <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;schema&gt;
+    &lt;!-- Metadata --&gt;
+    &lt;meta&gt;
+        &lt;!-- Supported driver types --&gt;
+        &lt;drivers&gt;
+            &lt;driver&gt;mysql&lt;/driver&gt;
+            &lt;driver&gt;mysqli&lt;/driver&gt;
+        &lt;/drivers&gt;
+    &lt;/meta&gt;
+
+    &lt;!-- SQL commands to run on installation and update --&gt;
+    &lt;sql&gt;
+        &lt;!-- Create the #__foobar_profiles table if it's missing --&gt;
+        &lt;action table="#__foobar_profiles" canfail="0"&gt;
+            &lt;condition type="missing" value="" /&gt;
+            &lt;query&gt;&lt;![CDATA[
+CREATE TABLE `#__foobar_profiles` (
+`foobar_profile_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`description` varchar(255) NOT NULL,
+`params` longtext,
+PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8;
+            ]]&gt;&lt;/query&gt;
+        &lt;/action&gt;
+        &lt;action table="#__foobar_profiles" canfail="0"&gt;
+            &lt;condition type="missing" value="params" /&gt;
+            &lt;query&gt;&lt;![CDATA[
+ALTER TABLE `#__foobar_profiles` ADD `params` longtext AFTER `description`;
+            ]]&gt;&lt;/query&gt;
+        &lt;/action&gt;
+    &lt;/sql&gt;
+&lt;/schema&gt;</programlisting>
+
+        <para>As you can see the file has the root element
+        <tag>&lt;schema&gt;</tag> and consists of two sections.</para>
+
+        <bridgehead renderas="sect4">The <tag>&lt;meta&gt;</tag>
+        section</bridgehead>
+
+        <para>This section has a lone element, <tag>&lt;drivers&gt;</tag>,
+        which tells FOF which database technologies this XML schema file
+        applies to. Put one driver name in each <tag>&lt;driver&gt;</tag>
+        child element. The driver names recognised are those that Joomla!
+        supports. By the latest count they are: mysql, mysqli, postgresql,
+        sqlsrv, sqlazure</para>
+
+        <warning>
+          <para>Joomla! seems to only be tested properly against the mysql and
+          mysqli drivers. We have been observing inconsistent behaviour with
+          the other drivers. You are advised AGAINST supporting these database
+          technologies unless you enjoy receiving bug reports which you can't
+          fix because the problem is in Joomla!, not your code.</para>
+        </warning>
+
+        <bridgehead renderas="sect4">The <tag>&lt;sql&gt;</tag>
+        section</bridgehead>
+
+        <para>This is where all the action takes place. And that's why you
+        have one or more <tag>&lt;action&gt;</tag> tags. Each
+        <tag>&lt;action&gt;</tag> tag defines SQL commands which should run
+        when one or more conditions are met. Each tag has the following
+        attributes:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>table</term>
+
+            <listitem>
+              <para>REQUIRED. The table this action operates on, e.g.
+              <option>#__foobar_categories</option></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>canfail</term>
+
+            <listitem>
+              <para>(optional) If it's set to 0 (default) if any SQL command
+              in this action tag fails the error will bubble up and throw a
+              system error, preventing further execution. If it's set to 1 all
+              SQL errors are ignored. This setting can be overridden in each
+              <tag>&lt;query&gt;</tag> tag.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Let's start with the <emphasis
+        role="bold">conditions</emphasis>. They are defined by one or more
+        <tag>&lt;condition&gt;</tag> tags. All <tag>&lt;condition&gt;</tag>
+        tags accept the <parameter>operator</parameter> attribute which can
+        have one of the following values:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>and</term>
+
+            <listitem>
+              <para>(default) This condition must be true</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>not</term>
+
+            <listitem>
+              <para>This condition must be false</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>or</term>
+
+            <listitem>
+              <para>Either this condition or its previous conditions must be
+              true</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>nor</term>
+
+            <listitem>
+              <para>Either this condition must be false or its previous
+              conditions must be true</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>xor</term>
+
+            <listitem>
+              <para>Either this condition or its previous conditions must be
+              true, but not both</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>maybe</term>
+
+            <listitem>
+              <para>Equivalent to "or"</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Any other value is treated as "and". As you may have noticed
+        this is straightforward Boolean algebra.</para>
+
+        <para>The kind of check performed by a <tag>&lt;condition&gt;</tag>
+        tag is determined by its <parameter>type</parameter> attribute:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>missing</term>
+
+            <listitem>
+              <para>Checks if a table or a field of the table is missing. This
+              depends on the <parameter>value</parameter> of the value
+              attribute of the tag:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>If it's empty FOF will check if the table defined by
+                  the <parameter>table</parameter> attribute of the
+                  <tag>&lt;action&gt;</tag> tag exists.</para>
+                </listitem>
+
+                <listitem>
+                  <para>If it's not empty FOF will check if the field whose
+                  name you've put in the <parameter>value</parameter>
+                  attribute exists in the table defined by the
+                  <parameter>table</parameter> attribute of the
+                  <tag>&lt;action&gt;</tag> tag.</para>
+                </listitem>
+              </itemizedlist>
+
+              <para>This is useful to install tables if they are missing or
+              add missing fields to tables.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>type</term>
+
+            <listitem>
+              <para>FOF checks if the type of a database field matches what
+              you expect. The field will be searched in the
+              <parameter>table</parameter> attribute of the
+              <tag>&lt;action&gt;</tag> tag. It requires two
+              attributes:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para><parameter>value</parameter>. The name of the
+                  field.</para>
+                </listitem>
+
+                <listitem>
+                  <para><parameter>coltype</parameter>. The expected field
+                  type (case insensitive). Please note that this expects the
+                  full field type definition, e.g. "VARCHAR(255) NULL" and NOT
+                  just "VARCHAR". This is a limitation of Joomla!'s database
+                  drivers.</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>equals</term>
+
+            <listitem>
+              <para>FOF checks the result of a SQL query against the
+              <parameter>value</parameter> attribute. In this case the content
+              of the <tag>&lt;condition&gt;</tag> tag gives the SQL query to
+              execute. For example:</para>
+
+              <programlisting>        &lt;action table="#__admintools_profiles" canfail="1"&gt;
+            &lt;condition type="equals" operator="not" value="1"&gt;&lt;![CDATA[
+SELECT COUNT(*) FROM `#__admintools_profiles` WHERE `id` = 1;
+            ]]&gt;&lt;/condition&gt;
+
+            &lt;query canfail="1"&gt;&lt;![CDATA[
+INSERT IGNORE INTO `#__admintools_profiles`
+(`id`,`description`, `configuration`, `filters`) VALUES
+(1,'Default PHP Change Scanner Profile','','');
+            ]]&gt;&lt;/query&gt;
+        &lt;/action&gt;
+</programlisting>
+
+              <para>In this case we are checking if the COUNT query returns
+              "1". If not (due to the "not" operator) we will run the INSERT
+              IGNORE query.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>true</term>
+
+            <listitem>
+              <para>Always returns true. Useful to run index creation as
+              indices cannot be reliably detected across all database types
+              (again, a limitation of Joomla!'s database drivers…).</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Next up you have one or more <tag>&lt;query&gt;</tag> tags. When
+        the conditions are met they will all execute. The only attribute you
+        can have is <parameter>canfail</parameter> and it's optional. If you
+        skip it FOF will use the <parameter>canfail</parameter> attribute of
+        the <tag>&lt;action&gt;</tag> tag.</para>
+
+        <para>As you see this feature is extremely simple and extremely
+        powerful. If you use it wisely it will make your component's database
+        installation and maintenance seem to take place magically!</para>
       </section>
     </section>
   </chapter>

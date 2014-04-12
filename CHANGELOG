@@ -3,6 +3,7 @@ FOF 2.3.0
 ~ All class prefixes changed from FOF to F0F (the letter o was changed to number 0) to avoid naming conflicts with Joomla!'s outdated copy of FOF
 + Automatically set the front-end page title in FOFViewHtml
 + Added update helper to help you interact with the Joomla! extensions update
++ Database schema installer / updater / remover helper – takes database schema maintenance to the next level!
 
 Backwards compatibility notes:
 ----------------------------------------

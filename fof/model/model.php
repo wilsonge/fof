@@ -89,7 +89,7 @@ class F0FModel extends F0FUtilsObject
 
 	/**
 	 * Input variables, passed on from the controller, in an associative array
-	 * @var array
+	 * @var F0FInput
 	 */
 	protected $input = array();
 
