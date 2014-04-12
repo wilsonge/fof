@@ -139,15 +139,10 @@ class F0FUtilsUpdate extends F0FModel
 		// and remove cached component update info in order to force a reload
 		if ($force)
 		{
-			// Find the update site ID
-			$query = $db->getQuery(true)
-				->select($db->qn('update_site_id'))
-				->from($db->qn('#__update_sites_extensions'))
-				->where($db->qn('extension_id') . ' = ' . $db->q($this->extension_id));
-			$db->setQuery($query);
-			$updateSiteId = $db->loadResult();
+			// Find the update site IDs
+			$updateSiteIds = $this->getUpdateSiteIds();
 
-			if (empty($updateSiteId))
+			if (empty($updateSiteIds))
 			{
 				return $updateResponse;
 			}
@@ -156,14 +151,14 @@ class F0FUtilsUpdate extends F0FModel
 			$query = $db->getQuery(true)
 				->update($db->qn('#__update_sites'))
 				->set($db->qn('last_check_timestamp') . ' = ' . $db->q('0'))
-				->where($db->qn('update_site_id') . ' = ' . $db->q($updateSiteId));
+				->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
 			$db->setQuery($query);
 			$db->execute();
 
 			// Remove cached component update info from #__updates
 			$query = $db->getQuery(true)
 				->delete($db->qn('#__updates'))
-				->where($db->qn('update_site_id') . ' = ' . $db->q($updateSiteId));
+				->where($db->qn('update_site_id') .' IN ('.implode(', ', $updateSiteIds).')');
 			$db->setQuery($query);
 			$db->execute();
 		}
@@ -197,6 +192,24 @@ class F0FUtilsUpdate extends F0FModel
 	}
 
 	/**
+	 * Gets the update site Ids for our extension.
+	 *
+	 * @return 	mixed	An array of Ids or null if the query failed.
+	 */
+	public function getUpdateSiteIds()
+	{
+		$db = $this->getDbo();
+		$query = $db->getQuery(true)
+			->select($db->qn('update_site_id'))
+			->from($db->qn('#__update_sites_extensions'))
+			->where($db->qn('extension_id') . ' = ' . $db->q($this->extension_id));
+		$db->setQuery($query);
+		$updateSiteIds = $db->loadColumn(0);
+
+		return $updateSiteIds;
+	}
+
+	/**
 	 * Get the currently installed version as reported by the #__extensions table
 	 *
 	 * @return  string
@@ -223,6 +236,11 @@ class F0FUtilsUpdate extends F0FModel
 	 */
 	public function refreshUpdateSite()
 	{
+		if (empty($this->extension_id))
+		{
+			return;
+		}
+
 		// Create the update site definition we want to store to the database
 		$update_site = array(
 			'name'		=> $this->updateSiteName,
@@ -245,15 +263,9 @@ class F0FUtilsUpdate extends F0FModel
 		}
 
 		// Get the update sites for our extension
-		$query = $db->getQuery(true)
-			->select($db->qn('update_site_id'))
-			->from($db->qn('#__update_sites_extensions'))
-			->where($db->qn('extension_id') . ' = ' . $db->q($this->extension_id));
-		$db->setQuery($query);
+		$updateSiteIds = $this->getUpdateSiteIds();
 
-		$updateSiteIDs = $db->loadColumn(0);
-
-		if (!count($updateSiteIDs))
+		if (!count($updateSiteIds))
 		{
 			// No update sites defined. Create a new one.
 			$newSite = (object)$update_site;
@@ -270,7 +282,7 @@ class F0FUtilsUpdate extends F0FModel
 		else
 		{
 			// Loop through all update sites
-			foreach ($updateSiteIDs as $id)
+			foreach ($updateSiteIds as $id)
 			{
 				$query = $db->getQuery(true)
 					->select('*')
@@ -278,6 +290,17 @@ class F0FUtilsUpdate extends F0FModel
 					->where($db->qn('update_site_id') . ' = ' . $db->q($id));
 				$db->setQuery($query);
 				$aSite = $db->loadObject();
+
+				if (empty($aSite))
+				{
+					// Update site not defined. Create a new one.
+					$update_site['update_site_id'] = $id;
+					$newSite = (object)$update_site;
+					$db->insertObject('#__update_sites', $newSite);
+
+					// Update site is now up-to-date, don't need to refresh it anymore.
+					continue;
+				}
 
 				// Does the name and location match?
 				if (($aSite->name == $update_site['name']) && ($aSite->location == $update_site['location']))
