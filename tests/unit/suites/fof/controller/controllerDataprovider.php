@@ -596,7 +596,7 @@ class ControllerDataprovider
 				'type'      => ''
 			),
 			array(
-				'redirect' => 'url-routed',
+				'redirect' => '/index.php/component/foftest/?view=foobar',
 				'type'     => 'message',
 				'message'  => ''
 			)
@@ -644,7 +644,7 @@ class ControllerDataprovider
 				'type'      => ''
 			),
 			array(
-				'redirect' => 'url-routed',
+				'redirect' => '/index.php/component/foftest/?view=foobar',
 				'type'     => 'message',
 				'message'  => ''
 			)
@@ -660,7 +660,7 @@ class ControllerDataprovider
 				'type'      => ''
 			),
 			array(
-				'redirect' => 'url-routed',
+				'redirect' => '/index.php/component/foftest/?view=foobar',
 				'type'     => 'message',
 				'message'  => ''
 			)
@@ -676,7 +676,7 @@ class ControllerDataprovider
 				'type'      => ''
 			),
 			array(
-				'redirect' => 'url-routed',
+				'redirect' => '/index.php/component/foftest/?view=foobar',
 				'type'     => 'message',
 				'message'  => ''
 			)
