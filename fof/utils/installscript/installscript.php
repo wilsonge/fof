@@ -324,10 +324,39 @@ abstract class F0FUtilsInstallscript
 		else
 		{
 			// This is the free version, remove the removeFilesAllVersions and removeFilesFree files
-			$removeFiles = array(
-				'files'   => array_merge($this->removeFilesAllVersions['files'], $this->removeFilesFree['files']),
-				'folders' => array_merge($this->removeFilesAllVersions['folders'], $this->removeFilesFree['folders']),
-			);
+			$removeFiles = array('files' => array(), 'folders' => array());
+
+			if (isset($this->removeFilesAllVersions['files']))
+			{
+				if (isset($this->removeFilesFree['files']))
+				{
+					$removeFiles['files'] = array_merge($this->removeFilesAllVersions['files'], $this->removeFilesFree['files']);
+				}
+				else
+				{
+					$removeFiles['files'] = $this->removeFilesAllVersions['files'];
+				}
+			}
+			elseif (isset($this->removeFilesFree['files']))
+			{
+				$removeFiles['files'] = $this->removeFilesFree['files'];
+			}
+
+			if (isset($this->removeFilesAllVersions['folders']))
+			{
+				if (isset($this->removeFilesFree['folders']))
+				{
+					$removeFiles['folders'] = array_merge($this->removeFilesAllVersions['folders'], $this->removeFilesFree['folders']);
+				}
+				else
+				{
+					$removeFiles['folders'] = $this->removeFilesAllVersions['folders'];
+				}
+			}
+			elseif (isset($this->removeFilesFree['folders']))
+			{
+				$removeFiles['folders'] = $this->removeFilesFree['folders'];
+			}
 		}
 
 		$this->removeFilesAndFolders($removeFiles);
@@ -807,7 +836,7 @@ abstract class F0FUtilsInstallscript
 		$status->plugins = array();
 
 		// Modules installation
-		if (count($this->installation_queue['modules']))
+		if (isset($this->installation_queue['modules']) && count($this->installation_queue['modules']))
 		{
 			foreach ($this->installation_queue['modules'] as $folder => $modules)
 			{
@@ -961,7 +990,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Plugins installation
-		if (count($this->installation_queue['plugins']))
+		if (isset($this->installation_queue['plugins']) && count($this->installation_queue['plugins']))
 		{
 			foreach ($this->installation_queue['plugins'] as $folder => $plugins)
 			{
@@ -1057,7 +1086,7 @@ abstract class F0FUtilsInstallscript
 		$src = $parent->getParent()->getPath('source');
 
 		// Modules uninstallation
-		if (count($this->installation_queue['modules']))
+		if (isset($this->installation_queue['modules']) && count($this->installation_queue['modules']))
 		{
 			foreach ($this->installation_queue['modules'] as $folder => $modules)
 			{
@@ -1099,7 +1128,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Plugins uninstallation
-		if (count($this->installation_queue['plugins']))
+		if (isset($this->installation_queue['plugins']) && count($this->installation_queue['plugins']))
 		{
 			foreach ($this->installation_queue['plugins'] as $folder => $plugins)
 			{
@@ -1150,7 +1179,7 @@ abstract class F0FUtilsInstallscript
 	protected function removeFilesAndFolders($removeList)
 	{
 		// Remove files
-		if (!empty($removeList['files']))
+		if (isset($removeList['files']) && !empty($removeList['files']))
 		{
 			foreach ($removeList['files'] as $file)
 			{
@@ -1166,7 +1195,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Remove folders
-		if (!empty($removeList['folders']))
+		if (isset($removeList['folders']) && !empty($removeList['folders']))
 		{
 			foreach ($removeList['folders'] as $folder)
 			{
@@ -1461,7 +1490,7 @@ abstract class F0FUtilsInstallscript
 		$src = $parent->getParent()->getPath('source');
 
 		// Modules uninstallation
-		if (count($this->uninstallation_queue['modules']))
+		if (isset($this->uninstallation_queue['modules']) && count($this->uninstallation_queue['modules']))
 		{
 			foreach ($this->uninstallation_queue['modules'] as $folder => $modules)
 			{
@@ -1494,7 +1523,7 @@ abstract class F0FUtilsInstallscript
 		}
 
 		// Plugins uninstallation
-		if (count($this->uninstallation_queue['plugins']))
+		if (isset($this->uninstallation_queue['plugins']) && count($this->uninstallation_queue['plugins']))
 		{
 			foreach ($this->uninstallation_queue['plugins'] as $folder => $plugins)
 			{
