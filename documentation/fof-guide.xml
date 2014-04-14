@@ -3989,139 +3989,687 @@ $json = ob_end_clean();
       <title>Utility classes</title>
 
       <para>FOF comes with certain classes that are designed to make your life
-      as a Joomla! extensions developer much easier.</para>
+      as a Joomla! extensions developer much easier. They handle things like
+      installation, updates and database schema management. This code has been
+      battle tested in our own components over the years.</para>
 
-      <section xml:id="utils-update">
-        <title>The update model helper</title>
+      <section xml:id="utils-installscript">
+        <title>The installation script helper</title>
 
         <note>
           <para>Available since FOF 2.3.0</para>
         </note>
 
-        <para>Joomla! comes with an extensions updater feature. That said, its
-        API is hard to use and leads to a lot of code repetition. Even worse,
-        trying to use the support for commercial extensions is even worse.
-        This is why FOF comes with the <classname>F0FUtilsUpdate</classname>
-        model class.</para>
+        <para>A FOF component usually needs to pack and install several
+        things. At the very least it includes the component itself and a copy
+        of the FOF library. Joomla! offers a method for installing multiple
+        extensions at once, called the "package" extension type. However,
+        "package" extensions are all or nothing: you either install everything
+        included in your package or nothing at all. Quite obviously this can't
+        be used to prevent installing an old version of FOF on top of a new
+        one. FOF itself is of the "library" extension type. You'd think that a
+        "library" package is checked for its version so that old versions
+        can't be installed on top of new ones. Wrong. You might thing that the
+        "library" package can have an installation script, like components and
+        plugins, to determine if it can be installed, preventing an old
+        version of the library overwriting a new one. Wrong, again. Joomla!'s
+        extensions installer is coded in the most short-sighted way possible.
+        All is lost?</para>
 
-        <para>This class is not designed to be used on its own. You will need
-        to create a Model in your extension extending from this class. For
-        example:</para>
+        <para>Not so fast! We have a few aces up our sleeves. The solution
+        we've been using in our company over the years is a "component"
+        package with a smart installer script which can install our component,
+        any modules and plugins we may be including with it and FOF (and,
+        possibly, Akeeba Strapper) if it's not installed or out-of-date. The
+        "secret sauce" of our installer script is now inside FOF 2.3.0 and
+        later, in the F0FUtilsInstallscript class. Here we are going to
+        explain how to use it.</para>
 
-        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {}</programlisting>
+        <bridgehead>Package layout</bridgehead>
 
-        <para>As is it won't help you much. At the very least you have to tell
-        it which component this model refers to. You can do so in your
-        constructor. For example:</para>
+        <para>The contents of your package need to follow a specific folder
+        layout. Here's the proposed layout:</para>
 
-        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
+        <programlisting>&lt;root&gt;
+  +-- backend   Component files under site's "administrator" directory
+  +-- frontend  Component files under site's root director
+  +-- media     OPTIONAL. Component media files, under site's "media" directory
+  +-- cli       OPTIONAL. Component CLI script installed under site's "cli" directory
+  +-- language  OPTIONAL. Language files for your component.
+  +-- fof       FOF installation files (extract FOF's library package in here)
+  +-- strapper  OPTIONAL. Akeeba Strapper (extract Strapper's package in here)
+  +-- modules   OPTIONAL. Modules bundled with the component
+  |     +-- admin   Administrator (back-end) modules
+  |     |     +-- mymodule  Installation files for mod_mymodule admin module
+  |     +-- site    Site (front-end) modules
+  |           +-- mymodule  Installation files for mod_mymodule site module
+  +-- plugins   OPTIONAL. Plugins bundled with the component
+        +-- system  System plugins
+        |     +-- foobar  Installation files for plg_system_foobar plugin
+        +-- whatever  Plugins installed in the "whatever" plugin folder
+              +-- baz  Installation fles for plg_whatever_baz plugin</programlisting>
 
-  public function __construct($config = array())
+        <para>The <filename>backend</filename>, <filename>frontend</filename>,
+        <filename>media</filename> and <filename>language</filename>
+        directories can have any name you want as they are NOT handled by the
+        installation script. They are defined in your component's XML manifest
+        and it's up to Joomla! to decide what to do with them. The other
+        directories, however, do play an important role.</para>
+
+        <tip>
+          <para>If you don't like our naming conventions you can choose
+          different names for the top-level directories by specialising the
+          F0FUtilsInstallscript class. More on that later on!</para>
+        </tip>
+
+        <tip>
+          <para>Feel lost? You may want to see how we do this in our own
+          components. A great place where the full power of the installation
+          script helper is put to action is <link
+          xlink:href="https://github.com/akeeba/akeebasubs/blob/development/component/script.akeebasubs.php">Akeeba
+          Subscriptions</link>.</para>
+        </tip>
+
+        <para>The <emphasis role="bold">fof</emphasis> directory is the one
+        you MUST have. It contains a copy of FOF's installation files. Just
+        extract the latest FOF library package in there.</para>
+
+        <para>The <emphasis role="bold">strapper</emphasis> directory can
+        contain a copy of Akeeba Strapper, our Bootstrap 2.x compatibility
+        layer, if you are using it in your component. In this case just
+        extract the Strapper library into this directory.</para>
+
+        <para>The <emphasis role="bold">cli</emphasis> directory contains
+        command-line scripts which will be copied to your site's "cli"
+        directory. They are typically used to set up CRON jobs for
+        housekeeping or other lengthy operations.</para>
+
+        <para>The <emphasis role="bold">modules</emphasis> directory contains
+        all the modules you want to bundle with your extension. The suggested
+        directory layout is having two sub-directories called
+        <filename>admin</filename> and <filename>site</filename> containing
+        the administrator (back-end) and public (front-end) modules
+        respectively. Each module's installation file go inside a
+        sub-directory of the <filename>admin</filename> or
+        <filename>site</filename> directories depending on where it should be
+        installed. The name of the module's directory must match its extension
+        name as set in the XML manifest. You can also skip the
+        <filename>admin</filename> or <filename>site</filename> directories
+        and put everything under <filename>modules</filename> but we have
+        found that this will make your life much harder as your extension
+        starts growing bigger. Trust us on that.</para>
+
+        <para>The <emphasis role="bold">plugins</emphasis> directory contains
+        all the plugins you want to bundle with your extension. You need to
+        have one sub-directory for each Joomla! plugin folder, e.g.
+        <filename>system</filename>, <filename>content</filename>,
+        <filename>user</filename> etc or even custom plugin folders such as
+        akeebasubs, ats, whatever, ... Inside each sub-directory create one
+        directory per plugin.</para>
+
+        <bridgehead>Important note about XML manifests</bridgehead>
+
+        <para>A few notes on XML manifests. Please note that due to one of the
+        myriads of JInstaller's bugs and limitations your component's XML
+        manifest SHOULD be placed in the package's root and MUST begin with a
+        letter before "L". We recommend using the following naming convention
+        to prevent package installation problems due to Joomla! being outright
+        silly in its handling of manifests:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Components: com_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Plugins: plg_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Modules: mod_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Libraries: lib_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Files: files_something.xml</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Using this convention you ensure that when you list all XML
+        manifests in the package and sort them alphabetically the component's
+        manifest will show up first. This is exactly how Joomla! decides which
+        XML manifest to use for installing a package: list all of them,
+        alpha-sort them and pick the first one.</para>
+
+        <bridgehead>Creating your installation script</bridgehead>
+
+        <para>Let's say your component is called Foobar and its Joomla! name
+        is com_foobar. You need to create the file
+        <filename>script.foobar.php</filename> and place it in the root of
+        your package. The file name and location of the script are extremely
+        important! They are defined in your XML manifest, using a line like
+        this:</para>
+
+        <programlisting>&lt;scriptfile&gt;script.foobar.php&lt;/scriptfile&gt;</programlisting>
+
+        <para>You are advised to follow this naming convention and place the
+        script in your package's root to avoid nasty surprises.</para>
+
+        <para>Next up, you need to put the following contents in your script
+        file:</para>
+
+        <programlisting>&lt;?php
+// no direct access
+defined('_JEXEC') or die;
+
+// Load FOF if not already loaded
+if (!defined('F0F_INCLUDED'))
+{
+  $paths = array(
+    (defined('JPATH_LIBRARIES') ? JPATH_LIBRARIES : JPATH_ROOT . '/libraries') . '/f0f/include.php',
+    __DIR__ . '/fof/include.php',
+  );
+
+  foreach ($paths as $filePath)
   {
-    $config['update_component'] = 'com_foobar';
-
-    parent::__construct($config);
+    if (!defined('F0F_INCLUDED') &amp;&amp; file_exists($filePath))
+    {
+      @include_once $filePath;
+    }
   }
+}
+
+class Com_FoobarInstallerScript extends F0FUtilsInstallscript
+{
+    protected $componentName = 'com_foobar';
+    protected $componentTitle = 'Foobar Component';
 }</programlisting>
 
-        <para>You can now get the updates to your component by doing</para>
+        <para>Let's analyse this script. We begin by preventing direct access
+        to the file in the standard Joomla! way:</para>
 
-        <programlisting>$updateInfo = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getUpdates();</programlisting>
+        <programlisting xml:id="installscript-p1">// no direct access
+defined('_JEXEC') or die;
+</programlisting>
 
-        <para>This will return an array with the following keys:</para>
+        <para>Then we have to load FOF. We need to do that because the
+        F0FUtilsInstallscript which powers our installation script is part of
+        FOF. However FOF might not be already installed on the site. In this
+        case we'll be loading it from our installation directory. Speaking of
+        which, an important note to understand why this works.</para>
+
+        <important>
+          <para>Your installation script is loaded from the component's
+          installation directory, typically a temporary directory created by
+          the Joomla! extensions installer. It is loaded BEFORE Joomla!
+          installs / updates / uninstalls your component. This is very
+          important to keep in mind, especially if you are going to work with
+          relative directories in your customised installation script.</para>
+        </important>
+
+        <para>So here we go loading FOF:</para>
+
+        <programlistingco>
+          <areaspec>
+            <area coords="???" xml:id="???"/>
+          </areaspec>
+
+          <programlisting>// Load FOF if not already loaded
+if (!defined('F0F_INCLUDED'))
+{
+  $paths = array(
+    (defined('JPATH_LIBRARIES') ? JPATH_LIBRARIES : JPATH_ROOT . '/libraries') . '/f0f/include.php',
+    __DIR__ . '/fof/include.php',
+  );
+
+  foreach ($paths as $filePath)
+  {
+    if (!defined('F0F_INCLUDED') &amp;&amp; file_exists($filePath))
+    {
+      @include_once $filePath;
+    }
+  }
+}</programlisting>
+        </programlistingco>
+
+        <para>Please note that if the FOF directory in your package has a
+        different name you will need to modify __DIR__ . '/<emphasis
+        role="bold">fof</emphasis>/include.php' to reflect the name you chose
+        and nothing else at all in this block of code.</para>
+
+        <para>Next up we define our installation script class for Joomla! to
+        find it:</para>
+
+        <programlisting>class Com_FoobarInstallerScript extends F0FUtilsInstallscript
+</programlisting>
+
+        <warning>
+          <para>Naming your installation class is EXTREMELY IMPORTANT. If you
+          do not follow the naming convention TO THE LETTER Joomla! will not
+          "see" your installation script. This results to immense amounts of
+          hair pulling as Joomla! throws no error whatsoever when you tell it
+          to use an installation script and it doesn't find one.</para>
+        </warning>
+
+        <para>The naming is extremely important. The name must begin with the
+        Joomla! name of your component, with the Com and extension name
+        capitalised, i.e. Com_Foobar. If you use something like com_foobar,
+        Com_foobar, com_Foobar, COM_Foobar, COM_FOOBAR etc Joomla! WILL NOT BE
+        ABLE TO FIND YOUR INSTALLATION SCRIPT AND WILL NOT RUN IT AT ALL. Then
+        it must be followed by exactly InstallerScript. Again, case matters.
+        If you use installerScript, installerscript etc Joomla! will NOT be
+        able to find your installation script. Mind your case!</para>
+
+        <para>The final few lines tell the installation script the component
+        name and the human-readable title.</para>
+
+        <programlisting>{
+    protected $componentName = 'com_foobar';
+    protected $componentTitle = 'Foobar Component';
+}</programlisting>
+
+        <para>As is, the installation script will do the following:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Make sure your component is being installed on Joomla! 2.5.6
+            or later using PHP 5.3.3 or later</para>
+          </listitem>
+
+          <listitem>
+            <para>Install or update your database tables using the XML schema
+            files (see <link linkend="utils-databaseinstaller">the database
+            schema installer / updater / removal class</link>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Install or update FOF if the version bundled with your
+            component is newer than the installed one</para>
+          </listitem>
+
+          <listitem>
+            <para>Install or update Akeeba Strapper if the version bundled
+            with your component is newer than the installed one</para>
+          </listitem>
+
+          <listitem>
+            <para>Work around known Joomla! bugs affecting the generation /
+            update of administrator menu items for newly installed and update
+            components</para>
+          </listitem>
+
+          <listitem>
+            <para>Display an installation overview page, letting the user of
+            what was installed on their site</para>
+          </listitem>
+        </orderedlist>
+
+        <para>When uninstalling the component, the installation script as is
+        right now will do the following:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Remove your database tables using the XML schema files (see
+            <link linkend="utils-databaseinstaller">the database schema
+            installer / updater / removal class</link>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Display an uninstallation overview page, letting the user of
+            what was removed from their site</para>
+          </listitem>
+        </orderedlist>
+
+        <warning>
+          <para><emphasis role="bold">NEVER, EVER</emphasis> uninstall FOF or
+          Akeeba Strapper when uninstalling your component. Joomla! does not
+          provide a way to track dependencies. As a result you can never know
+          if anything else installed on your client's site is using FOF or
+          Akeeba Strapper, making their removal problematic (you could break
+          another developer's perfectly working code). If any developer is
+          caught doing that we will have to put them on a blacklist and take
+          action against their software.</para>
+        </warning>
+
+        <bridgehead>Customising the installation script</bridgehead>
+
+        <para>All customisation can be done by overriding the protected
+        properties and methods of F0FUtilsInstallscript. The properties
+        are:</para>
 
         <variablelist>
           <varlistentry>
-            <term>hasUpdate</term>
+            <term>componentName</term>
 
             <listitem>
-              <para>Boolean. True if there is an updated version
-              available.</para>
+              <para><emphasis role="bold">MANDATORY</emphasis>. The
+              component's name, e.g. 'com_foobar'. You absolutely need to set
+              this, otherwise </para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>version</term>
+            <term>componentTitle</term>
 
             <listitem>
-              <para>String. The version number of the updated version
-              available.</para>
+              <para><emphasis role="bold">MANDATORY</emphasis>. The
+              component's human readable title, e.g. 'My Foobar Component'.
+              This is shown in the installation and uninstallation overview
+              page.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>infoURL</term>
+            <term>installation_queue</term>
 
             <listitem>
-              <para>String. The optional information URL as found in the
-              extension's update XML stream.</para>
+              <para>The list of extra modules and plugins to install on
+              component installation / update and remove on component
+              uninstallation. This is an array which looks like this:</para>
+
+              <programlisting>protected $installation_queue = array(
+  // modules =&gt; { (folder) =&gt; { (module) =&gt; { (position), (published) } }* }*
+  'modules' =&gt; array(
+    'admin' =&gt; array(
+      'adminmodule' =&gt; array('cpanel', 1),
+    ),
+    'site'  =&gt; array(
+      'mymodule' =&gt; array('position-1', 0),
+      'othermodule' =&gt; array('position-2', 1),
+    )
+  ),
+  // plugins =&gt; { (folder) =&gt; { (element) =&gt; (published) }* }*
+  'plugins' =&gt; array(
+    'system' =&gt; array(
+      'foobar' =&gt; 1,
+      'baz' =&gt; 0
+    ),
+  )
+);
+</programlisting>
+
+              <para>The <emphasis role="bold">modules</emphasis> key is an
+              array containing exactly two keys, admin and site, both being
+              arrays containing the list of administrator (back-end) and site
+              (front-end) modules to be installed respectively.</para>
+
+              <para>Each module definition consists of a key which is the
+              module name and its content is an array with two values. The
+              first value is the position the module should be installed to
+              and the second value indicated whether the module will be
+              published by default.</para>
+
+              <para>In the example above the adminmodule is an administrator
+              module which will be placed in the cpanel module position and
+              published whenever the component is installed or updated.</para>
+
+              <para>The <emphasis role="bold">plugins</emphasis> key is an
+              array containing one or more keys. Each key is the name of a
+              Joomla! plugins folder and its contents is an array containing
+              the list of plugins to install.</para>
+
+              <para>Each plugin definition consists of a key which is the
+              plugin name and its content is a value which indicates whether
+              the plugin will be published by default.</para>
+
+              <para>In the example above the plg_system_foobar plugin will be
+              published whenever the component is installed or updated. The
+              plg_system_baz plugin, however, will not be published or
+              unpublished whenever the component is installed or
+              updated.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>uninstallation_queue</term>
+
+            <listitem>
+              <para>The list of obsolete extra modules and plugins to
+              uninstall on component upgrade / installation. Please note that
+              this IS NOT used when uninstalling the component. When you
+              uninstall the component all the plugins and modules listed in
+              $installation_queue will be removed automatically. The reason of
+              $uninstallation_queue's existence is a simple way to uninstall
+              obsolete plugins and modules when you update a component. It is
+              an array like this:</para>
+
+              <programlisting>protected $uninstallation_queue = array(
+  // modules =&gt; { (folder) =&gt; { (module) }* }*
+  'modules' =&gt; array(
+    'admin' =&gt; array(
+       'adminobsolete'
+    ),
+    'site'  =&gt; array()
+  ),
+  // plugins =&gt; { (folder) =&gt; { (element) }* }*
+  'plugins' =&gt; array(
+    'system' =&gt; array(
+      'obsoleteplugin'
+    ),
+  )
+);
+</programlisting>
+
+              <para>The <emphasis role="bold">modules</emphasis> key is an
+              array containing exactly two keys, admin and site, both being
+              arrays containing the list of administrator (back-end) and site
+              (front-end) modules to be uninstalled respectively.</para>
+
+              <para>Each module definition consists of a single value which is
+              the module name to be uninstalled.</para>
+
+              <para>In the example above the adminobsolete is an administrator
+              module which will be uninstalled when you install or upgrade the
+              component.</para>
+
+              <para>The <emphasis role="bold">plugins</emphasis> key is an
+              array containing one or more keys. Each key is the name of a
+              Joomla! plugins folder and its contents is an array containing
+              the list of plugins to uninstall.</para>
+
+              <para>Each plugin definition consists of a single value which is
+              the plugin name.</para>
+
+              <para>In the example above the plg_system_obsoleteplugin plugin
+              will be uninstalled whenever the component is installed or
+              updated.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>removeFilesFree</term>
+
+            <listitem>
+              <para>Obsolete files and folders to remove from the free version
+              only. This is used when you move a feature from the free version
+              of your extension to its paid version ($isPaid is true). If you
+              don't have such a distinction you can ignore this and use the
+              $removeFilesAllVersion option instead. The format is:</para>
+
+              <programlisting>protected $removeFilesFree = array(
+  'files'   =&gt; array(
+    'administrator/components/com_foobar/helpers/whatever.php'
+  ),
+  'folders' =&gt; array(
+    'administrator/components/com_foobar/baz'
+  )
+);</programlisting>
+
+              <para>The array has exactly two keys. The <emphasis
+              role="bold">files</emphasis> key is an array containing a list
+              of files to be removed on installation / update. The <emphasis
+              role="bold">folders</emphasis> key is an array containing a list
+              of folders to be recursively removed on installation / update.
+              Files and folders are given as paths relative to the site's
+              root.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>removeFilesAllVersions</term>
+
+            <listitem>
+              <para>Obsolete files and folders to remove from both paid and
+              free releases. This is used when you refactor code and some
+              files inevitably become obsolete and need to be removed. These
+              files are always removed, no matter what the $isPaid value is
+              Its format is the same as removeFilesFree. </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>cliScriptFiles</term>
+
+            <listitem>
+              <para>A list of all CLI scripts to be copied to the "cli"
+              directory of the site. These are copied from the package
+              directory defined in $cliSourcePath. Its format is a simple
+              array listing the names of the files to be copied.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>cliSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where cli scripts are stored.
+              Please remember that this is the path inside your package, NOT
+              the path inside your user's site.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>fofSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where FOF is stored. Please
+              remember that this is the path inside your package, NOT the path
+              inside your user's site.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>strapperSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where Akeeba Strapper is
+              stored. Please remember that this is the path inside your
+              package, NOT the path inside your user's site.</para>
+
+              <para>Installing Akeeba Strapper with your component is
+              optional. If this path does not exist Akeeba Strapper will
+              simply not be installed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>modulesSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where modules to be installed
+              are stored. Please remember that this is the path inside your
+              package, NOT the path inside your user's site.</para>
+
+              <para>Installing modules with your component is optional. If
+              this path does not exist no module will be installed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>pluginsSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where extra plugins are
+              stored. Please remember that this is the path inside your
+              package, NOT the path inside your user's site.</para>
+
+              <para>Installing plugins with your component is optional. If
+              this path does not exist no plugin will be installed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>schemaXmlPathRelative</term>
+
+            <listitem>
+              <para>Is the schemaXmlPath class variable a relative path? If
+              set to true the schemaXmlPath variable contains a path relative
+              to the component's back-end directory. If set to false the
+              schemaXmlPath variable contains an absolute filesystem path.
+              This is used when installing / updating / removing your database
+              tables using the XML schema files.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>schemaXmlPath</term>
+
+            <listitem>
+              <para>The path where the schema XML files are stored. Its
+              contents depend on the schemaXmlPathRelative variable
+              above</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>true. schemaXmlPath contains a path relative to the
+                  component's back-end directory</para>
+                </listitem>
+
+                <listitem>
+                  <para>false. schemaXmlPath contains an absolute filesystem
+                  path</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>minimumPHPVersion</term>
+
+            <listitem>
+              <para>The minimum PHP version required to install this
+              extension. If it's empty no minimum version check will be
+              performed. You are advised to not set it to a version lower than
+              what FOF requires (5.3.3)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>minimumJoomlaVersion</term>
+
+            <listitem>
+              <para>The minimum Joomla! version required to install this
+              extension. If it's empty no minimum version check will be
+              performed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>maximumJoomlaVersion</term>
+
+            <listitem>
+              <para>The maximum Joomla! version this extension can be
+              installed on. If it's empty no maximum version check will be
+              performed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>isPaid</term>
+
+            <listitem>
+              <para>Is this the paid version of the extension? This only
+              determines which files / extensions will be removed. This is
+              strictly optional.</para>
             </listitem>
           </varlistentry>
         </variablelist>
 
-        <para>If you want to find out the current version of your extension
-        you can do:</para>
-
-        <para><programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getVersion();</programlisting>And
-        now you have all the update information you might need.</para>
-
-        <para>In order to modify the update site and/or use the Joomla! 3.2 or
-        later support for paid extensions you need to first define a few
-        things in your constructor:</para>
-
-        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
-
-  public function __construct($config = array())
-  {
-    $config['update_component'] = 'com_foobar';
-    $config['update_sitename'] = 'Foobar updates';
-    $config['update_site'] = 'http://www.example.com/updates/com_foobar.xml';
-    $config['update_extraquery'] = 'authorisation=mySuperSecretCode';
-
-    parent::__construct($config);
-  }
-}</programlisting>
-
-        <para>The parameters you are setting are:</para>
-
-        <variablelist>
-          <varlistentry>
-            <term>update_sitename</term>
-
-            <listitem>
-              <para>The name of the update site, as stored in Joomla!'s
-              #__update_sites table and used... nowhere at all (typical
-              Joomla)!</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>update_site</term>
-
-            <listitem>
-              <para>The URL to the update XML file for this extension</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>update_extraquery</term>
-
-            <listitem>
-              <para>Something to be appended to the download URL. The idea is
-              that you'll be using this to authenticate your clients to your
-              site and allow them to download your commercial extension. It's
-              a good idea to never hardcode this parameter but read it from
-              your component's configuration.</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-        <para>Then, somewhere in your component, you need to run:</para>
-
-        <programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;refreshUpdateSite();</programlisting>
-
-        <para>It's a good idea to put that in your component's control panel
-        controller, in the onBeforeBrowse() method.</para>
+        <para>As for the methods you can consult the docblocks in
+        F0FUtilsInstallscript.</para>
       </section>
 
       <section xml:id="utils-databaseinstaller">
@@ -4230,7 +4778,7 @@ $json = ob_end_clean();
               <para>The absolute filesystem path where the XML schema files
               are located. If not specified we will use the
               <filename>sql/xml</filename> directory at the back-end of the
-              component. </para>
+              component.</para>
             </listitem>
           </varlistentry>
 
@@ -4531,6 +5079,139 @@ INSERT IGNORE INTO `#__admintools_profiles`
         <para>As you see this feature is extremely simple and extremely
         powerful. If you use it wisely it will make your component's database
         installation and maintenance seem to take place magically!</para>
+      </section>
+
+      <section xml:id="utils-update">
+        <title>The update model helper</title>
+
+        <note>
+          <para>Available since FOF 2.3.0</para>
+        </note>
+
+        <para>Joomla! comes with an extensions updater feature. That said, its
+        API is hard to use and leads to a lot of code repetition. Even worse,
+        trying to use the support for commercial extensions is even worse.
+        This is why FOF comes with the <classname>F0FUtilsUpdate</classname>
+        model class.</para>
+
+        <para>This class is not designed to be used on its own. You will need
+        to create a Model in your extension extending from this class. For
+        example:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {}</programlisting>
+
+        <para>As is it won't help you much. At the very least you have to tell
+        it which component this model refers to. You can do so in your
+        constructor. For example:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
+
+  public function __construct($config = array())
+  {
+    $config['update_component'] = 'com_foobar';
+
+    parent::__construct($config);
+  }
+}</programlisting>
+
+        <para>You can now get the updates to your component by doing</para>
+
+        <programlisting>$updateInfo = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getUpdates();</programlisting>
+
+        <para>This will return an array with the following keys:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>hasUpdate</term>
+
+            <listitem>
+              <para>Boolean. True if there is an updated version
+              available.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>version</term>
+
+            <listitem>
+              <para>String. The version number of the updated version
+              available.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>infoURL</term>
+
+            <listitem>
+              <para>String. The optional information URL as found in the
+              extension's update XML stream.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>If you want to find out the current version of your extension
+        you can do:</para>
+
+        <para><programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getVersion();</programlisting>And
+        now you have all the update information you might need.</para>
+
+        <para>In order to modify the update site and/or use the Joomla! 3.2 or
+        later support for paid extensions you need to first define a few
+        things in your constructor:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
+
+  public function __construct($config = array())
+  {
+    $config['update_component'] = 'com_foobar';
+    $config['update_sitename'] = 'Foobar updates';
+    $config['update_site'] = 'http://www.example.com/updates/com_foobar.xml';
+    $config['update_extraquery'] = 'authorisation=mySuperSecretCode';
+
+    parent::__construct($config);
+  }
+}</programlisting>
+
+        <para>The parameters you are setting are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>update_sitename</term>
+
+            <listitem>
+              <para>The name of the update site, as stored in Joomla!'s
+              #__update_sites table and used... nowhere at all (typical
+              Joomla)!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>update_site</term>
+
+            <listitem>
+              <para>The URL to the update XML file for this extension</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>update_extraquery</term>
+
+            <listitem>
+              <para>Something to be appended to the download URL. The idea is
+              that you'll be using this to authenticate your clients to your
+              site and allow them to download your commercial extension. It's
+              a good idea to never hardcode this parameter but read it from
+              your component's configuration.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Then, somewhere in your component, you need to run:</para>
+
+        <programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;refreshUpdateSite();</programlisting>
+
+        <para>It's a good idea to put that in your component's control panel
+        controller, in the onBeforeBrowse() method.</para>
       </section>
     </section>
   </chapter>
