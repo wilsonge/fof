@@ -8,10 +8,11 @@
  */
 
 require_once 'controllerDataprovider.php';
-require_once JPATH_TESTS.'/unit/core/application/route.php';
 
 class F0FControllerTest extends FtestCaseDatabase
 {
+	private $_stashedServer = array();
+
     protected function setUp()
     {
         $loadDataset = true;
@@ -23,11 +24,56 @@ class F0FControllerTest extends FtestCaseDatabase
             $loadDataset = false;
         }
 
+		parent::setUp();
+
+		// Force a JDocumentHTML instance
+		$this->saveFactoryState();
+		JFactory::$document = JDocument::getInstance('html');
+
+		// Fake the server variables to get JURI working right
+		global $_SERVER;
+		$this->_stashedServer = $_SERVER;
+		$_SERVER['HTTP_HOST'] = 'www.example.com';
+		$_SERVER['REQUEST_URI'] = '/index.php?option=com_foobar';
+		$_SERVER['SCRIPT_NAME'] = '/index.php';
+
+		// Fake the session
+		JFactory::$session = $this->getMockSession();
+		$application = JFactory::getApplication('site');
+
+		// Joomla requires that we produce a template in the templates directory. So we'll cheat and provide
+		// the system template which is in our environment for 3.2
+		$template = (object)array(
+			'template'		=> 'system',
+		);
+		$attribute = new ReflectionProperty($application, 'template');
+		$attribute->setAccessible(TRUE);
+		$attribute->setValue($application, $template);
+
+		// Replace the F0FPlatform with our fake one
+		$this->saveF0FPlatform();
+		$this->replaceF0FPlatform();
+
         parent::setUp($loadDataset);
 
-        F0FPlatform::forceInstance(null);
         F0FTable::forceInstance(null);
     }
+
+	protected function tearDown()
+	{
+		// Restore the JFactory
+		$this->restoreFactoryState();
+
+		// Restore the F0FPlatform object instance
+		$this->restoreF0FPlatform();
+
+		// Restore the $_SERVER global
+		global $_SERVER;
+		$_SERVER = $this->_stashedServer;
+
+		// Call the parent
+		parent::tearDown();
+	}
 
     /**
      * @group           F0FController
