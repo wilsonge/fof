@@ -448,7 +448,7 @@ class F0FDatabaseInstaller
 
 			// Check if a column type matches the "coltype" attribute
 			case 'type':
-				$tableColumns = $this->db->getTableColumns($table, true);
+				$tableColumns = $this->db->getTableColumns($table, false);
 				$condition = false;
 
 				if (array_key_exists($value, $tableColumns))
@@ -458,7 +458,7 @@ class F0FDatabaseInstaller
 					if (!empty($coltype))
 					{
 						$coltype = strtolower($coltype);
-						$currentType = strtolower($tableColumns[$value]);
+						$currentType = strtolower($tableColumns[$value]['Type']);
 
 						$condition = ($coltype == $currentType);
 					}
