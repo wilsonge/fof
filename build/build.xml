@@ -159,12 +159,47 @@
 		<delete file="${dirs.release}/fof-guide.fo" quiet="yes" />
 	</target>
 	
+	<target name="doc-html" description="Documentation in single-page HTML format">
+		<exec command="xsltproc --nonet --xinclude --novalid --stringparam img.src.path ${dirs.documentation}/ --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/fof-guide.html ${dirs.bin.dbxsl}/html/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
+	</target>
+
+	<target name="doc-epub" description="Documentation in ePub format">
+        <mkdir dir="${dirs.bin.release}/tmp" />
+        <mkdir dir="${dirs.bin.release}/tmp/OEBPS" />
+        <mkdir dir="${dirs.bin.release}/tmp/OEBPS/images" />
+        <copy todir="${dirs.bin.release}/tmp">
+            <fileset dir="./templates">
+                <include name="mimetype" />
+            </fileset>
+        </copy>
+        <copy todir="${dirs.bin.release}/tmp/OEBPS/images">
+            <fileset dir="${dirs.documentation}/images">
+                <include name="*.png" />
+                <include name="*.jpg" />
+                <include name="*.jpeg" />
+                <include name="*.gif" />
+            </fileset>
+        </copy>
+
+        <exec command="xsltproc --nonet --xinclude --novalid --stringparam epub.stylesheet style.css --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/tmp/fof-guide.epub ${dirs.bin.dbxsl}/epub/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
+
+        <zip destfile="${dirs.bin.release}/fof-docs.epub" basedir="${dirs.bin.release}/tmp">
+            <fileset dir="${dirs.bin.release}/tmp">
+                <include name="**" />
+            </fileset>
+        </zip>
+	</target>
+
 	<!--
 	====================================================================================================
 	Tasks - Project management
 	====================================================================================================
 	-->
-	
+    <target name="link" description="Internal linker">
+        <exec command="php ../buildfiles/tools/link.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />
+        <!--<exec command="php ../buildfiles/tools/langlink.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />-->
+    </target>
+
 	<target name="docsdeploy" depends="docsdeploy-fofguide">
 		<echo>All FOF documentation has been uploaded</echo>
 	</target>

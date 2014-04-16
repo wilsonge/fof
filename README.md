@@ -90,3 +90,95 @@ Before making any changes you will need to create a new branch. In the GitHub fo
 After you're done with your changes you need to publish your branch back to GitHub. Easy peasy! If you're using the GitHub application you need just two steps. First commit all your changed files, which adds them to your local branch. Then click on the Sync Branch button. When it stops spinning everything is uploaded to GitHub and you're ready to finally do your Pull Request!
 
 Now go to github.com, into the forked FOF repository under your user account. Click on the branch dropdown and select your branch. On its left you'll see a green icon with the tooltip "Compare & Review". Click it. Just fill in the title and description –hopefully giving as much information as possible about what you did and why– and your PR is now created! If you need to explain something in greater detail just send a list message.
+
+## Build instructions
+
+### Prerequisites
+
+In order to build the installation package of this library you need to have
+the following tools:
+* A command line environment. bash under Linux / Mac OS X works best. On Windows you will need to run most tools using an elevated privileges (administrator) command prompt.
+* The PHP CLI binary in your path
+* Command line Subversion and Git binaries(*)
+* PEAR and Phing installed, with the Net_FTP and VersionControl_SVN PEAR packages installed
+* libxml and libxslt tools if you intend to build the documentation PDF files
+
+You will also need the following path structure on your system:
+* `fof` This repository, a.k.a. MAIN directory
+* `buildfiles` [Akeeba Build Tools](https://github.com/akeeba/buildfiles)
+
+### Initialising the repository
+
+All of the following commands are to be run from the MAIN directory. Lines
+starting with $ indicate a Mac OS X / Linux / other *NIX system commands. Lines
+starting with > indicate Windows commands. The starting character ($ or >) MUST
+NOT be typed!
+
+1. You will first need to do the initial link with Akeeba Build Tools, running
+   the following command (Mac OS X, Linux, other *NIX systems):
+
+		$ php ../buildfiles/tools/link.php `pwd`
+
+   or, on Windows:
+
+		> php ../buildfiles/tools/link.php %CD%
+
+1. After the initial linking takes place, go inside the build directory:
+
+		$ cd build
+
+   and run the link phing task:
+
+		$ phing link
+
+### Useful Phing tasks
+
+All of the following commands are to be run from the MAIN/build directory.
+Lines starting with $ indicate a Mac OS X / Linux / other *NIX system commands.
+Lines starting with > indicate Windows commands. The starting character ($ or >)
+MUST NOT be typed!
+
+You are advised to NOT distribute the library installation packages you have built yourselves with your components. It
+is best to only use the official library packages released by Akeeba Ltd.
+
+1. Relinking internal files
+
+   This is only required when the buildfiles change.
+
+		$ phing link
+		> phing link
+
+1. Creating a dev release installation package
+
+   This creates the installable ZIP packages of the component inside the
+   MAIN/release directory.
+
+		$ phing git
+		> phing git
+
+1. Build the documentation in PDF format
+
+   This creates the documentation in PDF format
+
+		$ phing doc-pdf
+		> phing doc-pdf
+
+1. Build the documentation in ePub format
+
+   This creates the documentation in ePub format for use with e-readers (also Kindle, iPad, Android tablets, ...)
+
+		$ phing doc-epub
+		> phing doc-epub
+
+   Unlike the other formats, this doesn't generate a single file. Instead, it creates a META-INF and a OEBPS folder in
+   the `release` directory.
+
+1. Build the documentation in HTML format
+
+   This creates the documentation as a single-page PDF file
+
+		$ phing doc-html
+		> phing doc-html
+
+Please note that all generated files (ZIP library packages, PDF files, HTML files) are written to the
+`release` directory inside the repository's root.
