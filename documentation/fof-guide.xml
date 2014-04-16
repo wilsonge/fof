@@ -42,6 +42,18 @@
       material on this site then please contact <link
       xlink:href="mailto:legal@opensourcematters.org">legal@opensourcematters.org</link>.</para>
     </legalnotice>
+
+    <cover>
+      <para><figure role="front-large">
+          <title>FOF Developer's Guide cover image</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/cover.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </figure></para>
+    </cover>
   </info>
 
   <chapter xml:id="introducing-fof">
@@ -4347,7 +4359,7 @@ if (!defined('F0F_INCLUDED'))
             <listitem>
               <para><emphasis role="bold">MANDATORY</emphasis>. The
               component's name, e.g. 'com_foobar'. You absolutely need to set
-              this, otherwise </para>
+              this, otherwise</para>
             </listitem>
           </varlistentry>
 
@@ -4516,7 +4528,7 @@ if (!defined('F0F_INCLUDED'))
               free releases. This is used when you refactor code and some
               files inevitably become obsolete and need to be removed. These
               files are always removed, no matter what the $isPaid value is
-              Its format is the same as removeFilesFree. </para>
+              Its format is the same as removeFilesFree.</para>
             </listitem>
           </varlistentry>
 
