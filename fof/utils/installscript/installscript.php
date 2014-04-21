@@ -298,8 +298,9 @@ abstract class F0FUtilsInstallscript
 	{
 		// Install or update database
 		$dbInstaller = new F0FDatabaseInstaller(array(
-			($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') .
-			$this->schemaXmlPath
+			'dbinstaller_directory' =>
+				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
+				$this->schemaXmlPath
 		));
 		$dbInstaller->updateSchema();
 
@@ -385,8 +386,9 @@ abstract class F0FUtilsInstallscript
 	{
 		// Uninstall database
 		$dbInstaller = new F0FDatabaseInstaller(array(
-			($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') .
-			$this->schemaXmlPath
+			'dbinstaller_directory' =>
+				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
+				$this->schemaXmlPath
 		));
 		$dbInstaller->removeSchema();
 
