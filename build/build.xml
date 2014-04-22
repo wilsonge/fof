@@ -181,7 +181,7 @@
             </fileset>
         </copy>
 
-        <exec command="xsltproc --nonet --xinclude --novalid --stringparam epub.stylesheet style.css --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/tmp/fof-guide.epub ${dirs.bin.dbxsl}/epub/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
+        <exec command="xsltproc --nonet --xinclude --novalid --stringparam epub.stylesheet style.css --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/tmp/fof-guide.epub ${dirs.bin.dbxsl}/epub3/chunk.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
 
         <zip destfile="${dirs.bin.release}/fof-docs.epub" basedir="${dirs.bin.release}/tmp">
             <fileset dir="${dirs.bin.release}/tmp">
