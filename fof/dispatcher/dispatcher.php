@@ -255,7 +255,7 @@ class F0FDispatcher extends F0FUtilsObject
      *
      * @throws Exception
      *
-     * @return  null
+     * @return  void|Exception
      */
 	public function dispatch()
 	{
@@ -334,22 +334,9 @@ class F0FDispatcher extends F0FUtilsObject
 		$format = $this->input->get('format', 'html', 'cmd');
 		$format = empty($format) ? 'html' : $format;
 
-		if ($format == 'html')
+		if (($format != 'html') && $controller->hasRedirect())
 		{
-			// In HTML views perform a redirection
-			if ($controller->redirect())
-			{
-				return;
-			}
-		}
-		else
-		{
-			// In non-HTML views just exit the application with the proper HTTP headers
-			if ($controller->hasRedirect())
-			{
-				$headers = $platform->sendHeaders();
-				jexit();
-			}
+			$platform->setHeader('Location', $controller->redirect(), true);
 		}
 	}
 

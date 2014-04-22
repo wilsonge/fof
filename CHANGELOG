@@ -5,6 +5,7 @@ FOF 2.3.0
 + Update helper to help you interact with the Joomla! extensions update
 + Database schema installer / updater / remover helper – takes database schema maintenance to the next level!
 + F0FUtilsInstallscript utility class to create extremely powerful component installation scripts without reinventing the wheel every time
+# [HIGH] Redirections not working when format != 'html'
 
 Backwards compatibility notes:
 ----------------------------------------
