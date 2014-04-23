@@ -334,9 +334,9 @@ class F0FDispatcher extends F0FUtilsObject
 		$format = $this->input->get('format', 'html', 'cmd');
 		$format = empty($format) ? 'html' : $format;
 
-		if (($format != 'html') && $controller->hasRedirect())
+		if ($controller->hasRedirect())
 		{
-			$platform->setHeader('Location', $controller->redirect(), true);
+			$controller->redirect();
 		}
 	}
 
