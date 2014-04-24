@@ -136,7 +136,7 @@ class F0FFormFieldList extends JFormFieldList implements F0FFormField
 
 				$search    = '[ITEM:' . strtoupper($fieldname) . ']';
 				$replace   = $this->item->$fieldname;
-				$link_url  = str_replace($search, $replace, $link_url);
+				$link_url  = @str_replace($search, $replace, $link_url);
 			}
 		}
 		else
