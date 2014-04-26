@@ -182,3 +182,20 @@ is best to only use the official library packages released by Akeeba Ltd.
 
 Please note that all generated files (ZIP library packages, PDF files, HTML files) are written to the
 `release` directory inside the repository's root.
+
+## Third Party Links
+
+### Caveat
+
+This section lists FOF (ie, F0F) related links by third parties. 
+
+These links are listed as a courtesy only. Akeeba Limited is not responsible for the content on these sites, nor guarantees the accuracy of any information contain therein. 
+
+### Contribute your links
+
+Submit a PR (see instructions above) and edit this README.md (scroll down to this very section). 
+
+### Links
+
+Technical Notes [https://southlasalle.atlassian.net/wiki/display/technicalnotes/Framework+on+Framework]
+
