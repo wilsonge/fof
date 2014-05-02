@@ -133,7 +133,8 @@ class F0FIntegrationJoomlaPlatform extends F0FPlatform implements F0FPlatformInt
 				}
 				else
 				{
-					$isCLI = JFactory::getApplication() instanceof JException;
+                    $app = JFactory::getApplication();
+					$isCLI = $app instanceof JException || $app instanceof JApplicationCli;
 				}
 			}
 			catch (Exception $e)
