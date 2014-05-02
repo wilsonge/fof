@@ -1025,8 +1025,8 @@ HTML;
 		$html = '';
 
 		// Do we have a tabbed form?
-		$isTabbed = $form->getAttribute('tabbed', 0);
-		$isTabbed = in_array($isTabbed, array('true', 'yes', 'on', 1));
+		$isTabbed = $form->getAttribute('tabbed', '0');
+		$isTabbed = in_array($isTabbed, array('true', 'yes', 'on', '1'));
 
 		// If the form is tabbed, render the tabs bars
 		if ($isTabbed)
@@ -1092,7 +1092,7 @@ HTML;
 	 */
 	protected function isTabFieldset($fieldset)
 	{
-		if (!$fieldset->class)
+		if (!isset($fieldset->class) || !$fieldset->class)
 		{
 			return false;
 		}
