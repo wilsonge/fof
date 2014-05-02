@@ -2767,6 +2767,16 @@ class F0FController extends F0FUtilsObject
 			$config['use_hypermedia'] = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.use_hypermedia', false);
 		}
 
+		// Set also the linkbar_style
+		if (!isset($config['linkbar_style']))
+		{
+			$style = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.linkbar_style', false);
+			
+			if ($style) {
+				$config['linkbar_style'] = $style;
+			}
+		}
+
 		$result = new $viewClass($config);
 
 		return $result;
