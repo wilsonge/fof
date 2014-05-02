@@ -1092,7 +1092,7 @@ HTML;
 	 */
 	protected function isTabFieldset($fieldset)
 	{
-		if (!$fieldset->class)
+		if (!isset($fieldset->class) || !$fieldset->class)
 		{
 			return false;
 		}
