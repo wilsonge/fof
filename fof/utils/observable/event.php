@@ -6,14 +6,14 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Defines an observable event.
  *
  * This class is based on JEvent as found in Joomla! 3.2.0
  */
-abstract class FOFUtilsObservableEvent extends FOFUtilsObject
+abstract class F0FUtilsObservableEvent extends F0FUtilsObject
 {
     /**
      * Event object to observe.

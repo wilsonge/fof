@@ -5,7 +5,7 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Implementation of the Hypertext Application Language link in PHP.
@@ -13,7 +13,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFHalLink
+class F0FHalLink
 {
 	/**
 	 * For indicating the target URI. Corresponds with the ’Target IRI’ as
@@ -56,7 +56,7 @@ class FOFHalLink
 	protected $_title = null;
 
 	/**
-	 * Public constructor of a FOFHalLink object
+	 * Public constructor of a F0FHalLink object
 	 *
 	 * @param   string   $href       See $this->_href
 	 * @param   boolean  $templated  See $this->_templated

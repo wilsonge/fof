@@ -1,7 +1,7 @@
 <?php
 
-class FtestView extends FOFView {
+class FtestView extends F0FView {
 }
 
-class FtestFake extends FOFView {
+class FtestFake extends F0FView {
 }

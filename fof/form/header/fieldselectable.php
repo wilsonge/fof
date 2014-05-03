@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Generic field header, with drop down filters
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderFieldselectable extends FOFFormHeaderField
+class F0FFormHeaderFieldselectable extends F0FFormHeaderField
 {
 	/**
 	 * Create objects for the options
@@ -40,9 +40,9 @@ class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 			// Maybe we have to load a file?
 			if (!empty($source_file))
 			{
-				$source_file = FOFTemplateUtils::parsePath($source_file, true);
+				$source_file = F0FTemplateUtils::parsePath($source_file, true);
 
-				if (FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
+				if (F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
 				{
 					include_once $source_file;
 				}

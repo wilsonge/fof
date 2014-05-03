@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework query base class; for compatibility purposes
@@ -15,22 +15,22 @@ defined('FOF_INCLUDED') or die;
  * @since       2.1
  * @deprecated  2.1
  */
-abstract class FOFQueryAbstract
+abstract class F0FQueryAbstract
 {
 	/**
 	 * Returns a new database query class
 	 *
 	 * @param   JDatabaseDriver  $db  The DB driver which will provide us with a query object
 	 *
-	 * @return FOFQueryAbstract
+	 * @return F0FQueryAbstract
 	 */
 	public static function &getNew($db = null)
 	{
-		FOFPlatform::getInstance()->logDeprecated('FOFQueryAbstract is deprecated. Use JDatabaseQuery instead.');
+		F0FPlatform::getInstance()->logDeprecated('F0FQueryAbstract is deprecated. Use JDatabaseQuery instead.');
 
 		if (is_null($db))
 		{
-			$ret = FOFPlatform::getInstance()->getDbo()->getQuery(true);
+			$ret = F0FPlatform::getInstance()->getDbo()->getQuery(true);
 		}
 		else
 		{

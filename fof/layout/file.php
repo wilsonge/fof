@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Base class for rendering a display layout
@@ -21,7 +21,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFLayoutFile extends JLayoutFile
+class F0FLayoutFile extends JLayoutFile
 {
 	/**
 	 * Method to finds the full real file path, checking possible overrides
@@ -30,7 +30,7 @@ class FOFLayoutFile extends JLayoutFile
 	 */
 	protected function getPath()
 	{
-		$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+		$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		if (is_null($this->fullPath) && !empty($this->layoutId))
 		{
@@ -38,7 +38,7 @@ class FOFLayoutFile extends JLayoutFile
 			$file  = array_pop($parts);
 
 			$filePath = implode('/', $parts);
-			$suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
+			$suffixes = F0FPlatform::getInstance()->getTemplateSuffixes();
 
 			foreach ($suffixes as $suffix)
 			{
@@ -47,8 +47,8 @@ class FOFLayoutFile extends JLayoutFile
 
 			$files[] = $file . '.php';
 
-            $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
-            $prefix       = FOFPlatform::getInstance()->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
+            $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
+            $prefix       = F0FPlatform::getInstance()->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
 
 			$possiblePaths = array(
 				$prefix . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,

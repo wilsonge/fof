@@ -5,15 +5,15 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * FOFEncryptBase32
+ * F0FEncryptBase32
  *
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFEncryptBase32
+class F0FEncryptBase32
 {
 	/**
 	 * CSRFC3548

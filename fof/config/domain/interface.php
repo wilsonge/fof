@@ -6,17 +6,17 @@
  *  @license     GNU General Public License version 2, or later
  */
 
-defined('FOF_INCLUDED') or die();
+defined('F0F_INCLUDED') or die();
 
 /**
- * The Interface of an FOFConfigDomain class. The methods are used to parse and
- * privision sensible information to consumers. FOFConfigProvider acts as an
- * adapter to the FOFConfigDomain classes.
+ * The Interface of an F0FConfigDomain class. The methods are used to parse and
+ * privision sensible information to consumers. F0FConfigProvider acts as an
+ * adapter to the F0FConfigDomain classes.
  *
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-interface FOFConfigDomainInterface
+interface F0FConfigDomainInterface
 {
 	/**
 	 * Parse the XML data, adding them to the $ret array

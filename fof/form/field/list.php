@@ -6,29 +6,26 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldList'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/list.php';
-}
+JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Supports a generic list of options.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldList extends JFormFieldList implements FOFFormField
+class F0FFormFieldList extends JFormFieldList implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -114,7 +111,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 			$show_link = false;
 		}
 
-		if ($show_link && ($this->item instanceof FOFTable))
+		if ($show_link && ($this->item instanceof F0FTable))
 		{
 			// Replace [ITEM:ID] in the URL with the item's key value (usually:
 			// the auto-incrementing numeric ID)
@@ -139,7 +136,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 
 				$search    = '[ITEM:' . strtoupper($fieldname) . ']';
 				$replace   = $this->item->$fieldname;
-				$link_url  = str_replace($search, $replace, $link_url);
+				$link_url  = @str_replace($search, $replace, $link_url);
 			}
 		}
 		else
@@ -224,7 +221,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 	 *
 	 * @return  array  The field option objects.
 	 *
-	 * @since	Ordering is available since FOF 2.1.b2.
+	 * @since	Ordering is available since F0F 2.1.b2.
 	 */
 	protected function getOptions()
 	{
@@ -275,7 +272,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 		if ($order)
 		{
 			jimport('joomla.utilities.arrayhelper');
-			FOFUtilsArray::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
+			F0FUtilsArray::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
 		}
 
 		// Initialise the options
@@ -295,9 +292,9 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 			// Maybe we have to load a file?
 			if (!empty($source_file))
 			{
-				$source_file = FOFTemplateUtils::parsePath($source_file, true);
+				$source_file = F0FTemplateUtils::parsePath($source_file, true);
 
-				if (FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
+				if (F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
 				{
 					include_once $source_file;
 				}

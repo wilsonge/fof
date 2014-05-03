@@ -6,7 +6,7 @@
  *  @license     GNU General Public License version 2, or later
  */
 
-defined('FOF_INCLUDED') or die();
+defined('F0F_INCLUDED') or die();
 
 /**
  * Configuration parser for the tables-specific settings
@@ -14,7 +14,7 @@ defined('FOF_INCLUDED') or die();
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFConfigDomainTables implements FOFConfigDomainInterface
+class F0FConfigDomainTables implements F0FConfigDomainInterface
 {
 	/**
 	 * Parse the XML data, adding them to the $ret array

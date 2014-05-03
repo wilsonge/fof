@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework CSV View class. Automatically renders the data in CSV
@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFViewCsv extends FOFViewHtml
+class F0FViewCsv extends F0FViewHtml
 {
 	/**
 	 *  Should I produce a CSV header row.
@@ -39,7 +39,7 @@ class FOFViewCsv extends FOFViewHtml
 	protected $csvFields = array();
 
 	/**
-	* Public constructor. Instantiates a FOFViewCsv object.
+	* Public constructor. Instantiates a F0FViewCsv object.
 	*
 	* @param   array  $config  The configuration data array
 	*/
@@ -78,7 +78,7 @@ class FOFViewCsv extends FOFViewHtml
 		if (empty($this->csvFilename))
 		{
 			$view              = $this->input->getCmd('view', 'cpanel');
-			$view              = FOFInflector::pluralize($view);
+			$view              = F0FInflector::pluralize($view);
 			$this->csvFilename = strtolower($view);
 		}
 
@@ -103,7 +103,7 @@ class FOFViewCsv extends FOFViewHtml
 		$items = $model->getItemList();
 		$this->items = $items;
 
-        $platform = FOFPlatform::getInstance();
+        $platform = F0FPlatform::getInstance();
 		$document = $platform->getDocument();
 
 		if ($document instanceof JDocument)
@@ -123,7 +123,7 @@ class FOFViewCsv extends FOFViewHtml
 			$tpl = 'csv';
 		}
 
-		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
+		F0FPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 

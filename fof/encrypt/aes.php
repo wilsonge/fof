@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * A simple implementation of AES-128, AES-192 and AES-256 encryption using the
@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFEncryptAes
+class F0FEncryptAes
 {
 	/** @var string The AES cipher to use (this is an mcrypt identifier, not the bit strength) */
 	private $_cipherType = 0;

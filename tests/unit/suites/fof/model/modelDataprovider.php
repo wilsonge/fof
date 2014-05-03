@@ -487,6 +487,63 @@ abstract class ModelDataprovider
         return $data;
     }
 
+    public static function getTestGetIterator()
+    {
+        $data[] = array(
+            array(
+                'override'   => false,
+                'tableClass' => null,
+                'limit'      => 3,
+                'limitstart' => 1
+            ),
+            array(
+                'count'      => 3,
+                'tableClass' => 'F0FTable'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'override'   => false,
+                'tableClass' => null,
+                'limit'      => 3,
+                'limitstart' => 4
+            ),
+            array(
+                'count' => 1,
+                'tableClass' => 'F0FTable'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'override'   => true,
+                'tableClass' => null,
+                'limit'      => 3,
+                'limitstart' => 4
+            ),
+            array(
+                'count' => 5,
+                'tableClass' => 'F0FTable'
+            )
+        );
+
+        $data[] = array(
+            array(
+                'override'   => false,
+                'tableClass' => 'FofcustomTableFoobar',
+                'limit'      => 3,
+                'limitstart' => 1
+            ),
+            array(
+                'count'      => 3,
+                'tableClass' => 'FofcustomTableFoobar'
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestSave()
     {
         // SAVE OK - Array data, no table id inside - No form
@@ -614,9 +671,9 @@ abstract class ModelDataprovider
             )
         );
 
-        // SAVE OK - FOFTable data, table id inside - No form
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
-        $table = clone FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        // SAVE OK - F0FTable data, table id inside - No form
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table = clone F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
         $data[] = array(
             array(
@@ -1580,7 +1637,7 @@ abstract class ModelDataprovider
     public static function getTestGetForm()
     {
         // Standard behavior
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1615,7 +1672,7 @@ abstract class ModelDataprovider
         );
 
         // Getting the form name from the request
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1650,7 +1707,7 @@ abstract class ModelDataprovider
         );
 
         // Calculating the form name on your own
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1720,7 +1777,7 @@ abstract class ModelDataprovider
         );
 
         // Changing arguments in the onBefore event
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1758,7 +1815,7 @@ abstract class ModelDataprovider
         );
 
         // Changing arguments in the onAfter event
-        $form   = new FOFForm('dummy');
+        $form   = new F0FForm('dummy');
         $data[] = array(
             array('name' => 'foobars'),
             array(

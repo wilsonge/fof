@@ -5,17 +5,17 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  *
- * This file is adapted from the Joomla! Platform. It is used to iterate a database cursor returning FOFTable objects
+ * This file is adapted from the Joomla! Platform. It is used to iterate a database cursor returning F0FTable objects
  * instead of plain stdClass objects
  */
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Database iterator
  */
-abstract class FOFDatabaseIterator implements Countable, Iterator
+    abstract class F0FDatabaseIterator implements Countable, Iterator
 {
 	/**
 	 * The database cursor.
@@ -46,9 +46,9 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	private $_current;
 
 	/**
-	 * The current database record as a FOFTable object.
+	 * The current database record as a F0FTable object.
 	 *
-	 * @var    FOFTable
+	 * @var    F0FTable
 	 */
 	private $_currentTable;
 
@@ -67,9 +67,9 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	private $_fetched = 0;
 
 	/**
-	 * A FOFTable object created using the class type $class, used by getTable
+	 * A F0FTable object created using the class type $class, used by getTable
 	 *
-	 * @var   FOFTable
+	 * @var   F0FTable
 	 */
 	private $_tableObject = null;
 
@@ -82,13 +82,13 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	 * @param   string  $class   The table class of the returned objects
 	 * @param   array   $config  Configuration parameters to push to the table class
 	 *
-	 * @return  FOFDatabaseIterator
+	 * @return  F0FDatabaseIterator
 	 *
 	 * @throws  InvalidArgumentException
 	 */
 	public static function &getIterator($dbName, $cursor, $column = null, $class, $config = array())
 	{
-		$className = 'FOFDatabaseIterator' . ucfirst($dbName);
+		$className = 'F0FDatabaseIterator' . ucfirst($dbName);
 
 		$object = new $className($cursor, $column, $class, $config);
 
@@ -108,13 +108,20 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	public function __construct($cursor, $column = null, $class, $config = array())
 	{
 		// Figure out the type and prefix of the class by the class name
-		$parts = FOFInflector::explode($class);
-		$this->_tableObject = FOFTable::getInstance($parts[2], ucfirst($parts[0]) . ucfirst($parts[1]));
+		$parts = F0FInflector::explode($class);
 
-		$this->cursor = $cursor;
-		$this->class = 'stdClass';
-		$this->_column = $column;
+        if(count($parts) != 3)
+        {
+            throw new InvalidArgumentException('Invalid table name, expected a pattern like ComponentTableFoobar got '.$class);
+        }
+
+		$this->_tableObject = F0FTable::getInstance($parts[2], ucfirst($parts[0]) . ucfirst($parts[1]));
+
+		$this->cursor   = $cursor;
+		$this->class    = 'stdClass';
+		$this->_column  = $column;
 		$this->_fetched = 0;
+
 		$this->next();
 	}
 
@@ -224,9 +231,9 @@ abstract class FOFDatabaseIterator implements Countable, Iterator
 	abstract protected function freeResult();
 
 	/**
-	 * Returns the data in $this->_current as a FOFTable instance
+	 * Returns the data in $this->_current as a F0FTable instance
 	 *
-	 * @return  FOFTable
+	 * @return  F0FTable
 	 *
 	 * @throws  OutOfBoundsException
 	 */

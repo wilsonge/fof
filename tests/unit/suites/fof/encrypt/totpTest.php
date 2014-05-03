@@ -1,19 +1,19 @@
 <?php
 /**
  * @package     FrameworkOnFramework.UnitTest
- * @subpackage  FOFEncryptTotp
+ * @subpackage  F0FEncryptTotp
  *
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
- * Test class for FOFEncryptTotp
+ * Test class for F0FEncryptTotp
  *
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class FOFEncryptTotpTest extends PHPUnit_Framework_TestCase
+class F0FEncryptTotpTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * [setUp description]
@@ -28,7 +28,7 @@ class FOFEncryptTotpTest extends PHPUnit_Framework_TestCase
 		$secretLength 			= 10;
 		$this->secretLength 	= $secretLength;
 
-		$this->theThing = new FOFEncryptTotp($timeStep, $passCodeLength, $secretLength);
+		$this->theThing = new F0FEncryptTotp($timeStep, $passCodeLength, $secretLength);
 	}
 
 	/**

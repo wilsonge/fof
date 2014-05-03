@@ -12,6 +12,7 @@ release/*.zip
 .DS_STORE
 .idea/
 /fof/lib_fof.xml
+/fof/lib_f0f.xml
 tests/unit/config.php
 refs/heads/staging
 /build/build.properties
@@ -32,3 +33,7 @@ antconfig.txt
 /tests/environments/2.5/cache/
 /tests/environments/2.5/templates/fake_test_template
 /release/
+
+/build/phingext
+/build/tools
+/build/buildlang

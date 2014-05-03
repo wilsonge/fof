@@ -6,7 +6,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 if (!class_exists('JFormFieldSql'))
 {
@@ -14,13 +14,13 @@ if (!class_exists('JFormFieldSql'))
 }
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Generic list from a model's results
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderModel extends FOFFormHeaderFieldselectable
+class F0FFormHeaderModel extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Method to get the field options.
@@ -50,13 +50,13 @@ class FOFFormHeaderModel extends FOFFormHeaderFieldselectable
 		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 		// Explode model name into model name and prefix
-		$parts = FOFInflector::explode($modelName);
+		$parts = F0FInflector::explode($modelName);
 		$mName = ucfirst(array_pop($parts));
-		$mPrefix = FOFInflector::implode($parts);
+		$mPrefix = F0FInflector::implode($parts);
 
 		// Get the model object
 		$config = array('savestate' => 0);
-		$model = FOFModel::getTmpInstance($mName, $mPrefix, $config);
+		$model = F0FModel::getTmpInstance($mName, $mPrefix, $config);
 
 		if ($applyAccess)
 		{

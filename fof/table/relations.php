@@ -7,16 +7,16 @@
  */
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-class FOFTableRelations
+class F0FTableRelations
 {
 	/**
 	 * Holds all known relation definitions
 	 *
 	 * @var   array
 	 */
-	private $relations = array(
+	protected $relations = array(
 		'child'		=> array(),
 		'parent'	=> array(),
 		'children'	=> array(),
@@ -28,7 +28,7 @@ class FOFTableRelations
 	 *
 	 * @var  array
 	 */
-	private $defaultRelation = array(
+	protected $defaultRelation = array(
 		'child'		=> null,
 		'parent'	=> null,
 		'children'	=> null,
@@ -38,31 +38,31 @@ class FOFTableRelations
 	/**
 	 * The table these relations are attached to
 	 *
-	 * @var   FOFTable
+	 * @var   F0FTable
 	 */
-	private $table = null;
+	protected $table = null;
 
 	/**
 	 * The name of the component used by our attached table
 	 *
 	 * @var   string
 	 */
-	private $componentName = 'joomla';
+	protected $componentName = 'joomla';
 
 	/**
 	 * The type (table name without prefix and component name) of our attached table
 	 *
 	 * @var   string
 	 */
-	private $tableType = '';
+	protected $tableType = '';
 
 
 	/**
-	 * Create a relations object based on the provided FOFTable instance
+	 * Create a relations object based on the provided F0FTable instance
 	 *
-	 * @param   FOFTable   $table  The table instance used to initialise the relations
+	 * @param   F0FTable   $table  The table instance used to initialise the relations
 	 */
-	public function __construct(FOFTable $table)
+	public function __construct(F0FTable $table)
 	{
 		// Store the table
 		$this->table = $table;
@@ -82,7 +82,7 @@ class FOFTableRelations
 			$this->tableType = array_pop($type);
 		}
 
-		$this->tableType = FOFInflector::singularize($this->tableType);
+		$this->tableType = F0FInflector::singularize($this->tableType);
 
 		$tableKey = $table->getKeyName();
 
@@ -123,7 +123,7 @@ class FOFTableRelations
 			}
 
 			// Default item name: the name of the table, singular
-			$itemName = FOFInflector::singularize($parts[1]);
+			$itemName = F0FInflector::singularize($parts[1]);
 
 			// Prefix the item name with the component name if we refer to a different component
 			if ($parts[0] != $this->componentName)
@@ -301,11 +301,18 @@ class FOFTableRelations
 
 		foreach ($types as $type)
 		{
-			foreach ($this->relations[$type] as $relations)
+			foreach ($this->relations[$type] as $key => $relations)
 			{
-				if (array_key_exists($itemName, $relations))
+				if ($itemName == $key)
 				{
 					unset ($this->relations[$type][$itemName]);
+
+                    // If it's the default one, remove it from the default array, too
+                    if($this->defaultRelation[$type] == $itemName)
+                    {
+                        $this->defaultRelation[$type] = null;
+                    }
+
 					return;
 				}
 			}
@@ -331,6 +338,9 @@ class FOFTableRelations
 		foreach ($types as $type)
 		{
 			$this->relations[$type] = array();
+
+            // Remove the relation from the default stack, too
+            $this->defaultRelation[$type] = null;
 		}
 	}
 
@@ -353,9 +363,9 @@ class FOFTableRelations
 
 		foreach ($types as $type)
 		{
-			foreach ($this->relations[$type] as $relations)
+			foreach ($this->relations[$type] as $key => $relations)
 			{
-				if (array_key_exists($itemName, $relations))
+				if ($itemName == $key)
 				{
 					return true;
 				}
@@ -386,11 +396,11 @@ class FOFTableRelations
 
 		foreach ($types as $type)
 		{
-			foreach ($this->relations[$type] as $relations)
+			foreach ($this->relations[$type] as $key => $relations)
 			{
-				if (array_key_exists($itemName, $relations))
+				if ($itemName == $key)
 				{
-					$temp = $relations[$itemName];
+					$temp         = $relations;
 					$temp['type'] = $type;
 
 					return $temp;
@@ -408,7 +418,7 @@ class FOFTableRelations
 	 * @param   string  $itemName  The name of the relation to use
 	 * @param   string  $type      [optional] The relation type (child, parent)
 	 *
-	 * @return  FOFTable
+	 * @return  F0FTable
 	 *
 	 * @throws  RuntimeException  If the named relation doesn't exist or isn't supposed to return single items
 	 */
@@ -443,7 +453,7 @@ class FOFTableRelations
 	 * @param   string  $itemName  The name of the relation to use
 	 * @param   string  $type      [optional] The relation type (children, multiple)
 	 *
-	 * @return  FOFDatabaseIterator
+	 * @return  F0FDatabaseIterator
 	 *
 	 * @throws  RuntimeException  If the named relation doesn't exist or isn't supposed to return single items
 	 */
@@ -480,7 +490,7 @@ class FOFTableRelations
 	 *
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default parent relation
 	 *
-	 * @return  FOFTable
+	 * @return  F0FTable
 	 *
 	 * @throws  RuntimeException  When the relation is not found
 	 */
@@ -509,7 +519,7 @@ class FOFTableRelations
 	 *
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default child relation
 	 *
-	 * @return  FOFTable
+	 * @return  F0FTable
 	 *
 	 * @throws  RuntimeException  When the relation is not found
 	 */
@@ -538,7 +548,7 @@ class FOFTableRelations
 	 *
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default children relation
 	 *
-	 * @return  FOFDatabaseIterator
+	 * @return  F0FDatabaseIterator
 	 *
 	 * @throws  RuntimeException  When the relation is not found
 	 */
@@ -567,7 +577,7 @@ class FOFTableRelations
 	 *
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default children relation
 	 *
-	 * @return  FOFDatabaseIterator
+	 * @return  F0FDatabaseIterator
 	 *
 	 * @throws  RuntimeException  When the relation is not found
 	 */
@@ -591,7 +601,7 @@ class FOFTableRelations
 		$tableName = $this->table->getTableName();
 		$tableName = str_replace('#__', '', $tableName);
 		$tableNameParts = explode('_', $tableName, 2);
-		$tableClass = ucfirst($tableNameParts[0]) . 'Table' . ucfirst(FOFInflector::singularize($tableNameParts[1]));
+		$tableClass = ucfirst($tableNameParts[0]) . 'Table' . ucfirst(F0FInflector::singularize($tableNameParts[1]));
 
 		$parentRelation = $this->relations['parent'][$itemName];
 		$relation = array(
@@ -608,7 +618,7 @@ class FOFTableRelations
 	 *
 	 * @param   string  $itemName  [optional] The name of the relation to use, skip to use the default multiple relation
 	 *
-	 * @return  FOFDatabaseIterator
+	 * @return  F0FDatabaseIterator
 	 *
 	 * @throws  RuntimeException  When the relation is not found
 	 */
@@ -633,30 +643,55 @@ class FOFTableRelations
 	}
 
 	/**
-	 * Returns a FOFTable object based on a given relation
+	 * Returns a F0FTable object based on a given relation
 	 *
-	 * @param   array    $relation   Relation definition
+	 * @param   array    $relation   Indexed array holding relation definition.
+     *                                  tableClass => name of the related table class
+     *                                  localKey   => name of the local key
+     *                                  remoteKey  => name of the remote key
 	 *
-	 * @return FOFTable
+	 * @return F0FTable
 	 *
 	 * @throws RuntimeException
+     * @throws InvalidArgumentException
 	 */
-	private function getTableFromRelation($relation)
+	protected function getTableFromRelation($relation)
 	{
+        // Sanity checks
+        if(
+            !isset($relation['tableClass']) || !isset($relation['remoteKey']) || !isset($relation['localKey']) ||
+            !$relation['tableClass'] || !$relation['remoteKey'] || !$relation['localKey']
+        )
+        {
+            throw new InvalidArgumentException('Missing array index for the '.__METHOD__.' method. Please check method signature', 500);
+        }
+
 		// Get a table object from the table class name
-		$tableClass = $relation['tableClass'];
-		$tableClassParts = FOFInflector::explode($tableClass);
-		$table = FOFTable::getInstance($tableClassParts[2], ucfirst($tableClassParts[0]) . ucfirst($tableClassParts[1]));
+		$tableClass      = $relation['tableClass'];
+		$tableClassParts = F0FInflector::explode($tableClass);
+
+        if(count($tableClassParts) < 3)
+        {
+            throw new InvalidArgumentException('Invalid table class named. It should be something like FooTableBar');
+        }
+
+		$table = F0FTable::getInstance($tableClassParts[2], ucfirst($tableClassParts[0]) . ucfirst($tableClassParts[1]));
 
 		// Get the table name
 		$tableName = $table->getTableName();
 
 		// Get the remote and local key names
 		$remoteKey = $relation['remoteKey'];
-		$localKey = $relation['localKey'];
+		$localKey  = $relation['localKey'];
 
 		// Get the local key's value
 		$value = $this->table->$localKey;
+
+        // If there's no value for the primary key, let's stop here
+        if(!$value)
+        {
+            throw new RuntimeException('Missing value for the primary key of the table '.$this->table->getTableName(), 500);
+        }
 
 		// This is required to prevent one relation from killing the db cursor used in a different relation...
 		$oldDb = $this->table->getDbo();
@@ -682,30 +717,69 @@ class FOFTableRelations
 	}
 
 	/**
-	 * Returns a FOFDatabaseIterator based on a given relation
+	 * Returns a F0FDatabaseIterator based on a given relation
 	 *
-	 * @param   array    $relation   Relation definition
+	 * @param   array    $relation   Indexed array holding relation definition.
+     *                                  tableClass => name of the related table class
+     *                                  localKey   => name of the local key
+     *                                  remoteKey  => name of the remote key
+     *                                  pivotTable    => name of the pivot table (optional)
+     *                                  theirPivotKey => name of the remote key in the pivot table (mandatory if pivotTable is set)
+     *                                  ourPivotKey   => name of our key in the pivot table (mandatory if pivotTable is set)
 	 *
-	 * @return FOFDatabaseIterator
+	 * @return F0FDatabaseIterator
 	 *
 	 * @throws RuntimeException
+	 * @throws InvalidArgumentException
 	 */
-	private function getIteratorFromRelation($relation)
+	protected function getIteratorFromRelation($relation)
 	{
+        // Sanity checks
+        if(
+            !isset($relation['tableClass']) || !isset($relation['remoteKey']) || !isset($relation['localKey']) ||
+            !$relation['tableClass'] || !$relation['remoteKey'] || !$relation['localKey']
+        )
+        {
+            throw new InvalidArgumentException('Missing array index for the '.__METHOD__.' method. Please check method signature', 500);
+        }
+
+        if(array_key_exists('pivotTable', $relation))
+        {
+            if(
+                !isset($relation['theirPivotKey']) || !isset($relation['ourPivotKey']) ||
+                !$relation['pivotTable'] || !$relation['theirPivotKey'] || !$relation['ourPivotKey']
+            )
+            {
+                throw new InvalidArgumentException('Missing array index for the '.__METHOD__.' method. Please check method signature', 500);
+            }
+        }
+
 		// Get a table object from the table class name
-		$tableClass = $relation['tableClass'];
-		$tableClassParts = FOFInflector::explode($tableClass);
-		$table = FOFTable::getInstance($tableClassParts[2], ucfirst($tableClassParts[0]) . ucfirst($tableClassParts[1]));
+		$tableClass      = $relation['tableClass'];
+		$tableClassParts = F0FInflector::explode($tableClass);
+
+        if(count($tableClassParts) < 3)
+        {
+            throw new InvalidArgumentException('Invalid table class named. It should be something like FooTableBar');
+        }
+
+		$table = F0FTable::getInstance($tableClassParts[2], ucfirst($tableClassParts[0]) . ucfirst($tableClassParts[1]));
 
 		// Get the table name
 		$tableName = $table->getTableName();
 
 		// Get the remote and local key names
 		$remoteKey = $relation['remoteKey'];
-		$localKey = $relation['localKey'];
+		$localKey  = $relation['localKey'];
 
 		// Get the local key's value
 		$value = $this->table->$localKey;
+
+        // If there's no value for the primary key, let's stop here
+        if(!$value)
+        {
+            throw new RuntimeException('Missing value for the primary key of the table '.$this->table->getTableName(), 500);
+        }
 
 		// This is required to prevent one relation from killing the db cursor used in a different relation...
 		$oldDb = $this->table->getDbo();
@@ -723,8 +797,7 @@ class FOFTableRelations
 		// If we don't have pivot it's a straightforward query
 		if (!$hasPivot)
 		{
-			$query
-				->where($db->qn($remoteKey) . ' = ' . $db->q($value));
+			$query->where($db->qn($remoteKey) . ' = ' . $db->q($value));
 		}
 		// If we have a pivot table we have to do a subquery
 		else
@@ -740,7 +813,7 @@ class FOFTableRelations
 
 		$cursor = $db->execute();
 
-		$iterator = FOFDatabaseIterator::getIterator($db->name, $cursor, null, $tableClass);
+		$iterator = F0FDatabaseIterator::getIterator($db->name, $cursor, null, $tableClass);
 
 		return $iterator;
 	}
@@ -757,11 +830,11 @@ class FOFTableRelations
 	 *
 	 * @return  void
 	 */
-	private function addBespokeSimpleRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $default)
+	protected function addBespokeSimpleRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $default)
 	{
-		$ourPivotKey = null;
+		$ourPivotKey   = null;
 		$theirPivotKey = null;
-		$pivotTable = null;
+		$pivotTable    = null;
 
 		$this->normaliseParameters(false, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
 
@@ -788,11 +861,11 @@ class FOFTableRelations
 	 * @param   string   $ourPivotKey    is the column containing our side of the FK relation in the pivot table, default: $localKey
 	 * @param   string   $theirPivotKey  is the column containing the other table's side of the FK relation in the pivot table, default $remoteKey
 	 * @param   string   $pivotTable     is the name of the glue (pivot) table, default: #__componentname_thisclassname_itemname with plural items (e.g. #__foobar_users_roles)
-	 * @param   boolean  $default       is this the default children relationship?
+	 * @param   boolean  $default        is this the default children relationship?
 	 *
 	 * @return  void
 	 */
-	private function addBespokePivotRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable, $default)
+	protected function addBespokePivotRelation($relationType, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable, $default)
 	{
 		$this->normaliseParameters(true, $itemName, $tableClass, $localKey, $remoteKey, $ourPivotKey, $theirPivotKey, $pivotTable);
 
@@ -825,7 +898,7 @@ class FOFTableRelations
 	 *
 	 * @return  void
 	 */
-	private function normaliseParameters($pivot = false, &$itemName, &$tableClass, &$localKey, &$remoteKey, &$ourPivotKey, &$theirPivotKey, &$pivotTable)
+	protected function normaliseParameters($pivot = false, &$itemName, &$tableClass, &$localKey, &$remoteKey, &$ourPivotKey, &$theirPivotKey, &$pivotTable)
 	{
 		// Get a default table class if none is provided
 		if (empty($tableClass))
@@ -842,14 +915,19 @@ class FOFTableRelations
 				$tableClassParts[0] = 'J';
 			}
 
-			$tableClass = ucfirst($tableClassParts[0]) . 'Table' . ucfirst(FOFInflector::singularize($tableClassParts[1]));
+			$tableClass = ucfirst($tableClassParts[0]) . 'Table' . ucfirst(F0FInflector::singularize($tableClassParts[1]));
 		}
 
 		// Make sure we have both a local and remote key
 		if (empty($localKey) && empty($remoteKey))
 		{
-			$tableClassParts = FOFInflector::explode($tableClass);
-			$localKey = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
+            // WARNING! If we have a pivot table, this behavior is wrong!
+            // Infact if we have `parts` and `groups` the local key should be foobar_part_id and the remote one foobar_group_id.
+            // However, this isn't a real issue because:
+            // 1. we have no way to detect the local key of a multiple relation
+            // 2. this scenario never happens, since, in this class, if we're adding a multiple relation we always supply the local key
+			$tableClassParts = F0FInflector::explode($tableClass);
+			$localKey  = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
 			$remoteKey = $localKey;
 		}
 		elseif (empty($localKey) && !empty($remoteKey))
@@ -858,15 +936,23 @@ class FOFTableRelations
 		}
 		elseif (!empty($localKey) && empty($remoteKey))
 		{
-			$remoteKey = $localKey;
+            if($pivot)
+            {
+                $tableClassParts = F0FInflector::explode($tableClass);
+                $remoteKey = $tableClassParts[0] . '_' . $tableClassParts[2] . '_id';
+            }
+            else
+            {
+                $remoteKey = $localKey;
+            }
 		}
 
 		// If we don't have a pivot table nullify the relevant variables and return
 		if (!$pivot)
 		{
-			$ourPivotKey = null;
+			$ourPivotKey   = null;
 			$theirPivotKey = null;
-			$pivotTable = null;
+			$pivotTable    = null;
 
 			return;
 		}
@@ -884,7 +970,7 @@ class FOFTableRelations
 		if (empty($pivotTable))
 		{
 			$pivotTable = '#__' . strtolower($this->componentName) . '_' .
-							strtolower(FOFInflector::pluralize($this->tableType)) . '_';
+							strtolower(F0FInflector::pluralize($this->tableType)) . '_';
 
 			$itemNameParts = explode('_', $itemName);
 			$lastPart = array_pop($itemNameParts);
@@ -900,7 +986,7 @@ class FOFTableRelations
 	 *
 	 * @return  string  The normalised relation key name
 	 */
-	private function normaliseItemName($itemName, $pluralise = false)
+	protected function normaliseItemName($itemName, $pluralise = false)
 	{
 		// Explode the item name
 		$itemNameParts = explode('_', $itemName);
@@ -920,16 +1006,16 @@ class FOFTableRelations
 		if (count($itemNameParts) > 1)
 		{
 			$name = array_pop($itemNameParts);
-			$name = $pluralise ? FOFInflector::pluralize($name) : FOFInflector::singularize($name);
+			$name = $pluralise ? F0FInflector::pluralize($name) : F0FInflector::singularize($name);
 			$itemNameParts[] = $name;
 
-			$itemName = FOFInflector::implode($itemNameParts);
+			$itemName = F0FInflector::implode($itemNameParts);
 		}
 		// Otherwise we singularise/pluralise the remaining part
 		else
 		{
 			$name = array_pop($itemNameParts);
-			$itemName = $pluralise ? FOFInflector::pluralize($name) : FOFInflector::singularize($name);
+			$itemName = $pluralise ? F0FInflector::pluralize($name) : F0FInflector::singularize($name);
 		}
 
 		if (!empty($prefix))

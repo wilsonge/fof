@@ -9,8 +9,9 @@
 
 use org\bovigo\vfs\vfsStream;
 require_once 'modelDataprovider.php';
+require_once JPATH_TESTS.'/unit/core/table/custom.php';
 
-class FOFModelTest extends FtestCaseDatabase
+class F0FModelTest extends FtestCaseDatabase
 {
 	protected function setUp()
 	{
@@ -25,22 +26,22 @@ class FOFModelTest extends FtestCaseDatabase
 
 		parent::setUp($loadDataset);
 
-		// TODO It seems that another test is "polluting" FOFPlatform instance, leaving a Mock Object as current instance
-		FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+		// TODO It seems that another test is "polluting" F0FPlatform instance, leaving a Mock Object as current instance
+		F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
 	}
 
     /**
      * @group               modelTestGetId
-     * @group               FOFModel
-     * @covers              FOFModel::getId
+     * @group               F0FModel
+     * @covers              F0FModel::getId
      * @preventDataLoading
      */
     public function testGetId()
     {
         $config['option'] = 'com_foftest';
 
-        $model = new FOFModel($config);
+        $model = new F0FModel($config);
 
         // I prefer using the reflection class instead of the setter method, so I can be sure of what is going on
         $reflect  = new ReflectionClass($model);
@@ -50,13 +51,13 @@ class FOFModelTest extends FtestCaseDatabase
 
         $value = $model->getId();
 
-        $this->assertEquals(88, $value, 'FOFModel::getId Wrong set value');
+        $this->assertEquals(88, $value, 'F0FModel::getId Wrong set value');
     }
 
     /**
      * @group               modelTestSetIdsFromRequest
-     * @group               FOFModel
-     * @covers              FOFModel::setIDsFromRequest
+     * @group               F0FModel
+     * @covers              F0FModel::setIDsFromRequest
      * @dataProvider        getTestSetIDsFromRequest
      * @preventDataLoading
      */
@@ -81,27 +82,27 @@ class FOFModelTest extends FtestCaseDatabase
             $input[$test['kid']['name']] = $test['kid']['value'];
         }
 
-        // FOFModel constructor will automatically set the data coming from the request, taking the from the request
+        // F0FModel constructor will automatically set the data coming from the request, taking the from the request
         // (which is bad for our test), so I have to use the getTmp method.
         // Sadly, it will reset the input, too, so I have to manually inject it.
-        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
-        $model->setInput(new FOFInput($input));
+        $model = F0FModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+        $model->setInput(new F0FInput($input));
 
         $model->setIDsFromRequest();
 
         $property = new ReflectionProperty($model, 'id');
         $property->setAccessible(true);
-        $this->assertEquals($checks['id'], $property->getValue($model), 'FOFModel::setIDsFromRequests wrong value for property "id"');
+        $this->assertEquals($checks['id'], $property->getValue($model), 'F0FModel::setIDsFromRequests wrong value for property "id"');
 
         $property = new ReflectionProperty($model, 'id_list');
         $property->setAccessible(true);
-        $this->assertEquals($checks['id_list'], $property->getValue($model), 'FOFModel::setIDsFromRequests wrong value for property "id_list"');
+        $this->assertEquals($checks['id_list'], $property->getValue($model), 'F0FModel::setIDsFromRequests wrong value for property "id_list"');
     }
 
 	/**
 	 * @group               modelTestSetId
-	 * @group               FOFModel
-	 * @covers              FOFModel::setId
+	 * @group               F0FModel
+	 * @covers              F0FModel::setId
 	 * @dataProvider        getTestSetId
 	 * @preventDataLoading
 	 */
@@ -109,10 +110,10 @@ class FOFModelTest extends FtestCaseDatabase
 	{
 		$config['option'] = 'com_foftest';
 
-		$model = new FOFModel($config);
+		$model = new F0FModel($config);
 		$rc = $model->setId($modelId);
 
-		$this->assertInstanceOf('FOFModel', $rc, 'FOFModel::setId should return itself in order to support chaining');
+		$this->assertInstanceOf('F0FModel', $rc, 'F0FModel::setId should return itself in order to support chaining');
 
 		$reflect  = new ReflectionClass($model);
 		$property = $reflect->getProperty('id');
@@ -128,13 +129,13 @@ class FOFModelTest extends FtestCaseDatabase
             $expected = $modelId;
         }
 
-		$this->assertEquals($expected, $value, 'FOFModel::setId Wrong set value');
+		$this->assertEquals($expected, $value, 'F0FModel::setId Wrong set value');
 	}
 
 	/**
 	 * @group               modelTestSetIdException
-	 * @group               FOFModel
-	 * @covers              FOFModel::setId
+	 * @group               F0FModel
+	 * @covers              F0FModel::setId
 	 * @dataProvider        getTestSetIdException
 	 * @preventDataLoading
 	 */
@@ -144,14 +145,14 @@ class FOFModelTest extends FtestCaseDatabase
 
 		$config['option'] = 'com_foftest';
 
-		$model = new FOFModel($config);
+		$model = new F0FModel($config);
 		$model->setId($modelId);
 	}
 
     /**
      * @group               modelTestSetIds
-     * @group               FOFModel
-     * @covers              FOFModel::setIds
+     * @group               F0FModel
+     * @covers              F0FModel::setIds
      * @dataProvider        getTestSetIds
      * @preventDataLoading
      */
@@ -159,10 +160,10 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['option'] = 'com_foftest';
 
-        $model = new FOFModel($config);
+        $model = new F0FModel($config);
         $rc = $model->setIds($modelIds);
 
-        $this->assertInstanceOf('FOFModel', $rc, 'FOFModel::setIds should return itself in order to support chaining');
+        $this->assertInstanceOf('F0FModel', $rc, 'F0FModel::setIds should return itself in order to support chaining');
 
         $reflect  = new ReflectionClass($model);
 
@@ -170,26 +171,26 @@ class FOFModelTest extends FtestCaseDatabase
         $property->setAccessible(true);
         $value    = $property->getValue($model);
 
-        $this->assertEquals($check['id'], $value, 'FOFModel::setIds Wrong value for "id" property');
+        $this->assertEquals($check['id'], $value, 'F0FModel::setIds Wrong value for "id" property');
 
         $property = $reflect->getProperty('id_list');
         $property->setAccessible(true);
         $value    = $property->getValue($model);
 
-        $this->assertEquals($check['id_list'], $value, 'FOFModel::setIds Wrong value for "id_list" property');
+        $this->assertEquals($check['id_list'], $value, 'F0FModel::setIds Wrong value for "id_list" property');
     }
 
     /**
      * @group               modelTestReset
-     * @group               FOFModel
-     * @covers              FOFModel::reset
+     * @group               F0FModel
+     * @covers              F0FModel::reset
      * @preventDataLoading
      */
     public function testReset()
     {
         $config['option'] = 'com_foftest';
 
-        $model = new FOFModel($config);
+        $model = new F0FModel($config);
 
         $toBeInspected = array(
             'id'         => array('expected' => 0),
@@ -225,15 +226,15 @@ class FOFModelTest extends FtestCaseDatabase
 
     /**
      * @group               modelTestGetItem
-     * @group               FOFModel
-     * @covers              FOFModel::getItem
+     * @group               F0FModel
+     * @covers              F0FModel::getItem
      * @dataProvider        getTestGetItem
      */
     public function testGetItem($modelinfo, $test, $session, $checks)
     {
         $config['option'] = 'com_foftest';
         $config['view']   = $modelinfo['name'];
-        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
 		$model->savestate(true); // This is required to emulate the save state flag set by getAnInstance, used by the Controller
 
         if($test['setid'])
@@ -251,11 +252,11 @@ class FOFModelTest extends FtestCaseDatabase
 
         $result = $model->getItem($test['id']);
 
-        $this->assertInstanceOf('FOFTable', $result, 'FOFModel::getItem should return an instance of FOFTable');
+        $this->assertInstanceOf('F0FTable', $result, 'F0FModel::getItem should return an instance of F0FTable');
 
         foreach($checks as $property => $value)
         {
-            $this->assertEquals($value, $result->$property, 'FOFModel::getItem loaded the wrong data for property '.$property);
+            $this->assertEquals($value, $result->$property, 'F0FModel::getItem loaded the wrong data for property '.$property);
         }
     }
 
@@ -263,15 +264,15 @@ class FOFModelTest extends FtestCaseDatabase
      * Tailored test to check when the session has a different id from the loaded from db one
      *
      * @group               modelTestGetItem
-     * @group               FOFModel
-     * @covers              FOFModel::getItem
+     * @group               F0FModel
+     * @covers              F0FModel::getItem
      */
     public function testGetItemSessionWipe()
     {
         $config['option'] = 'com_foftest';
         $config['view']   = 'foobars';
 
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
 		$model->savestate(true); // Required to emulate the save state flag set by getAnInstance used by the Controller
 
         $hackedSession = new JSession;
@@ -291,13 +292,13 @@ class FOFModelTest extends FtestCaseDatabase
 
         $result = $model->getItem(2);
 
-        $this->assertInstanceOf('FOFTable', $result, 'FOFModel::getItem should return an instance of FOFTable');
+        $this->assertInstanceOf('F0FTable', $result, 'F0FModel::getItem should return an instance of F0FTable');
 
 		$result = $model->save($result->getData());
 
-		$this->assertEquals($result, true, 'FOFModel::save failed');
+		$this->assertEquals($result, true, 'F0FModel::save failed');
 
-        $this->assertArrayNotHasKey('com_foftest.cpanels.savedata', $_SESSION['__default'], 'FOFModel::save should wipe saved session data');
+        $this->assertArrayNotHasKey('com_foftest.cpanels.savedata', $_SESSION['__default'], 'F0FModel::save should wipe saved session data');
 
         // Let's remove any evidence...
         unset($_SESSION);
@@ -305,8 +306,8 @@ class FOFModelTest extends FtestCaseDatabase
 
     /**
      * @group               modelTestGetItemList
-     * @group               FOFModel
-     * @covers              FOFModel::getItemList
+     * @group               F0FModel
+     * @covers              F0FModel::getItemList
      * @dataProvider        getTestGetItemList
      */
     public function testGetItemList($modelinfo, $test, $checks)
@@ -316,7 +317,7 @@ class FOFModelTest extends FtestCaseDatabase
             'view'      => $modelinfo['name']
         );
 
-        $model = $this->getMock('FOFModel', array('buildQuery'), array($config));
+        $model = $this->getMock('F0FModel', array('buildQuery'), array($config));
 
         $model->expects($this->any())->method('buildQuery')->will($this->returnValue($test['query']));
         $model->limit($test['limit']);
@@ -324,15 +325,15 @@ class FOFModelTest extends FtestCaseDatabase
 
         $list = $model->getItemList($test['override'], $test['group']);
 
-        $this->assertEquals($checks['list'], $list, 'FOFModel::getItemList return a wrong recordset');
+        $this->assertEquals($checks['list'], $list, 'F0FModel::getItemList return a wrong recordset');
     }
 
     /**
      * Tailored test to check if getItemList is using the internal cache, instead of running the query again
      *
      * @group               modelTestGetItemListCache
-     * @group               FOFModel
-     * @covers              FOFModel::getItemList
+     * @group               F0FModel
+     * @covers              F0FModel::getItemList
      * @dataProvider        getTestGetItemList
      * @preventDataLoading
      */
@@ -340,7 +341,7 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['option'] = 'com_foftest';
         $config['view']   = 'foobars';
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
 
         $dummy = array('Hijacked internal cache');
 
@@ -350,13 +351,39 @@ class FOFModelTest extends FtestCaseDatabase
 
         $result = $model->getItemList();
 
-        $this->assertEquals($dummy, $result, 'FOFModel::getItemList failed to use its internal cache');
+        $this->assertEquals($dummy, $result, 'F0FModel::getItemList failed to use its internal cache');
+    }
+
+    /**
+     * @group               modelTestGetIterator
+     * @group               F0FModel
+     * @covers              F0FModel::getIterator
+     * @dataProvider        getTestGetIterator
+     */
+    public function testGetIterator($test, $checks)
+    {
+        $config['option'] = 'com_foftest';
+        $config['view']   = 'foobars';
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+
+        if($test['limit'] && $test['limitstart'])
+        {
+            $model->setState('limit', $test['limit']);
+            $model->setState('limitstart', $test['limitstart']);
+        }
+
+        $iterator = $model->getIterator($test['override'], $test['tableClass']);
+        $item     = $iterator->current();
+
+        $this->assertInstanceOf('F0FDatabaseIterator', $iterator, 'F0FModel::getIterator should return an instance of F0FDatabaseIterator');
+        $this->assertEquals($checks['count'], count($iterator), 'F0FModel::getIterator did not respect the limits');
+        $this->assertInstanceOf($checks['tableClass'], $item, 'F0FModel::getIterator used the wrong class for record loading');
     }
 
     /**
      * @group               modelTestSave
-     * @group               FOFModel
-     * @covers              FOFModel::save
+     * @group               F0FModel
+     * @covers              F0FModel::save
      * @dataProvider        getTestSave
      */
     public function testSave($test, $checks)
@@ -364,8 +391,8 @@ class FOFModelTest extends FtestCaseDatabase
         $db           = JFactory::getDbo();
         $tableConstr  = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        // FOFTable mock
-        $table = $this->getMock('FOFTable',	array('save', 'getErrors'), $tableConstr, '',	true, true, true, true);
+        // F0FTable mock
+        $table = $this->getMock('F0FTable',	array('save', 'getErrors'), $tableConstr, '',	true, true, true, true);
 
         $table->expects($this->any())->method('save')->will($this->returnCallback(
             function() use(&$table, $test)
@@ -388,10 +415,10 @@ class FOFModelTest extends FtestCaseDatabase
 
         $table->expects($this->any())->method('getErrors')->will($this->returnValue($test['table']['error']));
 
-        // FOFForm mock
+        // F0FForm mock
         if(isset($test['form']['mock']))
         {
-            $form = $this->getMock('FOFForm', array('getAttribute'), array('dummy'));
+            $form = $this->getMock('F0FForm', array('getAttribute'), array('dummy'));
             $form->expects($this->any())->method('getAttribute')->will($this->returnValue($test['form']['validation']));
         }
         else
@@ -399,10 +426,10 @@ class FOFModelTest extends FtestCaseDatabase
             $form = $test['form'];
         }
 
-        // FOFModel mock
+        // F0FModel mock
         $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
         $modelMethods    = array('getForm', 'onBeforeSave', 'onAfterSave', 'getTable', 'validateForm');
-        $model           = $this->getMock('FOFModel', $modelMethods, array($config));
+        $model           = $this->getMock('F0FModel', $modelMethods, array($config));
 
         $model->expects($this->any())->method('getForm')->will($this->returnValue($form));
 
@@ -435,7 +462,7 @@ class FOFModelTest extends FtestCaseDatabase
 
         $return = $model->save($test['data']);
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::save returned the wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::save returned the wrong value');
 
         if($checks['return'])
         {
@@ -445,7 +472,7 @@ class FOFModelTest extends FtestCaseDatabase
             $property->setAccessible(true);
             $tableId  = $property->getValue($model);
 
-            $this->assertEquals($checks['table']['id'], $tableId, 'FOFModel::save internally saved the wrong table id');
+            $this->assertEquals($checks['table']['id'], $tableId, 'F0FModel::save internally saved the wrong table id');
         }
         else
         {
@@ -456,13 +483,13 @@ class FOFModelTest extends FtestCaseDatabase
         $otable->setAccessible(true);
         $otable = $otable->getValue($model);
 
-        $this->assertEquals($savedTable, $otable, 'FOFModel::save internally saved the wrong table');
+        $this->assertEquals($savedTable, $otable, 'F0FModel::save internally saved the wrong table');
     }
 
     /**
      * @group               modelTestSave
-     * @group               FOFModel
-     * @covers              FOFModel::save
+     * @group               F0FModel
+     * @covers              F0FModel::save
      * @dataProvider        getTestSaveSessionWipe
      */
     public function testSaveSessionWipe($test, $checks)
@@ -483,30 +510,30 @@ class FOFModelTest extends FtestCaseDatabase
         $db           = JFactory::getDbo();
         $tableConstr  = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        // FOFTable mock
-        $table = $this->getMock('FOFTable',	array('save', 'getErrors', 'getProperties'), $tableConstr, '', true, true, true, true);
+        // F0FTable mock
+        $table = $this->getMock('F0FTable',	array('save', 'getErrors', 'getProperties'), $tableConstr, '', true, true, true, true);
         $table->expects($this->any())->method('save')->will($this->returnValue($test['table']['save']));
         $table->expects($this->any())->method('getErrors')->will($this->returnValue($test['table']['error']));
         $table->expects($this->any())->method('getProperties')->will($this->returnValue($test['table']['properties']));
 
-        // FOFModel mock
+        // F0FModel mock
         $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
         $modelMethods    = array('getTable');
-        $model           = $this->getMock('FOFModel', $modelMethods, array($config));
+        $model           = $this->getMock('F0FModel', $modelMethods, array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->save($test['data']);
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::save returned the wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::save returned the wrong value');
 
         if($checks['return'])
         {
-            $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFModel::save should wipe saved session data');
+            $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'F0FModel::save should wipe saved session data');
         }
         else
         {
-            $this->assertArrayHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'FOFModel::save should not wipe saved session data when failing');
-            $this->assertEquals($checks['session'], $_SESSION['__default']['com_foftest.foobars.savedata'], 'FOFModel::save stored the wrong data in the session after failing');
+            $this->assertArrayHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'F0FModel::save should not wipe saved session data when failing');
+            $this->assertEquals($checks['session'], $_SESSION['__default']['com_foftest.foobars.savedata'], 'F0FModel::save stored the wrong data in the session after failing');
         }
 
         // Let's remove any evidence...
@@ -518,8 +545,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestCopy
-     * @group               FOFModel
-     * @covers              FOFModel::copy
+     * @group               F0FModel
+     * @covers              F0FModel::copy
      * @dataProvider        getTestCopy
      * @preventDataLoading
      */
@@ -530,11 +557,11 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('copy', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('copy', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('copy')->will($this->returnValue($test['copy']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforeCopy', 'onAfterCopy', 'getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('onBeforeCopy', 'onAfterCopy', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeCopy')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterCopy')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -548,11 +575,11 @@ class FOFModelTest extends FtestCaseDatabase
 
         $return = $model->copy();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::copy returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::copy returned a wrong value');
 
         if(!$test['copy'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::copy got the wrong error message when copy fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::copy got the wrong error message when copy fails');
         }
     }
 
@@ -561,8 +588,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestDelete
-     * @group               FOFModel
-     * @covers              FOFModel::delete
+     * @group               F0FModel
+     * @covers              F0FModel::delete
      * @dataProvider        getTestDelete
      * @preventDataLoading
      */
@@ -573,11 +600,11 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('delete', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('delete', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('delete')->will($this->returnValue($test['delete']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforeDelete', 'onAfterDelete', 'getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('onBeforeDelete', 'onAfterDelete', 'getTable'), array($config));
 
         if(isset($test['beforeFailsOnce']))
         {
@@ -600,11 +627,11 @@ class FOFModelTest extends FtestCaseDatabase
 
         $return = $model->delete();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::delete returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::delete returned a wrong value');
 
         if(!$test['delete'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::delete got the wrong error message when delete fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::delete got the wrong error message when delete fails');
         }
     }
 
@@ -613,8 +640,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestPublish
-     * @group               FOFModel
-     * @covers              FOFModel::publish
+     * @group               F0FModel
+     * @covers              F0FModel::publish
      * @dataProvider        getTestPublish
      * @preventDataLoading
      */
@@ -627,11 +654,11 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('publish', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('publish', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('publish')->will($this->returnValue($test['publish']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforePublish')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterPublish')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -652,24 +679,24 @@ class FOFModelTest extends FtestCaseDatabase
             $event = $property->getValue($model);
 
             // Let's create a mock for the platform and check that plugins are run
-            $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('runPlugins'));
+            $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('runPlugins'));
             $platform->expects($this->any())->method('runPlugins')->with(
                 $event,
                 array('com_foftest.foobars', $test['id_list'], 1)
             );
 
-            FOFPlatform::forceInstance($platform);
+            F0FPlatform::forceInstance($platform);
         }
 
         // I don't pass any argument since I'm not interested in records being really published, that's table duty.
         // Here I'm testing how the model reacts vs different scenarios
         $return = $model->publish();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::publish returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::publish returned a wrong value');
 
         if(!$test['publish'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::publish got the wrong error message when publish fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::publish got the wrong error message when publish fails');
         }
     }
 
@@ -678,8 +705,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestCheckout
-     * @group               FOFModel
-     * @covers              FOFModel::checkout
+     * @group               F0FModel
+     * @covers              F0FModel::checkout
      * @dataProvider        getTestCheckout
      * @preventDataLoading
      */
@@ -690,20 +717,20 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('checkout', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('checkout', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('checkout')->will($this->returnValue($test['checkout']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('getTable'), array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->checkout();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::checkout returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::checkout returned a wrong value');
 
         if(!$test['checkout'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::checkout got the wrong error message when checkout fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::checkout got the wrong error message when checkout fails');
         }
     }
 
@@ -712,8 +739,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestCheckin
-     * @group               FOFModel
-     * @covers              FOFModel::checkin
+     * @group               F0FModel
+     * @covers              F0FModel::checkin
      * @dataProvider        getTestCheckin
      * @preventDataLoading
      */
@@ -724,20 +751,20 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('checkin', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('checkin', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('checkin')->will($this->returnValue($test['checkin']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('getTable'), array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->checkin();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::checkin returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::checkin returned a wrong value');
 
         if(!$test['checkin'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::checkin got the wrong error message when checkin fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::checkin got the wrong error message when checkin fails');
         }
     }
 
@@ -746,8 +773,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestIsCheckedOut
-     * @group               FOFModel
-     * @covers              FOFModel::isCheckedOut
+     * @group               F0FModel
+     * @covers              F0FModel::isCheckedOut
      * @dataProvider        getTestIsCheckedOut
      * @preventDataLoading
      */
@@ -758,20 +785,20 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('isCheckedOut', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('isCheckedOut', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('isCheckedOut')->will($this->returnValue($test['isCheckedOut']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('getTable'), array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->isCheckedOut();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::isCheckedOut returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::isCheckedOut returned a wrong value');
 
         if(!$test['isCheckedOut'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::isCheckedOut got the wrong error message when isCheckedOut fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::isCheckedOut got the wrong error message when isCheckedOut fails');
         }
     }
 
@@ -780,8 +807,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestHit
-     * @group               FOFModel
-     * @covers              FOFModel::hit
+     * @group               F0FModel
+     * @covers              F0FModel::hit
      * @dataProvider        getTestHit
      * @preventDataLoading
      */
@@ -792,11 +819,11 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('hit', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('hit', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('hit')->will($this->returnValue($test['hit']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforeHit', 'onAfterHit', 'getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('onBeforeHit', 'onAfterHit', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeHit')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterHit')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -810,11 +837,11 @@ class FOFModelTest extends FtestCaseDatabase
 
         $return = $model->hit();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::hit returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::hit returned a wrong value');
 
         if(!$test['hit'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::hit got the wrong error message when hit fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::hit got the wrong error message when hit fails');
         }
     }
 
@@ -823,8 +850,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestMove
-     * @group               FOFModel
-     * @covers              FOFModel::move
+     * @group               F0FModel
+     * @covers              F0FModel::move
      * @dataProvider        getTestMove
      * @preventDataLoading
      */
@@ -835,12 +862,12 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('move', 'load', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('move', 'load', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('move')->will($this->returnValue($test['move']));
         $table->expects($this->any())->method('load')->will($this->returnValue($test['load']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforeMove', 'onAfterMove', 'getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('onBeforeMove', 'onAfterMove', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeMove')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterMove')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -849,11 +876,11 @@ class FOFModelTest extends FtestCaseDatabase
         // Here I'm testing how the model reacts vs different scenarios
         $return = $model->move(1);
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::move returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::move returned a wrong value');
 
         if(!$test['move'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::move got the wrong error message when move fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::move got the wrong error message when move fails');
         }
     }
 
@@ -862,8 +889,8 @@ class FOFModelTest extends FtestCaseDatabase
      * I just want to test the model in all the possible scenarios.
      *
      * @group               modelTestReorder
-     * @group               FOFModel
-     * @covers              FOFModel::reorder
+     * @group               F0FModel
+     * @covers              F0FModel::reorder
      * @dataProvider        getTestReorder
      * @preventDataLoading
      */
@@ -874,48 +901,48 @@ class FOFModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	array('reorder', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	array('reorder', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('reorder')->will($this->returnValue($test['reorder']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('FOFModel', array('onBeforeReorder', 'onAfterReorder', 'getTable'), array($config));
+        $model = $this->getMock('F0FModel', array('onBeforeReorder', 'onAfterReorder', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeReorder')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterReorder')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->reorder();
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::reorder returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::reorder returned a wrong value');
 
         if(!$test['reorder'])
         {
-            $this->assertEquals($test['error'], $model->getError(), 'FOFModel::reorder got the wrong error message when reorder fails');
+            $this->assertEquals($test['error'], $model->getError(), 'F0FModel::reorder got the wrong error message when reorder fails');
         }
     }
 
     /**
      * @group               modelTestgetTotal
-     * @group               FOFModel
-     * @covers              FOFModel::getTotal
+     * @group               F0FModel
+     * @covers              F0FModel::getTotal
      * @dataProvider        getTestgetTotal
      */
     public function testGetTotal($test, $checks)
     {
         $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = $this->getMock('FOFModel', array('buildCountQuery', 'buildQuery'), array($config));
+        $model = $this->getMock('F0FModel', array('buildCountQuery', 'buildQuery'), array($config));
         $model->expects($this->any())->method('buildCountQuery')->will($this->returnValue($test['buildCount']));
         $model->expects($this->any())->method('buildQuery')->will($this->returnValue($test['buildQuery']));
 
         $total = $model->getTotal();
 
-        $this->assertEquals($checks['total'], $total, 'FOFModel::getTotal returned wrong total value');
+        $this->assertEquals($checks['total'], $total, 'F0FModel::getTotal returned wrong total value');
     }
 
     /**
      * @group               modelTestGetHash
-     * @group               FOFModel
-     * @covers              FOFModel::getHash
+     * @group               F0FModel
+     * @covers              F0FModel::getHash
      * @dataProvider        getTestGetHash
      * @preventDataLoading
      */
@@ -928,23 +955,23 @@ class FOFModelTest extends FtestCaseDatabase
 
         if(isset($test['tmpInstance']) && $test['tmpInstance'])
         {
-            $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+            $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
         }
         else
         {
-            $model = FOFModel::getAnInstance('Foobars', 'FoftestModel', $config);
+            $model = F0FModel::getAnInstance('Foobars', 'FoftestModel', $config);
         }
 
         $hash = $model->getHash();
 
-        $this->assertEquals($checks['hash'], $hash, 'FOFModel::getHash created a wrong hash value');
+        $this->assertEquals($checks['hash'], $hash, 'F0FModel::getHash created a wrong hash value');
     }
 
     /**
      * @group               modelTestGetList
-     * @group               FOFModel
-     * @covers              FOFModel::_getList
-     * @covers              FOFModel::onProcessList
+     * @group               F0FModel
+     * @covers              F0FModel::_getList
+     * @covers              F0FModel::onProcessList
      * @dataProvider        getTestGetList
      */
     public function testGetList($modelinfo, $test, $checks)
@@ -955,14 +982,14 @@ class FOFModelTest extends FtestCaseDatabase
         );
 
         // Create a mock so I can test onProcessList, too
-        $model = $this->getMock('FOFModel', array('onProcessList'), array($config));
+        $model = $this->getMock('F0FModel', array('onProcessList'), array($config));
         $model->expects($this->any())->method('onProcessList')->will($this->returnCallback($test['callback']));
 
         $method = new ReflectionMethod($model, '_getList');
         $method->setAccessible(true);
         $list = $method->invoke($model, $test['query'], $test['limitstart'], $test['limit'], $test['group']);
 
-        $this->assertEquals($checks['list'], $list, 'FOFModel::_getList returned a wrong recordset');
+        $this->assertEquals($checks['list'], $list, 'F0FModel::_getList returned a wrong recordset');
     }
 
     /**
@@ -970,8 +997,8 @@ class FOFModelTest extends FtestCaseDatabase
      * arguments. I will check for the correct table to be returned while testing _createTable.
      *
      * @group               modelTestGetTable
-     * @group               FOFModel
-     * @covers              FOFModel::getTable
+     * @group               F0FModel
+     * @covers              F0FModel::getTable
      * @dataProvider        getTestGetTable
      * @preventDataLoading
      */
@@ -984,10 +1011,10 @@ class FOFModelTest extends FtestCaseDatabase
 
         $config['option'] = 'com_foftest';
         $config['name']   = $modelinfo['name'];
-        $config['table']  = FOFInflector::singularize($modelinfo['name']);
+        $config['table']  = F0FInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
-        $model = $this->getMock('FOFModel', array('_createTable'), array($config));
+        $model = $this->getMock('F0FModel', array('_createTable'), array($config));
 
         if(!$test['create']['options'])
         {
@@ -1017,8 +1044,8 @@ class FOFModelTest extends FtestCaseDatabase
 
     /**
      * @group               modelTestGetTable
-     * @group               FOFModel
-     * @covers              FOFModel::getTable
+     * @group               F0FModel
+     * @covers              F0FModel::getTable
      * @preventDataLoading
      */
     public function testGetTableException()
@@ -1030,7 +1057,7 @@ class FOFModelTest extends FtestCaseDatabase
             'view'      => 'foobars'
         );
 
-        $model = $this->getMock('FOFModel', array('_createTable'), array($config));
+        $model = $this->getMock('F0FModel', array('_createTable'), array($config));
         $model->expects($this->any())->method('_createTable')->will($this->returnValue(false));
 
         $model->getTable();
@@ -1038,8 +1065,8 @@ class FOFModelTest extends FtestCaseDatabase
 
     /**
      * @group               modelTestCreateTable
-     * @group               FOFModel
-     * @covers              FOFModel::_createTable
+     * @group               F0FModel
+     * @covers              F0FModel::_createTable
      * @dataProvider        getTestCreateTable
      * @preventDataLoading
      */
@@ -1050,7 +1077,7 @@ class FOFModelTest extends FtestCaseDatabase
             'view'      => $modelinfo['name']
         );
 
-        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
 
         // I have to get the SAME dbo object, or the table won't be the same
         if(isset($test['loadDbo']))
@@ -1063,18 +1090,18 @@ class FOFModelTest extends FtestCaseDatabase
         $table = $method->invoke($model, $test['name'], $test['prefix'], $test['config']);
 
         // Let's reset any saved instance
-        FOFTable::forceInstance();
+        F0FTable::forceInstance();
 
-        $tableCheck = FOFTable::getAnInstance($checks['name'], $checks['prefix'], array('dbo' => $model->getDbo()));
+        $tableCheck = F0FTable::getAnInstance($checks['name'], $checks['prefix'], array('dbo' => $model->getDbo()));
 
-        $this->assertInstanceOf('FOFTable', $table, 'FOFModel::_createTable should return an instance of FOFTable');
-        $this->assertEquals($tableCheck, $table, 'FOFModel::_createTable returned a wrong table');
+        $this->assertInstanceOf('F0FTable', $table, 'F0FModel::_createTable should return an instance of F0FTable');
+        $this->assertEquals($tableCheck, $table, 'F0FModel::_createTable returned a wrong table');
     }
 
     /**
      * @group               modelTestBuildQuery
-     * @group               FOFModel
-     * @covers              FOFModel::buildQuery
+     * @group               F0FModel
+     * @covers              F0FModel::buildQuery
      * @dataProvider        getTestBuildQuery
      * @preventDataLoading
      */
@@ -1082,15 +1109,15 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['option'] = 'com_foftest';
         $config['name']   = $modelinfo['name'];
-        $config['table']  = FOFInflector::singularize($modelinfo['name']);
+        $config['table']  = F0FInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
         // Create a mock so I can test vs different table alias
-        $model = $this->getMock('FOFModel', array('getTableAlias'), array($config));
+        $model = $this->getMock('F0FModel', array('getTableAlias'), array($config));
         $model->expects($this->any())->method('getTableAlias')->will($this->returnValue($test['aliasTable']));
 
         // Let's create a mocked Behavior, so I can manipulate its behavior (LOL)
-        $behavior = $this->getMock('FOFModelDispatcherBehavior', array('trigger'));
+        $behavior = $this->getMock('F0FModelDispatcherBehavior', array('trigger'));
         $behavior->expects($this->any())->method('trigger')->will($this->returnValue(null));
 
         // Inject the hacked behavior
@@ -1100,63 +1127,63 @@ class FOFModelTest extends FtestCaseDatabase
 
         $query = $model->buildQuery($test['overrideLimits']);
 
-        $this->assertEquals((string) $checks['query'], (string) $query, 'FOFModel::buildQuery returned a wrong query');
+        $this->assertEquals((string) $checks['query'], (string) $query, 'F0FModel::buildQuery returned a wrong query');
     }
 
     /**
      * @group               modelTest__get
-     * @group               FOFModel
-     * @covers              FOFModel::__get
+     * @group               F0FModel
+     * @covers              F0FModel::__get
      * @preventDataLoading
      */
     public function test__get()
     {
         $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
         $model->setState('dummy', 'test');
 
-        $this->assertEquals('test', $model->dummy, 'FOFModel::__get failed to retrieve a state using magic getter');
+        $this->assertEquals('test', $model->dummy, 'F0FModel::__get failed to retrieve a state using magic getter');
     }
 
     /**
      * @group               modelTest__set
-     * @group               FOFModel
-     * @covers              FOFModel::__set
+     * @group               F0FModel
+     * @covers              F0FModel::__set
      * @preventDataLoading
      */
     public function test__set()
     {
         $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
         $model->dummy = 'test';
 
-        $this->assertEquals('test', $model->getState('dummy'), 'FOFModel::__set failed to retrieve a state using magic setter');
+        $this->assertEquals('test', $model->getState('dummy'), 'F0FModel::__set failed to retrieve a state using magic setter');
     }
 
     /**
      * @group               modelTest__call
-     * @group               FOFModel
-     * @covers              FOFModel::__call
+     * @group               F0FModel
+     * @covers              F0FModel::__call
      * @preventDataLoading
      */
     public function test__call()
     {
         $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
         $model->dummy('test');
 
-        $this->assertEquals('test', $model->getState('dummy'), 'FOFModel::__set failed to retrieve a state using __call');
+        $this->assertEquals('test', $model->getState('dummy'), 'F0FModel::__set failed to retrieve a state using __call');
     }
 
     /**
      * @group               modelTestGetForm
-     * @group               FOFModel
-     * @covers              FOFModel::getForm
-     * @covers              FOFModel::onBeforeLoadForm
-     * @covers              FOFModel::onAfterLoadForm
+     * @group               F0FModel
+     * @covers              F0FModel::getForm
+     * @covers              F0FModel::onBeforeLoadForm
+     * @covers              F0FModel::onAfterLoadForm
      * @dataProvider        getTestGetForm
      * @preventDataLoading
      */
@@ -1164,11 +1191,11 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['option'] = 'com_foftest';
         $config['name']   = $modelinfo['name'];
-        $config['table']  = FOFInflector::singularize($modelinfo['name']);
+        $config['table']  = F0FInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
         $methods = array('getState', 'loadForm', 'onBeforeLoadForm', 'onAfterLoadForm');
-        $model   = $this->getMock('FOFModel', $methods, array($config));
+        $model   = $this->getMock('F0FModel', $methods, array($config));
 
         // Test vs different form name coming from the request
         $model->expects($this->any())->method('getState')->will($this->returnCallback(
@@ -1241,13 +1268,13 @@ class FOFModelTest extends FtestCaseDatabase
         $model->setInput($config['input']);
         $form = $model->getForm($test['data'], $test['loadData'], $test['source']);
 
-        $this->assertEquals($checks['form'], $form, 'FOFModel::getForm returned the wrong value');
+        $this->assertEquals($checks['form'], $form, 'F0FModel::getForm returned the wrong value');
     }
 
     /**
      * @group               modelTestLoadForm
-     * @group               FOFModel
-     * @covers              FOFModel::LoadForm
+     * @group               F0FModel
+     * @covers              F0FModel::LoadForm
      * @dataProvider        getTestLoadForm
      * @preventDataLoading
      */
@@ -1256,18 +1283,18 @@ class FOFModelTest extends FtestCaseDatabase
         $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
         $methods = array('findFormFilename', 'loadFormData', 'onBeforePreprocessForm', 'preprocessForm', 'onAfterPreprocessForm');
-        $model   = $this->getMock('FOFModel', $methods, array($config));
+        $model   = $this->getMock('F0FModel', $methods, array($config));
 
         $model->expects($this->any())->method('findFormFilename')->will($this->returnValue($test['formPath']));
         $model->expects($this->any())->method('loadFormData')->will($this->returnValue($test['data']));
 
-        $formMock = $this->getMock('FOFForm', array('bind'), array('dummy'));
+        $formMock = $this->getMock('F0FForm', array('bind'), array('dummy'));
         $formMock->expects($this->any())->method('bind')
                  ->with($checks['bind']['data']);
 
-        $fofform = new ReflectionProperty('FOFForm', 'forms');
+        $fofform = new ReflectionProperty('F0FForm', 'forms');
         $fofform->setAccessible(true);
-        $fofform->setValue('FOFForm', array($test['name'] => $formMock));
+        $fofform->setValue('F0FForm', array($test['name'] => $formMock));
 
         // Let's check if the onBeforePreprocessForm is called with the correct arguments
         // Do I want to modify incoming data in the onBefore event?
@@ -1321,16 +1348,16 @@ class FOFModelTest extends FtestCaseDatabase
 
         if(isset($checks['errMsg']))
         {
-            $this->assertEquals($checks['errMsg'], $model->getError(), 'FOFModel::loadForm failed to set the correct message while an exception is thrown');
+            $this->assertEquals($checks['errMsg'], $model->getError(), 'F0FModel::loadForm failed to set the correct message while an exception is thrown');
         }
 
-        $this->assertEquals($checks['form'], (bool)$form, 'FOFModel::loadForm returned a wrong value');
+        $this->assertEquals($checks['form'], (bool)$form, 'F0FModel::loadForm returned a wrong value');
     }
 
     /**
      * @group               modelTestFindFormFilename
-     * @group               FOFModel
-     * @covers              FOFModel::findFormFilename
+     * @group               F0FModel
+     * @covers              F0FModel::findFormFilename
      * @dataProvider        getTestFindFormFilename
      * @preventDataLoading
      */
@@ -1338,11 +1365,11 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
-        $model = FOFModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance($modelinfo['name'], 'FoftestModel', $config);
         $model->setInput($config['input']);
 
         // First of all I stub the filesystem object, so it won't strip out the protocol part
-        $filesystem = $this->getMock('FOFIntegrationJoomlaPlatform', array('fileExists'));
+        $filesystem = $this->getMock('F0FIntegrationJoomlaPlatform', array('fileExists'));
         $filesystem->expects($this->any())
                    ->method('fileExists')
                    ->will($this->returnCallback(function($file){ return is_file($file);}));
@@ -1354,7 +1381,7 @@ class FOFModelTest extends FtestCaseDatabase
             $methods[] = 'getTemplateSuffixes';
         }
 
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', $methods);
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', $methods);
 
         // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())
@@ -1371,7 +1398,7 @@ class FOFModelTest extends FtestCaseDatabase
             $platform->expects($this->any())->method('getTemplateSuffixes')->will($this->returnValue($test['suffix']));
         }
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $paths = array();
 
@@ -1393,13 +1420,13 @@ class FOFModelTest extends FtestCaseDatabase
         // I always have to supply paths, since I have to use the filesystem wrapper
         $form = $model->findFormFilename($test['form_name'], $paths);
 
-        $this->assertEquals($checks['form'], $form, 'FOFModel::findFormFilename returned a wrong value');
+        $this->assertEquals($checks['form'], $form, 'F0FModel::findFormFilename returned a wrong value');
     }
 
     /**
      * @group               modelTestLoadFormData
-     * @group               FOFModel
-     * @covers              FOFModel::loadFormData
+     * @group               F0FModel
+     * @covers              F0FModel::loadFormData
      * @dataProvider        getTestLoadFormData
      * @preventDataLoading
      */
@@ -1407,7 +1434,7 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
 
         $property = new ReflectionProperty($model, '_formData');
         $property->setAccessible(true);
@@ -1418,14 +1445,14 @@ class FOFModelTest extends FtestCaseDatabase
 
         $data = $method->invoke($model);
 
-        $this->assertEquals($checks['data'], $data, 'FOFModel::loadFormData returned the wrong value');
+        $this->assertEquals($checks['data'], $data, 'F0FModel::loadFormData returned the wrong value');
     }
 
 
     /**
      * @group               modelTestPreprocessForm
-     * @group               FOFModel
-     * @covers              FOFModel::preprocessForm
+     * @group               F0FModel
+     * @covers              F0FModel::preprocessForm
      * @dataProvider        getTestPreprocessForm
      * @preventDataLoading
      */
@@ -1433,11 +1460,11 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
 
-        $form = new FOFForm('dummy');
+        $form = new F0FForm('dummy');
 
-        $platform = $this->getMock('FOFIntegrationJoomlaPlatform', array('importPlugin', 'runPlugins'));
+        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('importPlugin', 'runPlugins'));
         $platform->expects($this->any())->method('importPlugin')->with('content');
         $platform->expects($this->any())->method('runPlugins')
                  ->with('onContentPrepareForm', array($form, array()))
@@ -1448,7 +1475,7 @@ class FOFModelTest extends FtestCaseDatabase
             $this->setExpectedException('Exception');
         }
 
-        FOFPlatform::forceInstance($platform);
+        F0FPlatform::forceInstance($platform);
 
         $method = new ReflectionMethod($model, 'preprocessForm');
         $method->setAccessible(true);
@@ -1457,8 +1484,8 @@ class FOFModelTest extends FtestCaseDatabase
 
     /**
      * @group               modelTestValidateForm
-     * @group               FOFModel
-     * @covers              FOFModel::validateForm
+     * @group               F0FModel
+     * @covers              F0FModel::validateForm
      * @dataProvider        getTestValidateForm
      * @preventDataLoading
      */
@@ -1466,9 +1493,9 @@ class FOFModelTest extends FtestCaseDatabase
     {
         $config['input']  = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = FOFModel::getTmpInstance('Foobars', 'FoftestModel', $config);
+        $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
 
-        $form = $this->getMock('FOFForm', array('filter', 'validate', 'getErrors'), array('dummy'));
+        $form = $this->getMock('F0FForm', array('filter', 'validate', 'getErrors'), array('dummy'));
         $form->expects($this->any())->method('filter')
              ->with($checks['data'])
              ->will($this->returnValue($test['filterData']));
@@ -1481,11 +1508,11 @@ class FOFModelTest extends FtestCaseDatabase
 
         $return = $model->validateForm($form, $test['data'], $test['group']);
 
-        $this->assertEquals($checks['return'], $return, 'FOFModel::validateForm returned a wrong value');
+        $this->assertEquals($checks['return'], $return, 'F0FModel::validateForm returned a wrong value');
 
         if(!$checks['return'])
         {
-            $this->assertEquals($checks['errMsg'], $model->getError(), 'FOFModel::validateForm set the wrong message when failing');
+            $this->assertEquals($checks['errMsg'], $model->getError(), 'F0FModel::validateForm set the wrong message when failing');
         }
     }
 
@@ -1522,6 +1549,11 @@ class FOFModelTest extends FtestCaseDatabase
     public function getTestGetItemList()
     {
         return ModelDataprovider::getTestGetItemList();
+    }
+
+    public function getTestGetIterator()
+    {
+        return ModelDataprovider::getTestGetIterator();
     }
 
     public function getTestSave()

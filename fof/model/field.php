@@ -7,7 +7,7 @@
  */
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework model behavior class
@@ -15,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class FOFModelField
+abstract class F0FModelField
 {
 	protected $_db = null;
 
@@ -135,7 +135,7 @@ abstract class FOFModelField
 
 		if (is_array($value))
 		{
-			$db    = FOFPlatform::getInstance()->getDbo();
+			$db    = F0FPlatform::getInstance()->getDbo();
 			$value = array_map(array($db, 'quote'), $value);
 
 			return '(' . $this->getFieldName() . ' IN (' . implode(',', $value) . '))';
@@ -238,7 +238,7 @@ abstract class FOFModelField
 	 * @param   object  $field   The field informations
 	 * @param   array   $config  The field configuration (like the db object to use)
 	 *
-	 * @return  FOFModelField  The Field object
+	 * @return  F0FModelField  The Field object
 	 */
 	public static function getField($field, $config = array())
 	{
@@ -246,7 +246,7 @@ abstract class FOFModelField
 
 		$classType = self::getFieldType($type);
 
-		$className = 'FOFModelField' . $classType;
+		$className = 'F0FModelField' . $classType;
 
 		if (class_exists($className))
 		{
@@ -256,7 +256,7 @@ abstract class FOFModelField
 			}
 			else
 			{
-				$db = FOFPlatform::getInstance()->getDbo();
+				$db = F0FPlatform::getInstance()->getDbo();
 			}
 
 			if (isset($config['table_alias']))

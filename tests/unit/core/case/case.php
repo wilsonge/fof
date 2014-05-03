@@ -8,7 +8,7 @@
  */
 
 //require_once 'PHPUnit/Framework.php';
-require_once 'PHPUnit/Autoload.php';
+//require_once 'PHPUnit/Autoload.php';
 
 abstract class FtestCase extends PHPUnit_Framework_TestCase
 {
@@ -18,9 +18,9 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 	protected $factoryState = array();
 
 	/**
-	 * @var			FOFPlatform   The stashed FOFPlatform instance
+	 * @var			F0FPlatform   The stashed F0FPlatform instance
 	 */
-	protected $_stashedFOFPlatform = null;
+	protected $_stashedF0FPlatform = null;
 
 	/**
 	 * @var         array  The list of errors expected to be encountered during the test.
@@ -279,33 +279,33 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Save the current FOFPlatform object
+	 * Save the current F0FPlatform object
 	 *
 	 * @return  void
 	 */
-	protected function saveFOFPlatform()
+	protected function saveF0FPlatform()
 	{
-		$this->_stashedFOFPlatform = clone FOFPlatform::getInstance();
+		$this->_stashedF0FPlatform = clone F0FPlatform::getInstance();
 	}
 
 	/**
-	 * Restore the saved FOFPlatform object
+	 * Restore the saved F0FPlatform object
 	 *
 	 * @return  void
 	 */
-	protected function restoreFOFPlatform()
+	protected function restoreF0FPlatform()
 	{
-		FOFPlatform::forceInstance($this->_stashedFOFPlatform);
+		F0FPlatform::forceInstance($this->_stashedF0FPlatform);
 	}
 
 	/**
-	 * Replace the FOFPlatform object with a slightly customised one which
+	 * Replace the F0FPlatform object with a slightly customised one which
 	 * allows us to fake front-end, back-end and CLI execution at will.
 	 */
-	protected function replaceFOFPlatform()
+	protected function replaceF0FPlatform()
 	{
 		$platform = new FtestPlatformJoomla();
-		FOFPlatform::forceInstance($platform);
+		F0FPlatform::forceInstance($platform);
 	}
 
 

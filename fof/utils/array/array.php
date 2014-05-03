@@ -6,14 +6,14 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * A utility class to handle array manipulation.
  *
  * Based on the JArrayHelper class as found in Joomla! 3.2.0
  */
-abstract class FOFUtilsArray
+abstract class F0FUtilsArray
 {
 	/**
 	 * Option to perform case-sensitive sorts.
@@ -321,7 +321,7 @@ abstract class FOFUtilsArray
 	 *     'New' => array('1000', '1500', '1750'),
 	 *     'Used' => array('3000', '4000', '5000', '6000')
 	 * );
-	 * $output = FOFUtilsArray::invert($input);
+	 * $output = F0FUtilsArray::invert($input);
 	 *
 	 * Output would be equal to:
 	 * $output = array(
@@ -498,7 +498,7 @@ abstract class FOFUtilsArray
 	 *
 	 * @return  integer  Comparison status
 	 *
-	 * @see     FOFUtilsArray::sortObjects()
+	 * @see     F0FUtilsArray::sortObjects()
 	 */
 	protected static function _sortObjects(&$a, &$b)
 	{

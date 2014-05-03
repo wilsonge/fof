@@ -6,26 +6,26 @@
  *  @license     GNU General Public License version 2, or later
  */
 
-defined('FOF_INCLUDED') or die();
+defined('F0F_INCLUDED') or die();
 
 /**
- * The main class autoloader for FOF itself
+ * The main class autoloader for F0F itself
  *
  * @package     FrameworkOnFramework
  * @subpackage  autoloader
  * @since       2.1
  */
-class FOFAutoloaderFof
+class F0FAutoloaderFof
 {
 	/**
 	 * An instance of this autoloader
 	 *
-	 * @var   FOFAutoloaderFof
+	 * @var   F0FAutoloaderFof
 	 */
 	public static $autoloader = null;
 
 	/**
-	 * The path to the FOF root directory
+	 * The path to the F0F root directory
 	 *
 	 * @var   string
 	 */
@@ -34,7 +34,7 @@ class FOFAutoloaderFof
 	/**
 	 * Initialise this autoloader
 	 *
-	 * @return  FOFAutoloaderFof
+	 * @return  F0FAutoloaderFof
 	 */
 	public static function init()
 	{
@@ -65,8 +65,8 @@ class FOFAutoloaderFof
 	 */
 	public function autoload_fof_core($class_name)
 	{
-		// Make sure the class has a FOF prefix
-		if (substr($class_name, 0, 3) != 'FOF')
+		// Make sure the class has a F0F prefix
+		if (substr($class_name, 0, 3) != 'F0F')
 		{
 			return;
 		}

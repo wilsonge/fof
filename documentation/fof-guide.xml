@@ -42,6 +42,18 @@
       material on this site then please contact <link
       xlink:href="mailto:legal@opensourcematters.org">legal@opensourcematters.org</link>.</para>
     </legalnotice>
+
+    <cover>
+      <para><figure role="front-large">
+          <title>FOF Developer's Guide cover image</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/cover.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </figure></para>
+    </cover>
   </info>
 
   <chapter xml:id="introducing-fof">
@@ -109,11 +121,11 @@
       <section xml:id="preface-to-doc">
         <title>Preface to this documentation</title>
 
-        <para>FOF is a rapid application development framework for the Joomla!
-        CMS. Instead of trying to completely replace Joomla!’s own API
-        (formerly known as the Joomla! Platform) it builds upon it and extends
-        it both in scope and features. In the end of the day it enables
-        agony-free extension development for the Joomla! CMS.</para>
+        <para>FOF is a rapid application development framework for Joomla!.
+        Instead of trying to completely replace Joomla!’s own API (formerly
+        known as the Joomla! Platform) it builds upon it and extends it both
+        in scope and features. In the end of the day it enables agony-free
+        extension development for the Joomla! CMS.</para>
 
         <para>In order to exploit the time-saving capabilities of the FOF
         framework to the maximum you need to understand how it's organized,
@@ -182,14 +194,14 @@
         module or plugin is using this short code snippet right after your
         defined('_JEXEC') or die() statement (Joomla! 2.x and later):</para>
 
-        <programlisting>if (!defined('FOF_INCLUDED'))
+        <programlisting>if (!defined('F0F_INCLUDED'))
 {
-    include_once JPATH_LIBRARIES . '/fof/include.php';
+    include_once JPATH_LIBRARIES . '/f0f/include.php';
 }</programlisting>
 
         <para>Alternatively, you can use the one-liner:</para>
 
-        <programlisting>require_once JPATH_LIBRARIES . '/fof/include.php';
+        <programlisting>require_once JPATH_LIBRARIES . '/f0f/include.php';
 </programlisting>
 
         <para>From that point onwards you can use FOF in your
@@ -198,14 +210,6 @@
 
       <section xml:id="install-fof-with-your-component">
         <title>Installing FOF with your component</title>
-
-        <important>
-          <para>Joomla! 3.2 will ship with FOF pre-installed. Developers must
-          make sure that they do not accidentally overwrite the FOF library
-          shipped with Joomla!. You can do that with an
-          if(version_compare(JVERSION, '3.2.0', 'ge')) return; in your FOF
-          installation code.</para>
-        </important>
 
         <para>Unfortunately, Joomla! doesn't allow us to version checking
         before installing a library package. This means that it's your
@@ -221,7 +225,7 @@
         method:</para>
 
         <programlisting>/**
- * Check if FoF is already installed and install if not
+ * Check if FOF is already installed and install if not
  *
  * @param   object  $parent  class calling this method
  *
@@ -238,11 +242,11 @@ private function _installFOF($parent)
 
     if (!defined('JPATH_LIBRARIES'))
     {
-        $target = JPATH_ROOT . '/libraries/fof';
+        $target = JPATH_ROOT . '/libraries/f0f';
     }
     else
     {
-        $target = JPATH_LIBRARIES . '/fof';
+        $target = JPATH_LIBRARIES . '/f0f';
     }
     $haveToInstallFOF = false;
 
@@ -408,7 +412,7 @@ function postflight($type, $parent)
       how to write components? Yes, it's possible with FOF. It has been
       possible since September 2011, actually. And for those who mumble their
       words and spread FUD, yes, it IS HMVC by any definition. The very
-      existence of the FOFDispatcher class proves the point.</para>
+      existence of the F0FDispatcher class proves the point.</para>
 
       <bridgehead>Easy reuse of view template files without ugly
       include().</bridgehead>
@@ -416,7 +420,7 @@ function postflight($type, $parent)
       <para>More often than not you want to reuse view template files across
       views. The "traditional" way was by using include() or require()
       statements. This meant, however, that template overrides ceased working.
-      Not any more! Using FOFView's loadAnyTemplate() you can load any view
+      Not any more! Using F0FView's loadAnyTemplate() you can load any view
       template file from the front- or back-end of your component or any other
       component, automatically respecting template overrides.</para>
 
@@ -436,7 +440,7 @@ function postflight($type, $parent)
       This usually required the users to "hack core", i.e. modify your views'
       PHP files, ending up in an unmaintainable, non-upgradeable and
       potentially insecure solution. Not any more! Using FOF's
-      FOFTemplateUtils::addCSS and FOFTemplateUtils::addJS you can load your
+      F0FTemplateUtils::addCSS and F0FTemplateUtils::addJS you can load your
       CSS and JS files directly from the view template file. Even better? You
       can use the equivalent of template overrides to let your users and
       template designers override them with their own implementations. They
@@ -610,7 +614,7 @@ function postflight($type, $parent)
     has to do with views being rendered as HTML. It's what renders the title
     in the back-end, the actions toolbar in the front- or back-end and the
     navigation links / menu in the back-end. In case you missed the subtle
-    reference: FOFToolbar allows you to render an actions toolbar even in the
+    reference: F0FToobar allows you to render an actions toolbar even in the
     front-end of your component, something that's not possible with plain old
     Joomla!. You will simply need to add some CSS to do it.</para>
 
@@ -670,7 +674,7 @@ function postflight($type, $parent)
         <listitem>
           <para>If a default model is not found, FOF will fall back to
           creating a suitably configured instance of
-          <classname>FOFModel</classname>, using convention over configuration
+          <classname>F0FModel</classname>, using convention over configuration
           (explained below) to determine what the model object should
           do.</para>
         </listitem>
@@ -733,8 +737,8 @@ function postflight($type, $parent)
       plural.</para>
 
       <para>If the view-specific model behaviour class is not found, FOF will
-      fall back to <classname>FOFModelBehaviorName</classname>, e.g.
-      <classname>FOFModelBehaviorFilter</classname> if you are using the
+      fall back to <classname>F0FModelBehaviorName</classname>, e.g.
+      <classname>F0FModelBehaviorFilter</classname> if you are using the
       "filters" behaviour name. The built-in behaviours are discussed further
       down in the Built-in Behaviours section.</para>
 
@@ -742,7 +746,7 @@ function postflight($type, $parent)
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from FOFModel into your extension's specialised
+      yourself copying code from F0FModel into your extension's specialised
       model class you're doing it wrong.</para>
 
       <para>FOF models can be customised very easily using the
@@ -842,7 +846,7 @@ function postflight($type, $parent)
           <title>Introduction</title>
 
           <para>Model Behaviors are a handy way to alter the workflow of a
-          FOFModel. It's based upon the standard Joomla Event system.</para>
+          F0FModel. It's based upon the standard Joomla Event system.</para>
 
           <para>Before and After certain actions, the model triggers an
           "event" which is propagated to each of the registered behaviors for
@@ -854,7 +858,7 @@ function postflight($type, $parent)
           created.</para>
 
           <para>FOF already provides a list of common behaviors, that can be
-          used by any FOFModel object.</para>
+          used by any F0FModel object.</para>
         </section>
 
         <section xml:id="fofmodel-behaviours-standard">
@@ -1306,7 +1310,7 @@ function postflight($type, $parent)
           behavior. You can override it with your preferred behavior in your
           model class declaration:</para>
 
-          <programlisting>class FoobarModelTodos extends FOFmodel {
+          <programlisting>class FoobarModelTodos extends F0FModel {
 
     ....
 
@@ -1320,7 +1324,7 @@ function postflight($type, $parent)
           <para>2. Passing it into the <parameter>$config</parameter>
           parameter for the constructor of your model class:</para>
 
-          <programlisting>class FoobarModelTodos extends FOFmodel {
+          <programlisting>class FoobarModelTodos extends F0FModel {
 
     ....
 
@@ -1340,14 +1344,14 @@ function postflight($type, $parent)
           <para>3. Passing it when you create the model instance through the
           <parameter>config</parameter> parameter:</para>
 
-          <programlisting>$model = FOFModel::getTmpInstance('Todos', 'FoobarModel', array(
+          <programlisting>$model = F0FModel::getTmpInstance('Todos', 'FoobarModel', array(
     'behaviors' =&gt; array('filters', 'access', 'enabled'))
 );</programlisting>
 
           <para>4. Adding it dinamically using the method
           <methodname>addBehavior</methodname></para>
 
-          <programlisting>class FoobarModelTodos extends FOFmodel {
+          <programlisting>class FoobarModelTodos extends F0FModel {
 ....
 
     public function __construct($config = array()) {
@@ -1384,7 +1388,7 @@ function postflight($type, $parent)
             </listitem>
 
             <listitem>
-              <para>Then look for FOFModelBehaviorFoobar</para>
+              <para>Then look for F0FModelBehaviorFoobar</para>
             </listitem>
           </orderedlist>
 
@@ -1405,7 +1409,7 @@ function postflight($type, $parent)
           <programlisting>/**
  * This event runs before saving data in the model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  * @param   array     &amp;$data   The data to save
  *
  * @return  void
@@ -1417,7 +1421,7 @@ public function onBeforeSave(&amp;$model, &amp;$data)
 /**
  * This event runs before deleting a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1428,7 +1432,7 @@ public function onBeforeDelete(&amp;$model)
 /**
  * This event runs before copying a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1439,7 +1443,7 @@ public function onBeforeCopy(&amp;$model)
 /**
  * This event runs before publishing a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1450,7 +1454,7 @@ public function onBeforePublish(&amp;$model)
 /**
  * This event runs before registering a hit on a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1461,7 +1465,7 @@ public function onBeforeHit(&amp;$model)
 /**
  * This event runs before moving a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1472,7 +1476,7 @@ public function onBeforeMove(&amp;$model)
 /**
  * This event runs before changing the records' order in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1484,7 +1488,7 @@ public function onBeforeReorder(&amp;$model)
  * This event runs when we are building the query used to fetch a record
  * list in a model
  *
- * @param   FOFModel        &amp;$model  The model which calls this event
+ * @param   F0FModel        &amp;$model  The model which calls this event
  * @param   JDatabaseQuery  &amp;$query  The query being built
  *
  * @return  void
@@ -1496,7 +1500,7 @@ public function onBeforeBuildQuery(&amp;$model, &amp;$query)
 /**
  * This event runs after saving a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1507,7 +1511,7 @@ public function onAfterSave(&amp;$model)
 /**
  * This event runs after deleting a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1518,7 +1522,7 @@ public function onAfterDelete(&amp;$model)
 /**
  * This event runs after copying a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1529,7 +1533,7 @@ public function onAfterCopy(&amp;$model)
 /**
  * This event runs after publishing a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1540,7 +1544,7 @@ public function onAfterPublish(&amp;$model)
 /**
  * This event runs after registering a hit on a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1551,7 +1555,7 @@ public function onAfterHit(&amp;$model)
 /**
  * This event runs after moving a record in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1562,7 +1566,7 @@ public function onAfterMove(&amp;$model)
 /**
  * This event runs after reordering records in a model
  *
- * @param   FOFModel  &amp;$model  The model which calls this event
+ * @param   F0FModel  &amp;$model  The model which calls this event
  *
  * @return  void
  */
@@ -1574,7 +1578,7 @@ public function onAfterReorder(&amp;$model)
  * This event runs after we have built the query used to fetch a record
  * list in a model
  *
- * @param   FOFModel        &amp;$model  The model which calls this event
+ * @param   F0FModel        &amp;$model  The model which calls this event
  * @param   JDatabaseQuery  &amp;$query  The model which calls this event
  *
  * @return  void
@@ -1586,8 +1590,8 @@ public function onAfterBuildQuery(&amp;$model, &amp;$query)
 /**
  * This event runs after getting a single item
  *
- * @param   FOFModel  &amp;$model   The model which calls this event
- * @param   FOFTable  &amp;$record  The record loaded by this model
+ * @param   F0FModel  &amp;$model   The model which calls this event
+ * @param   F0FTable  &amp;$record  The record loaded by this model
  *
  * @return  void
  */
@@ -1603,12 +1607,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
           that will filter the items based on the publish_up and pulish_down
           fields of a table.</para>
 
-          <programlisting>class FOFModelBehaviorPublished extends FOFModelBehavior
+          <programlisting>class F0FModelBehaviorPublished extends F0FModelBehavior
 {
     /**
      * Let's add the filter for the publish_up and publish_down fields here, after the query is built by the model
      *
-     * @param   FOFModel        &amp;$model  The model which calls this event
+     * @param   F0FModel        &amp;$model  The model which calls this event
      * @param   JDatabaseQuery  &amp;$query  The model which calls this event
      *
      * @return  void
@@ -1616,7 +1620,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
     public function onAfterBuildQuery(&amp;$model, &amp;$query)
     {
         // This behavior only applies to the front-end.
-        if (!FOFPlatform::getInstance()-&gt;isFrontend())
+        if (!F0FPlatform::getInstance()-&gt;isFrontend())
         {
             return;
         }
@@ -1659,17 +1663,17 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
     /**
      * Voids the getItem result if the loaded item wasn't published
      *
-     * @param   FOFModel  &amp;$model   The model which was called
-     * @param   FOFTable  &amp;$record  The record loaded from the databae
+     * @param   F0FModel  &amp;$model   The model which was called
+     * @param   F0FTable  &amp;$record  The record loaded from the databae
      *
      * @return  void
      */
     public function onAfterGetItem(&amp;$model, &amp;$record)
     {
-        if ($record instanceof FOFTable)
+        if ($record instanceof F0FTable)
         {
             // This behavior only applies to the front-end.
-            if (!FOFPlatform::getInstance()-&gt;isFrontend())
+            if (!F0FPlatform::getInstance()-&gt;isFrontend())
             {
                 return;
             }
@@ -1746,7 +1750,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
       <para>All Table files are located in your component's
       <filename>tables</filename> directories in the back-end. If the Table
       class is not loaded and a suitable file cannot be found FOF will fall
-      back to creating a suitable configure instance of FOFTable, using
+      back to creating a suitable configure instance of F0FTable, using
       convention over configuration (explained below) to determine what the
       table object should do.</para>
 
@@ -1910,7 +1914,7 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
       fields while using the table.</para>
 
       <para>To do that you can simply create the join query, pass it to the
-      <classname>FOFTable</classname> in the construction and you're done! FOF
+      <classname>F0FTable</classname> in the construction and you're done! FOF
       will do the rest.</para>
 
       <para>Let's see it in action with a real an example. Let's you have the
@@ -2002,11 +2006,11 @@ WHERE jos_foo.foo_id = 1
 </programlisting>
 
       <para>So we just have to "inject" the join part. We can do that
-      extending the <classname>FOFTable</classname>, creating a query using
+      extending the <classname>F0FTable</classname>, creating a query using
       Joomla! object and then assigning it to the table:</para>
 
       <programlisting>&lt;?php
-class FoobarTableFoo extends FOFTable
+class FoobarTableFoo extends F0FTable
 {
   public function __construct($table, $key, &amp;$db)
   {
@@ -2033,7 +2037,7 @@ class FoobarTableFoo extends FOFTable
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from <classname>FOFTable</classname> into your
+      yourself copying code from <classname>F0FTable</classname> into your
       extension's specialised table class you're doing it wrong.</para>
 
       <para>FOF tables can be customised very easily using the
@@ -2051,7 +2055,7 @@ class FoobarTableFoo extends FOFTable
       <bridgehead>Customising using plugins</bridgehead>
 
       <para>You can customise the actions of tables by using standard
-      "<filename>system</filename>" plugins. <classname>FOFTable</classname>
+      "<filename>system</filename>" plugins. <classname>F0FTable</classname>
       will automatically create plugin events using a fixed naming prefix and
       appending them with the last part of the table's name. For example, if
       you have a table called <classname>TodoTableItem</classname> FOF will
@@ -2237,7 +2241,7 @@ class FoobarTableFoo extends FOFTable
           <title>Introduction</title>
 
           <para>Table Behaviors are an handy way to alter the workflow of a
-          FOFTable. It's based upon the standard Joomla Event system.</para>
+          F0FTable. It's based upon the standard Joomla Event system.</para>
 
           <para>Before and After certain actions, the table triggers an
           "event" which is propagated to each of the registered behaviors for
@@ -2249,7 +2253,7 @@ class FoobarTableFoo extends FOFTable
           created.</para>
 
           <para>FOF already provides a list of common behaviors, that can be
-          used by any FOFTable object.</para>
+          used by any F0FTable object.</para>
         </section>
 
         <section xml:id="foftable-behaviors-standard">
@@ -2326,7 +2330,7 @@ class FoobarTableFoo extends FOFTable
               <para>Passing it when you create the table instance through the
               <parameter>config</parameter> parameter:</para>
 
-              <programlisting>$model = FOFTable::getTmpInstance('Todo', 'FoobarTable', array('behaviors' =&gt; array('tags')));</programlisting>
+              <programlisting>$model = F0FTable::getTmpInstance('Todo', 'FoobarTable', array('behaviors' =&gt; array('tags')));</programlisting>
             </listitem>
 
             <listitem>
@@ -2372,7 +2376,7 @@ class FoobarTableFoo extends FOFTable
             </listitem>
 
             <listitem>
-              <para>Then look for FOFTableBehaviorFoobar</para>
+              <para>Then look for F0FTableBehaviorFoobar</para>
             </listitem>
           </itemizedlist>
 
@@ -2394,7 +2398,7 @@ class FoobarTableFoo extends FOFTable
           <programlisting>/**
  * This event runs before binding data to the table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   array     &amp;$data   The data to bind
  *
  * @return  boolean  True on success
@@ -2407,7 +2411,7 @@ public function onBeforeBind(&amp;$table, &amp;$data)
 /**
  * The event which runs after binding data to the table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   object|array  &amp;$src  The data to bind
  *
  * @return  boolean  True on success
@@ -2420,7 +2424,7 @@ public function onAfterBind(&amp;$table, &amp;$src)
 /**
  * The event which runs after loading a record from the database
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   boolean  &amp;$result  Did the load succeeded?
  *
  * @return  void
@@ -2433,7 +2437,7 @@ public function onAfterLoad(&amp;$table, &amp;$result)
 /**
  * The event which runs before storing (saving) data to the database
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
  *
  * @return  boolean  True to allow saving
@@ -2446,7 +2450,7 @@ public function onBeforeStore(&amp;$table, $updateNulls)
 /**
  * The event which runs after storing (saving) data to the database
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow saving without an error
  */
@@ -2458,7 +2462,7 @@ public function onAfterStore(&amp;$table)
 /**
  * The event which runs before moving a record
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
  *
  * @return  boolean  True to allow moving
@@ -2471,7 +2475,7 @@ public function onBeforeMove(&amp;$table, $updateNulls)
 /**
  * The event which runs after moving a record
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow moving without an error
  */
@@ -2483,7 +2487,7 @@ public function onAfterMove(&amp;$table)
 /**
  * The event which runs before reordering a table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * @param   string  $where  The WHERE clause of the SQL query to run on reordering (record filter)
  *
  * @return  boolean  True to allow reordering
@@ -2496,7 +2500,7 @@ public function onBeforeReorder(&amp;$table, $where = '')
 /**
  * The event which runs after reordering a table
  *
- * @param   FOFTable  &amp;$table  The table which calls this event
+ * @param   F0FTable  &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow the reordering to complete without an error
  */
@@ -2508,7 +2512,7 @@ public function onAfterReorder(&amp;$table)
 /**
  * The event which runs before deleting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record to delete
  *
  * @return  boolean  True to allow the deletion
@@ -2521,7 +2525,7 @@ public function onBeforeDelete(&amp;$table, $oid)
 /**
  * The event which runs after deleting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record which was deleted
  *
  * @return  boolean  True to allow the deletion without errors
@@ -2534,7 +2538,7 @@ public function onAfterDelete(&amp;$table, $oid)
 /**
  * The event which runs before hitting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record to hit
  * @param   boolean  $log  Should we log the hit?
  *
@@ -2548,7 +2552,7 @@ public function onBeforeHit(&amp;$table, $oid, $log)
 /**
  * The event which runs after hitting a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record which was hit
  *
  * @return  boolean  True to allow the hitting without errors
@@ -2561,7 +2565,7 @@ public function onAfterHit(&amp;$table, $oid)
 /**
  * The even which runs before copying a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record being copied
  *
  * @return  boolean  True to allow the copy to take place
@@ -2574,7 +2578,7 @@ public function onBeforeCopy(&amp;$table, $oid)
 /**
  * The even which runs after copying a record
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer  $oid  The PK value of the record which was copied (not the new one)
  *
  * @return  boolean  True to allow the copy without errors
@@ -2587,7 +2591,7 @@ public function onAfterCopy(&amp;$table, $oid)
 /**
  * The event which runs before a record is (un)published
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * @param   integer|array  &amp;$cid     The PK IDs of the records being (un)published
  * @param   integer        $publish  1 to publish, 0 to unpublish
  *
@@ -2601,7 +2605,7 @@ public function onBeforePublish(&amp;$table, &amp;$cid, $publish)
 /**
  * The event which runs after the object is reset to its default values.
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow the reset to complete without errors
  */
@@ -2613,7 +2617,7 @@ public function onAfterReset(&amp;$table)
 /**
  * The even which runs before the object is reset to its default values.
  *
- * @param   FOFTable &amp;$table  The table which calls this event
+ * @param   F0FTable &amp;$table  The table which calls this event
  * 
  * @return  boolean  True to allow the reset to complete
  */
@@ -2645,8 +2649,8 @@ public function onBeforeReset(&amp;$table)
         immediately understand that each comment record in that table is
         related to an article in a table called
         <database>#__foobar_articles</database>. That's why you end up writing
-        code to fetch the comments of an article using FOFModel or the article
-        a comment belongs to using FOFTable.</para>
+        code to fetch the comments of an article using F0FModel or the article
+        a comment belongs to using F0FTable.</para>
 
         <para>By doing that, you are implicitly mapping the raw data in the
         database to one or more PHP objects. This is a very primitive data
@@ -2668,7 +2672,7 @@ public function onBeforeReset(&amp;$table)
 
         <para>FOF follows a middle path. You can tell it how your database
         tables relate to each other and it will provide you with an interface
-        to get related objects directly from a FOFTable object. It currently
+        to get related objects directly from a F0FTable object. It currently
         supports all three normalised relations:</para>
 
         <itemizedlist>
@@ -2731,10 +2735,10 @@ public function onBeforeReset(&amp;$table)
         <para>Before this feature you would have to write this kind of
         code:</para>
 
-        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+        <programlisting>$article = F0FTable::getTmpInstance('Article', 'FoobarTable');
 $article-&gt;load(1);
 
-$model = FOFModel::getTmpInstance('Comments', 'FoobarModel');
+$model = F0FModel::getTmpInstance('Comments', 'FoobarModel');
 $comments = $model-&gt;foobar_article_id($article-&gt;foobar_article_id)-&gt;getList();
 foreach ($comments as $commentData)
 {
@@ -2745,7 +2749,7 @@ foreach ($comments as $commentData)
 
         <para>You can now write</para>
 
-        <programlisting>$article = FOFTable::getTmpInstance('Article', 'FoobarTable');
+        <programlisting>$article = F0FTable::getTmpInstance('Article', 'FoobarTable');
 $article-&gt;load(1);
 
 foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTable)
@@ -2758,7 +2762,7 @@ foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTabl
         <filename>fof.xml</filename>.</para>
 
         <para>Even better, relations returning many items use
-        FOFDatabaseIterator which means that only one record is loaded in
+        F0FDatabaseIterator which means that only one record is loaded in
         memory at a time. When sifting through copious amounts of records this
         decreases your memory consumption considerably.</para>
 
@@ -2769,10 +2773,10 @@ foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTabl
         <bridgehead>How do I use it?</bridgehead>
 
         <para>Each table provides the getRelations() method which returns a
-        FOFTableRelations object. By default it's populated with parent
+        F0FTableRelations object. By default it's populated with parent
         relations based on field names which follow the FOF naming
         conventions. At any time you can use the add*Relation() methods of
-        FOFTableRelations to add any kind of relations. The docblocks in the
+        F0FTableRelations to add any kind of relations. The docblocks in the
         methods explain to you exactly what each parameter does and through
         which method the related tables are made available. We suggest adding
         relations in the constructor (__construct() method) of your
@@ -2780,12 +2784,12 @@ foreach ($article-&gt;getRelations()-&gt;getChildren('comments') as $commentTabl
         in <filename>fof.xml</filename>.</para>
 
         <para>From that point you can use the relations anywhere you have an
-        instance of that FOFTable object. The best methods for getting a
-        FOFTable object are:</para>
+        instance of that F0FTable object. The best methods for getting a
+        F0FTable object are:</para>
 
         <itemizedlist>
           <listitem>
-            <para>Using FOFModel's getIterator. <emphasis role="bold">This is
+            <para>Using F0FModel's getIterator. <emphasis role="bold">This is
             the preferred method</emphasis>. Even if you only need the first
             item fetched by the model it is far better for performance and
             memory consumption to use:</para>
@@ -2798,12 +2802,12 @@ $myRecord = $iterator-&gt;current();</programlisting>
           </listitem>
 
           <listitem>
-            <para>Using FOFModel's getFirstItem. This method is not
+            <para>Using F0FModel's getFirstItem. This method is not
             recommended for performance / resource usage reasons. Keep in mind
-            that FOFModel will load the ENTIRE record list, based on its
-            state, in memory and return the first item fetched as a FOFTable.
+            that F0FModel will load the ENTIRE record list, based on its
+            state, in memory and return the first item fetched as a F0FTable.
             This can lead to bad performance and excessive memory consumption
-            unless you are absolutely sure that FOFModel will only fetch one
+            unless you are absolutely sure that F0FModel will only fetch one
             (or, at most, a handful) of items from the database.
             Example:</para>
 
@@ -2811,21 +2815,21 @@ $myRecord = $iterator-&gt;current();</programlisting>
           </listitem>
 
           <listitem>
-            <para>Using FOFTable::getAnInstance(). This method is not
+            <para>Using F0FTable::getAnInstance(). This method is not
             recommended due to the singleton caveat. Remember that the
             returned object is a singleton. If you need to load a new record
             you are required to clone that object, e.g. $table = clone
-            FOFTable::getAnInstance('Items', 'FoobarTable');</para>
+            F0FTable::getAnInstance('Items', 'FoobarTable');</para>
 
             <programlisting>// If you forget the clone you will spend some not-so-fun hours debugging erratic behaviour
-$myRecord = <emphasis role="bold">clone</emphasis> FOFTable::getAnInstance('Items', 'FoobarTable');
+$myRecord = <emphasis role="bold">clone</emphasis> F0FTable::getAnInstance('Items', 'FoobarTable');
 $myRecord-&gt;load(123);</programlisting>
           </listitem>
 
           <listitem>
-            <para>Using the getTable() method of a FOFModel object. This
+            <para>Using the getTable() method of a F0FModel object. This
             method is not recommended due to the singleton caveat. Likewise to
-            FOFTable::getAnInstance() you get a singleton object for that
+            F0FTable::getAnInstance() you get a singleton object for that
             model. Unless you want to operate on the last item fetched / saved
             in the model you need to clone it.</para>
 
@@ -2885,7 +2889,7 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
         <listitem>
           <para>If a default controller is not found, FOF will fall back to
           creating a suitably configured instance of
-          <classname>FOFController</classname>, using convention over
+          <classname>F0FController</classname>, using convention over
           configuration to determine what the controller object should
           do.</para>
         </listitem>
@@ -2910,7 +2914,7 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from FOFController into your extension's
+      yourself copying code from F0FController into your extension's
       specialised table class you're doing it wrong.</para>
 
       <para>FOF controller can be customised very easily using the
@@ -2962,18 +2966,18 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
       <para>The signature for these plugins methods is like this:</para>
 
-      <programlisting><methodname>onBefore<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (FOFController &amp;$controller, FOFInput &amp;$input)</programlisting>
+      <programlisting><methodname>onBefore<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (F0FController &amp;$controller, F0FInput &amp;$input)</programlisting>
 
       <para>Both parameters are passed by reference, meaning that you can
       modify them from your plugin. There's a caveat: by the time the
       <methodname>onBefore</methodname> plugin event is called the model and
       view instances have already been created with the previously existing
-      <classname>FOFInput</classname> instance. If you need to modify the
+      <classname>F0FInput</classname> instance. If you need to modify the
       model's state you will have to do something like
       <code>$controller-&gt;getThisModel()-&gt;setState('foo', $myNewFooValue)
       </code></para>
 
-      <programlisting><methodname>onAfter<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (FOFController &amp;$controller, FOFInput &amp;$input, &amp;$ret)</programlisting>
+      <programlisting><methodname>onAfter<replaceable>Component</replaceable>Controller<replaceable>View</replaceable><replaceable>Task</replaceable></methodname> (F0FController &amp;$controller, F0FInput &amp;$input, &amp;$ret)</programlisting>
 
       <para>The <parameter>$ret</parameter> parameter contains the return
       value of the task method. It is passed by reference and you can modify
@@ -3037,11 +3041,11 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
         <listitem>
           <para>If a default view is not found, FOF will fall back to creating
-          a suitably configured instance of a <classname>FOFView</classname>
+          a suitably configured instance of a <classname>F0FView</classname>
           format-specific class, using convention over configuration to
           determine what the model object should do. For example, if the
           current format is <option>html</option> FOF will create an instance
-          of <classname>FOFViewHtml</classname>. If there is no suitable class
+          of <classname>F0FViewHtml</classname>. If there is no suitable class
           found you will get an error as FOF has no idea what to
           render.</para>
         </listitem>
@@ -3084,8 +3088,7 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
               <entry><filename>form.php</filename> OR
               <filename>form.form.xml</filename></entry>
 
-              <entry>This is the file that shows the data of a single record
-              without being able to edit the record</entry>
+              <entry>This is the file that shows the edit page</entry>
             </row>
 
             <row>
@@ -3094,7 +3097,8 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
               <entry><filename>item.php</filename> OR
               <filename>form.item.xml</filename></entry>
 
-              <entry>This is the file that shows the edit page</entry>
+              <entry>This is the file that shows the data of a single record
+              without being able to edit the record</entry>
             </row>
           </tbody>
         </tgroup>
@@ -3120,7 +3124,7 @@ $myRecord = <emphasis role="bold">clone</emphasis> $model-&gt;getTable();</progr
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from any FOFView class into your extension's
+      yourself copying code from any F0FView class into your extension's
       specialised table class you're doing it wrong.</para>
 
       <para>FOF view can be customised very easily using the
@@ -3237,7 +3241,7 @@ echo $this-&gt;getRenderedForm();
 
       <para>The JSON format can be used to provide web services with
       integrated hypermedia (following the HAL specification). All you need to
-      do is to tell <classname>FOFViewJson</classname> to use hypermedia,
+      do is to tell <classname>F0FViewJson</classname> to use hypermedia,
       either by setting <code>$this-&gt;useHypermedia = true;</code> in your
       specialised JSON view class or, much easier, using the
       <filename>fof.xml</filename> configuration file.</para>
@@ -3294,7 +3298,7 @@ echo $this-&gt;getRenderedForm();
       not present in the front-end, it will be attempted to be loaded from the
       back-end but NOT vice versa. If the Dispatcher class is not loaded and a
       suitable file cannot be found FOF will fall back to creating a suitably
-      configured instance of <classname>FOFDispatcher</classname>, using
+      configured instance of <classname>F0FDispatcher</classname>, using
       convention over configuration to determine what the Dispatcher object
       should do.</para>
 
@@ -3302,7 +3306,7 @@ echo $this-&gt;getRenderedForm();
 
       <para>Unlike plain old Joomla! you are NOT supposed to copy and paste
       code when dealing with FOF. Our rule of thumb is that if you ever find
-      yourself copying code from FOFDispatcher into your extension's
+      yourself copying code from F0FDispatcher into your extension's
       specialised table class you're doing it wrong.</para>
 
       <para>FOF dispatcher can be customised very easily using the
@@ -3456,7 +3460,7 @@ echo $this-&gt;getRenderedForm();
         expands to exactly 10 characters. If you don’t feel like guessing, you
         can simply do:</para>
 
-        <programlisting>$totp = new FOFEncryptTotp();
+        <programlisting>$totp = new F0FEncryptTotp();
 $secret = $totp-&gt;generateSecret();
 </programlisting>
 
@@ -3516,10 +3520,10 @@ $authKey = json_encode(array(
   'username' =&gt; $username,
   'password' =&gt; $password
 ));
-$totp = new FOFEncryptTotp($timeStep);
+$totp = new F0FEncryptTotp($timeStep);
 $otp = $totp-&gt;getCode($secretKey);
 $cryptoKey = hash('sha256', $this-&gt;_fofAuth_Key.$otp);
-$aes = new FOFEncryptAes($cryptoKey);
+$aes = new F0FEncryptAes($cryptoKey);
 $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 </programlisting>
 
@@ -3558,7 +3562,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       front-end and back-end. If a file is not present in the front-end, it
       will be attempted to be loaded from the back-end. If the Toolbar class
       is not loaded and a suitable file cannot be found FOF will fall back to
-      creating a suitably configured instance of FOFToolbar, using convention
+      creating a suitably configured instance of F0FToobar, using convention
       over configuration to determine what the controller object should
       do.</para>
 
@@ -3666,7 +3670,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       sometimes you want a more complex presentation. For example, you want to
       show different link bars depending on a configuration setting (e.g. a
       "Power user" switch in your component's options), or a drop-down menu.
-      To this end, <classname>FOFToolbar</classname> provides the following
+      To this end, <classname>F0FToobar</classname> provides the following
       methods.</para>
 
       <programlisting>public function <methodname>clearLinks</methodname>()</programlisting>
@@ -3693,7 +3697,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 
       <para>In order to use these methods you will have to override the
       <methodname>renderSubmenu</methodname> method in
-      <classname>FOFToolbar</classname>.</para>
+      <classname>F0FToobar</classname>.</para>
 
       <bridgehead>When the link bar is rendered</bridgehead>
 
@@ -3745,7 +3749,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       <para>You already know it, you just didn't realise it. Here's the secret
       sauce:</para>
 
-      <programlisting>FOFDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
+      <programlisting>F0FDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
 </programlisting>
 
       <para>You are simply creating an instance of the dispatcher of the
@@ -3757,18 +3761,18 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       something like this:</para>
 
       <programlisting>@ob_start();
-FOFDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
+F0FDispatcher::getTmpInstance('com_foobar', 'items', array('layout' =&gt; 'fancy'))-&gt;dispatch();
 $result = ob_end_clean();
 </programlisting>
 
       <para>If you need to pass input variables to the dispatcher you can do
       something like this:</para>
 
-      <programlisting>FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
+      <programlisting>F0FDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
 </programlisting>
 
       <para>where <varname>$input</varname> can be an indexed array, a
-      stdClass object or –preferred– a <classname>FOFInput</classname> or
+      stdClass object or –preferred– a <classname>F0FInput</classname> or
       <classname>JInput</classname> instance. For example:</para>
 
       <programlisting>$inputvars = array(
@@ -3776,8 +3780,8 @@ $result = ob_end_clean();
     'limitstart'    =&gt; 0,
     'foobar'        =&gt; 'baz'
 );
-$input = new FOFInput($inputvars);
-FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
+$input = new F0FInput($inputvars);
+F0FDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
 </programlisting>
 
       <para>And, of course, you can mix and match all of the above ideas to
@@ -3788,9 +3792,9 @@ FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input)
     'limitstart'    =&gt; 0,
     'format'        =&gt; 'json'
 );
-$input = new FOFInput($inputvars);
+$input = new F0FInput($inputvars);
 @ob_start();
-FOFDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
+F0FDispatcher::getTmpInstance('com_foobar', 'items', array('input' =&gt; $input))-&gt;dispatch();
 $json = ob_end_clean();
 </programlisting>
 
@@ -3946,51 +3950,1281 @@ $json = ob_end_clean();
     </section>
 
     <section xml:id="fofdatabaseiterator">
-      <title>The database cursor iterator (FOFDatabaseIterator)</title>
+      <title>The database cursor iterator (F0FDatabaseIterator)</title>
 
       <note>
         <para>Available since FOF 2.2.0</para>
       </note>
 
       <para>In many cases you have to sift through a large number of database
-      records and you want to use the magic of FOFTable. The traditional way
-      to do that was to use FOFModel::getItemList to get a big array of
+      records and you want to use the magic of F0FTable. The traditional way
+      to do that was to use F0FModel::getItemList to get a big array of
       stdClass objects, iterate through it with foreach, mapping each stdClass
-      object to your FOFTable instance. This is a performance and resource
+      object to your F0FTable instance. This is a performance and resource
       nightmare. PHP has to retrieve the entire list of records from the
       database and cast it to stupid stdClass objects, then you have to remap
-      them one by one as FOFTable instances. The time and memory required to
+      them one by one as F0FTable instances. The time and memory required to
       do that makes it impractical for lists over a few dozen records.</para>
 
-      <para>Enter the FOFDatabaseIterator. This is a regular, non-resettable
+      <para>Enter the F0FDatabaseIterator. This is a regular, non-resettable
       and non-seekable PHP iterator. This means that you can only fetch its
       current record or proceed to the next one. You cannot scroll back to the
       beginning and you cannot move to an arbitrary location within the
       iterator (unlike an array). However, it will only load one record in
-      memory at a time and deliver it to you as a FOFTable object. The magic
+      memory at a time and deliver it to you as a F0FTable object. The magic
       behind it lies in the way it is implemented: it is given a database
       cursor (pretty much, a resource pointing to the result set of a database
       query) and it uses standard PHP features to only ever fetch the next
       item from this cursor. Behind the scenes it will get a new instance of
-      the FOFTable class and use its bind() method to bind the data to it,
+      the F0FTable class and use its bind() method to bind the data to it,
       then return you the table object. Since it's an Iterator you can use it
       in a foreach statement to iterate through the entire list of records,
-      one FOFTable object at a time.</para>
+      one F0FTable object at a time.</para>
 
-      <para>Even though you can create a FOFDatabaseIterator directly, you
-      will hardly ever need to do so. A FOFTableIterator is returned by
-      FOFModel's getIterator() method and the FOFTableRelations' methods which
+      <para>Even though you can create a F0FDatabaseIterator directly, you
+      will hardly ever need to do so. A F0FTableIterator is returned by
+      F0FModel's getIterator() method and the F0FTableRelations' methods which
       return multiple records. You are advised to use the iterator whenever
       you reasonably expect to deal with large numbers of database records,
       especially if you need to act upon them.</para>
 
-      <para>The only drawback is that by using FOFModel's getIterator the
+      <para>The only drawback is that by using F0FModel's getIterator the
       onProcessList method, which is used for record list post-processing, is
       never called. This is actually a good thing. You can migrate that logic
       into the onBeforeBind() method of your table, where it belongs
       architecturally. After all, you are post-processing a list of records,
       one record at a time. What is more natural than doing so in the one
       class dedicated to handling one record at a time?</para>
+    </section>
+
+    <section xml:id="utility-classes">
+      <title>Utility classes</title>
+
+      <para>FOF comes with certain classes that are designed to make your life
+      as a Joomla! extensions developer much easier. They handle things like
+      installation, updates and database schema management. This code has been
+      battle tested in our own components over the years.</para>
+
+      <section xml:id="utils-installscript">
+        <title>The installation script helper</title>
+
+        <note>
+          <para>Available since FOF 2.3.0</para>
+        </note>
+
+        <para>A FOF component usually needs to pack and install several
+        things. At the very least it includes the component itself and a copy
+        of the FOF library. Joomla! offers a method for installing multiple
+        extensions at once, called the "package" extension type. However,
+        "package" extensions are all or nothing: you either install everything
+        included in your package or nothing at all. Quite obviously this can't
+        be used to prevent installing an old version of FOF on top of a new
+        one. FOF itself is of the "library" extension type. You'd think that a
+        "library" package is checked for its version so that old versions
+        can't be installed on top of new ones. Wrong. You might thing that the
+        "library" package can have an installation script, like components and
+        plugins, to determine if it can be installed, preventing an old
+        version of the library overwriting a new one. Wrong, again. Joomla!'s
+        extensions installer is coded in the most short-sighted way possible.
+        All is lost?</para>
+
+        <para>Not so fast! We have a few aces up our sleeves. The solution
+        we've been using in our company over the years is a "component"
+        package with a smart installer script which can install our component,
+        any modules and plugins we may be including with it and FOF (and,
+        possibly, Akeeba Strapper) if it's not installed or out-of-date. The
+        "secret sauce" of our installer script is now inside FOF 2.3.0 and
+        later, in the F0FUtilsInstallscript class. Here we are going to
+        explain how to use it.</para>
+
+        <bridgehead>Package layout</bridgehead>
+
+        <para>The contents of your package need to follow a specific folder
+        layout. Here's the proposed layout:</para>
+
+        <programlisting>&lt;root&gt;
+  +-- backend   Component files under site's "administrator" directory
+  +-- frontend  Component files under site's root director
+  +-- media     OPTIONAL. Component media files, under site's "media" directory
+  +-- cli       OPTIONAL. Component CLI script installed under site's "cli" directory
+  +-- language  OPTIONAL. Language files for your component.
+  +-- fof       FOF installation files (extract FOF's library package in here)
+  +-- strapper  OPTIONAL. Akeeba Strapper (extract Strapper's package in here)
+  +-- modules   OPTIONAL. Modules bundled with the component
+  |     +-- admin   Administrator (back-end) modules
+  |     |     +-- mymodule  Installation files for mod_mymodule admin module
+  |     +-- site    Site (front-end) modules
+  |           +-- mymodule  Installation files for mod_mymodule site module
+  +-- plugins   OPTIONAL. Plugins bundled with the component
+        +-- system  System plugins
+        |     +-- foobar  Installation files for plg_system_foobar plugin
+        +-- whatever  Plugins installed in the "whatever" plugin folder
+              +-- baz  Installation fles for plg_whatever_baz plugin</programlisting>
+
+        <para>The <filename>backend</filename>, <filename>frontend</filename>,
+        <filename>media</filename> and <filename>language</filename>
+        directories can have any name you want as they are NOT handled by the
+        installation script. They are defined in your component's XML manifest
+        and it's up to Joomla! to decide what to do with them. The other
+        directories, however, do play an important role.</para>
+
+        <tip>
+          <para>If you don't like our naming conventions you can choose
+          different names for the top-level directories by specialising the
+          F0FUtilsInstallscript class. More on that later on!</para>
+        </tip>
+
+        <tip>
+          <para>Feel lost? You may want to see how we do this in our own
+          components. A great place where the full power of the installation
+          script helper is put to action is <link
+          xlink:href="https://github.com/akeeba/akeebasubs/blob/development/component/script.akeebasubs.php">Akeeba
+          Subscriptions</link>.</para>
+        </tip>
+
+        <para>The <emphasis role="bold">fof</emphasis> directory is the one
+        you MUST have. It contains a copy of FOF's installation files. Just
+        extract the latest FOF library package in there.</para>
+
+        <para>The <emphasis role="bold">strapper</emphasis> directory can
+        contain a copy of Akeeba Strapper, our Bootstrap 2.x compatibility
+        layer, if you are using it in your component. In this case just
+        extract the Strapper library into this directory.</para>
+
+        <para>The <emphasis role="bold">cli</emphasis> directory contains
+        command-line scripts which will be copied to your site's "cli"
+        directory. They are typically used to set up CRON jobs for
+        housekeeping or other lengthy operations.</para>
+
+        <para>The <emphasis role="bold">modules</emphasis> directory contains
+        all the modules you want to bundle with your extension. The suggested
+        directory layout is having two sub-directories called
+        <filename>admin</filename> and <filename>site</filename> containing
+        the administrator (back-end) and public (front-end) modules
+        respectively. Each module's installation file go inside a
+        sub-directory of the <filename>admin</filename> or
+        <filename>site</filename> directories depending on where it should be
+        installed. The name of the module's directory must match its extension
+        name as set in the XML manifest. You can also skip the
+        <filename>admin</filename> or <filename>site</filename> directories
+        and put everything under <filename>modules</filename> but we have
+        found that this will make your life much harder as your extension
+        starts growing bigger. Trust us on that.</para>
+
+        <para>The <emphasis role="bold">plugins</emphasis> directory contains
+        all the plugins you want to bundle with your extension. You need to
+        have one sub-directory for each Joomla! plugin folder, e.g.
+        <filename>system</filename>, <filename>content</filename>,
+        <filename>user</filename> etc or even custom plugin folders such as
+        akeebasubs, ats, whatever, ... Inside each sub-directory create one
+        directory per plugin.</para>
+
+        <bridgehead>Important note about XML manifests</bridgehead>
+
+        <para>A few notes on XML manifests. Please note that due to one of the
+        myriads of JInstaller's bugs and limitations your component's XML
+        manifest SHOULD be placed in the package's root and MUST begin with a
+        letter before "L". We recommend using the following naming convention
+        to prevent package installation problems due to Joomla! being outright
+        silly in its handling of manifests:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Components: com_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Plugins: plg_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Modules: mod_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Libraries: lib_something.xml</para>
+          </listitem>
+
+          <listitem>
+            <para>Files: files_something.xml</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Using this convention you ensure that when you list all XML
+        manifests in the package and sort them alphabetically the component's
+        manifest will show up first. This is exactly how Joomla! decides which
+        XML manifest to use for installing a package: list all of them,
+        alpha-sort them and pick the first one.</para>
+
+        <bridgehead>Creating your installation script</bridgehead>
+
+        <para>Let's say your component is called Foobar and its Joomla! name
+        is com_foobar. You need to create the file
+        <filename>script.foobar.php</filename> and place it in the root of
+        your package. The file name and location of the script are extremely
+        important! They are defined in your XML manifest, using a line like
+        this:</para>
+
+        <programlisting>&lt;scriptfile&gt;script.foobar.php&lt;/scriptfile&gt;</programlisting>
+
+        <para>You are advised to follow this naming convention and place the
+        script in your package's root to avoid nasty surprises.</para>
+
+        <para>Next up, you need to put the following contents in your script
+        file:</para>
+
+        <programlisting>&lt;?php
+// no direct access
+defined('_JEXEC') or die;
+
+// Load FOF if not already loaded
+if (!defined('F0F_INCLUDED'))
+{
+  $paths = array(
+    (defined('JPATH_LIBRARIES') ? JPATH_LIBRARIES : JPATH_ROOT . '/libraries') . '/f0f/include.php',
+    __DIR__ . '/fof/include.php',
+  );
+
+  foreach ($paths as $filePath)
+  {
+    if (!defined('F0F_INCLUDED') &amp;&amp; file_exists($filePath))
+    {
+      @include_once $filePath;
+    }
+  }
+}
+
+class Com_FoobarInstallerScript extends F0FUtilsInstallscript
+{
+    protected $componentName = 'com_foobar';
+    protected $componentTitle = 'Foobar Component';
+}</programlisting>
+
+        <para>Let's analyse this script. We begin by preventing direct access
+        to the file in the standard Joomla! way:</para>
+
+        <programlisting xml:id="installscript-p1">// no direct access
+defined('_JEXEC') or die;
+</programlisting>
+
+        <para>Then we have to load FOF. We need to do that because the
+        F0FUtilsInstallscript which powers our installation script is part of
+        FOF. However FOF might not be already installed on the site. In this
+        case we'll be loading it from our installation directory. Speaking of
+        which, an important note to understand why this works.</para>
+
+        <important>
+          <para>Your installation script is loaded from the component's
+          installation directory, typically a temporary directory created by
+          the Joomla! extensions installer. It is loaded BEFORE Joomla!
+          installs / updates / uninstalls your component. This is very
+          important to keep in mind, especially if you are going to work with
+          relative directories in your customised installation script.</para>
+        </important>
+
+        <para>So here we go loading FOF:</para>
+
+        <programlistingco>
+          <areaspec>
+            <area coords="???" xml:id="???"/>
+          </areaspec>
+
+          <programlisting>// Load FOF if not already loaded
+if (!defined('F0F_INCLUDED'))
+{
+  $paths = array(
+    (defined('JPATH_LIBRARIES') ? JPATH_LIBRARIES : JPATH_ROOT . '/libraries') . '/f0f/include.php',
+    __DIR__ . '/fof/include.php',
+  );
+
+  foreach ($paths as $filePath)
+  {
+    if (!defined('F0F_INCLUDED') &amp;&amp; file_exists($filePath))
+    {
+      @include_once $filePath;
+    }
+  }
+}</programlisting>
+        </programlistingco>
+
+        <para>Please note that if the FOF directory in your package has a
+        different name you will need to modify __DIR__ . '/<emphasis
+        role="bold">fof</emphasis>/include.php' to reflect the name you chose
+        and nothing else at all in this block of code.</para>
+
+        <para>Next up we define our installation script class for Joomla! to
+        find it:</para>
+
+        <programlisting>class Com_FoobarInstallerScript extends F0FUtilsInstallscript
+</programlisting>
+
+        <warning>
+          <para>Naming your installation class is EXTREMELY IMPORTANT. If you
+          do not follow the naming convention TO THE LETTER Joomla! will not
+          "see" your installation script. This results to immense amounts of
+          hair pulling as Joomla! throws no error whatsoever when you tell it
+          to use an installation script and it doesn't find one.</para>
+        </warning>
+
+        <para>The naming is extremely important. The name must begin with the
+        Joomla! name of your component, with the Com and extension name
+        capitalised, i.e. Com_Foobar. If you use something like com_foobar,
+        Com_foobar, com_Foobar, COM_Foobar, COM_FOOBAR etc Joomla! WILL NOT BE
+        ABLE TO FIND YOUR INSTALLATION SCRIPT AND WILL NOT RUN IT AT ALL. Then
+        it must be followed by exactly InstallerScript. Again, case matters.
+        If you use installerScript, installerscript etc Joomla! will NOT be
+        able to find your installation script. Mind your case!</para>
+
+        <para>The final few lines tell the installation script the component
+        name and the human-readable title.</para>
+
+        <programlisting>{
+    protected $componentName = 'com_foobar';
+    protected $componentTitle = 'Foobar Component';
+}</programlisting>
+
+        <para>As is, the installation script will do the following:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Make sure your component is being installed on Joomla! 2.5.6
+            or later using PHP 5.3.3 or later</para>
+          </listitem>
+
+          <listitem>
+            <para>Install or update your database tables using the XML schema
+            files (see <link linkend="utils-databaseinstaller">the database
+            schema installer / updater / removal class</link>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Install or update FOF if the version bundled with your
+            component is newer than the installed one</para>
+          </listitem>
+
+          <listitem>
+            <para>Install or update Akeeba Strapper if the version bundled
+            with your component is newer than the installed one</para>
+          </listitem>
+
+          <listitem>
+            <para>Work around known Joomla! bugs affecting the generation /
+            update of administrator menu items for newly installed and update
+            components</para>
+          </listitem>
+
+          <listitem>
+            <para>Display an installation overview page, letting the user of
+            what was installed on their site</para>
+          </listitem>
+        </orderedlist>
+
+        <para>When uninstalling the component, the installation script as is
+        right now will do the following:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Remove your database tables using the XML schema files (see
+            <link linkend="utils-databaseinstaller">the database schema
+            installer / updater / removal class</link>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Display an uninstallation overview page, letting the user of
+            what was removed from their site</para>
+          </listitem>
+        </orderedlist>
+
+        <warning>
+          <para><emphasis role="bold">NEVER, EVER</emphasis> uninstall FOF or
+          Akeeba Strapper when uninstalling your component. Joomla! does not
+          provide a way to track dependencies. As a result you can never know
+          if anything else installed on your client's site is using FOF or
+          Akeeba Strapper, making their removal problematic (you could break
+          another developer's perfectly working code). If any developer is
+          caught doing that we will have to put them on a blacklist and take
+          action against their software.</para>
+        </warning>
+
+        <bridgehead>Customising the installation script</bridgehead>
+
+        <para>All customisation can be done by overriding the protected
+        properties and methods of F0FUtilsInstallscript. The properties
+        are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>componentName</term>
+
+            <listitem>
+              <para><emphasis role="bold">MANDATORY</emphasis>. The
+              component's name, e.g. 'com_foobar'. You absolutely need to set
+              this, otherwise</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>componentTitle</term>
+
+            <listitem>
+              <para><emphasis role="bold">MANDATORY</emphasis>. The
+              component's human readable title, e.g. 'My Foobar Component'.
+              This is shown in the installation and uninstallation overview
+              page.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>installation_queue</term>
+
+            <listitem>
+              <para>The list of extra modules and plugins to install on
+              component installation / update and remove on component
+              uninstallation. This is an array which looks like this:</para>
+
+              <programlisting>protected $installation_queue = array(
+  // modules =&gt; { (folder) =&gt; { (module) =&gt; { (position), (published) } }* }*
+  'modules' =&gt; array(
+    'admin' =&gt; array(
+      'adminmodule' =&gt; array('cpanel', 1),
+    ),
+    'site'  =&gt; array(
+      'mymodule' =&gt; array('position-1', 0),
+      'othermodule' =&gt; array('position-2', 1),
+    )
+  ),
+  // plugins =&gt; { (folder) =&gt; { (element) =&gt; (published) }* }*
+  'plugins' =&gt; array(
+    'system' =&gt; array(
+      'foobar' =&gt; 1,
+      'baz' =&gt; 0
+    ),
+  )
+);
+</programlisting>
+
+              <para>The <emphasis role="bold">modules</emphasis> key is an
+              array containing exactly two keys, admin and site, both being
+              arrays containing the list of administrator (back-end) and site
+              (front-end) modules to be installed respectively.</para>
+
+              <para>Each module definition consists of a key which is the
+              module name and its content is an array with two values. The
+              first value is the position the module should be installed to
+              and the second value indicated whether the module will be
+              published by default.</para>
+
+              <para>In the example above the adminmodule is an administrator
+              module which will be placed in the cpanel module position and
+              published whenever the component is installed or updated.</para>
+
+              <para>The <emphasis role="bold">plugins</emphasis> key is an
+              array containing one or more keys. Each key is the name of a
+              Joomla! plugins folder and its contents is an array containing
+              the list of plugins to install.</para>
+
+              <para>Each plugin definition consists of a key which is the
+              plugin name and its content is a value which indicates whether
+              the plugin will be published by default.</para>
+
+              <para>In the example above the plg_system_foobar plugin will be
+              published whenever the component is installed or updated. The
+              plg_system_baz plugin, however, will not be published or
+              unpublished whenever the component is installed or
+              updated.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>uninstallation_queue</term>
+
+            <listitem>
+              <para>The list of obsolete extra modules and plugins to
+              uninstall on component upgrade / installation. Please note that
+              this IS NOT used when uninstalling the component. When you
+              uninstall the component all the plugins and modules listed in
+              $installation_queue will be removed automatically. The reason of
+              $uninstallation_queue's existence is a simple way to uninstall
+              obsolete plugins and modules when you update a component. It is
+              an array like this:</para>
+
+              <programlisting>protected $uninstallation_queue = array(
+  // modules =&gt; { (folder) =&gt; { (module) }* }*
+  'modules' =&gt; array(
+    'admin' =&gt; array(
+       'adminobsolete'
+    ),
+    'site'  =&gt; array()
+  ),
+  // plugins =&gt; { (folder) =&gt; { (element) }* }*
+  'plugins' =&gt; array(
+    'system' =&gt; array(
+      'obsoleteplugin'
+    ),
+  )
+);
+</programlisting>
+
+              <para>The <emphasis role="bold">modules</emphasis> key is an
+              array containing exactly two keys, admin and site, both being
+              arrays containing the list of administrator (back-end) and site
+              (front-end) modules to be uninstalled respectively.</para>
+
+              <para>Each module definition consists of a single value which is
+              the module name to be uninstalled.</para>
+
+              <para>In the example above the adminobsolete is an administrator
+              module which will be uninstalled when you install or upgrade the
+              component.</para>
+
+              <para>The <emphasis role="bold">plugins</emphasis> key is an
+              array containing one or more keys. Each key is the name of a
+              Joomla! plugins folder and its contents is an array containing
+              the list of plugins to uninstall.</para>
+
+              <para>Each plugin definition consists of a single value which is
+              the plugin name.</para>
+
+              <para>In the example above the plg_system_obsoleteplugin plugin
+              will be uninstalled whenever the component is installed or
+              updated.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>removeFilesFree</term>
+
+            <listitem>
+              <para>Obsolete files and folders to remove from the free version
+              only. This is used when you move a feature from the free version
+              of your extension to its paid version ($isPaid is true). If you
+              don't have such a distinction you can ignore this and use the
+              $removeFilesAllVersion option instead. The format is:</para>
+
+              <programlisting>protected $removeFilesFree = array(
+  'files'   =&gt; array(
+    'administrator/components/com_foobar/helpers/whatever.php'
+  ),
+  'folders' =&gt; array(
+    'administrator/components/com_foobar/baz'
+  )
+);</programlisting>
+
+              <para>The array has exactly two keys. The <emphasis
+              role="bold">files</emphasis> key is an array containing a list
+              of files to be removed on installation / update. The <emphasis
+              role="bold">folders</emphasis> key is an array containing a list
+              of folders to be recursively removed on installation / update.
+              Files and folders are given as paths relative to the site's
+              root.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>removeFilesAllVersions</term>
+
+            <listitem>
+              <para>Obsolete files and folders to remove from both paid and
+              free releases. This is used when you refactor code and some
+              files inevitably become obsolete and need to be removed. These
+              files are always removed, no matter what the $isPaid value is
+              Its format is the same as removeFilesFree.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>cliScriptFiles</term>
+
+            <listitem>
+              <para>A list of all CLI scripts to be copied to the "cli"
+              directory of the site. These are copied from the package
+              directory defined in $cliSourcePath. Its format is a simple
+              array listing the names of the files to be copied.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>cliSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where cli scripts are stored.
+              Please remember that this is the path inside your package, NOT
+              the path inside your user's site.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>fofSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where FOF is stored. Please
+              remember that this is the path inside your package, NOT the path
+              inside your user's site.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>strapperSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where Akeeba Strapper is
+              stored. Please remember that this is the path inside your
+              package, NOT the path inside your user's site.</para>
+
+              <para>Installing Akeeba Strapper with your component is
+              optional. If this path does not exist Akeeba Strapper will
+              simply not be installed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>modulesSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where modules to be installed
+              are stored. Please remember that this is the path inside your
+              package, NOT the path inside your user's site.</para>
+
+              <para>Installing modules with your component is optional. If
+              this path does not exist no module will be installed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>pluginsSourcePath</term>
+
+            <listitem>
+              <para>The path inside your package where extra plugins are
+              stored. Please remember that this is the path inside your
+              package, NOT the path inside your user's site.</para>
+
+              <para>Installing plugins with your component is optional. If
+              this path does not exist no plugin will be installed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>schemaXmlPathRelative</term>
+
+            <listitem>
+              <para>Is the schemaXmlPath class variable a relative path? If
+              set to true the schemaXmlPath variable contains a path relative
+              to the component's back-end directory. If set to false the
+              schemaXmlPath variable contains an absolute filesystem path.
+              This is used when installing / updating / removing your database
+              tables using the XML schema files.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>schemaXmlPath</term>
+
+            <listitem>
+              <para>The path where the schema XML files are stored. Its
+              contents depend on the schemaXmlPathRelative variable
+              above</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>true. schemaXmlPath contains a path relative to the
+                  component's back-end directory</para>
+                </listitem>
+
+                <listitem>
+                  <para>false. schemaXmlPath contains an absolute filesystem
+                  path</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>minimumPHPVersion</term>
+
+            <listitem>
+              <para>The minimum PHP version required to install this
+              extension. If it's empty no minimum version check will be
+              performed. You are advised to not set it to a version lower than
+              what FOF requires (5.3.3)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>minimumJoomlaVersion</term>
+
+            <listitem>
+              <para>The minimum Joomla! version required to install this
+              extension. If it's empty no minimum version check will be
+              performed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>maximumJoomlaVersion</term>
+
+            <listitem>
+              <para>The maximum Joomla! version this extension can be
+              installed on. If it's empty no maximum version check will be
+              performed.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>isPaid</term>
+
+            <listitem>
+              <para>Is this the paid version of the extension? This only
+              determines which files / extensions will be removed. This is
+              strictly optional.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>As for the methods you can consult the docblocks in
+        F0FUtilsInstallscript.</para>
+      </section>
+
+      <section xml:id="utils-databaseinstaller">
+        <title>The database schema installer / updater / removal class</title>
+
+        <note>
+          <para>Available since FOF 2.3.0</para>
+        </note>
+
+        <para>One of the most important operations in managing a component is
+        being able to install, update and remove its database schema. Normally
+        you do that using the relevant sections in your extension's manifest
+        file. The big problem with this approach is that you are using the
+        short-sighted code in Joomla!'s own extensions installer. The
+        Achilles' heel in Joomla!'s code is that database installation and
+        updates depend solely on the contents of the
+        <database>#__schemas</database> table. If no version is recorded
+        there, Joomla! is using your installation SQL file. If it contains a
+        version it will try to run all SQL scripts with a name which indicates
+        a version later than the one recorded in the schemas table. This
+        leaves a lot of room for spectacular failures in the following cases,
+        which happen far more frequently than you'd imagine:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The #__schemas entry is empty but (some of) the database
+            tables already exist, for example is the user is transferring
+            tables manually, upgrading from an earlier Joomla! version using a
+            third party tool, a previous installation has gone wrong
+            etc</para>
+          </listitem>
+
+          <listitem>
+            <para>The #__schemas entry is out of date, e.g. the installer
+            timed out before updating it</para>
+          </listitem>
+
+          <listitem>
+            <para>A previous installation resulted in a SQL error</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>In all of the above cases Joomla! will throw a SQL error and
+        your clients will think that you are a moron who can't even install
+        their own component's database properly. Well, it's time to claim your
+        power over Joomla! thanks to FOF!</para>
+
+        <para>FOF 2.3.0 and later comes with the
+        <classname>F0FDatabaseInstaller</classname> class. Unlike Joomla!, it
+        doesn't base its actions on unreliable version numbers. Instead, it
+        will run SQL commands based on whether tables / fields exist, the
+        reported type of fields or the result of custom SQL commands. It goes
+        even further than that by letting YOU, the developer, to choose if the
+        failure of executing a particular SQL command should raise a blocking
+        SQL error or be silently ignored. This is database schema management
+        on steroids.</para>
+
+        <para>The schema files are provided in XML format. You only need one
+        XML file per database technology. By default these files are stored in
+        the back-end of your component, under the <filename>sql/xml</filename>
+        directory. This is something you can override through the
+        <parameter>$config</parameter> array you pass to the class
+        constructor. The recognised parameters are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>input</term>
+
+            <listitem>
+              <para>The F0FInput object, used only when
+              <parameter>option</parameter> is not specified to figure out
+              which component we are referring to. You are advised to use the
+              <parameter>dbinstaller_directory</parameter> parameter
+              instead.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>db</term>
+
+            <listitem>
+              <para>The database object used to execute the SQL commands. If
+              none is specified the default system-wide database object will
+              be used.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>option</term>
+
+            <listitem>
+              <para>The name of the component, e.g
+              <option>com_foobar</option>. This is used to determine the
+              default location of the XML schema files if
+              <parameter>dbinstaller_directory</parameter> is not defined. If
+              not specified it will be read from the
+              <parameter>option</parameter> key of the
+              <parameter>input</parameter> object.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>dbinstaller_directory</term>
+
+            <listitem>
+              <para>The absolute filesystem path where the XML schema files
+              are located. If not specified we will use the
+              <filename>sql/xml</filename> directory at the back-end of the
+              component.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>dbinstaller_files</term>
+
+            <listitem>
+              <para>A comma-separated list or array of the base names of the
+              schema files we will be looking for. The default value is:
+              <option>array('mysql', 'mysqli', 'postgresql', 'sqlsrv',
+              'mssql')</option> Please note that the name of the file doesn't
+              have to be the same as the database technology you are using.
+              See further below for the format of the SQL file.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>The class provides two methods you can use <emphasis>anywhere in
+        your component</emphasis>:</para>
+
+        <programlisting>public function updateSchema()</programlisting>
+
+        <para>It creates or updates the tables of your component in the
+        database. You are suggested to call this in two places: in your
+        installation script and in the main back-end page of your component.
+        The latter place is not very obvious, but it allows your component to
+        update its tables even without going through the installer. You will
+        thank yourself for doing that when an installation fails due to a
+        timeout error (resulting in an inconsistency between schema and code)
+        and when you pull a Git repository on a test server. No need to run
+        SQL commands manually, just visit your component's back-end page and
+        presto! The database schema is updated. You're welcome.</para>
+
+        <programlisting>public function removeSchema()</programlisting>
+
+        <para>It removes (drops) the tables of your component. You are
+        recommended to only use it in the uninstallation script of your
+        component. Beware! It really does what it says on the tin. It will
+        remove all database tables you mention in your XML schema file without
+        any further warning. One line and the data dies, permanently.</para>
+
+        <bridgehead>Format of the XML schema files</bridgehead>
+
+        <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;schema&gt;
+    &lt;!-- Metadata --&gt;
+    &lt;meta&gt;
+        &lt;!-- Supported driver types --&gt;
+        &lt;drivers&gt;
+            &lt;driver&gt;mysql&lt;/driver&gt;
+            &lt;driver&gt;mysqli&lt;/driver&gt;
+        &lt;/drivers&gt;
+    &lt;/meta&gt;
+
+    &lt;!-- SQL commands to run on installation and update --&gt;
+    &lt;sql&gt;
+        &lt;!-- Create the #__foobar_profiles table if it's missing --&gt;
+        &lt;action table="#__foobar_profiles" canfail="0"&gt;
+            &lt;condition type="missing" value="" /&gt;
+            &lt;query&gt;&lt;![CDATA[
+CREATE TABLE `#__foobar_profiles` (
+`foobar_profile_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+`description` varchar(255) NOT NULL,
+`params` longtext,
+PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8;
+            ]]&gt;&lt;/query&gt;
+        &lt;/action&gt;
+        &lt;action table="#__foobar_profiles" canfail="0"&gt;
+            &lt;condition type="missing" value="params" /&gt;
+            &lt;query&gt;&lt;![CDATA[
+ALTER TABLE `#__foobar_profiles` ADD `params` longtext AFTER `description`;
+            ]]&gt;&lt;/query&gt;
+        &lt;/action&gt;
+    &lt;/sql&gt;
+&lt;/schema&gt;</programlisting>
+
+        <para>As you can see the file has the root element
+        <tag>&lt;schema&gt;</tag> and consists of two sections.</para>
+
+        <bridgehead renderas="sect4">The <tag>&lt;meta&gt;</tag>
+        section</bridgehead>
+
+        <para>This section has a lone element, <tag>&lt;drivers&gt;</tag>,
+        which tells FOF which database technologies this XML schema file
+        applies to. Put one driver name in each <tag>&lt;driver&gt;</tag>
+        child element. The driver names recognised are those that Joomla!
+        supports. By the latest count they are: mysql, mysqli, postgresql,
+        sqlsrv, sqlazure</para>
+
+        <warning>
+          <para>Joomla! seems to only be tested properly against the mysql and
+          mysqli drivers. We have been observing inconsistent behaviour with
+          the other drivers. You are advised AGAINST supporting these database
+          technologies unless you enjoy receiving bug reports which you can't
+          fix because the problem is in Joomla!, not your code.</para>
+        </warning>
+
+        <bridgehead renderas="sect4">The <tag>&lt;sql&gt;</tag>
+        section</bridgehead>
+
+        <para>This is where all the action takes place. And that's why you
+        have one or more <tag>&lt;action&gt;</tag> tags. Each
+        <tag>&lt;action&gt;</tag> tag defines SQL commands which should run
+        when one or more conditions are met. Each tag has the following
+        attributes:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>table</term>
+
+            <listitem>
+              <para>REQUIRED. The table this action operates on, e.g.
+              <option>#__foobar_categories</option></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>canfail</term>
+
+            <listitem>
+              <para>(optional) If it's set to 0 (default) if any SQL command
+              in this action tag fails the error will bubble up and throw a
+              system error, preventing further execution. If it's set to 1 all
+              SQL errors are ignored. This setting can be overridden in each
+              <tag>&lt;query&gt;</tag> tag.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Let's start with the <emphasis
+        role="bold">conditions</emphasis>. They are defined by one or more
+        <tag>&lt;condition&gt;</tag> tags. All <tag>&lt;condition&gt;</tag>
+        tags accept the <parameter>operator</parameter> attribute which can
+        have one of the following values:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>and</term>
+
+            <listitem>
+              <para>(default) This condition must be true</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>not</term>
+
+            <listitem>
+              <para>This condition must be false</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>or</term>
+
+            <listitem>
+              <para>Either this condition or its previous conditions must be
+              true</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>nor</term>
+
+            <listitem>
+              <para>Either this condition must be false or its previous
+              conditions must be true</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>xor</term>
+
+            <listitem>
+              <para>Either this condition or its previous conditions must be
+              true, but not both</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>maybe</term>
+
+            <listitem>
+              <para>Equivalent to "or"</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Any other value is treated as "and". As you may have noticed
+        this is straightforward Boolean algebra.</para>
+
+        <para>The kind of check performed by a <tag>&lt;condition&gt;</tag>
+        tag is determined by its <parameter>type</parameter> attribute:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>missing</term>
+
+            <listitem>
+              <para>Checks if a table or a field of the table is missing. This
+              depends on the <parameter>value</parameter> of the value
+              attribute of the tag:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>If it's empty FOF will check if the table defined by
+                  the <parameter>table</parameter> attribute of the
+                  <tag>&lt;action&gt;</tag> tag exists.</para>
+                </listitem>
+
+                <listitem>
+                  <para>If it's not empty FOF will check if the field whose
+                  name you've put in the <parameter>value</parameter>
+                  attribute exists in the table defined by the
+                  <parameter>table</parameter> attribute of the
+                  <tag>&lt;action&gt;</tag> tag.</para>
+                </listitem>
+              </itemizedlist>
+
+              <para>This is useful to install tables if they are missing or
+              add missing fields to tables.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>type</term>
+
+            <listitem>
+              <para>FOF checks if the type of a database field matches what
+              you expect. The field will be searched in the
+              <parameter>table</parameter> attribute of the
+              <tag>&lt;action&gt;</tag> tag. It requires two
+              attributes:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para><parameter>value</parameter>. The name of the
+                  field.</para>
+                </listitem>
+
+                <listitem>
+                  <para><parameter>coltype</parameter>. The expected field
+                  type (case insensitive). Please note that this expects the
+                  full field type definition, e.g. "VARCHAR(255) NULL" and NOT
+                  just "VARCHAR". This is a limitation of Joomla!'s database
+                  drivers.</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>equals</term>
+
+            <listitem>
+              <para>FOF checks the result of a SQL query against the
+              <parameter>value</parameter> attribute. In this case the content
+              of the <tag>&lt;condition&gt;</tag> tag gives the SQL query to
+              execute. For example:</para>
+
+              <programlisting>        &lt;action table="#__admintools_profiles" canfail="1"&gt;
+            &lt;condition type="equals" operator="not" value="1"&gt;&lt;![CDATA[
+SELECT COUNT(*) FROM `#__admintools_profiles` WHERE `id` = 1;
+            ]]&gt;&lt;/condition&gt;
+
+            &lt;query canfail="1"&gt;&lt;![CDATA[
+INSERT IGNORE INTO `#__admintools_profiles`
+(`id`,`description`, `configuration`, `filters`) VALUES
+(1,'Default PHP Change Scanner Profile','','');
+            ]]&gt;&lt;/query&gt;
+        &lt;/action&gt;
+</programlisting>
+
+              <para>In this case we are checking if the COUNT query returns
+              "1". If not (due to the "not" operator) we will run the INSERT
+              IGNORE query.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>true</term>
+
+            <listitem>
+              <para>Always returns true. Useful to run index creation as
+              indices cannot be reliably detected across all database types
+              (again, a limitation of Joomla!'s database drivers…).</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Next up you have one or more <tag>&lt;query&gt;</tag> tags. When
+        the conditions are met they will all execute. The only attribute you
+        can have is <parameter>canfail</parameter> and it's optional. If you
+        skip it FOF will use the <parameter>canfail</parameter> attribute of
+        the <tag>&lt;action&gt;</tag> tag.</para>
+
+        <para>As you see this feature is extremely simple and extremely
+        powerful. If you use it wisely it will make your component's database
+        installation and maintenance seem to take place magically!</para>
+      </section>
+
+      <section xml:id="utils-update">
+        <title>The update model helper</title>
+
+        <note>
+          <para>Available since FOF 2.3.0</para>
+        </note>
+
+        <para>Joomla! comes with an extensions updater feature. That said, its
+        API is hard to use and leads to a lot of code repetition. Even worse,
+        trying to use the support for commercial extensions is even worse.
+        This is why FOF comes with the <classname>F0FUtilsUpdate</classname>
+        model class.</para>
+
+        <para>This class is not designed to be used on its own. You will need
+        to create a Model in your extension extending from this class. For
+        example:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {}</programlisting>
+
+        <para>As is it won't help you much. At the very least you have to tell
+        it which component this model refers to. You can do so in your
+        constructor. For example:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
+
+  public function __construct($config = array())
+  {
+    $config['update_component'] = 'com_foobar';
+
+    parent::__construct($config);
+  }
+}</programlisting>
+
+        <para>You can now get the updates to your component by doing</para>
+
+        <programlisting>$updateInfo = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getUpdates();</programlisting>
+
+        <para>This will return an array with the following keys:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>hasUpdate</term>
+
+            <listitem>
+              <para>Boolean. True if there is an updated version
+              available.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>version</term>
+
+            <listitem>
+              <para>String. The version number of the updated version
+              available.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>infoURL</term>
+
+            <listitem>
+              <para>String. The optional information URL as found in the
+              extension's update XML stream.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>If you want to find out the current version of your extension
+        you can do:</para>
+
+        <para><programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;getVersion();</programlisting>And
+        now you have all the update information you might need.</para>
+
+        <para>In order to modify the update site and/or use the Joomla! 3.2 or
+        later support for paid extensions you need to first define a few
+        things in your constructor:</para>
+
+        <programlisting>class FoobarModelUpdates extends F0FUtilsUpdate {
+
+  public function __construct($config = array())
+  {
+    $config['update_component'] = 'com_foobar';
+    $config['update_sitename'] = 'Foobar updates';
+    $config['update_site'] = 'http://www.example.com/updates/com_foobar.xml';
+    $config['update_extraquery'] = 'authorisation=mySuperSecretCode';
+
+    parent::__construct($config);
+  }
+}</programlisting>
+
+        <para>The parameters you are setting are:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>update_sitename</term>
+
+            <listitem>
+              <para>The name of the update site, as stored in Joomla!'s
+              #__update_sites table and used... nowhere at all (typical
+              Joomla)!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>update_site</term>
+
+            <listitem>
+              <para>The URL to the update XML file for this extension</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>update_extraquery</term>
+
+            <listitem>
+              <para>Something to be appended to the download URL. The idea is
+              that you'll be using this to authenticate your clients to your
+              site and allow them to download your commercial extension. It's
+              a good idea to never hardcode this parameter but read it from
+              your component's configuration.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Then, somewhere in your component, you need to run:</para>
+
+        <programlisting>$currentVersion = F0FModel::getTmpInstance('Updates', 'FoobarModel')-&gt;refreshUpdateSite();</programlisting>
+
+        <para>It's a good idea to put that in your component's control panel
+        controller, in the onBeforeBrowse() method.</para>
+      </section>
     </section>
   </chapter>
 
@@ -4220,7 +5454,7 @@ $json = ob_end_clean();
               <term>name</term>
 
               <listitem>
-                <para>How this relation will be known to FOFTable</para>
+                <para>How this relation will be known to F0FTable</para>
               </listitem>
             </varlistentry>
 
@@ -4286,14 +5520,14 @@ $json = ob_end_clean();
               <term>tableClass</term>
 
               <listitem>
-                <para>The FOFTable class name of the foreign table, e.g.
+                <para>The F0FTable class name of the foreign table, e.g.
                 FoobarTableItems. This is not required if remoteKey and the
                 table class follow the FOF naming conventions, i.e.
                 foobar_item_id is understood to belong to #__foobar_items
-                which maps to the FOFTable class FoobarTableItems. The table
+                which maps to the F0FTable class FoobarTableItems. The table
                 class doesn't need to exist (you don't need to specialise
-                FOFTable to define a relation). If the class is not found a
-                properly configured FOFTable object is created
+                F0FTable to define a relation). If the class is not found a
+                properly configured F0FTable object is created
                 automatically.</para>
               </listitem>
             </varlistentry>
@@ -4461,7 +5695,7 @@ $json = ob_end_clean();
             <term>behaviors</term>
 
             <listitem>
-              <para>Add model behaviours. See the FOFModel documentation for
+              <para>Add model behaviours. See the F0FModel documentation for
               more information on behaviours.</para>
 
               <itemizedlist>
@@ -4534,6 +5768,18 @@ $json = ob_end_clean();
             <listitem>
               <para>The task to execute if none is defined. The default value
               is <methodname>display</methodname>.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>defaultPageTitle</term>
+
+            <listitem>
+              <para>Only taken into account when setFrontendPageTitle is also
+              enabled. This is the translation key of the page's title which
+              will be used in the front-end. You can override this behaviour
+              by specialising the setPageTitle method of your
+              <classname>F0FView</classname> class.</para>
             </listitem>
           </varlistentry>
 
@@ -4716,6 +5962,24 @@ $json = ob_end_clean();
           </varlistentry>
 
           <varlistentry>
+            <term>setFrontendPageTitle</term>
+
+            <listitem>
+              <para>When enabled, FOF will set the page title and metadata in
+              the front-end. You can enable this option by setting it to
+              <option>1</option>, <option>yes</option>, <option>true</option>
+              or <option>on</option>. When this setting is not set, the
+              default behaviour of Joomla! is to set the page title to the
+              name of the currently active menu item. The default Joomla!
+              behaviour ignores the <guilabel>Include Site Name in Page
+              Titles</guilabel> setting in the site's Global Configuration
+              (it's a Joomla! bug), but the code in FOF which runs when this
+              setting is enabled does honour that Global Configuration
+              setting.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>table_path</term>
 
             <listitem>
@@ -4887,7 +6151,7 @@ $json = ob_end_clean();
         </listitem>
       </itemizedlist>
 
-      <para>FOF takes this concept further with the FOFForm package. Not only
+      <para>FOF takes this concept further with the F0FForm package. Not only
       can you create edit views, but you can also create browse (records
       listing) and read (single record display) views out of XML forms.
       Moreover, the forms are handled automatically by the FOF base MVC
@@ -5392,6 +6656,49 @@ $json = ob_end_clean();
           Joomla! 1.5.0. It's up to you to decide which method is best for
           your project!</para>
 
+          <section xml:id="format-forms-with-bs-tabs">
+            <title>Using Bootstrap-powered tabs</title>
+
+            <important>
+              <para>Available since FOF 2.3.0.</para>
+
+              <para>This feature simply emits Bootstrap 2.x compatible HTML
+              markup, therefore only works with Bootstrap-powered templates.
+              This means that you will need to be using Akeeba Strapper
+              (Joomla! 2.5 and 3.x are supported) or Joomla! 3.x with a
+              Bootstrap-powered template.</para>
+            </important>
+
+            <para>If you have a long form you may want to provide tabs to let
+            the user access different sections of the form. In order to do
+            that, you first have to set the <parameter>tabbed</parameter>
+            attribute of your form to <option>true</option>,
+            <option>yes</option>, <option>1</option> or <option>on</option>.
+            For example:</para>
+
+            <programlisting>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;form tabbed="1"&gt;
+</programlisting>
+
+            <para>Each <tag>fieldset</tag> which will be part of the tab set
+            must include <option>tab-pane</option> in its
+            <parameter>class</parameter> attribute. Moreover, it MUST have
+            non-empty <parameter>label</parameter> and
+            <parameter>name</parameter> attributes. For example:</para>
+
+            <programlisting>&lt;fieldset name="basic_configuration"
+label="COM_FOOBAR_ITEMS_GROUP_BASIC"
+class="tab-pane active another-class"
+&gt;</programlisting>
+
+            <para>Please note that <emphasis>exactly one</emphasis> of your
+            <tag>fieldset</tag>s must have <option>active</option> added to
+            its <parameter>class</parameter> attribute. This will be the tab
+            which will be open by default. If you forget to set an active tab
+            the tab pane will render with no tab active by default which is
+            confusing for your users!</para>
+          </section>
+
           <section xml:id="format-forms-with-classes">
             <title>Assigning classes and IDs to &lt;fieldset&gt;s</title>
 
@@ -5835,7 +7142,7 @@ echo $viewTemplate;
             <title>model</title>
 
             <para>Similar to the fieldselectable header, but gets the options
-            from a FOFModel descendant.</para>
+            from a F0FModel descendant.</para>
 
             <para>You can set the following attributes on top of those of the
             'fieldselectable' field type's:</para>
@@ -6726,7 +8033,7 @@ echo $viewTemplate;
             <title>model</title>
 
             <para>Similar to the list field, but gets the options from a
-            FOFModel descendant.</para>
+            F0FModel descendant.</para>
 
             <para>You can set the following attributes on top of those of the
             'list' field type's:</para>
@@ -7336,7 +8643,7 @@ echo $viewTemplate;
     if (!$this-&gt;$slug)
     {
         $this-&gt;$slug = !$this-&gt;firstname ? $this-&gt;lastname : $this-&gt;firstname .' '. $this-&gt;lastname;
-        $this-&gt;$slug = FOFStringUtils::toSlug($this-&gt;$slug);
+        $this-&gt;$slug = F0FStringUtils::toSlug($this-&gt;$slug);
     }
     return parent::onBeforeStore($updateNulls);
 }
@@ -7372,7 +8679,7 @@ CREATE TABLE IF NOT EXISTS `#__foobar_childs` (
       new site/components/com_foobar/models/items.php:</para>
 
       <programlisting>defined('_JEXEC') or die();
-class FoobarModelItems extends FOFModel
+class FoobarModelItems extends F0FModel
 {
     /***
     Delete all related records in the child table "#__foobar_childs" when the parent table's record is deleted
@@ -7382,10 +8689,10 @@ class FoobarModelItems extends FOFModel
         $result = parent::onBeforeDelete($id, $table);
         if($result) {
             $table-&gt;load($id);
-            $childids = FOFModel::getTmpInstance('childs','FoobarModel')-&gt;limit(0)-&gt;limitstart(0)-&gt;getItemList();
+            $childids = F0FModel::getTmpInstance('childs','FoobarModel')-&gt;limit(0)-&gt;limitstart(0)-&gt;getItemList();
             if(!empty($childids)){
                 foreach($childids as $childid){
-                    FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($childid-&gt;foobar_child_id)-&gt;delete();
+                    F0FModel::getTmpInstance('childs','FoobarModel')-&gt;setId($childid-&gt;foobar_child_id)-&gt;delete();
                 }
             }
         }
@@ -7397,7 +8704,7 @@ class FoobarModelItems extends FOFModel
 
       <para>If you have a one-to-one relationship, then you'll have:</para>
 
-      <programlisting>class FoobarModelItems extends FOFModel
+      <programlisting>class FoobarModelItems extends F0FModel
 {
     /***
     Delete all related records in the child table "#__foobar_childs"
@@ -7408,7 +8715,7 @@ class FoobarModelItems extends FOFModel
         $result = parent::onBeforeDelete($id, $table);
         if($result) {
             $table-&gt;load($id);
-            FOFModel::getTmpInstance('childs','FoobarModel')-&gt;setId($table-&gt;load($id))-&gt;delete();
+            F0FModel::getTmpInstance('childs','FoobarModel')-&gt;setId($table-&gt;load($id))-&gt;delete();
         }
     return $result;
     }
@@ -7595,7 +8902,7 @@ class FoobarModelItems extends FOFModel
       to exactly 10 characters. If you don’t feel like guessing, you can
       simply do:</para>
 
-      <programlisting>$totp = new FOFEncryptTotp();
+      <programlisting>$totp = new F0FEncryptTotp();
 $secret = $totp-&gt;generateSecret();</programlisting>
 
       <para>You have to share this secret key with all clients wishing to
@@ -7650,10 +8957,10 @@ $authKey = json_encode(array(
   'username' =&gt; $username,
   'password' =&gt; $password
 ));
-$totp = new FOFEncryptTotp($timeStep);
+$totp = new F0FEncryptTotp($timeStep);
 $otp = $totp-&gt;getCode($secretKey);
 $cryptoKey = hash('sha256', $this-&gt;_fofAuth_Key.$otp);
-$aes = new FOFEncryptAes($cryptoKey);
+$aes = new F0FEncryptAes($cryptoKey);
 $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 </programlisting>
 
@@ -7675,7 +8982,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       <para>Create a controller at
       &lt;administrator&gt;/controllers/cpanel.php</para>
 
-      <programlisting>class COMPONENT_NAMEControllerCpanel extends FOFController
+      <programlisting>class COMPONENT_NAMEControllerCpanel extends F0FController
 
 {
 	public function execute($task)
@@ -7717,7 +9024,7 @@ $option = 'com_COMPONENT_NAME';
       <para>Customize the Cpanel toolbar creating a
       &lt;administrator&gt;/toolbar.php file with:</para>
 
-      <programlisting>class COMPONENT_NAMEToolbar extends FOFToolbar
+      <programlisting>class COMPONENT_NAMEToolbar extends F0FToobar
 {
 	/**
 	 * Prepares the toolbar for Cpanel view
@@ -7753,7 +9060,7 @@ $option = 'com_COMPONENT_NAME';
       one is not. To activate this feature, set the _autoChecks flag to true
       in your table constructor:</para>
 
-      <programlisting>class FoobarTableBar extends FOFTable
+      <programlisting>class FoobarTableBar extends F0FTable
 {
     function __construct($table, $key, $db)
     {

@@ -6,29 +6,26 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldCheckbox'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/checkbox.php';
-}
+JFormHelper::loadFieldClass('checkbox');
 
 /**
- * Form Field class for the FOF framework
+ * Form Field class for the F0F framework
  * A single checkbox
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldCheckbox extends JFormFieldCheckbox implements FOFFormField
+class F0FFormFieldCheckbox extends JFormFieldCheckbox implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 

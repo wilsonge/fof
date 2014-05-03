@@ -11,9 +11,9 @@
 // Protect from unauthorized access
 defined('_JEXEC') or die();
 
-if (!defined('FOF_INCLUDED'))
+if (!defined('F0F_INCLUDED'))
 {
-    include_once JPATH_SITE . '/libraries/fof/include.php';
+    include_once JPATH_LIBRARIES . '/f0f/include.php';
 }
 
 if (!@include_once(JPATH_SITE . '/media/akeeba_strapper/version.php') && !defined('AKEEBASTRAPPER_VERSION'))
@@ -129,7 +129,7 @@ class AkeebaStrapper
 		if(is_null($config))
 		{
 			// Load a configuration INI file which controls which files should be skipped
-			$iniFile = FOFTemplateUtils::parsePath('media://akeeba_strapper/strapper.ini', true);
+			$iniFile = F0FTemplateUtils::parsePath('media://akeeba_strapper/strapper.ini', true);
 
 			$config = parse_ini_file($iniFile);
 		}
@@ -265,7 +265,7 @@ class AkeebaStrapper
 		{
 			if (in_array($key, array('joomla3', 'joomla32')))
 			{
-				$isFrontend = FOFPlatform::getInstance()->isFrontend();
+				$isFrontend = F0FPlatform::getInstance()->isFrontend();
 
 				$loadBootstrap = $isFrontend ? 'full' : 'lite';
 			}
@@ -320,7 +320,7 @@ class AkeebaStrapper
         {
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
 
-			$filename = FOFTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
+			$filename = F0FTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
 			if (@filesize($filename) > 5)
 			{
 				self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', AKEEBASTRAPPER_MEDIATAG);
@@ -379,7 +379,7 @@ class AkeebaStrapper
 
 		$tag = self::getTag($overrideTag);
 
-        self::$scriptURLs[] = array(FOFTemplateUtils::parsePath($path), $tag);
+        self::$scriptURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
     }
 
     /**
@@ -412,7 +412,7 @@ class AkeebaStrapper
 
 		$tag = self::getTag($overrideTag);
 
-		self::$cssURLs[] = array(FOFTemplateUtils::parsePath($path), $tag);
+		self::$cssURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
     }
 
     /**
@@ -509,7 +509,14 @@ function AkeebaStrapperLoader()
 
 	if ($preload)
     {
-        $buffer = JResponse::getBody();
+		if (version_compare(JVERSION, '3.2', 'ge'))
+		{
+			$buffer = JFactory::getApplication()->getBody();
+		}
+		else
+		{
+			$buffer = JResponse::getBody();
+		}
     }
 	else
 	{
@@ -585,7 +592,7 @@ function AkeebaStrapperLoader()
         {
             list($lessFile, $altFiles, $tag) = $entry;
 
-            $url = FOFTemplateUtils::addLESS($lessFile, $altFiles, true);
+            $url = F0FTemplateUtils::addLESS($lessFile, $altFiles, true);
 
 			if ($preload)
             {
@@ -599,7 +606,7 @@ function AkeebaStrapperLoader()
                     {
                         foreach ($altFiles as $altFile)
                         {
-                            $url = FOFTemplateUtils::parsePath($altFile);
+                            $url = F0FTemplateUtils::parsePath($altFile);
                             $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
                         }
                     }
@@ -621,7 +628,7 @@ function AkeebaStrapperLoader()
                     {
                         foreach ($altFiles as $altFile)
                         {
-                            $url = FOFTemplateUtils::parsePath($altFile);
+                            $url = F0FTemplateUtils::parsePath($altFile);
                             JFactory::getDocument()->addStyleSheet($url . $tag);
                         }
                     }
@@ -674,7 +681,15 @@ function AkeebaStrapperLoader()
         if ($pos > 0)
         {
             $buffer = substr($buffer, 0, $pos + 6) . $myscripts . substr($buffer, $pos + 6);
-            JResponse::setBody($buffer);
+
+			if (version_compare(JVERSION, '3.2', 'ge'))
+			{
+				JFactory::getApplication()->setBody($buffer);
+			}
+			else
+			{
+				JResponse::setBody($buffer);
+			}
         }
     }
 }

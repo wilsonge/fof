@@ -10,7 +10,7 @@
 require_once 'tableDataprovider.php';
 require_once JPATH_TESTS.'/unit/core/table/table.php';
 
-class FOFTableTest extends FtestCaseDatabase
+class F0FTableTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
@@ -25,20 +25,20 @@ class FOFTableTest extends FtestCaseDatabase
 
 	    parent::setUp($loadDataset);
 
-        FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+        F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
     }
 
 	/**
-	 * @covers              FOFTable::setKnownFields
-	 * @group               FOFTable
+	 * @covers              F0FTable::setKnownFields
+	 * @group               F0FTable
 	 * @preventDataLoading
 	 */
 	public function testSetKnownFields()
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
-		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+		$table 		= F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
 		$knownFields = array(
 			'foo',
@@ -51,15 +51,15 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::getKnownFields
-	 * @group               FOFTable
+	 * @covers              F0FTable::getKnownFields
+	 * @group               F0FTable
 	 * @preventDataLoading
 	 */
 	public function testGetKnownFields()
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
-		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+		$table 		= F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
 		$knownFields = array(
 			'foo',
@@ -74,15 +74,15 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::addKnownField
-	 * @group               FOFTable
+	 * @covers              F0FTable::addKnownField
+	 * @group               F0FTable
 	 * @preventDataLoading
 	 */
 	public function testAddKnownField()
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
-		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+		$table 		= F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
 		$table->addKnownField('foo');
 		$table->addKnownField('bar');
@@ -94,15 +94,15 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::removeKnownField
-	 * @group               FOFTable
+	 * @covers              F0FTable::removeKnownField
+	 * @group               F0FTable
 	 * @preventDataLoading
 	 */
 	public function testRemoveKnownField()
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
 
-		$table 		= FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+		$table 		= F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
 		$table->addKnownField('foo');
 		$table->removeKnownField('foo');
@@ -113,14 +113,14 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::load
+	 * @covers              F0FTable::load
 	 * @group               tableLoad
-	 * @group               FOFTable
+	 * @group               F0FTable
 	 */
 	public function testLoad()
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
-        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
         $reflection = new ReflectionClass($table);
         $property   = $reflection->getProperty('_tableExists');
@@ -150,9 +150,9 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
-	 * @covers              FOFTable::load
+	 * @covers              F0FTable::load
 	 * @group               tableLoadJoined
-	 * @group               FOFTable
+	 * @group               F0FTable
 	 * @dataProvider        getTestLoadJoined
 	 */
 	public function testLoadJoined($tableinfo, $test, $check)
@@ -172,14 +172,14 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tableCheck
-	 * @group               FOFTable
-	 * @covers              FOFTable::check
+	 * @group               F0FTable
+	 * @covers              F0FTable::check
 	 * @preventDataLoading
 	 */
 	public function testCheck()
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
-        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
         $reflection = new ReflectionClass($table);
         $property   = $reflection->getProperty('_autoChecks');
@@ -236,8 +236,8 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
-	 * @covers              FOFTable::reset
-	 * @group               FOFTable
+	 * @covers              F0FTable::reset
+	 * @group               F0FTable
 	 */
 	public function testReset()
 	{
@@ -245,7 +245,7 @@ class FOFTableTest extends FtestCaseDatabase
 		$methods = array('onBeforeReset', 'onAfterReset');
 		$constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-		$table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+		$table = $this->getMock('F0FTable',	$methods, $constr_args,	'',	true, true, true, true);
 
 		$table->expects($this->any())->method('onBeforeReset')->will($this->returnValue(false));
 		$table->expects($this->any())->method('onAfterReset') ->will($this->returnValue(true));
@@ -255,7 +255,7 @@ class FOFTableTest extends FtestCaseDatabase
 		unset($table);
 
 		// Rebuild the mock to return true on onBeforeReset
-		$table = $this->getMock('FOFTable', $methods, $constr_args,	'',	true, true,	true, true);
+		$table = $this->getMock('F0FTable', $methods, $constr_args,	'',	true, true,	true, true);
 
 		$table->expects($this->any())->method('onBeforeReset')->will($this->returnValue(true));
 		$table->expects($this->any())->method('onAfterReset') ->will($this->returnValue(true));
@@ -268,7 +268,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 		// Then let's check if reset method worked
 		// @TODO we must check for additional fields, like joined columns
-		// This test is not 100% correct, we must change it after FOFTable refactoring
+		// This test is not 100% correct, we must change it after F0FTable refactoring
 		$fields  = $table->getTableFields();
 		$success = true;
 		foreach($fields as $field => $class)
@@ -291,7 +291,7 @@ class FOFTableTest extends FtestCaseDatabase
 		unset($table);
 
 		// Rebuild the mock to return true on onBeforeReset AND false on onAfterReset
-		$table = $this->getMock('FOFTable', $methods, $constr_args,	'', true, true,	true, true);
+		$table = $this->getMock('F0FTable', $methods, $constr_args,	'', true, true,	true, true);
 
 		$table->expects($this->any())->method('onBeforeReset')->will($this->returnValue(true));
 		$table->expects($this->any())->method('onAfterReset') ->will($this->returnValue(false));
@@ -302,9 +302,9 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
     /**
-     * @covers              FOFTable::bind
+     * @covers              F0FTable::bind
      * @dataProvider        getTestBind
-     * @group               FOFTable
+     * @group               F0FTable
      * @preventDataLoading
      */
     public function testBind($onBefore, $returnValue, $toBind, $toSkip, $toCheck)
@@ -313,7 +313,7 @@ class FOFTableTest extends FtestCaseDatabase
         $methods     = array('onBeforeBind');
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	$methods, $constr_args,	'',	true, true, true, true);
         $table->expects($this->any())->method('onBeforeBind')->will($this->returnValue($onBefore));
 
         $rc = $table->bind($toBind, $toSkip);
@@ -330,16 +330,16 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
-	 * @covers              FOFTable::bind
-	 * @group               FOFTable
+	 * @covers              F0FTable::bind
+	 * @group               F0FTable
 	 * @preventDataLoading
 	 */
 	public function testBindException()
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
-        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
         $table->bind('This is a wrong argument');
     }
 
@@ -348,8 +348,8 @@ class FOFTableTest extends FtestCaseDatabase
      */
     public function testtemp()
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobar'));
-        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+        $table 		     = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
         $table->setAssetKey('com_foftest.foobar');
 
@@ -362,8 +362,8 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableStore
-     * @group               FOFTable
-     * @covers              FOFTable::store
+     * @group               F0FTable
+     * @covers              F0FTable::store
      * @dataProvider        getTestStore
      */
     public function testStore($events, $tableinfo, $test, $check)
@@ -372,9 +372,9 @@ class FOFTableTest extends FtestCaseDatabase
         $methods     = array('onBeforeStore', 'onAfterStore');
         $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
 
-        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	$methods, $constr_args,	'',	true, true, true, true);
 
-        // Mocking these methods will prevent some FOF features (ie slug creation, created_by set up and so on)
+        // Mocking these methods will prevent some F0F features (ie slug creation, created_by set up and so on)
         // I think it's ok since we're going to test that features when we'll test these methods,
         // now we only care about the store() method
         $table->expects($this->any())->method('onBeforeStore')->will($this->returnValue($events['before']));
@@ -441,8 +441,8 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
      * @group               tableMove
-	 * @group               FOFTable
-     * @covers              FOFTable::move
+	 * @group               F0FTable
+     * @covers              F0FTable::move
      * @dataProvider        getTestMove
      */
     public function testMove($events, $tableinfo, $test, $check)
@@ -451,7 +451,7 @@ class FOFTableTest extends FtestCaseDatabase
         $methods     = array('onBeforeMove', 'onAfterMove');
         $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
 
-        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	$methods, $constr_args,	'',	true, true, true, true);
         $table->expects($this->any())->method('onBeforeMove')->will($this->returnValue($events['before']));
         $table->expects($this->any())->method('onAfterMove')->will($this->returnValue($events['after']));
 
@@ -488,23 +488,23 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tableMove
-	 * @group               FOFTable
-	 * @covers              FOFTable::move
+	 * @group               F0FTable
+	 * @covers              F0FTable::move
 	 * @preventDataLoading
 	 */
 	public function testMoveException()
 	{
 		$this->setExpectedException('UnexpectedValueException');
 
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
-		$table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'bare'));
+		$table 		     = F0FTable::getAnInstance('Bare', 'FoftestTable', $config);
 		$table->move(0);
 	}
 
 	/**
      * @group               tableReorder
-	 * @group               FOFTable
-	 * @covers              FOFTable::reorder
+	 * @group               F0FTable
+	 * @covers              F0FTable::reorder
      * @dataProvider        getTestReorder
      */
     public function testReorder($events, $tableinfo, $test, $check)
@@ -513,7 +513,7 @@ class FOFTableTest extends FtestCaseDatabase
         $methods     = array('onBeforeReorder', 'onAfterReorder');
         $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
 
-        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	$methods, $constr_args,	'',	true, true, true, true);
         $table->expects($this->any())->method('onBeforeReorder')->will($this->returnValue($events['before']));
         $table->expects($this->any())->method('onAfterReorder')->will($this->returnValue($events['after']));
 
@@ -558,29 +558,29 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableReorder
-     * @group               FOFTable
-     * @covers              FOFTable::reorder
+     * @group               F0FTable
+     * @covers              F0FTable::reorder
      * @preventDataLoading
      */
     public function testReorderException()
     {
         $this->setExpectedException('UnexpectedValueException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
-        $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'bare'));
+        $table 		     = F0FTable::getAnInstance('Bare', 'FoftestTable', $config);
         $table->reorder();
     }
 
     /**
      * @group               tableCheckout
-     * @group               FOFTable
-     * @covers              FOFTable::checkout
+     * @group               F0FTable
+     * @covers              F0FTable::checkout
      * @dataProvider        getTestCheckout
      */
     public function testCheckout($tableinfo, $test, $check)
     {
         $db    = JFactory::getDbo();
-        $table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+        $table = new F0FTable($tableinfo['table'], $tableinfo['id'], $db);
 
         if($test['loadid'])
         {
@@ -618,14 +618,14 @@ class FOFTableTest extends FtestCaseDatabase
 
     /**
      * @group               tableCheckin
-     * @group               FOFTable
-     * @covers              FOFTable::checkin
+     * @group               F0FTable
+     * @covers              F0FTable::checkin
      * @dataProvider        getTestCheckin
      */
     public function testCheckin($tableinfo, $test, $check)
     {
         $db    = JFactory::getDbo();
-        $table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+        $table = new F0FTable($tableinfo['table'], $tableinfo['id'], $db);
 
         if($test['loadid'])
         {
@@ -669,14 +669,14 @@ class FOFTableTest extends FtestCaseDatabase
      * that's surfing in our site writing directly into the session table
      *
      * @group               tableIsCheckedOut
-     * @group               FOFTable
-     * @covers              FOFTable::isCheckedOut
+     * @group               F0FTable
+     * @covers              F0FTable::isCheckedOut
      * @dataProvider        getTestIsCheckedOut
      */
     public function testIsCheckedOut($tableinfo, $test, $check)
     {
         $db    = JFactory::getDbo();
-        $table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+        $table = new F0FTable($tableinfo['table'], $tableinfo['id'], $db);
 
         if($test['alias'])
         {
@@ -689,23 +689,23 @@ class FOFTableTest extends FtestCaseDatabase
     }
 
 	/**
-	 * @covers              FOFTable::isCheckedOut
-	 * @group               FOFTable
+	 * @covers              F0FTable::isCheckedOut
+	 * @group               F0FTable
 	 * @preventDataLoading
 	 */
 	public function testIsCheckedOutExcpetion()
     {
         $this->setExpectedException('UnexpectedValueException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'bare'));
-        $table 		     = FOFTable::getAnInstance('Bare', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'bare'));
+        $table 		     = F0FTable::getAnInstance('Bare', 'FoftestTable', $config);
         $table->isCheckedOut();
     }
 
     /**
      * @group               tableCopy
-     * @group               FOFTable
-     * @covers              FOFTable::copy
+     * @group               F0FTable
+     * @covers              F0FTable::copy
      * @dataProvider        getTestCopy
      */
     public function testCopy($events, $tableinfo, $test, $check)
@@ -716,11 +716,11 @@ class FOFTableTest extends FtestCaseDatabase
         $db          = JFactory::getDbo();
         $methods     = array('onBeforeCopy', 'onAfterCopy');
         $constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
-        $table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+        $table = $this->getMock('F0FTable',	$methods, $constr_args,	'',	true, true, true, true);
 	    $table->expects($this->any())->method('onBeforeCopy')->will($this->returnValue($events['before']));
 	    $table->expects($this->any())->method('onAfterCopy')->will($this->returnValue($events['after']));
 
-	    //$table = new FOFTable($tableinfo['table'], $tableinfo['id'], $db);
+	    //$table = new F0FTable($tableinfo['table'], $tableinfo['id'], $db);
 	    $table->setAssetKey('com_foftest.foobar');
 
         if($test['alias'])
@@ -820,8 +820,8 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tablePublish
-	 * @group               FOFTable
-	 * @covers              FOFTable::publish
+	 * @group               F0FTable
+	 * @covers              F0FTable::publish
 	 * @dataProvider        getTestPublish
 	 */
 	public function testPublish($events, $tableinfo, $test, $check)
@@ -829,7 +829,7 @@ class FOFTableTest extends FtestCaseDatabase
 		$db          = JFactory::getDbo();
 		$methods     = array('onBeforePublish');
 		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
-		$table = $this->getMock('FOFTable',	$methods, $constr_args,	'',	true, true, true, true);
+		$table = $this->getMock('F0FTable',	$methods, $constr_args,	'',	true, true, true, true);
 		$table->expects($this->any())->method('onBeforePublish')->will($this->returnValue($events['before']));
 
 		if($test['alias'])
@@ -877,8 +877,8 @@ class FOFTableTest extends FtestCaseDatabase
 
 	/**
 	 * @group               tableDelete
-	 * @group               FOFTable
-	 * @covers              FOFTable::delete
+	 * @group               F0FTable
+	 * @covers              F0FTable::delete
 	 * @dataProvider        getTestDelete
 	 */
 	public function testDelete($events, $tableinfo, $test, $check)
@@ -888,7 +888,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 		$id          = max($test['loadid'], $test['cid']);
 		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
-		$table       = $this->getMock('FOFTable', $methods, $constr_args, '', true, true, true, true);
+		$table       = $this->getMock('F0FTable', $methods, $constr_args, '', true, true, true, true);
 
 		foreach($events as $event => $return)
 		{
@@ -930,23 +930,23 @@ class FOFTableTest extends FtestCaseDatabase
 	}
 
 	/**
-	 * @covers              FOFTable::delete
-	 * @group               FOFTable
+	 * @covers              F0FTable::delete
+	 * @group               F0FTable
 	 * @preventDataLoading
 	 */
 	public function testDeleteException()
 	{
 		$this->setExpectedException('UnexpectedValueException');
 
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobars'));
-		$table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobars'));
+		$table 		     = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 		$table->delete();
 	}
 
 	/**
 	 * @group               tableHit
-	 * @group               FOFTable
-	 * @covers              FOFTable::hit
+	 * @group               F0FTable
+	 * @covers              F0FTable::hit
 	 * @dataProvider        getTestHit
 	 */
 	public function testHit($events, $tableinfo, $test, $check)
@@ -956,7 +956,7 @@ class FOFTableTest extends FtestCaseDatabase
 
 		$id          = max($test['loadid'], $test['cid']);
 		$constr_args = array($tableinfo['table'], $tableinfo['id'], &$db);
-		$table       = $this->getMock('FOFTable', $methods, $constr_args, '', true, true, true, true);
+		$table       = $this->getMock('F0FTable', $methods, $constr_args, '', true, true, true, true);
 
 		foreach($events as $event => $return)
 		{
@@ -983,7 +983,7 @@ class FOFTableTest extends FtestCaseDatabase
 		}
 
 		$rc = $table->hit($test['cid']);
-		$this->assertEquals($check['return'], $rc, 'FOFTable::hit returned a wrong value');
+		$this->assertEquals($check['return'], $rc, 'F0FTable::hit returned a wrong value');
 
 		if(isset($check['hits']))
 		{
@@ -995,21 +995,21 @@ class FOFTableTest extends FtestCaseDatabase
 						->where($tableinfo['id'].' = '.$id);
 			$hits = $db->setQuery($query)->loadResult();
 
-			$this->assertEquals($check['hits'], $hits, 'FOFTable::hit saved a wrong value');
-			$this->assertEquals($check['hits'], $table->$hitField, 'FOFTable::hit saved a wrong value inside table object');
+			$this->assertEquals($check['hits'], $hits, 'F0FTable::hit saved a wrong value');
+			$this->assertEquals($check['hits'], $table->$hitField, 'F0FTable::hit saved a wrong value inside table object');
         }
 	}
 
 	/**
 	 * @group               tableToCsv
-	 * @group               FOFTable
-	 * @covers              FOFTable::toCSV
+	 * @group               F0FTable
+	 * @covers              F0FTable::toCSV
 	 * @dataProvider        getTestToCSV
 	 */
 	public function testToCSV($tableinfo, $test, $check)
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
 		if($test['loadid'])
 		{
@@ -1018,19 +1018,19 @@ class FOFTableTest extends FtestCaseDatabase
 
 		$string = $table->toCSV($test['separator']);
 
-		$this->assertEquals($check['string'], $string, 'FOFTable::toCSV returned a wrong value');
+		$this->assertEquals($check['string'], $string, 'F0FTable::toCSV returned a wrong value');
 	}
 
 	/**
 	 * @group               tableGetData
-	 * @group               FOFTable
-	 * @covers              FOFTable::getData
+	 * @group               F0FTable
+	 * @covers              F0FTable::getData
 	 * @dataProvider        getTestGetData
 	 */
 	public function testGetData($tableinfo, $test, $check)
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
 		if($test['loadid'])
 		{
@@ -1039,20 +1039,20 @@ class FOFTableTest extends FtestCaseDatabase
 
 		$return = $table->getData();
 
-		$this->assertEquals($check['return'], $return, 'FOFTable::getData returned a wrong value');
+		$this->assertEquals($check['return'], $return, 'F0FTable::getData returned a wrong value');
 	}
 
 	/**
 	 * @group               tableGetCSVHeader
-	 * @group               FOFTable
-	 * @covers              FOFTable::getCSVHeader
+	 * @group               F0FTable
+	 * @covers              F0FTable::getCSVHeader
 	 * @dataProvider        getCSVHeader
 	 * @preventDataLoading
 	 */
 	public function testGetCSVHeader($tableinfo, $test, $check)
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
 		if($test['loadid'])
 		{
@@ -1061,26 +1061,26 @@ class FOFTableTest extends FtestCaseDatabase
 
 		$string = $table->getCSVHeader($test['separator']);
 
-		$this->assertEquals($check['string'], $string, 'FOFTable::getCSVHeader returned a wrong value');
+		$this->assertEquals($check['string'], $string, 'F0FTable::getCSVHeader returned a wrong value');
 	}
 
 	/**
 	 * @group               tableGetTableFields
-	 * @group               FOFTable
-	 * @covers              FOFTable::getTableFields
+	 * @group               F0FTable
+	 * @covers              F0FTable::getTableFields
 	 * @dataProvider        getTableFields
 	 * @preventDataLoading
 	 */
 	public function testGetTableFields($tableinfo, $test, $check)
 	{
-		$config['input']           = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$config['input']           = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
 		$config['use_table_cache'] = $test['use_table_cache'];
 
-		$table = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+		$table = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
 		if(isset($test['joomlaCache']))
 		{
-			$mock = $this->getMock('FOFIntegrationJoomlaPlatform', array('getCache'));
+			$mock = $this->getMock('F0FIntegrationJoomlaPlatform', array('getCache'));
 
 			if($test['joomlaCache'])
 			{
@@ -1098,7 +1098,7 @@ class FOFTableTest extends FtestCaseDatabase
 				$mock->expects($this->any())->method('getCache')->will($this->returnValue(null));
 			}
 
-			FOFPlatform::forceInstance($mock);
+			F0FPlatform::forceInstance($mock);
 		}
 
 		if(isset($test['tableCache']))
@@ -1127,50 +1127,50 @@ class FOFTableTest extends FtestCaseDatabase
 		}
 
 
-		$this->assertEquals($check['fields'], $fields, 'FOFTable::getTableFields returned the wrong value');
+		$this->assertEquals($check['fields'], $fields, 'F0FTable::getTableFields returned the wrong value');
 	}
 
 	/**
 	 * @group               tableIsQuoted
-	 * @group               FOFTable
-	 * @covers              FOFTable::isQuoted
+	 * @group               F0FTable
+	 * @covers              F0FTable::isQuoted
 	 * @dataProvider        getIsQuoted
 	 * @preventDataLoading
 	 */
 	public function testIsQuoted($tableinfo, $test, $check)
 	{
-		$config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
-		$table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+		$table 		     = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
 		$method = new ReflectionMethod($table, 'isQuoted');
 		$method->setAccessible(true);
 		$return = $method->invoke($table, $test['column']);
 
-		$this->assertEquals($check['return'], $return, 'FOFTable::isQuoted returned a wrong value');
+		$this->assertEquals($check['return'], $return, 'F0FTable::isQuoted returned a wrong value');
 	}
 
     /**
      * @group               tableOnBeforeStore
-     * @group               FOFTable
-     * @covers              FOFTable::onBeforeStore
+     * @group               F0FTable
+     * @covers              F0FTable::onBeforeStore
      * @dataProvider        getTestOnBeforeStore
      */
     public function testOnBeforeStore($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
 
         if(isset($test['tbl_key']))
         {
             $config['tbl_key'] = $test['tbl_key'];
         }
 
-        $table 		     = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $table = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         // Let's mock the platform in order to fake an user
         $user = (object) array('id' => 42);
-        $mock = $this->getMock('FOFIntegrationJoomlaPlatform', array('getUser'));
+        $mock = $this->getMock('F0FIntegrationJoomlaPlatform', array('getUser'));
         $mock->expects($this->any())->method('getUser')->will($this->returnValue($user));
-        FOFPlatform::forceInstance($mock);
+        F0FPlatform::forceInstance($mock);
 
         if(isset($test['alias']))
         {
@@ -1186,7 +1186,7 @@ class FOFTableTest extends FtestCaseDatabase
         $method->setAccessible(true);
         $return = $method->invoke($table, $test['updateNulls']);
 
-        $this->assertEquals($check['return'], $return, 'FOFTable::onBeforeStore return a wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FTable::onBeforeStore return a wrong value');
 
         $fields = $table->getData();
 
@@ -1195,7 +1195,7 @@ class FOFTableTest extends FtestCaseDatabase
 
         if(isset($check['fields'][$created_on]) && $check['fields'][$created_on] == 'NOT NULL' )
         {
-            $this->assertNotEmpty($fields[$created_on], 'FOFTable::onBeforeStore assigned a wrong value to the "'.$created_on.'" field');
+            $this->assertNotEmpty($fields[$created_on], 'F0FTable::onBeforeStore assigned a wrong value to the "'.$created_on.'" field');
             unset($fields[$created_on]);
             unset($check['fields'][$created_on]);
         }
@@ -1204,30 +1204,30 @@ class FOFTableTest extends FtestCaseDatabase
 
         if(isset($check['fields'][$modified_on]) && $check['fields'][$modified_on] == 'NOT NULL' )
         {
-            $this->assertNotEmpty($fields[$modified_on], 'FOFTable::onBeforeStore assigned a wrong value to the "'.$modified_on.'" field');
+            $this->assertNotEmpty($fields[$modified_on], 'F0FTable::onBeforeStore assigned a wrong value to the "'.$modified_on.'" field');
             unset($fields[$modified_on]);
             unset($check['fields'][$modified_on]);
         }
 
-        $this->assertEquals($check['fields'], $fields, 'FOFTable::onBeforeStore assigned a wrong value to a "magic" field');
+        $this->assertEquals($check['fields'], $fields, 'F0FTable::onBeforeStore assigned a wrong value to a "magic" field');
     }
 
     /**
      * @group               tableGetAssetName
-     * @group               FOFTable
-     * @covers              FOFTable::getAssetName
+     * @group               F0FTable
+     * @covers              F0FTable::getAssetName
      * @dataProvider        getTestGetAssetName
      */
     public function testGetAssetName($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['table']));
 
         if(isset($test['tbl_key']))
         {
             $config['tbl_key'] = $test['tbl_key'];
         }
 
-        $table = FOFTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
+        $table = F0FTable::getAnInstance($tableinfo['table'], 'FoftestTable', $config);
 
         if (isset($test['alias']))
         {
@@ -1243,36 +1243,50 @@ class FOFTableTest extends FtestCaseDatabase
 
         $assetName = $table->getAssetName();
 
-        $this->assertEquals($check['assetName'], $assetName, 'FOFTable::getAssetName return a wrong asset name');
+        $this->assertEquals($check['assetName'], $assetName, 'F0FTable::getAssetName return a wrong asset name');
     }
 
     /**
      * @group               tableGetAssetName
-     * @group               FOFTable
-     * @covers              FOFTable::getAssetName
+     * @group               F0FTable
+     * @covers              F0FTable::getAssetName
      */
     public function testGetAssetNameException()
     {
         $this->setExpectedException('UnexpectedValueException');
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => 'foobars'));
-        $table 		     = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobars'));
+        $table 		     = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 
         $table->getAssetName();
     }
 
 	/**
-	 * @covers              FOFTable::getContentType
-	 * @group               FOFTable
+	 * @covers              F0FTable::getContentType
+	 * @group               F0FTable
 	 * @dataProvider        getTestGetContentType
 	 */
 	public function testGetContentType($option, $view, $expected, $message)
 	{
-		$config['input'] = new FOFInput(array('option' => $option, 'view' => $view));
+		$config['input'] = new F0FInput(array('option' => $option, 'view' => $view));
 
-		$table = FOFTable::getAnInstance('Foobar', 'FoftestTable', $config);
+		$table = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
 		$this->assertEquals($expected, $table->getContentType(), $message);
 	}
+
+    /**
+     * @covers              F0FTable::getRelations
+     * @group               F0FTable
+     */
+    public function testGetRelations()
+    {
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'foobar'));
+
+        $table = F0FTable::getAnInstance('Foobar', 'FoftestTable', $config);
+        $relations = $table->getRelations();
+
+        $this->assertInstanceOf('F0FTableRelations', $relations, 'F0FTable::getRelations should return an instance of F0FTableRelations');
+    }
 
 	public function getTestLoadJoined()
 	{

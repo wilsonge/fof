@@ -1,5 +1,5 @@
 <?php
-class TableFtest extends FOFTable {
+class TableFtest extends F0FTable {
 
 	public function __construct($table, $key, &$db, $config = array())
 	{

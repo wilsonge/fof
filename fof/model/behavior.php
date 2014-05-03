@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework model behavior class. It defines the events which are
@@ -16,12 +16,12 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class FOFModelBehavior extends FOFUtilsObservableEvent
+abstract class F0FModelBehavior extends F0FUtilsObservableEvent
 {
 	/**
 	 * This event runs before saving data in the model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 * @param   array     &$data   The data to save
 	 *
 	 * @return  void
@@ -33,7 +33,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs before deleting a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -44,7 +44,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs before copying a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -55,7 +55,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs before publishing a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -66,7 +66,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs before registering a hit on a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -77,7 +77,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs before moving a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -88,7 +88,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs before changing the records' order in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -100,7 +100,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	 * This event runs when we are building the query used to fetch a record
 	 * list in a model
 	 *
-	 * @param   FOFModel        &$model  The model which calls this event
+	 * @param   F0FModel        &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The query being built
 	 *
 	 * @return  void
@@ -112,7 +112,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after saving a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -123,7 +123,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after deleting a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -134,7 +134,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after copying a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -145,7 +145,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after publishing a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -156,7 +156,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after registering a hit on a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -167,7 +167,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after moving a record in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -178,7 +178,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after reordering records in a model
 	 *
-	 * @param   FOFModel  &$model  The model which calls this event
+	 * @param   F0FModel  &$model  The model which calls this event
 	 *
 	 * @return  void
 	 */
@@ -190,7 +190,7 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model
 	 *
-	 * @param   FOFModel        &$model  The model which calls this event
+	 * @param   F0FModel        &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The query being built
 	 *
 	 * @return  void
@@ -202,8 +202,8 @@ abstract class FOFModelBehavior extends FOFUtilsObservableEvent
 	/**
 	 * This event runs after getting a single item
 	 *
-	 * @param   FOFModel  &$model   The model which calls this event
-	 * @param   FOFTable  &$record  The record loaded by this model
+	 * @param   F0FModel  &$model   The model which calls this event
+	 * @param   F0FTable  &$record  The record loaded by this model
 	 *
 	 * @return  void
 	 */

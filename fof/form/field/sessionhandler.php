@@ -6,29 +6,26 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldSessionHandler'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/sessionhandler.php';
-}
+JFormHelper::loadFieldClass('sessionhandler');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Joomla! session handlers
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldSessionhandler extends JFormFieldSessionHandler implements FOFFormField
+class F0FFormFieldSessionhandler extends JFormFieldSessionHandler implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -81,7 +78,7 @@ class FOFFormFieldSessionhandler extends JFormFieldSessionHandler implements FOF
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -98,7 +95,7 @@ class FOFFormFieldSessionhandler extends JFormFieldSessionHandler implements FOF
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 }

@@ -5,7 +5,7 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Joomla! 3 view renderer class
@@ -13,7 +13,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFRenderJoomla3 extends FOFRenderStrapper
+class F0FRenderJoomla3 extends F0FRenderStrapper
 {
 	/**
 	 * Public constructor. Determines the priority of this class and if it should be enabled
@@ -29,7 +29,7 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   F0FInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -61,7 +61,7 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input array (request parameters)
+	 * @param   F0FInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -82,7 +82,7 @@ class FOFRenderJoomla3 extends FOFRenderStrapper
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
-	 * @param   FOFInput  $input   The input object
+	 * @param   F0FInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
 	 *
 	 * @return  void

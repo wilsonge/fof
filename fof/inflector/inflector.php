@@ -5,20 +5,20 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * The FOFInflector is an adaptation of the Akelos PHP Inflector which is a PHP
+ * The F0FInflector is an adaptation of the Akelos PHP Inflector which is a PHP
  * port from a Ruby on Rails project.
  */
 
 /**
- * FOFInflector to pluralize and singularize English nouns.
+ * F0FInflector to pluralize and singularize English nouns.
  *
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFInflector
+class F0FInflector
 {
 	/**
 	 * Rules for pluralizing and singularizing of nouns.

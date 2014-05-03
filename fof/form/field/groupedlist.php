@@ -6,29 +6,26 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldGroupedList'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/groupedlist.php';
-}
+JFormHelper::loadFieldClass('groupedlist');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Supports a generic list of options.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormField
+class F0FFormFieldGroupedlist extends JFormFieldGroupedList implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -171,7 +168,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 				$label = '';
 			}
 
-			$match = FOFFormFieldList::getOptionName($data, $selected, $optKey, $optText);
+			$match = F0FFormFieldList::getOptionName($data, $selected, $optKey, $optText);
 
 			if (!is_null($match))
 			{

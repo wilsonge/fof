@@ -6,29 +6,26 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldUser'))
-{
-	require_once JPATH_LIBRARIES . '/cms/form/field/user.php';
-}
+JFormHelper::loadFieldClass('user');
 
 /**
- * Form Field class for the FOF framework
+ * Form Field class for the F0F framework
  * A user selection box / display field
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
+class F0FFormFieldUser extends JFormFieldUser implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -219,7 +216,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 		}
 		else
 		{
-			if (FOFPlatform::getInstance()->isBackend())
+			if (F0FPlatform::getInstance()->isBackend())
 			{
 				// If no link is defined in the back-end, assume the user edit
 				// link in the User Manager component
@@ -257,8 +254,8 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 			if ($avatar_method == 'plugin')
 			{
 				// Use the user plugins to get an avatar
-				FOFPlatform::getInstance()->importPlugin('user');
-				$jResponse = FOFPlatform::getInstance()->runPlugins('onUserAvatar', array($user, $avatar_size));
+				F0FPlatform::getInstance()->importPlugin('user');
+				$jResponse = F0FPlatform::getInstance()->runPlugins('onUserAvatar', array($user, $avatar_size));
 
 				if (!empty($jResponse))
 				{
@@ -281,7 +278,7 @@ class FOFFormFieldUser extends JFormFieldUser implements FOFFormField
 				// Fall back to the Gravatar method
 				$md5 = md5($user->email);
 
-				if (FOFPlatform::getInstance()->isCli())
+				if (F0FPlatform::getInstance()->isCli())
 				{
 					$scheme = 'http';
 				}

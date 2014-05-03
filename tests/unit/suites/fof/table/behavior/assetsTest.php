@@ -9,7 +9,7 @@
 
 require_once 'assetsDataprovider.php';
 
-class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
+class F0FTableBehaviorAssetsTest extends FtestCaseDatabase
 {
     protected function setUp()
     {
@@ -24,34 +24,34 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        FOFPlatform::forceInstance(null);
-        FOFTable::forceInstance(null);
+        F0FPlatform::forceInstance(null);
+        F0FTable::forceInstance(null);
     }
 
     /**
      * @group               assetsOnAfterStore
-     * @group               FOFTableBehavior
-     * @covers              FOFTableBehaviorAssets::onAfterStore
+     * @group               F0FTableBehavior
+     * @covers              F0FTableBehaviorAssets::onAfterStore
      * @dataProvider        getTestOnAfterStore
      */
     public function testOnAfterStore($tableinfo, $test, $check)
     {
         $db = JFactory::getDbo();
 
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
 
         if(isset($test['tbl_key']))
         {
             $config['tbl_key'] = $test['tbl_key'];
         }
 
-        $table = FOFTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
+        $table = F0FTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
 
         $reflection = new ReflectionProperty($table, 'tableDispatcher');
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($table);
 
-        $behavior = new FOFTableBehaviorAssets($dispatcher);
+        $behavior = new F0FTableBehaviorAssets($dispatcher);
 
         if(isset($test['alias']))
         {
@@ -78,7 +78,7 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
 
         $return = $behavior->onAfterStore($table);
 
-        $this->assertEquals($check['return'], $return, 'FOFTableBehaviorAssets::onAfterStore returned a wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FTableBehaviorAssets::onAfterStore returned a wrong value');
 
         $asset = null;
         if($check['count'] == 0)
@@ -86,7 +86,7 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
             $query      = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
             $afterTotal = $db->setQuery($query)->loadResult();
 
-            $this->assertEquals(0, $beforeTotal - $afterTotal, 'FOFTableBehaviorAssets::onAfterStore wrong number of assets saved');
+            $this->assertEquals(0, $beforeTotal - $afterTotal, 'F0FTableBehaviorAssets::onAfterStore wrong number of assets saved');
         }
         else
         {
@@ -97,13 +97,13 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
                         ->where('name = '.$db->q($table->getAssetName()));
             $asset = $db->setQuery($query)->loadObject();
 
-            $this->assertEquals($check['count'], (int) (!is_null($asset)), 'FOFTableBehaviorAssets::onAfterStore wrong number of assets saved');
+            $this->assertEquals($check['count'], (int) (!is_null($asset)), 'F0FTableBehaviorAssets::onAfterStore wrong number of assets saved');
         }
 
 
         if(isset($check['rules']))
         {
-            $this->assertEquals($check['rules'], $asset->rules, 'FOFTableBehaviorAssets::onAfterStore wrong rule stored');
+            $this->assertEquals($check['rules'], $asset->rules, 'F0FTableBehaviorAssets::onAfterStore wrong rule stored');
         }
 
         if($asset)
@@ -111,32 +111,32 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
             $asset_field = $table->getColumnAlias('asset_id');
             $table->load($test['id']);
 
-            $this->assertEquals($asset->id, $table->$asset_field, 'FOFTableBehaviorAssets::onAfterStore asset id not store inside the table');
+            $this->assertEquals($asset->id, $table->$asset_field, 'F0FTableBehaviorAssets::onAfterStore asset id not store inside the table');
         }
     }
 
     /**
      * @group               assetsOnAfterBind
-     * @group               FOFTableBehavior
-     * @covers              FOFTableBehaviorAssets::onAfterBind
+     * @group               F0FTableBehavior
+     * @covers              F0FTableBehaviorAssets::onAfterBind
      * @dataProvider        getTestOnAfterBind
      */
     public function testOnAfterBind($tableinfo, $test, $check)
     {
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
 
         if(isset($test['tbl_key']))
         {
             $config['tbl_key'] = $test['tbl_key'];
         }
 
-        $table = FOFTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
+        $table = F0FTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
 
         $reflection = new ReflectionProperty($table, 'tableDispatcher');
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($table);
 
-        $behavior = new FOFTableBehaviorAssets($dispatcher);
+        $behavior = new F0FTableBehaviorAssets($dispatcher);
 
         if(isset($test['alias']))
         {
@@ -156,33 +156,33 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
         $return = $behavior->onAfterBind($table, $test['bind']);
         $rules  = $table->getRules();
 
-        $this->assertEquals($check['return'], $return, 'FOFTableBehaviorAssets::onAfterStore returned a wrong value');
-        $this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, 'FOFTableBehaviorAssets::onAfterStore set rules wrong');
+        $this->assertEquals($check['return'], $return, 'F0FTableBehaviorAssets::onAfterStore returned a wrong value');
+        $this->assertJsonStringEqualsJsonString($check['rules'], (string) $rules, 'F0FTableBehaviorAssets::onAfterStore set rules wrong');
     }
 
     /**
      * @group               assetsOnBeforeDelete
-     * @group               FOFTableBehavior
-     * @covers              FOFTableBehaviorAssets::onBeforeDelete
+     * @group               F0FTableBehavior
+     * @covers              F0FTableBehaviorAssets::onBeforeDelete
      * @dataProvider        getTestOnBeforeDelete
      */
     public function testOnBeforeDelete($tableinfo, $test, $check)
     {
         $db              = JFactory::getDbo();
-        $config['input'] = new FOFInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
+        $config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => $tableinfo['name']));
 
         if(isset($test['tbl_key']))
         {
             $config['tbl_key'] = $test['tbl_key'];
         }
 
-        $table = FOFTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
+        $table = F0FTable::getAnInstance($tableinfo['name'], 'FoftestTable', $config);
 
         $reflection = new ReflectionProperty($table, 'tableDispatcher');
         $reflection->setAccessible(true);
         $dispatcher = $reflection->getValue($table);
 
-        $behavior = new FOFTableBehaviorAssets($dispatcher);
+        $behavior = new F0FTableBehaviorAssets($dispatcher);
 
         if(isset($test['alias']))
         {
@@ -204,12 +204,12 @@ class FOFTableBehaviorAssetsTest extends FtestCaseDatabase
 
         $return = $behavior->onBeforeDelete($table, isset($test['id']) ? $test['id'] : null);
 
-        $this->assertEquals($check['return'], $return, 'FOFTableBehaviorAssets::onBeforeDelete returned a wrong value');
+        $this->assertEquals($check['return'], $return, 'F0FTableBehaviorAssets::onBeforeDelete returned a wrong value');
 
         $query      = $db->getQuery(true)->select('COUNT(*)')->from('#__assets');
         $afterTotal = $db->setQuery($query)->loadResult();
 
-        $this->assertEquals($check['count'], $beforeTotal - $afterTotal, 'FOFTableBehaviorAssets::onBeforeDelete deleted a wrong number of assets');
+        $this->assertEquals($check['count'], $beforeTotal - $afterTotal, 'F0FTableBehaviorAssets::onBeforeDelete deleted a wrong number of assets');
     }
 
     public function getTestOnAfterStore()
