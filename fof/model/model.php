@@ -602,8 +602,16 @@ class F0FModel extends F0FUtilsObject
 		}
 		else
 		{
-			$eliminatePart = ucfirst($bareComponent) . 'Model';
-			$view = strtolower(str_replace($eliminatePart, '', $className));
+            if (array_key_exists('view', $config))
+            {
+                $view = $config['view'];
+            }
+
+            if (empty($view))
+            {
+                $eliminatePart = ucfirst($bareComponent) . 'Model';
+                $view = strtolower(str_replace($eliminatePart, '', $className));
+            }
 		}
 
 		if (array_key_exists('name', $config))
