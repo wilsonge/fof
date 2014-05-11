@@ -1139,7 +1139,9 @@ HTML;
 
 		$html .= "\t" . '<div id="' . $fieldset->name . '" ' . $class . '>' . PHP_EOL;
 
-		if (isset($fieldset->label) && !empty($fieldset->label))
+		$isTabbedFieldset = $this->isTabFieldset($fieldset);
+
+		if (isset($fieldset->label) && !empty($fieldset->label) && !$isTabbedFieldset)
 		{
 			$html .= "\t\t" . '<h3>' . JText::_($fieldset->label) . '</h3>' . PHP_EOL;
 		}
