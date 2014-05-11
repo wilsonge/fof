@@ -1,3 +1,7 @@
+FOF 2.3.1
+================================================================================
+~ Compatibility with braindead admin templates which FORCE format=utf (the heck...?) in the URL
+
 FOF 2.3.0
 ================================================================================
 * FOF 2.3.x will be the last minor version before FOF 3.0
