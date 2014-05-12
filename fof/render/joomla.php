@@ -48,15 +48,49 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			return;
 		}
 
-		if (!F0FPlatform::getInstance()->isCli())
+		$platform = F0FPlatform::getInstance();
+
+		if ($platform->isCli())
 		{
-			// Wrap output in a Joomla-versioned div
-			$version = new JVersion;
-			$versionParts = explode('.', $version->RELEASE);
-			$minorVersion = str_replace('.', '', $version->RELEASE);
-			$majorVersion = array_shift($versionParts);
-			echo "<div class=\"joomla-version-$majorVersion joomla-version-$minorVersion\">\n";
+			return;
 		}
+
+		// Wrap output in a Joomla-versioned div
+		$version = new JVersion;
+		$versionParts = explode('.', $version->RELEASE);
+		$minorVersion = str_replace('.', '', $version->RELEASE);
+		$majorVersion = array_shift($versionParts);
+
+		if ($platform->isBackend())
+		{
+			$area = $platform->isBackend() ? 'admin' : 'site';
+			$option = $input->getCmd('option', '');
+			$view = $input->getCmd('view', '');
+			$layout = $input->getCmd('layout', '');
+			$task = $input->getCmd('task', '');
+			$itemid = $input->getCmd('Itemid', '');
+
+			$classes = array(
+				'joomla-version-' . $majorVersion,
+				'joomla-version-' . $minorVersion,
+				$area,
+				$option,
+				'view-' . $view,
+				'layout-' . $layout,
+				'task-' . $task,
+				'itemid-' . $itemid,
+			);
+		}
+		elseif ($platform->isFrontend())
+		{
+			// @TODO: Remove the frontend Joomla! version classes in FOF 3
+			$classes = array(
+				'joomla-version-' . $majorVersion,
+				'joomla-version-' . $minorVersion,
+			);
+		}
+
+		echo '<div id="akeeba-bootstrap" class="' . implode($classes, ' ') . "\">\n";
 
 		// Render submenu and toolbar (only if asked to)
 		if ($input->getBool('render_toolbar', true))
