@@ -510,6 +510,10 @@ JS;
 
 HTML;
 		}
+		else
+		{
+			JHtml::_('behavior.tooltip');
+		}
 
 		// Getting all header row elements
 		$headerFields = $form->getHeaderset();
@@ -1024,6 +1028,15 @@ HTML;
 	{
 		$html = '';
 
+		if (version_compare(JVERSION, '3.0', 'ge'))
+		{
+			JHtml::_('bootstrap.tooltip');
+		}
+		else
+		{
+			JHtml::_('behavior.tooltip');
+		}
+
 		// Do we have a tabbed form?
 		$isTabbed = $form->getAttribute('tabbed', '0');
 		$isTabbed = in_array($isTabbed, array('true', 'yes', 'on', '1'));
@@ -1178,6 +1191,8 @@ HTML;
 			}
 			*/
 
+			$tooltip = $form->getFieldAttribute($field->fieldname, 'tooltip', '', $field->group);
+
 			if ($formType == 'read')
 			{
 				$inputField = $field->static;
@@ -1200,7 +1215,24 @@ HTML;
 			else
 			{
 				$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . PHP_EOL;
-				$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+
+				if (!empty($tooltip))
+				{
+					if (version_compare(JVERSION, '3.0', 'ge'))
+					{
+						$tooltipText = '<strong>' . JText::_($title) . '</strong><br />' . JText::_($tooltip);
+					}
+					else
+					{
+						$tooltipText = JText::_($title) . '::' . JText::_($tooltip);
+					}
+
+					$html .= "\t\t\t\t" . '<label class="control-label hasTip hasTooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">' . PHP_EOL;
+				}
+				else
+				{
+					$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+				}
 				$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
 
 				if ($required)

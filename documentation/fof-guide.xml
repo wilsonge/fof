@@ -7338,6 +7338,13 @@ echo $viewTemplate;
             </listitem>
 
             <listitem>
+              <para><emphasis role="strong">tooltip</emphasis> The language
+              string which will be used for the tooltip of the field; this is
+              a language string that will be fed to JText::_() for
+              translation.</para>
+            </listitem>
+
+            <listitem>
               <para><emphasis role="strong">required</emphasis> Set it to 1,
               yes or true to make this a required field. If you use the form
               validation then the form cannot be submitted unless this value
