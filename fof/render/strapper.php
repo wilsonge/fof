@@ -1226,7 +1226,7 @@ HTML;
 {
 	$(document).ready(function()
 	{
-		$('.f0f-tooltip').tooltip({placement: 'top'});
+		$('.fof-tooltip').tooltip({placement: 'top'});
 	});
 })(akeeba.jQuery);
 JS;
@@ -1242,7 +1242,7 @@ JS;
 
 				$tooltipText = '<strong>' . JText::_($title) . '</strong><br />' . JText::_($tooltip);
 
-				$html .= "\t\t\t\t" . '<label class="control-label f0f-tooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" data-toggle="f0f-tooltip">';
+				$html .= "\t\t\t\t" . '<label class="control-label fof-tooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" data-toggle="fof-tooltip">';
 			}
 			else
 			{
