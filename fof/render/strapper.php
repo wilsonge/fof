@@ -1217,7 +1217,6 @@ HTML;
 		{
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
-				// TODO: load this script at a better place
 				static $loadedTooltipScript = false;
 
 				if (!$loadedTooltipScript)

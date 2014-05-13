@@ -464,8 +464,6 @@ class F0FRenderJoomla extends F0FRenderAbstract
 
 		foreach ($fields as $field)
 		{
-			// TODO This overwrites the previous Joomla renderer which was required for the tooltips.
-			// TODO Nicholas can you please review/correct this?
 			$groupClass	 = $form->getFieldAttribute($field->fieldname, 'groupclass', '', $field->group);
 
 			// Auto-generate label and description if needed
@@ -515,9 +513,8 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			}
 			else
 			{
-				$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . PHP_EOL;
+				$html .= "\t\t\t" . '<div class="fof-row ' . $groupClass . '">' . PHP_EOL;
 				$html .= $this->renderFieldsetLabel($field, $form, $title);
-				$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
 				$html .= "\t\t\t\t" . $inputField . PHP_EOL;
 
 				if (!empty($description))
@@ -526,7 +523,6 @@ class F0FRenderJoomla extends F0FRenderAbstract
 					$html .= JText::_($description) . '</span>' . PHP_EOL;
 				}
 
-				$html .= "\t\t\t\t" . '</div>' . PHP_EOL;
 				$html .= "\t\t\t" . '</div>' . PHP_EOL;
 			}
 		}
@@ -553,6 +549,11 @@ class F0FRenderJoomla extends F0FRenderAbstract
 		$labelClass	 = $field->labelClass;
 		$required	 = $field->required;
 
+		if ($required)
+		{
+			$labelClass .= ' required';
+		}
+
 		$tooltip = $form->getFieldAttribute($field->fieldname, 'tooltip', '', $field->group);
 
 		if (!empty($tooltip))
@@ -561,18 +562,20 @@ class F0FRenderJoomla extends F0FRenderAbstract
 
 			$tooltipText = JText::_($title) . '::' . JText::_($tooltip);
 
-			$html .= "\t\t\t\t" . '<label class="control-label hasTip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">' . PHP_EOL;
+			$labelClass .= ' hasTip';
+
+			$html .= "\t\t\t\t" . '<label id="' . $field->id . '-lbl" class="' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">';
 		}
 		else
 		{
-			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+			$html .= "\t\t\t\t" . '<label class="' . $labelClass . '" for="' . $field->id . '">';
 		}
 
-		$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
+		$html .= JText::_($title);
 
 		if ($required)
 		{
-			$html .= ' *';
+			$html .= '<span class="star">&nbsp;*</span>';
 		}
 
 		$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
