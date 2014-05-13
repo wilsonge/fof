@@ -55,7 +55,7 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			return;
 		}
 
-		// Wrap output in a Joomla-versioned div
+		// Wrap output in various classes
 		$version = new JVersion;
 		$versionParts = explode('.', $version->RELEASE);
 		$minorVersion = str_replace('.', '', $version->RELEASE);
@@ -90,7 +90,7 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			);
 		}
 
-		echo '<div id="akeeba-bootstrap" class="' . implode($classes, ' ') . "\">\n";
+		echo '<div id="akeeba-renderjoomla" class="' . implode($classes, ' ') . "\">\n";
 
 		// Render submenu and toolbar (only if asked to)
 		if ($input->getBool('render_toolbar', true))
@@ -130,7 +130,7 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			return;
 		}
 
-		echo "</div>\n";
+		echo "</div>\n";    // Closes akeeba-renderjoomla div
 	}
 
 	/**

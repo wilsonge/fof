@@ -48,6 +48,42 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 			return;
 		}
 
+		$platform = F0FPlatform::getInstance();
+
+		if ($platform->isCli())
+		{
+			return;
+		}
+
+		if ($platform->isBackend())
+		{
+			// Wrap output in various classes
+			$version = new JVersion;
+			$versionParts = explode('.', $version->RELEASE);
+			$minorVersion = str_replace('.', '', $version->RELEASE);
+			$majorVersion = array_shift($versionParts);
+
+			$area = $platform->isBackend() ? 'admin' : 'site';
+			$option = $input->getCmd('option', '');
+			$view = $input->getCmd('view', '');
+			$layout = $input->getCmd('layout', '');
+			$task = $input->getCmd('task', '');
+			$itemid = $input->getCmd('Itemid', '');
+
+			$classes = array(
+				'joomla-version-' . $majorVersion,
+				'joomla-version-' . $minorVersion,
+				$area,
+				$option,
+				'view-' . $view,
+				'layout-' . $layout,
+				'task-' . $task,
+				'itemid-' . $itemid,
+			);
+		}
+
+		echo '<div id="akeeba-renderjoomla" class="' . implode($classes, ' ') . "\">\n";
+
 		// Render the submenu and toolbar
 		if ($input->getBool('render_toolbar', true))
 		{
@@ -68,13 +104,25 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 	 */
 	public function postRender($view, $task, $input, $config = array())
 	{
-		/*
-		We don't need to do anything here, if we are running Joomla3,
-		so overwrite the default with all the closing div's
+		$format	 = $input->getCmd('format', 'html');
 
-		I added it here because I am not 100% sure if it would break BC
-		when doing it in the default strapper
-		*/
+		if (empty($format))
+		{
+			$format	 = 'html';
+		}
+
+		if ($format != 'html')
+		{
+			return;
+		}
+
+		// Closing tag only if we're not in CLI
+		if (F0FPlatform::getInstance()->isCli())
+		{
+			return;
+		}
+
+		echo "</div>\n";    // Closes akeeba-renderjoomla div
 	}
 
 	/**

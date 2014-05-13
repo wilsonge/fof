@@ -90,9 +90,8 @@ class F0FRenderStrapper extends F0FRenderAbstract
 			);
 		}
 
+		// Wrap output in divs
 		echo '<div id="akeeba-bootstrap" class="' . implode($classes, ' ') . "\">\n";
-
-		// Wrap output in an akeeba-bootstrap class div
 		echo "<div class=\"akeeba-bootstrap\">\n";
 		echo "<div class=\"row-fluid\">\n";
 
