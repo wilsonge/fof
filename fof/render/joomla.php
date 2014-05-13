@@ -419,51 +419,163 @@ class F0FRenderJoomla extends F0FRenderAbstract
 
 		foreach ($form->getFieldsets() as $fieldset)
 		{
-			$fields = $form->getFieldset($fieldset->name);
+			$html .= $this->renderFieldset($fieldset, $form, $model, $input, $formType, false);
+		}
 
-			if (isset($fieldset->class))
+		return $html;
+	}
+
+	/**
+	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
+	 *
+	 * @param   stdClass  &$fieldset   The fieldset to render
+	 * @param   F0FForm   &$form       The form to render
+	 * @param   F0FModel  $model       The model providing our data
+	 * @param   F0FInput  $input       The input object
+	 * @param   string    $formType    The form type e.g. 'edit' or 'read'
+	 * @param   boolean   $showHeader  Should I render the fieldset's header?
+	 *
+	 * @return  string    The HTML rendering of the fieldset
+	 */
+	protected function renderFieldset(stdClass &$fieldset, F0FForm &$form, F0FModel $model, F0FInput $input, $formType, $showHeader = true)
+	{
+		$html = '';
+
+		$fields = $form->getFieldset($fieldset->name);
+
+		if (isset($fieldset->class))
+		{
+			$class = 'class="' . $fieldset->class . '"';
+		}
+		else
+		{
+			$class = '';
+		}
+
+		$element = empty($fields) ? 'div' : 'fieldset';
+		$html .= "\t" . '<' . $element . ' id="' . $fieldset->name . '" ' . $class . '>' . PHP_EOL;
+
+		$isTabbedFieldset = $this->isTabFieldset($fieldset);
+
+		if (isset($fieldset->label) && !empty($fieldset->label) && !$isTabbedFieldset)
+		{
+			$html .= "\t\t" . '<h3>' . JText::_($fieldset->label) . '</h3>' . PHP_EOL;
+		}
+
+		foreach ($fields as $field)
+		{
+			// TODO This overwrites the previous Joomla renderer which was required for the tooltips.
+			// TODO Nicholas can you please review/correct this?
+			$groupClass	 = $form->getFieldAttribute($field->fieldname, 'groupclass', '', $field->group);
+
+			// Auto-generate label and description if needed
+			// Field label
+			$title 		 = $form->getFieldAttribute($field->fieldname, 'label', '', $field->group);
+			$emptylabel  = $form->getFieldAttribute($field->fieldname, 'emptylabel', false, $field->group);
+
+			if (empty($title) && !$emptylabel)
 			{
-				$class = 'class="' . $fieldset->class . '"';
+				$model->getName();
+				$title = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_LABEL');
+			}
+
+			// Field description
+			$description = $form->getFieldAttribute($field->fieldname, 'description', '', $field->group);
+
+			/**
+			 * The following code is backwards incompatible. Most forms don't require a description in their form
+			 * fields. Having to use emptydescription="1" on each one of them is an overkill. Removed.
+			 */
+			/*
+			$emptydescription   = $form->getFieldAttribute($field->fieldname, 'emptydescription', false, $field->group);
+			if (empty($description) && !$emptydescription)
+			{
+				$description = strtoupper($input->get('option') . '_' . $model->getName() . '_' . $field->id . '_DESC');
+			}
+			*/
+
+			if ($formType == 'read')
+			{
+				$inputField = $field->static;
+			}
+			elseif ($formType == 'edit')
+			{
+				$inputField = $field->input;
+			}
+
+			if (empty($title))
+			{
+				$html .= "\t\t\t" . $inputField . PHP_EOL;
+
+				if (!empty($description) && $formType == 'edit')
+				{
+					$html .= "\t\t\t\t" . '<span class="help-block">';
+					$html .= JText::_($description) . '</span>' . PHP_EOL;
+				}
 			}
 			else
 			{
-				$class = '';
-			}
+				$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . PHP_EOL;
+				$html .= $this->renderFieldsetLabel($field, $form, $title);
+				$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
+				$html .= "\t\t\t\t" . $inputField . PHP_EOL;
 
-			$element = empty($fields) ? 'div' : 'fieldset';
-			$html .= "\t" . '<' . $element . ' id="' . $fieldset->name . '" ' . $class . '>' . PHP_EOL;
-
-			if (isset($fieldset->label) && !empty($fieldset->label))
-			{
-				$html .= "\t\t" . '<h3>' . JText::_($fieldset->label) . '</h3>' . PHP_EOL;
-			}
-
-			foreach ($fields as $field)
-			{
-				$label	 = $field->label;
-
-				$html .= "<div class=\"fof-row\">";
-
-				if (!is_null($label))
+				if (!empty($description))
 				{
-					$html .= "\t\t\t" . $label . PHP_EOL;
+					$html .= "\t\t\t\t" . '<span class="help-block">';
+					$html .= JText::_($description) . '</span>' . PHP_EOL;
 				}
 
-				if ($formType == 'read')
-				{
-					$html .= "\t\t\t" . $field->static . PHP_EOL;
-				}
-				elseif ($formType == 'edit')
-				{
-					$html .= "\t\t\t" . $field->input . PHP_EOL;
-				}
-
-				$html .= "</div>";
+				$html .= "\t\t\t\t" . '</div>' . PHP_EOL;
+				$html .= "\t\t\t" . '</div>' . PHP_EOL;
 			}
-
-			$element = empty($fields) ? 'div' : 'fieldset';
-			$html .= "\t" . '</' . $element . '>' . PHP_EOL;
 		}
+
+		$element = empty($fields) ? 'div' : 'fieldset';
+		$html .= "\t" . '</' . $element . '>' . PHP_EOL;
+
+		return $html;
+	}
+
+	/**
+	 * Renders a label for a fieldset.
+	 *
+	 * @param   object  	$field  	The field of the label to render
+	 * @param   F0FForm   	&$form      The form to render
+	 * @param 	string		$title		The title of the label
+	 *
+	 * @return 	string		The rendered label
+	 */
+	protected function renderFieldsetLabel($field, F0FForm &$form, $title)
+	{
+		$html = '';
+
+		$labelClass	 = $field->labelClass;
+		$required	 = $field->required;
+
+		$tooltip = $form->getFieldAttribute($field->fieldname, 'tooltip', '', $field->group);
+
+		if (!empty($tooltip))
+		{
+			JHtml::_('behavior.tooltip');
+
+			$tooltipText = JText::_($title) . '::' . JText::_($tooltip);
+
+			$html .= "\t\t\t\t" . '<label class="control-label hasTip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">' . PHP_EOL;
+		}
+		else
+		{
+			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+		}
+
+		$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
+
+		if ($required)
+		{
+			$html .= ' *';
+		}
+
+		$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
 
 		return $html;
 	}
