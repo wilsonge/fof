@@ -221,7 +221,7 @@ abstract class F0FRenderAbstract
 	/**
 	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
 	 *
-	 * @TODO: add this to FOF3, don't yet add it for backward compatibility
+	 * @TODO: Convert to an abstract method or interface at FOF3
 	 *
 	 * @param   stdClass  &$fieldset   The fieldset to render
 	 * @param   F0FForm   &$form       The form to render
@@ -232,12 +232,15 @@ abstract class F0FRenderAbstract
 	 *
 	 * @return  string    The HTML rendering of the fieldset
 	 */
-//	abstract protected function renderFieldset(stdClass &$fieldset, F0FForm &$form, F0FModel $model, F0FInput $input, $formType, $showHeader = true);
+	protected function renderFieldset(stdClass &$fieldset, F0FForm &$form, F0FModel $model, F0FInput $input, $formType, $showHeader = true)
+	{
+
+	}
 
 	/**
 	 * Renders a label for a fieldset.
 	 *
-	 * @TODO: add this to FOF3, don't yet add it for backward compatibility
+	 * @TODO: Convert to an abstract method or interface at FOF3
 	 *
 	 * @param   object  	$field  	The field of the label to render
 	 * @param   F0FForm   	&$form      The form to render
@@ -245,7 +248,10 @@ abstract class F0FRenderAbstract
 	 *
 	 * @return 	string		The rendered label
 	 */
-//	abstract protected function renderFieldsetLabel($field, F0FForm &$form, $title);
+	protected function renderFieldsetLabel($field, F0FForm &$form, $title)
+	{
+
+	}
 
 	/**
 	 * Checks if the fieldset defines a tab pane
