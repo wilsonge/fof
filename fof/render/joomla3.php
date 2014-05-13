@@ -108,4 +108,47 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 				break;
 		}
 	}
+
+	/**
+	 * Renders a label for a fieldset.
+	 *
+	 * @param   object  	$field  	The field of the label to render
+	 * @param   F0FForm   	&$form      The form to render
+	 * @param 	string		$title		The title of the label
+	 *
+	 * @return 	string		The rendered label
+	 */
+	protected function renderFieldsetLabel($field, F0FForm &$form, $title)
+	{
+		$html = '';
+
+		$labelClass	 = $field->labelClass;
+		$required	 = $field->required;
+
+		$tooltip = $form->getFieldAttribute($field->fieldname, 'tooltip', '', $field->group);
+
+		if (!empty($tooltip))
+		{
+			JHtml::_('bootstrap.tooltip');
+
+			$tooltipText = '<strong>' . JText::_($title) . '</strong><br />' . JText::_($tooltip);
+
+			$html .= "\t\t\t\t" . '<label class="control-label hasTooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">';
+		}
+		else
+		{
+			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">';
+		}
+
+		$html .= JText::_($title);
+
+		if ($required)
+		{
+			$html .= ' *';
+		}
+
+		$html .= '</label>' . PHP_EOL;
+
+		return $html;
+	}
 }
