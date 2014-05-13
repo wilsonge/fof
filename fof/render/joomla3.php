@@ -133,21 +133,21 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 
 			$tooltipText = '<strong>' . JText::_($title) . '</strong><br />' . JText::_($tooltip);
 
-			$html .= "\t\t\t\t" . '<label class="control-label hasTooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">' . PHP_EOL;
+			$html .= "\t\t\t\t" . '<label class="control-label hasTooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">';
 		}
 		else
 		{
-			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">';
 		}
 
-		$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
+		$html .= JText::_($title);
 
 		if ($required)
 		{
 			$html .= ' *';
 		}
 
-		$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
+		$html .= '</label>' . PHP_EOL;
 
 		return $html;
 	}

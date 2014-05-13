@@ -1177,7 +1177,7 @@ HTML;
 				$html .= "\t\t\t" . '<div class="control-group ' . $groupClass . '">' . PHP_EOL;
 				$html .= $this->renderFieldsetLabel($field, $form, $title);
 				$html .= "\t\t\t\t" . '<div class="controls">' . PHP_EOL;
-				$html .= "\t\t\t\t" . $inputField . PHP_EOL;
+				$html .= "\t\t\t\t\t" . $inputField . PHP_EOL;
 
 				if (!empty($description))
 				{
@@ -1242,7 +1242,7 @@ JS;
 
 				$tooltipText = '<strong>' . JText::_($title) . '</strong><br />' . JText::_($tooltip);
 
-				$html .= "\t\t\t\t" . '<label class="control-label f0f-tooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" data-toggle="f0f-tooltip">' . PHP_EOL;
+				$html .= "\t\t\t\t" . '<label class="control-label f0f-tooltip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" data-toggle="f0f-tooltip">';
 			}
 			else
 			{
@@ -1252,22 +1252,22 @@ JS;
 
 				$tooltipText = JText::_($title) . '::' . JText::_($tooltip);
 
-				$html .= "\t\t\t\t" . '<label class="control-label hasTip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">' . PHP_EOL;
+				$html .= "\t\t\t\t" . '<label class="control-label hasTip ' . $labelClass . '" for="' . $field->id . '" title="' . $tooltipText . '" rel="tooltip">';
 			}
 		}
 		else
 		{
-			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">' . PHP_EOL;
+			$html .= "\t\t\t\t" . '<label class="control-label ' . $labelClass . '" for="' . $field->id . '">';
 		}
 
-		$html .= "\t\t\t\t" . JText::_($title) . PHP_EOL;
+		$html .= JText::_($title);
 
 		if ($required)
 		{
 			$html .= ' *';
 		}
 
-		$html .= "\t\t\t\t" . '</label>' . PHP_EOL;
+		$html .= '</label>' . PHP_EOL;
 
 		return $html;
 	}
