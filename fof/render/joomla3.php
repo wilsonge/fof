@@ -70,7 +70,7 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 			$task = $input->getCmd('task', '');
 			$itemid = $input->getCmd('Itemid', '');
 
-			$classes = array(
+			$classes = ' class="' . implode(array(
 				'joomla-version-' . $majorVersion,
 				'joomla-version-' . $minorVersion,
 				$area,
@@ -79,10 +79,14 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 				'layout-' . $layout,
 				'task-' . $task,
 				'itemid-' . $itemid,
-			);
+			), ' ') . '"';
+		}
+		else
+		{
+			$classes = '';
 		}
 
-		echo '<div id="akeeba-renderjoomla" class="' . implode($classes, ' ') . "\">\n";
+		echo '<div id="akeeba-renderjoomla"' . $classes . ">\n";
 
 		// Render the submenu and toolbar
 		if ($input->getBool('render_toolbar', true))
