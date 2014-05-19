@@ -63,7 +63,6 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 			$minorVersion = str_replace('.', '', $version->RELEASE);
 			$majorVersion = array_shift($versionParts);
 
-			$area = $platform->isBackend() ? 'admin' : 'site';
 			$option = $input->getCmd('option', '');
 			$view = $input->getCmd('view', '');
 			$layout = $input->getCmd('layout', '');
@@ -73,7 +72,7 @@ class F0FRenderJoomla3 extends F0FRenderStrapper
 			$classes = ' class="' . implode(array(
 				'joomla-version-' . $majorVersion,
 				'joomla-version-' . $minorVersion,
-				$area,
+				'admin',
 				$option,
 				'view-' . $view,
 				'layout-' . $layout,
