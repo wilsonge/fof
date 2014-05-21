@@ -904,11 +904,6 @@ abstract class F0FUtilsInstallscript
 							// A. Position and state
 							list($modulePosition, $modulePublished) = $modulePreferences;
 
-							if ($modulePosition == 'cpanel')
-							{
-								$modulePosition = 'icon';
-							}
-
 							$sql = $db->getQuery(true)
 								->update($db->qn('#__modules'))
 								->set($db->qn('position') . ' = ' . $db->q($modulePosition))
