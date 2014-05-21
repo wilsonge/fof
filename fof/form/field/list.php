@@ -278,6 +278,30 @@ class F0FFormFieldList extends JFormFieldList implements F0FFormField
 		// Initialise the options
 		$options = array();
 
+		// Get the field $options
+		foreach ($sortOptions as $sortOption)
+		{
+			$option = $sortOption->option;
+			$name = $sortOption->name;
+
+			// Only add <option /> elements.
+			if ($option->getName() != 'option')
+			{
+				continue;
+			}
+
+			$tmp = JHtml::_('select.option', (string) $option['value'], $name, 'value', 'text', ((string) $option['disabled'] == 'true'));
+
+			// Set some option attributes.
+			$tmp->class = (string) $option['class'];
+
+			// Set some JavaScript option attributes.
+			$tmp->onclick = (string) $option['onclick'];
+
+			// Add the option object to the result set.
+			$options[] = $tmp;
+		}
+
 		// Do we have a class and method source for our options?
 		$source_file      = empty($this->element['source_file']) ? '' : (string) $this->element['source_file'];
 		$source_class     = empty($this->element['source_class']) ? '' : (string) $this->element['source_class'];
@@ -310,7 +334,7 @@ class F0FFormFieldList extends JFormFieldList implements F0FFormField
 					// Get the data from the class
 					if ($source_format == 'optionsobject')
 					{
-						$options = $source_class::$source_method();
+						$options = array_merge($options, $source_class::$source_method());
 					}
 					else
 					{
@@ -333,30 +357,6 @@ class F0FFormFieldList extends JFormFieldList implements F0FFormField
 					}
 				}
 			}
-		}
-
-		// Get the field $options
-		foreach ($sortOptions as $sortOption)
-		{
-			$option = $sortOption->option;
-			$name = $sortOption->name;
-
-			// Only add <option /> elements.
-			if ($option->getName() != 'option')
-			{
-				continue;
-			}
-
-			$tmp = JHtml::_('select.option', (string) $option['value'], $name, 'value', 'text', ((string) $option['disabled'] == 'true'));
-
-			// Set some option attributes.
-			$tmp->class = (string) $option['class'];
-
-			// Set some JavaScript option attributes.
-			$tmp->onclick = (string) $option['onclick'];
-
-			// Add the option object to the result set.
-			$options[] = $tmp;
 		}
 
 		reset($options);
