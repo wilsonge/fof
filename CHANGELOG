@@ -1,5 +1,6 @@
 FOF 2.3.1
 ================================================================================
+! CLI scripts were not being copied over
 + Tooltip support for F0FForm fieldsets
 + source_format="optionsobject" support for F0FFormFieldList
 ~ Compatibility with braindead admin templates which FORCE format=utf (the heck...?) in the URL
