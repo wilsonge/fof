@@ -152,6 +152,12 @@ class AkeebaStrapper
             return;
 		}
 
+		// Load jQuery only once
+		if (self::$_includedJQuery)
+		{
+			return;
+		}
+
 		$jQueryLoad = self::getPreference('jquery_load', 'auto');
 		if (!in_array($jQueryLoad, array('auto', 'full', 'namespace', 'none')))
 		{
@@ -212,6 +218,12 @@ class AkeebaStrapper
         if (self::isCli())
 		{
             return;
+		}
+
+		// Load only once
+		if (self::$_includedJQueryUI)
+		{
+			return;
 		}
 
         if (!self::$_includedJQuery)
