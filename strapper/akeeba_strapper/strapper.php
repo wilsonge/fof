@@ -255,6 +255,12 @@ class AkeebaStrapper
             return;
 		}
 
+		// Load Bootstrap only once
+		if (self::$_includedBootstrap)
+		{
+			return;
+		}
+
 		if (version_compare(JVERSION, '3.2', 'ge'))
 		{
 			$key = 'joomla32';
