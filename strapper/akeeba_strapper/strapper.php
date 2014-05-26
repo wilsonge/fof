@@ -679,7 +679,8 @@ function AkeebaStrapperLoader()
 /**
  * Akeeba Strapper onAfterRender entry point.
  *
- * Makes sure bootstrap[.min].js is loaded only once.
+ * Makes sure Akeeba Strapper's bootstrap[.min].js is only loaded when
+ * bootstrap[.min].js has not yet been loaded.
  */
 function AkeebaStrapperOnAfterRender()
 {
@@ -695,6 +696,7 @@ function AkeebaStrapperOnAfterRender()
 		}
 
 		// Get all bootstrap[.min].js to remove
+		$count = 0;
 		$scriptsToRemove = array();
 		$scriptRegex = "/<script [^>]+(\/>|><\/script>)/i";
 		preg_match_all($scriptRegex, $buffer, $matches);
@@ -711,8 +713,9 @@ function AkeebaStrapperOnAfterRender()
 
 				if (in_array($scriptName, array('bootstrap.min.js', 'bootstrap.js')))
 				{
-					// Only keep media/akeeba_strapper/js/bootstrap.min.js
-					if (strpos($script, 'media/akeeba_strapper/js/bootstrap.min.js') == false)
+					$count++;
+
+					if (strpos($script, 'media/akeeba_strapper/js/bootstrap.min.js') !== false)
 					{
 						$scriptsToRemove[] = $script;
 					}
@@ -721,7 +724,7 @@ function AkeebaStrapperOnAfterRender()
 		}
 
 		// Remove duplicated bootstrap scripts from the output
-		if (!empty($scriptsToRemove))
+		if ($count > 1 && !empty($scriptsToRemove))
 		{
 			$buffer = str_replace($scriptsToRemove, '', $buffer);
 
