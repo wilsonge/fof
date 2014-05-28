@@ -5,6 +5,8 @@
 	"homepage": "https://github.com/akeeba/fof",
 	"license": "GPL-2.0+",
 	"require": {
-		"mikey179/vfsStream": "v1.2.0"
+		"mikey179/vfsStream": "v1.2.0",
+		"phpunit/phpunit": "4.1.*",
+		"phpunit/dbunit": ">=1.2"
 	}
 }
