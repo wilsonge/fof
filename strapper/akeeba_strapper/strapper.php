@@ -241,7 +241,7 @@ class AkeebaStrapper
 		$theme = self::getPreference('jquery_theme', self::$jqUItheme);
 
 		self::addJSfile('media://akeeba_strapper/js/akeebajqui.js', AKEEBASTRAPPER_MEDIATAG);
-		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.min.css", AKEEBASTRAPPER_MEDIATAG);
+		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.css", AKEEBASTRAPPER_MEDIATAG);
     }
 
     /**
@@ -325,27 +325,16 @@ class AkeebaStrapper
 
 		self::$_includedBootstrap = true;
 
-		$source = self::getPreference('bootstrap_source', 'css');
-		if (!in_array($source, array('css','less')))
-		{
-			$source = 'css';
-		}
-
-        $altCss = array('media://akeeba_strapper/css/strapper.min.css');
+        $altCss = array('media://akeeba_strapper/css/strapper.css');
 
         if ($loadBootstrap == 'full')
         {
-            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
+            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.css');
 
-			$filename = F0FTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
+			$filename = F0FTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.js', true);
 			if (@filesize($filename) > 5)
 			{
-				self::addJSfile('media://akeeba_strapper/js/bootstrap.min.js', AKEEBASTRAPPER_MEDIATAG);
-			}
-
-			if ($source == 'less')
-			{
-				self::addLESSfile('media://akeeba_strapper/less/bootstrap.j25.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
+				self::addJSfile('media://akeeba_strapper/js/bootstrap.js', AKEEBASTRAPPER_MEDIATAG);
 			}
         }
         else
@@ -366,18 +355,11 @@ class AkeebaStrapper
 			}
 
             array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.min.css');
-			if ($source == 'less')
-			{
-				self::addLESSfile('media://akeeba_strapper/less/bootstrap' . $qualifier . '.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
-			}
         }
 
-		if ($source == 'css')
+		foreach($altCss as $css)
 		{
-			foreach($altCss as $css)
-			{
-				self::addCSSfile($css, AKEEBASTRAPPER_MEDIATAG);
-			}
+			self::addCSSfile($css, AKEEBASTRAPPER_MEDIATAG);
 		}
     }
 
@@ -395,6 +377,12 @@ class AkeebaStrapper
 		}
 
 		$tag = self::getTag($overrideTag);
+
+		$localFile = F0FTemplateUtils::parsePath($path, true);
+		if (!@file_exists($localFile) && (substr($path, -7) != '.min.js'))
+		{
+			$path = substr($path, 0, -3) . '.min.js';
+		}
 
         self::$scriptURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
     }
@@ -428,6 +416,12 @@ class AkeebaStrapper
 		}
 
 		$tag = self::getTag($overrideTag);
+
+		$localFile = F0FTemplateUtils::parsePath($path, true);
+		if (!@file_exists($localFile) && (substr($path, -8) != '.min.css'))
+		{
+			$path = substr($path, 0, -4) . '.min.js';
+		}
 
 		self::$cssURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
     }
@@ -721,7 +715,10 @@ function AkeebaStrapperOnAfterRender()
 				{
 					$count++;
 
-					if (strpos($script, 'media/akeeba_strapper/js/bootstrap.min.js') !== false)
+					if (
+						(strpos($script, 'media/akeeba_strapper/js/bootstrap.min.js') !== false)
+						|| strpos($script, 'media/akeeba_strapper/js/bootstrap.js') !== false
+					)
 					{
 						$scriptsToRemove[] = $script;
 					}
