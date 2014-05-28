@@ -12,9 +12,11 @@ defined('F0F_INCLUDED') or die;
 /**
  * A class to manage tables holding nested sets (hierarchical data)
  *
- * @property int $lft Left value (for nested set implementation)
- * @property int $rgt Right value (for nested set implementation)
- * @property string $hash Slug hash (for faster searching)
+ * @property int    $lft   Left value (for nested set implementation)
+ * @property int    $rgt   Right value (for nested set implementation)
+ * @property string $hash  Slug hash (optional; for faster searching)
+ * @property string $slug  Node's slug (optional)
+ * @property string $title Title of the node (optional)
  */
 class F0FTableNested extends F0FTable
 {
@@ -37,10 +39,10 @@ class F0FTableNested extends F0FTable
 	 * Public constructor. Overrides the parent constructor, making sure there are lft/rgt columns which make it
 	 * compatible with nested sets.
 	 *
-	 * @param   string           $table   Name of the database table to model.
-	 * @param   string           $key     Name of the primary key field in the table.
-	 * @param   JDatabaseDriver  &$db     Database driver
-	 * @param   array            $config  The configuration parameters array
+	 * @param   string          $table  Name of the database table to model.
+	 * @param   string          $key    Name of the primary key field in the table.
+	 * @param   JDatabaseDriver &$db    Database driver
+	 * @param   array           $config The configuration parameters array
 	 *
 	 * @throws \RuntimeException When lft/rgt columns are not found
 	 */
@@ -50,7 +52,7 @@ class F0FTableNested extends F0FTable
 
 		if (!$this->hasField('lft') || !$this->hasField('rgt'))
 		{
-			throw new \RuntimeException("Table $this->tableName is not compatible with F0FTableNested: it does not have lft/rgt columns");
+			throw new \RuntimeException("Table " . $this->getTableName() . " is not compatible with F0FTableNested: it does not have lft/rgt columns");
 		}
 	}
 
@@ -86,8 +88,8 @@ class F0FTableNested extends F0FTable
 	 * is loaded before trying to delete it. In the end the data model is reset. If the node has any children nodes
 	 * they will be removed before the node itself is deleted if $recursive == true (default: true).
 	 *
-	 * @param   integer $oid  		The primary key value of the item to delete
-	 * @param   bool    $recursive  Should I recursively delete any nodes in the subtree? (default: true)
+	 * @param   integer $oid       The primary key value of the item to delete
+	 * @param   bool    $recursive Should I recursively delete any nodes in the subtree? (default: true)
 	 *
 	 * @throws  UnexpectedValueException
 	 *
@@ -115,21 +117,21 @@ class F0FTableNested extends F0FTable
 			$fldRgt = $db->qn($this->getColumnAlias('rgt'));
 
 			// Get all sub-nodes
-			// @todo
-			$subNodes = $this->getClone();
-			$subNodes->reset();
-			$subNodes
-				->whereRaw($fldLft . ' > ' . $fldLft)
-				->whereRaw($fldRgt . ' < ' . $fldRgt)
-				->get(true);
+			$table = $this->getClone();
+			$table->reset();
+			$subNodes = $table
+				->whereRaw($fldLft . ' > ' . $myLeft)
+				->whereRaw($fldRgt . ' < ' . $myRight)
+				->get();
 
 			// Delete all subnodes (goes through the model to trigger the observers)
 			if (!empty($subNodes))
 			{
-				array_walk($subNodes, function($item, $key){
-					/** @var F0FTableNested $item */
+				/** @var F0FTableNested $item */
+				foreach ($subNodes as $item)
+				{
 					$item->delete(null, false);
-				});
+				};
 			}
 		}
 
@@ -139,7 +141,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Not supported in nested sets
 	 *
-	 * @param   string   $where  Ignored
+	 * @param   string $where Ignored
 	 *
 	 * @return  void
 	 *
@@ -153,8 +155,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Not supported in nested sets
 	 *
-	 * @param   integer  $delta  Ignored
-	 * @param   string   $where  Ignored
+	 * @param   integer $delta Ignored
+	 * @param   string  $where Ignored
 	 *
 	 * @return  void
 	 *
@@ -191,7 +193,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Makes a copy of the record, inserting it as the last child of the current node's parent.
 	 *
-	 * @return static
+	 * @return self
 	 */
 	public function copy()
 	{
@@ -216,11 +218,32 @@ class F0FTableNested extends F0FTable
 	 * Insert the current node as a tree root. It is a good idea to never use this method, instead providing a root node
 	 * in your schema installation and then sticking to only one root.
 	 *
-	 * @return static
+	 * @return self
 	 */
 	public function insertAsRoot()
 	{
-		// @todo
+		// First we need to find the right value of the last parent, a.k.a. the max(rgt) of the table
+		$db = $this->getDbo();
+
+		// Get the lft/rgt names
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$query = $db->getQuery(true)
+			->select('MAX(' . $fldRgt . ')')
+			->from($db->qn($this->getTableName()));
+		$maxRgt = $db->setQuery($query, 0, 1)->loadResult();
+
+		if (empty($maxRgt))
+		{
+			$maxRgt = 0;
+		}
+
+		$this->lft = ++$maxRgt;
+		$this->rgt = ++$maxRgt;
+
+		$this->store();
+
+		return $this;
 	}
 
 	/**
@@ -236,7 +259,56 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertAsFirstChildOf(F0FTableNested &$parentNode)
 	{
-		// @todo
+		// Get a reference to the database
+		$db = $this->getDbo();
+
+		// Get the field names
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+		// Get the value of the parent node's rgt
+		$myLeft = $parentNode->lft;
+
+		// Update my lft/rgt values
+		$this->lft = $myLeft + 1;
+		$this->rgt = $myLeft + 2;
+
+		// Update parent node's right (we added two elements in there, remember?)
+		$parentNode->rgt += 2;
+
+		// Wrap everything in a transaction
+		$db->transactionStart();
+
+		try
+		{
+			// Make a hole (2 queries)
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($fldLft . ' = ' . $fldLft . '+2')
+				->where($fldLft . ' > ' . $db->q($myLeft));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($fldRgt . ' = ' . $fldRgt . '+ 2')
+				->where($fldRgt . '>' . $db->q($myLeft));
+			$db->setQuery($query)->execute();
+
+			// Insert the new node
+			$this->store();
+
+			// Commit the transaction
+			$db->transactionCommit();
+		}
+		catch (\Exception $e)
+		{
+			// Roll back the transaction on error
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -252,7 +324,56 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertAsLastChildOf(F0FTableNested &$parentNode)
 	{
-		// @todo
+		// Get a reference to the database
+		$db = $this->getDbo();
+
+		// Get the field names
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+		// Get the value of the parent node's lft
+		$myRight = $parentNode->rgt;
+
+		// Update my lft/rgt values
+		$this->lft = $myRight;
+		$this->rgt = $myRight + 1;
+
+		// Update parent node's right (we added two elements in there, remember?)
+		$parentNode->rgt += 2;
+
+		// Wrap everything in a transaction
+		$db->transactionStart();
+
+		try
+		{
+			// Make a hole (2 queries)
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($fldRgt . ' = ' . $fldRgt . '+2')
+				->where($fldRgt . '>=' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($fldLft . ' = ' . $fldLft . '+2')
+				->where($fldLft . '>' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Insert the new node
+			$this->store();
+
+			// Commit the transaction
+			$db->transactionCommit();
+		}
+		catch (\Exception $e)
+		{
+			// Roll back the transaction on error
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -282,7 +403,52 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertLeftOf(F0FTableNested &$siblingNode)
 	{
-		// @todo
+		// Get a reference to the database
+		$db = $this->getDbo();
+
+		// Get the field names
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+		// Get the value of the parent node's rgt
+		$myLeft = $siblingNode->lft;
+
+		// Update my lft/rgt values
+		$this->lft = $myLeft;
+		$this->rgt = $myLeft + 1;
+
+		// Update sibling's lft/rgt values
+		$siblingNode->lft++;
+		$siblingNode->rgt++;
+
+		$db->transactionStart();
+
+		try
+		{
+			$db->setQuery(
+				$db->getQuery(true)
+					->update($db->qn($this->getTableName()))
+					->set($fldLft . ' = ' . $fldLft . '+2')
+					->where($fldLft . ' >= ' . $db->q($myLeft))
+			)->execute();
+
+			$db->setQuery(
+				$db->getQuery(true)
+					->update($db->qn($this->getTableName()))
+					->set($fldRgt . ' = ' . $fldRgt . '+2')
+					->where($fldRgt . ' > ' . $db->q($myLeft))
+			)->execute();
+
+			$this->store();
+		}
+		catch (\Exception $e)
+		{
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -297,7 +463,48 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertRightOf(F0FTableNested &$siblingNode)
 	{
-		// @todo
+		// Get a reference to the database
+		$db = $this->getDbo();
+
+		// Get the field names
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+		// Get the value of the parent node's lft
+		$myRight = $siblingNode->rgt;
+
+		// Update my lft/rgt values
+		$this->lft = $myRight + 1;
+		$this->rgt = $myRight + 2;
+
+		$db->transactionStart();
+
+		try
+		{
+			$db->setQuery(
+				$db->getQuery(true)
+					->update($db->qn($this->getTableName()))
+					->set($fldRgt . ' = ' . $fldRgt . '+2')
+					->where($fldRgt . ' > ' . $db->q($myRight))
+			)->execute();
+
+			$db->setQuery(
+				$db->getQuery(true)
+					->update($db->qn($this->getTableName()))
+					->set($fldLft . ' = ' . $fldLft . '+2')
+					->where($fldLft . ' > ' . $db->q($myRight))
+			)->execute();
+
+			$this->store();
+		}
+		catch (\Exception $e)
+		{
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -319,7 +526,29 @@ class F0FTableNested extends F0FTable
 	 */
 	public function moveLeft()
 	{
-		// @todo
+		// If it is a root node we will not move the node (roots don't participate in tree ordering)
+		if ($this->isRoot())
+		{
+			return $this;
+		}
+
+		// Are we already the leftmost node?
+		$parentNode = $this->getParent();
+
+		if ($parentNode->lft == ($this->lft - 1))
+		{
+			return $this;
+		}
+
+		// Get the sibling to the left
+		$db = $this->getDbo();
+		$table = $this->getClone();
+		$table->reset();
+		$leftSibling = $table->whereRaw($db->qn($this->getColumnAlias('rgt')) . ' = ' . $db->q($this->lft - 1))
+			->get(0, 1)->current();
+
+		// Move the node
+		return $this->moveToLeftOf($leftSibling);
 	}
 
 	/**
@@ -329,7 +558,30 @@ class F0FTableNested extends F0FTable
 	 */
 	public function moveRight()
 	{
-		// @todo
+		// If it is a root node we will not move the node (roots don't participate in tree ordering)
+		if ($this->isRoot())
+		{
+			return $this;
+		}
+
+		// Are we already the rightmost node?
+		$parentNode = $this->getParent();
+
+		if ($parentNode->rgt == ($this->rgt + 1))
+		{
+			return $this;
+		}
+
+		// Get the sibling to the right
+		$db = $this->getDbo();
+
+		$table = $this->getClone();
+		$table->reset();
+		$rightSibling = $table->whereRaw($db->qn($this->getColumnAlias('lft')) . ' = ' . $db->q($this->rgt + 1))
+			->get(0, 1)->current();
+
+		// Move the node
+		return $this->moveToRightOf($rightSibling);
 	}
 
 	/**
@@ -344,7 +596,82 @@ class F0FTableNested extends F0FTable
 	 */
 	public function moveToLeftOf(F0FTableNested $siblingNode)
 	{
-		// @todo
+		$db = $this->getDbo();
+		$left = $db->qn($this->getColumnAlias('lft'));
+		$right = $db->qn($this->getColumnAlias('rgt'));
+
+		// Get node metrics
+		$myLeft = $this->lft;
+		$myRight = $this->rgt;
+		$myWidth = $myRight - $myLeft + 1;
+
+		// Get parent metrics
+		$sibLeft = $siblingNode->lft;
+
+		// Start the transaction
+		$db->transactionStart();
+
+		try
+		{
+			// Temporary remove subtree being moved
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set("$left = " . $db->q(0) . " - $left")
+				->set("$right = " . $db->q(0) . " - $right")
+				->where($left . ' >= ' . $db->q($myLeft))
+				->where($right . ' <= ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Close hole left behind
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' - ' . $db->q($myWidth))
+				->where($left . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' - ' . $db->q($myWidth))
+				->where($right . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Make a hole for the new items
+			$newSibLeft = ($sibLeft > $myRight) ? $sibLeft - $myWidth : $sibLeft;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' + ' . $db->q($myWidth))
+				->where($right . ' >= ' . $db->q($newSibLeft));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' + ' . $db->q($myWidth))
+				->where($left . ' >= ' . $db->q($newSibLeft));
+			$db->setQuery($query)->execute();
+
+			// Move node and subnodes
+			$moveRight = $newSibLeft - $myLeft;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $db->q(0) . ' - ' . $left . ' + ' . $db->q($moveRight))
+				->set($right . ' = ' . $db->q(0) . ' - ' . $right . ' + ' . $db->q($moveRight))
+				->where($left . ' <= 0 - ' . $db->q($myLeft))
+				->where($right . ' >= 0 - ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Commit the transaction
+			$db->transactionCommit();
+		}
+		catch (\Exception $e)
+		{
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -359,7 +686,82 @@ class F0FTableNested extends F0FTable
 	 */
 	public function moveToRightOf(F0FTableNested $siblingNode)
 	{
-		// @todo
+		$db = $this->getDbo();
+		$left = $db->qn($this->getColumnAlias('lft'));
+		$right = $db->qn($this->getColumnAlias('rgt'));
+
+		// Get node metrics
+		$myLeft = $this->lft;
+		$myRight = $this->rgt;
+		$myWidth = $myRight - $myLeft + 1;
+
+		// Get parent metrics
+		$sibRight = $siblingNode->rgt;
+
+		// Start the transaction
+		$db->transactionStart();
+
+		try
+		{
+			// Temporary remove subtree being moved
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set("$left = " . $db->q(0) . " - $left")
+				->set("$right = " . $db->q(0) . " - $right")
+				->where($left . ' >= ' . $db->q($myLeft))
+				->where($right . ' <= ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Close hole left behind
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' - ' . $db->q($myWidth))
+				->where($left . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' - ' . $db->q($myWidth))
+				->where($right . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Make a hole for the new items
+			$newSibRight = ($sibRight > $myRight) ? $sibRight - $myWidth : $sibRight;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' + ' . $db->q($myWidth))
+				->where($left . ' > ' . $db->q($newSibRight));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' + ' . $db->q($myWidth))
+				->where($right . ' > ' . $db->q($newSibRight));
+			$db->setQuery($query)->execute();
+
+			// Move node and subnodes
+			$moveRight = ($sibRight > $myRight) ? $sibRight - $myRight : $sibRight - $myRight + $myWidth;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $db->q(0) . ' - ' . $left . ' + ' . $db->q($moveRight))
+				->set($right . ' = ' . $db->q(0) . ' - ' . $right . ' + ' . $db->q($moveRight))
+				->where($left . ' <= 0 - ' . $db->q($myLeft))
+				->where($right . ' >= 0 - ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Commit the transaction
+			$db->transactionCommit();
+		}
+		catch (\Exception $e)
+		{
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -409,7 +811,82 @@ class F0FTableNested extends F0FTable
 	 */
 	public function makeFirstChildOf(F0FTableNested $parentNode)
 	{
-		// @todo
+		$db = $this->getDbo();
+		$left = $db->qn($this->getColumnAlias('lft'));
+		$right = $db->qn($this->getColumnAlias('rgt'));
+
+		// Get node metrics
+		$myLeft = $this->lft;
+		$myRight = $this->rgt;
+		$myWidth = $myRight - $myLeft + 1;
+
+		// Get parent metrics
+		$parentLeft = $parentNode->lft;
+
+		// Start the transaction
+		$db->transactionStart();
+
+		try
+		{
+			// Temporary remove subtree being moved
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set("$left = " . $db->q(0) . " - $left")
+				->set("$right = " . $db->q(0) . " - $right")
+				->where($left . ' >= ' . $db->q($myLeft))
+				->where($right . ' <= ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Close hole left behind
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' - ' . $db->q($myWidth))
+				->where($left . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' - ' . $db->q($myWidth))
+				->where($right . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Make a hole for the new items
+			$newParentLeft = ($parentLeft > $myRight) ? $parentLeft - $myWidth : $parentLeft;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' + ' . $db->q($myWidth))
+				->where($right . ' >= ' . $db->q($newParentLeft));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' + ' . $db->q($myWidth))
+				->where($left . ' > ' . $db->q($newParentLeft));
+			$db->setQuery($query)->execute();
+
+			// Move node and subnodes
+			$moveRight = $newParentLeft - $myLeft + 1;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $db->q(0) . ' - ' . $left . ' + ' . $db->q($moveRight))
+				->set($right . ' = ' . $db->q(0) . ' - ' . $right . ' + ' . $db->q($moveRight))
+				->where($left . ' <= 0 - ' . $db->q($myLeft))
+				->where($right . ' >= 0 - ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Commit the transaction
+			$db->transactionCommit();
+		}
+		catch (\Exception $e)
+		{
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -423,7 +900,82 @@ class F0FTableNested extends F0FTable
 	 */
 	public function makeLastChildOf(F0FTableNested $parentNode)
 	{
-		// @todo
+		$db = $this->getDbo();
+		$left = $db->qn($this->getColumnAlias('lft'));
+		$right = $db->qn($this->getColumnAlias('rgt'));
+
+		// Get node metrics
+		$myLeft = $this->lft;
+		$myRight = $this->rgt;
+		$myWidth = $myRight - $myLeft + 1;
+
+		// Get parent metrics
+		$parentRight = $parentNode->rgt;
+
+		// Start the transaction
+		$db->transactionStart();
+
+		try
+		{
+			// Temporary remove subtree being moved
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set("$left = " . $db->q(0) . " - $left")
+				->set("$right = " . $db->q(0) . " - $right")
+				->where($left . ' >= ' . $db->q($myLeft))
+				->where($right . ' <= ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Close hole left behind
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' - ' . $db->q($myWidth))
+				->where($left . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' - ' . $db->q($myWidth))
+				->where($right . ' > ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Make a hole for the new items
+			$newLeft = ($parentRight > $myRight) ? $parentRight - $myWidth : $parentRight;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $left . ' + ' . $db->q($myWidth))
+				->where($left . ' >= ' . $db->q($newLeft));
+			$db->setQuery($query)->execute();
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($right . ' = ' . $right . ' + ' . $db->q($myWidth))
+				->where($right . ' >= ' . $db->q($newLeft));
+			$db->setQuery($query)->execute();
+
+			// Move node and subnodes
+			$moveRight = ($parentRight > $myRight) ? $parentRight - $myRight - 1 : $parentRight - $myRight - 1 + $myWidth;
+
+			$query = $db->getQuery(true)
+				->update($db->qn($this->getTableName()))
+				->set($left . ' = ' . $db->q(0) . ' - ' . $left . ' + ' . $db->q($moveRight))
+				->set($right . ' = ' . $db->q(0) . ' - ' . $right . ' + ' . $db->q($moveRight))
+				->where($left . ' <= 0 - ' . $db->q($myLeft))
+				->where($right . ' >= 0 - ' . $db->q($myRight));
+			$db->setQuery($query)->execute();
+
+			// Commit the transaction
+			$db->transactionCommit();
+		}
+		catch (\Exception $e)
+		{
+			$db->transactionRollback();
+
+			throw $e;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -446,7 +998,26 @@ class F0FTableNested extends F0FTable
 	 */
 	public function makeRoot()
 	{
-		// @todo
+		// Make sure we are not a root
+		if ($this->isRoot())
+		{
+			return $this;
+		}
+
+		// Get a reference to my root
+		$myRoot = $this->getRoot();
+
+		// Double check I am not a root
+		if ($this->equals($myRoot))
+		{
+			return $this;
+		}
+
+		// Move myself to the right of my root
+		$this->moveToRightOf($myRoot);
+		$this->treeDepth = 0;
+
+		return $this;
 	}
 
 	/**
@@ -456,17 +1027,66 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getLevel()
 	{
-		// @todo
+		if (is_null($this->treeDepth))
+		{
+			$db = $this->getDbo();
+
+			$fldLft = $db->qn($this->getColumnAlias('lft'));
+			$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+			$query = $db->getQuery(true)
+				->select('(COUNT(' . $db->qn('parent') . '.' . $fldLft . ') - 1) AS ' . $db->qn('depth'))
+				->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
+				->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'))
+				->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
+				->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
+				->where($db->qn('node') . '.' . $fldLft . ' = ' . $db->q($this->lft))
+				->group($db->qn('node') . '.' . $fldLft)
+				->order($db->qn('node') . '.' . $fldLft . ' ASC');
+
+			$this->treeDepth = $db->setQuery($query, 0, 1)->loadResult();
+		}
+
+		return $this->treeDepth;
 	}
 
 	/**
 	 * Returns the immediate parent of the current node
 	 *
-	 * @return static
+	 * @return self
 	 */
 	public function getParent()
 	{
-		// @todo
+		if ($this->isRoot())
+		{
+			return $this;
+		}
+
+		if (empty($this->treeParent) || !is_object($this->treeParent) || !($this->treeParent instanceof F0FTableNested))
+		{
+			$db = $this->getDbo();
+
+			$fldLft = $db->qn($this->getColumnAlias('lft'));
+			$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+			$query = $db->getQuery(true)
+				->select($db->qn('parent') . '.' . $fldLft)
+				->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
+				->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'))
+				->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
+				->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
+				->where($db->qn('node') . '.' . $fldLft . ' = ' . $db->q($this->lft))
+				->order($db->qn('parent') . '.' . $fldLft . ' DESC');
+			$targetLft = $db->setQuery($query, 1, 1)->loadResult();
+
+			$table = $this->getClone();
+			$table->reset();
+			$this->treeParent = $table
+				->whereRaw($fldLft . ' = ' . $db->q($targetLft))
+				->get()->current();
+		}
+
+		return $this->treeParent;
 	}
 
 	/**
@@ -476,7 +1096,14 @@ class F0FTableNested extends F0FTable
 	 */
 	public function isRoot()
 	{
-		// @todo
+		// If lft=1 it is necessarily a root node
+		if ($this->lft == 1)
+		{
+			return true;
+		}
+
+		// Otherwise make sure its level is 0
+		return $this->getLevel() == 0;
 	}
 
 	/**
@@ -508,7 +1135,23 @@ class F0FTableNested extends F0FTable
 	 */
 	public function isDescendantOf(F0FTableNested $otherNode)
 	{
-		// @todo
+		$children = $otherNode->getClone()->resetTreeCache()->getDescendants();
+
+		if (empty($children))
+		{
+			return false;
+		}
+
+		/** @var F0FTableNested $child */
+		foreach ($children as $child)
+		{
+			if ($child->equals($this))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -532,7 +1175,23 @@ class F0FTableNested extends F0FTable
 	 */
 	public function isAncestorOf(F0FTableNested $otherNode)
 	{
-		// @todo
+		$parents = $otherNode->getClone()->resetTreeCache()->getAncestors();
+
+		if (empty($parents))
+		{
+			return false;
+		}
+
+		/** @var F0FTableNested $parent */
+		foreach ($parents as $parent)
+		{
+			if ($parent->equals($this))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -610,7 +1269,16 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeAncestorsAndSelf()
 	{
-		// @todo
+		$this->treeNestedGet = true;
+
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' >= ' . $db->qn('node') . '.' . $fldLft);
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' <= ' . $db->qn('node') . '.' . $fldRgt);
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' = ' . $db->q($this->lft));
 	}
 
 	/**
@@ -620,7 +1288,16 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeAncestors()
 	{
-		// @todo
+		$this->treeNestedGet = true;
+
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' > ' . $db->qn('node') . '.' . $fldLft);
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' < ' . $db->qn('node') . '.' . $fldRgt);
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' = ' . $db->q($this->lft));
 	}
 
 	/**
@@ -630,7 +1307,14 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeSiblingsAndSelf()
 	{
-		// @todo
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$parent = $this->getParent();
+		$this->whereRaw($db->qn('node') . '.' . $fldLft . ' > ' . $db->q($parent->lft));
+		$this->whereRaw($db->qn('node') . '.' . $fldRgt . ' < ' . $db->q($parent->rgt));
 	}
 
 	/**
@@ -640,7 +1324,8 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeSiblings()
 	{
-		// @todo
+		$this->scopeSiblingsAndSelf();
+		$this->scopeWithoutSelf();
 	}
 
 	/**
@@ -650,7 +1335,12 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeLeaves()
 	{
-		// @todo
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$this->whereRaw($db->qn('node') . '.' . $fldLft . ' = ' . $db->qn('node') . '.' . $fldRgt . ' - ' . $db->q(1));
 	}
 
 	/**
@@ -660,7 +1350,16 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeDescendantsAndSelf()
 	{
-		// @todo
+		$this->treeNestedGet = true;
+
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$this->whereRaw($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft);
+		$this->whereRaw($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt);
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' = ' . $db->q($this->lft));
 	}
 
 	/**
@@ -670,7 +1369,16 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeDescendants()
 	{
-		// @todo
+		$this->treeNestedGet = true;
+
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$this->whereRaw($db->qn('node') . '.' . $fldLft . ' > ' . $db->qn('parent') . '.' . $fldLft);
+		$this->whereRaw($db->qn('node') . '.' . $fldLft . ' < ' . $db->qn('parent') . '.' . $fldRgt);
+		$this->whereRaw($db->qn('parent') . '.' . $fldLft . ' = ' . $db->q($this->lft));
 	}
 
 	/**
@@ -680,7 +1388,59 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeImmediateDescendants()
 	{
-		// @todo
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		$subQuery = $db->getQuery(true)
+			->select(array(
+				$db->qn('node') . '.' . $fldLft,
+				'(COUNT(*) - 1) AS ' . $db->qn('depth')
+			))
+			->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
+			->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'))
+			->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
+			->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
+			->where($db->qn('node') . '.' . $fldLft . ' = ' . $db->q($this->lft))
+			->group($db->qn('node') . '.' . $fldLft)
+			->order($db->qn('node') . '.' . $fldLft . ' ASC');
+
+		$query = $db->getQuery(true)
+			->select(array(
+				$db->qn('node') . '.' . $fldLft,
+				'(COUNT(' . $db->qn('parent') . '.' . $fldLft . ') - (' .
+				$db->qn('sub_tree') . '.' . $db->qn('depth') . ' + 1)) AS ' . $db->qn('depth')
+			))
+			->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
+			->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'))
+			->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('sub_parent'))
+			->join('CROSS', '(' . $subQuery . ') AS ' . $db->qn('sub_tree'))
+			->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
+			->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
+			->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('sub_parent') . '.' . $fldLft)
+			->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('sub_parent') . '.' . $fldRgt)
+			->where($db->qn('sub_parent') . '.' . $fldLft . ' = ' . $db->qn('sub_tree') . '.' . $fldLft)
+			->group($db->qn('node') . '.' . $fldLft)
+			->having(array(
+				$db->qn('depth') . ' > ' . $db->q(0),
+				$db->qn('depth') . ' <= ' . $db->q(1),
+			))
+			->order($db->qn('node') . '.' . $fldLft . ' ASC');
+
+		$leftValues = $db->setQuery($query)->loadColumn();
+
+		if (empty($leftValues))
+		{
+			$leftValues = array(0);
+		}
+
+		array_walk($leftValues, function (&$item, $key) use (&$db)
+		{
+			$item = $db->q($item);
+		});
+
+		$this->whereRaw($db->qn('node') . '.' . $fldLft . ' IN (' . implode(',', $leftValues) . ')');
 	}
 
 	/**
@@ -692,7 +1452,11 @@ class F0FTableNested extends F0FTable
 	 */
 	public function withoutNode(F0FTableNested $node)
 	{
-		// @todo
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+		$this->whereRaw('NOT(' . $db->qn('node') . '.' . $fldLft . ' = ' . $db->q($node->lft) . ')');
 	}
 
 	/**
@@ -719,13 +1483,95 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Returns the root node of the tree this node belongs to
 	 *
-	 * @return static
+	 * @return self
 	 *
 	 * @throws \RuntimeException
 	 */
 	public function getRoot()
 	{
-		// @todo
+		// If this is a root node return itself (there is no such thing as the root of a root node)
+		if ($this->isRoot())
+		{
+			return $this;
+		}
+
+		if (empty($this->treeRoot) || !is_object($this->treeRoot) || !($this->treeRoot instanceof F0FTableNested))
+		{
+			$this->treeRoot = null;
+
+			// First try to get the record with the minimum ID
+			$db = $this->getDbo();
+
+			$fldLft = $db->qn($this->getColumnAlias('lft'));
+			$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+			$subQuery = $db->getQuery(true)
+				->select('MIN(' . $fldLft . ')')
+				->from($db->qn($this->getTableName()));
+
+			try
+			{
+				$table = $this->getClone();
+				$table->reset();
+				$root = $table
+					->whereRaw($fldLft . ' = (' . (string)$subQuery . ')')
+					->get(0, 1)->current();
+
+				if (($root->lft < $this->lft) && ($root->rgt > $this->rgt))
+				{
+					$this->treeRoot = $root;
+				}
+			}
+			catch (\RuntimeException $e)
+			{
+				// If there is no root found throw an exception. Basically: your table is FUBAR.
+				throw new \RuntimeException("No root found for table " . $this->getTableName() . ", node lft=" . $this->lft);
+			}
+
+			// If the above method didn't work, get all roots and select the one with the appropriate lft/rgt values
+			if (is_null($this->treeRoot))
+			{
+				// Find the node with depth = 0, lft < our lft and rgt > our right. That's our root node.
+				$query = $db->getQuery(true)
+					->select(array(
+						$fldLft,
+						'(COUNT(' . $db->qn('parent') . '.' . $fldLft . ') - 1) AS ' . $db->qn('depth')
+					))
+					->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
+					->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'))
+					->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
+					->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
+					->where($db->qn('node') . '.' . $fldLft . ' < ' . $db->q($this->lft))
+					->where($db->qn('node') . '.' . $fldRgt . ' > ' . $db->q($this->rgt))
+					->having($db->qn('depth') . ' = ' . $db->q(0))
+					->group($db->qn('node') . '.' . $fldLft);
+
+				// Get the lft value
+				$targetLeft = $db->setQuery($query)->loadResult();
+
+				if (empty($targetLeft))
+				{
+					// If there is no root found throw an exception. Basically: your table is FUBAR.
+					throw new \RuntimeException("No root found for table " . $this->getTableName() . ", node lft=" . $this->lft);
+				}
+
+				try
+				{
+					$table = $this->getClone();
+					$table->reset();
+					$this->treeRoot = $table
+						->whereRaw($fldLft . ' = ' . $db->q($targetLeft))
+						->get(0, 1)->current();
+				}
+				catch (\RuntimeException $e)
+				{
+					// If there is no root found throw an exception. Basically: your table is FUBAR.
+					throw new \RuntimeException("No root found for table " . $this->getTableName() . ", node lft=" . $this->lft);
+				}
+			}
+		}
+
+		return $this->treeRoot;
 	}
 
 	/**
@@ -736,7 +1582,9 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getAncestorsAndSelf()
 	{
-		// @todo
+		$this->scopeAncestorsAndSelf();
+
+		return $this->get();
 	}
 
 	/**
@@ -746,7 +1594,10 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getAncestorsAndSelfWithoutRoot()
 	{
-		// @todo
+		$this->scopeAncestorsAndSelf();
+		$this->scopeWithoutRoot();
+
+		return $this->get();
 	}
 
 	/**
@@ -757,7 +1608,10 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getAncestors()
 	{
-		// @todo
+		$this->scopeAncestorsAndSelf();
+		$this->scopeWithoutSelf();
+
+		return $this->get();
 	}
 
 	/**
@@ -767,7 +1621,10 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getAncestorsWithoutRoot()
 	{
-		// @todo
+		$this->scopeAncestors();
+		$this->scopeWithoutRoot();
+
+		return $this->get();
 	}
 
 	/**
@@ -777,7 +1634,9 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getSiblingsAndSelf()
 	{
-		// @todo
+		$this->scopeSiblingsAndSelf();
+
+		return $this->get();
 	}
 
 	/**
@@ -787,7 +1646,9 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getSiblings()
 	{
-		// @todo
+		$this->scopeSiblings();
+
+		return $this->get();
 	}
 
 	/**
@@ -798,7 +1659,9 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getLeaves()
 	{
-		// @todo
+		$this->scopeLeaves();
+
+		return $this->get();
 	}
 
 	/**
@@ -810,7 +1673,9 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getDescendantsAndSelf()
 	{
-		// @todo
+		$this->scopeDescendantsAndSelf();
+
+		return $this->get();
 	}
 
 	/**
@@ -822,7 +1687,9 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getDescendants()
 	{
-		// @todo
+		$this->scopeDescendants();
+
+		return $this->get();
 	}
 
 	/**
@@ -833,7 +1700,9 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getImmediateDescendants()
 	{
-		// @todo
+		$this->scopeImmediateDescendants();
+
+		return $this->get();
 	}
 
 	/**
@@ -851,7 +1720,49 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getNestedList($column = 'title', $key = null, $seperator = '  ')
 	{
-		// @todo
+		$db = $this->getDbo();
+
+		$fldLft = $db->qn($this->getColumnAlias('lft'));
+		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+		if (empty($key) || !$this->hasField($key))
+		{
+			$key = $this->getKeyName();
+		}
+
+		if (empty($column))
+		{
+			$column = 'title';
+		}
+
+		$fldKey = $db->qn($this->getColumnAlias($key));
+		$fldColumn = $db->qn($this->getColumnAlias($column));
+
+		$query = $db->getQuery(true)
+			->select(array(
+				$db->qn('node') . '.' . $fldKey,
+				$db->qn('node') . '.' . $fldColumn,
+				'(COUNT(' . $db->qn('parent') . '.' . $fldKey . ') - 1) AS ' . $db->qn('depth')
+			))
+			->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
+			->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'))
+			->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
+			->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
+			->group($db->qn('node') . '.' . $fldLft)
+			->order($db->qn('node') . '.' . $fldLft . ' ASC');
+
+		$tempResults = $db->setQuery($query)->loadAssocList();
+		$ret = array();
+
+		if (!empty($tempResults))
+		{
+			foreach ($tempResults as $row)
+			{
+				$ret[$row[$key]] = str_repeat($seperator, $row['depth']) . $row[$column];
+			}
+		}
+
+		return $ret;
 	}
 
 	/**
@@ -903,7 +1814,7 @@ class F0FTableNested extends F0FTable
 	 * the query generated by buildQuery. You are responsible for quoting and escaping the field names and data found
 	 * inside the WHERE clause.
 	 *
-	 * @param   string  $rawWhereClause  The raw WHERE clause to add
+	 * @param   string $rawWhereClause The raw WHERE clause to add
 	 *
 	 * @return  $this  For chaining
 	 */
@@ -925,12 +1836,12 @@ class F0FTableNested extends F0FTable
 
 		$query = $db->getQuery(true)
 			->select($db->qn('node') . '.*')
-			->from($db->qn($this->tableName) . ' AS ' . $db->qn('node'));
+			->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'));
 
 		if ($this->treeNestedGet)
 		{
 			$query
-				->join('CROSS', $db->qn($this->tableName) . ' AS ' . $db->qn('parent'));
+				->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'));
 		}
 
 		// Apply custom WHERE clauses
@@ -949,8 +1860,8 @@ class F0FTableNested extends F0FTable
 	 * Returns a database iterator to retrieve records. Use the scope methods and the whereRaw method to define what
 	 * exactly will be returned.
 	 *
-	 * @param   integer $limitstart     How many items to skip from the start, only when $overrideLimits = true
-	 * @param   integer $limit          How many items to return, only when $overrideLimits = true
+	 * @param   integer $limitstart How many items to skip from the start, only when $overrideLimits = true
+	 * @param   integer $limit      How many items to return, only when $overrideLimits = true
 	 *
 	 * @return  F0FDatabaseIterator  The data collection
 	 */
