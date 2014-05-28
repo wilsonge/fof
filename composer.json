@@ -1,6 +1,10 @@
 {
-    
-    "require": {
-        "mikey179/vfsStream": "v1.2.0"
-    }
+	"name": "akeeba/fof",
+	"type": "library",
+	"description": "FOF (Framework on Framework) is a Rapid Application Development framework for Joomla!",
+	"homepage": "https://github.com/akeeba/fof",
+	"license": "GPL-2.0+",
+	"require": {
+		"mikey179/vfsStream": "v1.2.0"
+	}
 }
