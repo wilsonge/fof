@@ -658,6 +658,20 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
 	}
 
 	/**
+	 * Does the specified field exist?
+	 *
+	 * @param   string  $fieldName  The field name to search (it's OK to use aliases)
+	 *
+	 * @return  bool
+	 */
+	public function hasField($fieldName)
+	{
+		$search = $this->getColumnAlias($fieldName);
+
+		return in_array($search, $this->knownFields);
+	}
+
+	/**
 	 * Add a field to the known fields array
 	 *
 	 * @param   string   $field       The name of the field to add
