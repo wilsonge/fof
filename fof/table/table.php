@@ -1062,7 +1062,7 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
     /**
      * Clones the current object, after resetting it
      *
-     * @return F0FTable
+     * @return static
      */
     public function getClone()
     {
@@ -3415,6 +3415,18 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
 	public function getKeyName()
 	{
 		return $this->_tbl_key;
+	}
+
+	/**
+	 * Returns the identity value of this record
+	 *
+	 * @return mixed
+	 */
+	public function getId()
+	{
+		$key = $this->getKeyName();
+
+		return $this->$key;
 	}
 
 	/**
