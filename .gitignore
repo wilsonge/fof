@@ -38,3 +38,6 @@ antconfig.txt
 /build/tools
 /build/buildlang
 /build/templates/release*
+
+DESCRIPTION.html
+RELEASENOTES.html
