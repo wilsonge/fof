@@ -1,3 +1,7 @@
+FOF 2.3.2
+================================================================================
+# [MEDIUM] F0FTemplateUtils does not convert .min.css/.min.js to .css/.js when calculating debug paths
+
 FOF 2.3.1
 ================================================================================
 ! CLI scripts were not being copied over
