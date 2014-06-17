@@ -1,3 +1,9 @@
+FOF 2.3.2
+================================================================================
++ F0FUtilsUpdate will refresh the update site if Joomla!, in its infinite stupidity, has disabled it without notifying the user and without giving them a way to re-enable it.
+# [MEDIUM] F0FTemplateUtils does not convert .min.css/.min.js to .css/.js when calculating debug paths
+# [LOW] F0FFormFieldCalendar not showing up in "read" task
+
 FOF 2.3.1
 ================================================================================
 ! CLI scripts were not being copied over
