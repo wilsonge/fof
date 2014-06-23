@@ -143,6 +143,63 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestCreate
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::create
+     * @dataProvider        NestedDataprovider::getTestCreate
+     */
+    public function testCreate($test)
+    {
+        $db = JFactory::getDbo();
+
+        $matcher = $this->never();
+
+        if(!$test['root'])
+        {
+            $matcher = $this->once();
+        }
+
+        $table = $this->getMock('F0FTableNested', array('insertAsChildOf', 'getParent'), array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db));
+        $table->expects($this->once())->method('insertAsChildOf')->will($this->returnValue(null));
+        // This is just a little trick, so insertAsChildOf won't complain about the argument passed
+        $table->expects($matcher)->method('getParent')->willReturnSelf();
+
+        $table->load($test['loadid']);
+        $table->create($test['data']);
+    }
+
+    /**
+     * @group               nestedTestCreate
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::create
+     * @preventDataLoading
+     */
+    public function testCreateNotLoaded()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->create(array());
+    }
+
+    /**
+     * @group               nestedTestCreate
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::create
+     * @preventDataLoading
+     */
+    public function testCreateWrongLftRgtValues()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->load(1);
+        $table->lft = 10;
+        $table->rgt = 9;
+        $table->create(array());
+    }
+
+    /**
      * @group               nestedTestMakeRoot
      * @group               F0FTableNested
      * @covers              F0FTableNested::makeRoot

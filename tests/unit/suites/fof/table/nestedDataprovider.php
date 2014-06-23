@@ -140,6 +140,33 @@ class NestedDataprovider
         return $data;
     }
 
+    public static function getTestCreate()
+    {
+        // Create a node under the root
+        $data[] = array(
+            array(
+                'root'   => true,
+                'loadid' => 1,
+                'data'   => array(
+                    'title' => 'Created node'
+                )
+            )
+        );
+
+        // Create a node in any other position
+        $data[] = array(
+            array(
+                'root'   => false,
+                'loadid' => 2,
+                'data'   => array(
+                    'title' => 'Created node'
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestMakeRoot()
     {
         $data[] = array(
