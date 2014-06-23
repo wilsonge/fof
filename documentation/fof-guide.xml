@@ -1769,6 +1769,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
           <listitem>
             <para>The title of an item. It's used for creating a slug.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>slug</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
@@ -1780,6 +1786,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             generated out of the title using a very basic transliteration
             algorithm.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>title</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
@@ -1807,6 +1819,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The ID of the user who created the record. Handled
             automatically by FOF.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>created_on</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
@@ -1816,6 +1834,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The date when the record was created. Handled automatically
             by FOF.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>created_by</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
@@ -1825,6 +1849,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The ID of the user who last modified the record. Handled
             automatically by FOF.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>created_by</parameter>, <parameter>created_on</parameter>, <parameter>modified_on</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
@@ -1834,6 +1864,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The date when the record was last modified. Handled
             automatically by FOF.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>created_by</parameter>, <parameter>created_on</parameter>, <parameter>modified_by</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
@@ -1843,6 +1879,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The ID of the user who locked (checked out) the record for
             editing. Handled automatically by FOF.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>locked_on</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
@@ -1852,6 +1894,12 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
             <para>The date when the record was locked (checked out) for
             editing. Handled automatically by FOF.</para>
           </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>required :
+              <parameter>locked_by</parameter></para>
+            </listitem>
+          </itemizedlist>
         </varlistentry>
 
         <varlistentry>
