@@ -81,4 +81,36 @@ class F0FTableNestedTest extends FtestCaseDatabase
             }
         }
     }
+
+    /**
+     * @group               nestedTestReorder
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::reorder
+     * @preventDataLoading
+     */
+    public function testReorder()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $db = JFactory::getDbo();
+
+        $table = new F0FTableNested('#__foftest_nestedsets', 'id', $db);
+        $table->reorder();
+    }
+
+    /**
+     * @group               nestedTestMove
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::move
+     * @preventDataLoading
+     */
+    public function testMove()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $db = JFactory::getDbo();
+
+        $table = new F0FTableNested('#__foftest_nestedsets', 'id', $db);
+        $table->move(1);
+    }
 }
