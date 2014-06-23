@@ -120,6 +120,7 @@ DROP TABLE IF EXISTS `jos_foftest_nestedsets`;
 CREATE TABLE `jos_foftest_nestedsets` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
+  `slug` varchar(255) NOT NULL DEFAULT '',
   `lft` int(11) DEFAULT NULL,
   `rgt` int(11) DEFAULT NULL,
   `hash` char(40) DEFAULT NULL,
@@ -128,4 +129,16 @@ CREATE TABLE `jos_foftest_nestedsets` (
   KEY `rgt` (`rgt`),
   KEY `lft_2` (`lft`,`rgt`),
   KEY `char` (`hash`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `jos_foftest_nestedbares`;
+CREATE TABLE `jos_foftest_nestedbares` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `lft` int(11) DEFAULT NULL,
+  `rgt` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `lft` (`lft`),
+  KEY `rgt` (`rgt`),
+  KEY `lft_2` (`lft`,`rgt`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

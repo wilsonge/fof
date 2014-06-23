@@ -66,7 +66,6 @@ class F0FTableNested extends F0FTable
 		// Create a slug if there is a title and an empty slug
 		if ($this->hasField('title') && $this->hasField('slug') && empty($this->slug))
 		{
-
 			$this->slug = F0FStringUtils::toSlug($this->title);
 		}
 
