@@ -1864,6 +1864,15 @@ public function onAfterGetItem(&amp;$model, &amp;$record)
         </varlistentry>
 
         <varlistentry>
+          <term>language</term>
+
+          <listitem>
+            <para>The language of the record if you want a multi-lingual
+            site.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
           <term>asset_id</term>
 
           <listitem>
