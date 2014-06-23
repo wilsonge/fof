@@ -7,7 +7,7 @@ class NestedDataprovider
         $data[] = array(
             array(
                 'table' => '#__foftest_nestedsets',
-                'id'    => 'id'
+                'id'    => 'foftest_nestedset_id'
             ),
             array(
                 'exception' => false
@@ -32,7 +32,7 @@ class NestedDataprovider
         $data[] = array(
             array(
                 'table' => '#__foftest_nestedsets',
-                'id'    => 'id',
+                'id'    => 'foftest_nestedset_id',
                 'fields' => array(
                     'title' => 'Test title',
                     'slug'  => ''
@@ -50,7 +50,7 @@ class NestedDataprovider
         $data[] = array(
             array(
                 'table' => '#__foftest_nestedsets',
-                'id'    => 'id',
+                'id'    => 'foftest_nestedset_id',
                 'fields' => array(
                     'title' => 'Test title',
                     'slug'  => 'old-slug'
@@ -77,6 +77,63 @@ class NestedDataprovider
                     'hash' => null
                 ),
                 'return' => true
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestDelete()
+    {
+        // Delete a single leaf item (with recursive - useless, but to test everything)
+        $data[] = array(
+            array(
+                'loadid'    => null,
+                'delete'    => 15,
+                'recursive' => true
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(15)
+            )
+        );
+
+        // Delete a single leaf item (no recursive - useless, but to test everything)
+        $data[] = array(
+            array(
+                'loadid'    => null,
+                'delete'    => 15,
+                'recursive' => false
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(15)
+            )
+        );
+
+        // Delete a single root item (no recursive delete)
+        $data[] = array(
+            array(
+                'loadid'    => null,
+                'delete'    => 14,
+                'recursive' => false
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(14)
+            )
+        );
+
+        // Delete a single root item (recursive delete)
+        $data[] = array(
+            array(
+                'loadid'    => null,
+                'delete'    => 14,
+                'recursive' => true
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(14, 15, 16)
             )
         );
 

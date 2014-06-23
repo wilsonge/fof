@@ -379,7 +379,7 @@
   </table>
 
   <table name="jos_foftest_nestedsets">
-    <column>id</column>
+    <column>foftest_nestedset_id</column>
     <column>title</column>
     <column>lft</column>
     <column>rgt</column>

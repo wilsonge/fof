@@ -7,6 +7,7 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+require_once JPATH_TESTS.'/unit/core/table/nested.php';
 require_once 'nestedDataprovider.php';
 
 class F0FTableNestedTest extends FtestCaseDatabase
@@ -80,6 +81,33 @@ class F0FTableNestedTest extends FtestCaseDatabase
                 $this->assertEquals($expected, $table->$field, 'F0FTableNested::check failed to set the field '.$field);
             }
         }
+    }
+
+    /**
+     * @group               nestedTestDelete
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::delete
+     * @dataProvider        NestedDataprovider::getTestDelete
+     */
+    public function testDelete($test, $check)
+    {
+        $db = JFactory::getDbo();
+
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        $return = $table->delete($test['delete'], $test['recursive']);
+
+        $this->assertEquals($check['return'], $return, 'F0FTableNested::delete returned the wrong value');
+
+        $query = $db->getQuery(true)->select($table->getKeyName())->from($table->getTableName());
+        $items = $db->setQuery($query)->loadColumn();
+
+        $this->assertEmpty(array_intersect($check['deleted'], $items), 'F0FTableNested::delete failed to delete all the items');
     }
 
     /**

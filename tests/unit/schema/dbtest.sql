@@ -118,13 +118,13 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_bares` (
 -- Table for nested sets
 DROP TABLE IF EXISTS `jos_foftest_nestedsets`;
 CREATE TABLE `jos_foftest_nestedsets` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `foftest_nestedset_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
   `slug` varchar(255) NOT NULL DEFAULT '',
   `lft` int(11) DEFAULT NULL,
   `rgt` int(11) DEFAULT NULL,
   `hash` char(40) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`foftest_nestedset_id`),
   KEY `lft` (`lft`),
   KEY `rgt` (`rgt`),
   KEY `lft_2` (`lft`,`rgt`),
