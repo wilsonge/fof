@@ -141,4 +141,38 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $table = new F0FTableNested('#__foftest_nestedsets', 'id', $db);
         $table->move(1);
     }
+
+    /**
+     * @group               nestedTestMakeRoot
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::makeRoot
+     * @dataProvider        NestedDataprovider::getTestMakeRoot
+     */
+    public function testMakeRoot($test)
+    {
+        $db = JFactory::getDbo();
+
+        if($test['setup'])
+        {
+            $db->setQuery('TRUNCATE #__foftest_nestedsets')->execute();
+
+            foreach($test['setup'] as $row)
+            {
+                $dummy = (object) $row;
+                $db->insertObject('#__foftest_nestedsets', $dummy);
+            }
+        }
+
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
+        $table->load($test['loadid']);
+
+        $result = $table->makeRoot();
+
+        // Let's wipe the cache, so I can run all the logic again
+        TestReflection::invoke($table, 'resetTreeCache');
+
+        $this->assertInstanceOf('F0FTableNested', $result, 'F0FTableNested::makeRoot should return an instance of itself for chaining');
+        $this->assertTrue($table->isRoot(), 'F0FTableNested::makeRoot the new node is not a root one');
+    }
 }

@@ -670,6 +670,9 @@ class F0FTableNested extends F0FTable
 			throw $e;
 		}
 
+        // Let's load the record again to fetch the new values for lft and rgt
+        $this->load();
+
 		return $this;
 	}
 
@@ -759,6 +762,9 @@ class F0FTableNested extends F0FTable
 
 			throw $e;
 		}
+
+        // Let's load the record again to fetch the new values for lft and rgt
+        $this->load();
 
 		return $this;
 	}
@@ -885,6 +891,9 @@ class F0FTableNested extends F0FTable
 			throw $e;
 		}
 
+        // Let's load the record again to fetch the new values for lft and rgt
+        $this->load();
+
 		return $this;
 	}
 
@@ -973,6 +982,9 @@ class F0FTableNested extends F0FTable
 
 			throw $e;
 		}
+
+        // Let's load the record again to fetch the new values for lft and rgt
+        $this->load();
 
 		return $this;
 	}

@@ -139,4 +139,26 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestMakeRoot()
+    {
+        $data[] = array(
+            array(
+                'setup' => array(
+                    array('foftest_nestedset_id' => 1, 'title' => 'Original root', 'lft' => 1, 'rgt' => 4),
+                    array('foftest_nestedset_id' => 2, 'title' => 'Child', 'lft' => 2, 'rgt' => 3)
+                ),
+                'loadid' => 2
+            )
+        );
+
+        $data[] = array(
+            array(
+                'setup'  => array(),
+                'loadid' => 9
+            )
+        );
+
+        return $data;
+    }
 }
