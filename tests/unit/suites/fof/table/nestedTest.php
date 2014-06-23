@@ -183,20 +183,33 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
-     * @group               nestedTestCreate
+     * @group               nestedTestInsertAsRoot
      * @group               F0FTableNested
-     * @covers              F0FTableNested::create
-     * @preventDataLoading
+     * @covers              F0FTableNested::insertAsRoot
      */
-    public function testCreateWrongLftRgtValues()
+    public function testInsertAsRoot()
+    {
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
+        $table->title = 'New root';
+        $table->insertAsRoot();
+
+        $this->assertTrue($table->isRoot(), 'F0FTableNested::insertAsRoot failed to create a new root');
+    }
+
+    /**
+     * @group               nestedTestInsertAsRoot
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::insertAsRoot
+     */
+    public function testInsertAsRootException()
     {
         $this->setExpectedException('RuntimeException');
 
         $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
         $table->load(1);
-        $table->lft = 10;
-        $table->rgt = 9;
-        $table->create(array());
+        $table->insertAsRoot();
     }
 
     /**

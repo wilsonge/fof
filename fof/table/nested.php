@@ -178,14 +178,9 @@ class F0FTableNested extends F0FTable
 	public function create($data)
 	{
         // Sanity checks on current node position
-        if(!$this->lft || !$this->rgt)
+        if($this->lft >= $this->rgt)
         {
-            throw new RuntimeException('You must load the node before trying to create a new one');
-        }
-
-        if(!($this->rgt > $this->lft))
-        {
-            throw new RuntimeException('Left value is greater than the right one');
+            throw new RuntimeException('Invalid position values for the current node');
         }
 
 		$newNode = $this->getClone();
@@ -234,6 +229,12 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertAsRoot()
 	{
+        // You can't insert a node that is already saved i.e. the table has an id
+        if($this->getId())
+        {
+            throw new RuntimeException(__CLASS__.'::'.__METHOD__.' can be only used with new nodes');
+        }
+
 		// First we need to find the right value of the last parent, a.k.a. the max(rgt) of the table
 		$db = $this->getDbo();
 
