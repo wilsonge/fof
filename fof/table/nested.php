@@ -443,8 +443,8 @@ class F0FTableNested extends F0FTable
 		$this->rgt = $myLeft + 1;
 
 		// Update sibling's lft/rgt values
-		$siblingNode->lft++;
-		$siblingNode->rgt++;
+		$siblingNode->lft += 2;
+		$siblingNode->rgt += 2;
 
 		$db->transactionStart();
 
@@ -465,6 +465,9 @@ class F0FTableNested extends F0FTable
 			)->execute();
 
 			$this->store();
+
+            // Commit the transaction
+            $db->transactionCommit();
 		}
 		catch (\Exception $e)
 		{
@@ -525,6 +528,9 @@ class F0FTableNested extends F0FTable
 			)->execute();
 
 			$this->store();
+
+            // Commit the transaction
+            $db->transactionCommit();
 		}
 		catch (\Exception $e)
 		{

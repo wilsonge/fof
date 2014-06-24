@@ -237,12 +237,44 @@ class NestedDataprovider
             )
         );
 
+        // Copying an existing node with children
+        $data[] = array(
+            array(
+                'loadid'   => 10,
+                'parentid' => 9,
+                'title'    => ''
+            )
+        );
+
         // Copying an existing node of another parent
         $data[] = array(
             array(
                 'loadid'   => 4,
                 'parentid' => 14,
                 'title'    => ''
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestInsertLeftOf()
+    {
+        // Creating a new node
+        $data[] = array(
+            array(
+                'loadid' => 0,
+                'siblingid' => 13,
+                'title' => 'Left sibling'
+            )
+        );
+
+        // Copying an existing node
+        $data[] = array(
+            array(
+                'loadid' => 10,
+                'siblingid' => 13,
+                'title' => ''
             )
         );
 
