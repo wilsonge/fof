@@ -77,9 +77,8 @@ class F0FModelBehaviorLanguage extends F0FModelBehavior
 		// Filter out double languages
 		$languages = array_unique($languages);
 
-
 		// And filter the query output by these languages
-		$db        = F0FPlatform::getInstance()->getDbo();
+		$db = F0FPlatform::getInstance()->getDbo();
 
 		// Alias
 		$alias = $model->getTableAlias();
