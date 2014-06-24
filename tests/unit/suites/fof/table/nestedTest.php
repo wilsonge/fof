@@ -370,10 +370,10 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         // Assertions on the objects
         $this->assertNotEquals($test['loadid'], $table->getId(), 'F0FTableNested::insertLeftOf should always create a new node');
-        $this->assertEquals($siblingLft + 2, $sibling->lft, 'F0FTableNested::insertAsLastChildOf should increase the lft value by 1');
-        $this->assertEquals($siblingRgt + 2, $sibling->rgt, 'F0FTableNested::insertAsLastChildOf should increase the rgt value by 1');
-        $this->assertEquals(1, $table->rgt - $table->lft, 'F0FTableNested::insertAsLastChildOf should insert the node as leaf');
-        $this->assertEquals(1, $sibling->lft - $table->rgt, 'F0FTableNested::insertAsLastChildOf should insert the node on the left of the sibling');
+        $this->assertEquals($siblingLft + 2, $sibling->lft, 'F0FTableNested::insertLeftOf should increase the lft value by 2');
+        $this->assertEquals($siblingRgt + 2, $sibling->rgt, 'F0FTableNested::insertLeftOf should increase the rgt value by 2');
+        $this->assertEquals(1, $table->rgt - $table->lft, 'F0FTableNested::insertLeftOf should insert the node as leaf');
+        $this->assertEquals(1, $sibling->lft - $table->rgt, 'F0FTableNested::insertLeftOf should insert the node on the left of the sibling');
 
         // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
         $query = $db->getQuery(true)
@@ -392,6 +392,66 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::insertLeftOf Node object and database rgt values are not the same');
         $this->assertEquals($sibling->lft, $siblingDb->lft, 'F0FTableNested::insertLeftOf Sibling object and database lft values are not the same');
         $this->assertEquals($sibling->rgt, $siblingDb->rgt, 'F0FTableNested::insertLeftOf Sibling object and database rgt values are not the same');
+    }
+
+    /**
+     * @group               nestedTestInsertRightOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::insertRightOf
+     * @dataProvider        NestedDataprovider::getTestInsertRightOf
+     */
+    public function testInsertRightOf($test)
+    {
+        /** @var F0FTableNested $table */
+        /** @var F0FTableNested $sibling */
+
+        $db = JFactory::getDbo();
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $sibling = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['title'])
+        {
+            $table->title = $test['title'];
+        }
+
+        $sibling->load($test['siblingid']);
+        $siblingLft = $sibling->lft;
+        $siblingRgt = $sibling->rgt;
+
+        $return = $table->insertRightOf($sibling);
+
+        $this->assertInstanceOf('F0FTableNested', $return, 'F0FTableNested::insertRightOf should return an instance of itself for chaining');
+
+        // Assertions on the objects
+        $this->assertNotEquals($test['loadid'], $table->getId(), 'F0FTableNested::insertRightOf should always create a new node');
+        $this->assertEquals($siblingLft, $sibling->lft, 'F0FTableNested::insertRightOf should not modify the lft value');
+        $this->assertEquals($siblingRgt, $sibling->rgt, 'F0FTableNested::insertRightOf should not modify the rgt value');
+        $this->assertEquals(1, $table->rgt - $table->lft, 'F0FTableNested::insertRightOf should insert the node as leaf');
+        $this->assertEquals(1, $table->lft - $sibling->rgt, 'F0FTableNested::insertRightOf should insert the node on the right of the sibling');
+
+        // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
+        $nodeDb = $db->setQuery($query)->loadObject();
+
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$sibling->foftest_nestedset_id);
+        $siblingDb = $db->setQuery($query)->loadObject();
+
+        $this->assertEquals($table->lft, $nodeDb->lft, 'F0FTableNested::insertRightOf Node object and database lft values are not the same');
+        $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::insertRightOf Node object and database rgt values are not the same');
+        $this->assertEquals($sibling->lft, $siblingDb->lft, 'F0FTableNested::insertRightOf Sibling object and database lft values are not the same');
+        $this->assertEquals($sibling->rgt, $siblingDb->rgt, 'F0FTableNested::insertRightOf Sibling object and database rgt values are not the same');
     }
 
     /**

@@ -281,6 +281,29 @@ class NestedDataprovider
         return $data;
     }
 
+    public static function getTestInsertRightOf()
+    {
+        // Creating a new node
+        $data[] = array(
+            array(
+                'loadid' => 0,
+                'siblingid' => 13,
+                'title' => 'Right sibling'
+            )
+        );
+
+        // Copying an existing node
+        $data[] = array(
+            array(
+                'loadid' => 10,
+                'siblingid' => 13,
+                'title' => ''
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestMakeRoot()
     {
         $data[] = array(
