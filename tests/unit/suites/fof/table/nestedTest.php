@@ -274,6 +274,67 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestInsertAsLastChildOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::insertAsLastChildOf
+     * @dataProvider        NestedDataprovider::getTestInsertAsLastChildOf
+     */
+    public function testInsertAsLastChildOf($test)
+    {
+        /** @var F0FTableNested $table */
+        /** @var F0FTableNested $parent */
+
+        $db = JFactory::getDbo();
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $parent = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['title'])
+        {
+            $table->title = $test['title'];
+        }
+
+        $parent->load($test['parentid']);
+        $parentLft = $parent->lft;
+        $parentRgt = $parent->rgt;
+
+        $return = $table->insertAsLastChildOf($parent);
+
+        $this->assertInstanceOf('F0FTableNested', $return, 'F0FTableNested::insertAsLastChildOf should return an instance of itself for chaining');
+
+        // Assertions on the objects
+        $this->assertNotEquals($test['loadid'], $table->getId(), 'F0FTableNested::insertAsLastChildOf should always create a new node');
+
+        $this->assertEquals($parentLft, $parent->lft, 'F0FTableNested::insertAsLastChildOf should not touch the lft value of the parent');
+        $this->assertEquals($parentRgt + 2, $parent->rgt, 'F0FTableNested::insertAsLastChildOf should increase the rgt value by 2');
+        $this->assertEquals(1, $table->rgt - $table->lft, 'F0FTableNested::insertAsLastChildOf should insert the node as leaf');
+        $this->assertEquals(1, $parent->rgt - $table->rgt, 'F0FTableNested::insertAsLastChildOf should insert the node as last child');
+
+        // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
+        $nodeDb = $db->setQuery($query)->loadObject();
+
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$parent->foftest_nestedset_id);
+        $parentDb = $db->setQuery($query)->loadObject();
+
+        $this->assertEquals($table->lft, $nodeDb->lft, 'F0FTableNested::insertAsLastChildOf Children object and database lft values are not the same');
+        $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::insertAsLastChildOf Children object and database rgt values are not the same');
+        $this->assertEquals($parent->lft, $parentDb->lft, 'F0FTableNested::insertAsLastChildOf Parent object and database lft values are not the same');
+        $this->assertEquals($parent->rgt, $parentDb->rgt, 'F0FTableNested::insertAsLastChildOf Parnet object and database rgt values are not the same');
+    }
+
+    /**
      * @group               nestedTestMakeRoot
      * @group               F0FTableNested
      * @covers              F0FTableNested::makeRoot

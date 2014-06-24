@@ -208,6 +208,47 @@ class NestedDataprovider
         return $data;
     }
 
+    public static function getTestInsertAsLastChildOf()
+    {
+        // Creating a new node
+        $data[] = array(
+            array(
+                'loadid'   => 0,
+                'parentid' => 14,
+                'title'    => 'Last child'
+            )
+        );
+
+        // Copying an existing node of the same parent (it's not the last child)
+        $data[] = array(
+            array(
+                'loadid'   => 15,
+                'parentid' => 14,
+                'title'    => ''
+            )
+        );
+
+        // Copying an existing node of the same parent (it's the last child)
+        $data[] = array(
+            array(
+                'loadid'   => 16,
+                'parentid' => 14,
+                'title'    => ''
+            )
+        );
+
+        // Copying an existing node of another parent
+        $data[] = array(
+            array(
+                'loadid'   => 4,
+                'parentid' => 14,
+                'title'    => ''
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestMakeRoot()
     {
         $data[] = array(
