@@ -232,7 +232,7 @@ class F0FTableNested extends F0FTable
         // You can't insert a node that is already saved i.e. the table has an id
         if($this->getId())
         {
-            throw new RuntimeException(__CLASS__.'::'.__METHOD__.' can be only used with new nodes');
+            throw new RuntimeException(__METHOD__.' can be only used with new nodes');
         }
 
 		// First we need to find the right value of the last parent, a.k.a. the max(rgt) of the table
@@ -278,6 +278,10 @@ class F0FTableNested extends F0FTable
 		// Get the field names
 		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
 		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+        // Nullify the PK, so a new record will be created
+        $pk = $this->getKeyName();
+        $this->$pk = null;
 
 		// Get the value of the parent node's rgt
 		$myLeft = $parentNode->lft;
@@ -343,6 +347,10 @@ class F0FTableNested extends F0FTable
 		// Get the field names
 		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
 		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+        // Nullify the PK, so a new record will be created
+        $pk = $this->getKeyName();
+        $this->$pk = null;
 
 		// Get the value of the parent node's lft
 		$myRight = $parentNode->rgt;
@@ -423,6 +431,10 @@ class F0FTableNested extends F0FTable
 		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
 		$fldLft = $db->qn($this->getColumnAlias('lft'));
 
+        // Nullify the PK, so a new record will be created
+        $pk = $this->getKeyName();
+        $this->$pk = null;
+
 		// Get the value of the parent node's rgt
 		$myLeft = $siblingNode->lft;
 
@@ -482,6 +494,10 @@ class F0FTableNested extends F0FTable
 		// Get the field names
 		$fldRgt = $db->qn($this->getColumnAlias('rgt'));
 		$fldLft = $db->qn($this->getColumnAlias('lft'));
+
+        // Nullify the PK, so a new record will be created
+        $pk = $this->getKeyName();
+        $this->$pk = null;
 
 		// Get the value of the parent node's lft
 		$myRight = $siblingNode->rgt;

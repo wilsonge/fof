@@ -4,6 +4,7 @@ FOF 2.3.2
 # [MEDIUM] F0FTemplateUtils does not convert .min.css/.min.js to .css/.js when calculating debug paths
 # [MEDIUM] F0FDatabaseIterator didn't clone the table object
 # [MEDIUM] After adding/moving a subtree, load again the node in order to update lft and rgt values
+# [MEDIUM] Insert node methods weren't copying an existing method
 # [LOW] F0FFormFieldCalendar not showing up in "read" task
 
 FOF 2.3.1
