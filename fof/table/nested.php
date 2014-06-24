@@ -400,6 +400,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Alias for insertAsLastchildOf
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $parentNode
 	 *
 	 * @return $this for chaining
@@ -545,6 +546,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Alias for insertRightOf
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $siblingNode
 	 *
 	 * @return $this for chaining
@@ -808,6 +810,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Alias for moveToRightOf
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $siblingNode
 	 *
 	 * @return $this for chaining
@@ -820,6 +823,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Alias for makeNextSiblingOf
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $siblingNode
 	 *
 	 * @return $this for chaining
@@ -832,6 +836,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Alias for moveToLeftOf
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $siblingNode
 	 *
 	 * @return $this for chaining
@@ -1028,6 +1033,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Alias for makeLastChildOf
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $parentNode
 	 *
 	 * @return $this for chaining
