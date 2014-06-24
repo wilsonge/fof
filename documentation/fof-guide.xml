@@ -7142,6 +7142,14 @@ echo $viewTemplate;
             encouraged.</para>
           </section>
 
+          <section xml:id="filterdate">
+            <title>filterdate</title>
+
+            <para>This is the same as fielddate but no header is
+            rendered. Only the filtering widget is rendered. This header field
+            type only works on Joomla! 3.x and later.</para>
+          </section>
+
           <section xml:id="filtersearchable">
             <title>filtersearchable</title>
 
