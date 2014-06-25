@@ -488,6 +488,19 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestMoveLeft
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveLeft
+     */
+    public function testMoveLeftException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->moveLeft();
+    }
+
+    /**
      * @group               nestedTestMoveRight
      * @group               F0FTableNested
      * @covers              F0FTableNested::moveRight
@@ -508,6 +521,19 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $table->load($test['loadid']);
 
+        $table->moveRight();
+    }
+
+    /**
+     * @group               nestedTestMoveRight
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveRight
+     */
+    public function testMoveRightException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
         $table->moveRight();
     }
 
