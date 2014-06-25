@@ -342,6 +342,44 @@ class NestedDataprovider
         return $data;
     }
 
+    public static function getTestMoveRight()
+    {
+        // Node in the middle of another two
+        $data[] = array(
+            array(
+                'loadid' => 13
+            ),
+            array(
+                'move'        => true,
+                'rightSibling' => 14
+            )
+        );
+
+        // Root node
+        $data[] = array(
+            array(
+                'loadid' => 1
+            ),
+            array(
+                'move'        => false,
+                'rightSibling' => ''
+            )
+        );
+
+        // Already a rightmost node
+        $data[] = array(
+            array(
+                'loadid' => 14
+            ),
+            array(
+                'move'        => false,
+                'rightSibling' => ''
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestMakeRoot()
     {
         $data[] = array(

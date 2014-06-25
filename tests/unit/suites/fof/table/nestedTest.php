@@ -488,6 +488,30 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestMoveRight
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveRight
+     * @dataProvider        NestedDataprovider::getTestMoveRight
+     */
+    public function testMoveRight($test, $check)
+    {
+        $db = JFactory::getDbo();
+
+        $table = m::mock('FoftestTableNestedset[moveToRightOf]', array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset')));
+        $table->shouldReceive('moveToRightOf')
+            ->times((int) $check['move'])
+            ->with(
+                m::on(function($leftSibling) use($check) {
+                    return $leftSibling->foftest_nestedset_id == $check['rightSibling'];
+                }))
+            ->andReturn(true);
+
+        $table->load($test['loadid']);
+
+        $table->moveRight();
+    }
+
+    /**
      * @group               nestedTestMakeRoot
      * @group               F0FTableNested
      * @covers              F0FTableNested::makeRoot
