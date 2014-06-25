@@ -502,6 +502,67 @@ class NestedDataprovider
         return $data;
     }
 
+    public static function getTestMakeFirstChildOf()
+    {
+        // Moving a single node
+        $data[] = array(
+            array(
+                'loadid'   => 13,
+                'parentid' => 2
+            ),
+            array(
+                'table'  => array('lft' => 3, 'rgt' => 4),
+                'parent' => array('lft' => 2, 'rgt' => 17)
+            )
+        );
+
+        // Moving an entire subtree
+        $data[] = array(
+            array(
+                'loadid'   => 10,
+                'parentid' => 2
+            ),
+            array(
+                'table'  => array('lft' => 3, 'rgt' => 8),
+                'parent' => array('lft' => 2, 'rgt' => 21)
+            )
+        );
+
+        // Moving a single node under the same parent
+        $data[] = array(
+            array(
+                'loadid'   => 13,
+                'parentid' => 9
+            ),
+            array(
+                'table'  => array('lft' => 17, 'rgt' => 18),
+                'parent' => array('lft' => 16, 'rgt' => 31)
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestMakeFirstChildOfException()
+    {
+        $data[] = array(
+            'loadid'   => 0,
+            'parentid' => 0
+        );
+
+        $data[] = array(
+            'loadid'   => 1,
+            'parentid' => 0
+        );
+
+        $data[] = array(
+            'loadid'   => 0,
+            'parentid' => 1
+        );
+
+        return $data;
+    }
+
     public static function getTestMakeRoot()
     {
         $data[] = array(

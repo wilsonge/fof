@@ -921,12 +921,23 @@ class F0FTableNested extends F0FTable
 	 */
 	public function makeFirstChildOf(F0FTableNested $parentNode)
 	{
-		$db = $this->getDbo();
-		$left = $db->qn($this->getColumnAlias('lft'));
+        // Sanity checks on current and sibling node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
+        if($parentNode->lft >= $parentNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the parent node');
+        }
+
+		$db    = $this->getDbo();
+		$left  = $db->qn($this->getColumnAlias('lft'));
 		$right = $db->qn($this->getColumnAlias('rgt'));
 
 		// Get node metrics
-		$myLeft = $this->lft;
+		$myLeft  = $this->lft;
 		$myRight = $this->rgt;
 		$myWidth = $myRight - $myLeft + 1;
 
