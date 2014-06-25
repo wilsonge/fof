@@ -269,6 +269,7 @@ class F0FTableNested extends F0FTable
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	public function insertAsFirstChildOf(F0FTableNested &$parentNode)
 	{
@@ -343,6 +344,7 @@ class F0FTableNested extends F0FTable
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	public function insertAsLastChildOf(F0FTableNested &$parentNode)
 	{
@@ -432,6 +434,7 @@ class F0FTableNested extends F0FTable
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	public function insertLeftOf(F0FTableNested &$siblingNode)
 	{
@@ -504,6 +507,7 @@ class F0FTableNested extends F0FTable
 	 *
 	 * @return $this for chaining
 	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	public function insertRightOf(F0FTableNested &$siblingNode)
 	{
