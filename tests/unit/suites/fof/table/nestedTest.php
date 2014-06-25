@@ -12,6 +12,10 @@ use \Mockery as m;
 require_once JPATH_TESTS.'/unit/core/table/nested.php';
 require_once 'nestedDataprovider.php';
 
+/*
+ * In these tests, in order to avoid countless queries, we use hardcoded values to check the results.
+ * This means that if you ever change the data for nested sets, you'll have to double check these tests, since most likely they will break
+ */
 class F0FTableNestedTest extends FtestCaseDatabase
 {
     protected function setUp()
@@ -535,6 +539,87 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
         $table->moveRight();
+    }
+
+    /**
+     * @group               nestedTestMoveToLeftOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveToLeftOf
+     * @dataProvider        NestedDataprovider::getTestMoveToLeftOf
+     */
+    public function testMoveToLeftOf($test, $check)
+    {
+        /** @var F0FTableNested $table */
+        /** @var F0FTableNested $sibling */
+
+        $db = JFactory::getDbo();
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $sibling = $table->getClone();
+
+        // Am I request to create a different root?
+        if($test['newRoot'])
+        {
+            $root = $table->getClone();
+            $root->title = 'New root';
+            $root->insertAsRoot();
+
+            $child = $table->getClone();
+            $child->title = 'First child 2nd root';
+            $child->insertAsChildOf($root);
+
+            $child->reset();
+
+            $child->title = 'Second child 2nd root';
+            $child->insertAsChildOf($root);
+        }
+
+        $table->load($test['loadid']);
+        $sibling->load($test['siblingid']);
+
+        $return = $table->moveToLeftOf($sibling);
+
+        $this->assertInstanceOf('F0FTableNested', $return, 'F0FTableNested::moveToLeftOf should return an instance of itself for chaining');
+
+        // Assertions on the objects
+        $this->assertEquals($check['table']['lft'], $table->lft, 'F0FTableNested::moveToLeftOf failed to assign the correct lft value to the node');
+        $this->assertEquals($check['table']['rgt'], $table->rgt, 'F0FTableNested::moveToLeftOf failed to assign the correct rgt value to the node');
+
+        // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
+        $nodeDb = $db->setQuery($query)->loadObject();
+
+        $this->assertEquals($table->lft, $nodeDb->lft, 'F0FTableNested::moveToLeftOf Node object and database lft values are not the same');
+        $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::moveToLeftOf Node object and database rgt values are not the same');
+    }
+
+    /**
+     * @group               nestedTestMoveToLeftOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveToLeftOf
+     * @dataProvider        NestedDataprovider::getTestMoveToLeftOfException
+     */
+    public function testMoveToLeftOfException($test)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $sibling = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['siblingid'])
+        {
+            $sibling->load($test['siblingid']);
+        }
+
+        $table->moveToLeftOf($sibling);
     }
 
     /**

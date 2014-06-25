@@ -380,6 +380,67 @@ class NestedDataprovider
         return $data;
     }
 
+    public static function getTestMoveToLeftOf()
+    {
+        // Moving a node to the left
+        $data[] = array(
+            array(
+                'newRoot' => false,
+                'loadid' => 13,
+                'siblingid' => 10
+            ),
+            array(
+                'table'   => array('lft' => 17, 'rgt' => 18)
+            )
+        );
+
+        // Trying to move the leftmost node to the left (no changes at all)
+        $data[] = array(
+            array(
+                'newRoot' => false,
+                'loadid' => 10,
+                'siblingid' => 13
+            ),
+            array(
+                'table'   => array('lft' => 17, 'rgt' => 22)
+            )
+        );
+
+        // There are more roots, let's try to move one
+        $data[] = array(
+            array(
+                'newRoot' => true,
+                'loadid' => 17,
+                'siblingid' => 1
+            ),
+            array(
+                'table'   => array('lft' => 1, 'rgt' => 6)
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestMoveToLeftOfException()
+    {
+        $data[] = array(
+            'loadid'    => 0,
+            'siblingid' => 0
+        );
+
+        $data[] = array(
+            'loadid'    => 1,
+            'siblingid' => 0
+        );
+
+        $data[] = array(
+            'loadid'    => 0,
+            'siblingid' => 1
+        );
+
+        return $data;
+    }
+
     public static function getTestMakeRoot()
     {
         $data[] = array(
