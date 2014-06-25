@@ -1155,10 +1155,18 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Gets the level (depth) of this node in the tree. The result is cached in $this->treeDepth for faster retrieval.
 	 *
+     * @throws  RuntimeException
+     *
 	 * @return int|mixed
 	 */
 	public function getLevel()
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
 		if (is_null($this->treeDepth))
 		{
 			$db = $this->getDbo();

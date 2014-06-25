@@ -935,4 +935,38 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $this->assertInstanceOf('F0FTableNested', $return, 'F0FTableNested::makeRoot should return an instance of itself for chaining');
     }
+
+    /**
+     * @group               nestedTestGetLevel
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::getLevel
+     * @dataProvider        NestedDataprovider::getTestGetLevel
+     */
+    public function testGetLevel($test, $check)
+    {
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->load($test['loadid']);
+
+        if($test['cache'])
+        {
+            TestReflection::setValue($table, 'treeDepth', $test['cache']);
+        }
+
+        $level = $table->getLevel();
+
+        $this->assertEquals($check['level'], $level, 'F0FTableNested::getLevel returned the wrong level');
+    }
+
+    /**
+     * @group               nestedTestGetLevel
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::getLevel
+     */
+    public function testGetLevelException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->getLevel();
+    }
 }

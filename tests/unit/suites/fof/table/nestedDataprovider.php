@@ -673,4 +673,42 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestGetLevel()
+    {
+        // Node
+        $data[] = array(
+            array(
+                'cache' => null,
+                'loadid' => 2
+            ),
+            array(
+                'level' => 1
+            )
+        );
+
+        // Root
+        $data[] = array(
+            array(
+                'cache' => null,
+                'loadid' => 1
+            ),
+            array(
+                'level' => 0
+            )
+        );
+
+        // Cached value
+        $data[] = array(
+            array(
+                'cache' => 'cached',
+                'loadid' => 1
+            ),
+            array(
+                'level' => 'cached'
+            )
+        );
+
+        return $data;
+    }
 }
