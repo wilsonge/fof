@@ -683,6 +683,87 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestMoveToRightOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveToRightOf
+     * @dataProvider        NestedDataprovider::getTestMoveToRightOf
+     */
+    public function testMoveToRightOf($test, $check)
+    {
+        /** @var F0FTableNested $table */
+        /** @var F0FTableNested $sibling */
+
+        $db = JFactory::getDbo();
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $sibling = $table->getClone();
+
+        // Am I request to create a different root?
+        if($test['newRoot'])
+        {
+            $root = $table->getClone();
+            $root->title = 'New root';
+            $root->insertAsRoot();
+
+            $child = $table->getClone();
+            $child->title = 'First child 2nd root';
+            $child->insertAsChildOf($root);
+
+            $child->reset();
+
+            $child->title = 'Second child 2nd root';
+            $child->insertAsChildOf($root);
+        }
+
+        $table->load($test['loadid']);
+        $sibling->load($test['siblingid']);
+
+        $return = $table->moveToRightOf($sibling);
+
+        $this->assertInstanceOf('F0FTableNested', $return, 'F0FTableNested::moveToRightOf should return an instance of itself for chaining');
+
+        // Assertions on the objects
+        $this->assertEquals($check['table']['lft'], $table->lft, 'F0FTableNested::moveToRightOf failed to assign the correct lft value to the node');
+        $this->assertEquals($check['table']['rgt'], $table->rgt, 'F0FTableNested::moveToRightOf failed to assign the correct rgt value to the node');
+
+        // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
+        $nodeDb = $db->setQuery($query)->loadObject();
+
+        $this->assertEquals($table->lft, $nodeDb->lft, 'F0FTableNested::moveToRightOf Node object and database lft values are not the same');
+        $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::moveToRightOf Node object and database rgt values are not the same');
+    }
+
+    /**
+     * @group               nestedTestMoveToRightOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveToRightOf
+     * @dataProvider        NestedDataprovider::getTestMoveToRightOfException
+     */
+    public function testMoveToRightOfException($test)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $sibling = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['siblingid'])
+        {
+            $sibling->load($test['siblingid']);
+        }
+
+        $table->moveToRightOf($sibling);
+    }
+
+    /**
      * @group               nestedTestMakeRoot
      * @group               F0FTableNested
      * @covers              F0FTableNested::makeRoot

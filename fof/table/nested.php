@@ -774,16 +774,28 @@ class F0FTableNested extends F0FTable
 	 *
 	 * @return $this for chaining
 	 *
-	 * @throws \Exception
+	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	public function moveToRightOf(F0FTableNested $siblingNode)
 	{
-		$db = $this->getDbo();
-		$left = $db->qn($this->getColumnAlias('lft'));
+        // Sanity checks on current and sibling node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
+        if($siblingNode->lft >= $siblingNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the sibling node');
+        }
+
+		$db    = $this->getDbo();
+		$left  = $db->qn($this->getColumnAlias('lft'));
 		$right = $db->qn($this->getColumnAlias('rgt'));
 
 		// Get node metrics
-		$myLeft = $this->lft;
+		$myLeft  = $this->lft;
 		$myRight = $this->rgt;
 		$myWidth = $myRight - $myLeft + 1;
 
