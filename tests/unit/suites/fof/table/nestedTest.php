@@ -182,20 +182,6 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
-     * @group               nestedTestCreate
-     * @group               F0FTableNested
-     * @covers              F0FTableNested::create
-     * @preventDataLoading
-     */
-    public function testCreateNotLoaded()
-    {
-        $this->setExpectedException('RuntimeException');
-
-        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
-        $table->create(array());
-    }
-
-    /**
      * @group               nestedTestInsertAsRoot
      * @group               F0FTableNested
      * @covers              F0FTableNested::insertAsRoot
@@ -929,32 +915,24 @@ class F0FTableNestedTest extends FtestCaseDatabase
      * @covers              F0FTableNested::makeRoot
      * @dataProvider        NestedDataprovider::getTestMakeRoot
      */
-    public function testMakeRoot($test)
+    public function testMakeRoot($test, $check)
     {
-        // TODO Rewrite this test, since it's testing logic out of the scope of the function under test
         $db = JFactory::getDbo();
 
-        if($test['setup'])
-        {
-            $db->setQuery('TRUNCATE #__foftest_nestedsets')->execute();
+        $table = m::mock('FoftestTableNestedset[moveToRightOf,isRoot,getRoot,equals]',
+                            array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset'))
+        );
 
-            foreach($test['setup'] as $row)
-            {
-                $dummy = (object) $row;
-                $db->insertObject('#__foftest_nestedsets', $dummy);
-            }
-        }
+        $table->shouldReceive('moveToRightOf')
+            ->times((int) $check['move'])
+            ->andReturn(true);
 
-        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->shouldReceive('isRoot')->andReturn($test['mock']['isRoot']);
+        $table->shouldReceive('getRoot')->andReturn($table);
+        $table->shouldReceive('equals')->andReturn($test['mock']['equals']);
 
-        $table->load($test['loadid']);
+        $return = $table->makeRoot();
 
-        $result = $table->makeRoot();
-
-        // Let's wipe the cache, so I can run all the logic again
-        TestReflection::invoke($table, 'resetTreeCache');
-
-        $this->assertInstanceOf('F0FTableNested', $result, 'F0FTableNested::makeRoot should return an instance of itself for chaining');
-        $this->assertTrue($table->isRoot(), 'F0FTableNested::makeRoot the new node is not a root one');
+        $this->assertInstanceOf('F0FTableNested', $return, 'F0FTableNested::makeRoot should return an instance of itself for chaining');
     }
 }

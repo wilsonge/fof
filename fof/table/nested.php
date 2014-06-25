@@ -170,19 +170,11 @@ class F0FTableNested extends F0FTable
 	 * Create a new record with the provided data. It is inserted as the last child of the current node's parent
 	 *
 	 * @param   array $data The data to use in the new record
-     *
-     * @throws  RuntimeException
 	 *
 	 * @return  static  The new node
 	 */
 	public function create($data)
 	{
-        // Sanity checks on current node position
-        if($this->lft >= $this->rgt)
-        {
-            throw new RuntimeException('Invalid position values for the current node');
-        }
-
 		$newNode = $this->getClone();
 		$newNode->reset();
 		$newNode->bind($data);

@@ -632,20 +632,42 @@ class NestedDataprovider
 
     public static function getTestMakeRoot()
     {
+        // Node is root
         $data[] = array(
             array(
-                'setup' => array(
-                    array('foftest_nestedset_id' => 1, 'title' => 'Original root', 'lft' => 1, 'rgt' => 4),
-                    array('foftest_nestedset_id' => 2, 'title' => 'Child', 'lft' => 2, 'rgt' => 3)
-                ),
-                'loadid' => 2
+                'mock' => array(
+                    'isRoot' => true,
+                    'equals' => true
+                )
+            ),
+            array(
+                'move' => false
             )
         );
 
+        // Node is equal to the root
         $data[] = array(
             array(
-                'setup'  => array(),
-                'loadid' => 9
+                'mock' => array(
+                    'isRoot' => false,
+                    'equals' => true
+                )
+            ),
+            array(
+                'move' => false
+            )
+        );
+
+        // Ok, we can move it
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'isRoot' => false,
+                    'equals' => false
+                )
+            ),
+            array(
+                'move' => true
             )
         );
 
