@@ -836,6 +836,78 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestMakeLastChildOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::makeLastChildOf
+     * @dataProvider        NestedDataprovider::getTestMakeLastChildOf
+     */
+    public function testMakeLastChildOf($test, $check)
+    {
+        /** @var F0FTableNested $table */
+        /** @var F0FTableNested $parent */
+
+        $db = JFactory::getDbo();
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $parent = $table->getClone();
+
+        $table->load($test['loadid']);
+        $parent->load($test['parentid']);
+
+        $return = $table->makeLastChildOf($parent);
+
+        $this->assertInstanceOf('F0FTableNested', $return, 'F0FTableNested::makeLastChildOf should return an instance of itself for chaining');
+
+        // Assertions on the objects
+        $this->assertEquals($check['table']['lft'], $table->lft, 'F0FTableNested::makeLastChildOf failed to assign the correct lft value to the node');
+        $this->assertEquals($check['table']['rgt'], $table->rgt, 'F0FTableNested::makeLastChildOf failed to assign the correct rgt value to the node');
+
+        // Great, the returned objects are ok, what about the ACTUAL data saved inside the db?
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
+        $nodeDb = $db->setQuery($query)->loadObject();
+
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$parent->foftest_nestedset_id);
+        $parentDb = $db->setQuery($query)->loadObject();
+
+        $this->assertEquals($table->lft, $nodeDb->lft, 'F0FTableNested::makeLastChildOf Node object and database lft values are not the same');
+        $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::makeLastChildOf Node object and database rgt values are not the same');
+        $this->assertEquals($check['parent']['lft'], $parentDb->lft, 'F0FTableNested::makeLastChildOf Saved the wrong lft value for the parent');
+        $this->assertEquals($check['parent']['rgt'], $parentDb->rgt, 'F0FTableNested::makeLastChildOf Saved the wrong rgt value for the parent');
+    }
+
+    /**
+     * @group               nestedTestMakeLastChildOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::makeLastChildOf
+     * @dataProvider        NestedDataprovider::getTestMakeLastChildOfException
+     */
+    public function testMakeLastChildOfException($test)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $parent = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['siblingid'])
+        {
+            $parent->load($test['parentid']);
+        }
+
+        $table->makeLastChildOf($parent);
+    }
+
+    /**
      * @group               nestedTestMakeRoot
      * @group               F0FTableNested
      * @covers              F0FTableNested::makeRoot
