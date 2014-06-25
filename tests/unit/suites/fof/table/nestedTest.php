@@ -1,4 +1,6 @@
 <?php
+use \Mockery as m;
+
 /**
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Table
@@ -26,6 +28,13 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         F0FPlatform::forceInstance(null);
         F0FTable::forceInstance(null);
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        m::close();
     }
 
     /**
@@ -452,6 +461,30 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::insertRightOf Node object and database rgt values are not the same');
         $this->assertEquals($sibling->lft, $siblingDb->lft, 'F0FTableNested::insertRightOf Sibling object and database lft values are not the same');
         $this->assertEquals($sibling->rgt, $siblingDb->rgt, 'F0FTableNested::insertRightOf Sibling object and database rgt values are not the same');
+    }
+
+    /**
+     * @group               nestedTestMoveLeft
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::moveLeft
+     * @dataProvider        NestedDataprovider::getTestMoveLeft
+     */
+    public function testMoveLeft($test, $check)
+    {
+        $db = JFactory::getDbo();
+
+        $table = m::mock('FoftestTableNestedset[moveToLeftOf]', array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset')));
+        $table->shouldReceive('moveToLeftOf')
+              ->times((int) $check['move'])
+              ->with(
+                m::on(function($leftSibling) use($check) {
+                    return $leftSibling->foftest_nestedset_id == $check['leftSibling'];
+              }))
+              ->andReturn(true);
+
+        $table->load($test['loadid']);
+
+        $table->moveLeft();
     }
 
     /**

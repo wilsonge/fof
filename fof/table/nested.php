@@ -559,10 +559,18 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Move the current node (and its subtree) one position to the left in the tree, i.e. before its left-hand sibling
 	 *
+     * @throws  \RuntimeException
+     *
 	 * @return $this
 	 */
 	public function moveLeft()
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
 		// If it is a root node we will not move the node (roots don't participate in tree ordering)
 		if ($this->isRoot())
 		{
