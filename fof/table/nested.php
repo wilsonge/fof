@@ -272,6 +272,11 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertAsFirstChildOf(F0FTableNested &$parentNode)
 	{
+        if($parentNode->lft >= $parentNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the parent node');
+        }
+
 		// Get a reference to the database
 		$db = $this->getDbo();
 
@@ -341,6 +346,11 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertAsLastChildOf(F0FTableNested &$parentNode)
 	{
+        if($parentNode->lft >= $parentNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the parent node');
+        }
+
 		// Get a reference to the database
 		$db = $this->getDbo();
 
@@ -425,6 +435,11 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertLeftOf(F0FTableNested &$siblingNode)
 	{
+        if($siblingNode->lft >= $siblingNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the sibling node');
+        }
+
 		// Get a reference to the database
 		$db = $this->getDbo();
 
@@ -492,6 +507,11 @@ class F0FTableNested extends F0FTable
 	 */
 	public function insertRightOf(F0FTableNested &$siblingNode)
 	{
+        if($siblingNode->lft >= $siblingNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the sibling node');
+        }
+
 		// Get a reference to the database
 		$db = $this->getDbo();
 

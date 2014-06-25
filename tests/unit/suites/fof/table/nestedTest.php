@@ -287,6 +287,21 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestInsertAsFirstChildOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::insertAsFirstChildOf
+     */
+    public function testInsertAsFirstChildOfException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $parent = $table->getClone();
+
+        $table->insertAsFirstChildOf($parent);
+    }
+
+    /**
      * @group               nestedTestInsertAsLastChildOf
      * @group               F0FTableNested
      * @covers              F0FTableNested::insertAsLastChildOf
@@ -345,6 +360,21 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::insertAsLastChildOf Children object and database rgt values are not the same');
         $this->assertEquals($parent->lft, $parentDb->lft, 'F0FTableNested::insertAsLastChildOf Parent object and database lft values are not the same');
         $this->assertEquals($parent->rgt, $parentDb->rgt, 'F0FTableNested::insertAsLastChildOf Parent object and database rgt values are not the same');
+    }
+
+    /**
+     * @group               nestedTestInsertAsLastChildOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::insertAsLastChildOf
+     */
+    public function testInsertAsLastChildOfException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $parent = $table->getClone();
+
+        $table->insertAsLastChildOf($parent);
     }
 
     /**
@@ -408,6 +438,21 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
+     * @group               nestedTestInsertLeftOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::insertLeftOf
+     */
+    public function testInsertLeftOfException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $sibling = $table->getClone();
+
+        $table->insertLeftOf($sibling);
+    }
+
+    /**
      * @group               nestedTestInsertRightOf
      * @group               F0FTableNested
      * @covers              F0FTableNested::insertRightOf
@@ -465,6 +510,21 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::insertRightOf Node object and database rgt values are not the same');
         $this->assertEquals($sibling->lft, $siblingDb->lft, 'F0FTableNested::insertRightOf Sibling object and database lft values are not the same');
         $this->assertEquals($sibling->rgt, $siblingDb->rgt, 'F0FTableNested::insertRightOf Sibling object and database rgt values are not the same');
+    }
+
+    /**
+     * @group               nestedTestInsertRightOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::insertRightOf
+     */
+    public function testInsertRightOfException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $sibling = $table->getClone();
+
+        $table->insertRightOf($sibling);
     }
 
     /**
