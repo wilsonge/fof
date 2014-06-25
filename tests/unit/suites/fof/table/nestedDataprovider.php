@@ -390,7 +390,8 @@ class NestedDataprovider
                 'siblingid' => 10
             ),
             array(
-                'table'   => array('lft' => 17, 'rgt' => 18)
+                'table'   => array('lft' => 17, 'rgt' => 18),
+                'sibling' => array('lft' => 19, 'rgt' => 24)
             )
         );
 
@@ -402,7 +403,8 @@ class NestedDataprovider
                 'siblingid' => 13
             ),
             array(
-                'table'   => array('lft' => 17, 'rgt' => 22)
+                'table'   => array('lft' => 17, 'rgt' => 22),
+                'sibling' => array('lft' => 23, 'rgt' => 24)
             )
         );
 
@@ -414,7 +416,8 @@ class NestedDataprovider
                 'siblingid' => 1
             ),
             array(
-                'table'   => array('lft' => 1, 'rgt' => 6)
+                'table'   => array('lft' => 1, 'rgt' => 6),
+                'sibling' => array('lft' => 7, 'rgt' => 38)
             )
         );
 
@@ -451,7 +454,8 @@ class NestedDataprovider
                 'siblingid' => 13
             ),
             array(
-                'table'   => array('lft' => 19, 'rgt' => 24)
+                'table'   => array('lft' => 19, 'rgt' => 24),
+                'sibling' => array('lft' => 17, 'rgt' => 18)
             )
         );
 
@@ -463,7 +467,8 @@ class NestedDataprovider
                 'siblingid' => 13
             ),
             array(
-                'table'   => array('lft' => 25, 'rgt' => 30)
+                'table'   => array('lft' => 25, 'rgt' => 30),
+                'sibling' => array('lft' => 23, 'rgt' => 24)
             )
         );
 
@@ -475,7 +480,8 @@ class NestedDataprovider
                 'siblingid' => 17
             ),
             array(
-                'table'   => array('lft' => 7, 'rgt' => 38)
+                'table'   => array('lft' => 7, 'rgt' => 38),
+                'sibling' => array('lft' => 1, 'rgt' => 6)
             )
         );
 

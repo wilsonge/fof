@@ -652,8 +652,16 @@ class F0FTableNestedTest extends FtestCaseDatabase
                     ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from('#__foftest_nestedsets')
+                    ->where('foftest_nestedset_id = '.$sibling->foftest_nestedset_id);
+        $siblingDb = $db->setQuery($query)->loadObject();
+
         $this->assertEquals($table->lft, $nodeDb->lft, 'F0FTableNested::moveToLeftOf Node object and database lft values are not the same');
         $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::moveToLeftOf Node object and database rgt values are not the same');
+        $this->assertEquals($check['sibling']['lft'], $siblingDb->lft, 'F0FTableNested::moveToLeftOf Saved the wrong lft value for the sibling');
+        $this->assertEquals($check['sibling']['rgt'], $siblingDb->rgt, 'F0FTableNested::moveToLeftOf Saved the wrong rgt value for the sibling');
     }
 
     /**
@@ -733,8 +741,16 @@ class F0FTableNestedTest extends FtestCaseDatabase
             ->where('foftest_nestedset_id = '.$table->foftest_nestedset_id);
         $nodeDb = $db->setQuery($query)->loadObject();
 
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from('#__foftest_nestedsets')
+            ->where('foftest_nestedset_id = '.$sibling->foftest_nestedset_id);
+        $siblingDb = $db->setQuery($query)->loadObject();
+
         $this->assertEquals($table->lft, $nodeDb->lft, 'F0FTableNested::moveToRightOf Node object and database lft values are not the same');
         $this->assertEquals($table->rgt, $nodeDb->rgt, 'F0FTableNested::moveToRightOf Node object and database rgt values are not the same');
+        $this->assertEquals($check['sibling']['lft'], $siblingDb->lft, 'F0FTableNested::moveToRightOf Saved the wrong lft value for the sibling');
+        $this->assertEquals($check['sibling']['rgt'], $siblingDb->rgt, 'F0FTableNested::moveToRightOf Saved the wrong rgt value for the sibling');
     }
 
     /**
