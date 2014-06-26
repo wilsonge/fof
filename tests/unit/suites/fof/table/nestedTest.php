@@ -1030,6 +1030,7 @@ class F0FTableNestedTest extends FtestCaseDatabase
      * @group               F0FTableNested
      * @covers              F0FTableNested::isLeaf
      * @dataProvider        NestedDataprovider::getTestIsLeaf
+     * @preventDataLoading
      */
     public function testIsLeaf($test, $check)
     {
@@ -1041,5 +1042,64 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $result = $table->isLeaf();
 
         $this->assertEquals($check['result'], $result, 'F0FTableNested::isLeaf ');
+    }
+
+    /**
+     * @group               nestedTestIsLeaf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::isLeaf
+     * @preventDataLoading
+     */
+    public function testIsLeafException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->isLeaf();
+    }
+
+    /**
+     * @group               nestedTestIsDescendantOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::isDescendantOf
+     * @dataProvider        NestedDataprovider::getTestIsDescendantOf
+     */
+    public function testIsDescendantOf($test, $check)
+    {
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $other  = $table->getClone();
+
+        $table->load($test['loadid']);
+        $other->load($test['otherid']);
+
+        $result = $table->isDescendantOf($other);
+
+        $this->assertEquals($check['result'], $result, 'F0FTableNested::isDescendantOf returned the wrong value');
+    }
+
+    /**
+     * @group               nestedTestIsDescendantOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::isDescendantOf
+     * @dataProvider        NestedDataprovider::getTestIsDescendantOfException
+     */
+    public function testIsDescendantOfException($test)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $other  = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['otherid'])
+        {
+            $other->load($test['otherid']);
+        }
+
+        $table->isDescendantOf($other);
     }
 }

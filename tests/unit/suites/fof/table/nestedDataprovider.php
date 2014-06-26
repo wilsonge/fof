@@ -846,4 +846,55 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestIsDescendantOf()
+    {
+        $data[] = array(
+            array(
+                'loadid'  => 10,
+                'otherid' => 9
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 3,
+                'otherid' => 9
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestIsDescendantOfException()
+    {
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 0
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 1,
+                'otherid' => 0
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 1
+            )
+        );
+
+        return $data;
+    }
 }

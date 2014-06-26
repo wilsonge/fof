@@ -1301,7 +1301,12 @@ class F0FTableNested extends F0FTable
             throw new RuntimeException('Invalid position values for the current node');
         }
 
-		return ($otherNode->lft > $this->lft) && ($otherNode->rgt < $this->rgt);
+        if($otherNode->lft >= $otherNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the other node');
+        }
+
+		return ($otherNode->lft < $this->lft) && ($otherNode->rgt > $this->rgt);
 	}
 
 	/**
