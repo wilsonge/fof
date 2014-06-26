@@ -1390,29 +1390,16 @@ class F0FTableNested extends F0FTable
 	}
 
 	/**
-	 * Checks if our node is inside the subtree of $otherNode. This is a fast check as only lft and rgt values have to
-	 * be compared.
+	 * Alias for isDescendantOf
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $otherNode
-	 *
-     * @throws  RuntimeException
      *
 	 * @return bool
 	 */
 	public function insideSubtree(F0FTableNested $otherNode)
 	{
-        // Sanity checks on current node position
-        if($this->lft >= $this->rgt)
-        {
-            throw new RuntimeException('Invalid position values for the current node');
-        }
-
-        if($otherNode->lft >= $otherNode->rgt)
-        {
-            throw new RuntimeException('Invalid position values for the other node');
-        }
-
-		return ($this->lft > $otherNode->lft) && ($this->rgt < $otherNode->rgt);
+		return $this->isDescendantOf($otherNode);
 	}
 
 	/**
