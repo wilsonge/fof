@@ -1570,6 +1570,12 @@ class F0FTableNested extends F0FTable
 	 */
 	protected function scopeImmediateDescendants()
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
 		$db = $this->getDbo();
 
 		$fldLft = $db->qn($this->getColumnAlias('lft'));

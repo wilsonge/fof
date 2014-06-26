@@ -1223,4 +1223,36 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestScopeImmediateDescendants()
+    {
+        $data[] = array(
+            array(
+                'loadid' => 5
+            ),
+            array(
+                'result' => array(7,9)
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid' => 8
+            ),
+            array(
+                'result' => array(0)
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid' => 2
+            ),
+            array(
+                'result' => array(3, 5)
+            )
+        );
+
+        return $data;
+    }
 }

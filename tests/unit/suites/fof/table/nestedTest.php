@@ -1236,4 +1236,41 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $this->assertEquals($check['result'], $result, 'F0FTableNested::inSameScope returned the wrong value');
     }
+
+    /**
+     * @group               nestedTestScopeImmediateDescendants
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::scopeImmediateDescendants
+     * @dataProvider        NestedDataprovider::getTestScopeImmediateDescendants
+     */
+    public function testScopeImmediateDescendants($test, $check)
+    {
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->load($test['loadid']);
+
+        TestReflection::invoke($table, 'scopeImmediateDescendants');
+
+        // Let's get the built where clause and "normalize" it
+        $where = array_pop(TestReflection::getValue($table, 'whereClauses'));
+        preg_match_all('#IN\s?\((.*?)\)#', $where, $matches);
+
+        $where = explode(',', str_replace("'", '', $matches[1][0]));
+        $where = array_map('trim', $where);
+
+        $this->assertEquals($check['result'], $where, 'F0FTableNested::scopeImmediateDescendants applied the wrong where');
+    }
+
+    /**
+     * @group               nestedTestScopeImmediateDescendants
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::scopeImmediateDescendants
+     */
+    public function testScopeImmediateDescendantsException()
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
+        TestReflection::invoke($table, 'scopeImmediateDescendants');
+    }
 }
