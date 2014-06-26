@@ -968,4 +968,74 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestEquals()
+    {
+        // The node is truly the same
+        $data[] = array(
+            array(
+                'loadid'  => 4,
+                'otherid' => 4,
+                'forceTableId' => null,
+                'forceOtherId' => null
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        // Id is different
+        $data[] = array(
+            array(
+                'loadid'  => 4,
+                'otherid' => 4,
+                'forceTableId' => 3,
+                'forceOtherId' => null
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        // Lft/rgt value are different
+        $data[] = array(
+            array(
+                'loadid'  => 4,
+                'otherid' => 12,
+                'forceTableId' => 12,
+                'forceOtherId' => null
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestEqualsException()
+    {
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 0
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 1,
+                'otherid' => 0
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 1
+            )
+        );
+
+        return $data;
+    }
 }

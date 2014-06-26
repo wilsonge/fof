@@ -1147,4 +1147,61 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $table->isSelfOrDescendantOf($other);
     }
+
+    /**
+     * @group               nestedTestEquals
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::equals
+     * @dataProvider        NestedDataprovider::getTestEquals
+     */
+    public function testEquals($test, $check)
+    {
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $other  = $table->getClone();
+
+        $table->load($test['loadid']);
+        $other->load($test['otherid']);
+
+        if(!is_null($test['forceTableId']))
+        {
+            $pk = $table->getKeyName();
+            $table->$pk = $test['forceTableId'];
+        }
+
+        if(!is_null($test['forceOtherId']))
+        {
+            $pk = $other->getKeyName();
+            $other->$pk = $test['forceOtherId'];
+        }
+
+        $result = $table->equals($other);
+
+        $this->assertEquals($check['result'], $result, 'F0FTableNested::equals returned the wrong value');
+    }
+
+    /**
+     * @group               nestedTestEquals
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::equals
+     * @dataProvider        NestedDataprovider::getTestEqualsException
+     */
+    public function testEqualsException($test)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $other  = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['otherid'])
+        {
+            $other->load($test['otherid']);
+        }
+
+        $table->equals($other);
+    }
 }
