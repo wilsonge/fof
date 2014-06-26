@@ -1193,10 +1193,18 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Returns the immediate parent of the current node
 	 *
-	 * @return self
+     * @throws RuntimeException
+     *
+	 * @return F0FTableNested
 	 */
 	public function getParent()
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
 		if ($this->isRoot())
 		{
 			return $this;

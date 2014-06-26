@@ -711,4 +711,64 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestGetParent()
+    {
+        // Root node, we simply return ourself
+        $data[] = array(
+            array(
+                'loadid' => 1,
+                'cache'  => null,
+            ),
+            array(
+                'parent' => 1
+            )
+        );
+
+        // Child node
+        $data[] = array(
+            array(
+                'loadid' => 16,
+                'cache'  => null,
+            ),
+            array(
+                'parent' => 14
+            )
+        );
+
+        // Child node - wrong cache
+        $data[] = array(
+            array(
+                'loadid' => 16,
+                'cache'  => 'dummy',
+            ),
+            array(
+                'parent' => 14
+            )
+        );
+
+        // Child node - wrong cache 2
+        $data[] = array(
+            array(
+                'loadid' => 16,
+                'cache'  => new stdClass(),
+            ),
+            array(
+                'parent' => 14
+            )
+        );
+
+        // Child node - correct cache
+        $data[] = array(
+            array(
+                'loadid' => 16,
+                'cache'  => 'loadself',
+            ),
+            array(
+                'parent' => 16
+            )
+        );
+
+        return $data;
+    }
 }

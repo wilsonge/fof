@@ -969,4 +969,34 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
         $table->getLevel();
     }
+
+    /**
+     * @group               nestedTestGetParent
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::getParent
+     * @dataProvider        NestedDataprovider::getTestGetParent
+     */
+    public function testGetParent($test, $check)
+    {
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table->load($test['loadid']);
+
+        if(!is_null($test['cache']))
+        {
+            if($test['cache'] == 'loadself')
+            {
+                TestReflection::setValue($table, 'treeParent', $table);
+            }
+            else
+            {
+                TestReflection::setValue($table, 'treeParent', $test['cache']);
+            }
+        }
+
+        $parent = $table->getParent();
+
+        $this->assertInstanceOf('F0FTableNested', $parent, 'F0FTableNested::getParent should return an instance of F0FTableNested');
+        $this->assertEquals($check['parent'], $parent->foftest_nestedset_id, 'F0FTableNested::getParent returned the wrong parent id');
+
+    }
 }
