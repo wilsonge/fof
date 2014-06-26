@@ -999,4 +999,29 @@ class F0FTableNestedTest extends FtestCaseDatabase
         $this->assertEquals($check['parent'], $parent->foftest_nestedset_id, 'F0FTableNested::getParent returned the wrong parent id');
 
     }
+
+    /**
+     * @group               nestedTestIsRoot
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::isRoot
+     * @dataProvider        NestedDataprovider::getTestIsRoot
+     */
+    public function testIsRoot($test, $check)
+    {
+        $db = JFactory::getDbo();
+
+        $table = m::mock('FoftestTableNestedset[getLevel]',
+            array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset'))
+        );
+
+        $table->shouldReceive('getLevel')
+            ->times((int) $check['getLevel'])
+            ->andReturn($test['mock']['getLevel']);
+
+        $table->load($test['loadid']);
+
+        $result = $table->isRoot();
+
+        $this->assertEquals($check['result'], $result, 'F0FTableNested::isRoot returned the wrong value');
+    }
 }
