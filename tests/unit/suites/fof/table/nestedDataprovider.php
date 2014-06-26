@@ -1038,4 +1038,189 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestInSameScope()
+    {
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => true,
+                        'isRoot'  => false,
+                        'isChild' => false
+                    ),
+                    'other' => array(
+                        'isLeaf'  => true,
+                        'isRoot'  => false,
+                        'isChild' => false
+                    )
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => true,
+                        'isRoot'  => false,
+                        'isChild' => false
+                    ),
+                    'other' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => true,
+                        'isChild' => false
+                    )
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => true,
+                        'isRoot'  => false,
+                        'isChild' => false
+                    ),
+                    'other' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => false,
+                        'isChild' => true
+                    )
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => true,
+                        'isChild' => false
+                    ),
+                    'other' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => true,
+                        'isChild' => false
+                    )
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => true,
+                        'isChild' => false
+                    ),
+                    'other' => array(
+                        'isLeaf'  => true,
+                        'isRoot'  => false,
+                        'isChild' => false
+                    )
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => true,
+                        'isChild' => false
+                    ),
+                    'other' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => false,
+                        'isChild' => true
+                    )
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => false,
+                        'isChild' => true
+                    ),
+                    'other' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => false,
+                        'isChild' => true
+                    )
+                )
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => false,
+                        'isChild' => true
+                    ),
+                    'other' => array(
+                        'isLeaf'  => true,
+                        'isRoot'  => false,
+                        'isChild' => false
+                    )
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'table' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => false,
+                        'isChild' => true
+                    ),
+                    'other' => array(
+                        'isLeaf'  => false,
+                        'isRoot'  => true,
+                        'isChild' => false
+                    )
+                )
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }

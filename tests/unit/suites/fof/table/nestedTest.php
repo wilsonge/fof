@@ -1204,4 +1204,36 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $table->equals($other);
     }
+
+    /**
+     * @group               nestedTestInSameScope
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::inSameScope
+     * @dataProvider        NestedDataprovider::getTestInSameScope
+     * @preventDataLoading
+     */
+    public function testInSameScope($test, $check)
+    {
+        $db = JFactory::getDbo();
+
+        $table = m::mock('FoftestTableNestedset[isLeaf,isRoot,isChild]',
+            array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset'))
+        );
+
+        $table->shouldReceive('isLeaf')->andReturn($test['mock']['table']['isLeaf']);
+        $table->shouldReceive('isRoot')->andReturn($test['mock']['table']['isRoot']);
+        $table->shouldReceive('isChild')->andReturn($test['mock']['table']['isChild']);
+
+        $other = m::mock('FoftestTableNestedset[isLeaf,isRoot,isChild]',
+            array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset'))
+        );
+
+        $other->shouldReceive('isLeaf')->andReturn($test['mock']['other']['isLeaf']);
+        $other->shouldReceive('isRoot')->andReturn($test['mock']['other']['isRoot']);
+        $other->shouldReceive('isChild')->andReturn($test['mock']['other']['isChild']);
+
+        $result = $table->inSameScope($other);
+
+        $this->assertEquals($check['result'], $result, 'F0FTableNested::inSameScope returned the wrong value');
+    }
 }
