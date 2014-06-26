@@ -1257,16 +1257,26 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Is this a leaf node (a node without children)?
 	 *
+     * @throws  RuntimeException
+     *
 	 * @return bool
 	 */
 	public function isLeaf()
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
 		return ($this->rgt - 1) == $this->lft;
 	}
 
 	/**
 	 * Is this a child node (not root)?
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return bool
 	 */
 	public function isChild()
@@ -1279,10 +1289,18 @@ class F0FTableNested extends F0FTable
 	 *
 	 * @param F0FTableNested $otherNode
 	 *
+     * @throws  RuntimeException
+     *
 	 * @return bool
 	 */
 	public function isDescendantOf(F0FTableNested $otherNode)
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
 		return ($otherNode->lft > $this->lft) && ($otherNode->rgt < $this->rgt);
 	}
 
@@ -1291,16 +1309,30 @@ class F0FTableNested extends F0FTable
 	 *
 	 * @param F0FTableNested $otherNode
 	 *
+     * @throws  RuntimeException
+     *
 	 * @return bool
 	 */
 	public function isSelfOrDescendantOf(F0FTableNested $otherNode)
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
+        if($otherNode->lft >= $otherNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the other node');
+        }
+
 		return ($otherNode->lft >= $this->lft) && ($otherNode->rgt <= $this->rgt);
 	}
 
 	/**
 	 * Returns true if we are an ancestor of $otherNode
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $otherNode
 	 *
 	 * @return bool
@@ -1313,6 +1345,7 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Returns true if $otherNode is ourselves or we are an ancestor of $otherNode
 	 *
+     * @codeCoverageIgnore
 	 * @param F0FTableNested $otherNode
 	 *
 	 * @return bool
@@ -1327,10 +1360,23 @@ class F0FTableNested extends F0FTable
 	 *
 	 * @param F0FTableNested $node
 	 *
+     * @throws  RuntimeException
+     *
 	 * @return bool
 	 */
 	public function equals(F0FTableNested &$node)
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
+        if($node->lft >= $node->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the other node');
+        }
+
 		return (
 			($this->getId() == $node->getId())
 			&& ($this->lft == $node->lft)
@@ -1344,10 +1390,23 @@ class F0FTableNested extends F0FTable
 	 *
 	 * @param F0FTableNested $otherNode
 	 *
+     * @throws  RuntimeException
+     *
 	 * @return bool
 	 */
 	public function insideSubtree(F0FTableNested $otherNode)
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
+        if($otherNode->lft >= $otherNode->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the other node');
+        }
+
 		return ($this->lft > $otherNode->lft) && ($this->rgt < $otherNode->rgt);
 	}
 
@@ -1436,6 +1495,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * get() will return all sibling nodes but not ourselves
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return void
 	 */
 	protected function scopeSiblings()
@@ -1578,6 +1639,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * get() will not return ourselves if it's part of the query results
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return void
 	 */
 	protected function scopeWithoutSelf()
@@ -1588,6 +1651,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * get() will not return our root if it's part of the query results
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return void
 	 */
 	protected function scopeWithoutRoot()
@@ -1694,6 +1759,8 @@ class F0FTableNested extends F0FTable
 	 * Get all ancestors to this node and the node itself. In other words it gets the full path to the node and the node
 	 * itself.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getAncestorsAndSelf()
@@ -1706,6 +1773,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Get all ancestors to this node and the node itself, but not the root node. If you want to
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getAncestorsAndSelfWithoutRoot()
@@ -1720,6 +1789,8 @@ class F0FTableNested extends F0FTable
 	 * Get all ancestors to this node but not the node itself. In other words it gets the path to the node, without the
 	 * node itself.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getAncestors()
@@ -1733,6 +1804,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Get all ancestors to this node but not the node itself and its root.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getAncestorsWithoutRoot()
@@ -1746,6 +1819,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Get all sibling nodes, including ourselves
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getSiblingsAndSelf()
@@ -1758,6 +1833,8 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Get all sibling nodes, except ourselves
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getSiblings()
@@ -1771,6 +1848,8 @@ class F0FTableNested extends F0FTable
 	 * Get all leaf nodes in the tree. You may want to use the scopes to narrow down the search in a specific subtree or
 	 * path.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getLeaves()
@@ -1785,6 +1864,8 @@ class F0FTableNested extends F0FTable
 	 *
 	 * Note: all descendant nodes, even descendants of our immediate descendants, will be returned.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getDescendantsAndSelf()
@@ -1799,6 +1880,8 @@ class F0FTableNested extends F0FTable
 	 *
 	 * Note: all descendant nodes, even descendants of our immediate descendants, will be returned.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getDescendants()
@@ -1812,6 +1895,8 @@ class F0FTableNested extends F0FTable
 	 * Get the immediate descendants (children). Unlike getDescendants it only goes one level deep into the tree
 	 * structure. Descendants of descendant nodes will not be returned.
 	 *
+     * @codeCoverageIgnore
+     *
 	 * @return F0FDatabaseIterator
 	 */
 	public function getImmediateDescendants()
