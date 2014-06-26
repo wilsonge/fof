@@ -1024,4 +1024,22 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $this->assertEquals($check['result'], $result, 'F0FTableNested::isRoot returned the wrong value');
     }
+
+    /**
+     * @group               nestedTestIsLeaf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::isLeaf
+     * @dataProvider        NestedDataprovider::getTestIsLeaf
+     */
+    public function testIsLeaf($test, $check)
+    {
+        $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
+        $table->lft = $test['lft'];
+        $table->rgt = $test['rgt'];
+
+        $result = $table->isLeaf();
+
+        $this->assertEquals($check['result'], $result, 'F0FTableNested::isLeaf ');
+    }
 }

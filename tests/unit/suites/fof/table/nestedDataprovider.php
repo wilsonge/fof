@@ -821,4 +821,29 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestIsLeaf()
+    {
+        $data[] = array(
+            array(
+                'lft' => 10,
+                'rgt' => 11
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'lft' => 10,
+                'rgt' => 13
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        return $data;
+    }
 }
