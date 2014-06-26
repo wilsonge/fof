@@ -869,10 +869,81 @@ class NestedDataprovider
             )
         );
 
+        $data[] = array(
+            array(
+                'loadid'  => 9,
+                'otherid' => 9
+            ),
+            array(
+                'result' => false
+            )
+        );
+
         return $data;
     }
 
     public static function getTestIsDescendantOfException()
+    {
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 0
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 1,
+                'otherid' => 0
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 0,
+                'otherid' => 1
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestIsSelfOrDescendantOf()
+    {
+        $data[] = array(
+            array(
+                'loadid'  => 10,
+                'otherid' => 9
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 3,
+                'otherid' => 9
+            ),
+            array(
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            array(
+                'loadid'  => 9,
+                'otherid' => 9
+            ),
+            array(
+                'result' => true
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestIsSelfOrDescendantOfException()
     {
         $data[] = array(
             array(

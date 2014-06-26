@@ -1102,4 +1102,49 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         $table->isDescendantOf($other);
     }
+
+    /**
+     * @group               nestedTestIsSelfOrDescendantOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::isSelfOrDescendantOf
+     * @dataProvider        NestedDataprovider::getTestIsSelfOrDescendantOf
+     */
+    public function testIsSelfOrDescendantOf($test, $check)
+    {
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $other  = $table->getClone();
+
+        $table->load($test['loadid']);
+        $other->load($test['otherid']);
+
+        $result = $table->isSelfOrDescendantOf($other);
+
+        $this->assertEquals($check['result'], $result, 'F0FTableNested::isDescendantOf returned the wrong value');
+    }
+
+    /**
+     * @group               nestedTestIsSelfOrDescendantOf
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::isSelfOrDescendantOf
+     * @dataProvider        NestedDataprovider::getTestIsSelfOrDescendantOfException
+     */
+    public function testIsSelfOrDescendantOfException($test)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $table  = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $other  = $table->getClone();
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['otherid'])
+        {
+            $other->load($test['otherid']);
+        }
+
+        $table->isSelfOrDescendantOf($other);
+    }
 }
