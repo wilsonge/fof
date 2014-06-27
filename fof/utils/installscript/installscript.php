@@ -415,9 +415,9 @@ abstract class F0FUtilsInstallscript
 				JFile::delete(JPATH_ROOT . '/cli/' . $script);
 			}
 
-			if (JFile::exists($src . '/cli/' . $script))
+			if (JFile::exists($src . '/' . $this->cliSourcePath . '/' . $script))
 			{
-				JFile::copy($src . '/cli/' . $script, JPATH_ROOT . '/cli/' . $script);
+				JFile::copy($src . '/' . $this->cliSourcePath . '/' . $script, JPATH_ROOT . '/cli/' . $script);
 			}
 		}
 	}
