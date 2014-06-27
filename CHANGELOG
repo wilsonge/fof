@@ -2,6 +2,12 @@ FOF 2.3.2
 ================================================================================
 + F0FUtilsUpdate will refresh the update site if Joomla!, in its infinite stupidity, has disabled it without notifying the user and without giving them a way to re-enable it.
 # [MEDIUM] F0FTemplateUtils does not convert .min.css/.min.js to .css/.js when calculating debug paths
+# [MEDIUM] F0FDatabaseIterator didn't clone the table object
+# [MEDIUM] After adding/moving a subtree, load again the node in order to update lft and rgt values
+# [MEDIUM] Insert node methods weren't copying an existing node
+# [MEDIUM] F0FTableNested::insertLeftOf was updating the sibling object node incorrectly
+# [MEDIUM] F0FTableNested::insertLeftOf/insertRightOf was not committing the transaction
+# [MEDIUM] F0FTableNested Always check to deal with a loaded node
 # [LOW] F0FFormFieldCalendar not showing up in "read" task
 # [LOW] Cache wasn't used under some circumstances in F0FInflector
 
