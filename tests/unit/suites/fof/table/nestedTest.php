@@ -1328,7 +1328,7 @@ class F0FTableNestedTest extends FtestCaseDatabase
     }
 
     /**
-     * @group               nestedTestGetRootException
+     * @group               nestedTestGetRoot
      * @group               F0FTableNested
      * @covers              F0FTableNested::getRoot
      * @dataProvider        NestedDataprovider::getTestRootException
@@ -1390,5 +1390,20 @@ class F0FTableNestedTest extends FtestCaseDatabase
         }
 
         $table->getRoot();
+    }
+
+    /**
+     * @group               nestedTestGetNestedList
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::getNestedList
+     * @dataProvider        NestedDataprovider::getTestGetNestedList
+     */
+    public function testGetNestedList($test, $check)
+    {
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
+        $result = $table->getNestedList($test['column'], $test['key'], $test['separator']);
+
+        $this->assertEquals($check['result'], $result, 'F0FTableNested::getNestedList returned the wrong list');
     }
 }
