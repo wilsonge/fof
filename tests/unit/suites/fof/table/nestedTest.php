@@ -1273,4 +1273,122 @@ class F0FTableNestedTest extends FtestCaseDatabase
 
         TestReflection::invoke($table, 'scopeImmediateDescendants');
     }
+
+    /**
+     * @group               nestedTestGetRoot
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::getRoot
+     * @dataProvider        NestedDataprovider::getTestRoot
+     */
+    public function testGetRoot($test, $check)
+    {
+        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+
+        // Am I request to create a different root?
+        if($test['newRoot'])
+        {
+            $root = $table->getClone();
+            $root->title = 'New root';
+            $root->insertAsRoot();
+
+            $child = $table->getClone();
+            $child->title = 'First child 2nd root';
+            $child->insertAsChildOf($root);
+
+            $child->reset();
+
+            $child->title = 'Second child 2nd root';
+            $child->insertAsChildOf($root);
+
+            $grandson = $child->getClone();
+            $grandson->reset();
+            $grandson->title = 'First grandson of second child';
+            $grandson->insertAsChildOf($child);
+
+        }
+
+        $table->load($test['loadid']);
+
+        if(!is_null($test['cache']))
+        {
+            if($test['cache'] == 'loadself')
+            {
+                TestReflection::setValue($table, 'treeRoot', $table);
+            }
+            else
+            {
+                TestReflection::setValue($table, 'treeRoot', $test['cache']);
+            }
+        }
+
+        $return = $table->getRoot();
+        $root   = $return->getId();
+
+        $this->assertEquals($check['result'], $root, 'F0FTableNested::getRoot returned the wrong root');
+    }
+
+    /**
+     * @group               nestedTestGetRootException
+     * @group               F0FTableNested
+     * @covers              F0FTableNested::getRoot
+     * @dataProvider        NestedDataprovider::getTestRootException
+     */
+    public function testGetRootException($test)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $counter = 0;
+        $db      = JFactory::getDbo();
+
+        $table = m::mock('FoftestTableNestedset[get,isRoot]',
+            array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset'))
+        );
+
+        $table->shouldReceive('isRoot')->andReturn(false);
+
+        // I want to throw an exception at the first run
+        if($test['mock']['current'][0])
+        {
+            $table->shouldReceive('get')->andThrow(new RuntimeException());
+        }
+        // The first run is ok, the exception will be thrown at the second call
+        else
+        {
+            // That's "funny": since we are cloning the table object, mockery will reset the invocation counter
+            // This means that I have to manually track down the invocations and act accordingly
+            $table->shouldReceive('get')->andReturn(
+                new F0FClosure(array(
+                    'current' => function() use($table, &$counter){
+                        if(!$counter)
+                        {
+                            $counter++;
+
+                            $clone = $table->getClone();
+                            $clone->lft = 1000;
+                            $clone->rgt = 1001;
+
+                            return $clone;
+                        }
+                        else
+                        {
+                            throw new RuntimeException();
+                        }
+                    }
+                ))
+            );
+        }
+
+        if($test['loadid'])
+        {
+            $table->load($test['loadid']);
+        }
+
+        if($test['wrongNode'])
+        {
+            $table->lft = 2000;
+            $table->rgt = 2001;
+        }
+
+        $table->getRoot();
+    }
 }

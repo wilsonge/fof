@@ -1255,4 +1255,178 @@ class NestedDataprovider
 
         return $data;
     }
+
+    public static function getTestRoot()
+    {
+        // The node is a root himself
+        $data[] = array(
+            array(
+                'loadid'  => 1,
+                'cache'   => null,
+                'newRoot' => false
+            ),
+            array(
+                'result' => 1
+            )
+        );
+
+        // Two roots - The node is a root himself
+        $data[] = array(
+            array(
+                'loadid'  => 17,
+                'cache'   => null,
+                'newRoot' => true
+            ),
+            array(
+                'result' => 17
+            )
+        );
+
+        // Single root - The root is the immediate parent of the node
+        $data[] = array(
+            array(
+                'loadid'  => 2,
+                'cache'   => null,
+                'newRoot' => false
+            ),
+            array(
+                'result' => 1
+            )
+        );
+
+        // Single root -  Node is deeper than first level
+        $data[] = array(
+            array(
+                'loadid'  => 7,
+                'cache'   => null,
+                'newRoot' => false
+            ),
+            array(
+                'result' => 1
+            )
+        );
+
+        // Two roots - Node is deeper than first level
+        $data[] = array(
+            array(
+                'loadid'  => 7,
+                'cache'   => null,
+                'newRoot' => true
+            ),
+            array(
+                'result' => 1
+            )
+        );
+
+        // The treeRoot is cached - wrong way
+        $data[] = array(
+            array(
+                'loadid'  => 2,
+                'cache'   => 1,
+                'newRoot' => false
+            ),
+            array(
+                'result' => 1
+            )
+        );
+
+        // The treeRoot is cached - wrong way 2
+        $data[] = array(
+            array(
+                'loadid'  => 2,
+                'cache'   => new stdClass(),
+                'newRoot' => false
+            ),
+            array(
+                'result' => 1
+            )
+        );
+
+        // The treeRoot is cached - right way
+        $data[] = array(
+            array(
+                'loadid'  => 2,
+                'cache'   => 'loadself',
+                'newRoot' => false
+            ),
+            array(
+                'result' => 2
+            )
+        );
+
+        // Two roots - Your root is in another castle
+        $data[] = array(
+            array(
+                'loadid'  => 20,
+                'cache'   => null,
+                'newRoot' => true
+            ),
+            array(
+                'result' => 17
+            )
+        );
+
+        // Two roots - Your root is in another castle
+        $data[] = array(
+            array(
+                'loadid'  => 18,
+                'cache'   => null,
+                'newRoot' => true
+            ),
+            array(
+                'result' => 17
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestRootException()
+    {
+        // Node is not loaded
+        $data[] = array(
+            array(
+                'loadid' => 0,
+                'mock'   => array(
+                    'current' => array(false, false)
+                ),
+                'wrongNode' => false
+            )
+        );
+
+        // Can't find any valid root
+        $data[] = array(
+            array(
+                'loadid' => 2,
+                'mock'   => array(
+                    'current' => array(true, false)
+                ),
+                'wrongNode' => false
+            )
+        );
+
+        // There 2 roots, I get an error while trying to load all the roots
+        $data[] = array(
+            array(
+                'loadid' => 2,
+                'mock'   => array(
+                    'current' => array(false, true)
+                ),
+                'wrongNode' => true
+            )
+        );
+
+        // There 2 roots, I get an error while getting the correct one
+        $data[] = array(
+            array(
+                'loadid' => 2,
+                'mock'   => array(
+                    'current' => array(false, true)
+                ),
+                'wrongNode' => false
+            )
+        );
+
+        return $data;
+    }
 }

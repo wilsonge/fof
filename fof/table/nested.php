@@ -1668,6 +1668,12 @@ class F0FTableNested extends F0FTable
 	 */
 	public function getRoot()
 	{
+        // Sanity checks on current node position
+        if($this->lft >= $this->rgt)
+        {
+            throw new RuntimeException('Invalid position values for the current node');
+        }
+
 		// If this is a root node return itself (there is no such thing as the root of a root node)
 		if ($this->isRoot())
 		{
@@ -1696,7 +1702,7 @@ class F0FTableNested extends F0FTable
 					->whereRaw($fldLft . ' = (' . (string)$subQuery . ')')
 					->get(0, 1)->current();
 
-				if (($root->lft < $this->lft) && ($root->rgt > $this->rgt))
+				if ($this->isDescendantOf($root))
 				{
 					$this->treeRoot = $root;
 				}
@@ -1713,7 +1719,7 @@ class F0FTableNested extends F0FTable
 				// Find the node with depth = 0, lft < our lft and rgt > our right. That's our root node.
 				$query = $db->getQuery(true)
 					->select(array(
-						$fldLft,
+                        $db->qn('node') . '.' . $fldLft,
 						'(COUNT(' . $db->qn('parent') . '.' . $fldLft . ') - 1) AS ' . $db->qn('depth')
 					))
 					->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
