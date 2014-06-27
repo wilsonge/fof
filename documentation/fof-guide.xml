@@ -8174,6 +8174,36 @@ echo $viewTemplate;
             We recommend placing this field first on your form, to respect
             Joomla! 3.0 and later's JUI (Joomla! User Interface)
             guidelines.</para>
+
+            <para>You can set the following attributes:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">class</emphasis> CSS
+                class</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">readonly</emphasis> Is this a
+                read-only field?</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">disabled</emphasis> Is this a
+                disabled form element?</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">onchange</emphasis> The onChange
+                Javascript event</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">ordertitle</emphasis> The field name
+                used to display the options title (if not set it will use the magic
+                <literal>title</literal> field)</para>
+              </listitem>
+            </itemizedlist>
           </section>
 
           <section xml:id="password">
