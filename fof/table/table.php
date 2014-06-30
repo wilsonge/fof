@@ -3731,8 +3731,8 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
 			$contentType->table = json_encode(
 				array(
 					'special' => array(
-						'dbtable' => $table->getTableName(),
-						'key'     => $table->getKeyName(),
+						'dbtable' => $this->getTableName(),
+						'key'     => $this->getKeyName(),
 						'type'    => $name,
 						'prefix'  => $this->_tablePrefix,
 						'class'   => 'F0FTable',
@@ -3752,7 +3752,7 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
 				array(
 					'common' => array(
 						0 => array(
-							"core_content_item_id" => $table->getKeyName(),
+							"core_content_item_id" => $this->getKeyName(),
 							"core_title"           => $this->getUcmCoreAlias('title'),
 							"core_state"           => $this->getUcmCoreAlias('enabled'),
 							"core_alias"           => $this->getUcmCoreAlias('alias'),
