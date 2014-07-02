@@ -1,3 +1,7 @@
+FOF 2.3.3
+================================================================================
+~ Strapper: Force load our namespaced jQuery on Joomla! 3. See the comments in strapper.php for the gory details behind this decision.
+
 FOF 2.3.2
 ================================================================================
 + F0FUtilsUpdate will refresh the update site if Joomla!, in its infinite stupidity, has disabled it without notifying the user and without giving them a way to re-enable it.

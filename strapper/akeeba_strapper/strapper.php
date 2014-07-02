@@ -173,15 +173,13 @@ class AkeebaStrapper
 		}
 		elseif ($jQueryLoad == 'auto')
 		{
-			if (version_compare(JVERSION, '3.0', 'gt'))
-			{
-				$jQueryLoad = 'namespace';
-				JHtml::_('jquery.framework');
-			}
-			else
-			{
-				$jQueryLoad = 'full';
-			}
+			// By default, "auto" means "load the full jQuery stack". You might wonder why we do that in Joomla! 3.
+			// After all Joomla! 3 comes with jQuery built-in, right? Well, not quite. Some morons pretending to
+			// be developers write plugins which REPLACE Joomla!'s jQuery with ancient versions (jQuery 1.2 anyone?)
+			// Even worse, they tend to use versions which used to be stored in CDNs when the dinosaurs roamed the
+			// Earth. Not any more, so they end up NOT LOADING jQuery at all, causing our properly written code to
+			// not work. Therefore we force load our own copy of jQuery unless we are specifically instructed not to.
+			$jQueryLoad = 'full';
 		}
 
         if ($jQueryLoad == 'full')
