@@ -7511,6 +7511,11 @@ echo $viewTemplate;
               </listitem>
 
               <listitem>
+                <para><emphasis role="strong">htmlelement</emphasis> The
+                HTML used tag, allowed: button, a (default 'button')</para>
+              </listitem>
+
+              <listitem>
                 <para><emphasis role="strong">text</emphasis> Button text
                 value; this is a language string that will be fed to
                 JText::_() for translation</para>

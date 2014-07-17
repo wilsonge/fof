@@ -97,6 +97,13 @@ class F0FFormFieldButton extends F0FFormFieldText implements F0FFormField
 	{
 		$this->label = '';
 
+		$allowedElement = array('button', 'a');
+		
+		if (in_array($this->element['htmlelement'], $allowedElement))
+			$type = $this->element['htmlelement'];
+		else
+			$type = 'button';
+
 		$text  = $this->element['text'];
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 		$icon  = $this->element['icon'] ? (string) $this->element['icon'] : '';
@@ -110,11 +117,11 @@ class F0FFormFieldButton extends F0FFormFieldText implements F0FFormField
 			$icon = '<span class="icon ' . $icon . '"></span>';
 		}
 
-		return '<a id="' . $this->id . '" class="btn ' . $class . '" ' .
+		return '<' . $type . ' id="' . $this->id . '" class="btn ' . $class . '" ' .
 			$onclick . $url . '>' .
 			$icon .
 			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
-			'</a>';
+			'</' . $type . '>';
 	}
 
 	/**
