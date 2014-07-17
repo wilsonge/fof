@@ -7505,6 +7505,12 @@ echo $viewTemplate;
               </listitem>
 
               <listitem>
+                <para><emphasis role="strong">url</emphasis> URL template
+                for each element (use [ITEM:ID] as a placeholder for the item
+                id) (default '')</para>
+              </listitem>
+
+              <listitem>
                 <para><emphasis role="strong">text</emphasis> Button text
                 value; this is a language string that will be fed to
                 JText::_() for translation</para>
