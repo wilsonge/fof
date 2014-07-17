@@ -7774,6 +7774,25 @@ echo $viewTemplate;
             </itemizedlist>
           </section>
 
+          <section xml:id="groupedbutton">
+            <title>groupedbutton</title>
+
+            <para>This will display a group of button.</para>
+
+            <para>You can set the following attributes:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">class</emphasis> CSS class
+                (default '')</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>This element supports sub-elements organised in
+            <literal>&lt;button&gt;</literal> tags. For more information
+            please consult the <literal>button</literal> element.</para>
+          </section>
+
           <section xml:id="groupedlist">
             <title>groupedlist</title>
 
