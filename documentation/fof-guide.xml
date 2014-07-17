@@ -1343,7 +1343,7 @@ function postflight($type, $parent)
 
 }</programlisting>
 
-          <para>5. Adding it on the view inside <filename>fof.xml</filename>
+          <para>5. Adding it on the view inside <filename>fof.xml</filename></para>
 
           <programlisting language="xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;fof&gt;
