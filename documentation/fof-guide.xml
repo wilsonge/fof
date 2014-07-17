@@ -7505,6 +7505,17 @@ echo $viewTemplate;
               </listitem>
 
               <listitem>
+                <para><emphasis role="strong">url</emphasis> URL template
+                for each element (use [ITEM:ID] as a placeholder for the item
+                id) (default '')</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">htmlelement</emphasis> The
+                HTML used tag, allowed: button, a (default 'button')</para>
+              </listitem>
+
+              <listitem>
                 <para><emphasis role="strong">text</emphasis> Button text
                 value; this is a language string that will be fed to
                 JText::_() for translation</para>
@@ -7766,6 +7777,25 @@ echo $viewTemplate;
                 Javascript event</para>
               </listitem>
             </itemizedlist>
+          </section>
+
+          <section xml:id="groupedbutton">
+            <title>groupedbutton</title>
+
+            <para>This will display a group of button.</para>
+
+            <para>You can set the following attributes:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">class</emphasis> CSS class
+                (default '')</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>This element supports sub-elements organised in
+            <literal>&lt;button&gt;</literal> tags. For more information
+            please consult the <literal>button</literal> element.</para>
           </section>
 
           <section xml:id="groupedlist">

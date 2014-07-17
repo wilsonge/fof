@@ -988,6 +988,8 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
         $known        = $this->getKnownFields();
         $skipFields[] = $this->_tbl_key;
 
+		if(in_array($this->getColumnAlias('title'), $known)
+			&& in_array($this->getColumnAlias('slug'), $known))      $skipFields[] = $this->getColumnAlias('slug');
         if(in_array($this->getColumnAlias('hits'), $known))         $skipFields[] = $this->getColumnAlias('hits');
         if(in_array($this->getColumnAlias('created_on'), $known))   $skipFields[] = $this->getColumnAlias('created_on');
         if(in_array($this->getColumnAlias('created_by'), $known))   $skipFields[] = $this->getColumnAlias('created_by');
