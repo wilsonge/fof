@@ -1073,6 +1073,22 @@ abstract class F0FUtilsInstallscript
 			}
 		}
 
+		// Clear com_modules and com_plugins cache (needed when we alter module/plugin state)
+		$core_components = array('com_modules', 'com_plugins');
+
+		foreach ($core_components as $component)
+		{
+			try
+			{
+				$cache = JFactory::getCache($component);
+				$cache->clean();
+			}
+			catch (Exception $e)
+			{
+				// suck it up
+			}
+		}
+
 		return $status;
 	}
 
@@ -1173,6 +1189,22 @@ abstract class F0FUtilsInstallscript
 						}
 					}
 				}
+			}
+		}
+
+		// Clear com_modules and com_plugins cache (needed when we alter module/plugin state)
+		$core_components = array('com_modules', 'com_plugins');
+
+		foreach ($core_components as $component)
+		{
+			try
+			{
+				$cache = JFactory::getCache($component);
+				$cache->clean();
+			}
+			catch (Exception $e)
+			{
+				// suck it up
 			}
 		}
 

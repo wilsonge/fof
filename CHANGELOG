@@ -1,3 +1,7 @@
+FOF 2.3.4
+================================================================================
+~ Installation script: work around Joomla!'s bad use of caching regarding modules and plugins
+
 FOF 2.3.3
 ================================================================================
 ~ Installation script: work around Joomla! not creating menu entries under Components on some sites (mostly those upgraded with jUpgrade)
