@@ -2,7 +2,6 @@ FOF 2.3.4
 ================================================================================
 + Cache cleaner utility class to help you clean Joomla!'s cache
 ~ Installation script: work around Joomla!'s bad use of caching regarding modules and plugins
-# [MEDIUM] Joomla! caches plugin information, leading to unexpected behaviour in various places
 
 FOF 2.3.3
 ================================================================================
