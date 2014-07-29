@@ -59,6 +59,8 @@ class F0FUtilsCacheCleaner
 	 */
 	public static function clearCacheGroups(array $clearGroups, array $cacheClients = array(0, 1))
 	{
+		$conf = JFactory::getConfig();
+
 		foreach ($clearGroups as $group)
 		{
 			foreach ($cacheClients as $client_id)
