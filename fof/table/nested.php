@@ -85,16 +85,15 @@ class F0FTableNested extends F0FTable
 	/**
 	 * Delete a node, either the currently loaded one or the one specified in $id. If an $id is specified that node
 	 * is loaded before trying to delete it. In the end the data model is reset. If the node has any children nodes
-	 * they will be removed before the node itself is deleted if $recursive == true (default: true).
+	 * they will be removed before the node itself is deleted.
 	 *
 	 * @param   integer $oid       The primary key value of the item to delete
-	 * @param   bool    $recursive Should I recursively delete any nodes in the subtree? (default: true)
 	 *
 	 * @throws  UnexpectedValueException
 	 *
 	 * @return  boolean  True on success
 	 */
-	public function delete($oid = null, $recursive = true)
+	public function delete($oid = null)
 	{
 		// Load the specified record (if necessary)
 		if (!empty($oid))
@@ -103,7 +102,7 @@ class F0FTableNested extends F0FTable
 		}
 
 		// Recursively delete all children nodes as long as we are not a leaf node and $recursive is enabled
-		if ($recursive && !$this->isLeaf())
+		if (!$this->isLeaf())
 		{
 			// Get a reference to the database
 			$db = $this->getDbo();
@@ -129,7 +128,7 @@ class F0FTableNested extends F0FTable
 				/** @var F0FTableNested $item */
 				foreach ($subNodes as $item)
 				{
-					$item->delete(null, false);
+					$item->delete(null);
 				};
 			}
 		}
