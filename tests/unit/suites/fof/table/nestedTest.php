@@ -113,14 +113,27 @@ class F0FTableNestedTest extends FtestCaseDatabase
             $table->load($test['loadid']);
         }
 
-        $return = $table->delete($test['delete'], $test['recursive']);
+        $return = $table->delete($test['delete']);
 
         $this->assertEquals($check['return'], $return, 'F0FTableNested::delete returned the wrong value');
 
-        $query = $db->getQuery(true)->select($table->getKeyName())->from($table->getTableName());
+        $pk    = $table->getKeyName();
+        $query = $db->getQuery(true)->select($pk)->from($table->getTableName());
         $items = $db->setQuery($query)->loadColumn();
 
         $this->assertEmpty(array_intersect($check['deleted'], $items), 'F0FTableNested::delete failed to delete all the items');
+
+        $query = $db->getQuery(true)
+                    ->select('*')
+                    ->from($table->getTableName())
+                    ->where($db->qn($pk).' IN('.implode(',', array_keys($check['nodes'])).')');
+        $nodes = $db->setQuery($query)->loadObjectList();
+
+        foreach($nodes as $node)
+        {
+            $this->assertEquals($check['nodes'][$node->$pk]['lft'], $node->lft, 'F0FTableNested::delete failed to update the lft value of the node with id '.$node->$pk);
+            $this->assertEquals($check['nodes'][$node->$pk]['rgt'], $node->rgt, 'F0FTableNested::delete failed to update the rgt value of the node with id '.$node->$pk);
+        }
     }
 
     /**

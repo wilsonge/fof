@@ -120,23 +120,10 @@ class F0FTableNested extends F0FTable
 		// Recursively delete all children nodes as long as we are not a leaf node and $recursive is enabled
 		if (!$this->isLeaf())
 		{
-			// Get a reference to the database
-			$db = $this->getDbo();
-
-			// Get my lft/rgt values
-			$myLeft = $this->lft;
-			$myRight = $this->rgt;
-
-			$fldLft = $db->qn($this->getColumnAlias('lft'));
-			$fldRgt = $db->qn($this->getColumnAlias('rgt'));
-
 			// Get all sub-nodes
 			$table = $this->getClone();
-			$table->reset();
-			$subNodes = $table
-				->whereRaw($fldLft . ' > ' . $myLeft)
-				->whereRaw($fldRgt . ' < ' . $myRight)
-				->get();
+			$table->bind($this->getData());
+			$subNodes = $table->getDescendants();
 
 			// Delete all subnodes (goes through the model to trigger the observers)
 			if (!empty($subNodes))
@@ -144,8 +131,17 @@ class F0FTableNested extends F0FTable
 				/** @var F0FTableNested $item */
 				foreach ($subNodes as $item)
 				{
-					$item->delete(null);
+                    // We have to pass the id, so we are getting it again from the database.
+                    // We have to do in this way, since a previous child could have changed our lft and rgt values
+					if(!$item->delete($item->$k))
+                    {
+                        // A subnode failed or prevents the check, let's stop here to not corrupt the tree
+                        return false;
+                    }
 				};
+
+                // Load it again, since while deleting a children we could have updated ourselves, too
+                $this->load($pk);
 			}
 		}
 
