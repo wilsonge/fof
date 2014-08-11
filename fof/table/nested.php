@@ -101,6 +101,22 @@ class F0FTableNested extends F0FTable
 			$this->load($oid);
 		}
 
+        $k  = $this->_tbl_key;
+        $pk = (!$oid) ? $this->$k : $oid;
+
+        // If no primary key is given, return false.
+        if (!$pk)
+        {
+            throw new UnexpectedValueException('Null primary key not allowed.');
+        }
+
+        // Execute the logic only if I have a primary key, otherwise I could have weird results
+        // Perform the checks on the current node *BEFORE* starting to delete the children
+        if (!$this->onBeforeDelete($oid))
+        {
+            return false;
+        }
+
 		// Recursively delete all children nodes as long as we are not a leaf node and $recursive is enabled
 		if (!$this->isLeaf())
 		{
@@ -133,7 +149,17 @@ class F0FTableNested extends F0FTable
 			}
 		}
 
-		return parent::delete($oid);
+        // Delete the row by primary key.
+        $query = $this->_db->getQuery(true);
+        $query->delete();
+        $query->from($this->_tbl);
+        $query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
+
+        $this->_db->setQuery($query)->execute();
+
+        $result = $this->onAfterDelete($oid);
+
+		return $result;
 	}
 
 	/**
