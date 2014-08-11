@@ -162,6 +162,52 @@ class F0FTableNested extends F0FTable
 		return $result;
 	}
 
+    protected function onAfterDelete($oid)
+    {
+        $db = $this->getDbo();
+
+        $myLeft  = $this->lft;
+        $myRight = $this->rgt;
+
+        $fldLft = $db->qn($this->getColumnAlias('lft'));
+        $fldRgt = $db->qn($this->getColumnAlias('rgt'));
+
+        // Move all siblings to the left
+        $width = $this->rgt - $this->lft + 1;
+
+        // Wrap everything in a transaction
+        $db->transactionStart();
+
+        try
+        {
+            // Shrink lft values
+            $query = $db->getQuery(true)
+                        ->update($db->qn($this->getTableName()))
+                        ->set($fldLft . ' = ' . $fldLft . ' - '.$width)
+                        ->where($fldLft . ' > ' . $db->q($myLeft));
+            $db->setQuery($query)->execute();
+
+            // Shrink rgt values
+            $query = $db->getQuery(true)
+                        ->update($db->qn($this->getTableName()))
+                        ->set($fldRgt . ' = ' . $fldRgt . ' - '.$width)
+                        ->where($fldRgt . ' > ' . $db->q($myRight));
+            $db->setQuery($query)->execute();
+
+            // Commit the transaction
+            $db->transactionCommit();
+        }
+        catch (\Exception $e)
+        {
+            // Roll back the transaction on error
+            $db->transactionRollback();
+
+            throw $e;
+        }
+
+        return parent::onAfterDelete($oid);
+    }
+
 	/**
 	 * Not supported in nested sets
 	 *
