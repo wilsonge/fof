@@ -117,6 +117,8 @@ class F0FTableNested extends F0FTable
             return false;
         }
 
+        $result = true;
+
 		// Recursively delete all children nodes as long as we are not a leaf node and $recursive is enabled
 		if (!$this->isLeaf())
 		{
@@ -135,8 +137,9 @@ class F0FTableNested extends F0FTable
                     // We have to do in this way, since a previous child could have changed our lft and rgt values
 					if(!$item->delete($item->$k))
                     {
-                        // A subnode failed or prevents the check, let's stop here to not corrupt the tree
-                        return false;
+                        // A subnode failed or prevents the delete, continue deleting other nodes,
+                        // but preserve the current node (ie the parent)
+                        $result = false;
                     }
 				};
 
@@ -145,15 +148,18 @@ class F0FTableNested extends F0FTable
 			}
 		}
 
-        // Delete the row by primary key.
-        $query = $this->_db->getQuery(true);
-        $query->delete();
-        $query->from($this->_tbl);
-        $query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
+        if($result)
+        {
+            // Delete the row by primary key.
+            $query = $this->_db->getQuery(true);
+            $query->delete();
+            $query->from($this->_tbl);
+            $query->where($this->_tbl_key . ' = ' . $this->_db->q($pk));
 
-        $this->_db->setQuery($query)->execute();
+            $this->_db->setQuery($query)->execute();
 
-        $result = $this->onAfterDelete($oid);
+            $result = $this->onAfterDelete($oid);
+        }
 
 		return $result;
 	}

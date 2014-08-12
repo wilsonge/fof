@@ -106,7 +106,17 @@ class F0FTableNestedTest extends FtestCaseDatabase
     {
         $db = JFactory::getDbo();
 
-        $table = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
+        $table = m::mock('FoftestTableNestedset[onBeforeDelete]', array('#__foftest_nestedsets', 'foftest_nestedset_id', &$db, array('_table_class' => 'FoftestTableNestedset')));
+
+        $table->shouldAllowMockingProtectedMethods()->shouldReceive('onBeforeDelete')->andReturnUsing(function($oid) use($test){
+            // Check if the current node allows delete or not (default: yes)
+            if(isset($test['mock']['before'][$oid]) && !$test['mock']['before'][$oid])
+            {
+                return false;
+            }
+
+            return true;
+        });
 
         if($test['loadid'])
         {

@@ -85,11 +85,20 @@ class NestedDataprovider
 
     public static function getTestDelete()
     {
+        /*
+         * At the moment I can only test when onBeforeDelete return false in the first level only.
+         * That's because the iterator is spawning a new class every time, so the mock we setup is not used
+         * and the check if performed vs the "real" object, which of course returns false.
+         */
+
         // Delete a single leaf item
         $data[] = array(
             array(
                 'loadid'    => null,
                 'delete'    => 15,
+                'mock'      => array(
+                    'before'    => array()
+                )
             ),
             array(
                 'return'  => true,
@@ -104,11 +113,38 @@ class NestedDataprovider
             )
         );
 
+        // Delete a single leaf item - prevented
+        $data[] = array(
+            array(
+                'loadid'    => null,
+                'delete'    => 15,
+                'mock'      => array(
+                    'before'    => array(
+                        15 => false
+                    )
+                )
+            ),
+            array(
+                'return'  => false,
+                'deleted' => array(),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1  => array('lft' => 1, 'rgt' => 32),
+                    9  => array('lft' => 16, 'rgt' => 31),
+                    14 => array('lft' => 25, 'rgt' => 30)
+                )
+            )
+        );
+
         // Delete a single trunk item
         $data[] = array(
             array(
                 'loadid'    => null,
-                'delete'    => 14
+                'delete'    => 14,
+                'mock'      => array(
+                    'before'    => array()
+                )
             ),
             array(
                 'return'  => true,
@@ -118,6 +154,29 @@ class NestedDataprovider
                 'nodes'   => array(
                     1 => array('lft' =>  1, 'rgt' => 26),
                     9 => array('lft' => 16, 'rgt' => 25)
+                )
+            )
+        );
+
+        // Delete a single trunk item - prevented
+        $data[] = array(
+            array(
+                'loadid'    => null,
+                'delete'    => 14,
+                'mock'      => array(
+                    'before'    => array(
+                        14 => false
+                    )
+                )
+            ),
+            array(
+                'return'  => false,
+                'deleted' => array(),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1 => array('lft' =>  1, 'rgt' => 32),
+                    9 => array('lft' => 16, 'rgt' => 31)
                 )
             )
         );
