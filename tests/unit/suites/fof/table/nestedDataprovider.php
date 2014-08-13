@@ -113,6 +113,28 @@ class NestedDataprovider
             )
         );
 
+        // Delete a single leaf item (loaded table)
+        $data[] = array(
+            array(
+                'loadid'    => 15,
+                'delete'    => null,
+                'mock'      => array(
+                    'before'    => array()
+                )
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(15),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1  => array('lft' => 1, 'rgt' => 30),
+                    9  => array('lft' => 16, 'rgt' => 29),
+                    14 => array('lft' => 25, 'rgt' => 28)
+                )
+            )
+        );
+
         // Delete a single leaf item - prevented
         $data[] = array(
             array(
@@ -142,6 +164,27 @@ class NestedDataprovider
             array(
                 'loadid'    => null,
                 'delete'    => 14,
+                'mock'      => array(
+                    'before'    => array()
+                )
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(14, 15, 16),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1 => array('lft' =>  1, 'rgt' => 26),
+                    9 => array('lft' => 16, 'rgt' => 25)
+                )
+            )
+        );
+
+        // Delete a single trunk item (loaded table)
+        $data[] = array(
+            array(
+                'loadid'    => 14,
+                'delete'    => null,
                 'mock'      => array(
                     'before'    => array()
                 )
