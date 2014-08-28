@@ -1,5 +1,9 @@
 FOF 2.3.4
 ================================================================================
++ Installation script: add support for post-installation messages in Joomla! 3.2 or later
+
+FOF 2.3.4
+================================================================================
 + Cache cleaner utility class to help you clean Joomla!'s cache
 ~ Installation script: work around Joomla!'s bad use of caching regarding modules and plugins
 
