@@ -420,6 +420,9 @@ abstract class F0FUtilsInstallscript
 		// Uninstall modules and plugins
 		$status = $this->uninstallSubextensions($parent);
 
+		// Uninstall post-installation messages on Joomla! 3.2 and later
+		$this->uninstallPostInstallationMessages();
+
 		// Show the post-uninstallation page
 		$this->renderPostUninstallation($status, $parent);
 	}
@@ -2197,9 +2200,9 @@ abstract class F0FUtilsInstallscript
 		$query = $db->getQuery(true)
 			->select('*')
 			->from($db->qn($tableName))
-			->where($db->q('extension_id') . ' = ' . $db->q($options['extension_id']))
-			->where($db->q('type') . ' = ' . $db->q($options['type']))
-			->where($db->q('title_key') . ' = ' . $db->q($options['title_key']));
+			->where($db->qn('extension_id') . ' = ' . $db->q($options['extension_id']))
+			->where($db->qn('type') . ' = ' . $db->q($options['type']))
+			->where($db->qn('title_key') . ' = ' . $db->q($options['title_key']));
 		$existingRow = $db->setQuery($query)->loadAssoc();
 
 		// Is the existing definition the same as the one we're trying to save (ignore the enabled flag)?
@@ -2214,7 +2217,7 @@ abstract class F0FUtilsInstallscript
 					continue;
 				}
 
-				if ($existingRow[$k] == $v)
+				if ($existingRow[$k] != $v)
 				{
 					$same = false;
 					break;
@@ -2288,6 +2291,58 @@ abstract class F0FUtilsInstallscript
 		{
 			$message['extension_id'] = $extension_id;
 			$this->addPostInstallationMessage($message);
+		}
+	}
+
+	protected function uninstallPostInstallationMessages()
+	{
+		// Make sure it's Joomla! 3.2.0 or later
+		if (!version_compare(JVERSION, '3.2.0', 'ge'))
+		{
+			return;
+		}
+
+		// Make sure there are post-installation messages
+		if (empty($this->postInstallationMessages))
+		{
+			return;
+		}
+
+		// Get the extension ID for our component
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('extension_id')
+			->from('#__extensions')
+			->where($db->qn('element') . ' = ' . $db->q($this->componentName));
+		$db->setQuery($query);
+
+		try
+		{
+			$ids = $db->loadColumn();
+		}
+		catch (Exception $exc)
+		{
+			return;
+		}
+
+		if (empty($ids))
+		{
+			return;
+		}
+
+		$extension_id = array_shift($ids);
+
+		$query = $db->getQuery(true)
+			->delete($this->postInstallationMessages)
+			->where($db->qn('extension_id') . ' = ' . $db->q($extension_id));
+
+		try
+		{
+			$db->setQuery($query)->execute();
+		}
+		catch (Exception $e)
+		{
+			return;
 		}
 	}
 }
