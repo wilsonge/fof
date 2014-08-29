@@ -2018,7 +2018,7 @@ abstract class F0FUtilsInstallscript
 	 * enabled              Must be 1 for this message to be enabled. If you omit it, it defaults to 1.
 	 *
 	 * condition_file        The RAD path to a PHP file containing a PHP function which determines whether this message
-	 *                        should be shown to the user. @see FOFTemplateUtils::parsePath() for RAD path format. Joomla!
+	 *                        should be shown to the user. @see F0FTemplateUtils::parsePath() for RAD path format. Joomla!
 	 *                        will include this file before calling the condition_method.
 	 *                      Example:   admin://components/com_foobar/helpers/postinstall.php
 	 *
@@ -2039,7 +2039,7 @@ abstract class F0FUtilsInstallscript
 	 *
 	 * action_file            The RAD path to a PHP file containing a PHP function which performs the action of this PIM.
 	 *
-	 * @see                   FOFTemplateUtils::parsePath() for RAD path format. Joomla! will include this file
+	 * @see                   F0FTemplateUtils::parsePath() for RAD path format. Joomla! will include this file
 	 *                        before calling the function defined in the action key below.
 	 *                        Example:   admin://components/com_foobar/helpers/postinstall.php
 	 *
@@ -2148,7 +2148,7 @@ abstract class F0FUtilsInstallscript
 				throw new Exception('Post-installation message definitions need an action file when they are of type "action"', 500);
 			}
 
-			$file_path = FOFTemplateUtils::parsePath($options['action_file'], true);
+			$file_path = F0FTemplateUtils::parsePath($options['action_file'], true);
 
 			if (!@is_file($file_path))
 			{
@@ -2177,7 +2177,7 @@ abstract class F0FUtilsInstallscript
 				throw new Exception('Post-installation message definitions need a condition file when they are of type "' . $options['type'] . '"', 500);
 			}
 
-			$file_path = FOFTemplateUtils::parsePath($options['condition_file'], true);
+			$file_path = F0FTemplateUtils::parsePath($options['condition_file'], true);
 
 			if (!@is_file($file_path))
 			{
