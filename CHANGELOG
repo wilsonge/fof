@@ -1,4 +1,4 @@
-FOF 2.3.4
+FOF 2.3.5
 ================================================================================
 + Installation script: add support for post-installation messages in Joomla! 3.2 or later
 # [HIGH] Joomla! doesn't understand Itemid sent as a POST query parameter, causing front-end FOFForm to effectively post to the home menu item
