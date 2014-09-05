@@ -1,6 +1,7 @@
 FOF 2.3.4
 ================================================================================
 + Installation script: add support for post-installation messages in Joomla! 3.2 or later
+# [HIGH] Joomla! doesn't understand Itemid sent as a POST query parameter, causing front-end FOFForm to effectively post to the home menu item
 # [LOW] gh-390 If Joomla SEF URL is enabled, but they are not rewritten, you could have unexpected results (404 errors, redirection issues etc etc)
 
 FOF 2.3.4
