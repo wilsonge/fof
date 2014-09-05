@@ -85,55 +85,142 @@ class NestedDataprovider
 
     public static function getTestDelete()
     {
-        // Delete a single leaf item (with recursive - useless, but to test everything)
+        /*
+         * At the moment I can only test when onBeforeDelete return false in the first level only.
+         * That's because the iterator is spawning a new class every time, so the mock we setup is not used
+         * and the check if performed vs the "real" object, which of course returns false.
+         */
+
+        // Delete a single leaf item
         $data[] = array(
             array(
                 'loadid'    => null,
                 'delete'    => 15,
-                'recursive' => true
+                'mock'      => array(
+                    'before'    => array()
+                )
             ),
             array(
                 'return'  => true,
-                'deleted' => array(15)
+                'deleted' => array(15),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1  => array('lft' => 1, 'rgt' => 30),
+                    9  => array('lft' => 16, 'rgt' => 29),
+                    14 => array('lft' => 25, 'rgt' => 28)
+                )
             )
         );
 
-        // Delete a single leaf item (no recursive - useless, but to test everything)
+        // Delete a single leaf item (loaded table)
+        $data[] = array(
+            array(
+                'loadid'    => 15,
+                'delete'    => null,
+                'mock'      => array(
+                    'before'    => array()
+                )
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(15),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1  => array('lft' => 1, 'rgt' => 30),
+                    9  => array('lft' => 16, 'rgt' => 29),
+                    14 => array('lft' => 25, 'rgt' => 28)
+                )
+            )
+        );
+
+        // Delete a single leaf item - prevented
         $data[] = array(
             array(
                 'loadid'    => null,
                 'delete'    => 15,
-                'recursive' => false
+                'mock'      => array(
+                    'before'    => array(
+                        15 => false
+                    )
+                )
             ),
             array(
-                'return'  => true,
-                'deleted' => array(15)
+                'return'  => false,
+                'deleted' => array(),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1  => array('lft' => 1, 'rgt' => 32),
+                    9  => array('lft' => 16, 'rgt' => 31),
+                    14 => array('lft' => 25, 'rgt' => 30)
+                )
             )
         );
 
-        // Delete a single root item (no recursive delete)
+        // Delete a single trunk item
         $data[] = array(
             array(
                 'loadid'    => null,
                 'delete'    => 14,
-                'recursive' => false
+                'mock'      => array(
+                    'before'    => array()
+                )
             ),
             array(
                 'return'  => true,
-                'deleted' => array(14)
+                'deleted' => array(14, 15, 16),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1 => array('lft' =>  1, 'rgt' => 26),
+                    9 => array('lft' => 16, 'rgt' => 25)
+                )
             )
         );
 
-        // Delete a single root item (recursive delete)
+        // Delete a single trunk item (loaded table)
+        $data[] = array(
+            array(
+                'loadid'    => 14,
+                'delete'    => null,
+                'mock'      => array(
+                    'before'    => array()
+                )
+            ),
+            array(
+                'return'  => true,
+                'deleted' => array(14, 15, 16),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1 => array('lft' =>  1, 'rgt' => 26),
+                    9 => array('lft' => 16, 'rgt' => 25)
+                )
+            )
+        );
+
+        // Delete a single trunk item - prevented
         $data[] = array(
             array(
                 'loadid'    => null,
                 'delete'    => 14,
-                'recursive' => true
+                'mock'      => array(
+                    'before'    => array(
+                        14 => false
+                    )
+                )
             ),
             array(
-                'return'  => true,
-                'deleted' => array(14, 15, 16)
+                'return'  => false,
+                'deleted' => array(),
+                // Associative array where the index is the node id, so I can double check if the lft rgt values
+                // are correctly updated
+                'nodes'   => array(
+                    1 => array('lft' =>  1, 'rgt' => 32),
+                    9 => array('lft' => 16, 'rgt' => 31)
+                )
             )
         );
 

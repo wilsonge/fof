@@ -1,3 +1,14 @@
+FOF 2.3.5
+================================================================================
++ Installation script: add support for post-installation messages in Joomla! 3.2 or later
+# [HIGH] Joomla! doesn't understand Itemid sent as a POST query parameter, causing front-end FOFForm to effectively post to the home menu item
+# [LOW] gh-390 If Joomla SEF URL is enabled, but they are not rewritten, you could have unexpected results (404 errors, redirection issues etc etc)
+
+FOF 2.3.4
+================================================================================
++ Cache cleaner utility class to help you clean Joomla!'s cache
+~ Installation script: work around Joomla!'s bad use of caching regarding modules and plugins
+
 FOF 2.3.3
 ================================================================================
 ~ Installation script: work around Joomla! not creating menu entries under Components on some sites (mostly those upgraded with jUpgrade)
