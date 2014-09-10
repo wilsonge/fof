@@ -2,33 +2,30 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldList'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/list.php';
-}
+JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Supports a generic list of options.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldList extends JFormFieldList implements FOFFormField
+class F0FFormFieldList extends JFormFieldList implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -60,7 +57,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 					$this->repeatable = $this->getRepeatable();
 				}
 
-				return $this->static;
+				return $this->repeatable;
 				break;
 
 			default:
@@ -114,13 +111,16 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 			$show_link = false;
 		}
 
-		if ($show_link && ($this->item instanceof FOFTable))
+		if ($show_link && ($this->item instanceof F0FTable))
 		{
 			// Replace [ITEM:ID] in the URL with the item's key value (usually:
 			// the auto-incrementing numeric ID)
 			$keyfield = $this->item->getKeyName();
 			$replace  = $this->item->$keyfield;
 			$link_url = str_replace('[ITEM:ID]', $replace, $link_url);
+
+			// Replace the [ITEMID] in the URL with the current Itemid parameter
+			$link_url = str_replace('[ITEMID]', JFactory::getApplication()->input->getInt('Itemid', 0), $link_url);
 
 			// Replace other field variables in the URL
 			$fields = $this->item->getFields();
@@ -136,7 +136,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 
 				$search    = '[ITEM:' . strtoupper($fieldname) . ']';
 				$replace   = $this->item->$fieldname;
-				$link_url  = str_replace($search, $replace, $link_url);
+				$link_url  = @str_replace($search, $replace, $link_url);
 			}
 		}
 		else
@@ -221,7 +221,7 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 	 *
 	 * @return  array  The field option objects.
 	 *
-	 * @since	Ordering is available since FOF 2.1.b2.
+	 * @since	Ordering is available since F0F 2.1.b2.
 	 */
 	protected function getOptions()
 	{
@@ -272,61 +272,11 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 		if ($order)
 		{
 			jimport('joomla.utilities.arrayhelper');
-			JArrayHelper::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
+			F0FUtilsArray::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
 		}
 
 		// Initialise the options
 		$options = array();
-
-		// Do we have a class and method source for our options?
-		$source_file      = empty($this->element['source_file']) ? '' : (string) $this->element['source_file'];
-		$source_class     = empty($this->element['source_class']) ? '' : (string) $this->element['source_class'];
-		$source_method    = empty($this->element['source_method']) ? '' : (string) $this->element['source_method'];
-		$source_key       = empty($this->element['source_key']) ? '*' : (string) $this->element['source_key'];
-		$source_value     = empty($this->element['source_value']) ? '*' : (string) $this->element['source_value'];
-		$source_translate = empty($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
-		$source_translate = in_array(strtolower($source_translate), array('true','yes','1','on')) ? true : false;
-
-		if ($source_class && $source_method)
-		{
-			// Maybe we have to load a file?
-			if (!empty($source_file))
-			{
-				$source_file = FOFTemplateUtils::parsePath($source_file, true);
-
-				JLoader::import('joomla.filesystem.file');
-
-				if (JFile::exists($source_file))
-				{
-					include_once $source_file;
-				}
-			}
-
-			// Make sure the class exists
-			if (class_exists($source_class, true))
-			{
-				// ...and so does the option
-				if (in_array($source_method, get_class_methods($source_class)))
-				{
-					// Get the data from the class
-					$source_data = $source_class::$source_method();
-
-					// Loop through the data and prime the $options array
-					foreach ($source_data as $k => $v)
-					{
-						$key = (empty($source_key) || ($source_key == '*')) ? $k : $v[$source_key];
-						$value = (empty($source_value) || ($source_value == '*')) ? $v : $v[$source_value];
-
-						if ($source_translate)
-						{
-							$value = JText::_($value);
-						}
-
-						$options[] = JHtml::_('select.option', $key, $value, 'value', 'text');
-					}
-				}
-			}
-		}
 
 		// Get the field $options
 		foreach ($sortOptions as $sortOption)
@@ -350,6 +300,63 @@ class FOFFormFieldList extends JFormFieldList implements FOFFormField
 
 			// Add the option object to the result set.
 			$options[] = $tmp;
+		}
+
+		// Do we have a class and method source for our options?
+		$source_file      = empty($this->element['source_file']) ? '' : (string) $this->element['source_file'];
+		$source_class     = empty($this->element['source_class']) ? '' : (string) $this->element['source_class'];
+		$source_method    = empty($this->element['source_method']) ? '' : (string) $this->element['source_method'];
+		$source_key       = empty($this->element['source_key']) ? '*' : (string) $this->element['source_key'];
+		$source_value     = empty($this->element['source_value']) ? '*' : (string) $this->element['source_value'];
+		$source_translate = empty($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
+		$source_translate = in_array(strtolower($source_translate), array('true','yes','1','on')) ? true : false;
+		$source_format	  = empty($this->element['source_format']) ? '' : (string) $this->element['source_format'];
+
+		if ($source_class && $source_method)
+		{
+			// Maybe we have to load a file?
+			if (!empty($source_file))
+			{
+				$source_file = F0FTemplateUtils::parsePath($source_file, true);
+
+				if (F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
+				{
+					include_once $source_file;
+				}
+			}
+
+			// Make sure the class exists
+			if (class_exists($source_class, true))
+			{
+				// ...and so does the option
+				if (in_array($source_method, get_class_methods($source_class)))
+				{
+					// Get the data from the class
+					if ($source_format == 'optionsobject')
+					{
+						$options = array_merge($options, $source_class::$source_method());
+					}
+					else
+					{
+						// Get the data from the class
+						$source_data = $source_class::$source_method();
+
+						// Loop through the data and prime the $options array
+						foreach ($source_data as $k => $v)
+						{
+							$key = (empty($source_key) || ($source_key == '*')) ? $k : $v[$source_key];
+							$value = (empty($source_value) || ($source_value == '*')) ? $v : $v[$source_value];
+
+							if ($source_translate)
+							{
+								$value = JText::_($value);
+							}
+
+							$options[] = JHtml::_('select.option', $key, $value, 'value', 'text');
+						}
+					}
+				}
+			}
 		}
 
 		reset($options);

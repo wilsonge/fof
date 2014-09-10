@@ -2,25 +2,25 @@
 /**
  *  @package     FrameworkOnFramework
  *  @subpackage  include
- *  @copyright   Copyright (c)2010-2012 Nicholas K. Dionysopoulos
+ *  @copyright   Copyright (c)2010-2014 Nicholas K. Dionysopoulos
  *  @license     GNU General Public License version 2, or later
  *
- *  Initializes FOF
+ *  Initializes F0F
  */
 
 defined('_JEXEC') or die();
 
-if (!defined('FOF_INCLUDED'))
+if (!defined('F0F_INCLUDED'))
 {
-    define('FOF_INCLUDED', '##VERSION##');
+    define('F0F_INCLUDED', '##VERSION##');
+
+	// Register the F0F autoloader
+    require_once __DIR__ . '/autoloader/fof.php';
+	F0FAutoloaderFof::init();
 
 	// Register a debug log
 	if (defined('JDEBUG') && JDEBUG)
 	{
-		JLog::addLogger(array('text_file' => 'fof.log.php'), JLog::ALL, array('fof'));
+		F0FPlatform::getInstance()->logAddLogger('fof.log.php');
 	}
-
-	// Register the FOF autoloader
-    require_once __DIR__ . '/autoloader/fof.php';
-	FOFAutoloaderFof::init();
 }

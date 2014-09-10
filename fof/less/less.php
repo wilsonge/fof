@@ -2,14 +2,14 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  less
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * This class is taken near verbatim (changes marked with **FOF** comment markers) from:
+ * This class is taken near verbatim (changes marked with **F0F** comment markers) from:
  *
  * lessphp v0.3.9
  * http://leafo.net/lessphp
@@ -25,7 +25,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFLess
+class F0FLess
 {
 	public static $VERSION = "v0.3.9";
 
@@ -65,7 +65,7 @@ class FOFLess
 	 * Set to the parser that generated the current line when compiling
 	 * so we know how to create error messages
 	 *
-	 * @var  FOFLessParser
+	 * @var  F0FLessParser
 	 */
 	protected $sourceParser = null;
 
@@ -111,11 +111,9 @@ class FOFLess
 	 */
 	protected function fileExists($name)
 	{
-		/** FOF - BEGIN CHANGE * */
-		JLoader::import('joomla.filesystem.file');
-
-		return JFile::exists($name);
-		/** FOF - END CHANGE * */
+		/** F0F - BEGIN CHANGE * */
+		return F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($name);
+		/** F0F - END CHANGE * */
 	}
 
 	/**
@@ -240,7 +238,7 @@ class FOFLess
 	 * @param   array          $props         Props
 	 * @param   stdClass       $block         Block
 	 * @param   string         $out           Out
-	 * @param   FOFLessParser  $sourceParser  Source parser
+	 * @param   F0FLessParser  $sourceParser  Source parser
 	 * @param   string         $importDir     Import dir
 	 *
 	 * @return  void
@@ -284,7 +282,7 @@ class FOFLess
 	 *
 	 * @param   stdClass  $block  Block
 	 *
-	 * @see  FOFLess::compileProp()
+	 * @see  F0FLess::compileProp()
 	 *
 	 * @return  void
 	 */
@@ -2816,9 +2814,9 @@ class FOFLess
 	protected function injectVariables($args)
 	{
 		$this->pushEnv();
-		/** FOF -- BEGIN CHANGE * */
-		$parser = new FOFLessParser($this, __METHOD__);
-		/** FOF -- END CHANGE * */
+		/** F0F -- BEGIN CHANGE * */
+		$parser = new F0FLessParser($this, __METHOD__);
+		/** F0F -- END CHANGE * */
 		foreach ($args as $name => $strValue)
 		{
 			if ($name{0} != '@')
@@ -2923,11 +2921,9 @@ class FOFLess
 
 		if ($outFname !== null)
 		{
-			/** FOF - BEGIN CHANGE * */
-			JLoader::import('joomla.filesystem.file');
-
-			return JFile::write($outFname, $out);
-			/** FOF - END CHANGE * */
+			/** F0F - BEGIN CHANGE * */
+			return F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileWrite($outFname, $out);
+			/** F0F - END CHANGE * */
 		}
 
 		return $out;
@@ -3091,13 +3087,13 @@ class FOFLess
 	 *
 	 * @param   type  $name  X
 	 *
-	 * @return  FOFLessParser
+	 * @return  F0FLessParser
 	 */
 	protected function makeParser($name)
 	{
-		/** FOF -- BEGIN CHANGE * */
-		$parser = new FOFLessParser($this, $name);
-		/** FOF -- END CHANGE * */
+		/** F0F -- BEGIN CHANGE * */
+		$parser = new F0FLessParser($this, $name);
+		/** F0F -- END CHANGE * */
 		$parser->writeComments = $this->preserveComments;
 
 		return $parser;
@@ -3118,20 +3114,20 @@ class FOFLess
 	/**
 	 * New formatter
 	 *
-	 * @return  FOFLessFormatterLessjs
+	 * @return  F0FLessFormatterLessjs
 	 */
 	protected function newFormatter()
 	{
-		/** FOF -- BEGIN CHANGE * */
-		$className = "FOFLessFormatterLessjs";
-		/** FOF -- END CHANGE * */
+		/** F0F -- BEGIN CHANGE * */
+		$className = "F0FLessFormatterLessjs";
+		/** F0F -- END CHANGE * */
 		if (!empty($this->formatterName))
 		{
 			if (!is_string($this->formatterName))
 				return $this->formatterName;
-			/** FOF -- BEGIN CHANGE * */
-			$className = "FOFLessFormatter" . ucfirst($this->formatterName);
-			/** FOF -- END CHANGE * */
+			/** F0F -- BEGIN CHANGE * */
+			$className = "F0FLessFormatter" . ucfirst($this->formatterName);
+			/** F0F -- END CHANGE * */
 		}
 
 		return new $className;

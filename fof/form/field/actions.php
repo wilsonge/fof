@@ -2,25 +2,22 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldList'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/list.php';
-}
+JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Supports a generic list of options.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldActions extends JFormFieldList implements FOFFormField
+class F0FFormFieldActions extends JFormFieldList implements F0FFormField
 {
 	protected $static;
 
@@ -28,8 +25,8 @@ class FOFFormFieldActions extends JFormFieldList implements FOFFormField
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/**
@@ -60,7 +57,7 @@ class FOFFormFieldActions extends JFormFieldList implements FOFFormField
 					$this->repeatable = $this->getRepeatable();
 				}
 
-				return $this->static;
+				return $this->repeatable;
 				break;
 
 			default:
@@ -89,27 +86,27 @@ class FOFFormFieldActions extends JFormFieldList implements FOFFormField
 
 		if (isset($this->element['show_published']))
 		{
-			$config['published'] = FOFStringUtils::toBool($this->element['show_published']);
+			$config['published'] = F0FStringUtils::toBool($this->element['show_published']);
 		}
 
 		if (isset($this->element['show_unpublished']))
 		{
-			$config['unpublished'] = FOFStringUtils::toBool($this->element['show_unpublished']);
+			$config['unpublished'] = F0FStringUtils::toBool($this->element['show_unpublished']);
 		}
 
 		if (isset($this->element['show_archived']))
 		{
-			$config['archived'] = FOFStringUtils::toBool($this->element['show_archived']);
+			$config['archived'] = F0FStringUtils::toBool($this->element['show_archived']);
 		}
 
 		if (isset($this->element['show_trash']))
 		{
-			$config['trash'] = FOFStringUtils::toBool($this->element['show_trash']);
+			$config['trash'] = F0FStringUtils::toBool($this->element['show_trash']);
 		}
 
 		if (isset($this->element['show_all']))
 		{
-			$config['all'] = FOFStringUtils::toBool($this->element['show_all']);
+			$config['all'] = F0FStringUtils::toBool($this->element['show_all']);
 		}
 
 		return $config;
@@ -132,7 +129,7 @@ class FOFFormFieldActions extends JFormFieldList implements FOFFormField
 	 *
 	 * @param   string  $enabledFieldName  Name of the enabled/published field
 	 *
-	 * @return  FOFFormFieldPublished  Field
+	 * @return  F0FFormFieldPublished  Field
 	 */
 	protected function getPublishedField($enabledFieldName)
 	{
@@ -161,7 +158,7 @@ class FOFFormFieldActions extends JFormFieldList implements FOFFormField
 
 		$publishedXml = new SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
 
-		$publishedField = new FOFFormFieldPublished($this->form);
+		$publishedField = new F0FFormFieldPublished($this->form);
 
 		// Pass required objects to the field
 		$publishedField->item = $this->item;
@@ -194,9 +191,9 @@ class FOFFormFieldActions extends JFormFieldList implements FOFFormField
 	 */
 	public function getRepeatable()
 	{
-		if (!($this->item instanceof FOFTable))
+		if (!($this->item instanceof F0FTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new Exception(__CLASS__ . ' needs a F0FTable to act upon');
 		}
 
 		$config = $this->getConfig();
@@ -215,7 +212,7 @@ class FOFFormFieldActions extends JFormFieldList implements FOFFormField
 		{
 			if ($config['published'] || $config['unpublished'])
 			{
-				// Generate a FOFFormFieldPublished field
+				// Generate a F0FFormFieldPublished field
 				$publishedField = $this->getPublishedField($publishedFieldName);
 
 				// Render the publish button

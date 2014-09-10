@@ -2,22 +2,22 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 JFormHelper::loadFieldClass('text');
 
 /**
- * Form Field class for the FOF framework
+ * Form Field class for the F0F framework
  * Supports a title field with an optional slug display below it.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldTitle extends FOFFormFieldText implements FOFFormField
+class F0FFormFieldTitle extends F0FFormFieldText implements F0FFormField
 {
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,

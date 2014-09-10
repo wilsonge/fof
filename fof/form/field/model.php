@@ -2,25 +2,22 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldSql'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/sql.php';
-}
+JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Generic list from a model's results
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
+class F0FFormFieldModel extends F0FFormFieldList implements F0FFormField
 {
 	protected $static;
 
@@ -54,7 +51,7 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 					$this->repeatable = $this->getRepeatable();
 				}
 
-				return $this->static;
+				return $this->repeatable;
 				break;
 
 			default:
@@ -75,7 +72,7 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -120,13 +117,16 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 			$show_link = false;
 		}
 
-		if ($show_link && ($this->item instanceof FOFTable))
+		if ($show_link && ($this->item instanceof F0FTable))
 		{
 			// Replace [ITEM:ID] in the URL with the item's key value (usually:
 			// the auto-incrementing numeric ID)
 			$keyfield = $this->item->getKeyName();
 			$replace  = $this->item->$keyfield;
 			$link_url = str_replace('[ITEM:ID]', $replace, $link_url);
+
+			// Replace the [ITEMID] in the URL with the current Itemid parameter
+			$link_url = str_replace('[ITEMID]', JFactory::getApplication()->input->getInt('Itemid', 0), $link_url);
 
 			// Replace other field variables in the URL
 			$fields = $this->item->getFields();
@@ -155,7 +155,7 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
 
-		$value = FOFFormFieldList::getOptionName($this->getOptions(), $this->value);
+		$value = F0FFormFieldList::getOptionName($this->getOptions(), $this->value);
 
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($value))
@@ -219,13 +219,13 @@ class FOFFormFieldModel extends FOFFormFieldList implements FOFFormField
 		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 		// Explode model name into model name and prefix
-		$parts = FOFInflector::explode($modelName);
+		$parts = F0FInflector::explode($modelName);
 		$mName = ucfirst(array_pop($parts));
-		$mPrefix = FOFInflector::implode($parts);
+		$mPrefix = F0FInflector::implode($parts);
 
 		// Get the model object
 		$config = array('savestate' => 0);
-		$model = FOFModel::getTmpInstance($mName, $mPrefix, $config);
+		$model = F0FModel::getTmpInstance($mName, $mPrefix, $config);
 
 		if ($applyAccess)
 		{

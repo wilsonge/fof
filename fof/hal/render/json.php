@@ -2,10 +2,10 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  hal
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Implements the HAL over JSON renderer
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFHalRenderJson implements FOFHalRenderInterface
+class F0FHalRenderJson implements F0FHalRenderInterface
 {
 	/**
 	 * When data is an array we'll output the list of data under this key
@@ -25,14 +25,14 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 	/**
 	 * The document to render
 	 *
-	 * @var   FOFHalDocument
+	 * @var   F0FHalDocument
 	 */
 	protected $_document;
 
 	/**
 	 * Public constructor
 	 *
-	 * @param   FOFHalDocument  &$document  The document to render
+	 * @param   F0FHalDocument  &$document  The document to render
 	 */
 	public function __construct(&$document)
 	{
@@ -102,7 +102,7 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 
 				foreach ($embeddeddocs as $embedded)
 				{
-					$renderer = new FOFHalRenderJson($embedded);
+					$renderer = new F0FHalRenderJson($embedded);
 					array_push($serialiseThis->_embedded->$rel, $renderer->render($options));
 				}
 			}
@@ -113,7 +113,7 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 
 		if (is_object($data))
 		{
-			if ($data instanceof FOFTable)
+			if ($data instanceof F0FTable)
 			{
 				$data = $data->getData();
 			}
@@ -139,14 +139,14 @@ class FOFHalRenderJson implements FOFHalRenderInterface
 	}
 
 	/**
-	 * Converts a FOFHalLink object into a stdClass object which will be used
+	 * Converts a F0FHalLink object into a stdClass object which will be used
 	 * for JSON serialisation
 	 *
-	 * @param   FOFHalLink  $link  The link you want converted
+	 * @param   F0FHalLink  $link  The link you want converted
 	 *
 	 * @return  stdClass  The converted link object
 	 */
-	protected function _getLink(FOFHalLink $link)
+	protected function _getLink(F0FHalLink $link)
 	{
 		$ret = array(
 			'href'	=> $link->href

@@ -73,9 +73,12 @@
 	
 	<target name="library-package" description="FOF Installation Package for Joomla! 1.6+"
 		depends="new-release,setup-properties">
-		
-		<!-- Generate XML file -->
-		<copy file="./templates/lib_fof.xml" tofile="${dirs.root}/lib_fof.xml" overwrite="true">
+
+		<!-- Generate files_strapper.xml and version.php for Akeeba Strapper -->
+		<copy todir="${dirs.root}" overwrite="true">
+			<fileset dir="./templates">
+				<include name="strapper/**" />
+			</fileset>
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
 					<token key="DATE" value="${git.date}" />
@@ -83,8 +86,18 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
-		<copy file="${dirs.root}/lib_fof.xml" tofile="${dirs.library}/lib_fof.xml" overwrite="true" />
-		
+
+		<!-- Generate XML file for FOF -->
+		<copy file="./templates/lib_f0f.xml" tofile="${dirs.root}/lib_f0f.xml" overwrite="true">
+			<filterchain>
+				<replacetokens begintoken="##" endtoken="##">
+					<token key="DATE" value="${git.date}" />
+					<token key="VERSION" value="${version}" />
+				</replacetokens>
+			</filterchain>
+		</copy>
+		<copy file="${dirs.root}/lib_f0f.xml" tofile="${dirs.library}/lib_f0f.xml" overwrite="true" />
+
 		<!-- Generate version.txt file for FOF -->
 		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
 			<filterchain>
@@ -103,8 +116,8 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
-		
-		<!-- Generate main include file -->
+
+		<!-- Generate include file for FOF -->
 		<copy file="./templates/include.php" tofile="${dirs.library}/include.php" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
@@ -113,7 +126,7 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
-		
+
 		<!-- Create the package -->
 		<zipme basedir="${dirs.library}" prefix="fof/" destfile="${dirs.release}/lib_fof-${version}.zip" includeemptydirs="true">
 			<fileset dir="${dirs.library}" id="library">
@@ -122,14 +135,14 @@
 		</zipme>
 		<zipme basedir="${dirs.root}" destfile="${dirs.release}/lib_fof-${version}.zip" includeemptydirs="true">
 			<fileset dir="${dirs.root}">
-				<include name="lib_fof.xml" />
+				<include name="lib_f0f.xml" />
 			</fileset>
 		</zipme>
-		
+
 		<!-- Clean up -->
 		<delete>
 			<fileset dir="${dirs.root}">
-				<include name="lib_fof.xml" />
+				<include name="lib_f0f.xml" />
 			</fileset>
 		</delete>
 	</target>
@@ -141,17 +154,65 @@
 	-->
 	
 	<target name="doc-pdf" description="Documentation in PDF format">
-		<exec command="xsltproc --nonet --xinclude --novalid --stringparam img.src.path ${dirs.documentation}/ --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/fof-guide.fo ${dirs.bin.dbxsl}/fo/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
+		<exec command="xsltproc --nonet --xinclude --novalid --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/fof-guide.fo ${dirs.bin.dbxsl}/fo/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
 		<exec command="${dirs.bin.fop}/fop -fo ${dirs.bin.release}/fof-guide.fo -pdf ${dirs.bin.release}/fof-guide.pdf" logoutput="true" />
 		<delete file="${dirs.release}/fof-guide.fo" quiet="yes" />
 	</target>
 	
+	<target name="doc-html" description="Documentation in single-page HTML format">
+		<exec command="xsltproc --nonet --xinclude --novalid --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --stringparam fop1.extensions 1 --output ${dirs.bin.release}/fof-guide.html ${dirs.bin.dbxsl}/html/docbook.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
+	</target>
+
+    <target name="doc-epub" description="Documentation in ePub format">
+        <mkdir dir="${dirs.bin.release}/tmp" />
+        <mkdir dir="${dirs.bin.release}/tmp/OEBPS" />
+        <mkdir dir="${dirs.bin.release}/tmp/OEBPS/images" />
+        <copy todir="${dirs.bin.release}/tmp/OEBPS/images">
+            <fileset dir="${dirs.documentation}/images">
+                <include name="*.png" />
+                <include name="*.jpg" />
+                <include name="*.jpeg" />
+                <include name="*.gif" />
+            </fileset>
+        </copy>
+
+        <exec command="xsltproc --nonet --xinclude --novalid --stringparam epub.stylesheet style.css --stringparam body.start.indent 0 --stringparam variablelist.term.break.after 1 --stringparam variablelist.term.separator &quot;&quot; --stringparam variablelist.max.termlength 12 --stringparam section.autolabel 1 --stringparam toc.section.depth 5 --output ${dirs.bin.release}/tmp/fof-guide.epub ${dirs.bin.dbxsl}/epub3/chunk.xsl ${dirs.documentation}/fof-guide.xml" dir="${project.basedir}" />
+
+        <copy todir="${dirs.bin.release}/tmp">
+            <fileset dir="./templates/epub">
+                <include name="mimetype" />
+            </fileset>
+        </copy>
+        <copy todir="${dirs.bin.release}/tmp/META-INF">
+            <fileset dir="./templates/epub">
+                <include name="com.apple.ibooks.display-options.xml" />
+            </fileset>
+        </copy>
+        <copy todir="${dirs.bin.release}/tmp/OEBPS" overwrite="true">
+            <fileset dir="./templates/epub">
+                <include name="docbook-epub.css" />
+            </fileset>
+        </copy>
+
+        <zip destfile="${dirs.bin.release}/fof-guide.epub" basedir="${dirs.bin.release}/tmp">
+            <fileset dir="${dirs.bin.release}/tmp">
+                <include name="**" />
+            </fileset>
+        </zip>
+
+        <delete dir="${dirs.bin.release}/tmp" quiet="true" />
+    </target>
+
 	<!--
 	====================================================================================================
 	Tasks - Project management
 	====================================================================================================
 	-->
-	
+    <target name="link" description="Internal linker">
+        <exec command="php ../buildfiles/tools/link.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />
+        <!--<exec command="php ../buildfiles/tools/langlink.php ${application.startdir}/.." dir="${application.startdir}/.." passthru="true" />-->
+    </target>
+
 	<target name="docsdeploy" depends="docsdeploy-fofguide">
 		<echo>All FOF documentation has been uploaded</echo>
 	</target>

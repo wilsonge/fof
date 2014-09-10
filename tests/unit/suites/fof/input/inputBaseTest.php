@@ -3,17 +3,17 @@
  * @package     FrameworkOnFramework.UnitTest
  * @subpackage  Input
  *
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
- * Test class for FOFString
+ * Test class for F0FString
  *
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class FOFInputTestBase extends PHPUnit_Framework_TestCase
+class F0FInputTestBase extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * [setUp description]
@@ -32,7 +32,7 @@ class FOFInputTestBase extends PHPUnit_Framework_TestCase
 					'var4' => 'four'
 				);
 
-		$this->FOFInput = new FOFInput($data);
+		$this->F0FInput = new F0FInput($data);
 	}
 
 	/**
@@ -56,15 +56,15 @@ class FOFInputTestBase extends PHPUnit_Framework_TestCase
 	 */
 	public function testGetVar()
 	{
-		$this->assertEquals('one', $this->FOFInput->get('var1'));
-		$this->assertEquals('two', $this->FOFInput->get('var2'));
-		$this->assertEquals('three', $this->FOFInput->get('var3'));
-		$this->assertEquals('four', $this->FOFInput->get('var4'));
-		$this->assertEquals(13, $this->FOFInput->get('int13'));
-		$this->assertEquals(true, is_array($this->FOFInput->get('anarray')));
-		$this->assertArrayHasKey('a', $this->FOFInput->get('anarray'));
-		$this->assertArrayHasKey('B', $this->FOFInput->get('anarray'));
-		$this->assertArrayHasKey('z', $this->FOFInput->get('anarray'));
+		$this->assertEquals('one', $this->F0FInput->get('var1'));
+		$this->assertEquals('two', $this->F0FInput->get('var2'));
+		$this->assertEquals('three', $this->F0FInput->get('var3'));
+		$this->assertEquals('four', $this->F0FInput->get('var4'));
+		$this->assertEquals(13, $this->F0FInput->get('int13'));
+		$this->assertEquals(true, is_array($this->F0FInput->get('anarray')));
+		$this->assertArrayHasKey('a', $this->F0FInput->get('anarray'));
+		$this->assertArrayHasKey('B', $this->F0FInput->get('anarray'));
+		$this->assertArrayHasKey('z', $this->F0FInput->get('anarray'));
 	}
 
 	/**
@@ -74,8 +74,8 @@ class FOFInputTestBase extends PHPUnit_Framework_TestCase
 	 */
 	public function testGetVarDefault()
 	{
-		$this->assertEquals('one', $this->FOFInput->get('var1', 'dumdidilidum'));
-		$this->assertEquals('myDefaulfValue', $this->FOFInput->get('var100', 'myDefaulfValue'));
+		$this->assertEquals('one', $this->F0FInput->get('var1', 'dumdidilidum'));
+		$this->assertEquals('myDefaulfValue', $this->F0FInput->get('var100', 'myDefaulfValue'));
 	}
 
 	/**
@@ -85,7 +85,7 @@ class FOFInputTestBase extends PHPUnit_Framework_TestCase
 	 */
 	public function testGetData()
 	{
-		$theData = $this->FOFInput->getData();
+		$theData = $this->F0FInput->getData();
 		$this->assertEquals('one', $theData['var1']);
 		$this->assertEquals('two', $theData['var2']);
 		$this->assertEquals('three', $theData['var3']);
@@ -99,8 +99,8 @@ class FOFInputTestBase extends PHPUnit_Framework_TestCase
 	 */
 	public function testMagicGet()
 	{
-		$this->assertEquals('one', $this->FOFInput->getString('var1'));
-		$this->assertEquals(13, $this->FOFInput->getInt('int13'));
+		$this->assertEquals('one', $this->F0FInput->getString('var1'));
+		$this->assertEquals(13, $this->F0FInput->getInt('int13'));
 	}
 
 }

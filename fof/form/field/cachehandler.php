@@ -2,34 +2,31 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldCacheHandler'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/cachehandler.php';
-}
+JFormHelper::loadFieldClass('cachehandler');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Joomla! cache handlers
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFFormField
+class F0FFormFieldCachehandler extends JFormFieldCacheHandler implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -61,7 +58,7 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 					$this->repeatable = $this->getRepeatable();
 				}
 
-				return $this->static;
+				return $this->repeatable;
 				break;
 
 			default:
@@ -82,7 +79,7 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -99,7 +96,7 @@ class FOFFormFieldCachehandler extends JFormFieldCacheHandler implements FOFForm
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars(FOFFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 }

@@ -2,11 +2,11 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage encrypt
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * A simple implementation of AES-128, AES-192 and AES-256 encryption using the
@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFEncryptAes
+class F0FEncryptAes
 {
 	/** @var string The AES cipher to use (this is an mcrypt identifier, not the bit strength) */
 	private $_cipherType = 0;

@@ -2,11 +2,11 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  layout
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Base class for rendering a display layout
@@ -21,7 +21,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFLayoutFile extends JLayoutFile
+class F0FLayoutFile extends JLayoutFile
 {
 	/**
 	 * Method to finds the full real file path, checking possible overrides
@@ -30,7 +30,7 @@ class FOFLayoutFile extends JLayoutFile
 	 */
 	protected function getPath()
 	{
-		jimport('joomla.filesystem.path');
+		$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		if (is_null($this->fullPath) && !empty($this->layoutId))
 		{
@@ -38,7 +38,7 @@ class FOFLayoutFile extends JLayoutFile
 			$file  = array_pop($parts);
 
 			$filePath = implode('/', $parts);
-			$suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
+			$suffixes = F0FPlatform::getInstance()->getTemplateSuffixes();
 
 			foreach ($suffixes as $suffix)
 			{
@@ -47,8 +47,11 @@ class FOFLayoutFile extends JLayoutFile
 
 			$files[] = $file . '.php';
 
+            $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
+            $prefix       = F0FPlatform::getInstance()->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
+
 			$possiblePaths = array(
-				JPATH_THEMES . '/' . JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,
+				$prefix . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,
 				$this->basePath . '/' . $filePath
 			);
 
@@ -56,7 +59,7 @@ class FOFLayoutFile extends JLayoutFile
 
 			while ((list(, $fileName) = each($files)) && is_null($this->fullPath))
 			{
-				$r = JPath::find($possiblePaths, $fileName);
+				$r = $filesystem->pathFind($possiblePaths, $fileName);
 				$this->fullPath = $r === false ? null : $r;
 			}
 		}

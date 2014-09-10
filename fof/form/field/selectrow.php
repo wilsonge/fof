@@ -2,28 +2,28 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Renders the checkbox in browse views which allows you to select rows
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldSelectrow extends JFormField implements FOFFormField
+class F0FFormFieldSelectrow extends JFormField implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -55,7 +55,7 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 					$this->repeatable = $this->getRepeatable();
 				}
 
-				return $this->static;
+				return $this->repeatable;
 				break;
 
 			default:
@@ -98,19 +98,20 @@ class FOFFormFieldSelectrow extends JFormField implements FOFFormField
 	 */
 	public function getRepeatable()
 	{
-		if (!($this->item instanceof FOFTable))
+		if (!($this->item instanceof F0FTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new Exception(__CLASS__ . ' needs a F0FTable to act upon');
 		}
 
 		// Is this record checked out?
 		$checked_out     = false;
 		$locked_by_field = $this->item->getColumnAlias('locked_by');
+		$myId            = JFactory::getUser()->get('id', 0);
 
 		if (property_exists($this->item, $locked_by_field))
 		{
 			$locked_by   = $this->item->$locked_by_field;
-			$checked_out = ($locked_by != 0);
+			$checked_out = ($locked_by != 0 && $locked_by != $myId);
 		}
 
 		// Get the key id for this record

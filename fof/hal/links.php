@@ -2,10 +2,10 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  hal
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Implementation of the Hypertext Application Language links in PHP. This is
@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFHalLinks
+class F0FHalLinks
 {
 	/**
 	 * The collection of links, sorted by relation
@@ -29,14 +29,14 @@ class FOFHalLinks
 	 * @param   string      $rel        The relation of the link to the document. See RFC 5988
 	 *                                  http://tools.ietf.org/html/rfc5988#section-6.2.2 A document
 	 *                                  MUST always have a "self" link.
-	 * @param   FOFHalLink  $link       The actual link object
+	 * @param   F0FHalLink  $link       The actual link object
 	 * @param   boolean     $overwrite  When false and a link of $rel relation exists, an array of
 	 *                                  links is created. Otherwise the existing link is overwriten
 	 *                                  with the new one
 	 *
 	 * @return  boolean  True if the link was added to the collection
 	 */
-	public function addLink($rel, FOFHalLink $link, $overwrite = true)
+	public function addLink($rel, F0FHalLink $link, $overwrite = true)
 	{
 		if (!$link->check())
 		{
@@ -66,7 +66,7 @@ class FOFHalLinks
 	 * Add multiple links to the links collection
 	 *
 	 * @param   string   $rel        The relation of the links to the document. See RFC 5988.
-	 * @param   array    $links      An array of FOFHalLink objects
+	 * @param   array    $links      An array of F0FHalLink objects
 	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array
 	 *                               of links is created. Otherwise the existing link is
 	 *                               overwriten with the new one
@@ -84,7 +84,7 @@ class FOFHalLinks
 
 		foreach ($links as $link)
 		{
-			if ($link instanceof FOFHalLink)
+			if ($link instanceof F0FHalLink)
 			{
 				$this->addLink($rel, $link, $localOverwrite);
 			}
@@ -104,7 +104,7 @@ class FOFHalLinks
 	 *
 	 * @param   string  $rel  Optional; the relation to return the links for
 	 *
-	 * @return  array|FOFHalLink
+	 * @return  array|F0FHalLink
 	 */
 	public function getLinks($rel = null)
 	{

@@ -2,11 +2,11 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  utils
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Helper class with utilitarian functions concerning strings
@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-abstract class FOFStringUtils
+abstract class F0FStringUtils
 {
 	/**
 	 * Convert a string into a slug (alias), suitable for use in URLs. Please
@@ -57,7 +57,7 @@ abstract class FOFStringUtils
 	 */
 	public static function toASCII($value)
 	{
-		$string = htmlentities(utf8_decode($value));
+		$string = htmlentities(utf8_decode($value), null, 'ISO-8859-1');
 		$string = preg_replace(
 			array('/&szlig;/', '/&(..)lig;/', '/&([aouAOU])uml;/', '/&(.)[^;]*;/'), array('ss', "$1", "$1" . 'e', "$1"), $string
 		);

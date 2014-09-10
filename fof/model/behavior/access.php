@@ -2,11 +2,11 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  model
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework model behavior class to filter front-end access to items
@@ -15,13 +15,13 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFModelBehaviorAccess extends FOFModelBehavior
+class F0FModelBehaviorAccess extends F0FModelBehavior
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
-	 * @param   FOFModel        &$model  The model which calls this event
+	 * @param   F0FModel        &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The model which calls this event
 	 *
 	 * @return  void
@@ -29,13 +29,13 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 	public function onAfterBuildQuery(&$model, &$query)
 	{
 		// This behavior only applies to the front-end.
-		if (!FOFPlatform::getInstance()->isFrontend())
+		if (!F0FPlatform::getInstance()->isFrontend())
 		{
 			return;
 		}
 
 		// Get the name of the access field
-		$table = $model->getTable();
+		$table       = $model->getTable();
 		$accessField = $table->getColumnAlias('access');
 
 		// Make sure the field actually exists
@@ -48,17 +48,17 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 	}
 
 	/**
-	 * The event runs after FOFModel has called FOFTable and retrieved a single
+	 * The event runs after F0FModel has called F0FTable and retrieved a single
 	 * item from the database. It is used to apply automatic filters.
 	 *
-	 * @param   FOFModel  &$model   The model which was called
-	 * @param   FOFTable  &$record  The record loaded from the databae
+	 * @param   F0FModel  &$model   The model which was called
+	 * @param   F0FTable  &$record  The record loaded from the databae
 	 *
 	 * @return  void
 	 */
 	public function onAfterGetItem(&$model, &$record)
 	{
-		if ($record instanceof FOFTable)
+		if ($record instanceof F0FTable)
 		{
 			$fieldName = $record->getColumnAlias('access');
 
@@ -69,7 +69,7 @@ class FOFModelBehaviorAccess extends FOFModelBehavior
 			}
 
 			// Get the user
-			$user = FOFPlatform::getInstance()->getUser();
+			$user = F0FPlatform::getInstance()->getUser();
 
 			// Filter by authorised access levels
 			if (!in_array($record->$fieldName, $user->getAuthorisedViewLevels()))

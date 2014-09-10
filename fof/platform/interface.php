@@ -2,15 +2,15 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  platform
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * Part of the FOF Platform Abstraction Layer. It implements everything that
- * depends on the platform FOF is running under, e.g. the Joomla! CMS front-end,
+ * Part of the F0F Platform Abstraction Layer. It implements everything that
+ * depends on the platform F0F is running under, e.g. the Joomla! CMS front-end,
  * the Joomla! CMS back-end, a CLI Joomla! Platform app, a bespoke Joomla!
  * Platform / Framework web application and so on.
  *
@@ -21,8 +21,15 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-interface FOFPlatformInterface
+interface F0FPlatformInterface
 {
+    /**
+     * Checks if the current script is run inside a valid CMS execution
+     *
+     * @return bool
+     */
+    public function checkExecution();
+
 	/**
 	 * Set the error Handling, if possible
 	 *
@@ -33,6 +40,17 @@ interface FOFPlatformInterface
 	 * @return  void
 	 */
 	public function setErrorHandling($level, $log_level, $options = array());
+
+    /**
+     * Raises an error, using the logic requested by the CMS (PHP Exception or dedicated class)
+     *
+     * @param   integer  $code
+     * @param   string   $message
+     *
+     * @return mixed
+     */
+    public function raiseError($code, $message);
+
 	/**
 	 * Returns the ordering of the platform class. Files with a lower ordering
 	 * number will be loaded first.
@@ -42,14 +60,84 @@ interface FOFPlatformInterface
 	public function getOrdering();
 
 	/**
+	 * Returns a platform integration object
+	 *
+	 * @param   string  $key  The key name of the platform integration object, e.g. 'filesystem'
+	 *
+	 * @return  object
+	 *
+	 * @since  2.1.2
+	 */
+	public function getIntegrationObject($key);
+
+	/**
+	 * Forces a platform integration object instance
+	 *
+	 * @param   string  $key     The key name of the platform integration object, e.g. 'filesystem'
+	 * @param   object  $object  The object to force for this key
+	 *
+	 * @return  object
+	 *
+	 * @since  2.1.2
+	 */
+	public function setIntegrationObject($key, $object);
+
+	/**
 	 * Is this platform enabled? This is used for automatic platform detection.
 	 * If the environment we're currently running in doesn't seem to be your
 	 * platform return false. If many classes return true, the one with the
-	 * lowest order will be picked by FOFPlatform.
+	 * lowest order will be picked by F0FPlatform.
 	 *
 	 * @return  boolean
 	 */
 	public function isEnabled();
+
+	/**
+	 * Returns the (internal) name of the platform implementation, e.g.
+	 * "joomla", "foobar123" etc. This MUST be the last part of the platform
+	 * class name. For example, if you have a plaform implementation class
+	 * F0FPlatformFoobar you MUST return "foobar" (all lowercase).
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformName();
+
+	/**
+	 * Returns the version number string of the platform, e.g. "4.5.6". If
+	 * implementation integrates with a CMS or a versioned foundation (e.g.
+	 * a framework) it is advisable to return that version.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformVersion();
+
+	/**
+	 * Returns the human readable platform name, e.g. "Joomla!", "Joomla!
+	 * Framework", "Something Something Something Framework" etc.
+	 *
+	 * @return  string
+	 *
+	 * @since  2.1.2
+	 */
+	public function getPlatformHumanName();
+
+    /**
+     * Returns absolute path to directories used by the CMS.
+     *
+     * The return is a table with the following key:
+     * * root    Path to the site root
+     * * public  Path to the public area of the site
+     * * admin   Path to the administrative area of the site
+     * * tmp     Path to the temp directory
+     * * log     Path to the log directory
+     *
+     * @return  array  A hash array with keys root, public, admin, tmp and log.
+     */
+    public function getPlatformBaseDirs();
 
 	/**
 	 * Returns the base (root) directories for a given component. The
@@ -139,7 +227,7 @@ interface FOFPlatformInterface
 	public function loadTranslations($component);
 
 	/**
-	 * By default FOF will only use the Controller's onBefore* methods to
+	 * By default F0F will only use the Controller's onBefore* methods to
 	 * perform user authorisation. In some cases, like the Joomla! back-end,
 	 * you alos need to perform component-wide user authorisation in the
 	 * Dispatcher. This method MUST implement this authorisation check. If you
@@ -160,7 +248,7 @@ interface FOFPlatformInterface
 	 *
 	 * @param   string    $key           The user state key for the variable
 	 * @param   string    $request       The request variable name for the variable
-	 * @param   FOFInput  $input         The FOFInput object with the request (input) data
+	 * @param   F0FInput  $input         The F0FInput object with the request (input) data
 	 * @param   mixed     $default       The default value. Default: null
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
@@ -191,10 +279,10 @@ interface FOFPlatformInterface
 	public function runPlugins($event, $data);
 
 	/**
-	 * Perform an ACL check. Please note that FOF uses by default the Joomla!
+	 * Perform an ACL check. Please note that F0F uses by default the Joomla!
 	 * CMS convention for ACL privileges, e.g core.edit for the edit privilege.
 	 * If your platform uses different conventions you'll have to override the
-	 * FOF defaults using fof.xml or by specialising the controller.
+	 * F0F defaults using fof.xml or by specialising the controller.
 	 *
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
@@ -215,14 +303,29 @@ interface FOFPlatformInterface
 
 	/**
 	 * Returns the JDocument object which handles this component's response. You
-	 * may also return null and FOF will a. try to figure out the output type by
+	 * may also return null and F0F will a. try to figure out the output type by
 	 * examining the "format" input parameter (or fall back to "html") and b.
-	 * FOF will not attempt to load CSS and Javascript files (as it doesn't make
+	 * F0F will not attempt to load CSS and Javascript files (as it doesn't make
 	 * sense if there's no JDocument to handle them).
 	 *
 	 * @return  JDocument
 	 */
 	public function getDocument();
+
+    /**
+     * Returns an object to handle dates
+     *
+     * @param   mixed   $time       The initial time
+     * @param   null    $tzOffest   The timezone offset
+     * @param   bool    $locale     Should I try to load a specific class for current language?
+     *
+     * @return  JDate object
+     */
+    public function getDate($time = 'now', $tzOffest = null, $locale = true);
+
+    public function getLanguage();
+
+    public function getDbo();
 
 	/**
 	 * Is this the administrative section of the component?
@@ -261,13 +364,15 @@ interface FOFPlatformInterface
 	 * @param   string  $version2  Second version number
 	 * @param   string  $operator  Operator (see version_compare for valid operators)
 	 *
+     * @deprecated Use PHP's version_compare against JVERSION in your code. This method is scheduled for removal in F0F 3.0
+     *
 	 * @return  boolean
 	 */
 	public function checkVersion($version1, $version2, $operator);
 
 	/**
 	 * Saves something to the cache. This is supposed to be used for system-wide
-	 * FOF data, not application data.
+	 * F0F data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to save
 	 * @param   string  $content  The actual data to save
@@ -278,7 +383,7 @@ interface FOFPlatformInterface
 
 	/**
 	 * Retrieves data from the cache. This is supposed to be used for system-side
-	 * FOF data, not application data.
+	 * F0F data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to retrieve
 	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
@@ -288,22 +393,29 @@ interface FOFPlatformInterface
 	public function getCache($key, $default = null);
 
 	/**
-	 * Clears the cache of system-wide FOF data. You are supposed to call this in
+	 * Clears the cache of system-wide F0F data. You are supposed to call this in
 	 * your components' installation script post-installation and post-upgrade
 	 * methods or whenever you are modifying the structure of database tables
-	 * accessed by FOF. Please note that FOF's cache never expires and is not
+	 * accessed by F0F. Please note that F0F's cache never expires and is not
 	 * purged by Joomla!. You MUST use this method to manually purge the cache.
 	 *
 	 * @return  boolean  True on success
 	 */
 	public function clearCache();
 
+    /**
+     * Returns an object that holds the configuration of the current site.
+     *
+     * @return  mixed
+     */
+    public function getConfig();
+
 	/**
-	 * Is the global FOF cache enabled?
+	 * Is the global F0F cache enabled?
 	 *
 	 * @return  boolean
 	 */
-	public function isGlobalFOFCacheEnabled();
+	public function isGlobalF0FCacheEnabled();
 
 	/**
 	 * logs in a user
@@ -321,13 +433,55 @@ interface FOFPlatformInterface
 	 */
 	public function logoutUser();
 
+    public function logAddLogger($file);
+
 	/**
 	 * Logs a deprecated practice. In Joomla! this results in the $message being output in the
 	 * deprecated log file, found in your site's log directory.
 	 *
-	 * @param   $message  The deprecated practice log message
+	 * @param   string  $message  The deprecated practice log message
 	 *
 	 * @return  void
 	 */
 	public function logDeprecated($message);
+
+    public function logDebug($message);
+
+    /**
+     * Returns the root URI for the request.
+     *
+     * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+     * @param   string   $path      The path
+     *
+     * @return  string  The root URI string.
+     */
+    public function URIroot($pathonly = false, $path = null);
+
+    /**
+     * Returns the base URI for the request.
+     *
+     * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+     * |
+     * @return  string  The base URI string
+     */
+    public function URIbase($pathonly = false);
+
+    /**
+     * Method to set a response header.  If the replace flag is set then all headers
+     * with the given name will be replaced by the new one (only if the current platform supports header caching)
+     *
+     * @param   string   $name     The name of the header to set.
+     * @param   string   $value    The value of the header to set.
+     * @param   boolean  $replace  True to replace any headers with the same name.
+     *
+     * @return  void
+     */
+    public function setHeader($name, $value, $replace = false);
+
+    /**
+     * In platforms that perform header caching, send all headers.
+     *
+     * @return  void
+     */
+    public function sendHeaders();
 }

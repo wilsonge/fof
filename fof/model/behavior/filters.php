@@ -2,11 +2,11 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  model
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework model behavior class
@@ -14,13 +14,13 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFModelBehaviorFilters extends FOFModelBehavior
+class F0FModelBehaviorFilters extends F0FModelBehavior
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
-	 * @param   FOFModel        &$model  The model which calls this event
+	 * @param   F0FModel        &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The model which calls this event
 	 *
 	 * @return  void
@@ -43,9 +43,13 @@ class FOFModelBehaviorFilters extends FOFModelBehavior
 			$filterName = ($field->name == $tableKey) ? 'id' : $field->name;
 			$filterState = $model->getState($filterName, null);
 
-			$field = FOFModelField::getField($field, array('dbo' => $db, 'table_alias' => $model->getTableAlias()));
+			$field = F0FModelField::getField($field, array('dbo' => $db, 'table_alias' => $model->getTableAlias()));
 
-			if ((is_array($filterState) && array_key_exists('value', $filterState)) || is_object($filterState))
+			if ((is_array($filterState) && (
+					array_key_exists('value', $filterState) ||
+					array_key_exists('from', $filterState) ||
+					array_key_exists('to', $filterState)
+				)) || is_object($filterState))
 			{
 				$options = new JRegistry($filterState);
 			}

@@ -2,33 +2,30 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldGroupedList'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/groupedlist.php';
-}
+JFormHelper::loadFieldClass('groupedlist');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Supports a generic list of options.
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormField
+class F0FFormFieldGroupedlist extends JFormFieldGroupedList implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -60,7 +57,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 					$this->repeatable = $this->getRepeatable();
 				}
 
-				return $this->static;
+				return $this->repeatable;
 				break;
 
 			default:
@@ -80,7 +77,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
-		$selected = self::getOptionName($this->getOptions(), $this->value);
+		$selected = self::getOptionName($this->getGroups(), $this->value);
 
 		if (is_null($selected))
 		{
@@ -110,7 +107,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
-		$selected = self::getOptionName($this->getOptions(), $this->value);
+		$selected = self::getOptionName($this->getGroups(), $this->value);
 
 		if (is_null($selected))
 		{
@@ -171,7 +168,7 @@ class FOFFormFieldGroupedlist extends JFormFieldGroupedList implements FOFFormFi
 				$label = '';
 			}
 
-			$match = FOFFormFieldList::getOptionName($data, $selected, $optKey, $optText);
+			$match = F0FFormFieldList::getOptionName($data, $selected, $optKey, $optText);
 
 			if (!is_null($match))
 			{

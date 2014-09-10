@@ -2,13 +2,11 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  view
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
-
-JLoader::import('joomla.application.component.view');
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework JSON View class. Renders the data as a JSON object or
@@ -17,7 +15,7 @@ JLoader::import('joomla.application.component.view');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFViewJson extends FOFViewHtml
+class F0FViewJson extends F0FViewHtml
 {
 	/**
 	 * When set to true we'll add hypermedia to the output, implementing the
@@ -55,9 +53,9 @@ class FOFViewJson extends FOFViewHtml
 		$model = $this->getModel();
 
 		$items = $model->getItemList();
-		$this->assignRef('items', $items);
+		$this->items = $items;
 
-		$document = FOFPlatform::getInstance()->getDocument();
+		$document = F0FPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -76,10 +74,7 @@ class FOFViewJson extends FOFViewHtml
 			$tpl = 'json';
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
-		}
+		F0FPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
@@ -95,14 +90,6 @@ class FOFViewJson extends FOFViewHtml
 		catch (Exception $e)
 		{
 			$hasFailed = true;
-		}
-
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			if ($result instanceof Exception)
-			{
-				$hasFailed = true;
-			}
 		}
 
 		if ($hasFailed)
@@ -156,9 +143,9 @@ class FOFViewJson extends FOFViewHtml
 		$model = $this->getModel();
 
 		$item = $model->getItem();
-		$this->assign('item', $item);
+		$this->item = $item;
 
-		$document = FOFPlatform::getInstance()->getDocument();
+		$document = F0FPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -177,10 +164,7 @@ class FOFViewJson extends FOFViewHtml
 			$tpl = 'json';
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
-		}
+    	F0FPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
@@ -196,14 +180,6 @@ class FOFViewJson extends FOFViewHtml
 		catch (Exception $e)
 		{
 			$hasFailed = true;
-		}
-
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			if ($result instanceof Exception)
-			{
-				$hasFailed = true;
-			}
 		}
 
 		if ($hasFailed)
@@ -246,12 +222,12 @@ class FOFViewJson extends FOFViewHtml
 	}
 
 	/**
-	 * Creates a FOFHalDocument using the provided data
+	 * Creates a F0FHalDocument using the provided data
 	 *
 	 * @param   array     $data   The data to put in the document
-	 * @param   FOFModel  $model  The model of this view
+	 * @param   F0FModel  $model  The model of this view
 	 *
-	 * @return  FOFHalDocument  A HAL-enabled document
+	 * @return  F0FHalDocument  A HAL-enabled document
 	 */
 	protected function _createDocumentWithHypermedia($data, $model = null)
 	{
@@ -269,22 +245,22 @@ class FOFViewJson extends FOFViewHtml
 		if ($count == 1)
 		{
 			reset($data);
-			$document = new FOFHalDocument(end($data));
+			$document = new F0FHalDocument(end($data));
 		}
 		else
 		{
-			$document = new FOFHalDocument($data);
+			$document = new F0FHalDocument($data);
 		}
 
 		// Create a self link
 		$uri = (string) (JUri::getInstance());
 		$uri = $this->_removeURIBase($uri);
 		$uri = JRoute::_($uri);
-		$document->addLink('self', new FOFHalLink($uri));
+		$document->addLink('self', new F0FHalLink($uri));
 
 		// Create relative links in a record list context
 
-		if (is_array($data) && ($model instanceof FOFModel))
+		if (is_array($data) && ($model instanceof F0FModel))
 		{
 			$pagination = $model->getPagination();
 
@@ -299,7 +275,7 @@ class FOFViewJson extends FOFViewHtml
 				$uri->setVar('limitstart', 0);
 				$uri = JRoute::_((string) $uri);
 
-				$document->addLink('first', new FOFHalLink($uri));
+				$document->addLink('first', new F0FHalLink($uri));
 
 				// Do we need a "prev" link?
 
@@ -311,7 +287,7 @@ class FOFViewJson extends FOFViewHtml
 					$uri->setVar('limitstart', $limitstart);
 					$uri = JRoute::_((string) $uri);
 
-					$document->addLink('prev', new FOFHalLink($uri));
+					$document->addLink('prev', new F0FHalLink($uri));
 				}
 
 				// Do we need a "next" link?
@@ -324,7 +300,7 @@ class FOFViewJson extends FOFViewHtml
 					$uri->setVar('limitstart', $limitstart);
 					$uri = JRoute::_((string) $uri);
 
-					$document->addLink('next', new FOFHalLink($uri));
+					$document->addLink('next', new F0FHalLink($uri));
 				}
 
 				// The "last" link?
@@ -334,7 +310,7 @@ class FOFViewJson extends FOFViewHtml
 				$uri->setVar('limitstart', $limitstart);
 				$uri = JRoute::_((string) $uri);
 
-				$document->addLink('last', new FOFHalLink($uri));
+				$document->addLink('last', new F0FHalLink($uri));
 			}
 		}
 
@@ -354,7 +330,7 @@ class FOFViewJson extends FOFViewHtml
 
 		if (is_null($root))
 		{
-			$root = rtrim(JURI::base(), '/');
+			$root = rtrim(F0FPlatform::getInstance()->URIbase(), '/');
 			$rootlen = strlen($root);
 		}
 

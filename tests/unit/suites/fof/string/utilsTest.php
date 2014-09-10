@@ -3,14 +3,14 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  String
  *
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
- * Test class for FOFString
+ * Test class for F0FString
  */
-class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
+class F0FStringUtilsTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	* Test to slug method
@@ -19,7 +19,7 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 	*/
 	public function testToSlug($word, $expect, $message)
 	{
-		$string = FOFStringUtils::toSlug($word);
+		$string = F0FStringUtils::toSlug($word);
 		$this->assertEquals(
 			$expect,
 			$string,
@@ -47,7 +47,7 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 	*/
 	public function testToASCII($word, $expect, $message)
 	{
-		$string = FOFStringUtils::toSlug($word);
+		$string = F0FStringUtils::toSlug($word);
 		$this->assertEquals(
 			$expect,
 			$string,
@@ -85,6 +85,6 @@ class FOFStringUtilsTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testToBool($string, $expected)
 	{
-		$this->assertEquals($expected, FOFStringUtils::toBool($string));
+		$this->assertEquals($expected, F0FStringUtils::toBool($string));
 	}
 }

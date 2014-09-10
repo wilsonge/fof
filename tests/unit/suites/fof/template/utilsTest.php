@@ -3,14 +3,14 @@
  * @package	    FrameworkOnFramework.UnitTest
  * @subpackage  Template
  *
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
- * Test class for FOFTemplateUtils
+ * Test class for F0FTemplateUtils
  */
-class FOFTemplateUtilsTest extends FtestCase
+class F0FTemplateUtilsTest extends FtestCase
 {
 	private $_stashedServer = array();
 
@@ -41,9 +41,9 @@ class FOFTemplateUtilsTest extends FtestCase
 		$attribute->setAccessible(TRUE);
 		$attribute->setValue($application, $template);
 
-		// Replace the FOFPlatform with our fake one
-		$this->saveFOFPlatform();
-		$this->replaceFOFPlatform();
+		// Replace the F0FPlatform with our fake one
+		$this->saveF0FPlatform();
+		$this->replaceF0FPlatform();
 	}
 
 	protected function tearDown()
@@ -51,8 +51,8 @@ class FOFTemplateUtilsTest extends FtestCase
 		// Restore the JFactory
 		$this->restoreFactoryState();
 
-		// Restore the FOFPlatform object instance
-		$this->restoreFOFPlatform();
+		// Restore the F0FPlatform object instance
+		$this->restoreF0FPlatform();
 
 		// Restore the $_SERVER global
 		global $_SERVER;
@@ -95,8 +95,8 @@ class FOFTemplateUtilsTest extends FtestCase
 	 */
 	public function testAddCSS($path, $expect, $message)
 	{
-		$document = FOFPlatform::getInstance()->getDocument();
-		FOFTemplateUtils::addCSS($path);
+		$document = F0FPlatform::getInstance()->getDocument();
+		F0FTemplateUtils::addCSS($path);
 
 		$styleSheets = $this->readAttribute($document, '_styleSheets');
 
@@ -128,8 +128,8 @@ class FOFTemplateUtilsTest extends FtestCase
 	 */
 	public function testAddJS($path, $expect, $message)
 	{
-		$document = FOFPlatform::getInstance()->getDocument();
-		FOFTemplateUtils::addJS($path);
+		$document = F0FPlatform::getInstance()->getDocument();
+		F0FTemplateUtils::addJS($path);
 
 		$scripts = $this->readAttribute($document, '_scripts');
 
@@ -148,29 +148,6 @@ class FOFTemplateUtilsTest extends FtestCase
 		);
 	}
 
-	/**
-	 * Test to addLESS method
-	 */
-	public function testAddLESS()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-	/**
-	 * Test to sefSort method
-	 */
-	public function testSefSort()
-	{
-		// Remove the following lines when you implement this test.
-		$this->markTestIncomplete(
-			'This test has not been implemented yet.'
-		);
-	}
-
-
     /**
      * Test to parsePath method
      *
@@ -178,7 +155,7 @@ class FOFTemplateUtilsTest extends FtestCase
      */
     public function testParsePath($path, $localfile, $expect, $message)
     {
-        $fullurl = FOFTemplateUtils::parsePath($path, $localfile);
+        $fullurl = F0FTemplateUtils::parsePath($path, $localfile);
         $this->assertEquals(
             $expect,
             $fullurl,
@@ -203,7 +180,7 @@ class FOFTemplateUtilsTest extends FtestCase
      */
     public function testGetAltPaths($path, $expect, $normal, $message)
     {
-        $altpath = FOFTemplateUtils::getAltPaths($path);
+        $altpath = F0FTemplateUtils::getAltPaths($path);
         $this->assertEquals(
             $expect,
             $altpath[$normal],
@@ -222,24 +199,13 @@ class FOFTemplateUtilsTest extends FtestCase
 	}
 
     /**
-     * Test to loadPosition method
-     */
-    public function testLoadPosition()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
-    }
-
-    /**
      * Test to route method
      *
      * @dataProvider getTestRoute
      */
     public function testRoute($url, $expect, $message)
     {
-        $fullurl = FOFTemplateUtils::route($url);
+        $fullurl = F0FTemplateUtils::route($url);
         $this->assertEquals(
             $expect,
             $fullurl,

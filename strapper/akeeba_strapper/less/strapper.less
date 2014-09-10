@@ -1,10 +1,12 @@
-/**
+/*!
  * Akeeba Strapper
  * A handy distribution of namespaced jQuery, jQuery UI and Twitter
  * Bootstrapper for use with Akeeba components.
  *
  * This file defines Akeeba Strapper specific styling overrides
  */
+
+@import 'bootstrap/variables.less';
 
 div.akeeba-bootstrap {
 	font-size: 10pt;
@@ -32,13 +34,17 @@ div.akeeba-bootstrap {
 	
 	// Table layout fixes
 	td.order {
+        & {
+          width: 12px;
+        }
+
 		span {
 			line-height: 16px;
 			height: 16px;
 			margin: 0;
 			padding: 0;
 		}
-		
+
 		a.jgrid span.state {
 			background-repeat: no-repeat;
 			height: 12px;
@@ -48,11 +54,33 @@ div.akeeba-bootstrap {
 				line-height: 16px;
 			}
 		}
-		
-		input.text_area {
-			width: 20px;
-		}
+
+        input.text-area-order {
+          margin-bottom: 0;
+          width: 20px;
+        }
+        .sortable-handler {
+          display: block;
+          float: left;
+          margin: 1px 0 0 0;
+          padding: 5px 5px;
+        }
+
+        .order-enabled {
+          width: 60px;
+        }
+
+        .order-disabled {
+          .sortable-handler {
+            margin: 0;
+            padding: 0;
+          }
+        }
 	}
+
+    th a.save-order {
+      height: 19px;
+    }
 	
 	div {
 		// Clear fixes
@@ -79,6 +107,14 @@ div.akeeba-bootstrap {
 			display: inline;
 		}
 	}
+}
+
+#akeeba-bootstrap {
+  &:not(.joomla-version-25) {
+    input[name="cid[]"] {
+      margin: -3px 0 0 0;
+    }
+  }
 }
 
 // Icon wrapper fix

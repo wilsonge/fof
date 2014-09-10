@@ -2,33 +2,30 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldHidden'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/hidden.php';
-}
+JFormHelper::loadFieldClass('hidden');
 
 /**
- * Form Field class for the FOF framework
+ * Form Field class for the F0F framework
  * A hidden field
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormFieldHidden extends JFormFieldHidden implements FOFFormField
+class F0FFormFieldHidden extends JFormFieldHidden implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -60,7 +57,7 @@ class FOFFormFieldHidden extends JFormFieldHidden implements FOFFormField
 					$this->repeatable = $this->getRepeatable();
 				}
 
-				return $this->static;
+				return $this->repeatable;
 				break;
 
 			default:

@@ -2,14 +2,14 @@
 /**
  *  @package     FrameworkOnFramework
  *  @subpackage  autoloader
- *  @copyright   Copyright (c)2010-2012 Nicholas K. Dionysopoulos
+ *  @copyright   Copyright (c)2010-2014 Nicholas K. Dionysopoulos
  *  @license     GNU General Public License version 2, or later
  */
 
-defined('FOF_INCLUDED') or die();
+defined('F0F_INCLUDED') or die();
 
 /**
- * An autoloader for FOF-powered components. It allows the autoloading of
+ * An autoloader for F0F-powered components. It allows the autoloading of
  * various classes related to the operation of a component, from Controllers
  * and Models to Helpers and Fields. If a class doesn't exist, it will be
  * created on the fly.
@@ -18,24 +18,24 @@ defined('FOF_INCLUDED') or die();
  * @subpackage  autoloader
  * @since    2.1
  */
-class FOFAutoloaderComponent
+class F0FAutoloaderComponent
 {
 	/**
 	 * An instance of this autoloader
 	 *
-	 * @var   FOFAutoloaderComponent
+	 * @var   F0FAutoloaderComponent
 	 */
 	public static $autoloader = null;
 
 	/**
-	 * The path to the FOF root directory
+	 * The path to the F0F root directory
 	 *
 	 * @var   string
 	 */
 	public static $fofPath = null;
 
 	/**
-	 * An array holding component names and their FOF-ness status
+	 * An array holding component names and their F0F-ness status
 	 *
 	 * @var   array
 	 */
@@ -44,7 +44,7 @@ class FOFAutoloaderComponent
 	/**
 	 * Initialise this autoloader
 	 *
-	 * @return  FOFAutoloaderComponent
+	 * @return  F0FAutoloaderComponent
 	 */
 	public static function init()
 	{
@@ -73,18 +73,18 @@ class FOFAutoloaderComponent
 	}
 
 	/**
-	 * Returns true if this is a FOF-powered component, i.e. if it has a fof.xml
+	 * Returns true if this is a F0F-powered component, i.e. if it has a fof.xml
 	 * file in its main directory.
 	 *
 	 * @param   string  $component  The component's name
 	 *
 	 * @return  boolean
 	 */
-	public function isFOFComponent($component)
+	public function isF0FComponent($component)
 	{
 		if (!isset($fofComponents[$component]))
 		{
-			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+			$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
 			$fofComponents[$component] = file_exists($componentPaths['admin'] . '/fof.xml');
 		}
 
@@ -153,13 +153,13 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_controller($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        F0FPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
 		if (is_null($isCli) && is_null($isAdmin))
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			list($isCli, $isAdmin) = F0FDispatcher::isCliAdmin();
 		}
 
 		if (strpos($class_name, 'Controller') === false)
@@ -173,14 +173,12 @@ class FOFAutoloaderComponent
 		$parts = explode('_', $class_modified);
 
 		// We need three parts in the name
-
 		if (count($parts) != 3)
 		{
 			return;
 		}
 
 		// We need the second part to be "controller"
-
 		if ($parts[1] != 'controller')
 		{
 			return;
@@ -191,19 +189,18 @@ class FOFAutoloaderComponent
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
 
-		// Is this an FOF 2.1 or later component?
-
-		if (!$this->isFOFComponent($component))
+		// Is this an F0F 2.1 or later component?
+		if (!$this->isF0FComponent($component))
 		{
 			return;
 		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
-		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
-		$alt_class = FOFInflector::camelize($component_raw . '_controller_' . $alt_view);
+		$alt_view = F0FInflector::isSingular($view) ? F0FInflector::pluralize($view) : F0FInflector::singularize($view);
+		$alt_class = F0FInflector::camelize($component_raw . '_controller_' . $alt_view);
 
 		// Get the component's paths
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
 
 		// Get the proper and alternate paths and file names
 		$file = "/controllers/$view.php";
@@ -212,51 +209,46 @@ class FOFAutoloaderComponent
 		$altPath = $componentPaths['alt'];
 
 		// Try to find the proper class in the proper path
-
 		if (file_exists($path . $file))
 		{
 			@include_once $path . $file;
 		}
 
 		// Try to find the proper class in the alternate path
-
 		if (!class_exists($class_name) && file_exists($altPath . $file))
 		{
 			@include_once $altPath . $file;
 		}
 
 		// Try to find the alternate class in the proper path
-
 		if (!class_exists($alt_class) && file_exists($path . $altFile))
 		{
 			@include_once $path . $altFile;
 		}
 
 		// Try to find the alternate class in the alternate path
-
 		if (!class_exists($alt_class) && file_exists($altPath . $altFile))
 		{
 			@include_once $altPath . $altFile;
 		}
 
 		// If the alternate class exists just map the class to the alternate
-
 		if (!class_exists($class_name) && class_exists($alt_class))
 		{
 			$this->class_alias($alt_class, $class_name);
 		}
 
-		// No class found? Map to FOFController
+		// No class found? Map to F0FController
 		elseif (!class_exists($class_name))
 		{
 			if ($view != 'default')
 			{
-				$defaultClass = FOFInflector::camelize($component_raw . '_controller_default');
+				$defaultClass = F0FInflector::camelize($component_raw . '_controller_default');
 				$this->class_alias($defaultClass, $class_name);
 			}
 			else
 			{
-				$this->class_alias('FOFController', $class_name);
+				$this->class_alias('F0FController', $class_name);
 			}
 		}
 	}
@@ -270,13 +262,13 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_model($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        F0FPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
 		if (is_null($isCli) && is_null($isAdmin))
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			list($isCli, $isAdmin) = F0FDispatcher::isCliAdmin();
 		}
 
 		if (strpos($class_name, 'Model') === false)
@@ -290,14 +282,12 @@ class FOFAutoloaderComponent
 		$parts = explode('_', $class_modified);
 
 		// We need three parts in the name
-
 		if (count($parts) != 3)
 		{
 			return;
 		}
 
 		// We need the second part to be "model"
-
 		if ($parts[1] != 'model')
 		{
 			return;
@@ -308,19 +298,18 @@ class FOFAutoloaderComponent
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
 
-		// Is this an FOF 2.1 or later component?
-
-		if (!$this->isFOFComponent($component))
+		// Is this an F0F 2.1 or later component?
+		if (!$this->isF0FComponent($component))
 		{
 			return;
 		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
-		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
-		$alt_class = FOFInflector::camelize($component_raw . '_model_' . $alt_view);
+		$alt_view = F0FInflector::isSingular($view) ? F0FInflector::pluralize($view) : F0FInflector::singularize($view);
+		$alt_class = F0FInflector::camelize($component_raw . '_model_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
 
 		$file = "/models/$view.php";
 		$altFile = "/models/$alt_view.php";
@@ -328,51 +317,46 @@ class FOFAutoloaderComponent
 		$altPath = $componentPaths['alt'];
 
 		// Try to find the proper class in the proper path
-
 		if (file_exists($path . $file))
 		{
 			@include_once $path . $file;
 		}
 
 		// Try to find the proper class in the alternate path
-
 		if (!class_exists($class_name) && file_exists($altPath . $file))
 		{
 			@include_once $altPath . $file;
 		}
 
 		// Try to find the alternate class in the proper path
-
 		if (!class_exists($alt_class) && file_exists($path . $altFile))
 		{
 			@include_once $path . $altFile;
 		}
 
 		// Try to find the alternate class in the alternate path
-
 		if (!class_exists($alt_class) && file_exists($altPath . $altFile))
 		{
 			@include_once $altPath . $altFile;
 		}
 
 		// If the alternate class exists just map the class to the alternate
-
 		if (!class_exists($class_name) && class_exists($alt_class))
 		{
 			$this->class_alias($alt_class, $class_name);
 		}
 
-		// No class found? Map to FOFModel
+		// No class found? Map to F0FModel
 		elseif (!class_exists($class_name))
 		{
 			if ($view != 'default')
 			{
-				$defaultClass = FOFInflector::camelize($component_raw . '_model_default');
+				$defaultClass = F0FInflector::camelize($component_raw . '_model_default');
 				$this->class_alias($defaultClass, $class_name);
 			}
 			else
 			{
-				$this->class_alias('FOFModel', $class_name, true);
+				$this->class_alias('F0FModel', $class_name, true);
 			}
 		}
 	}
@@ -386,13 +370,13 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_view($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        F0FPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
 		if (is_null($isCli) && is_null($isAdmin))
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			list($isCli, $isAdmin) = F0FDispatcher::isCliAdmin();
 		}
 
 		if (strpos($class_name, 'View') === false)
@@ -430,23 +414,22 @@ class FOFAutoloaderComponent
 		}
 		else
 		{
-			$input = new FOFInput;
+			$input = new F0FInput;
 			$format = $input->getCmd('format', 'html', 'cmd');
 		}
 
-		// Is this an FOF 2.1 or later component?
-
-		if (!$this->isFOFComponent($component))
+		// Is this an F0F 2.1 or later component?
+		if (!$this->isF0FComponent($component))
 		{
 			return;
 		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
-		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
-		$alt_class = FOFInflector::camelize($component_raw . '_view_' . $alt_view);
+		$alt_view = F0FInflector::isSingular($view) ? F0FInflector::pluralize($view) : F0FInflector::singularize($view);
+		$alt_class = F0FInflector::camelize($component_raw . '_view_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
 
 		$protoFile = "/models/$view";
 		$protoAltFile = "/models/$alt_view";
@@ -466,28 +449,24 @@ class FOFAutoloaderComponent
 			$altFile = $protoAltFile . '.' . $currentFormat . '.php';
 
 			// Try to find the proper class in the proper path
-
 			if (!class_exists($class_name) && file_exists($path . $file))
 			{
 				@include_once $path . $file;
 			}
 
 			// Try to find the proper class in the alternate path
-
 			if (!class_exists($class_name) && file_exists($altPath . $file))
 			{
 				@include_once $altPath . $file;
 			}
 
 			// Try to find the alternate class in the proper path
-
 			if (!class_exists($alt_class) && file_exists($path . $altFile))
 			{
 				@include_once $path . $altFile;
 			}
 
 			// Try to find the alternate class in the alternate path
-
 			if (!class_exists($alt_class) && file_exists($altPath . $altFile))
 			{
 				@include_once $altPath . $altFile;
@@ -495,29 +474,28 @@ class FOFAutoloaderComponent
 		}
 
 		// If the alternate class exists just map the class to the alternate
-
 		if (!class_exists($class_name) && class_exists($alt_class))
 		{
 			$this->class_alias($alt_class, $class_name);
 		}
 
-		// No class found? Map to FOFModel
+		// No class found? Map to F0FModel
 		elseif (!class_exists($class_name))
 		{
 			if ($view != 'default')
 			{
-				$defaultClass = FOFInflector::camelize($component_raw . '_view_default');
+				$defaultClass = F0FInflector::camelize($component_raw . '_view_default');
 				$this->class_alias($defaultClass, $class_name);
 			}
 			else
 			{
 				if (!file_exists(self::$fofPath . '/view/' . $format . '.php'))
 				{
-					$default_class = 'FOFView';
+					$default_class = 'F0FView';
 				}
 				else
 				{
-					$default_class = 'FOFView' . ucfirst($format);
+					$default_class = 'F0FView' . ucfirst($format);
 				}
 
 				$this->class_alias($default_class, $class_name, true);
@@ -534,13 +512,13 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_table($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        F0FPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
 		if (is_null($isCli) && is_null($isAdmin))
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			list($isCli, $isAdmin) = F0FDispatcher::isCliAdmin();
 		}
 
 		if (strpos($class_name, 'Table') === false)
@@ -561,7 +539,6 @@ class FOFAutoloaderComponent
 		}
 
 		// We need the second part to be "model"
-
 		if ($parts[1] != 'table')
 		{
 			return;
@@ -572,56 +549,52 @@ class FOFAutoloaderComponent
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
 
-		// Is this an FOF 2.1 or later component?
-
-		if (!$this->isFOFComponent($component))
+		// Is this an F0F 2.1 or later component?
+		if (!$this->isF0FComponent($component))
 		{
 			return;
 		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
-		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
-		$alt_class = FOFInflector::camelize($component_raw . '_table_' . $alt_view);
+		$alt_view = F0FInflector::isSingular($view) ? F0FInflector::pluralize($view) : F0FInflector::singularize($view);
+		$alt_class = F0FInflector::camelize($component_raw . '_table_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
 
 		$file = "/tables/$view.php";
 		$altFile = "/tables/$alt_view.php";
 		$path = $componentPaths['admin'];
 
 		// Try to find the proper class in the proper path
-
 		if (file_exists($path . $file))
 		{
 			@include_once $path . $file;
 		}
 
 		// Try to find the alternate class in the proper path
-
 		if (!class_exists($alt_class) && file_exists($path . $altFile))
 		{
 			@include_once $path . $altFile;
 		}
 
 		// If the alternate class exists just map the class to the alternate
-
 		if (!class_exists($class_name) && class_exists($alt_class))
 		{
 			$this->class_alias($alt_class, $class_name);
 		}
 
-		// No class found? Map to FOFModel
+		// No class found? Map to F0FModel
 		elseif (!class_exists($class_name))
 		{
 			if ($view != 'default')
 			{
-				$defaultClass = FOFInflector::camelize($component_raw . '_table_default');
+				$defaultClass = F0FInflector::camelize($component_raw . '_table_default');
 				$this->class_alias($defaultClass, $class_name);
 			}
 			else
 			{
-				$this->class_alias('FOFTable', $class_name, true);
+				$this->class_alias('F0FTable', $class_name, true);
 			}
 		}
 	}
@@ -635,13 +608,13 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_helper($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        F0FPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
 		if (is_null($isCli) && is_null($isAdmin))
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			list($isCli, $isAdmin) = F0FDispatcher::isCliAdmin();
 		}
 
 		if (strpos($class_name, 'Helper') === false)
@@ -655,14 +628,12 @@ class FOFAutoloaderComponent
 		$parts = explode('_', $class_modified);
 
 		// We need three parts in the name
-
 		if (count($parts) != 3)
 		{
 			return;
 		}
 
 		// We need the second part to be "model"
-
 		if ($parts[1] != 'helper')
 		{
 			return;
@@ -673,19 +644,18 @@ class FOFAutoloaderComponent
 		$component = 'com_' . $parts[0];
 		$view = $parts[2];
 
-		// Is this an FOF 2.1 or later component?
-
-		if (!$this->isFOFComponent($component))
+		// Is this an F0F 2.1 or later component?
+		if (!$this->isF0FComponent($component))
 		{
 			return;
 		}
 
 		// Get the alternate view and class name (opposite singular/plural name)
-		$alt_view = FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view);
-		$alt_class = FOFInflector::camelize($component_raw . '_helper_' . $alt_view);
+		$alt_view = F0FInflector::isSingular($view) ? F0FInflector::pluralize($view) : F0FInflector::singularize($view);
+		$alt_class = F0FInflector::camelize($component_raw . '_helper_' . $alt_view);
 
 		// Get the proper and alternate paths and file names
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
 
 		$file = "/helpers/$view.php";
 		$altFile = "/helpers/$alt_view.php";
@@ -693,35 +663,30 @@ class FOFAutoloaderComponent
 		$altPath = $componentPaths['alt'];
 
 		// Try to find the proper class in the proper path
-
 		if (file_exists($path . $file))
 		{
 			@include_once $path . $file;
 		}
 
 		// Try to find the proper class in the alternate path
-
 		if (!class_exists($class_name) && file_exists($altPath . $file))
 		{
 			@include_once $altPath . $file;
 		}
 
 		// Try to find the alternate class in the proper path
-
 		if (!class_exists($alt_class) && file_exists($path . $altFile))
 		{
 			@include_once $path . $altFile;
 		}
 
 		// Try to find the alternate class in the alternate path
-
 		if (!class_exists($alt_class) && file_exists($altPath . $altFile))
 		{
 			@include_once $altPath . $altFile;
 		}
 
 		// If the alternate class exists just map the class to the alternate
-
 		if (!class_exists($class_name) && class_exists($alt_class))
 		{
 			$this->class_alias($alt_class, $class_name);
@@ -737,13 +702,13 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_toolbar($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        F0FPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		static $isCli = null, $isAdmin = null;
 
 		if (is_null($isCli) && is_null($isAdmin))
 		{
-			list($isCli, $isAdmin) = FOFDispatcher::isCliAdmin();
+			list($isCli, $isAdmin) = F0FDispatcher::isCliAdmin();
 		}
 
 		if (strpos($class_name, 'Toolbar') === false)
@@ -757,14 +722,12 @@ class FOFAutoloaderComponent
 		$parts = explode('_', $class_modified);
 
 		// We need two parts in the name
-
 		if (count($parts) != 2)
 		{
 			return;
 		}
 
 		// We need the second part to be "model"
-
 		if ($parts[1] != 'toolbar')
 		{
 			return;
@@ -774,10 +737,12 @@ class FOFAutoloaderComponent
 		$component_raw  = $parts[0];
 		$component = 'com_' . $parts[0];
 
+        $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
+
 		// Get the proper and alternate paths and file names
-		$file = "/components/$component/toolbar.php";
-		$path = ($isAdmin || $isCli) ? JPATH_ADMINISTRATOR : JPATH_SITE;
-		$altPath = ($isAdmin || $isCli) ? JPATH_SITE : JPATH_ADMINISTRATOR;
+		$file    = "/components/$component/toolbar.php";
+		$path    = ($isAdmin || $isCli) ? $platformDirs['admin'] : $platformDirs['public'];
+		$altPath = ($isAdmin || $isCli) ? $platformDirs['public'] : $platformDirs['admin'];
 
 		// Try to find the proper class in the proper path
 
@@ -787,17 +752,15 @@ class FOFAutoloaderComponent
 		}
 
 		// Try to find the proper class in the alternate path
-
 		if (!class_exists($class_name) && file_exists($altPath . $file))
 		{
 			@include_once $altPath . $file;
 		}
 
-		// No class found? Map to FOFToolbar
-
+		// No class found? Map to F0FToolbar
 		if (!class_exists($class_name))
 		{
-			$this->class_alias('FOFToolbar', $class_name, true);
+			$this->class_alias('F0FToolbar', $class_name, true);
 		}
 	}
 
@@ -810,7 +773,7 @@ class FOFAutoloaderComponent
 	 */
 	public function autoload_fof_field($class_name)
 	{
-		JLog::add(__METHOD__ . "() autoloading $class_name", JLog::DEBUG, 'fof');
+        F0FPlatform::getInstance()->logDebug(__METHOD__ . "() autoloading $class_name");
 
 		// @todo
 	}

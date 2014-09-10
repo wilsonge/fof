@@ -2,11 +2,11 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Generic field header, with drop down filters
@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderFieldselectable extends FOFFormHeaderField
+class F0FFormHeaderFieldselectable extends F0FFormHeaderField
 {
 	/**
 	 * Create objects for the options
@@ -24,6 +24,27 @@ class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 	protected function getOptions()
 	{
 		$options = array();
+
+		// Get the field $options
+		foreach ($this->element->children() as $option)
+		{
+			// Only add <option /> elements.
+			if ($option->getName() != 'option')
+			{
+				continue;
+			}
+
+			// Create a new option object based on the <option /> element.
+			$options[] = JHtml::_(
+				'select.option',
+				(string) $option['value'],
+				JText::alt(
+					trim((string) $option),
+					preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)
+				),
+				'value', 'text', ((string) $option['disabled'] == 'true')
+			);
+		}
 
 		// Do we have a class and method source for our options?
 		$source_file = empty($this->element['source_file']) ? '' : (string) $this->element['source_file'];
@@ -40,11 +61,9 @@ class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 			// Maybe we have to load a file?
 			if (!empty($source_file))
 			{
-				$source_file = FOFTemplateUtils::parsePath($source_file, true);
+				$source_file = F0FTemplateUtils::parsePath($source_file, true);
 
-				JLoader::import('joomla.filesystem.file');
-
-				if (JFile::exists($source_file))
+				if (F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
 				{
 					include_once $source_file;
 				}
@@ -59,7 +78,7 @@ class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 					// Get the data from the class
 					if ($source_format == 'optionsobject')
 					{
-						$options = $source_class::$source_method();
+						$options = array_merge($options, $source_class::$source_method());
 					}
 					else
 					{
@@ -81,27 +100,6 @@ class FOFFormHeaderFieldselectable extends FOFFormHeaderField
 					}
 				}
 			}
-		}
-
-		// Get the field $options
-		foreach ($this->element->children() as $option)
-		{
-			// Only add <option /> elements.
-			if ($option->getName() != 'option')
-			{
-				continue;
-			}
-
-			// Create a new option object based on the <option /> element.
-			$options[] = JHtml::_(
-				'select.option',
-				(string) $option['value'],
-				JText::alt(
-					trim((string) $option),
-					preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)
-				),
-				'value', 'text', ((string) $option['disabled'] == 'true')
-			);
 		}
 
 		reset($options);

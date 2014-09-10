@@ -2,13 +2,11 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  view
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
-
-JLoader::import('joomla.application.component.view');
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework CSV View class. Automatically renders the data in CSV
@@ -17,7 +15,7 @@ JLoader::import('joomla.application.component.view');
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class FOFViewCsv extends FOFViewHtml
+class F0FViewCsv extends F0FViewHtml
 {
 	/**
 	 *  Should I produce a CSV header row.
@@ -41,7 +39,7 @@ class FOFViewCsv extends FOFViewHtml
 	protected $csvFields = array();
 
 	/**
-	* Public constructor. Instantiates a FOFViewCsv object.
+	* Public constructor. Instantiates a F0FViewCsv object.
 	*
 	* @param   array  $config  The configuration data array
 	*/
@@ -80,7 +78,7 @@ class FOFViewCsv extends FOFViewHtml
 		if (empty($this->csvFilename))
 		{
 			$view              = $this->input->getCmd('view', 'cpanel');
-			$view              = FOFInflector::pluralize($view);
+			$view              = F0FInflector::pluralize($view);
 			$this->csvFilename = strtolower($view);
 		}
 
@@ -103,31 +101,29 @@ class FOFViewCsv extends FOFViewHtml
 		$model = $this->getModel();
 
 		$items = $model->getItemList();
-		$this->assignRef('items', $items);
+		$this->items = $items;
 
-		$document = FOFPlatform::getInstance()->getDocument();
+        $platform = F0FPlatform::getInstance();
+		$document = $platform->getDocument();
 
 		if ($document instanceof JDocument)
 		{
 			$document->setMimeEncoding('text/csv');
 		}
 
-		JResponse::setHeader('Pragma', 'public');
-		JResponse::setHeader('Expires', '0');
-		JResponse::setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
-		JResponse::setHeader('Cache-Control', 'public', false);
-		JResponse::setHeader('Content-Description', 'File Transfer');
-		JResponse::setHeader('Content-Disposition', 'attachment; filename="' . $this->csvFilename . '"');
+		$platform->setHeader('Pragma', 'public');
+        $platform->setHeader('Expires', '0');
+        $platform->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+        $platform->setHeader('Cache-Control', 'public', false);
+        $platform->setHeader('Content-Description', 'File Transfer');
+        $platform->setHeader('Content-Disposition', 'attachment; filename="' . $this->csvFilename . '"');
 
 		if (is_null($tpl))
 		{
 			$tpl = 'csv';
 		}
 
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
-		}
+		F0FPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
@@ -143,14 +139,6 @@ class FOFViewCsv extends FOFViewHtml
 		catch (Exception $e)
 		{
 			$hasFailed = true;
-		}
-
-		if (FOFPlatform::getInstance()->checkVersion(JVERSION, '3.0', 'lt'))
-		{
-			if ($result instanceof Exception)
-			{
-				$hasFailed = true;
-			}
 		}
 
 		if (!$hasFailed)

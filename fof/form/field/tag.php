@@ -2,33 +2,30 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
-if (!class_exists('JFormFieldAccessLevel'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/accesslevel.php';
-}
+JFormHelper::loadFieldClass('tag');
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Tag Fields
  *
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
+class F0FFormFieldTag extends JFormFieldTag implements F0FFormField
 {
 	protected $static;
 
 	protected $repeatable;
-	
-	/** @var   FOFTable  The item being rendered in a repeatable form field */
+
+	/** @var   F0FTable  The item being rendered in a repeatable form field */
 	public $item;
-	
+
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
@@ -46,7 +43,7 @@ class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
 		$published = $this->element['published']? $this->element['published'] : array(0,1);
 		$name = (string) $this->element['name'];
 
-		$db		= JFactory::getDbo();
+		$db		= F0FPlatform::getInstance()->getDbo();
 		$query	= $db->getQuery(true)
 			->select('a.id AS value, a.path, a.title AS text, a.level, a.published')
 			->from('#__tags AS a')
@@ -54,7 +51,7 @@ class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
 
 		$item = $this->form->getModel()->getItem();
 
-		if ($item instanceof FOFTable)
+		if ($item instanceof F0FTable)
 		{
 			// Fake value for selected tags
 			$keyfield = $item->getKeyName();
@@ -78,7 +75,7 @@ class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
 		{
 			// Only item assigned values
 			$values = (array) $this->value;
-			JArrayHelper::toInteger($values);
+            F0FUtilsArray::toInteger($values);
 			$query->where('a.id IN (' . implode(',', $values) . ')');
 		}
 
@@ -99,7 +96,7 @@ class FOFFormFieldTag extends JFormFieldTag implements FOFFormField
 		}
 		elseif (is_array($published))
 		{
-			JArrayHelper::toInteger($published);
+            F0FUtilsArray::toInteger($published);
 			$query->where('a.published IN (' . implode(',', $published) . ')');
 		}
 

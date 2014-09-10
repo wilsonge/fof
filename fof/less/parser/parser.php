@@ -2,11 +2,11 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  less
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * This class is taken verbatim from:
@@ -23,7 +23,7 @@ defined('_JEXEC') or die;
  *
  * @since  2.0
  */
-class FOFLessParser
+class F0FLessParser
 {
 	// Used to uniquely identify blocks
 	protected static $nextBlockId = 0;
@@ -95,11 +95,11 @@ class FOFLessParser
 
 		if (!self::$operatorString)
 		{
-			self::$operatorString = '(' . implode('|', array_map(array('FOFLess', 'preg_quote'), array_keys(self::$precedence))) . ')';
+			self::$operatorString = '(' . implode('|', array_map(array('F0FLess', 'preg_quote'), array_keys(self::$precedence))) . ')';
 
-			$commentSingle = FOFLess::preg_quote(self::$commentSingle);
-			$commentMultiLeft = FOFLess::preg_quote(self::$commentMultiLeft);
-			$commentMultiRight = FOFLess::preg_quote(self::$commentMultiRight);
+			$commentSingle = F0FLess::preg_quote(self::$commentSingle);
+			$commentMultiLeft = F0FLess::preg_quote(self::$commentMultiLeft);
+			$commentMultiRight = F0FLess::preg_quote(self::$commentMultiRight);
 
 			self::$commentMulti = $commentMultiLeft . '.*?' . $commentMultiRight;
 			self::$whitePattern = '/' . $commentSingle . '[^\n]*\s*|(' . self::$commentMulti . ')\s*|\s+/Ais';
@@ -410,7 +410,7 @@ class FOFLessParser
 	protected function isDirective($dirname, $directives)
 	{
 		// TODO: cache pattern in parser
-		$pattern = implode("|", array_map(array("FOFLess", "preg_quote"), $directives));
+		$pattern = implode("|", array_map(array("F0FLess", "preg_quote"), $directives));
 		$pattern = '/^(-[a-z-]+-)?(' . $pattern . ')$/i';
 
 		return preg_match($pattern, $dirname);
@@ -458,7 +458,7 @@ class FOFLessParser
 			return false;
 		}
 
-		$exps = FOFLess::compressList($values, ' ');
+		$exps = F0FLess::compressList($values, ' ');
 
 		return true;
 	}
@@ -608,7 +608,7 @@ class FOFLessParser
 			return false;
 		}
 
-		$value = FOFLess::compressList($values, ', ');
+		$value = F0FLess::compressList($values, ', ');
 
 		return true;
 	}
@@ -905,7 +905,7 @@ class FOFLessParser
 		$this->eatWhiteDefault = false;
 
 		$stop = array("'", '"', "@{", $end);
-		$stop = array_map(array("FOFLess", "preg_quote"), $stop);
+		$stop = array_map(array("F0FLess", "preg_quote"), $stop);
 
 		// $stop[] = self::$commentMulti;
 
@@ -1013,7 +1013,7 @@ class FOFLessParser
 		$content = array();
 
 		// Look for either ending delim , escape, or string interpolation
-		$patt = '([^\n]*?)(@\{|\\\\|' . FOFLess::preg_quote($delim) . ')';
+		$patt = '([^\n]*?)(@\{|\\\\|' . F0FLess::preg_quote($delim) . ')';
 
 		$oldWhite = $this->eatWhiteDefault;
 		$this->eatWhiteDefault = false;
@@ -1827,7 +1827,7 @@ class FOFLessParser
 
 		if (!isset(self::$literalCache[$what]))
 		{
-			self::$literalCache[$what] = FOFLess::preg_quote($what);
+			self::$literalCache[$what] = F0FLess::preg_quote($what);
 		}
 
 		return $this->match(self::$literalCache[$what], $m, $eatWhitespace);
@@ -1903,7 +1903,7 @@ class FOFLessParser
 			$validChars = $allowNewline ? "." : "[^\n]";
 		}
 
-		if (!$this->match('(' . $validChars . '*?)' . FOFLess::preg_quote($what), $m, !$until))
+		if (!$this->match('(' . $validChars . '*?)' . F0FLess::preg_quote($what), $m, !$until))
 		{
 			return false;
 		}

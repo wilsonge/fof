@@ -2,12 +2,12 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  model
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework model behavior class
@@ -15,7 +15,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class FOFModelField
+abstract class F0FModelField
 {
 	protected $_db = null;
 
@@ -135,7 +135,7 @@ abstract class FOFModelField
 
 		if (is_array($value))
 		{
-			$db = JFactory::getDbo();
+			$db    = F0FPlatform::getInstance()->getDbo();
 			$value = array_map(array($db, 'quote'), $value);
 
 			return '(' . $this->getFieldName() . ' IN (' . implode(',', $value) . '))';
@@ -238,7 +238,7 @@ abstract class FOFModelField
 	 * @param   object  $field   The field informations
 	 * @param   array   $config  The field configuration (like the db object to use)
 	 *
-	 * @return  FOFModelField  The Field object
+	 * @return  F0FModelField  The Field object
 	 */
 	public static function getField($field, $config = array())
 	{
@@ -246,7 +246,7 @@ abstract class FOFModelField
 
 		$classType = self::getFieldType($type);
 
-		$className = 'FOFModelField' . $classType;
+		$className = 'F0FModelField' . $classType;
 
 		if (class_exists($className))
 		{
@@ -256,7 +256,7 @@ abstract class FOFModelField
 			}
 			else
 			{
-				$db = JFactory::getDBO();
+				$db = F0FPlatform::getInstance()->getDbo();
 			}
 
 			if (isset($config['table_alias']))

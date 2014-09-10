@@ -1,19 +1,19 @@
 <?php
 /**
  * @package     FrameworkOnFramework.UnitTest
- * @subpackage  FOFEncryptAES
+ * @subpackage  F0FEncryptAES
  *
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
- * Test class for FOFEncryptAES
+ * Test class for F0FEncryptAES
  *
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class FOFEncryptAesTest extends PHPUnit_Framework_TestCase
+class F0FEncryptAesTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * [setUp description]
@@ -25,7 +25,7 @@ class FOFEncryptAesTest extends PHPUnit_Framework_TestCase
 		// Check if PHP has mcrypt installed
 		if (function_exists('mcrypt_module_open'))
 		{
-			$this->theThing = new FOFEncryptAes('x123456789012345678901234567890x');
+			$this->theThing = new F0FEncryptAes('x123456789012345678901234567890x');
 		}
 	}
 

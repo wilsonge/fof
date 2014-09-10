@@ -2,19 +2,19 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  layout
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
- * Helper to render a FOFLayout object, storing a base path
+ * Helper to render a F0FLayout object, storing a base path
  *
  * @package  FrameworkOnFramework
  * @since    x.y
  */
-class FOFLayoutHelper extends JLayoutHelper
+class F0FLayoutHelper extends JLayoutHelper
 {
 	/**
 	 * Method to render the layout.
@@ -29,9 +29,9 @@ class FOFLayoutHelper extends JLayoutHelper
 	{
 		$basePath = empty($basePath) ? self::$defaultBasePath : $basePath;
 
-		// Make sure we send null to FOFLayoutFile if no path set
+		// Make sure we send null to F0FLayoutFile if no path set
 		$basePath = empty($basePath) ? null : $basePath;
-		$layout = new FOFLayoutFile($layoutFile, $basePath);
+		$layout = new F0FLayoutFile($layoutFile, $basePath);
 		$renderedLayout = $layout->render($displayData);
 
 		return $renderedLayout;

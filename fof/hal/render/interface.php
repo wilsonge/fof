@@ -2,10 +2,10 @@
 /**
  * @package     FrameworkOnFramework
  * @subpackage  hal
- * @copyright   Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 /**
  * Interface for HAL document renderers
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-interface FOFHalRenderInterface
+interface F0FHalRenderInterface
 {
 	/**
 	 * Render a HAL document into a representation suitable for consumption.

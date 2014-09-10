@@ -3,6 +3,8 @@ nbproject/
 fof/include.php
 fof/version.txt
 strapper/version.txt
+strapper/files_strapper.xml
+strapper/akeeba_strapper/version.php
 release/*.zip
 .buildpath
 .settings/
@@ -10,6 +12,7 @@ release/*.zip
 .DS_STORE
 .idea/
 /fof/lib_fof.xml
+/fof/lib_f0f.xml
 tests/unit/config.php
 refs/heads/staging
 /build/build.properties
@@ -23,7 +26,18 @@ antconfig.txt
 
 /build/bin
 
+/vendor/*
+
 /tests/environments/3.x/cache/
 /tests/environments/3.x/templates/fake_test_template
 /tests/environments/2.5/cache/
 /tests/environments/2.5/templates/fake_test_template
+/release/
+
+/build/phingext
+/build/tools
+/build/buildlang
+/build/templates/release*
+
+DESCRIPTION.html
+RELEASENOTES.html

@@ -2,11 +2,11 @@
 /**
  * @package    FrameworkOnFramework
  * @subpackage form
- * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
+ * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Protect from unauthorized access
-defined('_JEXEC') or die;
+defined('F0F_INCLUDED') or die;
 
 if (!class_exists('JFormFieldSql'))
 {
@@ -14,13 +14,13 @@ if (!class_exists('JFormFieldSql'))
 }
 
 /**
- * Form Field class for FOF
+ * Form Field class for F0F
  * Generic list from a model's results
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class FOFFormHeaderModel extends FOFFormHeaderFieldselectable
+class F0FFormHeaderModel extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Method to get the field options.
@@ -34,10 +34,11 @@ class FOFFormHeaderModel extends FOFFormHeaderFieldselectable
 		// Initialize some field attributes.
 		$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
 		$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
-		$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
 		$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
 		$modelName = (string) $this->element['model'];
 		$nonePlaceholder = (string) $this->element['none'];
+		$translate = empty($this->element['translate']) ? 'true' : (string) $this->element['translate'];
+		$translate = in_array(strtolower($translate), array('true','yes','1','on')) ? true : false;
 
 		if (!empty($nonePlaceholder))
 		{
@@ -49,13 +50,13 @@ class FOFFormHeaderModel extends FOFFormHeaderFieldselectable
 		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 		// Explode model name into model name and prefix
-		$parts = FOFInflector::explode($modelName);
+		$parts = F0FInflector::explode($modelName);
 		$mName = ucfirst(array_pop($parts));
-		$mPrefix = FOFInflector::implode($parts);
+		$mPrefix = F0FInflector::implode($parts);
 
 		// Get the model object
 		$config = array('savestate' => 0);
-		$model = FOFModel::getTmpInstance($mName, $mPrefix, $config);
+		$model = F0FModel::getTmpInstance($mName, $mPrefix, $config);
 
 		if ($applyAccess)
 		{
