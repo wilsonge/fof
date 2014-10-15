@@ -71,10 +71,12 @@ class F0FModelBehaviorFilters extends F0FModelBehavior
 			{
 				case 'between':
 				case 'outside':
+				case 'range' :
 					$sql = $field->$method($options->get('from', null), $options->get('to'));
 					break;
 
 				case 'interval':
+				case 'modulo':
 					$sql = $field->$method($options->get('value', null), $options->get('interval'));
 					break;
 
