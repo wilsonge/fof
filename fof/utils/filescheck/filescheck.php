@@ -185,4 +185,88 @@ class F0FUtilsFilescheck
 
 		return true;
 	}
+
+	/**
+	 * Performs a slow, thorough check of all files and folders (including MD5/SHA1 sum checks)
+	 *
+	 * @param int $idx The index from where to start
+	 *
+	 * @return array Progress report
+	 */
+	public function slowCheck($idx = 0)
+	{
+		$ret = array(
+			'done'	=> false,
+			'files'	=> array(),
+			'folders'	=> array(),
+			'idx'	=> $idx
+		);
+
+		$totalFiles = count($this->fileList);
+		$totalFolders = count($this->dirList);
+		$fileKeys = array_keys($this->fileList);
+
+		$timer = new F0FUtilsTimer(3.0, 75.0);
+
+		while ($timer->getTimeLeft() && (($idx < $totalFiles) || ($idx < $totalFolders)))
+		{
+			if ($idx < $totalFolders)
+			{
+				$directory = JPATH_ROOT . '/' . $this->dirList[$idx];
+
+				if (!@is_dir($directory))
+				{
+					$ret['folders'][] = $directory;
+				}
+			}
+
+			if ($idx < $totalFiles)
+			{
+				$fileKey = $fileKeys[$idx];
+				$filePath = JPATH_ROOT . '/' . $fileKey;
+				$fileData = $this->fileList[$fileKey];
+
+				if (!@file_exists($filePath))
+				{
+					$ret['files'][] = $fileKey . ' (missing)';
+				}
+				elseif (@filesize($filePath) != $fileData[0])
+				{
+					$ret['files'][] = $fileKey . ' (size ' . @filesize($filePath) . ' ≠ ' . $fileData[0] . ')';
+				}
+				else
+				{
+					if (function_exists('sha1_file'))
+					{
+						$fileSha1 = @sha1_file($filePath);
+
+						if ($fileSha1 != $fileData[2])
+						{
+							$ret['files'][] = $fileKey . ' (SHA1 ' . $fileSha1 . ' ≠ ' . $fileData[2] . ')';
+						}
+					}
+					elseif (function_exists('md5_file'))
+					{
+						$fileMd5 = @md5_file($filePath);
+
+						if ($fileMd5 != $fileData[1])
+						{
+							$ret['files'][] = $fileKey . ' (MD5 ' . $fileMd5 . ' ≠ ' . $fileData[1] . ')';
+						}
+					}
+				}
+			}
+
+			$idx++;
+		}
+
+		if (($idx >= $totalFiles) && ($idx >= $totalFolders))
+		{
+			$ret['done'] = true;
+		}
+
+		$ret['idx'] = $idx;
+
+		return $ret;
+	}
 }
