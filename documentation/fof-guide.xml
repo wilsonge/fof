@@ -1349,6 +1349,21 @@ function postflight($type, $parent)
             </variablelist>
           </section>
 
+          <section xml:id="fofmodel-behaviours-enabled">
+            <title>emptynonzero.php</title>
+
+            <para>Adding this behaviour to a model object will extent the
+            <code>filters</code> behavior and allows FOF to not empty zero value.
+            For example, if you pass &amp;foobar=0 in the URL then the SQL query
+            used to fetch the items list will be filtered by the rows where
+            the foobar column is set to 0. Without this behavior the column
+            foobar will be considered as empty.</para>
+
+            <important>
+              <para>This behaviour requires the <code>filters</code> behavior.</para>
+            </important>
+          </section>
+
           <section xml:id="fofmodel-behaviours-language">
             <title>language</title>
 

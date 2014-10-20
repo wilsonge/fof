@@ -32,6 +32,8 @@ class F0FModelBehaviorFilters extends F0FModelBehavior
 		$tableKey = $table->getKeyName();
 		$db = $model->getDBO();
 
+		$filterzero = $model->getState('_emptynonzero', null);
+
 		$fields = $model->getTableFields();
 
 		foreach ($fields as $fieldname => $fieldtype)
@@ -39,6 +41,7 @@ class F0FModelBehaviorFilters extends F0FModelBehavior
 			$field = new stdClass;
 			$field->name = $fieldname;
 			$field->type = $fieldtype;
+			$field->filterzero = $filterzero;
 
 			$filterName = ($field->name == $tableKey) ? 'id' : $field->name;
 			$filterState = $model->getState($filterName, null);
