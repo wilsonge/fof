@@ -60,6 +60,7 @@ abstract class F0FModelField
 
 		$this->name = $field->name;
 		$this->type = $field->type;
+		$this->filterzero = $field->filterzero;
 		$this->table_alias = $table_alias;
 	}
 
@@ -72,7 +73,8 @@ abstract class F0FModelField
 	 */
 	public function isEmpty($value)
 	{
-		return ($value === $this->null_value) || empty($value);
+		return (($value === $this->null_value) || empty($value))
+			&& !($this->filterzero && $value === "0");
 	}
 
 	/**
