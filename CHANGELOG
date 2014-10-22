@@ -1,3 +1,10 @@
+FOF 2.3.6
+================================================================================
++ F0FDownload class for simple and staggered file downloads
++ "range", "modulo" and "emptynonzero" filters in F0FModel
++ Installation integrity check linrary (F0FUtilsFilescheck)
++ F0FTimer class implements a runtime timer, useful to prevent long-running operations from timing out
+
 FOF 2.3.5
 ================================================================================
 + Installation script: add support for post-installation messages in Joomla! 3.2 or later
