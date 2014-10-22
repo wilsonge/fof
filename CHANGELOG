@@ -1,5 +1,6 @@
 FOF 2.3.6
 ================================================================================
++ F0FUtilsUpdateCollection, F0FUtilsUpdateExtension and F0FUtilsUpdateJoomla helper classes for managing update XML files
 + F0FDownload class for simple and staggered file downloads
 + "range", "modulo" and "emptynonzero" filters in F0FModel
 + Installation integrity check linrary (F0FUtilsFilescheck)
