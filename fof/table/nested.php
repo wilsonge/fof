@@ -1298,7 +1298,7 @@ class F0FTableNested extends F0FTable
 				->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
 				->where($db->qn('node') . '.' . $fldLft . ' = ' . $db->q($this->lft))
 				->order($db->qn('parent') . '.' . $fldLft . ' DESC');
-			$targetLft = $db->setQuery($query, 1, 1)->loadResult();
+			$targetLft = $db->setQuery($query, 0, 1)->loadResult();
 
 			$table = $this->getClone();
 			$table->reset();
