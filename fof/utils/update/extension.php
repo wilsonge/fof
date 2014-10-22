@@ -114,9 +114,9 @@ class F0FUtilsUpdateExtension
 			$entry['targetplatform']['name'] = (string)$targetPlatformNode[0]['name'];
 			$entry['targetplatform']['version'] = (string)$targetPlatformNode[0]['version'];
 			$client = $targetPlatformNode[0]->xpath('client');
-			$entry['targetplatform']['client'] = ($client[0] !== false) ? (string)$client[0] : '';
+			$entry['targetplatform']['client'] = ($client !== false) ? (string)$client[0] : '';
 			$folder = $targetPlatformNode[0]->xpath('folder');
-			$entry['targetplatform']['folder'] = ($folder[0] !== false) ? (string)$folder[0] : '';
+			$entry['targetplatform']['folder'] = ($folder !== false) ? (string)$folder[0] : '';
 
 			$ret[] = $entry;
 		}
