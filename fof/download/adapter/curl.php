@@ -62,6 +62,11 @@ class F0FDownloadAdapterCurl extends F0FDownloadAdapterAbstract implements F0FDo
 			unset($temp);
 		}
 
+		curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($ch, CURLOPT_SSLVERSION, 0);
+
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -114,6 +119,11 @@ class F0FDownloadAdapterCurl extends F0FDownloadAdapterAbstract implements F0FDo
 		$result = -1;
 
 		$ch = curl_init();
+
+		curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($ch, CURLOPT_SSLVERSION, 0);
 
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_NOBODY, true );
