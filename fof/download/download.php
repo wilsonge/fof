@@ -35,6 +35,11 @@ class F0FDownload
 
 		foreach ($allAdapters as $adapterInfo)
 		{
+			if (!class_exists($adapterInfo['classname'], true))
+			{
+				continue;
+			}
+
 			/** @var F0FDownloadAdapterAbstract $adapter */
 			$adapter = new $adapterInfo['classname'];
 
