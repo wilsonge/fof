@@ -155,20 +155,24 @@ class F0FDownload
 		$this->params = $params;
 
 		// Fetch data
-		$url         = $this->getParam('url');
-		$frag        = $this->getParam('frag', -1);
-		$totalSize   = $this->getParam('totalSize', -1);
-		$doneSize    = $this->getParam('doneSize', -1);
-		$maxExecTime = $this->getParam('maxExecTime', 5);
-		$runTimeBias = $this->getParam('runTimeBias', 75);
-		$length      = $this->getParam('length', 1048576);
+		$url         	= $this->getParam('url');
+		$localFilename	= $this->getParam('localFilename');
+		$frag        	= $this->getParam('frag', -1);
+		$totalSize   	= $this->getParam('totalSize', -1);
+		$doneSize    	= $this->getParam('doneSize', -1);
+		$maxExecTime 	= $this->getParam('maxExecTime', 5);
+		$runTimeBias 	= $this->getParam('runTimeBias', 75);
+		$length      	= $this->getParam('length', 1048576);
 
-		$localFilename = basename($url);
-
-		if (strpos($localFilename, '?') !== false)
+		if (empty($localFilename))
 		{
-			$paramsPos = strpos($localFilename, '?');
-			$localFilename = substr($localFilename, 0, $paramsPos - 1);
+			$localFilename = basename($url);
+
+			if (strpos($localFilename, '?') !== false)
+			{
+				$paramsPos = strpos($localFilename, '?');
+				$localFilename = substr($localFilename, 0, $paramsPos - 1);
+			}
 		}
 
 		$tmpDir        = JFactory::getConfig()->get('tmp_path', JPATH_ROOT . '/tmp');
