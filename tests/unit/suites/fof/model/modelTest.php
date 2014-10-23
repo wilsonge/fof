@@ -1292,6 +1292,9 @@ class F0FModelTest extends FtestCaseDatabase
         $formMock->expects($this->any())->method('bind')
                  ->with($checks['bind']['data']);
 
+		// This line is required on PHP 5.5, otherwise you can't bind "dummy" to the form mock
+		$formMock->dummy = 0;
+
         $fofform = new ReflectionProperty('F0FForm', 'forms');
         $fofform->setAccessible(true);
         $fofform->setValue('F0FForm', array($test['name'] => $formMock));
