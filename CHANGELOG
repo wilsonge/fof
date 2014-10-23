@@ -6,6 +6,8 @@ FOF 2.3.6
 + Installation integrity check linrary (F0FUtilsFilescheck)
 + F0FTimer class implements a runtime timer, useful to prevent long-running operations from timing out
 # [HIGH] F0FTableNested::getParent would return the wrong node
+# [MEDIUM] Bug in F0FToolbar didn't allow toolbar configuration with fof.xml
+# [MEDIUM] The tpl= query parameter could not be possibly made to work without copying & pasting the entire display() method
 # [LOW] Warnings in F0FTable when a table doesn't exist or has no fields
 # [LOW] Warnings in F0FTableNested when trying to move to the right/left of a node which is already the rightmost/leftmost node respectively
 
