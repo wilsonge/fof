@@ -1304,7 +1304,7 @@ class F0FTableNested extends F0FTable
 				->select($db->qn('parent') . '.' . $fldLft)
 				->from($db->qn($this->getTableName()) . ' AS ' . $db->qn('node'))
 				->join('CROSS', $db->qn($this->getTableName()) . ' AS ' . $db->qn('parent'))
-				->where($db->qn('node') . '.' . $fldLft . ' >= ' . $db->qn('parent') . '.' . $fldLft)
+				->where($db->qn('node') . '.' . $fldLft . ' > ' . $db->qn('parent') . '.' . $fldLft)
 				->where($db->qn('node') . '.' . $fldLft . ' <= ' . $db->qn('parent') . '.' . $fldRgt)
 				->where($db->qn('node') . '.' . $fldLft . ' = ' . $db->q($this->lft))
 				->order($db->qn('parent') . '.' . $fldLft . ' DESC');

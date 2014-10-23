@@ -1001,6 +1001,7 @@ class F0FTableNestedTest extends FtestCaseDatabase
      */
     public function testGetParent($test, $check)
     {
+		/** @var FoftestTableNestedset $table */
         $table   = F0FTable::getAnInstance('Nestedset', 'FoftestTable');
         $table->load($test['loadid']);
 
