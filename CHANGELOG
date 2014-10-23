@@ -3,7 +3,7 @@ FOF 2.3.6
 + F0FUtilsUpdateCollection, F0FUtilsUpdateExtension and F0FUtilsUpdateJoomla helper classes for managing update XML files
 + F0FDownload class for simple and staggered file downloads
 + "range", "modulo" and "emptynonzero" filters in F0FModel
-+ Installation integrity check linrary (F0FUtilsFilescheck)
++ Installation integrity check library (F0FUtilsFilescheck)
 + F0FTimer class implements a runtime timer, useful to prevent long-running operations from timing out
 + Support for multiple fieldsets per tab in tabbed XML forms
 # [HIGH] F0FTableNested::getParent would return the wrong node
