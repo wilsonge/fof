@@ -5,6 +5,7 @@ FOF 2.3.6
 + "range", "modulo" and "emptynonzero" filters in F0FModel
 + Installation integrity check linrary (F0FUtilsFilescheck)
 + F0FTimer class implements a runtime timer, useful to prevent long-running operations from timing out
+# [LOW] Warnings in FOFTable when a table doesn't exist or has no fields
 
 FOF 2.3.5
 ================================================================================
