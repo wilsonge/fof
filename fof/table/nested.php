@@ -682,7 +682,12 @@ class F0FTableNested extends F0FTable
 			->get(0, 1)->current();
 
 		// Move the node
-		return $this->moveToLeftOf($leftSibling);
+		if (is_object($leftSibling) && ($leftSibling instanceof F0FTableNested))
+		{
+			return $this->moveToLeftOf($leftSibling);
+		}
+
+		return false;
 	}
 
 	/**
@@ -723,7 +728,12 @@ class F0FTableNested extends F0FTable
 			->get(0, 1)->current();
 
 		// Move the node
-		return $this->moveToRightOf($rightSibling);
+		if (is_object($rightSibling) && ($rightSibling instanceof F0FTableNested))
+		{
+			return $this->moveToRightOf($rightSibling);
+		}
+
+		return false;
 	}
 
 	/**
