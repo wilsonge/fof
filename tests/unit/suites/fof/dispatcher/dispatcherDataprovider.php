@@ -252,7 +252,7 @@ class DispatcherDataprovider
         $key     = $encrypt->encode('F0F rocks!');
         $plain   = json_encode(array('username' => 'foftest', 'password' => 'dummy'));
 
-        $totp      = new F0FEncryptTotp(6);
+        $totp      = new F0FEncryptTotp(30);
         $otp       = $totp->getCode($key);
         $cryptoKey = hash('sha256', $key.$otp);
 
@@ -279,7 +279,7 @@ class DispatcherDataprovider
         $key     = $encrypt->encode('F0F rocks!');
         $plain   = json_encode(array('username' => 'foftest', 'password' => 'dummy'));
 
-        $totp      = new F0FEncryptTotp(6);
+        $totp      = new F0FEncryptTotp(30);
         $otp       = $totp->getCode($key);
         $cryptoKey = hash('sha256', $key.$otp);
 

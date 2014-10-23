@@ -142,7 +142,8 @@ class F0FDispatcherTest extends FtestCase
         }
 
         $config = array(
-            'input' => new F0FInput($input)
+            'input'			=> new F0FInput($input),
+			'authTimeStep'	=> 30,
         );
 
         $dispatcher = new F0FDispatcher($config);
