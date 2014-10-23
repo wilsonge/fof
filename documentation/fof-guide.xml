@@ -7026,6 +7026,69 @@ class="tab-pane active another-class"
             which will be open by default. If you forget to set an active tab
             the tab pane will render with no tab active by default which is
             confusing for your users!</para>
+
+            <title>Using more than one &lt;fieldset&gt; in tab</title>
+
+            <para>By default if you add a non tabbed <code>fieldset</code>
+            inside a tabbed <code>form</code> the fieldset will be render at
+            the bottom of the form and will appear on all tabs.</para>
+
+            <para>If you want to assign more than one <code>fieldset</code>
+            on the same tab you have to use the following attributes on the
+            <code>fieldset</code>:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>innertab</term>
+
+                <listitem>
+                  <para>The <parameter>name</parameter> of the tabbed
+                  <code>fieldset</code> where this fieldset will be
+                  assign.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <para>The tabbed <code>fieldset</code>s which have assigned
+            inner <code>fieldset</code>s can use the following
+            attributes:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>class</term>
+
+                <listitem>
+                  <para>One or more CSS classes to be applied to the generated
+                  <code>&lt;div&gt;</code> element of the <code>tab</code>
+                  .</para>
+                </listitem>
+              </varlistentry>
+              <varlistentry>
+                <term>innerclass</term>
+
+                <listitem>
+                  <para>One or more CSS classes to be applied to the generated
+                  <code>&lt;div&gt;</code> element of the <code>fieldset</code>
+                  .</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <para>For example, to create a tab with 2 <code>fieldset</code>s
+            :</para>
+
+            <programlisting language="xml">&lt;fieldset name="basic_configuration"
+label="COM_FOOBAR_ITEMS_GROUP_BASIC"
+class="tab-pane active another-class"
+innerclass="span6"
+&gt;
+
+&lt;fieldset name="other_configuration"
+label="COM_FOOBAR_ITEMS_GROUP_OTHER"
+class="span6"
+innertab="basic_configuration"
+&gt;
+</programlisting>
           </section>
 
           <section xml:id="format-forms-with-classes">
