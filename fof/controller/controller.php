@@ -996,12 +996,13 @@ class F0FController extends F0FUtilsObject
 	 * YOU MUST NOT USETHIS TASK DIRECTLY IN A URL. It is supposed to be
 	 * used ONLY inside your code. In the URL, use task=browse instead.
 	 *
-	 * @param   bool  $cachable   Is this view cacheable?
-	 * @param   bool  $urlparams  Add your safe URL parameters (see further down in the code)
+	 * @param   bool    $cachable   Is this view cacheable?
+	 * @param   bool    $urlparams  Add your safe URL parameters (see further down in the code)
+	 * @param   string  $tpl        The name of the template file to parse
 	 *
 	 * @return  bool
 	 */
-	public function display($cachable = false, $urlparams = false)
+	public function display($cachable = false, $urlparams = false, $tpl = null)
 	{
 		$document = F0FPlatform::getInstance()->getDocument();
 
@@ -1110,7 +1111,7 @@ class F0FController extends F0FUtilsObject
 		else
 		{
 			// Display without caching
-			$view->display();
+			$view->display($tpl);
 		}
 
 		return true;
@@ -2771,7 +2772,7 @@ class F0FController extends F0FUtilsObject
 		if (!isset($config['linkbar_style']))
 		{
 			$style = $this->configProvider->get($config['option'] . '.views.' . $config['view'] . '.config.linkbar_style', false);
-			
+
 			if ($style) {
 				$config['linkbar_style'] = $style;
 			}
