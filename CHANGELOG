@@ -5,6 +5,7 @@ FOF 2.3.6
 + "range", "modulo" and "emptynonzero" filters in F0FModel
 + Installation integrity check linrary (F0FUtilsFilescheck)
 + F0FTimer class implements a runtime timer, useful to prevent long-running operations from timing out
++ Support for multiple fieldsets per tab in tabbed XML forms
 # [HIGH] F0FTableNested::getParent would return the wrong node
 # [MEDIUM] Bug in F0FToolbar didn't allow toolbar configuration with fof.xml
 # [MEDIUM] The tpl= query parameter could not be possibly made to work without copying & pasting the entire display() method
