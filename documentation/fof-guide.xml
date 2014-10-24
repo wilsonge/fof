@@ -3794,7 +3794,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
           <listitem>
             <para>for example <methodname>onItemsBrowse</methodname>. The name
             consists of the word on in lowercase, followed by camel cased view
-            and task names, in this order. The view name is always pluralised. For example:
+            and task names, in this order. The view name MUST be pluralised. For example:
             <methodname>onItemsBrowse</methodname> and
             <methodname>onItemsAdd</methodname></para>
           </listitem>
