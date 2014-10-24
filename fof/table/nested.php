@@ -289,9 +289,10 @@ class F0FTableNested extends F0FTable
 			}
 			else
 			{
-				$this->setError("No items selected.");
-
-				return false;
+				// Even if it's null, let's still create the record
+				$this->create($this->getData());
+				
+				return $this;
 			}
 		}
 
