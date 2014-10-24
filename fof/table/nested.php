@@ -263,13 +263,53 @@ class F0FTableNested extends F0FTable
 	}
 
 	/**
-	 * Makes a copy of the record, inserting it as the last child of the current node's parent.
+	 * Makes a copy of the record, inserting it as the last child of the given node's parent.
 	 *
-	 * @return self
+	 * @param   integer|array  $cid  The primary key value (or values) or the record(s) to copy. 
+	 *                               If null, the current record will be copied
+	 * 
+	 * @return self|F0FTableNested	 The last copied node
 	 */
-	public function copy()
+	public function copy($cid = null)
 	{
-		return $this->create($this->getData());
+		//We have to cast the id as array, or the helper function will return an empty set
+		if($cid)
+		{
+			$cid = (array) $cid;
+		}
+
+        F0FUtilsArray::toInteger($cid);
+		$k = $this->_tbl_key;
+
+		if (count($cid) < 1)
+		{
+			if ($this->$k)
+			{
+				$cid = array($this->$k);
+			}
+			else
+			{
+				$this->setError("No items selected.");
+
+				return false;
+			}
+		}
+
+		foreach ($cid as $item)
+		{
+			// Prevent load with id = 0
+
+			if (!$item)
+			{
+				continue;
+			}
+
+			$this->load($item);
+			
+			$this->create($this->getData());
+		}
+
+		return $this;
 	}
 
 	/**
