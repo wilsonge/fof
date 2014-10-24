@@ -3772,7 +3772,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
       <code>com_todo</code>. The last part MUST be
       <classname>Toolbar</classname>.</para>
 
-      <para>The controller file name MUST be <filename>toolbar.php</filename>.
+      <para>The toolbar file name MUST be <filename>toolbar.php</filename>.
       All Toolbar files are located in your component's main directory, in the
       front-end and back-end. If a file is not present in the front-end, it
       will be attempted to be loaded from the back-end. If the Toolbar class
@@ -3794,11 +3794,9 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
           <listitem>
             <para>for example <methodname>onItemsBrowse</methodname>. The name
             consists of the word on in lowercase, followed by camel cased view
-            and task names, in this order. When the task is
-            <methodname>Browse</methodname> the view name MUST be plural. For
-            any other task the view name MUST be singular. For example:
+            and task names, in this order. The view name is always pluralised. For example:
             <methodname>onItemsBrowse</methodname> and
-            <methodname>onItemAdd</methodname></para>
+            <methodname>onItemsAdd</methodname></para>
           </listitem>
         </varlistentry>
 
@@ -3807,7 +3805,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 
           <listitem>
             <para>for example <methodname>onItems</methodname>. The name
-            consists of the word on in lowercase, followed by camel cased view
+            consists of the word on in lowercase, followed by camel cased pluralised view
             name.</para>
           </listitem>
         </varlistentry>
