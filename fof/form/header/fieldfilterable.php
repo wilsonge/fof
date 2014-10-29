@@ -23,7 +23,7 @@ class F0FFormHeaderFieldfilterable extends F0FFormHeaderFieldsearchable
 	 */
 	protected function getFilter()
 	{
-		$valide = array('yes', 'true', '1')
+		$valide = array('yes', 'true', '1');
 
 		// Initialize some field(s) attributes.
 		$size        = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
