@@ -25,6 +25,13 @@ class F0FDownload
 	private $adapter = null;
 
 	/**
+	 * Additional params that will be passed to the adapter while performing the download
+	 *
+	 * @var  array
+	 */
+	private $adapterOptions = array();
+
+	/**
 	 * Creates a new download object and assigns it the most fitting download adapter
 	 */
 	public function __construct()
@@ -86,6 +93,43 @@ class F0FDownload
 	}
 
 	/**
+	 * Returns the name of the current adapter
+	 *
+	 * @return string
+	 */
+	public function getAdapterName()
+	{
+		if(is_object($this->adapter))
+		{
+			$class = get_class($this->adapter);
+
+			return strtolower(str_ireplace('F0FDownloadAdapter', '', $class));
+		}
+
+		return '';
+	}
+
+	/**
+	 * Sets the additional options for the adapter
+	 *
+	 * @param array $options
+	 */
+	public function setAdapterOptions(array $options)
+	{
+		$this->adapterOptions = $options;
+	}
+
+	/**
+	 * Returns the additional options for the adapter
+	 *
+	 * @return array
+	 */
+	public function getAdapterOptions()
+	{
+		return $this->adapterOptions;
+	}
+
+	/**
 	 * Used to decode the $params array
 	 *
 	 * @param   string $key     The parameter key you want to retrieve the value for
@@ -116,7 +160,7 @@ class F0FDownload
 	{
 		try
 		{
-			return $this->adapter->downloadAndReturn($url);
+			return $this->adapter->downloadAndReturn($url, null, null, $this->adapterOptions);
 		}
 		catch (Exception $e)
 		{
@@ -236,7 +280,7 @@ class F0FDownload
 
 				try
 				{
-					$result = $this->adapter->downloadAndReturn($url, $from, $to);
+					$result = $this->adapter->downloadAndReturn($url, $from, $to, $this->adapterOptions);
 
 					if ($result === false)
 					{

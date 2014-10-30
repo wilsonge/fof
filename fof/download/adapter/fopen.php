@@ -42,15 +42,16 @@ class F0FDownloadAdapterFopen extends F0FDownloadAdapterAbstract implements F0FD
 	 * If this class' supportsChunkDownload returns false you should assume
 	 * that the $from and $to parameters will be ignored.
 	 *
-	 * @param   string   $url   The remote file's URL
-	 * @param   integer  $from  Byte range to start downloading from. Use null for start of file.
-	 * @param   integer  $to    Byte range to stop downloading. Use null to download the entire file ($from is ignored)
+	 * @param   string   $url     The remote file's URL
+	 * @param   integer  $from    Byte range to start downloading from. Use null for start of file.
+	 * @param   integer  $to      Byte range to stop downloading. Use null to download the entire file ($from is ignored)
+	 * @param   array    $params  Additional params that will be added before performing the download
 	 *
 	 * @return  string  The raw file data retrieved from the remote URL.
 	 *
 	 * @throws  Exception  A generic exception is thrown on error
 	 */
-	public function downloadAndReturn($url, $from = null, $to = null)
+	public function downloadAndReturn($url, $from = null, $to = null, array $params = array())
 	{
 		if (empty($from))
 		{
@@ -65,11 +66,11 @@ class F0FDownloadAdapterFopen extends F0FDownloadAdapterAbstract implements F0FD
 		if ($to < $from)
 		{
 			$temp = $to;
-			$to = $from;
+			$to   = $from;
 			$from = $temp;
+
 			unset($temp);
 		}
-
 
 		if (!(empty($from) && empty($to)))
 		{
@@ -84,8 +85,11 @@ class F0FDownloadAdapterFopen extends F0FDownloadAdapterAbstract implements F0FD
 					'verify_depth'  => 5,
 				)
 			);
+
+			$options = array_merge($options, $params);
+
 			$context = stream_context_create($options);
-			$result = @file_get_contents($url, false, $context, $from - $to + 1);
+			$result  = @file_get_contents($url, false, $context, $from - $to + 1);
 		}
 		else
 		{
@@ -99,8 +103,11 @@ class F0FDownloadAdapterFopen extends F0FDownloadAdapterAbstract implements F0FD
 					'verify_depth'  => 5,
 				)
 			);
+
+			$options = array_merge($options, $params);
+
 			$context = stream_context_create($options);
-			$result = @file_get_contents($url, false, $context);
+			$result  = @file_get_contents($url, false, $context);
 		}
 
 		if ($result === false)
