@@ -71,7 +71,6 @@ class F0FDownloadAdapterCurl extends F0FDownloadAdapterAbstract implements F0FDo
 			CURLOPT_SSL_VERIFYHOST  => 2,
 			CURLOPT_SSLVERSION      => 0,
 			CURLOPT_AUTOREFERER     => 1,
-			CURLOPT_AUTOREFERER     => 1,
 			CURLOPT_URL             => $url,
 			CURLOPT_BINARYTRANSFER  => 1,
 			CURLOPT_RETURNTRANSFER  => 1,
