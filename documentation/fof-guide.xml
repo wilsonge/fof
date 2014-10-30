@@ -7440,6 +7440,47 @@ echo $viewTemplate;
             </itemizedlist>
           </section>
 
+          <section xml:id="fieldfilterable">
+            <title>fieldfilterable</title>
+
+            <para>Displays a header field with a customisable filtering
+            widget.</para>
+
+            <para>The additional attributes you can set are:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">method</emphasis> (optional)
+                The filtering method (see filter model behavior). Default:
+                between</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">fromname</emphasis> The name
+                of the first input field (value or from, see filter model
+                behavior). Default: from</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">toname</emphasis> The name
+                of the second input field (to or interval, see filter model
+                behavior). Default: to</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">showmethod</emphasis> (optional)
+                Show the method input field, else it will be a hidden input.
+                Default: false</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">single</emphasis> (optional)
+                Show only a single input instead of two. Used for single
+                value filter (e.g. exact or partial). Default: false</para>
+              </listitem>
+            </itemizedlist>
+          </section>
+
           <section xml:id="fieldsearchable">
             <title>fieldsearchable</title>
 
