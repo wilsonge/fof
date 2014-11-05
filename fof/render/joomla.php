@@ -423,6 +423,15 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			$formid = 'adminForm';
 		}
 
+		// Check if we have a custom task
+		$customTask = $form->getAttribute('customTask');
+
+		if (empty($customTask))
+		{
+			$customTask = '';
+		}
+
+		// Get the form action URL
         $actionUrl = F0FPlatform::getInstance()->isBackend() ? 'index.php' : JUri::root().'index.php';
 
 		if (F0FPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
@@ -443,7 +452,7 @@ class F0FRenderJoomla extends F0FRenderAbstract
 			'">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $input->getCmd('view', 'edit') . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="task" value="' . $customTask . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . PHP_EOL;
 
 		$html .= "\t" . '<input type="hidden" name="' . JFactory::getSession()->getFormToken() . '" value="1" />' . PHP_EOL;

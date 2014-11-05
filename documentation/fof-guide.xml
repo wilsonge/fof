@@ -1353,14 +1353,15 @@ function postflight($type, $parent)
             <title>emptynonzero.php</title>
 
             <para>Adding this behaviour to a model object will extent the
-            <code>filters</code> behavior and allows FOF to not empty zero value.
-            For example, if you pass &amp;foobar=0 in the URL then the SQL query
-            used to fetch the items list will be filtered by the rows where
-            the foobar column is set to 0. Without this behavior the column
-            foobar will be considered as empty.</para>
+            <code>filters</code> behavior and allows FOF to not empty zero
+            value. For example, if you pass &amp;foobar=0 in the URL then the
+            SQL query used to fetch the items list will be filtered by the
+            rows where the foobar column is set to 0. Without this behavior
+            the column foobar will be considered as empty.</para>
 
             <important>
-              <para>This behaviour requires the <code>filters</code> behavior.</para>
+              <para>This behaviour requires the <code>filters</code>
+              behavior.</para>
             </important>
           </section>
 
@@ -3794,8 +3795,8 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
           <listitem>
             <para>for example <methodname>onItemsBrowse</methodname>. The name
             consists of the word on in lowercase, followed by camel cased view
-            and task names, in this order. The view name MUST be pluralised. For example:
-            <methodname>onItemsBrowse</methodname> and
+            and task names, in this order. The view name MUST be pluralised.
+            For example: <methodname>onItemsBrowse</methodname> and
             <methodname>onItemsAdd</methodname></para>
           </listitem>
         </varlistentry>
@@ -3805,8 +3806,8 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 
           <listitem>
             <para>for example <methodname>onItems</methodname>. The name
-            consists of the word on in lowercase, followed by camel cased pluralised view
-            name.</para>
+            consists of the word on in lowercase, followed by camel cased
+            pluralised view name.</para>
           </listitem>
         </varlistentry>
 
@@ -6957,6 +6958,24 @@ $phpFileChecker = array(
                   possible, especially in front-end facing MVC triads.</para>
                 </listitem>
               </varlistentry>
+
+              <varlistentry>
+                <term>customTask</term>
+
+                <listitem>
+                  <para>Force the default task when submitting the form. By
+                  default there is an empty default task. The toolbar buttons
+                  are supposed to set it to a non-empty value. However, if you
+                  are using an XML form without a toolbar button –or if the
+                  Javascript fails to run– the submitted task is empty and FOF
+                  will try to guess if it's an edit or a save task. By setting
+                  this attribute you can override this behaviour, forcing a
+                  specific or custom default task, e.g. savenew or foobar, to
+                  be sent instead. This is mostly useful in front-end forms
+                  which use a simple HTML submit button instead of a
+                  Jvascript-powered toolbar button.</para>
+                </listitem>
+              </varlistentry>
             </variablelist>
           </section>
         </section>
@@ -7031,8 +7050,8 @@ class="tab-pane active another-class"
             inside a tabbed <code>form</code> the fieldset will be render at
             the bottom of the form and will appear on all tabs.</para>
 
-            <para>If you want to assign more than one <code>fieldset</code>
-            on the same tab you have to use the following attributes on the
+            <para>If you want to assign more than one <code>fieldset</code> on
+            the same tab you have to use the following attributes on the
             <code>fieldset</code>:</para>
 
             <variablelist>
@@ -7047,9 +7066,8 @@ class="tab-pane active another-class"
               </varlistentry>
             </variablelist>
 
-            <para>The tabbed <code>fieldset</code>s which have assigned
-            inner <code>fieldset</code>s can use the following
-            attributes:</para>
+            <para>The tabbed <code>fieldset</code>s which have assigned inner
+            <code>fieldset</code>s can use the following attributes:</para>
 
             <variablelist>
               <varlistentry>
@@ -7061,13 +7079,14 @@ class="tab-pane active another-class"
                   .</para>
                 </listitem>
               </varlistentry>
+
               <varlistentry>
                 <term>innerclass</term>
 
                 <listitem>
                   <para>One or more CSS classes to be applied to the generated
-                  <code>&lt;div&gt;</code> element of the <code>fieldset</code>
-                  .</para>
+                  <code>&lt;div&gt;</code> element of the
+                  <code>fieldset</code> .</para>
                 </listitem>
               </varlistentry>
             </variablelist>
@@ -7450,20 +7469,20 @@ echo $viewTemplate;
 
             <itemizedlist>
               <listitem>
-                <para><emphasis role="strong">method</emphasis> (optional)
-                The filtering method (see filter model behavior). Default:
+                <para><emphasis role="strong">method</emphasis> (optional) The
+                filtering method (see filter model behavior). Default:
                 between</para>
               </listitem>
 
               <listitem>
-                <para><emphasis role="strong">fromname</emphasis> The name
-                of the first input field (value or from, see filter model
+                <para><emphasis role="strong">fromname</emphasis> The name of
+                the first input field (value or from, see filter model
                 behavior). Default: from</para>
               </listitem>
 
               <listitem>
-                <para><emphasis role="strong">toname</emphasis> The name
-                of the second input field (to or interval, see filter model
+                <para><emphasis role="strong">toname</emphasis> The name of
+                the second input field (to or interval, see filter model
                 behavior). Default: to</para>
               </listitem>
 
@@ -7475,8 +7494,8 @@ echo $viewTemplate;
 
               <listitem>
                 <para><emphasis role="strong">single</emphasis> (optional)
-                Show only a single input instead of two. Used for single
-                value filter (e.g. exact or partial). Default: false</para>
+                Show only a single input instead of two. Used for single value
+                filter (e.g. exact or partial). Default: false</para>
               </listitem>
             </itemizedlist>
           </section>
@@ -8770,33 +8789,37 @@ echo $viewTemplate;
                 <para><emphasis role="strong">class</emphasis> CSS class.
                 Default: ''</para>
               </listitem>
+
               <listitem>
                 <para><emphasis role="strong">relationclass</emphasis> CSS
-                class for each relation. Only on: Browse, Read.
-                Default: ''</para>
+                class for each relation. Only on: Browse, Read. Default:
+                ''</para>
               </listitem>
+
               <listitem>
-                <para><emphasis role="strong">value_field</emphasis> The
-                name of the field in the relation's table which is used as
-                the label. Only on: Browse, Read. Default:
-                <literal>title</literal>
-                </para>
+                <para><emphasis role="strong">value_field</emphasis> The name
+                of the field in the relation's table which is used as the
+                label. Only on: Browse, Read. Default:
+                <literal>title</literal></para>
               </listitem>
+
               <listitem>
-                <para><emphasis role="strong">translate</emphasis> Should
-                the value relation's value be passed through JText::_() before
+                <para><emphasis role="strong">translate</emphasis> Should the
+                value relation's value be passed through JText::_() before
                 being displayed? Only on: Browse, Read. Default: false</para>
               </listitem>
+
               <listitem>
                 <para><emphasis role="strong">url</emphasis> URL template for
                 each element (use [RELATION:ID] as a placeholder for the
-                relation id). This goes through the field tag replacement
-                (see below). Only on: Browse, Read.</para>
+                relation id). This goes through the field tag replacement (see
+                below). Only on: Browse, Read.</para>
               </listitem>
+
               <listitem>
                 <para><emphasis role="strong">empty_replacement</emphasis> a
-                string to show in place of the field when it's empty.
-                Only on: Browse, Read.</para>
+                string to show in place of the field when it's empty. Only on:
+                Browse, Read.</para>
               </listitem>
             </itemizedlist>
 
@@ -8804,17 +8827,18 @@ echo $viewTemplate;
               <title>Field tag replacement for relation fields</title>
 
               <para>Like with text fields, with relation fields you can
-              reference values from other fields inside your url. See
-              <link linkend="field-tag-replacement-for-text-fields">field
-              tag replacement for relation fields</link>.</para>
+              reference values from other fields inside your url. See <link
+              linkend="field-tag-replacement-for-text-fields">field tag
+              replacement for relation fields</link>.</para>
 
               <para>Relation field also recognises the special tag
-              <literal>[RELATION:ID]</literal>, replacing it with the value
-              of the key field of the relation table.</para>
+              <literal>[RELATION:ID]</literal>, replacing it with the value of
+              the key field of the relation table.</para>
             </section>
+
             <important>
-              <para>You need to setup the table settings relations
-              in fof.xml. <link linkend="fofxml-table">See relations
+              <para>You need to setup the table settings relations in fof.xml.
+              <link linkend="fofxml-table">See relations
               settings</link>.</para>
             </important>
           </section>
