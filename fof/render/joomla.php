@@ -170,6 +170,7 @@ class F0FRenderJoomla extends F0FRenderAbstract
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . F0FInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="layout" value="' . $input->getCmd('layout', '') . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
