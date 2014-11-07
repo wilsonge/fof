@@ -5942,6 +5942,38 @@ $phpFileChecker = array(
           ACL privilege is always going to fail, i.e. the task will not be
           accessible by any user.</para>
 
+          <bridgehead>Toolbar</bridgehead>
+
+          <para>The toolbar settings allow you to modify the default toolbar
+          buttons for each task.</para>
+
+          <para>The toolbar is enclosed inside a single
+          <code>&lt;toolbar&gt;</code> tag. You can have exactly zero or many
+          <code>&lt;toolbar&gt;</code> tags inside each view tag.</para>
+
+          <para>Inside the <code>&lt;toolbar&gt;</code> tag you can have one
+          or more <code>&lt;button&gt;</code> tags. The type attribute defines
+          the type of the button to add. The type has to be one of those values:
+          title, divider, custom, preview, help, back, media_manager, assign
+          , new, publish, publishList, unpublish, unpublishList, archiveList
+          , unarchiveList, editList, editHtml, editCss, deleteList, trash,
+          apply, save, save2new, save2copy, checkin, cancel, preferences
+          .</para>
+
+          <para>The view name is always pluralised. For example:</para>
+
+          <programlisting>
+    &lt;view name="items"&gt;
+        &lt;toolbar title="Todos" task="*"&gt;
+            &lt;button type="preferences" component="com_todo" /&gt;
+        &lt;/toolbar&gt;
+        &lt;toolbar title="Edit todo" task="edit"&gt;
+            &lt;button type="apply" alt="Apply" /&gt;
+            &lt;button type="cancel" /&gt;
+        &lt;/toolbar&gt;
+    &lt;/view&gt;
+</programlisting>
+
           <bridgehead>Option settings</bridgehead>
 
           <para>The configuration options of views and models can be modified
