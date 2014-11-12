@@ -7896,6 +7896,12 @@ echo $viewTemplate;
               </listitem>
 
               <listitem>
+                <para><emphasis role="strong">title</emphasis> Button title
+                value; this is a language string that will be fed to
+                JText::_() for translation. (default '')</para>
+              </listitem>
+
+              <listitem>
                 <para><emphasis role="strong">onclick</emphasis> "onclick"
                 attribute to add to the button (default '')</para>
               </listitem>
@@ -8017,6 +8023,32 @@ echo $viewTemplate;
                 disabled form element?</para>
               </listitem>
             </itemizedlist>
+          </section>
+
+          <section xml:id="checkboxes">
+            <title>checkboxes</title>
+
+            <para>This will display a list of checkbox input.</para>
+
+            <para>You can set the following attributes:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="strong">class</emphasis> CSS class.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="strong">translate</emphasis> Should the
+                checkbox's value be passed through JText::_() before being
+                displayed? Only on: Browse, Read. Default: false</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>This element has <literal>&lt;option&gt;</literal>
+            sub-elements defining the available options. Please consult
+            Joomla!'s own element of the same type for more
+            information.</para>
           </section>
 
           <section xml:id="components">
@@ -8652,6 +8684,11 @@ echo $viewTemplate;
               <listitem>
                 <para><emphasis role="strong">class</emphasis> CSS
                 class</para>
+              </listitem>
+
+             <listitem>
+                <para><emphasis role="strong">icon</emphasis> Bootstrap icon
+                to use. Default: 'icon-menu'</para>
               </listitem>
 
               <listitem>
