@@ -2779,8 +2779,8 @@ class F0FController extends F0FUtilsObject
 		}
 
 		/**
-		 * Some stupid administrative templates force format=utf (yeah, I know, what the fuck, right?) when a format
-		 * URL parameter does not exist in the URL. Of course there is no such thing as F0FViewUtf (why the hell would
+		 * Some administrative templates force format=utf (yeah, I know, what the heck, right?) when a format
+		 * URL parameter does not exist in the URL. Of course there is no such thing as F0FViewUtf (why the heck would
 		 * it be, there is no such thing as a format=utf in Joomla! for crying out loud) which causes a Fatal Error. So
 		 * we have to detect that and force $type='html'...
 		 */
