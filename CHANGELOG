@@ -1,4 +1,8 @@
-FOF 2.3.6
+FOF 2.4.1
+================================================================================
+# [HIGH] Models could result in invalid SQL due to lack of order and order direction validation under extreme circumstances
+
+FOF 2.4.0
 ================================================================================
 + F0FUtilsUpdateCollection, F0FUtilsUpdateExtension and F0FUtilsUpdateJoomla helper classes for managing update XML files
 + F0FDownload class for simple and staggered file downloads
