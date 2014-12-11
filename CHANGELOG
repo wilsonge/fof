@@ -1,3 +1,7 @@
+FOF 2.4.2
+================================================================================
+# [LOW] Prevent the component menu item from disappearing on extension update
+
 FOF 2.4.1
 ================================================================================
 # [HIGH] Models could result in invalid SQL due to lack of order and order direction validation under extreme circumstances
