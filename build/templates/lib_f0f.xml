@@ -45,7 +45,6 @@
 
 		<file>LICENSE.txt</file>
 		<file>include.php</file>
-		<file>index.html</file>
 		<file>version.txt</file>
 	</files>
 </extension>
