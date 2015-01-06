@@ -2472,13 +2472,13 @@ class F0FTable extends F0FUtilsObject implements JTableInterface
 	 * plugin events do NOT get triggered
 	 *
 	 * Example:
-	 * protected function onAfterStore(){
+	 * protected function onBeforeBind(){
 	 *       // Your code here
-	 *     return parent::onAfterStore() && $your_result;
+	 *     return parent::onBeforeBind() && $your_result;
 	 * }
 	 *
-	 * Do not do it the other way around, e.g. return $your_result && parent::onAfterStore()
-	 * Due to  PHP short-circuit boolean evaluation the parent::onAfterStore()
+	 * Do not do it the other way around, e.g. return $your_result && parent::onBeforeBind()
+	 * Due to  PHP short-circuit boolean evaluation the parent::onBeforeBind()
 	 * will not be called if $your_result is false.
 	 *
 	 * @param   object|array  &$from  The data to bind
