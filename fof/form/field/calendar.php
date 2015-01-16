@@ -115,7 +115,7 @@ class F0FFormFieldCalendar extends JFormFieldCalendar implements F0FFormField
 		$formatPHP = str_replace(array('%', 'H:M:S'), array('', 'H:i:s'), $formatJS);
 
 		// Check for empty date values
-		if (empty($this->value) || $this->value == '0000-00-00 00:00:00' || $this->value == '0000-00-00')
+		if (empty($this->value) || $this->value == F0FPlatform::getInstance()->getDbo()->getNullDate() || $this->value == '0000-00-00')
 		{
 			$this->value = $default;
 		}
