@@ -9,6 +9,7 @@ namespace FOF30\Dispatcher;
 
 use FOF30\Container\Container;
 use FOF30\Controller\Controller;
+use FOF30\Dispatcher\Exception\AccessForbidden;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
 
 defined('_JEXEC') or die;
@@ -149,7 +150,7 @@ class Dispatcher
 
 			$this->transparentAuthenticationLogout();
 
-			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		// Get and execute the controller
@@ -174,7 +175,7 @@ class Dispatcher
 
 			$this->transparentAuthenticationLogout();
 
-			throw new \Exception(\JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'), 403);
+			throw new AccessForbidden;
 		}
 
 		$this->transparentAuthenticationLogout();
