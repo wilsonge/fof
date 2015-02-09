@@ -207,7 +207,14 @@ class F0FToolbar
                 if(!F0FPlatform::getInstance()->isCli())
                 {
                     // Load the core Javascript
-	                JHtml::_('jquery.framework');
+	                if (version_compare(JVERSION, '3.0', 'ge'))
+	                {
+		                JHtml::_('jquery.framework');
+	                }
+	                else
+	                {
+		                JHtml::_('behavior.framework');
+	                }
                 }
 			}
 		}

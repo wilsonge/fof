@@ -390,8 +390,12 @@ class F0FRenderJoomla extends F0FRenderAbstract
 
 		if (in_array($validate, array('true', 'yes', '1', 'on')))
 		{
-			JHtml::_('jquery.framework');
-			JHTML::_('behavior.formvalidation');
+			if (version_compare(JVERSION, '3.0', 'ge'))
+			{
+				JHtml::_('jquery.framework');
+			}
+
+			JHtml::_('behavior.formvalidation');
 			$class = 'form-validate ';
 			$this->loadValidationScript($form);
 		}
