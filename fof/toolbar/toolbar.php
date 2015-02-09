@@ -207,7 +207,7 @@ class F0FToolbar
                 if(!F0FPlatform::getInstance()->isCli())
                 {
                     // Load the core Javascript
-                    JHtml::_('behavior.framework', true);
+	                JHtml::_('jquery.framework');
                 }
 			}
 		}

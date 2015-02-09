@@ -9663,7 +9663,7 @@ $encryptedAuthKey = $aes-&gt;encryptString($authKey);
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
-JHtml::_('behavior.framework');
+JHtml::_('jquery.framework');
 JHtml::_('behavior.modal');
 
 $option = 'com_COMPONENT_NAME';
