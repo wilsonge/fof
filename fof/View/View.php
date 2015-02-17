@@ -584,6 +584,15 @@ class View
 			throw new AccessForbidden;
 		}
 
+		$preRenderResult = '';
+
+		if ($this->doPreRender)
+		{
+			@ob_start();
+			$this->preRender();
+			$preRenderResult = @ob_end_clean();
+		}
+
 		$templateResult = $this->loadTemplate($tpl);
 
 		$eventName = 'onAfter' . ucfirst($this->doTask);
@@ -598,22 +607,15 @@ class View
 		{
 			throw $templateResult;
 		}
-		else
+
+		echo $preRenderResult . $templateResult;
+
+		if ($this->doPostRender)
 		{
-			if ($this->doPreRender)
-			{
-				$this->preRender();
-			}
-
-			echo $templateResult;
-
-			if ($this->doPostRender)
-			{
-				$this->postRender();
-			}
-
-			return true;
+			$this->postRender();
 		}
+
+		return true;
 	}
 
 	/**
@@ -1115,7 +1117,7 @@ class View
 	public function loadHelper($helperClass = null)
 	{
 		// Get the helper class name
-		$className = '\\' . $this->container->getNamespacePrefix() . '\\Helper\\' . ucfirst($helperClass);
+		$className = '\\' . $this->container->getNamespacePrefix() . 'Helper\\' . ucfirst($helperClass);
 
 		// This trick autoloads the helper class. We can't instantiate it as
 		// helpers are (supposed to be) abstract classes with static method

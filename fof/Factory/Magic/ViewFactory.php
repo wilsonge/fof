@@ -35,6 +35,7 @@ class ViewFactory extends BaseFactory
 		}
 
 		$appConfig = $this->container->appConfig;
+		$name = ucfirst($name);
 
 		$defaultConfig = array(
 			'name'          => $name,
@@ -46,7 +47,7 @@ class ViewFactory extends BaseFactory
 
 		$config = array_merge($defaultConfig, $config);
 
-		$className = $this->container->getNamespacePrefix() . '\\View\\DataView\\Default' . ucfirst($viewType);
+		$className = $this->container->getNamespacePrefix() . 'View\\DataView\\Default' . ucfirst($viewType);
 
 		if (!class_exists($className, true))
 		{
@@ -55,7 +56,7 @@ class ViewFactory extends BaseFactory
 
 		if (!class_exists($className, true))
 		{
-			$className = $this->container->getNamespacePrefix() . '\\View\\DataView\\DefaultHtml';
+			$className = $this->container->getNamespacePrefix() . 'View\\DataView\\DefaultHtml';
 		}
 
 		if (!class_exists($className))
