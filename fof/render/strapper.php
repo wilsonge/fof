@@ -998,6 +998,7 @@ HTML;
 		{
 			if (version_compare(JVERSION, '3.0', 'ge'))
 			{
+				JHtml::_('behavior.core');
 				JHtml::_('jquery.framework');
 			}
 
