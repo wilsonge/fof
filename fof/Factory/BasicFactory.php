@@ -70,6 +70,16 @@ class BasicFactory implements FactoryInterface
 	{
 		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($viewName);
 
+		try
+		{
+			return $this->createController($controllerClass, $config);
+		}
+		catch (ControllerNotFound $e)
+		{
+		}
+
+		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst(Inflector::singularize($viewName));
+
 		return $this->createController($controllerClass, $config);
 	}
 
@@ -84,6 +94,16 @@ class BasicFactory implements FactoryInterface
 	public function model($viewName, array $config = array())
 	{
 		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
+
+		try
+		{
+			return $this->createModel($modelClass, $config);
+		}
+		catch (ModelNotFound $e)
+		{
+		}
+
+		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst(Inflector::singularize($viewName));
 
 		return $this->createModel($modelClass, $config);
 	}
@@ -100,6 +120,16 @@ class BasicFactory implements FactoryInterface
 	public function view($viewName, $viewType = 'html', array $config = array())
 	{
 		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
+
+		try
+		{
+			return $this->createView($viewClass, $config);
+		}
+		catch (ViewNotFound $e)
+		{
+		}
+
+		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst(Inflector::singularize($viewName)) . '\\' . ucfirst($viewType);
 
 		return $this->createView($viewClass, $config);
 	}

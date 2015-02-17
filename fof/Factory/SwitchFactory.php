@@ -16,6 +16,7 @@ use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Factory\Exception\ToolbarNotFound;
 use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
+use FOF30\Inflector\Inflector;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
 use FOF30\TransparentAuthentication\TransparentAuthentication;
@@ -51,7 +52,15 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
 	public function controller($viewName, array $config = array())
 	{
-		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($viewName);
+		try
+		{
+			return parent::controller($viewName, $config);
+		}
+		catch (ControllerNotFound $e)
+		{
+		}
+
+		$controllerClass = $this->container->getNamespacePrefix('inverse') . 'Controller\\' . ucfirst($viewName);
 
 		try
 		{
@@ -59,10 +68,11 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		}
 		catch (ControllerNotFound $e)
 		{
-			$controllerClass = $this->container->getNamespacePrefix('inverse') . 'Controller\\' . ucfirst($viewName);
-
-			return $this->createController($controllerClass, $config);
 		}
+
+		$controllerClass = $this->container->getNamespacePrefix('inverse') . 'Controller\\' . ucfirst(Inflector::singularize($viewName));
+
+		return $this->createController($controllerClass, $config);
 	}
 
 	/**
@@ -75,7 +85,15 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
 	public function model($viewName, array $config = array())
 	{
-		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
+		try
+		{
+			return parent::model($viewName, $config);
+		}
+		catch (ModelNotFound $e)
+		{
+		}
+
+		$modelClass = $this->container->getNamespacePrefix('inverse') . 'Model\\' . ucfirst($viewName);
 
 		try
 		{
@@ -83,7 +101,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		}
 		catch (ModelNotFound $e)
 		{
-			$modelClass = $this->container->getNamespacePrefix('inverse') . 'Model\\' . ucfirst($viewName);
+			$modelClass = $this->container->getNamespacePrefix('inverse') . 'Model\\' . ucfirst(Inflector::singularize($viewName));
 
 			return $this->createModel($modelClass, $config);
 		}
@@ -100,7 +118,15 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
 	public function view($viewName, $viewType = 'html', array $config = array())
 	{
-		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
+		try
+		{
+			return parent::view($viewName, $viewType, $config);
+		}
+		catch (ViewNotFound $e)
+		{
+		}
+
+		$viewClass = $this->container->getNamespacePrefix('inverse') . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
 
 		try
 		{
@@ -108,7 +134,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 		}
 		catch (ViewNotFound $e)
 		{
-			$viewClass = $this->container->getNamespacePrefix('inverse') . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
+			$viewClass = $this->container->getNamespacePrefix('inverse') . 'View\\' . ucfirst(Inflector::singularize($viewName)) . '\\' . ucfirst($viewType);
 
 			return $this->createView($viewClass, $config);
 		}
