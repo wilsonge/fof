@@ -87,6 +87,10 @@ class F0FRenderStrapper extends F0FRenderAbstract
 				'view-' . $view,
 				'layout-' . $layout,
 				'task-' . $task,
+				// We have a floating sidebar, they said. It looks great, they said. They must've been blind, I say!
+				'j-toggle-main',
+				'j-toggle-transition',
+				'span12',
 			);
 		}
 		elseif ($platform->isFrontend())

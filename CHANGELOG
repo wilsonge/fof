@@ -2,6 +2,7 @@ FOF 2.4.2
 ================================================================================
 + gh-425 Added F0FUtilsIp to help you get the user's IP address and check if it matches against a set of IP expressions
 # [LOW] Prevent the component menu item from disappearing on extension update
+# [LOW] Backend Akeeba Strapper / Joomla! 3 dropdowns collapsing next to message area due to Joomla! 3.4 CSS bugs coming from the floating sidebar
 
 FOF 2.4.1
 ================================================================================
