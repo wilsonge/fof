@@ -8,6 +8,7 @@
 namespace FOF30\Model;
 
 use FOF30\Container\Container;
+use FOF30\Controller\Exception\LockedRecord;
 use FOF30\Event\Dispatcher;
 use FOF30\Event\Observer;
 use FOF30\Form\Form;
@@ -35,6 +36,20 @@ defined('_JEXEC') or die;
  * @method DataModel belongsTo() belongsTo(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
  * @method DataModel hasMany() hasMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null)
  * @method DataModel belongsToMany() belongsToMany(string $name, string $foreignModelClass = null, string $localKey = null, string $foreignKey = null, string $pivotTable = null, string $pivotLocalKey = null, string $pivotForeignKey = null)
+ *
+ * @method DataModel filter_order() filter_order(string $orderingField)
+ * @method DataModel filter_order_Dir() filter_order_Dir(string $direction)
+ * @method DataModel limit() limit(int $limit)
+ * @method DataModel limitstart() limitstart(int $limitStart)
+ *
+ * @property  int     $enabled      Publish status of this record
+ * @property  int     $ordering     Sort ordering of this record
+ * @property  int     $created_by   ID of the user who created this record
+ * @property  string  $created_on   Date/time stamp of record creation
+ * @property  int     $modified_by  ID of the user who modified this record
+ * @property  string  $modified_on  Date/time stamp of record modification
+ * @property  int     $locked_by    ID of the user who locked this record
+ * @property  string  $locked_on    Date/time stamp of record locking
  *
  * Type hinting -- end
  */
@@ -907,6 +922,12 @@ class DataModel extends Model implements \JTableInterface
 		$nullDate = $db->getNullDate();
 		$date = new \JDate();
 
+		// Get the user manager for this application and retrieve the user
+		$userId = $this->container->platform->getUser()->id;
+
+		// Is this a locked record?
+		$isLocked = $this->isLocked($userId);
+
 		// Update the created_on / modified_on
 		if ($isNewRecord && $this->hasField('created_on'))
 		{
@@ -917,14 +938,11 @@ class DataModel extends Model implements \JTableInterface
 				$this->$created_on = $date->toSql(false, $db);
 			}
 		}
-		elseif (!$isNewRecord && $this->hasField('modified_on'))
+		elseif (!$isNewRecord && $this->hasField('modified_on') && !$isLocked)
 		{
 			$modified_on        = $this->getFieldAlias('modified_on');
 			$this->$modified_on = $date->toSql(false, $db);
 		}
-
-		// Get the user manager for this application and retrieve the user
-		$userId = $this->container->platform->getUser()->id;
 
 		// Update the created_by / modified_by values if necessary
 		if ($isNewRecord && $this->hasField('created_by'))
@@ -936,23 +954,10 @@ class DataModel extends Model implements \JTableInterface
 				$this->$created_by = $userId;
 			}
 		}
-		elseif (!$isNewRecord && $this->hasField('modified_by'))
+		elseif (!$isNewRecord && $this->hasField('modified_by') && !$isLocked)
 		{
 			$modified_by        = $this->getFieldAlias('modified_by');
 			$this->$modified_by = $userId;
-		}
-
-		// Unlock the record if necessary
-		if ($this->hasField('locked_by'))
-		{
-			$locked_by        = $this->getFieldAlias('locked_by');
-			$this->$locked_by = 0;
-		}
-
-		if ($this->hasField('locked_on'))
-		{
-			$locked_on        = $this->getFieldAlias('locked_on');
-			$this->$locked_on = $nullDate;
 		}
 
 		// Insert or update the record. Note that the object we use for insertion / update is the a copy holding
@@ -1162,11 +1167,10 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Create a slug if there is a title and an empty slug
-        $slugField  = $this->getFieldAlias('slug');
-        $titleField = $this->getFieldValue('title');
-
 		if ($this->hasField('title') && $this->hasField('slug') && !$this->$slugField)
 		{
+			$slugField  = $this->getFieldAlias('slug');
+			$titleField = $this->getFieldValue('title');
 			$this->$slugField = \JApplicationHelper::stringURLSafe($this->$titleField);
 		}
 
@@ -1781,9 +1785,139 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function copy()
 	{
+		$this->triggerEvent('onBeforeCopy');
+
 		$this->{$this->idFieldName} = null;
 
-		return $this->save();
+		if ($this->hasField('created_by'))
+		{
+			$this->setFieldValue('created_by', null);
+		}
+
+		if ($this->hasField('modified_by'))
+		{
+			$this->setFieldValue('modified_by', null);
+		}
+
+		if ($this->hasField('locked_by'))
+		{
+			$this->setFieldValue('locked_by', null);
+		}
+
+		if ($this->hasField('created_on'))
+		{
+			$this->setFieldValue('created_on', null);
+		}
+
+		if ($this->hasField('modified_on'))
+		{
+			$this->setFieldValue('modified_on', null);
+		}
+
+		if ($this->hasField('locked_on'))
+		{
+			$this->setFieldValue('locked_on', null);
+		}
+
+		$result = $this->save();
+
+		$this->triggerEvent('onAfterCopy', array(&$result));
+
+		return $result;
+	}
+
+	/**
+	 * Check-in an item. This works similar to unlock() but performs additional checks. If the item is locked by another
+	 * user you need to have adequate ACL privileges to unlock it, i.e. core.admin or core.manage component-wide
+	 * privileges; core.edit.state privileges component-wide or per asset; or be the creator of the item and have
+	 * core.edit.own privileges component-wide or per asset.
+	 *
+	 * @return  $this
+	 *
+	 * @throws  LockedRecord  If you don't have the privilege to check in this item
+	 */
+	public function checkIn($userId = null)
+	{
+		// If there is no loaded record we can't do much, I'm afraid
+		if (!$this->getId())
+		{
+			throw new RecordNotLoaded("Can't archive a not loaded DataModel");
+		}
+
+		// If the lock fields are missing we have nothing to do
+		if (!$this->hasField('locked_by') && $this->hasField('locked_on'))
+		{
+			return $this;
+		}
+
+		// If there's no locked_by field we just unlock and return
+		if (!$this->hasField('locked_by'))
+		{
+			return $this->unlock();
+		}
+
+		// If the current user and the user who locked the record are the same, unlock it.
+		if (empty($userId))
+		{
+			$userId = $this->container->platform->getUser()->id;
+		}
+
+		$lockedBy = $this->getFieldValue('locked_by');
+
+		if (empty($lockedBy) || ($lockedBy == $userId))
+		{
+			return $this->unlock();
+		}
+
+		// Get the component privileges
+		$platform = $this->container->platform;
+		$component = $this->container->componentName;
+
+		$privileges = array
+		(
+			'editown'	 => $platform->authorise('core.edit.own'  , $component),
+			'editstate'	 => $platform->authorise('core.edit.state', $component),
+			'admin'	     => $platform->authorise('core.admin'    , $component),
+			'manage'	 => $platform->authorise('core.manage'    , $component),
+		);
+
+		// If we are trackign assets get the item's privileges
+		if ($this->isAssetsTracked())
+		{
+			$assetKey = $this->getAssetKey();
+			$assetPrivileges = array
+			(
+				'editown'	 => $platform->authorise('core.edit.own'  , $assetKey),
+				'editstate'	 => $platform->authorise('core.edit.state', $assetKey),
+			);
+
+			foreach ($assetPrivileges as $k => $v)
+			{
+				$privileges[$k] = $privileges[$k] || $v;
+			}
+		}
+
+		// If you are a Super User, component manager or allowed to edit the state of records we unlock it
+		if ($privileges['admin'] || $privileges['manage'] || $privileges['editstate'])
+		{
+			return $this->unlock();
+		}
+
+		// If you are the owner of the record and have core.edit.own privilege we will unlock it.
+		$owner = 0;
+
+		if ($this->hasField('created_by'))
+		{
+			$owner = $this->hasField('created_by');
+		}
+
+		if ($privileges['editown'] && ($owner == $userId))
+		{
+			return $this->unlock();
+		}
+
+		// All else failed, you don't have the privilege to unlock this item.
+		throw new LockedRecord;
 	}
 
 	/**
@@ -2386,6 +2520,66 @@ class DataModel extends Model implements \JTableInterface
 		$this->triggerEvent('onAfterUnlock');
 
 		return $this;
+	}
+
+	/**
+	 * Is this record locked by a different user than $userId?
+	 *
+	 * @param   integer  $userId
+	 *
+	 * @return  bool  True if the record is locked
+	 */
+	public function isLocked($userId = null)
+	{
+		if (!$this->getId())
+		{
+			throw new CannotLockNotLoadedRecord;
+		}
+
+		if (!$this->hasField('locked_on') && !$this->hasField('locked_by'))
+		{
+			return false;
+		}
+
+		$nullDate = $this->getDbo()->getNullDate();
+
+		// Get the locked_by / locked_on
+		$locked_on = $nullDate;
+		$locked_by = 0;
+
+		if ($this->hasField('locked_on'))
+		{
+			$locked_on = $this->getFieldValue('locked_on', $nullDate);
+
+			if (empty($locked_on))
+			{
+				$locked_on = $nullDate;
+			}
+		}
+
+		if ($this->hasField('locked_by'))
+		{
+			$locked_by = $this->getFieldValue('locked_by', 0);
+
+			if (empty($locked_by))
+			{
+				$locked_by = 0;
+			}
+		}
+
+		$allowedUsers = array(0);
+
+		if (!empty($userId))
+		{
+			$allowedUsers[] = $userId;
+		}
+
+		if (in_array($locked_by, $allowedUsers))
+		{
+			return false;
+		}
+
+		return $locked_on != $nullDate;
 	}
 
 	/**

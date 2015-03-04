@@ -9,6 +9,7 @@ namespace FOF30\Controller;
 
 use FOF30\Container\Container;
 use FOF30\Controller\Exception\ItemNotFound;
+use FOF30\Controller\Exception\LockedRecord;
 use FOF30\Controller\Exception\NotADataModel;
 use FOF30\Controller\Exception\TaskNotFound;
 use FOF30\Inflector\Inflector;
@@ -378,6 +379,11 @@ class DataController extends Controller
 		if ($form !== false)
 		{
 			$this->hasForm = true;
+
+			if (empty($this->layout))
+			{
+				$this->layout = 'default';
+			}
 		}
 
 		// Display the view
@@ -415,6 +421,10 @@ class DataController extends Controller
 		{
 			$this->layout = 'item';
 		}
+		elseif ($this->layout == 'default')
+		{
+			$this->layout = 'item';
+		}
 
 		// Apply the Form name
 		$formName = 'form.' . $this->layout;
@@ -445,6 +455,10 @@ class DataController extends Controller
 
 		// Set the layout to form, if it's not set in the URL
 		if (empty($this->layout))
+		{
+			$this->layout = 'form';
+		}
+		elseif ($this->layout == 'default')
 		{
 			$this->layout = 'form';
 		}
@@ -498,8 +512,15 @@ class DataController extends Controller
 			$this->getIDsFromRequest($model, true);
 		}
 
+		$userId = $this->container->platform->getUser()->id;
+
 		try
 		{
+			if ($model->isLocked($userId))
+			{
+				$model->checkIn($userId);
+			}
+
 			$model->lock();
 		}
 		catch (\Exception $e)
@@ -518,6 +539,10 @@ class DataController extends Controller
 
 		// Set the layout to form, if it's not set in the URL
 		if (empty($this->layout))
+		{
+			$this->layout = 'form';
+		}
+		elseif ($this->layout == 'default')
 		{
 			$this->layout = 'form';
 		}
@@ -695,6 +720,27 @@ class DataController extends Controller
 
 		if ($model->getId())
 		{
+			$userId = $this->container->platform->getUser()->id;
+
+			if ($model->isLocked($userId))
+			{
+				try
+				{
+					$model->checkIn($userId);
+				}
+				catch (LockedRecord $e)
+				{
+					// Redirect to the display task
+					if ($customURL = $this->input->getBase64('returnurl', ''))
+					{
+						$customURL = base64_decode($customURL);
+					}
+
+					$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+					$this->setRedirect($url, $e->getMessage(), 'error');
+				}
+			}
+
 			$model->unlock();
 		}
 
@@ -733,6 +779,14 @@ class DataController extends Controller
 			foreach ($ids as $id)
 			{
 				$model->find($id);
+
+				$userId = $this->container->platform->getUser()->id;
+
+				if ($model->isLocked($userId))
+				{
+					$model->checkIn($userId);
+				}
+
 				$model->publish();
 			}
 		}
@@ -781,6 +835,14 @@ class DataController extends Controller
 			foreach ($ids as $id)
 			{
 				$model->find($id);
+
+				$userId = $this->container->platform->getUser()->id;
+
+				if ($model->isLocked($userId))
+				{
+					$model->checkIn($userId);
+				}
+
 				$model->unpublish();
 			}
 		}
@@ -829,6 +891,14 @@ class DataController extends Controller
 			foreach ($ids as $id)
 			{
 				$model->find($id);
+
+				$userId = $this->container->platform->getUser()->id;
+
+				if ($model->isLocked($userId))
+				{
+					$model->checkIn($userId);
+				}
+
 				$model->archive();
 			}
 		}
@@ -877,7 +947,63 @@ class DataController extends Controller
 			foreach ($ids as $id)
 			{
 				$model->find($id);
+
+				$userId = $this->container->platform->getUser()->id;
+
+				if ($model->isLocked($userId))
+				{
+					$model->checkIn($userId);
+				}
+
 				$model->trash();
+			}
+		}
+		catch (\Exception $e)
+		{
+			$status = false;
+			$error  = $e->getMessage();
+		}
+
+		// Redirect
+		if ($customURL = $this->input->getBase64('returnurl', ''))
+		{
+			$customURL = base64_decode($customURL);
+		}
+
+		$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+
+		if (!$status)
+		{
+			$this->setRedirect($url, $error, 'error');
+		}
+		else
+		{
+			$this->setRedirect($url);
+		}
+	}
+
+	/**
+	 * Check in (unlock) items
+	 *
+	 * @return  void
+	 */
+	public function checkin()
+	{
+		// CSRF prevention
+		$this->csrfProtection();
+
+		$model = $this->getModel()->savestate(false);
+		$ids   = $this->getIDsFromRequest($model, false);
+		$error = null;
+
+		try
+		{
+			$status = true;
+
+			foreach ($ids as $id)
+			{
+				$model->find($id);
+				$model->checkIn();
 			}
 		}
 		catch (\Exception $e)
@@ -948,6 +1074,14 @@ class DataController extends Controller
 						if ($item->getId() == $ids[$i])
 						{
 							$item->$ordering = $neworder;
+
+							$userId = $this->container->platform->getUser()->id;
+
+							if ($model->isLocked($userId))
+							{
+								$model->checkIn($userId);
+							}
+
 							$model->save($item);
 						}
 					}
@@ -994,6 +1128,13 @@ class DataController extends Controller
 
 		try
 		{
+			$userId = $this->container->platform->getUser()->id;
+
+			if ($model->isLocked($userId))
+			{
+				$model->checkIn($userId);
+			}
+
 			$model->move(1);
 			$status = true;
 		}
@@ -1042,6 +1183,13 @@ class DataController extends Controller
 
 		try
 		{
+			$userId = $this->container->platform->getUser()->id;
+
+			if ($model->isLocked($userId))
+			{
+				$model->checkIn($userId);
+			}
+
 			$model->move(-1);
 			$status = true;
 		}
@@ -1090,6 +1238,14 @@ class DataController extends Controller
 			foreach ($ids as $id)
 			{
 				$model->find($id);
+
+				$userId = $this->container->platform->getUser()->id;
+
+				if ($model->isLocked($userId))
+				{
+					$model->checkIn($userId);
+				}
+
 				$model->delete();
 			}
 		}
@@ -1133,6 +1289,27 @@ class DataController extends Controller
 			$this->getIDsFromRequest($model, true);
 		}
 
+		$userId = $this->container->platform->getUser()->id;
+
+		if ($model->isLocked($userId))
+		{
+			try
+			{
+				$model->checkIn($userId);
+			}
+			catch (LockedRecord $e)
+			{
+				// Redirect to the display task
+				if ($customURL = $this->input->getBase64('returnurl', ''))
+				{
+					$customURL = base64_decode($customURL);
+				}
+
+				$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . Inflector::pluralize($this->view) . $this->getItemidURLSuffix();
+				$this->setRedirect($url, $e->getMessage(), 'error');
+			}
+		}
+
 		$id = $model->getId();
 
 		$data = $this->input->getData();
@@ -1156,14 +1333,14 @@ class DataController extends Controller
 			$eventName = 'onBeforeApplySave';
 			$result = $this->triggerEvent($eventName, array(&$data));
 
-			// Save the data
-			$model->save($data);
-
 			if ($id != 0)
 			{
 				// Try to check-in the record if it's not a new one
 				$model->unlock();
 			}
+
+			// Save the data
+			$model->save($data);
 
 			$eventName = 'onAfterApplySave';
 			$result = $this->triggerEvent($eventName, array(&$data, $model->getId()));
