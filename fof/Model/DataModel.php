@@ -463,10 +463,7 @@ class DataModel extends Model implements \JTableInterface
 			return call_user_func_array(array($this->relationManager, $name), $arguments);
 		}
 
-		$arg1 = array_shift($arguments);
-		$this->$name = $arg1;
-
-		return $this;
+		return parent::__call($name, $arguments);
 	}
 
 	/**
@@ -2014,6 +2011,94 @@ class DataModel extends Model implements \JTableInterface
 		$this->reset();
 
 		return $this;
+	}
+
+	/**
+	 * Generic check for whether dependencies exist for this object in the db schema. This method is NOT used by
+	 * default. If you want to use it you will have to override your delete(), trash() or forceDelete() method,
+	 * or create an onBeforeDelete and/or onBeforeTrash event handler.
+	 *
+	 * @param   integer  $oid    The primary key of the record to delete
+	 * @param   array    $joins  Any joins to foreign table, used to determine if dependent records exist
+	 *
+	 * @return  void
+	 *
+	 * @throws  \RuntimeException  If you should not delete the record (the message tells you why)
+	 */
+	public function canDelete($oid = null, $joins = null)
+	{
+		$pkField = $this->getKeyName();
+
+		if ($oid)
+		{
+			$this->$pkField = intval($oid);
+		}
+
+		if (is_array($joins))
+		{
+			$db      = $this->getDbo();
+			$query   = $db->getQuery(true)
+			              ->select($db->qn('master') . '.' . $db->qn($pkField))
+			              ->from($db->qn($this->_tbl) . ' AS ' . $db->qn('master'));
+			$tableNo = 0;
+
+			foreach ($joins as $table)
+			{
+				$tableNo++;
+				$query->select(
+					array(
+						'COUNT(DISTINCT ' . $db->qn('t' . $tableNo) .
+						'.' . $db->qn($table['idfield']) . ') AS ' . $db->qn($table['idalias'])
+					)
+				);
+				$query->join('LEFT', $db->qn($table['name']) .
+				                     ' AS ' . $db->qn('t' . $tableNo) .
+				                     ' ON ' . $db->qn('t' . $tableNo) . '.' . $db->qn($table['joinfield']) .
+				                     ' = ' . $db->qn('master') . '.' . $db->qn($pkField)
+				);
+			}
+
+			$query->where($db->qn('master') . '.' . $db->qn($pkField) . ' = ' . $db->q($this->$pkField));
+			$query->group($db->qn('master') . '.' . $db->qn($pkField));
+			$this->getDbo()->setQuery((string) $query);
+
+			$obj = $this->getDbo()->loadObject();
+
+			$msg = array();
+			$i   = 0;
+
+			foreach ($joins as $table)
+			{
+				$pkField = $table['idalias'];
+
+				if ($obj->$pkField > 0)
+				{
+					$msg[] = \JText::_($table['label']);
+				}
+
+				$i++;
+			}
+
+			if (count($msg))
+			{
+				$option  = $this->container->componentName;
+				$comName = $this->container->bareComponentName;
+				$tbl = $this->getTableName();
+				$tview   = str_replace('#__' . $comName . '_', '', $tbl);
+				$prefix  = $option . '_' . $tview . '_NODELETE_';
+
+				$message = '<ul>';
+
+				foreach ($msg as $key)
+				{
+					$message .= \JText::_($prefix . $key);
+				}
+
+				$message .= '</ul>';
+
+				throw new \RuntimeException($message);
+			}
+		}
 	}
 
 	/**
