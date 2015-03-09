@@ -750,7 +750,8 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
-	 * Returns the data currently bound to the model in an array format
+	 * Returns the data currently bound to the model in an array format. Similar to toArray() but returns a copy instead
+	 * of the internal table itself.
 	 *
 	 * @return array
 	 */
@@ -1532,7 +1533,7 @@ class DataModel extends Model implements \JTableInterface
 			->from($this->getTableName());
 
 		// Run the "before build query" hook and behaviours
-		$this->triggerEvent('onBeforeBuildQuery', array(&$query));
+		$this->triggerEvent('onBeforeBuildQuery', array(&$query, $overrideLimits));
 
 		// Apply custom WHERE clauses
 		if (count($this->whereClauses))
@@ -1566,7 +1567,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Run the "before after query" hook and behaviours
-		$this->triggerEvent('onAfterBuildQuery', array(&$query));
+		$this->triggerEvent('onAfterBuildQuery', array(&$query, $overrideLimits));
 
 		return $query;
 	}
@@ -2020,6 +2021,8 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		$this->relationFilters = array();
+
+		$this->triggerEvent('onAfterReset', array($useDefaults, $resetRelations));
 
 		return $this;
 	}
