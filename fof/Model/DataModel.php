@@ -2105,6 +2105,11 @@ class DataModel extends Model implements \JTableInterface
 			$this->$pkField = intval($oid);
 		}
 
+        if(!$this->$pkField)
+        {
+            throw new \InvalidArgumentException('Master table should be loaded or an ID should be passed');
+        }
+
 		if (is_array($joins))
 		{
 			$db      = $this->getDbo();
@@ -2115,6 +2120,15 @@ class DataModel extends Model implements \JTableInterface
 
 			foreach ($joins as $table)
 			{
+                // Sanity check on passed array
+                $check  = array('idfield', 'idalias', 'name', 'joinfield', 'label');
+                $result = array_intersect($check, array_keys($table));
+
+                if(count($result) != count($check))
+                {
+                    throw new \InvalidArgumentException('Join array missing some keys, please check the documentation');
+                }
+
 				$tableNo++;
 				$query->select(
 					array(
@@ -2162,7 +2176,7 @@ class DataModel extends Model implements \JTableInterface
 
 				foreach ($msg as $key)
 				{
-					$message .= \JText::_($prefix . $key);
+					$message .= '<li>'.\JText::_(strtoupper($prefix . $key)).'</li>';
 				}
 
 				$message .= '</ul>';
