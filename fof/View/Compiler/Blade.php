@@ -422,6 +422,51 @@ class Blade implements CompilerInterface
 	}
 
 	/**
+	 * Compile the end repeatable statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileRepeatable($expression)
+	{
+		$expression = trim($expression, '()');
+		$parts = explode(',', $expression, 2);
+
+		$functionName = '_fof_blade_repeatable_' . md5($this->path . trim($parts[0]));
+		$argumentsList = isset($parts[1]) ? $parts[1] : '';
+
+		return "<?php @\$$functionName = function($argumentsList) { ?>";
+	}
+
+	/**
+	 * Compile the end endRepeatable statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileEndRepeatable($expression)
+	{
+		return "<?php }; ?>";
+	}
+
+	/**
+	 * Compile the end yieldRepeatable statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileYieldRepeatable($expression)
+	{
+		$expression = trim($expression, '()');
+		$parts = explode(',', $expression, 2);
+
+		$functionName = '_fof_blade_repeatable_' . md5($this->path . trim($parts[0]));
+		$argumentsList = isset($parts[1]) ? $parts[1] : '';
+
+		return "<?php \$$functionName($argumentsList); ?>";
+	}
+
+	/**
 	 * Compile the lang statements into valid PHP.
 	 *
 	 * @param  string  $expression
@@ -667,7 +712,106 @@ class Blade implements CompilerInterface
 	 */
 	protected function compileRoute($expression)
 	{
-		return "<?php echo \JRoute::_($expression); ?>";
+		return "<?php echo \JRoute::_{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the css statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileCss($expression)
+	{
+		return "<?php \$this->addCssFile{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the inlineCss statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileInlineCss($expression)
+	{
+		return "<?php \$this->addCssInline{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the inlineJs statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileInlineJs($expression)
+	{
+		return "<?php \$this->addJavascriptInline{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the js statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileJs($expression)
+	{
+		return "<?php \$this->addJavascriptFile{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the less statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileLess($expression)
+	{
+		return "<?php \$this->addLessFile{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the jhtml statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileJhtml($expression)
+	{
+		return "<?php echo \\JHtml::_{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the media statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileMedia($expression)
+	{
+		return "<?php echo \$this->container->template->parsePath{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the modules statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileModules($expression)
+	{
+		return "<?php echo \$this->container->template->loadPosition{$expression}; ?>";
+	}
+
+	/**
+	 * Compile the module statements into valid PHP.
+	 *
+	 * @param  string  $expression
+	 * @return string
+	 */
+	protected function compileModule($expression)
+	{
+		return "<?php echo \$this->container->template->loadModule{$expression}; ?>";
 	}
 
 	/**
