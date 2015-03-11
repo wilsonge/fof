@@ -848,7 +848,7 @@ abstract class F0FUtilsInstallscript
 				}
 			}
 		}
-		/**/
+		**/
 	}
 
 	/**
