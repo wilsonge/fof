@@ -16,14 +16,12 @@
             "role": "Lead Developer"
         }
     ],
-    "autoload": {
-        "X-files": ["fof/include.php"]
-    },
-    "version": "2.4.2",
+    "version": "3.0.0-dev",
     "require-dev": {
-		"mikey179/vfsStream": "v1.2.0",
-		"phpunit/phpunit": "4.1.*",
+		"mikey179/vfsStream": "dev-master",
+		"phpunit/phpunit": "4.5.*",
 		"phpunit/dbunit": ">=1.2",
-        "mockery/mockery": "dev-master"
+        "mockery/mockery": "dev-master",
+        "fiunchinho/phpunit-randomizer": "1.0.*@dev"
 	}
 }
