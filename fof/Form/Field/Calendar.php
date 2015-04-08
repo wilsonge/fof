@@ -231,8 +231,11 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 		}
 		else
 		{
+			$jDate = new \JDate($this->value);
+			$value = strftime($this->format, $jDate->getTimestamp());
+
 			return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars($value, ENT_COMPAT, 'UTF-8') .
 			'</span>';
 		}
 	}
