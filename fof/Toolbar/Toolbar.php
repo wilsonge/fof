@@ -658,8 +658,13 @@ class Toolbar
 			}
 		}
 
-		\JArrayHelper::sortObjects($to_order, 'ordering');
-		$views = \JArrayHelper::getColumn($to_order, 'view');
+		$views = array();
+
+		if (!empty($to_order))
+		{
+			\JArrayHelper::sortObjects($to_order, 'ordering');
+			$views = \JArrayHelper::getColumn($to_order, 'view');
+		}
 
 		// If not using the metadata file, let's put the cpanel view on top
 		if (!$using_meta)
