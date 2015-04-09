@@ -171,10 +171,35 @@ class Toolbar
 			$task = $input->getCmd('task', $autoDetectedTask);
 		}
 
-		$view = $this->container->inflector->pluralize($view);
-
 		// If there is a fof.xml toolbar configuration use it and return
-		$toolbarConfig = $this->container->appConfig->get('models.' . ucfirst($view) . '.toolbar.' . $task);
+		$view = $this->container->inflector->pluralize($view);
+		$toolbarConfig = $this->container->appConfig->get('views.' . ucfirst($view) . '.toolbar.' . $task);
+
+		$oldValues = array(
+			'renderFrontendButtons' => $this->renderFrontendButtons,
+			'renderFrontendSubmenu' => $this->renderFrontendSubmenu,
+			'useConfigurationFile'  => $this->useConfigurationFile,
+		);
+
+		$newValues = array(
+			'renderFrontendButtons' => $this->container->appConfig->get(
+				'views.' . ucfirst($view) . '.config.renderFrontendButtons',
+				$oldValues['renderFrontendButtons']
+			),
+			'renderFrontendSubmenu' => $this->container->appConfig->get(
+				'views.' . ucfirst($view) . '.config.renderFrontendSubmenu',
+				$oldValues['renderFrontendSubmenu']
+			),
+			'useConfigurationFile'  => $this->container->appConfig->get(
+				'views.' . ucfirst($view) . '.config.useConfigurationFile',
+				$oldValues['useConfigurationFile']
+			),
+		);
+
+		foreach ($newValues as $k => $v)
+		{
+			$this->$k = $v;
+		}
 
 		if (!empty($toolbarConfig) && $this->useConfigurationFile)
 		{
@@ -318,7 +343,6 @@ class Toolbar
 		{
 			// Yeah. Let's not add the button if we can't load the model...
 		}
-
 	}
 
 	/**
@@ -860,7 +884,9 @@ class Toolbar
 				break;
 
 			case 'new':
-				if ($this->perms->create)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'create';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'add';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_NEW';
@@ -872,8 +898,25 @@ class Toolbar
 
 				break;
 
+			case 'copy':
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'create';
+
+				if ($this->checkACL($area))
+				{
+					$task = isset($attributes['task']) ? $attributes['task'] : 'copy';
+					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JLIB_HTML_BATCH_COPY';
+					$icon = isset($attributes['icon']) ? $attributes['icon'] : 'copy.png';
+					$iconOver = isset($attributes['iconOver']) ? $attributes['iconOver'] : 'copy_f2.png';
+
+					JToolBarHelper::custom($task, $icon, $iconOver, $alt, false);
+				}
+
+				break;
+
 			case 'publish':
-				if ($this->perms->editstate)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'editstate';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
@@ -886,7 +929,9 @@ class Toolbar
 				break;
 
 			case 'publishList':
-				if ($this->perms->editstate)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'editstate';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'publish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_PUBLISH';
@@ -897,7 +942,9 @@ class Toolbar
 				break;
 
 			case 'unpublish':
-				if ($this->perms->editstate)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'editstate';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
@@ -910,7 +957,9 @@ class Toolbar
 				break;
 
 			case 'unpublishList':
-				if ($this->perms->editstate)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'editstate';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'unpublish';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNPUBLISH';
@@ -921,7 +970,9 @@ class Toolbar
 				break;
 
 			case 'archiveList':
-				if ($this->perms->editstate)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'editstate';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'archive';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_ARCHIVE';
@@ -932,7 +983,9 @@ class Toolbar
 				break;
 
 			case 'unarchiveList':
-				if ($this->perms->editstate)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'editstate';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'unarchive';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_UNARCHIVE';
@@ -942,8 +995,11 @@ class Toolbar
 
 				break;
 
+			case 'edit':
 			case 'editList':
-				if ($this->perms->edit)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'edit';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'edit';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_EDIT';
@@ -968,7 +1024,10 @@ class Toolbar
 				break;
 
 			case 'deleteList':
-				if ($this->perms->delete)
+			case 'delete':
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'delete';
+
+				if ($this->checkACL($area))
 				{
 					$msg = isset($attributes['msg']) ? $attributes['msg'] : '';
 					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
@@ -980,7 +1039,9 @@ class Toolbar
 				break;
 
 			case 'trash':
-				if ($this->perms->editstate)
+				$area = isset($attributes['acl']) ? $attributes['acl'] : 'editstate';
+
+				if ($this->checkACL($area))
 				{
 					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
@@ -1004,6 +1065,15 @@ class Toolbar
 				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_SAVE';
 
 				JToolbarHelper::save($task, $alt);
+				break;
+
+			case 'savenew':
+				$task = isset($attributes['task']) ? $attributes['task'] : 'savenew';
+				$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_SAVE_AND_NEW';
+				$icon = isset($attributes['icon']) ? $attributes['icon'] : 'save-new.png';
+				$iconOver = isset($attributes['iconOver']) ? $attributes['iconOver'] : 'save-new_f2.png';
+
+				JToolBarHelper::custom($task, $icon, $iconOver, $alt, false);
 				break;
 
 			case 'save2new':
@@ -1053,5 +1123,52 @@ class Toolbar
 			default:
 				throw new UnknownButtonType($type);
 		}
+	}
+
+	/**
+	 * Checks if the current user has enough privileges for the requested ACL privilege of a custom toolbar button.
+	 *
+	 * @param   string  $area  The ACL privilege as set up in the $this->perms object
+	 *
+	 * @return  boolean  True if the user has the ACL privilege specified
+	 */
+	protected function checkACL($area)
+	{
+		if (is_bool($area))
+		{
+			return $area;
+		}
+
+		if (in_array(strtolower($area), array('false','0','no','403')))
+		{
+			return false;
+		}
+
+		if (in_array(strtolower($area), array('true','1','yes')))
+		{
+			return true;
+		}
+
+		if (in_array(strtolower($area), array('guest')))
+		{
+			return $this->container->platform->getUser()->guest;
+		}
+
+		if (in_array(strtolower($area), array('user')))
+		{
+			return !$this->container->platform->getUser()->guest;
+		}
+
+		if (empty($area))
+		{
+			return true;
+		}
+
+		if (isset($this->perms->$area))
+		{
+			return $this->perms->$area;
+		}
+
+		return false;
 	}
 }
