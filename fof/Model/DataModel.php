@@ -441,6 +441,9 @@ class DataModel extends Model implements \JTableInterface
 				$this->recordData[$fieldName] = $information->Default;
 			}
 		}
+
+		// Trigger the onAfterConstruct event. This allows you to set up model state etc.
+		$this->triggerEvent('onAfterConstruct');
 	}
 
 	/**
