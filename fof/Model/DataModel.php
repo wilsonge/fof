@@ -2413,6 +2413,8 @@ class DataModel extends Model implements \JTableInterface
 		// Bind the data
 		$this->bind($row);
 
+		$this->relationManager->rebase($this);
+
 		// Execute the onAfterLoad event
 		$this->triggerEvent('onAfterLoad', array(true, &$keys));
 
