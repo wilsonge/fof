@@ -2553,7 +2553,7 @@ class DataModel extends Model implements \JTableInterface
 
 		foreach ($prefixes as $prefix)
 		{
-			$className = $prefix . '\\' . ucfirst($behaviour);
+			$className = ltrim($prefix . '\\' . ucfirst($behaviour), '\\');
 
 			$observer = $this->behavioursDispatcher->getObserverByClass($className);
 
