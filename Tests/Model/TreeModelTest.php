@@ -74,6 +74,7 @@ class TreeModelTest extends DatabaseTest
         $table = new TreeModelStub(static::$container, $config, array(
             'onBeforeDelete' => $test['mock']['before']
         ));
+	    $table->setIgnoreRequest(1);
 
         if($test['loadid'])
         {
@@ -604,6 +605,7 @@ class TreeModelTest extends DatabaseTest
                 $sibling = $leftSibling->foftest_nestedset_id;
             }
         );
+	    $table->setIgnoreRequest(1);
 
         $table->findOrFail($test['loadid']);
 
@@ -658,6 +660,7 @@ class TreeModelTest extends DatabaseTest
                 $sibling = $rightSibling->foftest_nestedset_id;
             }
         );
+	    $table->setIgnoreRequest(1);
 
         $table->findOrFail($test['loadid']);
 
@@ -1160,6 +1163,7 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table   = new TreeModelStub(static::$container, $config);
+	    $table->setIgnoreRequest(1);
         $table->findOrFail($test['loadid']);
 
         if(!is_null($test['cache']))
@@ -1532,6 +1536,7 @@ class TreeModelTest extends DatabaseTest
         );
 
         $table = new TreeModelStub(static::$container, $config);
+	    $table->setIgnoreRequest(1);
 
         // Am I request to create a different root?
         if($test['newRoot'])
