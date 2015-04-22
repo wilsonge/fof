@@ -242,6 +242,8 @@ class TemplateTest extends FOFTestCase
 	 */
 	public function testRoute($url, $expect, $message)
 	{
+		$config = JFactory::getConfig();
+		$config->set('sef', 1); // Required by these tests
 		$fullurl = static::$container->template->route($url);
 		$this->assertEquals(
 			$expect,
