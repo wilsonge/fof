@@ -81,9 +81,16 @@ class MagicFactoryTest extends FOFTestCase
     {
         $msg   = 'MagicFactory::dispatcher %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'backEndPath' => JPATH_TESTS.'/Stubs/Fakeapp/Admin'
-        ));
+	    $config    = array(
+		    'backEndPath' => JPATH_TESTS . '/Stubs/Fakeapp/Admin'
+	    );
+
+	    if (!$test['backend'])
+	    {
+		    $config['componentNamespace'] = 'WhateverMan';
+	    }
+
+	    $container = new TestContainer($config);
 
         $platform = $container->platform;
         $platform::$isAdmin = $test['backend'];
@@ -107,9 +114,16 @@ class MagicFactoryTest extends FOFTestCase
     {
         $msg   = 'MagicFactory::transparentAuthentication %s - Case: '.$check['case'];
 
-        $container = new TestContainer(array(
-            'backEndPath' => JPATH_TESTS.'/Stubs/Fakeapp/Admin'
-        ));
+	    $config    = array(
+		    'backEndPath' => JPATH_TESTS . '/Stubs/Fakeapp/Admin'
+	    );
+
+	    if (!$test['backend'])
+	    {
+		    $config['componentNamespace'] = 'WhateverMan';
+	    }
+
+	    $container = new TestContainer($config);
 
         $platform = $container->platform;
         $platform::$isAdmin = $test['backend'];
