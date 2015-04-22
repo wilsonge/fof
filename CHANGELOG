@@ -1,3 +1,7 @@
+FOF 2.4.3
+================================================================================
+# [MEDIUM] F0FDownloadAdapterCurl: Would not follow HTTP redirects on servers with PHP Safe Mode enabled
+
 FOF 2.4.2
 ================================================================================
 + gh-425 Added F0FUtilsIp to help you get the user's IP address and check if it matches against a set of IP expressions
