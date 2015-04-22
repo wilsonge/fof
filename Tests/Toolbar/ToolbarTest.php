@@ -80,7 +80,17 @@ class ToolbarTest extends FOFTestCase
             ->willReturn($test['mock']['getController'] ? $controller : null);
 
         $appConfig = $this->getMock('FOF30\Configuration\Configuration', array('get'), array(), '', false);
-        $appConfig->expects($this->any())->method('get')->with($check['config'])->willReturn($test['mock']['config']);
+	    $appConfig->expects($this->any())->method('get')->willReturnCallback(function ($something) use ($test, $check) {
+		    if (strrpos($something, 'renderFrontendButtons') !== false)
+		    {
+			    return false;
+		    }
+
+		    if ($something == $check['config'])
+		    {
+			    return $test['mock']['config'];
+		    }
+	    });
 
         $container = new TestContainer(array(
             'input'      => new Input($test['input']),
@@ -92,7 +102,7 @@ class ToolbarTest extends FOFTestCase
 
         ReflectionHelper::setValue($toolbar, 'useConfigurationFile', $test['useConfig']);
 
-        $toolbar->renderToolbar($test['view'], $test['task']);
+	    $toolbar->renderToolbar($test['view'], $test['task']);
 
         $methods = $toolbar->methodCounter;
 

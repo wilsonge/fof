@@ -5,6 +5,7 @@ class ToolbarDataprovider
     public static function getTestRenderToolbar()
     {
         $data[] = array(
+	        //test
             array(
                 'mock' => array(
                     'getName'       => '',
@@ -19,6 +20,7 @@ class ToolbarDataprovider
                 'view'      => null,
                 'task'      => null
             ),
+            //check
             array(
                 'case'         => 'Component template, no render_toolbar flag',
                 'config'       => '',
@@ -64,7 +66,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'No view/task passed, no view/task in the input',
-                'config'       => 'models.Cpanels.toolbar.main',
+                'config'       => 'views.Cpanels.toolbar.main',
                 'counter'      => array()
             )
         );
@@ -84,7 +86,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'View passed, no view/task in the input',
-                'config'       => 'models.Views.toolbar.main',
+                'config'       => 'views.Views.toolbar.main',
                 'counter'      => array('onViews' => 1)
             )
         );
@@ -104,7 +106,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'View/task passed',
-                'config'       => 'models.Foobars.toolbar.task',
+                'config'       => 'views.Foobars.toolbar.task',
                 'counter'      => array('onTask' => 1)
             )
         );
@@ -124,7 +126,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'View/task passed',
-                'config'       => 'models.Foobars.toolbar.dummy',
+                'config'       => 'views.Foobars.toolbar.dummy',
                 'counter'      => array('onFoobarsDummy' => 1)
             )
         );
@@ -147,7 +149,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'No View/task passed, fetching them from the input',
-                'config'       => 'models.Foobars.toolbar.dummy',
+                'config'       => 'views.Foobars.toolbar.dummy',
                 'counter'      => array('onFoobarsDummy' => 1)
             )
         );
@@ -167,7 +169,7 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'No View/task passed, no view/task in the input, using controller default',
-                'config'       => 'models.Foobars.toolbar.dummy',
+                'config'       => 'views.Foobars.toolbar.dummy',
                 'counter'      => array('onFoobarsDummy' => 1)
             )
         );
@@ -187,8 +189,8 @@ class ToolbarDataprovider
             ),
             array(
                 'case'         => 'Using the configuration file',
-                'config'       => 'models.Foobars.toolbar.dummy',
-                'counter'      => array()
+                'config'       => 'views.Foobars.toolbar.dummy',
+                'counter'      => array('onFoobarsDummy' => 1)
             )
         );
 
