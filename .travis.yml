@@ -12,6 +12,7 @@ branches:
     - development
 
 install:
+  - composer selfupdate
   - composer update
 
 before_script:
