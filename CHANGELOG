@@ -1,3 +1,7 @@
+FOF 3.0.0
+================================================================================
++ Container: assign custom platform classes with platformClass parameter
+
 FOF 3.0.0.b2
 ================================================================================
 + Controller: Additional special ACL tasks "guest" and "user"

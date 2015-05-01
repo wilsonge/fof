@@ -11,7 +11,6 @@ use FOF30\Autoloader\Autoloader;
 use FOF30\Factory\FactoryInterface;
 use FOF30\Inflector\Inflector;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
-use FOF30\Platform\Joomla\Platform as JoomlaPlatform;
 use FOF30\Render\RenderInterface;
 use FOF30\Template\Template;
 use FOF30\TransparentAuthentication\TransparentAuthentication as TransparentAuth;
@@ -50,7 +49,8 @@ defined('_JEXEC') or die;
  * @property  string                                   $backEndPath        The absolute path to the front-end files
  * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
  * @property  string                                   $rendererClass      The fully qualified class name of the view renderer we'll be using. Must implement FOF30\Render\RenderInterface.
- * @property  string                                   $factoryClass       The fully qualified class name or slug (basic, switch) of the MVC Factory object, default is FOF30\Factory\BasicFactory.
+ * @property  string                                   $factoryClass       The fully qualified class name of the MVC Factory object, default is FOF30\Factory\BasicFactory.
+ * @property  string                                   $platformClass      The fully qualified class name of the Platform abstraction object, default is FOF30\Platform\Joomla\Platform.
  * @property  string                                   $mediaVersion       A version string for media files in forms. Default: md5 of release version, release date and site secret (if found)
  *
  * @property-read  \FOF30\Configuration\Configuration  $appConfig          The application configuration registry
@@ -214,6 +214,7 @@ class Container extends ContainerBase
 		// Get the values overrides from fof.xml
 		$values = array_merge(array(
 			'factoryClass' => '\\FOF30\\Factory\\BasicFactory',
+			'platformClass' => '\\FOF30\\Platform\\Joomla\\Platform',
 			'scaffolding' => false,
 			'saveScaffolding' => false,
 		), $values);
@@ -226,6 +227,7 @@ class Container extends ContainerBase
 			'thisPath' => $thisPath,
 			'rendererClass' => $appConfig->get('container.rendererClass', null),
 			'factoryClass' => $appConfig->get('container.factoryClass', $values['factoryClass']),
+			'platformClass' => $appConfig->get('container.platformClass', $values['platformClass']),
 			'scaffolding' => $appConfig->get('container.scaffolding', $values['scaffolding']),
 			'saveScaffolding' => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
 		));
@@ -275,6 +277,7 @@ class Container extends ContainerBase
 		$this->backEndPath = '';
 		$this->thisPath = '';
 		$this->factoryClass = 'FOF30\\Factory\\BasicFactory';
+		$this->platformClass = 'FOF30\\Platform\\Joomla\\Platform';
 
 		// Try to construct this container object
 		parent::__construct($values);
@@ -356,9 +359,16 @@ class Container extends ContainerBase
 		// Platform abstraction service
 		if (!isset($this['platform']))
 		{
+			if (empty($c['platformClass']))
+			{
+				$c['platformClass'] = 'FOF30\\Platform\\Joomla\\Platform';
+			}
+
 			$this['platform'] = function (Container $c)
 			{
-				return new JoomlaPlatform($c);
+				$className = $c['platformClass'];
+
+				return new $className($c);
 			};
 		}
 
