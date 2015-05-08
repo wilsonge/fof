@@ -11,15 +11,15 @@ matrix:
   allow_failures:
      - php: hhvm
      - php: 7.0
-          env: JVERSION_TEST=3.5-dev
+       env: JVERSION_TEST=3.5-dev
      - php: 5.6
-          env: JVERSION_TEST=3.5-dev
+       env: JVERSION_TEST=3.5-dev
      - php: 5.5
-          env: JVERSION_TEST=3.5-dev
+       env: JVERSION_TEST=3.5-dev
      - php: 5.4
-          env: JVERSION_TEST=3.5-dev
+       env: JVERSION_TEST=3.5-dev
      - php: 5.3
-          env: JVERSION_TEST=3.5-dev
+       env: JVERSION_TEST=3.5-dev
 
 env:
     - JVERSION_TEST=3.4
