@@ -24,7 +24,7 @@ install:
 
 before_script:
   - mysql -e 'create database fof_test;'
-  - if [[ "$JVERSION_TEST" == "3.4" ]]; then cp Tests/environments/3.4/joomla.sql joomla.sql; fi
+  - if [[ "$JVERSION_TEST" == "3.4" ]]; then cp Tests/environments/3.4/installation/sql/mysql/joomla.sql joomla.sql; fi
   - mysql fof_test < joomla.sql
   - cp build/templates/include.php fof/include.php
 
