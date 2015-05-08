@@ -1,14 +1,14 @@
 {
 	"name": "akeeba/fof",
-    "type": "library",
-    "description": "FOF (Framework on Framework) is a Rapid Application Development framework for Joomla!",
-    "require" : {
-        "php": ">=5.3.4"
-    },
-    "keywords": ["framework","joomla","mvc","rad"],
-    "homepage": "https://github.com/akeeba/fof",
+	"type": "library",
+	"description": "FOF (Framework on Framework) is a Rapid Application Development framework for Joomla!",
+	"require" : {
+		"php": ">=5.3.4"
+	},
+	"keywords": ["framework","joomla","mvc","rad"],
+	"homepage": "https://github.com/akeeba/fof",
 	"license": "GPL-2.0+",
-    "authors": [
+	"authors": [
         {
             "name": "Nicholas K. Dionysopoulos",
             "email": "nicholas_NO_SPAM_PLEASE@akeebabackup.com",
@@ -21,7 +21,7 @@
 		"mikey179/vfsStream": "dev-master",
 		"phpunit/phpunit": "4.5.*",
 		"phpunit/dbunit": ">=1.2",
-        "mockery/mockery": "dev-master",
+        "mockery/mockery": "0.9.4",
         "fiunchinho/phpunit-randomizer": "1.0.*@dev"
 	}
 }
