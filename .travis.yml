@@ -27,8 +27,8 @@ branches:
     - development
 
 install:
+  - if [[ "$TRAVIS_PHP_VERSION" == "5.3" ]]; then composer require mockery/mockery: 0.9.4; fi
   - composer update
-  - if [ '$TRAVIS_PHP_VERSION' == '5.3' ]; then composer require mockery/mockery: 0.9.4; fi
 
 before_script:
   - if [[ "$DB" == "mysql" ]]; then mysql -e 'create database fof_test;'; fi
