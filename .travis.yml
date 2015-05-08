@@ -11,9 +11,19 @@ matrix:
   allow_failures:
      - php: hhvm
      - php: 7.0
+          JVERSION_TEST=3.5-dev
+     - php: 5.6
+          JVERSION_TEST=3.5-dev
+     - php: 5.5
+          JVERSION_TEST=3.5-dev
+     - php: 5.4
+          JVERSION_TEST=3.5-dev
+     - php: 5.3
+          JVERSION_TEST=3.5-dev
 
 env:
     - JVERSION_TEST=3.4
+    - JVERSION_TEST=3.5-dev
 
 branches:
   only:
