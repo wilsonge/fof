@@ -8,6 +8,9 @@ php:
   - hhvm
 
 matrix:
+  include:
+    - php: 5.3
+      env: MOCKERY_VERSION = 0.9.4
   exclude:
     - php: hhvm
       env: DB=pgsql  # PDO driver for PostgreSQL currently unsupported by HHVM
@@ -28,6 +31,7 @@ branches:
 
 install:
   - composer update
+  - if [ '$TRAVIS_PHP_VERSION' == '5.3' ]; then composer require mockery/mockery:${MOCKERY_VERSION}; fi
 
 before_script:
   - if [[ "$DB" == "mysql" ]]; then mysql -e 'create database fof_test;'; fi
