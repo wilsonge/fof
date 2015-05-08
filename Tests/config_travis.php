@@ -11,6 +11,7 @@
 $fofTestConfig = array(
 	// Point to a path where a Joomla! 3.x site is stored. It's our guinea pig!
 	'3.4' => realpath(__DIR__.'/environments/3.4'),
+	'3.5-dev' => realpath(__DIR__.'/environments/3.5-dev'),
 	/*'dbparams' => array(
 		'host'  => '127.0.0.1',
 		'user'  => 'travis',
