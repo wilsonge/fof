@@ -14,7 +14,7 @@ matrix:
   exclude:
     - php: hhvm
       env: DB=pgsql  # PDO driver for PostgreSQL currently unsupported by HHVM
-   allow_failures:
+  allow_failures:
      - php: hhvm
      - php: 7.0
 
