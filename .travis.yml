@@ -34,9 +34,9 @@ before_script:
   - if [[ "$DB" == "mysql" ]]; then mysql -e 'create database fof_test;'; fi
   - if [[ "$DB" == "mysql" ]]; then cp Tests/environments/"$JVERSION_TEST"/installation/sql/mysql/joomla.sql joomla.sql; fi
   - if [[ "$DB" == "mysql" ]]; then mysql fof_test < joomla.sql; fi
-  - if [[ "$DB" == "pgsql" ]]; then pgsql -e 'create database fof_test;'; fi
+  - if [[ "$DB" == "pgsql" ]]; then psql -e 'create database fof_test;' -U postgres; fi
   - if [[ "$DB" == "pgsql" ]]; then cp Tests/environments/"$JVERSION_TEST"/installation/sql/postgresql/joomla.sql joomla.sql; fi
-  - if [[ "$DB" == "pgsql" ]]; then pgsql fof_test < joomla.sql; fi
+  - if [[ "$DB" == "pgsql" ]]; then psql fof_test < joomla.sql; fi
   - cp build/templates/include.php fof/include.php
 
 after_script:
