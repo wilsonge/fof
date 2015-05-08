@@ -10,7 +10,9 @@ php:
 matrix:
   include:
     - php: 5.3
-      env: MOCKERY_VERSION = 0.9.4
+      env:
+        global:
+          - MOCKERY_VERSION = 0.9.4
   exclude:
     - php: hhvm
       env: DB=pgsql  # PDO driver for PostgreSQL currently unsupported by HHVM
