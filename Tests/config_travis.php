@@ -9,5 +9,5 @@
  */
 $fofTestConfig = array(
 	// Point to a path where a Joomla! 3.x site is stored. It's our guinea pig!
-	'site_root'		=> './Tests/environments/3.4',
+	'site_root'		=> './Tests/environments',
 );
