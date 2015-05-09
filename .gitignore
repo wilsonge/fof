@@ -24,8 +24,7 @@
 /strapper/files_strapper.xml
 /strapper/akeeba_strapper/version.php
 
-/Tests/environments/3.4/cache/
-/Tests/environments/3.4/templates/fake_test_template
+/Tests/environments/
 /Tests/coverage
 /Tests/config.php
 
