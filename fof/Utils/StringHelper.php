@@ -9,7 +9,7 @@ namespace FOF30\Utils;
 
 defined('_JEXEC') or die;
 
-abstract class String
+abstract class StringHelper
 {
 	/**
 	 * Convert a string into a slug (alias), suitable for use in URLs. Please
@@ -27,7 +27,7 @@ abstract class String
 	{
 		if (class_exists('\JLog'))
 		{
-			\JLog::add('FOF30\\Utils\\String::toSlug is deprecated. Use \\JApplicationHelper::stringURLSafe instead', \JLog::WARNING, 'deprecated');
+			\JLog::add('FOF30\\Utils\\StringHelper::toSlug is deprecated. Use \\JApplicationHelper::stringURLSafe instead', \JLog::WARNING, 'deprecated');
 		}
 
 		if (!class_exists('\JApplicationHelper'))
@@ -54,7 +54,7 @@ abstract class String
 	{
 		if (class_exists('\JLog'))
 		{
-			\JLog::add('FOF30\\Utils\\String::toASCII is deprecated. Use JFactory::getLanguage()->transliterate instead', \JLog::WARNING, 'deprecated');
+			\JLog::add('FOF30\\Utils\\StringHelper::toASCII is deprecated. Use JFactory::getLanguage()->transliterate instead', \JLog::WARNING, 'deprecated');
 		}
 
 		$lang = \JFactory::getLanguage();

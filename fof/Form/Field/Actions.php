@@ -12,7 +12,7 @@ use FOF30\Form\Exception\GetStaticNotAllowed;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
-use FOF30\Utils\String;
+use FOF30\Utils\StringHelper;
 use \JHtml;
 
 defined('_JEXEC') or die;
@@ -111,27 +111,27 @@ class Actions extends \JFormFieldList implements FieldInterface
 
 		if (isset($this->element['show_published']))
 		{
-			$config['published'] = String::toBool($this->element['show_published']);
+			$config['published'] = StringHelper::toBool($this->element['show_published']);
 		}
 
 		if (isset($this->element['show_unpublished']))
 		{
-			$config['unpublished'] = String::toBool($this->element['show_unpublished']);
+			$config['unpublished'] = StringHelper::toBool($this->element['show_unpublished']);
 		}
 
 		if (isset($this->element['show_archived']))
 		{
-			$config['archived'] = String::toBool($this->element['show_archived']);
+			$config['archived'] = StringHelper::toBool($this->element['show_archived']);
 		}
 
 		if (isset($this->element['show_trash']))
 		{
-			$config['trash'] = String::toBool($this->element['show_trash']);
+			$config['trash'] = StringHelper::toBool($this->element['show_trash']);
 		}
 
 		if (isset($this->element['show_all']))
 		{
-			$config['all'] = String::toBool($this->element['show_all']);
+			$config['all'] = StringHelper::toBool($this->element['show_all']);
 		}
 
 		return $config;

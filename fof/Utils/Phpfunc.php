@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 /**
  * Intercept calls to PHP functions.
  *
- * @method  function_exists(string $function)
+ * @method  function_exists(StringHelper $function)
  * @method  mcrypt_list_algorithms()
  * @method  hash_algos()
  */
