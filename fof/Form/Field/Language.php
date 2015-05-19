@@ -99,7 +99,21 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 	 */
 	protected function getOptions()
 	{
-		$options = parent::getOptions();
+		static $cachedOptions = array();
+
+		$client = (string) $this->element['client'];
+
+		if ($client != 'site' && $client != 'administrator')
+		{
+			$client = 'site';
+		}
+
+		if (!isset($cachedOptions[$client]))
+		{
+			$cachedOptions[$client] = parent::getOptions();
+		}
+
+		$options = array_merge($cachedOptions[$client]);
 
 		$noneoption = $this->element['none'] ? $this->element['none'] : null;
 
