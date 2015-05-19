@@ -841,7 +841,9 @@ class Form extends JForm
 
 		if (is_object($data) && ($data instanceof DataModel))
 		{
-			return parent::bind($this->modelToBindSource($data));
+			$maxDepth = (int) $this->getAttribute('relation_depth', '1');
+
+			return parent::bind($this->modelToBindSource($data, $maxDepth));
 		}
 
 		return parent::bind($data);
@@ -1054,8 +1056,27 @@ class Form extends JForm
 		return $element;
 	}
 
-	protected function modelToBindSource(DataModel $model)
+	/**
+	 * Converts a DataModel into data suitable for use with the form. The difference to the Model's getData() method is
+	 * that we process hasOne and belongsTo relations. This is a recursive function which will be called at most
+	 * $maxLevel deep. You can set this in the form XML file, in the relation_depth attribute.
+	 *
+	 * The $modelsProcessed array which is passed in successive recursions lets us prevent pointless Inception-style
+	 * recursions, e.g. Model A is related to Model B is related to Model C is related to Model A. You clearly don't
+	 * care to see a.b.c.a.b in the results. You just want a.b.c. Obviously c is indirectly related to a because that's
+	 * where you began the recursion anyway.
+	 *
+	 * @param   DataModel  $model            The item to dump its contents into an array
+	 * @param   int        $maxLevel         Maximum nesting level of relations to process. Default: 1.
+	 * @param   array      $modelsProcessed  Array of the fully qualified model class names already processed.
+	 *
+	 * @return  array
+	 * @throws  DataModel\Relation\Exception\RelationNotFound
+	 */
+	protected function modelToBindSource(DataModel $model, $maxLevel = 1, $modelsProcessed = array())
 	{
+		$maxLevel--;
+
 		$data = $model->toArray();
 
 		$relations = $model->getRelations()->getRelationNames();
@@ -1065,7 +1086,7 @@ class Form extends JForm
 		}, $relationTypes);
 		$relationTypes = array_flip($relationTypes);
 
-		if (is_array($relations) && count($relations))
+		if (is_array($relations) && count($relations) && ($maxLevel >= 0))
 		{
 			foreach ($relations as $relationName)
 			{
@@ -1077,11 +1098,12 @@ class Form extends JForm
 					continue;
 				}
 
-				if ($relationTypes[$class] != 'hasOne')
+				if (!in_array($relationTypes[$class], array('hasOne', 'belongsTo')))
 				{
 					continue;
 				}
 
+				/** @var DataModel $relData */
 				$relData = $model->$relationName;
 
 				if (!($relData instanceof DataModel))
@@ -1089,9 +1111,18 @@ class Form extends JForm
 					continue;
 				}
 
-				$relDataArray = $relData->toArray();
+				$modelType = get_class($relData);
 
-				if (empty($relDataArray) || !is_array($relDataArray))
+				if (in_array($modelType, $modelsProcessed))
+				{
+					continue;
+				}
+
+				$modelsProcessed[] = $modelType;
+
+				$relDataArray = $this->modelToBindSource($relData, $maxLevel, $modelsProcessed);
+
+				if (!is_array($relDataArray) || empty($relDataArray))
 				{
 					continue;
 				}
