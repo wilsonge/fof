@@ -191,7 +191,7 @@ class Model extends GenericList implements FieldInterface
 	{
 		static $loadedOptions = array();
 
-		$myFormKey = $this->form->getName();
+		$myFormKey = $this->form->getName() . '#$#' . (string) $this->element['model'];
 
 		if ($forceReset && isset($loadedOptions[$myFormKey]))
 		{
