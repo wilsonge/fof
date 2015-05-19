@@ -143,26 +143,33 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 	 */
 	public function getFieldContents(array $fieldOptions = array())
 	{
+		/** @var array|null The select options coming from the access levels of the site */
+		static $defaultOptions = null;
+
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
 		$params = $this->getOptions();
 
-		$db    = $this->form->getContainer()->platform->getDbo();
-		$query = $db->getQuery(true)
-				->select('a.id AS value, a.title AS text')
-				->from('#__viewlevels AS a')
-				->group('a.id, a.title, a.ordering')
-				->order('a.ordering ASC')
-				->order($db->qn('title') . ' ASC');
 
-		// Get the options.
-		$options = $db->setQuery($query)->loadObjectList();
+		if (is_null($defaultOptions))
+		{
+			$db    = $this->form->getContainer()->platform->getDbo();
+			$query = $db->getQuery(true)
+			            ->select('a.id AS value, a.title AS text')
+			            ->from('#__viewlevels AS a')
+			            ->group('a.id, a.title, a.ordering')
+			            ->order('a.ordering ASC')
+			            ->order($db->qn('title') . ' ASC');
+
+			// Get the options.
+			$defaultOptions = $db->setQuery($query)->loadObjectList();
+		}
 
 		// If params is an array, push these options to the array
 		if (is_array($params))
 		{
-			$options = array_merge($params, $options);
+			$options = array_merge($params, $defaultOptions);
 		}
 
 		// If all levels is allowed, push it into the array.
