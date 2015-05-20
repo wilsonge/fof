@@ -334,7 +334,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$header->addAttribute('type', 'Ordering');
 		$header->addAttribute('label', $langDefs['label']['key']);
 		$header->addAttribute('sortable', 'true');
-		$header->addAttribute('tdwith', '1%');
+		$header->addAttribute('tdwidth', '1%');
 
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $fieldName);
@@ -366,7 +366,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$header->addAttribute('type', 'RowSelect');
 		$header->addAttribute('label', $langDefs['label']['key']);
 		$header->addAttribute('sortable', 'true');
-		$header->addAttribute('tdwith', '20');
+		$header->addAttribute('tdwidth', '20');
 
 		$field = $fieldSet->addChild('field');
 		$field->addAttribute('name', $keyField);
