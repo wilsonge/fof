@@ -309,6 +309,9 @@ class Model extends GenericList implements FieldInterface
 		// Replace the [ITEMID] in the URL with the current Itemid parameter
 		$ret = str_replace('[ITEMID]', $this->form->getContainer()->input->getInt('Itemid', 0), $ret);
 
+		// Replace the [TOKEN] in the URL with the Joomla! form token
+		$ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
+
 		// Replace other field variables in the URL
 		$fields = $this->item->getTableFields();
 

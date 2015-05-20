@@ -585,7 +585,7 @@ class BrowseErector extends BaseErector implements ErectorInterface
 		$field->addAttribute('type', 'Sortable');
 		$field->addAttribute('label', $langDefs['label']['key']);
 		$field->addAttribute('url', 'index.php?option=' .
-			$this->builder->getContainer()->componentName . '&view=' . $this->model->getContainer()->inflector->singularize($this->viewName) . '&id=[ITEM:ID]'
+			$this->builder->getContainer()->componentName . '&view=' . $this->model->getContainer()->inflector->singularize($this->viewName) . '&id=[ITEM:ID]&[TOKEN]=1'
 		);
 	}
 
