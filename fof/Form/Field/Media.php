@@ -194,9 +194,19 @@ class Media extends \JFormFieldMedia implements FieldInterface
 			$imgattr['title'] = JText::_((string) $this->element['title']);
 		}
 
-		if ($this->value && file_exists(JPATH_ROOT . '/' . $this->value))
+		$directory = '';
+
+		if ($this->element['directory'])
 		{
-			$src = $this->form->getContainer()->platform->URIroot() . $this->value;
+			$directory = (string) $this->element['directory'];
+			$directory = trim($directory, '/\\') . '/';
+		}
+
+		$imagePath = $directory . $this->value;
+
+		if ($this->value && file_exists(JPATH_ROOT . '/' . $imagePath))
+		{
+			$src = $this->form->getContainer()->platform->URIroot() . $imagePath;
 		}
 		else
 		{
