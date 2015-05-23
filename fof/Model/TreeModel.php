@@ -284,9 +284,18 @@ class TreeModel extends DataModel
      *
      * @codeCoverageIgnore
 	 */
-	public function copy()
+	public function copy($data = null)
 	{
-		return $this->create($this->toArray());
+		$selfData = $this->toArray();
+
+		if (!is_array($data))
+		{
+			$data = array();
+		}
+
+		$data = array_merge($data, $selfData);
+
+		return $this->create($data);
 	}
 
 	/**
