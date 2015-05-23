@@ -75,6 +75,15 @@ class DataController extends Controller
 	);
 
 	/**
+	 * An indexed array of default values for the add task. Since the add task resets the model you can't set these
+	 * values directly to the model. Instead, the defaultsForAdd values will be fed to model's bind() after it's reset
+	 * and before the session-stored item data is bound to the model object.
+	 *
+	 * @var  array
+	 */
+	protected $defaultsForAdd = array();
+
+	/**
 	 * Public constructor of the Controller class. You can pass the following variables in the $config array,
 	 * on top of what you already have in the base Controller class:
 	 *
@@ -460,6 +469,11 @@ class DataController extends Controller
 		elseif ($this->layout == 'default')
 		{
 			$this->layout = 'form';
+		}
+
+		if (!empty($this->defaultsForAdd))
+		{
+			$model->bind($this->defaultsForAdd);
 		}
 
 		// Get temporary data from the session, set if the save failed and we're redirected back here
