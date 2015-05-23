@@ -1923,9 +1923,11 @@ class DataModel extends Model implements \JTableInterface
 	 * Creates a copy of the current record. After the copy is performed, the data model contains the data of the new
 	 * record.
 	 *
+	 * @param   array|DataModel  An associative array or object to bind to the DataModel instance. Allows you to override values on the copied object.
+	 *
 	 * @return   DataModel
 	 */
-	public function copy()
+	public function copy($data = null)
 	{
 		$this->triggerEvent('onBeforeCopy');
 
@@ -1961,7 +1963,7 @@ class DataModel extends Model implements \JTableInterface
 			$this->setFieldValue('locked_on', null);
 		}
 
-		$result = $this->save();
+		$result = $this->save($data);
 
 		$this->triggerEvent('onAfterCopy', array(&$result));
 
