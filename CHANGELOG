@@ -1,6 +1,21 @@
 FOF 3.0.0
 ================================================================================
++ Preliminary changes for PHP 7 compatibility
++ Improve performance of AccessLevel field in Browse views
++ Improve performance of Language field in Browse views
++ Add relation depth support in Forms
 + Container: assign custom platform classes with platformClass parameter
++ Add support for [TOKEN] in XML form field text replacements
++ ViewTemplate field: pass $this->item as $model in repeatable (browse) mode
++ You can now set default values for the add task
++ Allow field value overrides when copying items
++ DataModel::check(): use default value for NOT NULL but empty fields
++ DataModel::check() set default ordering to 0 when it's NULL
+~ Suppress warnings in Selectable and GenericList headers when developers provide invalid list data
+# Two Model fields on the same form would result in the wrong data being displayed
+# Typo: tdwith instead of tdwidth in Scaffolding
+# Media field: did not take `directory` attribute into account
+# Filter order and direction not passed correctly to the view
 
 FOF 3.0.0.b2
 ================================================================================
