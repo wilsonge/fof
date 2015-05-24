@@ -1625,15 +1625,17 @@ class DataModel extends Model implements \JTableInterface
 		if (!array_key_exists($order, $this->knownFields))
 		{
 			$order = $this->getIdFieldName();
+			$this->setState('filter_order', $order);
 		}
 
 		$order = $db->qn($order);
 
-		$dir = strtoupper($this->getState('filter_order_Dir', 'ASC', 'cmd'));
+		$dir = strtoupper($this->getState('filter_order_Dir', null, 'cmd'));
 
-		if(!in_array($dir, array('ASC', 'DESC')))
+		if (!in_array($dir, array('ASC', 'DESC')))
 		{
 			$dir = 'ASC';
+			$this->setState('filter_order_Dir', $dir);
 		}
 
 		$query->order($order . ' ' . $dir);
