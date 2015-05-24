@@ -1320,6 +1320,12 @@ class DataModel extends Model implements \JTableInterface
 			$this->$slugField = \JApplicationHelper::stringURLSafe($this->$titleField);
 		}
 
+		// Special handling of the ordering field
+		if ($this->hasField('ordering') && is_null($this->getFieldValue('ordering')))
+		{
+			$this->setFieldValue('ordering', 0);
+		}
+
 		foreach ($this->knownFields as $fieldName => $field)
 		{
 			// Never check the key if it's empty; an empty key is normal for new records
