@@ -1570,7 +1570,7 @@ class InstallScript
 		try
 		{
 			$dependencies = $db->setQuery($query)->loadResult();
-			$dependencies = json_decode($dependencies);
+			$dependencies = json_decode($dependencies, true);
 
 			if (empty($dependencies))
 			{
