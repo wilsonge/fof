@@ -877,6 +877,12 @@ HTML;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $this->container->inflector->pluralize($form->getView()->getName()) . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="task" value="' . $form->getView()->getTask() . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="layout" value="' . $form->getView()->getLayout() . '" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="format" value="' . $this->container->input->getCmd('format', 'html') . '" />' . "\n";
+
+		if ($tmpl = $this->container->input->getCmd('tmpl', ''))
+		{
+			$html .= "\t" . '<input type="hidden" name="tmpl" value="' . $tmpl . '" />' . "\n";
+		}
 
 
 		// The id field is required in Joomla! 3 front-end to prevent the pagination limit box from screwing it up.
@@ -1002,6 +1008,12 @@ HTML;
 		$html .= "\t" . '<input type="hidden" name="view" value="' . $form->getView()->getName() . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="task" value="' . $customTask . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="format" value="' . $this->container->input->getCmd('format', 'html') . '" />' . "\n";
+
+		if ($tmpl = $this->container->input->getCmd('tmpl', ''))
+		{
+			$html .= "\t" . '<input type="hidden" name="tmpl" value="' . $tmpl . '" />' . "\n";
+		}
 
 		$html .= "\t" . '<input type="hidden" name="' . \JFactory::getSession()->getFormToken() . '" value="1" />' . "\n";
 
