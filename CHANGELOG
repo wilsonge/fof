@@ -12,6 +12,7 @@ FOF 3.0.0
 + DataModel::check(): use default value for NOT NULL but empty fields
 + DataModel::check() set default ordering to 0 when it's NULL
 + XML forms pass the format and tmpl parameters if they are set in the request
++ Model header and form field: "with" attribute
 ~ Suppress warnings in Selectable and GenericList headers when developers provide invalid list data
 # Two Model fields on the same form would result in the wrong data being displayed
 # Typo: tdwith instead of tdwidth in Scaffolding

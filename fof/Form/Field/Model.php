@@ -210,6 +210,15 @@ class Model extends GenericList implements FieldInterface
 			$modelName = (string) $this->element['model'];
 			$nonePlaceholder = (string) $this->element['none'];
 
+			$with = $this->element['with'] ? (string) $this->element['with'] : null;
+
+			if (!is_null($with))
+			{
+				$with = trim($with);
+				$with = explode(',', $with);
+				$with = array_map('trim', $with);
+			}
+
 			if (!empty($nonePlaceholder))
 			{
 				$options[] = JHtml::_('select.option', null, JText::_($nonePlaceholder));
@@ -243,6 +252,11 @@ class Model extends GenericList implements FieldInterface
 			if ($applyAccess)
 			{
 				$model->applyAccessFiltering();
+			}
+
+			if (!is_null($with))
+			{
+				$model->with($with);
 			}
 
 			// Process state variables
