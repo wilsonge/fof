@@ -249,7 +249,7 @@ class FofApp extends JApplicationCli
 		$this->out("Checking for Existing Composer File...");
 
 		// Does the composer file exists?
-		if (!file_exists(dirname(__FILE__) . '/composer.json')) {
+		if (!file_exists(getcwd() . '/composer.json')) {
 			
 			// Ask to create it
 			$this->out("Can't find a composer.json file in this directory. Run \"composer init\" to create it");
@@ -257,7 +257,7 @@ class FofApp extends JApplicationCli
 		}
 
 		// Read composer's informations
-		$composer = json_decode(file_get_contents(dirname(__FILE__) . '/composer.json'));
+		$composer = json_decode(file_get_contents(getcwd() . '/composer.json'));
 
 		// We do have a composer file, so we can start working
 		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
@@ -285,19 +285,19 @@ class FofApp extends JApplicationCli
 		// Create the directories if necessary
 		foreach ($info->paths as $folder) {
 			if (!is_dir($folder)) {
-				JFolder::create(dirname(__FILE__) . '/' . $folder);
+				JFolder::create(getcwd() . '/' . $folder);
 			}
 		}
 
 		// Now check for fof.xml file
-		$fof_xml = dirname(__FILE__) .  '/' . $info->paths['backend'] . '/fof.xml';
+		$fof_xml = getcwd() .  '/' . $info->paths['backend'] . '/fof.xml';
 		if (file_exists($fof_xml)) {
 
 		}
 
 		// Store back the info into the composer.json    
 		$composer->extra->fof = $info;
-		JFile::write(dirname(__FILE__) . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));      
+		JFile::write(getcwd() . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));      
 
 		$this->setDevServer(); 
 	}
@@ -310,7 +310,7 @@ class FofApp extends JApplicationCli
 	protected function setDevServer($force = false)
 	{	
 		// .fof file not found, ask the user!
-		if (!JFile::exists(dirname(__FILE__) . '/.fof') || $force) {
+		if (!JFile::exists(getcwd() . '/.fof') || $force) {
 			$this->out("What's the dev site location? ( /var/www/ )");
 			$path = $this->in();
 
@@ -325,9 +325,9 @@ class FofApp extends JApplicationCli
 			}
 
 			$fof = array('dev' => $path);
-			JFile::write(dirname(__FILE__) . '/.fof', json_encode($fof));
+			JFile::write(getcwd() . '/.fof', json_encode($fof));
 		} else {
-			$fof = json_decode(JFile::read(dirname(__FILE__) . '/.fof'));
+			$fof = json_decode(JFile::read(getcwd() . '/.fof'));
 			
 			if ($fof && $fof->dev) {
 				$path = $fof->dev;
