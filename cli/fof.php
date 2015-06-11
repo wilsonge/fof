@@ -30,7 +30,8 @@ define('_JEXEC', 1);
 // Required by the CMS
 define('DS', DIRECTORY_SEPARATOR);
 
-$minphp = '5.4.1';
+// JSON_PRETTY_PRINT only in PHP 5.4.0
+$minphp = '5.4.0';
 
 if (version_compare(PHP_VERSION, $minphp, 'lt')) {
 	$curversion = PHP_VERSION;
@@ -223,12 +224,70 @@ class FofApp extends JApplicationCli
         $composer = json_decode(file_get_contents(dirname(__FILE__) . '/composer.json'));
         
         // We do have a composer file, so we can start working
-        $info = array();
+        $composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
+       	$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
+
+       	$info = $composer->extra->fof;
 
         // Component Name (default: what's already stored in composer / composer package name)
-       	$info['name'] = $this->getComponentName($composer);
+       	$info->name = $this->getComponentName($composer);
 
-       	var_dump($info);
+       	$files = array(
+       		'backend' => 'component/backend',
+       		'frontend' => 'component/frontend',
+       		'media' => 'component/media',
+       		'translationsbackend' => 'translations/component/backend',
+       		'translationsfrontend' => 'translations/component/frontend'
+       	);
+
+       	$info->paths = array();
+
+       	foreach ($files as $key => $default) {
+       		$info->paths[$key] = $this->getPath($composer, $key, $default);
+       	}
+
+       	// Create the directories if necessary
+       	foreach ($info->paths as $folder) {
+       		if (!is_dir($folder)) {
+       			JFolder::create(dirname(__FILE__) . '/' . $folder);
+       		}
+       	}
+
+       	// Now check for fof.xml file
+       	$fof_xml = dirname(__FILE__) .  '/' . $info->paths['backend'] . '/fof.xml';
+       	if (file_exists($fof_xml)) {
+
+       	}
+       	
+       	// Store back the info into the composer.json    
+       	$composer->extra->fof = $info;
+       	JFile::write(dirname(__FILE__) . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));       
+	}
+
+	/**
+	 * Ask the user the path for each of the files folders
+	 * @param  object $composer The composer json object
+	 * @param  string $key      The key of the folder (backend)
+	 * @param  string $default  The default path to use
+	 * @return string           The user chosen path
+	 */
+	protected function getPath($composer, $key, $default) {
+		$extra = $composer->extra ? $composer->extra->fof : false;
+		$default_path = ($extra && $extra->paths && $extra->paths->$key) ? $extra->paths->$key : $default;
+
+		$this->out("Location of " . $key . " files: (" . $default_path . ")");
+		$path = $this->in();
+		
+		if (!$path) {
+			$path = $default_path;
+		}
+
+		// Keep asking while the path is not valid
+		while(!$path) {
+			$path = $this->getPath($composer, $key, $default);
+		}
+
+		return $path;
 	}
 
 	/**
@@ -298,6 +357,8 @@ class FofApp extends JApplicationCli
 
 		// Required by Joomla!
 		JLoader::import('joomla.environment.request');
+		JLoader::import('joomla.filesystem.file');
+		JLoader::import('joomla.filesystem.folder');
 
 		// Allow inclusion of Joomla! files
 		if (!defined('_JEXEC'))
