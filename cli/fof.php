@@ -210,58 +210,78 @@ class FofApp extends JApplicationCli
 		$this->displayBanner();
 		$this->disableTimeLimit();
 
-        $this->out("Checking for Existing Composer File...");
+		// Get command
+		$args = $this->input->args;
+		$command = array_shift($args);
 
-        // Does the composer file exists?
-        if (!file_exists(dirname(__FILE__) . '/composer.json')) {
-        	
-        	// Ask to create it
-        	$this->out("Can't find a composer.json file in this directory. Run \"composer init\" to create it");
-        	exit();
-        }
+		// Execute the right command
+		switch ($command) {
+			case 'init':
+				$this->init();
+				break;
+			default:
+				$this->showHelp();
+				break;
+		}
+	}
 
-        // Read composer's informations
-        $composer = json_decode(file_get_contents(dirname(__FILE__) . '/composer.json'));
-        
-        // We do have a composer file, so we can start working
-        $composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
-       	$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
+	/**
+	 * Run the init command
+	 */
+	protected function init()
+	{
+		$this->out("Checking for Existing Composer File...");
 
-       	$info = $composer->extra->fof;
+		// Does the composer file exists?
+		if (!file_exists(dirname(__FILE__) . '/composer.json')) {
+			
+			// Ask to create it
+			$this->out("Can't find a composer.json file in this directory. Run \"composer init\" to create it");
+			exit();
+		}
 
-        // Component Name (default: what's already stored in composer / composer package name)
-       	$info->name = $this->getComponentName($composer);
+		// Read composer's informations
+		$composer = json_decode(file_get_contents(dirname(__FILE__) . '/composer.json'));
 
-       	$files = array(
-       		'backend' => 'component/backend',
-       		'frontend' => 'component/frontend',
-       		'media' => 'component/media',
-       		'translationsbackend' => 'translations/component/backend',
-       		'translationsfrontend' => 'translations/component/frontend'
-       	);
+		// We do have a composer file, so we can start working
+		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
+		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
 
-       	$info->paths = array();
+		$info = $composer->extra->fof;
 
-       	foreach ($files as $key => $default) {
-       		$info->paths[$key] = $this->getPath($composer, $key, $default);
-       	}
+		// Component Name (default: what's already stored in composer / composer package name)
+		$info->name = $this->getComponentName($composer);
 
-       	// Create the directories if necessary
-       	foreach ($info->paths as $folder) {
-       		if (!is_dir($folder)) {
-       			JFolder::create(dirname(__FILE__) . '/' . $folder);
-       		}
-       	}
+		$files = array(
+			'backend' => 'component/backend',
+			'frontend' => 'component/frontend',
+			'media' => 'component/media',
+			'translationsbackend' => 'translations/component/backend',
+			'translationsfrontend' => 'translations/component/frontend'
+		);
 
-       	// Now check for fof.xml file
-       	$fof_xml = dirname(__FILE__) .  '/' . $info->paths['backend'] . '/fof.xml';
-       	if (file_exists($fof_xml)) {
+		$info->paths = array();
 
-       	}
-       	
-       	// Store back the info into the composer.json    
-       	$composer->extra->fof = $info;
-       	JFile::write(dirname(__FILE__) . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));       
+		foreach ($files as $key => $default) {
+			$info->paths[$key] = $this->getPath($composer, $key, $default);
+		}
+
+		// Create the directories if necessary
+		foreach ($info->paths as $folder) {
+			if (!is_dir($folder)) {
+				JFolder::create(dirname(__FILE__) . '/' . $folder);
+			}
+		}
+
+		// Now check for fof.xml file
+		$fof_xml = dirname(__FILE__) .  '/' . $info->paths['backend'] . '/fof.xml';
+		if (file_exists($fof_xml)) {
+
+		}
+
+		// Store back the info into the composer.json    
+		$composer->extra->fof = $info;
+		JFile::write(dirname(__FILE__) . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));       
 	}
 
 	/**
@@ -271,7 +291,8 @@ class FofApp extends JApplicationCli
 	 * @param  string $default  The default path to use
 	 * @return string           The user chosen path
 	 */
-	protected function getPath($composer, $key, $default) {
+	protected function getPath($composer, $key, $default) 
+	{
 		$extra = $composer->extra ? $composer->extra->fof : false;
 		$default_path = ($extra && $extra->paths && $extra->paths->$key) ? $extra->paths->$key : $default;
 
@@ -294,7 +315,8 @@ class FofApp extends JApplicationCli
 	 * Get the component's name from the user
 	 * @return string The name of the component (com_foobar)
 	 */
-	protected function getComponentName($composer) {
+	protected function getComponentName($composer) 
+	{
 		$extra = $composer->extra ? $composer->extra->fof : false;
 		$default_name = $extra ? $extra->name : array_pop(explode("/", $composer->name));
 		$default_name = $default_name ? $default_name : 'com_foobar';
@@ -389,6 +411,19 @@ class FofApp extends JApplicationCli
 		$this->out("license. See http://www.gnu.org/licenses/gpl-2.0.html for details.");
 		$this->out(str_repeat('-', 79));
 		$this->out("You are using PHP $phpversion ($phpenvironment)");
+		$this->out("");
+	}
+
+	/**
+	 * Display the help
+	 */
+	protected function showHelp() 
+	{
+		$this->out("");
+		$this->out(str_repeat('-', 79));
+		$this->out("FOF3 Generator Usage:");
+		$this->out("fof init: Initialize a component");
+		$this->out(str_repeat('-', 79));
 		$this->out("");
 	}
 }
