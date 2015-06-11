@@ -71,17 +71,28 @@ ENDWARNING;
 	die();
 }
 
-// Load system defines
-if (file_exists(__DIR__ . '/defines.php'))
-{
-	require_once __DIR__ . '/defines.php';
+$cwd = getcwd();
+
+// Are we in a joomla site (/cli/fof.php) ?
+if (file_exists(dirname(__DIR__) . '/includes/defines.php')) {
+	$dir = dirname(__DIR__);
+} else {
+	// Do we have .fof file?
+	if (!file_exists(dirname(__FILE__) . '/.fof')) {
+		// TODO: ask the path to a joomla site to create the .fof file
+		exit();
+	}
+
+	// load from .fof file
+	$fof = json_decode(file_get_contents(dirname(__FILE__) . '/.fof'));
+	if ($fof && $fof->dev) {
+		$dir = $fof->dev;
+	}
 }
 
 if (!defined('_JDEFINES'))
 {
-	$path = rtrim(__DIR__, DIRECTORY_SEPARATOR);
-	$rpos = strrpos($path, DIRECTORY_SEPARATOR);
-	$path = substr($path, 0, $rpos);
+	$path = rtrim($dir, DIRECTORY_SEPARATOR);
 	define('JPATH_BASE', $path);
 	require_once JPATH_BASE . '/includes/defines.php';
 }
@@ -219,6 +230,11 @@ class FofApp extends JApplicationCli
 			case 'init':
 				$this->init();
 				break;
+			case 'setdevserver':
+				$this->setDevServer();
+				break;
+			case 'help':
+			case 'h':
 			default:
 				$this->showHelp();
 				break;
@@ -281,8 +297,46 @@ class FofApp extends JApplicationCli
 
 		// Store back the info into the composer.json    
 		$composer->extra->fof = $info;
-		JFile::write(dirname(__FILE__) . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));       
+		JFile::write(dirname(__FILE__) . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));      
+
+		$this->setDevServer(); 
 	}
+
+	/**
+	 * Load the Joomla Configuration from a dev site
+	 * 
+	 * @param boolean $force Should we ask the user even if we have a .fof file?
+	 */
+	protected function setDevServer($force = false)
+	{	
+		// .fof file not found, ask the user!
+		if (!JFile::exists(dirname(__FILE__) . '/.fof') || $force) {
+			$this->out("What's the dev site location? ( /var/www/ )");
+			$path = $this->in();
+
+			if (!$path || !JFolder::exists($path)) {
+				$this->out('The path does not exists');
+				$this->setDevServer();
+			}
+
+			if (!JFile::exists($path . '/configuration.php')) {
+				$this->out('The path does not contain a Joomla Website');
+				$this->setDevServer();	
+			}
+
+			$fof = array('dev' => $path);
+			JFile::write(dirname(__FILE__) . '/.fof', json_encode($fof));
+		} else {
+			$fof = json_decode(JFile::read(dirname(__FILE__) . '/.fof'));
+			
+			if ($fof && $fof->dev) {
+				$path = $fof->dev;
+			}
+		}
+
+		// Load the configuration object.
+		$this->loadConfiguration($this->fetchConfigurationData($path . '/configuration.php'));
+	}	
 
 	/**
 	 * Ask the user the path for each of the files folders
@@ -423,6 +477,8 @@ class FofApp extends JApplicationCli
 		$this->out(str_repeat('-', 79));
 		$this->out("FOF3 Generator Usage:");
 		$this->out("fof init: Initialize a component");
+		$this->out("fof setdevserver: Set the dev server location");
+		$this->out("fof help: Show this help");
 		$this->out(str_repeat('-', 79));
 		$this->out("");
 	}
