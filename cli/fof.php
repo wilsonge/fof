@@ -27,6 +27,9 @@
 // Define ourselves as a parent file
 define('_JEXEC', 1);
 
+use FOF30\Factory\Scaffolding\Builder as ScaffoldingBuilder;
+use FOF30\Container\Container as Container;
+
 // Required by the CMS
 define('DS', DIRECTORY_SEPARATOR);
 
@@ -118,6 +121,9 @@ JLoader::import('cms.component.helper');
  */
 class FofApp extends JApplicationCli
 {
+
+	protected $admin = true;
+
 	/**
 	 * JApplicationCli didn't want to run on PHP CGI. I have my way of becoming
 	 * VERY convincing. Now obey your true master, you petty class!
@@ -211,6 +217,22 @@ class FofApp extends JApplicationCli
 		// Set the current directory.
 		$this->set('cwd', getcwd());
 	}
+
+	public function isCLIAdmin() {
+		return $this->admin;
+	}
+
+	public function isAdmin() {
+		return $this->admin;
+	}
+
+	public function setAdmin($admin = true) {
+		return $this->admin;
+	}
+
+	public function isBackend() {
+		return $this->admin;
+	}
 	
 	/**
 	 * The main entry point of the application
@@ -227,6 +249,29 @@ class FofApp extends JApplicationCli
 
 		// Execute the right command
 		switch ($command) {
+			case 'generate':
+				$type = array_shift($args);
+				
+				if (!$type) {
+					$this->out("Error. Syntax: fof generate <type> <name>");
+					exit();
+				}
+
+				switch ($type) {
+					case 'view':
+						$view = array_shift($args);
+						
+						if (!$view) {
+							$this->out("Error. Syntax: fof generate view <name>");
+							exit();
+						}
+
+						$this->generateListView($view);
+						break;
+				}
+
+				break;
+
 			case 'init':
 				$this->init();
 				break;
@@ -242,9 +287,46 @@ class FofApp extends JApplicationCli
 	}
 
 	/**
-	 * Run the init command
+	 * Generates a view's list xml file
+	 * @param  string 	$view 		The view to generate the file for
+	 * @param  boolean 	$backend 	Is this for the backend?
 	 */
-	protected function init()
+	protected function generateListView($view, $backend = true) 
+	{
+		$composer = $this->getComposerInfo();
+
+		// We do have a composer file, so we can start working
+		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
+		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
+
+		$component = $composer->extra->fof->name;
+
+		try {
+			$container = Container::getInstance($component);
+			$container->factory->setSaveScaffolding(true);
+
+			$this->setAdmin($backend);
+
+			$scaffolding = new ScaffoldingBuilder($container);
+			$xml = $scaffolding->make('form.default', $view);
+		} catch(Exception $e) {
+			if ($e instanceof FOF30\Model\DataModel\Exception\NoTableColumns) {
+				$this->out("FOF cannot find a database table for " . $view . '. It should be name #__' . $component . '_' . $container->inflector->pluralize($view));
+				exit();
+			}
+
+			$this->out($e);
+			exit();
+		}
+
+		var_dump($xml);
+	}
+
+	/**
+	 * Load the informations from the composer.json file
+	 * @return object The composer file informations
+	 */
+	protected function getComposerInfo() 
 	{
 		$this->out("Checking for Existing Composer File...");
 
@@ -258,6 +340,16 @@ class FofApp extends JApplicationCli
 
 		// Read composer's informations
 		$composer = json_decode(file_get_contents(getcwd() . '/composer.json'));
+
+		return $composer;
+	}
+
+	/**
+	 * Run the init command
+	 */
+	protected function init()
+	{
+		$composer = $this->getComposerInfo();
 
 		// We do have a composer file, so we can start working
 		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
