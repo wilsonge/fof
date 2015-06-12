@@ -291,8 +291,11 @@ class FofApp extends JApplicationCli
 	 * @param  string 	$view 		The view to generate the file for
 	 * @param  boolean 	$backend 	Is this for the backend?
 	 */
-	protected function generateListView($view, $backend = true) 
+	protected function generateListView($view) 
 	{
+		// Backend or frontend?
+		$backend = !$this->input->get('frontend', false);
+
 		$composer = $this->getComposerInfo();
 
 		// We do have a composer file, so we can start working
@@ -308,7 +311,10 @@ class FofApp extends JApplicationCli
 			$this->setAdmin($backend);
 
 			$scaffolding = new ScaffoldingBuilder($container);
-			$xml = $scaffolding->make('form.default', $view);
+			$scaffolding->make('form.default', $view);
+
+			$this->out($backend ? "Backend" : "Frontend" . " browse view for " . $view . ' created!');
+
 		} catch(Exception $e) {
 			if ($e instanceof FOF30\Model\DataModel\Exception\NoTableColumns) {
 				$this->out("FOF cannot find a database table for " . $view . '. It should be name #__' . $component . '_' . $container->inflector->pluralize($view));
@@ -318,8 +324,6 @@ class FofApp extends JApplicationCli
 			$this->out($e);
 			exit();
 		}
-
-		var_dump($xml);
 	}
 
 	/**
