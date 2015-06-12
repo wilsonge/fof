@@ -38,10 +38,52 @@ class Command {
 		return strtolower($name);
 	}
 
+	/**
+	 * Load the Joomla Configuration from a dev site
+	 * 
+	 * @param boolean $force Should we ask the user even if we have a .fof file?
+	 */
+	public function setDevServer($force = false)
+	{	
+		// .fof file not found, ask the user!
+		if (!\JFile::exists(getcwd() . '/.fof') || $force) {
+			$this->out("What's the dev site location? ( /var/www/ )");
+			$path = $this->in();
+
+			if (!$path || !\JFolder::exists($path)) {
+				$this->out('The path does not exists');
+				$this->setDevServer();
+			}
+
+			if (!\JFile::exists($path . '/configuration.php')) {
+				$this->out('The path does not contain a Joomla Website');
+				$this->setDevServer();	
+			}
+
+			$fof = array('dev' => $path);
+			\JFile::write(getcwd() . '/.fof', json_encode($fof));
+		} else {
+			$fof = json_decode(\JFile::read(getcwd() . '/.fof'));
+			
+			if ($fof && $fof->dev) {
+				$path = $fof->dev;
+			}
+		}
+
+		// Load the configuration object.
+		\JFactory::getApplication()->reloadConfiguration($path);
+	}
+
+	/**
+	 * Proxy the in() call to the application
+	 */
 	protected function in() {
 		return \JFactory::getApplication()->in();
 	}
 
+	/**
+	 * Proxy the out() call to the application
+	 */
 	protected function out($content) {
 		return \JFactory::getApplication()->out($content);
 	}

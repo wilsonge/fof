@@ -27,9 +27,6 @@
 // Define ourselves as a parent file
 define('_JEXEC', 1);
 
-use FOF30\Factory\Scaffolding\Builder as ScaffoldingBuilder;
-use FOF30\Container\Container as Container;
-
 // Required by the CMS
 define('DS', DIRECTORY_SEPARATOR);
 
@@ -218,18 +215,34 @@ class FofApp extends JApplicationCli
 		$this->set('cwd', getcwd());
 	}
 
+	/**
+	 * We need to override so we can let the generator in FOF generate the right files
+	 * @return boolean [description]
+	 */
 	public function isCLIAdmin() {
 		return $this->admin;
 	}
 
+	/**
+	 * We need to override so we can let the generator in FOF generate the right files
+	 * @return boolean [description]
+	 */
 	public function isAdmin() {
 		return $this->admin;
 	}
 
+	/**
+	 * We need to override so we can let the generator in FOF generate the right files
+	 * @return boolean [description]
+	 */
 	public function setAdmin($admin = true) {
 		return $this->admin;
 	}
 
+	/**
+	 * We need to override so we can let the generator in FOF generate the right files
+	 * @return boolean [description]
+	 */
 	public function isBackend() {
 		return $this->admin;
 	}
@@ -243,102 +256,39 @@ class FofApp extends JApplicationCli
 		$this->displayBanner();
 		$this->disableTimeLimit();
 
-		// Get command
+		// Get arguments
 		$args = $this->input->args;
-		$command = array_shift($args);
 
 		$composer = $this->getComposerInfo();
 
 		// Register the current namespace with the autoloader
 		FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Generator\\', array(realpath(dirname(__FILE__) . '/fof/')));
 		FOF30\Autoloader\Autoloader::getInstance()->register();
+			
+		// Get command
+		$command = array_shift($args);
 		$command = ucfirst(strtolower($command));
 
+		// Run automatically every know command
 		$class = 'FOF30\Generator\Command\\' . $command;
-		
-		if (class_exists($class)) {
-			$class = new $class();
-			$class->execute($composer, $this->input);
-		}
+		$partial_class = $class;
 
-		//\JPluginHelper::importPlugins('fofgenerator');
-		$this->dispatcher->trigger('onFOFGeneratorCommand' . $command, array($this->input));
-
-
-		// Execute the right command
-		/*switch ($command) {
-			case 'generate':
-				$type = array_shift($args);
-				
-				if (!$type) {
-					$this->out("Error. Syntax: fof generate <type> <name>");
-					exit();
-				}
-
-				switch ($type) {
-					case 'view':
-						$view = array_shift($args);
-						
-						if (!$view) {
-							$this->out("Error. Syntax: fof generate view <name>");
-							exit();
-						}
-
-						$this->generateListView($view);
-						break;
-				}
-
-				break;
-
-			case 'init':
-				$this->init();
-				break;
-			case 'setdevserver':
-				$this->setDevServer();
-				break;
-			case 'help':
-			case 'h':
-			default:
-				$this->showHelp();
-				break;
-		}*/
-	}
-
-	/**
-	 * Generates a view's list xml file
-	 * @param  string 	$view 		The view to generate the file for
-	 * @param  boolean 	$backend 	Is this for the backend?
-	 */
-	protected function generateListView($view) 
-	{
-		// Backend or frontend?
-		$backend = !$this->input->get('frontend', false);
-
-		$composer = $this->getComposerInfo();
-
-		// We do have a composer file, so we can start working
-		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
-		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
-
-		$component = $composer->extra->fof->name;
-
-		try {
-			$container = Container::getInstance($component);
-			$container->factory->setSaveScaffolding(true);
-
-			$this->setAdmin($backend);
-
-			$scaffolding = new ScaffoldingBuilder($container);
-			$scaffolding->make('form.default', $view);
-
-			$this->out($backend ? "Backend" : "Frontend" . " browse view for " . $view . ' created!');
-
-		} catch(Exception $e) {
-			if ($e instanceof FOF30\Model\DataModel\Exception\NoTableColumns) {
-				$this->out("FOF cannot find a database table for " . $view . '. It should be name #__' . $component . '_' . $container->inflector->pluralize($view));
-				exit();
+		while (count($args)) {
+			$command = array_shift($args);
+			$command = ucfirst(strtolower($command));
+			$partial_class = $class . '\\' . $command;
+			
+			if (class_exists($partial_class)) {
+				$class = $partial_class;
 			}
-
+		}
+		
+		try {
+			if (class_exists($class)) {
+				$class = new $class();
+				$class->execute($composer, $this->input);
+			}
+		} catch(Exception $e) {
 			$this->out($e);
 			exit();
 		}
@@ -364,56 +314,6 @@ class FofApp extends JApplicationCli
 		$composer = json_decode(file_get_contents(getcwd() . '/composer.json'));
 
 		return $composer;
-	}
-
-	/**
-	 * Run the init command
-	 */
-	protected function init()
-	{
-		$composer = $this->getComposerInfo();
-
-		// We do have a composer file, so we can start working
-		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
-		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
-
-		$info = $composer->extra->fof;
-
-		// Component Name (default: what's already stored in composer / composer package name)
-		$info->name = $this->getComponentName($composer);
-
-		$files = array(
-			'backend' => 'component/backend',
-			'frontend' => 'component/frontend',
-			'media' => 'component/media',
-			'translationsbackend' => 'translations/component/backend',
-			'translationsfrontend' => 'translations/component/frontend'
-		);
-
-		$info->paths = array();
-
-		foreach ($files as $key => $default) {
-			$info->paths[$key] = $this->getPath($composer, $key, $default);
-		}
-
-		// Create the directories if necessary
-		foreach ($info->paths as $folder) {
-			if (!is_dir($folder)) {
-				JFolder::create(getcwd() . '/' . $folder);
-			}
-		}
-
-		// Now check for fof.xml file
-		$fof_xml = getcwd() .  '/' . $info->paths['backend'] . '/fof.xml';
-		if (file_exists($fof_xml)) {
-
-		}
-
-		// Store back the info into the composer.json    
-		$composer->extra->fof = $info;
-		JFile::write(getcwd() . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));      
-
-		$this->setDevServer(); 
 	}
 
 	/**
@@ -485,57 +385,19 @@ class FofApp extends JApplicationCli
 	}
 
 	/**
-	 * Display the help
+	 * Load the Joomla Configuration from specific path
+	 *
+	 * @param string $path The directory where we should find the configuration.php file 
 	 */
-	protected function showHelp() 
-	{
-		$this->out("");
-		$this->out(str_repeat('-', 79));
-		$this->out("FOF3 Generator Usage:");
-		$this->out("fof init: Initialize a component");
-		$this->out("fof setdevserver: Set the dev server location");
-		$this->out("fof help: Show this help");
-		$this->out(str_repeat('-', 79));
-		$this->out("");
-	}
-
-	/**
-	 * Load the Joomla Configuration from a dev site
-	 * 
-	 * @param boolean $force Should we ask the user even if we have a .fof file?
-	 */
-	public function setDevServer($force = false)
-	{	
-		// .fof file not found, ask the user!
-		if (!\JFile::exists(getcwd() . '/.fof') || $force) {
-			$this->out("What's the dev site location? ( /var/www/ )");
-			$path = $this->in();
-
-			if (!$path || !\JFolder::exists($path)) {
-				$this->out('The path does not exists');
-				$this->setDevServer();
-			}
-
-			if (!\JFile::exists($path . '/configuration.php')) {
-				$this->out('The path does not contain a Joomla Website');
-				$this->setDevServer();	
-			}
-
-			$fof = array('dev' => $path);
-			\JFile::write(getcwd() . '/.fof', json_encode($fof));
-		} else {
-			$fof = json_decode(\JFile::read(getcwd() . '/.fof'));
-			
-			if ($fof && $fof->dev) {
-				$path = $fof->dev;
-			}
-		}
-
+	public function reloadConfiguration($path)
+	{			
 		// Load the configuration object.
 		$this->loadConfiguration($this->fetchConfigurationData($path . '/configuration.php'));
+
+		var_dump($this->config);
 	}
 }
 
 $app = JApplicationCli::getInstance('FofApp');
-JFactory::$application = $app;
+\JFactory::$application = $app;
 $app->execute();

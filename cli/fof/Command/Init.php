@@ -47,7 +47,7 @@ class Init extends Command {
 		$composer->extra->fof = $info;
 		\JFile::write(getcwd() . '/composer.json', json_encode($composer, JSON_PRETTY_PRINT));      
 
-		\JFactory::getApplication()->setDevServer(); 
+		$this->setDevServer(true); 
 	}
 
 
