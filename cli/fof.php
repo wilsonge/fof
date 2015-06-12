@@ -247,8 +247,26 @@ class FofApp extends JApplicationCli
 		$args = $this->input->args;
 		$command = array_shift($args);
 
+		$composer = $this->getComposerInfo();
+
+		// Register the current namespace with the autoloader
+		FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Generator\\', array(realpath(dirname(__FILE__) . '/fof/')));
+		FOF30\Autoloader\Autoloader::getInstance()->register();
+		$command = ucfirst(strtolower($command));
+
+		$class = 'FOF30\Generator\Command\\' . $command;
+		
+		if (class_exists($class)) {
+			$class = new $class();
+			$class->execute($composer, $this->input);
+		}
+
+		//\JPluginHelper::importPlugins('fofgenerator');
+		$this->dispatcher->trigger('onFOFGeneratorCommand' . $command, array($this->input));
+
+
 		// Execute the right command
-		switch ($command) {
+		/*switch ($command) {
 			case 'generate':
 				$type = array_shift($args);
 				
@@ -283,7 +301,7 @@ class FofApp extends JApplicationCli
 			default:
 				$this->showHelp();
 				break;
-		}
+		}*/
 	}
 
 	/**
@@ -399,104 +417,6 @@ class FofApp extends JApplicationCli
 	}
 
 	/**
-	 * Load the Joomla Configuration from a dev site
-	 * 
-	 * @param boolean $force Should we ask the user even if we have a .fof file?
-	 */
-	protected function setDevServer($force = false)
-	{	
-		// .fof file not found, ask the user!
-		if (!JFile::exists(getcwd() . '/.fof') || $force) {
-			$this->out("What's the dev site location? ( /var/www/ )");
-			$path = $this->in();
-
-			if (!$path || !JFolder::exists($path)) {
-				$this->out('The path does not exists');
-				$this->setDevServer();
-			}
-
-			if (!JFile::exists($path . '/configuration.php')) {
-				$this->out('The path does not contain a Joomla Website');
-				$this->setDevServer();	
-			}
-
-			$fof = array('dev' => $path);
-			JFile::write(getcwd() . '/.fof', json_encode($fof));
-		} else {
-			$fof = json_decode(JFile::read(getcwd() . '/.fof'));
-			
-			if ($fof && $fof->dev) {
-				$path = $fof->dev;
-			}
-		}
-
-		// Load the configuration object.
-		$this->loadConfiguration($this->fetchConfigurationData($path . '/configuration.php'));
-	}	
-
-	/**
-	 * Ask the user the path for each of the files folders
-	 * @param  object $composer The composer json object
-	 * @param  string $key      The key of the folder (backend)
-	 * @param  string $default  The default path to use
-	 * @return string           The user chosen path
-	 */
-	protected function getPath($composer, $key, $default) 
-	{
-		$extra = $composer->extra ? $composer->extra->fof : false;
-		$default_path = ($extra && $extra->paths && $extra->paths->$key) ? $extra->paths->$key : $default;
-
-		$this->out("Location of " . $key . " files: (" . $default_path . ")");
-		$path = $this->in();
-		
-		if (!$path) {
-			$path = $default_path;
-		}
-
-		// Keep asking while the path is not valid
-		while(!$path) {
-			$path = $this->getPath($composer, $key, $default);
-		}
-
-		return $path;
-	}
-
-	/**
-	 * Get the component's name from the user
-	 * @return string The name of the component (com_foobar)
-	 */
-	protected function getComponentName($composer) 
-	{
-		$extra = $composer->extra ? $composer->extra->fof : false;
-		$default_name = $extra ? $extra->name : array_pop(explode("/", $composer->name));
-		$default_name = $default_name ? $default_name : 'com_foobar';
-
-		// Add com_ if necessary
-		if (stripos($default_name, "com_") !== 0) {
-			$default_name = "com_" . $default_name;
-		}
-
-		$this->out("What's your component name? (" . $default_name . ")");
-		$name = $this->in();
-		
-		if (!$name) {
-			$name = $default_name;
-		}
-
-		// Keep asking while the name is not valid
-		while(!$name) {
-			$name = $this->getComponentName($composer);
-		}
-
-		// Add com_ if necessary
-		if (stripos($name, "com_") !== 0) {
-			$name = "com_" . $name;
-		}
-
-		return strtolower($name);
-	}
-
-	/**
 	 * Disable PHP time limit
 	 */
 	protected function disableTimeLimit() 
@@ -577,6 +497,42 @@ class FofApp extends JApplicationCli
 		$this->out("fof help: Show this help");
 		$this->out(str_repeat('-', 79));
 		$this->out("");
+	}
+
+	/**
+	 * Load the Joomla Configuration from a dev site
+	 * 
+	 * @param boolean $force Should we ask the user even if we have a .fof file?
+	 */
+	public function setDevServer($force = false)
+	{	
+		// .fof file not found, ask the user!
+		if (!\JFile::exists(getcwd() . '/.fof') || $force) {
+			$this->out("What's the dev site location? ( /var/www/ )");
+			$path = $this->in();
+
+			if (!$path || !\JFolder::exists($path)) {
+				$this->out('The path does not exists');
+				$this->setDevServer();
+			}
+
+			if (!\JFile::exists($path . '/configuration.php')) {
+				$this->out('The path does not contain a Joomla Website');
+				$this->setDevServer();	
+			}
+
+			$fof = array('dev' => $path);
+			\JFile::write(getcwd() . '/.fof', json_encode($fof));
+		} else {
+			$fof = json_decode(\JFile::read(getcwd() . '/.fof'));
+			
+			if ($fof && $fof->dev) {
+				$path = $fof->dev;
+			}
+		}
+
+		// Load the configuration object.
+		$this->loadConfiguration($this->fetchConfigurationData($path . '/configuration.php'));
 	}
 }
 
