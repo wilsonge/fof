@@ -214,38 +214,6 @@ class FofApp extends JApplicationCli
 		// Set the current directory.
 		$this->set('cwd', getcwd());
 	}
-
-	/**
-	 * We need to override so we can let the generator in FOF generate the right files
-	 * @return boolean [description]
-	 */
-	public function isCLIAdmin() {
-		return $this->admin;
-	}
-
-	/**
-	 * We need to override so we can let the generator in FOF generate the right files
-	 * @return boolean [description]
-	 */
-	public function isAdmin() {
-		return $this->admin;
-	}
-
-	/**
-	 * We need to override so we can let the generator in FOF generate the right files
-	 * @return boolean [description]
-	 */
-	public function setAdmin($admin = true) {
-		return $this->admin;
-	}
-
-	/**
-	 * We need to override so we can let the generator in FOF generate the right files
-	 * @return boolean [description]
-	 */
-	public function isBackend() {
-		return $this->admin;
-	}
 	
 	/**
 	 * The main entry point of the application
@@ -393,8 +361,6 @@ class FofApp extends JApplicationCli
 	{			
 		// Load the configuration object.
 		$this->loadConfiguration($this->fetchConfigurationData($path . '/configuration.php'));
-
-		var_dump($this->config);
 	}
 }
 

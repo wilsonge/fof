@@ -9,7 +9,7 @@ class Command {
 	 */
 	protected function getComponentName($composer) 
 	{
-		$extra = $composer->extra ? $composer->extra->fof : false;
+		$extra = ($composer->extra && $composer->extra->fof) ? $composer->extra->fof : false;
 		$default_name = $extra ? $extra->name : array_pop(explode("/", $composer->name));
 		$default_name = $default_name ? $default_name : 'com_foobar';
 
@@ -18,8 +18,12 @@ class Command {
 			$default_name = "com_" . $default_name;
 		}
 
-		\JFactory::getApplication()->out("What's your component name? (" . $default_name . ")");
-		$name = \JFactory::getApplication()->in();
+		$name = false;
+
+		if (!$extra) {
+			\JFactory::getApplication()->out("What's your component name? (" . $default_name . ")");
+			$name = \JFactory::getApplication()->in();
+		}
 		
 		if (!$name) {
 			$name = $default_name;
