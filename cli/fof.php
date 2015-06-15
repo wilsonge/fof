@@ -27,13 +27,13 @@
 
 $phar = Phar::running(false);
 if ($phar)
-{
+{	
 	Phar::interceptFileFuncs();
-	$path = 'phar://' . basename($phar) . '/';
+	$phar_path = "phar://" . $phar . '/';
 }
 else
 {
-	$path = realpath(dirname(__FILE__)) . '/';
+	$phar_path = realpath(dirname(__FILE__)) . '/';
 }
 
 // Try to set 0755
@@ -94,6 +94,7 @@ if (file_exists(dirname(__DIR__) . '/includes/defines.php')) {
 } else {
 	// Do we have .fof file?
 	if (!file_exists(getcwd() . '/.fof')) {
+		echo 'cannot find .fof';
 		// TODO: ask the path to a joomla site to create the .fof file
 		exit();
 	}
@@ -129,7 +130,7 @@ JLoader::import('joomla.application.component.helper');
 JLoader::import('cms.component.helper');
 
 // load the app
-require_once dirname(__FILE__) . '/fof/App.php';
+require_once $phar_path . 'fof/App.php';
 
 $app = JApplicationCli::getInstance('FofApp');
 \JFactory::$application = $app;
