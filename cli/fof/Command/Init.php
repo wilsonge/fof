@@ -8,8 +8,8 @@ class Init extends Command {
 	public function execute($composer, $input) {
 
 		// We do have a composer file, so we can start working
-		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
-		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
+		$composer->extra = $composer->extra ? $composer->extra : array('fof' => new \stdClass());
+		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : new \stdClass();
 
 		$info = $composer->extra->fof;
 
@@ -33,7 +33,7 @@ class Init extends Command {
 		// Create the directories if necessary
 		foreach ($info->paths as $folder) {
 			if (!is_dir($folder)) {
-				JFolder::create(getcwd() . '/' . $folder);
+				\JFolder::create(getcwd() . '/' . $folder);
 			}
 		}
 
