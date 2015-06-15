@@ -74,8 +74,6 @@ class Command {
 			}
 		}
 
-		echo $path;
-
 		// Load the configuration object.
 		\JFactory::getApplication()->reloadConfiguration($path);
 	}
