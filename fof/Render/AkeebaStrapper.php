@@ -763,26 +763,13 @@ HTML;
 		// Start the table output
 		$html .= "\t\t" . '<table class="table table-striped" id="itemsList">' . "\n";
 
-		// Open the table header region if required
-
+		// Render the header row, if enabled
 		if ($show_header)
 		{
 			$html .= "\t\t\t<thead>" . "\n";
-		}
-
-		// Render the header row, if enabled
-
-		if ($show_header)
-		{
 			$html .= "\t\t\t\t<tr>" . "\n";
 			$html .= $header_html;
 			$html .= "\t\t\t\t</tr>" . "\n";
-		}
-
-		// Close the table header region if required
-
-		if ($show_header)
-		{
 			$html .= "\t\t\t</thead>" . "\n";
 		}
 
