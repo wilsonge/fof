@@ -688,6 +688,16 @@ class DataModel extends Model implements \JTableInterface
 	}
 
 	/**
+	 * Get the columns from database table. For JTableInterface compatibility.
+	 *
+	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 */
+	public function getFields()
+	{
+		return $this->getTableFields();
+	}
+
+	/**
 	 * Get the columns from a database table.
 	 *
 	 * @param   string $tableName Table name. If null current table is used
@@ -2322,7 +2332,7 @@ class DataModel extends Model implements \JTableInterface
 	{
 		if ($reset)
 		{
-			$this->reset(true);
+			$this->reset();
 		}
 
 		try
