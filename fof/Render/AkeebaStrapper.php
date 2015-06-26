@@ -775,9 +775,8 @@ HTML;
 
 		// Loop through rows and fields, or show placeholder for no rows
 		$html .= "\t\t\t<tbody>" . "\n";
-		$fields		 = $form->getFieldset('items');
-		$num_columns = count($fields);
-		$items		 = $model->get();
+
+		$items = $model->get();
 
 		if ($count = count($items))
 		{
@@ -843,6 +842,9 @@ HTML;
 		}
 		elseif ($norows_placeholder)
 		{
+			$fields		 = $form->getFieldset('items');
+			$num_columns = count($fields);
+
 			$html .= "\t\t\t\t<tr><td colspan=\"$num_columns\">";
 			$html .= \JText::_($norows_placeholder);
 			$html .= "</td></tr>\n";
