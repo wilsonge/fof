@@ -141,8 +141,8 @@ class Relation extends GenericList
 
 		if ($id = $this->form->getModel()->getId())
 		{
-			$model     = $this->form->getContainer()->factory->model($view)->setIgnoreRequest(true)->savestate(false);
-			$relations = $model->getRelations()->getRelation($relation)->getData();
+			$model     = $this->form->getModel();
+			$relations = $model->$relation;
 
 			foreach ($relations as $item)
 			{

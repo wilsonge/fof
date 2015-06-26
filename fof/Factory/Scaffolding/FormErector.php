@@ -28,7 +28,7 @@ class FormErector extends BaseErector implements ErectorInterface
 
 
 		// Create the fieldset sections of the form file
-		$labelKey = $this->getLangKeyPrefix() . '_GROUP_BASIC';
+		$labelKey = $this->getLangKeyPrefix() . 'GROUP_BASIC';
 		$this->addString($labelKey, 'Basic');
 
 		$fieldSet = $this->xml->addChild('fieldset');
