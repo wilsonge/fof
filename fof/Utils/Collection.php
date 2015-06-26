@@ -546,6 +546,18 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate, JsonSeria
 	}
 
 	/**
+	 * Resets the Collection (removes all items)
+	 *
+	 * @return  Collection
+	 */
+	public function reset()
+	{
+		$this->items = array();
+
+		return $this;
+	}
+
+	/**
 	 * Transform each item in the collection using a callback.
 	 *
 	 * @param  callable $callback
