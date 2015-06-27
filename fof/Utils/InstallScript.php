@@ -1538,7 +1538,7 @@ class InstallScript
 		$extension_id = array_shift($ids);
 
 		$query = $db->getQuery(true)
-			->delete($this->postInstallationMessages)
+			->delete($db->qn('#__postinstall_messages'))
 			->where($db->qn('extension_id') . ' = ' . $db->q($extension_id));
 
 		try
