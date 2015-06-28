@@ -1704,15 +1704,7 @@ class DataModel extends Model implements \JTableInterface
 	 */
 	public function &getItemsArray($limitstart = 0, $limit = 0, $overrideLimits = false)
 	{
-		$limitstart = max($limitstart, 0);
-		$limit = max($limit, 0);
-
-		$query = $this->buildQuery($overrideLimits);
-
-		$db = $this->getDbo();
-		$db->setQuery($query, $limitstart, $limit);
-
-		$itemsTemp = $db->loadAssocList();
+		$itemsTemp = $this->getRawDataArray($limitstart, $limit, $overrideLimits);
 		$items = array();
 
 		while (!empty($itemsTemp))
@@ -1730,6 +1722,29 @@ class DataModel extends Model implements \JTableInterface
 		$this->triggerEvent('onAfterGetItemsArray', array(&$items));
 
 		return $items;
+	}
+
+	/**
+	 * Returns the raw data array, as fetched from the database, based on your currently set Model state
+	 *
+	 * @param   integer  $limitstart      How many items from the start to skip (0 = do not skip)
+	 * @param   integer  $limit           How many items to return (0 = all)
+	 * @param   bool     $overrideLimits  Set to true to override limitstart, limit and ordering
+	 *
+	 * @return  array  Array of hashed arrays
+	 */
+	public function &getRawDataArray($limitstart = 0, $limit = 0, $overrideLimits = false)
+	{
+		$limitstart = max($limitstart, 0);
+		$limit = max($limit, 0);
+
+		$query = $this->buildQuery($overrideLimits);
+
+		$db = $this->getDbo();
+		$db->setQuery($query, $limitstart, $limit);
+		$rawData = $db->loadAssocList();
+
+		return $rawData;
 	}
 
 	/**
