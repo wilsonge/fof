@@ -1,5 +1,6 @@
 FOF 3.0.0
 ================================================================================
++ CLI tool to quickly create FOF components – not included in the library ZIP package, look at https://github.com/akeeba/fof/tree/development/cli
 + Preliminary changes for PHP 7 compatibility
 + Improve performance of AccessLevel field in Browse views
 + Improve performance of Language field in Browse views
@@ -13,11 +14,19 @@ FOF 3.0.0
 + DataModel::check() set default ordering to 0 when it's NULL
 + XML forms pass the format and tmpl parameters if they are set in the request
 + Model header and form field: "with" attribute
++ DataModel: getRawDataArray() to get the raw database query results
++ DataModel\Collection: reset() allows you to clear all elements in the collection
+~ Reworked Tags field
 ~ Suppress warnings in Selectable and GenericList headers when developers provide invalid list data
 # Two Model fields on the same form would result in the wrong data being displayed
 # Typo: tdwith instead of tdwidth in Scaffolding
 # Media field: did not take `directory` attribute into account
 # Filter order and direction not passed correctly to the view
+# Calendar field type, notice thrown when the format attribute was not defined
+# InstallScript would screw up trying to remove post-installation messages resulting in removal not happening
+# Scaffolidng: some language keys had a double underscore
+# Relation field: wrong Model object instance used
+# Floating sidebar and messages didn't play along nicely
 
 FOF 3.0.0.b2
 ================================================================================
