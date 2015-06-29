@@ -19,8 +19,8 @@
     "version": "3.0.0-dev",
     "require-dev": {
 		"mikey179/vfsStream": "dev-master",
-		"phpunit/phpunit": "4.5.*",
-		"phpunit/dbunit": ">=1.2",
+		"phpunit/phpunit": "~4.5.0",
+		"phpunit/dbunit": "~1.2",
         "mockery/mockery": "0.9.4",
         "fiunchinho/phpunit-randomizer": "1.0.*@dev"
 	}
