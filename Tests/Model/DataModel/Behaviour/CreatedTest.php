@@ -54,7 +54,8 @@ class CreatedTest extends DatabaseTest
 
         $config = array(
             'idFieldName' => $test['tableid'],
-            'tableName'   => $test['table']
+            'tableName'   => $test['table'],
+            'aliasFields' => $test['aliases']
         );
 
         $platform = static::$container->platform;
