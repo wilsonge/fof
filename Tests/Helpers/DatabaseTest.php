@@ -11,6 +11,11 @@ use FOF30\Container\Container;
 
 abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 {
+    /**
+     * @var			array	The JFactory pointers saved before the execution of the test
+     */
+    protected $savedFactoryState = array();
+
 	/**
 	 * Assigns mock callbacks to methods.
 	 *
@@ -164,5 +169,41 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         {
             $platform->reset();
         }
+    }
+
+    /**
+     * Saves the Factory pointers
+     *
+     * @return void
+     */
+    protected function saveFactoryState()
+    {
+        $this->savedFactoryState['application']	 = \JFactory::$application;
+        $this->savedFactoryState['config']		 = \JFactory::$config;
+        $this->savedFactoryState['dates']		 = \JFactory::$dates;
+        $this->savedFactoryState['session']		 = \JFactory::$session;
+        $this->savedFactoryState['language']	 = \JFactory::$language;
+        $this->savedFactoryState['document']	 = \JFactory::$document;
+        $this->savedFactoryState['acl']			 = \JFactory::$acl;
+        $this->savedFactoryState['database']	 = \JFactory::$database;
+        $this->savedFactoryState['mailer']		 = \JFactory::$mailer;
+    }
+
+    /**
+     * Sets the Factory pointers
+     *
+     * @return  void
+     */
+    protected function restoreFactoryState()
+    {
+        \JFactory::$application	= $this->savedFactoryState['application'];
+        \JFactory::$config		= $this->savedFactoryState['config'];
+        \JFactory::$dates		= $this->savedFactoryState['dates'];
+        \JFactory::$session		= $this->savedFactoryState['session'];
+        \JFactory::$language	= $this->savedFactoryState['language'];
+        \JFactory::$document	= $this->savedFactoryState['document'];
+        \JFactory::$acl			= $this->savedFactoryState['acl'];
+        \JFactory::$database	= $this->savedFactoryState['database'];
+        \JFactory::$mailer		= $this->savedFactoryState['mailer'];
     }
 }
