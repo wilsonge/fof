@@ -20,6 +20,9 @@ defined('_JEXEC') or die;
  */
 class Tags extends Observer
 {
+    /** @var \JHelperTags  */
+    protected $tagsHelper;
+
 	public function __construct(Observable &$subject)
 	{
 		parent::__construct($subject);
@@ -30,8 +33,8 @@ class Tags extends Observer
 	/**
 	 * This event runs after unpublishing a record in a model
 	 *
-	 * @param   DataModel  &$model  The model which calls this event
-	 * @param   DataModel  &$data   The data to bind to the form
+	 * @param   DataModel  &$model        The model which calls this event
+	 * @param   \stdClass  &$dataObject   The data to bind to the form
 	 *
 	 * @return  void
 	 */
@@ -45,8 +48,8 @@ class Tags extends Observer
 	/**
 	 * This event runs after unpublishing a record in a model
 	 *
-	 * @param   DataModel  &$model  The model which calls this event
-	 * @param   DataModel  &$data   The data to bind to the form
+	 * @param   DataModel  &$model        The model which calls this event
+	 * @param   \stdClass  &$dataObject   The data to bind to the form
 	 *
 	 * @return  void
 	 */
