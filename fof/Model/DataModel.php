@@ -1348,7 +1348,7 @@ class DataModel extends Model implements \JTableInterface
 
 			if (($field->Null == 'NO') && empty($value) && !is_numeric($value) && !in_array($fieldName, $this->fieldsSkipChecks))
 			{
-				if ($field->Default)
+				if (!is_null($field->Default))
 				{
 					$this->$fieldName = $field->Default;
 
