@@ -190,13 +190,10 @@ class DataController extends Controller
 		// Alter the task based on the verb
 		switch ($requestMethod)
 		{
-			// POST and PUT result in a record being saved, as long as there is an ID
+			// POST and PUT result in a record being saved; no ID means creating a new record
 			case 'POST':
 			case 'PUT':
-				if ($id)
-				{
-					$task = 'save';
-				}
+				$task = 'save';
 				break;
 
 			// DELETE results in a record being deleted, as long as there is an ID
