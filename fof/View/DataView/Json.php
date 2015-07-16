@@ -281,6 +281,16 @@ class Json extends Raw implements DataViewInterface
 	}
 
 	/**
+	 * The event which runs when we are displaying a single item JSON view
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 */
+	protected function onAfterSave($tpl = null)
+	{
+		self::onBeforeRead($tpl);
+	}
+	
+	/**
 	 * Creates a \FOF30\Hal\Document using the provided data
 	 *
 	 * @param   mixed|array  $data   The data to put in the document

@@ -146,7 +146,23 @@ class DataController extends Controller
 			$task = $this->getCrudTask();
 		}
 
-		return parent::execute($task);
+		$ret = parent::execute($task);
+
+		// JSON shouldn't have redirects
+		if ($this->hasRedirect() && $this->input->getCmd('format', 'html') == 'json') {
+			// Error: deal with it in REST api way
+			if ($this->messageType == 'error') {
+				$response = new \JResponseJson($this->message, $this->message, true);
+				echo $response;
+				return $ret;
+			} else {
+				// Not an error, avoid redirect and display the record(s)
+				$this->redirect = false;
+				return $this->display();
+			}
+		}
+
+		return $ret;
 	}
 
 	/**
