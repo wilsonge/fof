@@ -43,6 +43,9 @@ class TestJoomlaPlatform extends PlatformJoomla
     /** @var \Closure Supply a closure to perform additional checks */
     public static $runPlugins = null;
 
+    /** @var  \Closure Supply a closure to mock the language object */
+    public static $language;
+
     /**
      * Resets all the mock variables to their default value
      */
@@ -164,5 +167,15 @@ class TestJoomlaPlatform extends PlatformJoomla
         }
 
         return parent::runPlugins($event, $data);
+    }
+
+    public function getLanguage()
+    {
+        if(is_callable(static::$language))
+        {
+            return call_user_func(static::$language);
+        }
+
+        return parent::getLanguage();
     }
 }

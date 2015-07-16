@@ -40,8 +40,6 @@ class Language extends Observer
 			$model->blacklistFilters('language');
 		}
 
-		$platform = $model->getContainer()->platform;
-
 		// Make sure the field actually exists
 		if (!$model->hasField('language'))
 		{
@@ -75,11 +73,14 @@ class Language extends Observer
 		if ($lang_filter_params->get('remove_default_prefix'))
 		{
 			// Get default site language
-			$lg = $platform->getLanguage();
+            $platform    = $model->getContainer()->platform;
+			$lg          = $platform->getLanguage();
 			$languages[] = $lg->getTag();
 		}
 		else
 		{
+            // We have to use JInput since the language fragment is not set in the $_REQUEST, thus we won't have it in our model
+            // TODO Double check the previous assumption
 			$languages[] = \JFactory::getApplication()->input->getCmd('language', '*');
 		}
 
