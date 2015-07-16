@@ -1436,7 +1436,7 @@ class DataModel extends Model implements \JTableInterface
 					->select($db->qn($k) . ', ' . $db->qn($order_field))
 					->from($db->qn($this->getTableName()))
 					->where($db->qn($order_field) . ' >= ' . $db->q(0))
-					->order($db->qn($order_field));
+					->order($db->qn($order_field) . 'ASC, ' . $db->qn($k) . 'ASC');
 
 		// Setup the extra where and ordering clause data.
 		if ($where)
