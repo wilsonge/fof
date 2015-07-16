@@ -21,6 +21,9 @@ defined('_JEXEC') or die;
  */
 class Language extends Observer
 {
+    /** @var  \PlgSystemLanguageFilter */
+    protected $lang_filter_plugin;
+
 	/**
 	 * This event runs before we have built the query used to fetch a record
 	 * list in a model. It is used to blacklist the language filter
@@ -59,8 +62,13 @@ class Language extends Observer
 			return;
 		}
 
-		$lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
-		$lang_filter_params = new \JRegistry($lang_filter_plugin->params);
+        // Ask Joomla for the plugin only if we don't already have it. Useful for tests
+        if(!$this->lang_filter_plugin)
+        {
+            $this->lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
+        }
+
+		$lang_filter_params = new \JRegistry($this->lang_filter_plugin->params);
 
 		$languages = array('*');
 
@@ -124,8 +132,13 @@ class Language extends Observer
 			return;
 		}
 
-		$lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
-		$lang_filter_params = new \JRegistry($lang_filter_plugin->params);
+        // Ask Joomla for the plugin only if we don't already have it. Useful for tests
+        if(!$this->lang_filter_plugin)
+        {
+            $this->lang_filter_plugin = \JPluginHelper::getPlugin('system', 'languagefilter');
+        }
+
+		$lang_filter_params = new \JRegistry($this->lang_filter_plugin->params);
 
 		$languages = array('*');
 
