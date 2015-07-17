@@ -805,6 +805,20 @@ class Toolbar
 	}
 
 	/**
+	* Simplified default rendering without any attributes.
+	*
+	* @access	protected
+	* @param	array	$tasks	Array of tasks.
+	*
+	* @return	void
+	*/
+	protected function renderToolbarElements($tasks)
+	{
+		foreach($tasks as $task)
+			$this->renderToolbarElement($task);
+	}
+
+	/**
 	 * Render a toolbar element.
 	 *
 	 * @param   string  $type        The element type.
