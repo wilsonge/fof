@@ -340,10 +340,17 @@ class Controller
 			throw new TaskNotFound(\JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
 		}
 
+		$result = $this->triggerEvent('onBeforeExecute', array(&$task));
+
+		if ($result === false)
+		{
+			return false;
+		}
+
 		$eventName = 'onBefore' . ucfirst($task);
 		$result = $this->triggerEvent($eventName);
 
-		if (!$result)
+		if ($result === false)
 		{
 			return false;
 		}
@@ -370,7 +377,14 @@ class Controller
 		$eventName = 'onAfter' . ucfirst($task);
 		$result = $this->triggerEvent($eventName);
 
-		if (!$result)
+		if ($result === false)
+		{
+			return false;
+		}
+
+		$result = $this->triggerEvent('onAfterExecute', array($task));
+
+		if ($result === false)
 		{
 			return false;
 		}

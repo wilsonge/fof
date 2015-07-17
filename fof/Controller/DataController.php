@@ -150,6 +150,34 @@ class DataController extends Controller
 	}
 
 	/**
+	 * Deal with JSON format: no redirects needed
+	 * @param  string $task The task being executed
+	 * @return boolean      True if everything went well
+	 */
+	protected function onAfterExecute($task)
+	{
+		// JSON shouldn't have redirects
+		if ($this->hasRedirect() && $this->input->getCmd('format', 'html') == 'json') {
+			// Error: deal with it in REST api way
+			if ($this->messageType == 'error') {
+				$response = new \JResponseJson($this->message, $this->message, true);
+				
+				echo $response;
+
+				$this->redirect = false;
+				$this->container->platform->setHeader('Status', 500);
+				return;
+			} else {
+				// Not an error, avoid redirect and display the record(s)
+				$this->redirect = false;
+				return $this->display();
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Determines the CRUD task to use based on the view name and HTTP verb used in the request.
 	 *
 	 * @return  string  The CRUD task (browse, read, edit, delete)
