@@ -257,6 +257,81 @@ class FormTest extends FOFTestCase
 
     /**
      * @group           Form
+     * @group           FormGetHeaderset
+     * @covers          FOF30\Form\Form::getHeaderset
+     * @dataProvider    FormDataprovider::getTestGetHeaderset
+     */
+    public function testGetHeaderset($test, $check)
+    {
+        $msg     = 'Form::getHeaderset %s - Case: '.$check['case'];
+        $checker = array();
+
+        $groups = array();
+
+        // phpUnit will try to serialize the data passed from the Dataprovider, sadly SimpleXML doesn't allow
+        // to do that, so I have to load it directly here
+        if($test['mock']['groups'])
+        {
+            $xml = simplexml_load_file(JPATH_TESTS.'/_data/form/form.default.xml');
+            $groups = $xml->xpath('//header');
+        }
+
+        $form = $this->getMock('FOF30\Form\Form', array('findHeadersByGroup', 'loadHeader'), array(static::$container, 'Foobar'));
+        $form->method('findHeadersByGroup')->willReturn($groups);
+        $form->method('loadHeader')->willReturnCallback(function($element, $group) use (&$test, &$checker){
+            $checker[] = $group;
+            return array_shift($test['mock']['header']);
+        });
+
+        $fields = $form->getHeaderset();
+
+        $this->assertEquals($check['header'], $checker, sprintf($msg, 'Failed to correctly build the header group'));
+        $this->assertEquals($check['fields'], $fields, sprintf($msg, 'Returned the wrong value'));
+    }
+
+    /**
+     * @group           Form
+     * @group           FormGetHeader
+     * @covers          FOF30\Form\Form::getHeader
+     * @dataProvider    FormDataprovider::getTestGetHeader
+     */
+    public function testGetHeader($test, $check)
+    {
+        $msg = 'Form::getHeader %s - Case: '.$check['case'];
+
+        $form = $this->getMock('FOF30\Form\Form', array('findHeader', 'loadHeader'), array(static::$container, 'Foobar'));
+        $form->method('findHeader')->willReturn($test['mock']['find']);
+        $form->method('loadHeader')->willReturn('mocked');
+
+        if($test['load'])
+        {
+            $form->loadFile(JPATH_TESTS.'/_data/form/form.default.xml');
+        }
+
+        $result = $form->getHeader('foobar');
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           Form
+     * @group           FormLoadClass
+     * @covers          FOF30\Form\Form::loadClass
+     * @dataProvider    FormDataprovider::getTestLoadClass
+     */
+    /*public function testLoadClass($test, $check)
+    {
+        $msg = 'Form::loadClass %s - Case: '.$check['case'];
+
+        $form = new Form(static::$container, 'Foobar');
+
+        $class = $form->loadClass($test['entity'], $test['type']);
+
+        $this->assertEquals($check['result'], $class, sprintf($msg, 'Returned the wrong result'));
+    }*/
+
+    /**
+     * @group           Form
      * @group           FormSetContainer
      * @covers          FOF30\Form\Form::setContainer
      */

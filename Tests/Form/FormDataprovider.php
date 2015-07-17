@@ -198,4 +198,113 @@ class FormDataprovider
 
         return $data;
     }
+
+    public function getTestGetHeaderset()
+    {
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'groups' => false,
+                    'header' => array()
+                )
+            ),
+            'check' => array(
+                'case' => 'There are no header fields',
+                'header' => array(),
+                'fields' => array()
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'groups' => true,
+                    'header' => array(
+                        (object)array('id' => 1),
+                        (object)array('id' => 2),
+                        (object)array('id' => 3),
+                        (object)array('id' => 4),
+                        (object)array('id' => 5),
+                        (object)array('id' => 6),
+                        (object)array('id' => 7),
+                    )
+                )
+            ),
+            'check' => array(
+                'case' => 'There are no header fields',
+                'header' => array('headers','headers','headers','headers','headers','headers','headers'),
+                'fields' => array(
+                    1 => (object)array('id' => 1),
+                    2 => (object)array('id' => 2),
+                    3 => (object)array('id' => 3),
+                    4 => (object)array('id' => 4),
+                    5 => (object)array('id' => 5),
+                    6 => (object)array('id' => 6),
+                    7 => (object)array('id' => 7),
+                )
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestGetHeader()
+    {
+        $data[] = array(
+            'input' => array(
+                'load' => false,
+                'mock' => array(
+                    'find' => array()
+                )
+            ),
+            'check' => array(
+                'case' => 'XML form not loaded',
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'load' => true,
+                'mock' => array(
+                    'find' => array()
+                )
+            ),
+            'check' => array(
+                'case' => 'Empty header',
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'load' => true,
+                'mock' => array(
+                    'find' => array('dummy')
+                )
+            ),
+            'check' => array(
+                'case' => 'Everything is ok',
+                'result' => 'mocked'
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestLoadClass()
+    {
+        $data[] = array(
+            'input' => array(
+                'entity' => '',
+                'type'   => ''
+            ),
+            'check' => array(
+                'case'   => '',
+                'result' => ''
+            )
+        );
+
+        return $data;
+    }
 }
