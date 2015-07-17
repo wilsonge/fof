@@ -146,15 +146,32 @@ class DataController extends Controller
 			$task = $this->getCrudTask();
 		}
 
+		$result = $this->triggerEvent('onBeforeExecute', array(&$task));
+
 		$ret = parent::execute($task);
 
+		if ($ret)
+		{
+			$result = $this->triggerEvent('onAfterExecute', array($task));
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Deal with JSON format: no redirects needed
+	 * @param  string $task The task being executed
+	 * @return boolean      True if everything went well
+	 */
+	protected function onAfterExecute($task)
+	{
 		// JSON shouldn't have redirects
 		if ($this->hasRedirect() && $this->input->getCmd('format', 'html') == 'json') {
 			// Error: deal with it in REST api way
 			if ($this->messageType == 'error') {
 				$response = new \JResponseJson($this->message, $this->message, true);
 				echo $response;
-				return $ret;
+				return true;
 			} else {
 				// Not an error, avoid redirect and display the record(s)
 				$this->redirect = false;
@@ -162,7 +179,7 @@ class DataController extends Controller
 			}
 		}
 
-		return $ret;
+		return true;
 	}
 
 	/**
