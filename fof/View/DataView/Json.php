@@ -188,6 +188,25 @@ class Json extends Raw implements DataViewInterface
 	 */
 	protected function onBeforeRead($tpl = null)
 	{
+		self::renderSingleItem($tpl);
+	}
+
+	/**
+	 * The event which runs when we are displaying a single item JSON view
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 */
+	protected function onAfterSave($tpl = null)
+	{
+		self::renderSingleItem($tpl);
+	}
+
+	/**
+	 * Renders a single item JSON view
+	 *
+	 * @param   string  $tpl  The view sub-template to use
+	 */
+	protected function renderSingleItem($tpl) {
 		// Load the model
 		/** @var DataModel $model */
 		$model = $this->getModel();
@@ -278,16 +297,6 @@ class Json extends Raw implements DataViewInterface
 		{
 			echo $result;
 		}
-	}
-
-	/**
-	 * The event which runs when we are displaying a single item JSON view
-	 *
-	 * @param   string  $tpl  The view sub-template to use
-	 */
-	protected function onAfterSave($tpl = null)
-	{
-		self::onBeforeRead($tpl);
 	}
 	
 	/**
