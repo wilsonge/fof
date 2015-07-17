@@ -72,15 +72,15 @@ class ToolbarTest extends FOFTestCase
         $msg = 'Toolbar::renderToolbar %s - Case: '.$check['case'];
 
         $controller = $this->getMock('\FOF30\Tests\Stubs\Controller\ControllerStub', array('getName', 'getTask'), array(static::$container));
-        $controller->expects($this->any())->method('getName')->willReturn($test['mock']['getName']);
-        $controller->expects($this->any())->method('getTask')->willReturn($test['mock']['getTask']);
+        $controller->method('getName')->willReturn($test['mock']['getName']);
+        $controller->method('getTask')->willReturn($test['mock']['getTask']);
 
         $dispacher = $this->getMock('FOF30\Dispatcher\Dispatcher', array('getController'), array(static::$container));
-        $dispacher->expects($this->any())->method('getController')
+        $dispacher->method('getController')
             ->willReturn($test['mock']['getController'] ? $controller : null);
 
         $appConfig = $this->getMock('FOF30\Configuration\Configuration', array('get'), array(), '', false);
-	    $appConfig->expects($this->any())->method('get')->willReturnCallback(function ($something) use ($test, $check) {
+	    $appConfig->method('get')->willReturnCallback(function ($something) use ($test, $check) {
 		    if (strrpos($something, 'renderFrontendButtons') !== false)
 		    {
 			    return false;
@@ -124,7 +124,7 @@ class ToolbarTest extends FOFTestCase
 
         $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('renderSubmenu', 'isDataView'), array(static::$container));
         $toolbar->expects($check['submenu'] ? $this->once() : $this->never())->method('renderSubmenu');
-        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+        $toolbar->method('isDataView')->willReturn($test['mock']['dataView']);
 
         ReflectionHelper::setValue($toolbar, 'renderFrontendSubmenu', $test['submenu']);
         ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
@@ -179,7 +179,7 @@ class ToolbarTest extends FOFTestCase
 
         $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('renderSubmenu', 'isDataView'), array($container));
         $toolbar->expects($check['submenu'] ? $this->once() : $this->never())->method('renderSubmenu');
-        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+        $toolbar->method('isDataView')->willReturn($test['mock']['dataView']);
 
         ReflectionHelper::setValue($toolbar, 'renderFrontendSubmenu', $test['submenu']);
         ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
@@ -207,7 +207,7 @@ class ToolbarTest extends FOFTestCase
 
         $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('renderSubmenu', 'isDataView'), array(static::$container));
         $toolbar->expects($check['submenu'] ? $this->once() : $this->never())->method('renderSubmenu');
-        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+        $toolbar->method('isDataView')->willReturn($test['mock']['dataView']);
 
         ReflectionHelper::setValue($toolbar, 'renderFrontendSubmenu', $test['submenu']);
         ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
@@ -233,7 +233,7 @@ class ToolbarTest extends FOFTestCase
         $platform::$isAdmin = $test['mock']['isAdmin'];
 
         $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('isDataView'), array(static::$container));
-        $toolbar->expects($this->any())->method('isDataView')->willReturn($test['mock']['dataView']);
+        $toolbar->method('isDataView')->willReturn($test['mock']['dataView']);
 
         ReflectionHelper::setValue($toolbar, 'renderFrontendButtons', $test['buttons']);
         ReflectionHelper::setValue($toolbar, 'perms', (object) $test['perms']);
@@ -342,8 +342,8 @@ class ToolbarTest extends FOFTestCase
         ));
 
         $toolbar = $this->getMock('FOF30\Tests\Stubs\Toolbar\ToolbarStub', array('getMyViews', 'appendLink'), array($container));
-        $toolbar->expects($this->any())->method('getMyViews')->willReturn($test['myviews']);
-        $toolbar->expects($this->any())->method('appendLink')
+        $toolbar->method('getMyViews')->willReturn($test['myviews']);
+        $toolbar->method('appendLink')
             ->willReturnCallback(function($name, $link, $active) use(&$checker){
                 $checker[] = array($name, $link, $active);
         });
@@ -416,7 +416,7 @@ class ToolbarTest extends FOFTestCase
         $TestContainer = static::$container;
 
         $controller = $this->getMock('\FOF30\Tests\Stubs\Controller\ControllerStub', array('getView'), array(static::$container));
-        $controller->expects($this->any())->method('getView')->willReturnCallback(function() use ($test, $TestContainer){
+        $controller->method('getView')->willReturnCallback(function() use ($test, $TestContainer){
             if(!is_null($test['mock']['getView'])){
                 return new $test['mock']['getView']($TestContainer);
             }
@@ -425,7 +425,7 @@ class ToolbarTest extends FOFTestCase
         });
 
         $dispacher = $this->getMock('FOF30\Dispatcher\Dispatcher', array('getController'), array(static::$container));
-        $dispacher->expects($this->any())->method('getController')
+        $dispacher->method('getController')
             ->willReturn($test['mock']['getController'] ? $controller : null);
 
         $container = new TestContainer(array(

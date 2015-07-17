@@ -62,7 +62,7 @@ class ModifiedTest extends DatabaseTest
         $platform::$user = (object)array('id' => 99);
 
         $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('isLocked'), array(static::$container, $config));
-        $model->expects($this->any())->method('isLocked')->willReturn($test['locked']);
+        $model->method('isLocked')->willReturn($test['locked']);
         $dataObject = new \stdClass();
 
         // Let's set some values inside the model

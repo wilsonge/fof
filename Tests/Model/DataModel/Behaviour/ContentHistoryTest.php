@@ -39,7 +39,7 @@ class ContentHistoryTest extends DatabaseTest
         );
 
         $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'checkContentType'), array(static::$container, $config));
-        $model->expects($this->any())->method('getContentType')->willReturn('com_foftest');
+        $model->method('getContentType')->willReturn('com_foftest');
 
         $dispatcher = $model->getBehavioursDispatcher();
         $behavior   = new ContentHistory($dispatcher);
@@ -81,7 +81,7 @@ class ContentHistoryTest extends DatabaseTest
         );
 
         $model = $this->getMock('\FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType', 'checkContentType'), array(static::$container, $config));
-        $model->expects($this->any())->method('getContentType')->willReturn('com_foftest');
+        $model->method('getContentType')->willReturn('com_foftest');
 
         $dispatcher = $model->getBehavioursDispatcher();
         $behavior   = new ContentHistory($dispatcher);

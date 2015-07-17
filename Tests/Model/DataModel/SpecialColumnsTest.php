@@ -238,7 +238,7 @@ class DataModelSpecialColumnsTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array($container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array($container));
@@ -317,7 +317,7 @@ class DataModelSpecialColumnsTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config, $methods));
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('getId')->willReturn(1);
 
         // Let's mock the dispatcher, too. So I can check if events are really triggered
         $dispatcher = $this->getMock('\\FOF30\\Event\\Dispatcher', array('trigger'), array(static::$container));
@@ -393,8 +393,8 @@ class DataModelSpecialColumnsTest extends DatabaseTest
         );
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('save', 'getId'), array(static::$container, $config));
-        $model->expects($this->any())->method('save')->willReturn(null);
-        $model->expects($this->any())->method('getId')->willReturn(1);
+        $model->method('save')->willReturn(null);
+        $model->method('getId')->willReturn(1);
 
         $result = $model->touch($test['user_id']);
 
@@ -462,8 +462,8 @@ class DataModelSpecialColumnsTest extends DatabaseTest
 
         $model = $this->getMock('\\FOF30\\Tests\\Stubs\\Model\\DataModelStub', array('unlock', 'isAssetsTracked', 'getAssetKey'), array($container, $config));
         $model->expects($check['unlock'] ? $this->once() : $this->never())->method('unlock')->willReturnSelf();
-        $model->expects($this->any())->method('isAssetsTracked')->willReturn($test['mock']['assetsTracked']);
-        $model->expects($this->any())->method('getAssetKey')->willReturn('foobars.dummy');
+        $model->method('isAssetsTracked')->willReturn($test['mock']['assetsTracked']);
+        $model->method('getAssetKey')->willReturn('foobars.dummy');
 
         if($check['exception'])
         {

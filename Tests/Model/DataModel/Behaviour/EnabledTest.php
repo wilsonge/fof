@@ -61,7 +61,7 @@ class EnabledTest extends DatabaseTest
 
         $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('reset', 'getFieldValue'), array(static::$container, $config));
         $model->expects($check['reset'] ? $this->once() : $this->never())->method('reset');
-        $model->expects($this->any())->method('getFieldValue')->willReturn($test['mock']['enabled']);
+        $model->method('getFieldValue')->willReturn($test['mock']['enabled']);
 
         $dispatcher = $model->getBehavioursDispatcher();
         $behavior   = new Enabled($dispatcher);

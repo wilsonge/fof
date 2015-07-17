@@ -41,9 +41,9 @@ class DataModelMagicMethodsTest extends DatabaseTest
 
         // Setup the class but do not instantiate it, so we an mock the methods
         $model = $this->getMock('FOF30\\Model\\DataModel', array('getName', 'addBehaviour', 'getState'), array(), '', false);
-        $model->expects($this->any())->method('getName')->willReturn('test');
+        $model->method('getName')->willReturn('test');
         $model->expects($this->exactly($check['addBehaviour']))->method('addBehaviour');
-        $model->expects($this->any())->method('getState')->willReturnCallback(function($field) use ($test){
+        $model->method('getState')->willReturnCallback(function($field) use ($test){
             if(isset($test['mock']['state'][$field])){
                 return $test['mock']['state'][$field];
             }

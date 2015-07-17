@@ -114,7 +114,7 @@ class FOFTestCase extends ApplicationTestCase
 				$callback	 = array(get_called_class(), 'mock' . $method);
 			}
 
-			$mockObject->expects($this->any())
+			$mockObject
 				->method($methodName)
 				->will($this->returnCallback($callback));
 		}
@@ -133,7 +133,7 @@ class FOFTestCase extends ApplicationTestCase
 	{
 		foreach ($array as $method => $return)
 		{
-			$mockObject->expects($this->any())
+			$mockObject
 				->method($method)
 				->will($this->returnValue($return));
 		}

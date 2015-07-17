@@ -128,7 +128,7 @@ class TagsTest extends DatabaseTest
         );
 
         $model = $this->getMock('FOF30\Tests\Stubs\Model\DataModelStub', array('getContentType'), array(static::$container, $config));
-        $model->expects($this->any())->method('getContentType')->willReturn('com_foftest.foobars');
+        $model->method('getContentType')->willReturn('com_foftest.foobars');
 
         $fakeHelper = new ClosureHelper(array(
             'deleteTagData' => function() use($test){ return $test['mock']['delete'];}

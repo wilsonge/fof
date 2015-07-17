@@ -50,21 +50,20 @@ class ObserverTest extends FOFTestCase
 			->getMock();
 
 		$this->dispatcher
-			->expects($this->any())
+
 			->method('attach')
 			->will($this->returnCallback(function($arg){
 				ObserverTest::$attachArguments = $arg;
 			}));
 
 		$this->dispatcher
-			->expects($this->any())
+
 			->method('detach')
 			->willReturnSelf();
 
 		$this->dispatcher
-			->expects($this->any())
+
 			->method('trigger')
 			->willReturn(array());
 	}
 }
- 

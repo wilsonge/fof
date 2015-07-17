@@ -299,7 +299,7 @@ class ViewTest extends FOFTestCase
         }
 
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadTemplate', 'preRender'), array(static::$container, array(), $methods));
-        $view->expects($this->any())->method('preRender')->willReturnCallback(function() use($test){
+        $view->method('preRender')->willReturnCallback(function() use($test){
             echo $test['mock']['pre'];
         });
 
@@ -351,8 +351,8 @@ class ViewTest extends FOFTestCase
         $msg = 'View::loadTemplate %s - Case: '.$check['case'];
 
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('loadAnyTemplate', 'getLayout'), array(static::$container));
-        $view->expects($this->any())->method('getLayout')->willReturn($test['mock']['layout']);
-        $view->expects($this->any())->method('loadAnyTemplate')->willReturnCallback(
+        $view->method('getLayout')->willReturn($test['mock']['layout']);
+        $view->method('loadAnyTemplate')->willReturnCallback(
             function() use (&$test){
                 $result = array_shift($test['mock']['any']);
 
@@ -396,7 +396,7 @@ class ViewTest extends FOFTestCase
             array('getEngine', 'incrementRender', 'decrementRender', 'flushSectionsIfDoneRendering'),
             array(static::$container));
 
-        $view->expects($this->any())->method('getEngine')->willReturn(new ClosureHelper(array(
+        $view->method('getEngine')->willReturn(new ClosureHelper(array(
             'get' => function() use($test){
                 return $test['mock']['engineGet'];
             }
@@ -686,7 +686,7 @@ class ViewTest extends FOFTestCase
     public function testFlushSectionsIfDoneRendering($test, $check)
     {
         $view = $this->getMock('\\FOF30\\Tests\\Stubs\\View\\ViewStub', array('doneRendering', 'flushSections'), array(static::$container));
-        $view->expects($this->any())->method('doneRendering')->willReturn($test['mock']['done']);
+        $view->method('doneRendering')->willReturn($test['mock']['done']);
         $view->expects($check['flush'] ? $this->once() : $this->never())->method('flushSections');
 
         $view->flushSectionsIfDoneRendering();
