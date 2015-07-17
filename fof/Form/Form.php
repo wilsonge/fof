@@ -376,7 +376,7 @@ class Form extends JForm
 	 *
 	 * @param   string $name  The name of the header field.
 	 * @param   string $group The optional dot-separated form group path on which to find the field.
-	 * @param   mixed  $value The optional value to use as the default for the field.
+	 * @param   mixed  $value The optional value to use as the default for the field. (DEPRECATED)
 	 *
 	 * @return  HeaderInterface|bool  The HeaderInterface object for the field or boolean false on error.
 	 *
@@ -399,7 +399,7 @@ class Form extends JForm
 			return false;
 		}
 
-		return $this->loadHeader($element, $group, $value);
+		return $this->loadHeader($element, $group);
 	}
 
 	/**
