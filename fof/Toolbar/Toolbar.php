@@ -805,6 +805,20 @@ class Toolbar
 	}
 
 	/**
+	* Simplified default rendering without any attributes.
+	*
+	* @access	protected
+	* @param	array	$tasks	Array of tasks.
+	*
+	* @return	void
+	*/
+	protected function renderToolbarElements($tasks)
+	{
+		foreach($tasks as $task)
+			$this->renderToolbarElement($task);
+	}
+
+	/**
 	 * Render a toolbar element.
 	 *
 	 * @param   string  $type        The element type.
@@ -883,6 +897,7 @@ class Toolbar
 				JToolbarHelper::assign($task, $alt);
 				break;
 
+			case 'addNew':
 			case 'new':
 				$area = isset($attributes['acl']) ? $attributes['acl'] : 'create';
 
@@ -1043,7 +1058,7 @@ class Toolbar
 
 				if ($this->checkACL($area))
 				{
-					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
+					$task = isset($attributes['task']) ? $attributes['task'] : 'trash';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
 					$check = isset($attributes['check']) ?
 						StringHelper::toBool($attributes['check']) : true;
