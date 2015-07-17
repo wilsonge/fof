@@ -278,7 +278,7 @@ class Form extends JForm
 		foreach ($elements as $element)
 		{
 			// Get the field groups for the element.
-			$attrs = $element->xpath('ancestor::headers[@name]/@name');
+			$attrs = $element->xpath('ancestor::headerset[@name]/@name');
 			$groups = array_map('strval', $attrs ? $attrs : array());
 			$group = implode('.', $groups);
 
