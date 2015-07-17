@@ -205,6 +205,7 @@ class Model extends GenericList implements FieldInterface
 			// Initialize some field attributes.
 			$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
 			$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
+			$valueReplace = $this->element['parse_value'] ? (string) $this->element['parse_value'] : false;
 			$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
 			$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
 			$modelName = (string) $this->element['model'];
@@ -289,7 +290,16 @@ class Model extends GenericList implements FieldInterface
 					}
 					else
 					{
-						$options[] = JHtml::_('select.option', $item->$key, $item->$value);
+						if ($valueReplace)
+						{
+							$text = $this->parseFieldTags($value, $item);
+						}
+						else
+						{
+							$text = $item->$value;
+						}
+
+						$options[] = JHtml::_('select.option', $item->$key, $text);
 					}
 				}
 			}
@@ -310,9 +320,14 @@ class Model extends GenericList implements FieldInterface
 	 *
 	 * @return  string         Text with tags replace
 	 */
-	protected function parseFieldTags($text)
+	protected function parseFieldTags($text, $item = null)
 	{
 		$ret = $text;
+
+		if ($item)
+		{
+			$this->item = $item;
+		}
 
 		// Replace [ITEM:ID] in the URL with the item's key value (usually:
 		// the auto-incrementing numeric ID)
