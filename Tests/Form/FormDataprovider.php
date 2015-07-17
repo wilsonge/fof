@@ -26,4 +26,176 @@ class FormDataprovider
 
         return $data;
     }
+
+    public static function getTestLoadCSSFiles()
+    {
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'attributes' => array()
+                )
+            ),
+            'check' => array(
+                'case' => 'There are no files to add',
+                'view' => array(
+                    'css'  => array(),
+                    'less' => array()
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'attributes' => array(
+                        'cssfiles'  => 'path/to/file.css',
+                        'lessfiles' => 'path/to/file.less'
+                    )
+                )
+            ),
+            'check' => array(
+                'case' => 'CSS and LESS files',
+                'view' => array(
+                    'css'  => array('path/to/file.css'),
+                    'less' => array(
+                        array('path/to/file.less', null)
+                    )
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'attributes' => array(
+                        'cssfiles'  => 'path/to/file.css',
+                        'lessfiles' => 'path/to/file.less'
+                    )
+                )
+            ),
+            'check' => array(
+                'case' => 'CSS and LESS files',
+                'view' => array(
+                    'css'  => array('path/to/file.css'),
+                    'less' => array(
+                        array('path/to/file.less', null)
+                    )
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'attributes' => array(
+                        'cssfiles'  => 'path/to/file.css, path/to/file2.css',
+                        'lessfiles' => 'path/to/file.less||alt.css, path/to/file2.less'
+                    )
+                )
+            ),
+            'check' => array(
+                'case' => 'Multiple CSS and LESS files',
+                'view' => array(
+                    'css'  => array('path/to/file.css', 'path/to/file2.css'),
+                    'less' => array(
+                        array('path/to/file.less', 'alt.css'),
+                        array('path/to/file2.less', null),
+                    )
+                )
+            )
+        );
+
+        return $data;
+    }
+
+    public static function getTestLoadJSFiles()
+    {
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'attributes' => array()
+                )
+            ),
+            'check' => array(
+                'case' => 'There are no files to add',
+                'view' => array(
+                    'js'  => array(),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'attributes' => array(
+                        'jsfiles' => 'path/to/file.js'
+                    )
+                )
+            ),
+            'check' => array(
+                'case' => 'Single JS file to add',
+                'view' => array(
+                    'js'  => array(
+                        'path/to/file.js'
+                    ),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'mock' => array(
+                    'attributes' => array(
+                        'jsfiles' => 'path/to/file.js, path/to/file2.js'
+                    )
+                )
+            ),
+            'check' => array(
+                'case' => 'Multiple JS files to add',
+                'view' => array(
+                    'js'  => array(
+                        'path/to/file.js',
+                        'path/to/file2.js'
+                    ),
+                )
+            )
+        );
+
+        return $data;
+    }
+
+    public function getTestLoadFile()
+    {
+        $data[] = array(
+            'input' => array(
+                'file' => 'nothere.xml'
+            ),
+            'check' => array(
+                'case' => 'File does not exists',
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'file' => JPATH_TESTS
+            ),
+            'check' => array(
+                'case' => 'Path is a directory',
+                'result' => false
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'file' => JPATH_TESTS.'/_data/form/form.default.xml'
+            ),
+            'check' => array(
+                'case' => 'Path is correct',
+                'result' => true
+            )
+        );
+
+        return $data;
+    }
 }
