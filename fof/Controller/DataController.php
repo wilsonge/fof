@@ -161,8 +161,12 @@ class DataController extends Controller
 			// Error: deal with it in REST api way
 			if ($this->messageType == 'error') {
 				$response = new \JResponseJson($this->message, $this->message, true);
+				
 				echo $response;
-				return true;
+
+				$this->redirect = false;
+				$this->container->platform->setHeader('Status', 500);
+				return;
 			} else {
 				// Not an error, avoid redirect and display the record(s)
 				$this->redirect = false;

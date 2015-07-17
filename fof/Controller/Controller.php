@@ -342,10 +342,15 @@ class Controller
 
 		$result = $this->triggerEvent('onBeforeExecute', array(&$task));
 
+		if ($result === false)
+		{
+			return false;
+		}
+
 		$eventName = 'onBefore' . ucfirst($task);
 		$result = $this->triggerEvent($eventName);
 
-		if (!$result)
+		if ($result === false)
 		{
 			return false;
 		}
@@ -372,14 +377,14 @@ class Controller
 		$eventName = 'onAfter' . ucfirst($task);
 		$result = $this->triggerEvent($eventName);
 
-		if (!$result)
+		if ($result === false)
 		{
 			return false;
 		}
 
 		$result = $this->triggerEvent('onAfterExecute', array($task));
 
-		if (!$result)
+		if ($result === false)
 		{
 			return false;
 		}
