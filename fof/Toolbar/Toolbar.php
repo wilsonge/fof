@@ -883,6 +883,7 @@ class Toolbar
 				JToolbarHelper::assign($task, $alt);
 				break;
 
+			case 'addNew':
 			case 'new':
 				$area = isset($attributes['acl']) ? $attributes['acl'] : 'create';
 
