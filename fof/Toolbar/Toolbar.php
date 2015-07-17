@@ -1044,7 +1044,7 @@ class Toolbar
 
 				if ($this->checkACL($area))
 				{
-					$task = isset($attributes['task']) ? $attributes['task'] : 'remove';
+					$task = isset($attributes['task']) ? $attributes['task'] : 'trash';
 					$alt = isset($attributes['alt']) ? $attributes['alt'] : 'JTOOLBAR_TRASH';
 					$check = isset($attributes['check']) ?
 						StringHelper::toBool($attributes['check']) : true;
