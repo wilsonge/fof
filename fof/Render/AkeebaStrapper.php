@@ -703,7 +703,9 @@ HTML;
 		// Get and output the sidebar, if present
 		$sidebar = \JHtmlSidebar::render();
 
-		if ($show_filters && !empty($sidebar))
+		if ($show_filters && !empty($sidebar)
+			&& (!$this->container->platform->isFrontend() || $this->container->toolbar->getRenderFrontendSubmenu())
+		)
 		{
 			$html .= '<div id="j-sidebar-container" class="span2">' . "\n";
 			$html .= "\t$sidebar\n";
