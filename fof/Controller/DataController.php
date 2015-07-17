@@ -146,16 +146,7 @@ class DataController extends Controller
 			$task = $this->getCrudTask();
 		}
 
-		$result = $this->triggerEvent('onBeforeExecute', array(&$task));
-
-		$ret = parent::execute($task);
-
-		if ($ret)
-		{
-			$result = $this->triggerEvent('onAfterExecute', array($task));
-		}
-
-		return $ret;
+		return parent::execute($task);
 	}
 
 	/**
