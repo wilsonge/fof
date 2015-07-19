@@ -38,6 +38,14 @@ class Params
 	{
 		$this->container = $container;
 
+		$this->reload();
+	}
+
+	/**
+	 * Reload the params
+	 */
+	public function reload()
+	{
 		// Load the params once
 		JLoader::import('joomla.application.component.helper');
 		$this->params = JComponentHelper::getParams($this->container->componentName);
@@ -82,7 +90,13 @@ class Params
 		{
 			$this->params->set($key, $value);
 		}
+	}
 
+	/**
+	 * Actually Save the params into the db
+	 */
+	public function save()
+	{
 		$db   = $this->container->db;
 		$data = $this->params->toString();
 
