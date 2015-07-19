@@ -10,6 +10,7 @@ namespace FOF30\Container;
 use FOF30\Autoloader\Autoloader;
 use FOF30\Factory\FactoryInterface;
 use FOF30\Inflector\Inflector;
+use FOF30\Params\Params;
 use FOF30\Platform\Joomla\Filesystem as JoomlaFilesystem;
 use FOF30\Render\RenderInterface;
 use FOF30\Template\Template;
@@ -60,6 +61,7 @@ defined('_JEXEC') or die;
  * @property-read  \FOF30\Factory\FactoryInterface     $factory            The MVC object factory
  * @property-read  \FOF30\Platform\FilesystemInterface $filesystem         The filesystem abstraction layer object
  * @property-read  \FOF30\Inflector\Inflector          $inflector          The English word inflector (pluralise / singularise words etc)
+ * @property-read  \FOF30\Params\Params          	   $params             The component's params
  * @property-read  \FOF30\Input\Input                  $input              The input object
  * @property-read  \FOF30\Platform\PlatformInterface   $platform           The platform abstraction layer object
  * @property-read  \FOF30\Render\RenderInterface       $renderer           The view renderer
@@ -443,6 +445,15 @@ class Container extends ContainerBase
 				}
 
 				return new $class($c);
+			};
+		}
+
+		// Component Params service
+		if (!isset($this['params']))
+		{
+			$this['params'] = function (Container $c)
+			{
+				return new Params($c);
 			};
 		}
 
