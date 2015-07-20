@@ -296,12 +296,45 @@ class FormDataprovider
     {
         $data[] = array(
             'input' => array(
-                'entity' => '',
-                'type'   => ''
+                'entity' => 'field',
+                'type'   => 'text'
             ),
             'check' => array(
-                'case'   => '',
-                'result' => ''
+                'case'   => 'Standard FOF30 field (autoloader)',
+                'result' => 'FOF30\Form\Field\Text'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'entity' => 'field',
+                'type'   => 'calendar'
+            ),
+            'check' => array(
+                'case'   => 'Specialized FOF30 field (autoloader)',
+                'result' => 'Fakeapp\Site\Form\Field\Calendar'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'entity' => 'field',
+                'type'   => 'customfield'
+            ),
+            'check' => array(
+                'case'   => 'Custom app field (autoloader)',
+                'result' => 'Fakeapp\Site\Form\Field\Customfield'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'entity' => 'field',
+                'type'   => 'meter'
+            ),
+            'check' => array(
+                'case'   => 'Joomla field',
+                'result' => 'JFormFieldMeter'
             )
         );
 

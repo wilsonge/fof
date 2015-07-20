@@ -319,7 +319,7 @@ class FormTest extends FOFTestCase
      * @covers          FOF30\Form\Form::loadClass
      * @dataProvider    FormDataprovider::getTestLoadClass
      */
-    /*public function testLoadClass($test, $check)
+    public function testLoadClass($test, $check)
     {
         $msg = 'Form::loadClass %s - Case: '.$check['case'];
 
@@ -327,8 +327,10 @@ class FormTest extends FOFTestCase
 
         $class = $form->loadClass($test['entity'], $test['type']);
 
+        $class = trim($class, '\\');
+
         $this->assertEquals($check['result'], $class, sprintf($msg, 'Returned the wrong result'));
-    }*/
+    }
 
     /**
      * @group           Form
