@@ -151,7 +151,6 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 
 		$params = $this->getOptions();
 
-
 		if (is_null($defaultOptions))
 		{
 			$db    = $this->form->getContainer()->platform->getDbo();
@@ -165,6 +164,8 @@ class AccessLevel extends \JFormFieldAccessLevel implements FieldInterface
 			// Get the options.
 			$defaultOptions = $db->setQuery($query)->loadObjectList();
 		}
+
+        $options = $defaultOptions;
 
 		// If params is an array, push these options to the array
 		if (is_array($params))
