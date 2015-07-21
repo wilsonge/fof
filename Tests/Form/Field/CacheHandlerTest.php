@@ -2,27 +2,26 @@
 
 namespace FOF30\Tests\Form\Field;
 
-use FOF30\Form\Form;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/AccessLevelDataprovider.php';
+require_once __DIR__.'/CacheHandlerDataprovider.php';
 
 /**
- * @covers  FOF30\Form\Field\AccessLevel::<private>
- * @covers  FOF30\Form\Field\AccessLevel::<protected>
+ * @covers  FOF30\Form\Field\CacheHandler::<private>
+ * @covers  FOF30\Form\Field\CacheHandler::<protected>
  */
-class AccessLevelTest extends FOFTestCase
+class CacheHandlerLevelTest extends FOFTestCase
 {
     /**
-     * @group           Field
-     * @group           AccessLevel__get
-     * @covers          FOF30\Form\Field\AccessLevel::__get
-     * @dataProvider    AccessLevelDataprovider::getTest__get
+     * @group           CacheHandler
+     * @group           CacheHandler__get
+     * @covers          FOF30\Form\Field\CacheHandler::__get
+     * @dataProvider    CacheHandlerDataprovider::getTest__get
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\AccessLevel', array('getStatic', 'getRepeatable'));
+        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getStatic', 'getRepeatable'));
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -35,20 +34,20 @@ class AccessLevelTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
-     * @group           AccessLevelGetStatic
-     * @covers          FOF30\Form\Field\AccessLevel::getStatic
-     * @dataProvider    AccessLevelDataprovider::getTestGetStatic
+     * @group           CacheHandler
+     * @group           CacheHandlerGetStatic
+     * @covers          FOF30\Form\Field\CacheHandler::getStatic
+     * @dataProvider    CacheHandlerDataprovider::getTestGetStatic
      */
     public function testGetStatic($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\AccessLevel', array('getInput', 'getFieldContents'));
+        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getInput', 'getFieldContents'));
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('id' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="AccessLevel" name="foobar" ';
+        $data  = '<field type="CacheHandler" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -63,20 +62,20 @@ class AccessLevelTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
-     * @group           AccessLevelGetRepeatable
-     * @covers          FOF30\Form\Field\AccessLevel::getRepeatable
-     * @dataProvider    AccessLevelDataprovider::getTestGetRepeatable
+     * @group           CacheHandler
+     * @group           CacheHandlerGetRepeatable
+     * @covers          FOF30\Form\Field\CacheHandler::getRepeatable
+     * @dataProvider    CacheHandlerDataprovider::getTestGetRepeatable
      */
     public function testGetRepeatable($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\AccessLevel', array('getInput', 'getFieldContents'));
+        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getInput', 'getFieldContents'));
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('class' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="AccessLevel" name="foobar" ';
+        $data  = '<field type="CacheHandler" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -91,22 +90,21 @@ class AccessLevelTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
-     * @group           AccessLevelGetFieldContents
-     * @covers          FOF30\Form\Field\AccessLevel::getFieldContents
-     * @dataProvider    AccessLevelDataprovider::getTestGetFieldContents
+     * @group           CacheHandler
+     * @group           CacheHandlerGetFieldContents
+     * @covers          FOF30\Form\Field\CacheHandler::getFieldContents
+     * @dataProvider    CacheHandlerDataprovider::getTestGetFieldContents
      */
     public function testGetFieldContents($test, $check)
     {
-        $msg = 'AccessLevel::getFieldContents %s - Case: '.$check['case'];
+        $msg = 'CacheHandler::getFieldContents %s - Case: '.$check['case'];
 
-        $field = $this->getMock('FOF30\Form\Field\AccessLevel', array('getOptions'));
-        $field->method('getOptions')->willReturn($test['mock']['options']);
+        $field = $this->getMock('FOF30\Form\Field\CacheHandler', array('getOptions'));
+        $field->method('getOptions')->willReturn(array(
+            array('value' => 'apc', 'text' => 'APC'),
+            array('value' => 'file', 'text' => 'File'),
+        ));
 
-        $form = new Form(static::$container, 'Foobar');
-        $field->setForm($form);
-
-        // Registered access level
         $field->value = $test['value'];
 
         $html = $field->getFieldContents($test['options']);
