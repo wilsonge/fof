@@ -56,7 +56,7 @@ class ActionsTest extends FOFTestCase
      * @covers          FOF30\Form\Field\Actions::getRepeatable
      * @dataProvider    ActionsDataprovider::getTestGetRepeatable
      */
-    /*public function testGetRepeatable($test, $check)
+    public function testGetRepeatable($test, $check)
     {
         $msg = 'Actions::getRepeatable %s - Case: '.$check['case'];
 
@@ -94,7 +94,7 @@ class ActionsTest extends FOFTestCase
         $html = $field->getRepeatable();
 
         $this->assertEquals($check['result'], $html, sprintf($msg, 'Returned the wrong result'));
-    }*/
+    }
 
     /**
      * @group           Field
