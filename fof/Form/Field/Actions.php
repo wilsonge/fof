@@ -229,16 +229,13 @@ class Actions extends \JFormFieldList implements FieldInterface
 
 		$config = $this->getConfig();
 
-		// Initialise
-		$prefix       = '';
-		$publish_up   = null;
-		$publish_down = null;
-
 		$html = '<div class="btn-group">';
 
 		// Render a published field
-		if ($publishedFieldName = $this->item->getFieldAlias('enabled'))
+		if ($this->item->hasField('enabled'))
 		{
+            $publishedFieldName = $this->item->getFieldAlias('enabled');
+
 			if ($config['published'] || $config['unpublished'])
 			{
 				// Generate a FieldInterfacePublished field
@@ -250,19 +247,19 @@ class Actions extends \JFormFieldList implements FieldInterface
 
 			if ($config['archived'])
 			{
-				$archived	= $this->item->{$publishedFieldName} == 2 ? true : false;
+				$archived	= $this->item->getFieldValue($publishedFieldName) == 2 ? true : false;
 
 				// Create dropdown items
 				$action = $archived ? 'unarchive' : 'archive';
-				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid, $prefix);
+				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
 			}
 
 			if ($config['trash'])
 			{
-				$trashed	= $this->item->{$publishedFieldName} == -2 ? true : false;
+				$trashed	= $this->item->getFieldValue($publishedFieldName) == -2 ? true : false;
 
 				$action = $trashed ? 'untrash' : 'trash';
-				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid, $prefix);
+				JHtml::_('actionsdropdown.' . $action, 'cb' . $this->rowid);
 			}
 
 			// Render dropdown list
