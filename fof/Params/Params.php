@@ -5,11 +5,11 @@
  * @license     GNU GPL version 2 or later
  */
 
-use JComponentHelper;
-use JFactory;
-use JLoader;
-
 namespace FOF30\Params;
+
+use FOF30\Container\Container;
+use JComponentHelper;
+use JLoader;
 
 defined('_JEXEC') or die;
 
