@@ -65,6 +65,16 @@ class Params
 	}
 
 	/**
+	 * Returns a copy of the loaded component parameters as an array
+	 *
+	 * @return  array
+	 */
+	public function getParams()
+	{
+		return $this->params->toArray();
+	}
+
+	/**
 	 * Sets the value of a component configuration parameter
 	 *
 	 * @param   string $key    The parameter to set
