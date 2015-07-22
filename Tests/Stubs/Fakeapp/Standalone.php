@@ -1,10 +1,9 @@
 <?php
 
-namespace Fakeapp\Site\Model;
-
-use FOF30\Tests\Stubs\Model\ModelStub;
-
-class Foobar extends ModelStub
+/**
+ * This class if used when we have to test the loading of classes that do not use the autoloader
+ */
+class Standalone
 {
     /**
      * This method is used in {@link CallbackTest::testGetCallbackResults()} to test the callback
@@ -14,7 +13,7 @@ class Foobar extends ModelStub
      *
      * @return array
      */
-    public function formCallback($data)
+    public static function formCallback($data)
     {
         return $data;
     }
