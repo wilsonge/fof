@@ -5,11 +5,11 @@
  * @license     GNU GPL version 2 or later
  */
 
-use JComponentHelper;
-use JFactory;
-use JLoader;
-
 namespace FOF30\Params;
+
+use FOF30\Container\Container;
+use JComponentHelper;
+use JLoader;
 
 defined('_JEXEC') or die;
 
@@ -62,6 +62,16 @@ class Params
 	public function get($key, $default = null)
 	{
 		return $this->params->get($key, $default);
+	}
+
+	/**
+	 * Returns a copy of the loaded component parameters as an array
+	 *
+	 * @return  array
+	 */
+	public function getParams()
+	{
+		return $this->params->toArray();
 	}
 
 	/**
