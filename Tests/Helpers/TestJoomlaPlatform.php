@@ -46,6 +46,9 @@ class TestJoomlaPlatform extends PlatformJoomla
     /** @var  \Closure Supply a closure to mock the language object */
     public static $language;
 
+    /** @var  \Closure Supply a closure to mock the config object */
+    public static $config;
+
     /**
      * Resets all the mock variables to their default value
      */
@@ -60,6 +63,7 @@ class TestJoomlaPlatform extends PlatformJoomla
         static::$uriBase          = null;
         static::$authorise        = null;
         static::$runPlugins       = null;
+        static::$config           = null;
 
         static::$getUserStateFromRequest = null;
     }
@@ -177,5 +181,15 @@ class TestJoomlaPlatform extends PlatformJoomla
         }
 
         return parent::getLanguage();
+    }
+
+    public function getConfig()
+    {
+        if(is_callable(static::$config))
+        {
+            return call_user_func(static::$config);
+        }
+
+        return parent::getConfig();
     }
 }

@@ -4,8 +4,10 @@ namespace FOF30\Tests\Form\Field;
 
 use FOF30\Form\Field\Calendar;
 use FOF30\Form\Form;
+use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Helpers\TestJoomlaPlatform;
 
 require_once __DIR__.'/CalendarDataprovider.php';
 
@@ -83,28 +85,65 @@ class CalendarTest extends FOFTestCase
      * @covers          FOF30\Form\Field\Calendar::getCalendar
      * @dataProvider    CalendarDataprovider::getTestGetCalendar
      */
-    /*public function testGetCalendar($test, $check)
+    public function testGetCalendar($test, $check)
     {
         $msg = 'Calendar::getCalendar %s - Case: '.$check['case'];
 
-        $form = new Form(static::$container, 'Foobar');
+        /** @var TestJoomlaPlatform $platform */
+        $platform = static::$container->platform;
+
+        // Let's mock the config object, so I can have a fixed configuration
+        $platform::$config = function(){
+            return new ClosureHelper(array(
+                'get' => function($self, $key, $default = null){
+                    if($key == 'offset')
+                    {
+                        return 'Europe/Rome';
+                    }
+
+                    return $default;
+                }
+            ));
+        };
+
+        // Let's mock the user timezone, too
+        $platform::$user = new ClosureHelper(array(
+            'getParam' => function($self, $key, $default = null) use ($test){
+                if($key == 'timezone' && $test['userTimezone'])
+                {
+                    return $test['userTimezone'];
+                }
+
+                return $default;
+            }
+        ));
 
         $field = new Calendar();
+
+        $xml = simplexml_load_string('<field type="Calendar" default="'.$test['field']['default'].'"/>');
+        ReflectionHelper::setValue($field, 'element', $xml);
+
+        $form = new Form(static::$container, 'Foobar');
         ReflectionHelper::setValue($field, 'form', $form);
 
-        $field->class = $test['class'];
-        $field->value = $test['value'];
-        $field->filter = $test['filter'];
-        $field->size = $test['size'];
-        $field->maxlength = $test['maxlength'];
-        $field->readonly = $test['readonly'];
-        $field->disabled = $test['disabled'];
-        $field->required = $test['required'];
+        // HTML field attributes
+        $field->maxlength = $test['attribs']['maxlength'];
+        $field->readonly  = $test['attribs']['readonly'];
+        $field->disabled  = $test['attribs']['disabled'];
+        $field->required  = $test['attribs']['required'];
+        $field->onchange  = $test['attribs']['onchange'];
+        $field->class     = $test['attribs']['class'];
+        $field->size      = $test['attribs']['size'];
+
+        // Field class settings
+        $field->value  = $test['field']['value'];
+        $field->filter = $test['field']['filter'];
+        $field->format = $test['field']['format'];
         $field->name = 'foobar-name';
         $field->id = 'foobar-id';
 
         $html = ReflectionHelper::invoke($field, 'getCalendar', $test['display']);
 
         $this->assertEquals($check['result'], $html, sprintf($msg, 'Returned the wrong result'));
-    }*/
+    }
 }
