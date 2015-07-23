@@ -17,7 +17,7 @@ require_once __DIR__.'/ActionsDataprovider.php';
 class ActionsTest extends FOFTestCase
 {
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           Actions__get
      * @covers          FOF30\Form\Field\Actions::__get
      * @dataProvider    ActionsDataprovider::getTest__get
@@ -37,7 +37,7 @@ class ActionsTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           ActionsGetStatic
      * @covers          FOF30\Form\Field\Actions::getStatic
      */
@@ -51,7 +51,7 @@ class ActionsTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           ActionsGetRepeatable
      * @covers          FOF30\Form\Field\Actions::getRepeatable
      * @dataProvider    ActionsDataprovider::getTestGetRepeatable
@@ -97,7 +97,7 @@ class ActionsTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           ActionsGetRepeatable
      * @covers          FOF30\Form\Field\Actions::getRepeatable
      */

@@ -15,7 +15,7 @@ require_once __DIR__.'/AccessLevelDataprovider.php';
 class AccessLevelTest extends FOFTestCase
 {
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           AccessLevel__get
      * @covers          FOF30\Form\Field\AccessLevel::__get
      * @dataProvider    AccessLevelDataprovider::getTest__get
@@ -35,7 +35,7 @@ class AccessLevelTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           AccessLevelGetStatic
      * @covers          FOF30\Form\Field\AccessLevel::getStatic
      * @dataProvider    AccessLevelDataprovider::getTestGetStatic
@@ -63,7 +63,7 @@ class AccessLevelTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           AccessLevelGetRepeatable
      * @covers          FOF30\Form\Field\AccessLevel::getRepeatable
      * @dataProvider    AccessLevelDataprovider::getTestGetRepeatable
@@ -91,7 +91,7 @@ class AccessLevelTest extends FOFTestCase
     }
 
     /**
-     * @group           Field
+     * @group           AccessLevel
      * @group           AccessLevelGetFieldContents
      * @covers          FOF30\Form\Field\AccessLevel::getFieldContents
      * @dataProvider    AccessLevelDataprovider::getTestGetFieldContents
