@@ -131,7 +131,7 @@ class HasMany extends Relation
 
 		$query = $db->getQuery(true)
 			->select('COUNT(*)')
-			->from($db->qn($foreignModel->getTableName()) . ' AS ' . $db->qn('reltbl'))
+			->from($db->qn($foreignModel->getTableName(), 'reltbl'))
 			->where($db->qn('reltbl') . '.' . $db->qn($foreignModel->getFieldAlias($this->foreignKey)) . ' = '
 				. $db->qn($tableAlias) . '.'
 				. $db->qn($this->parentModel->getFieldAlias($this->localKey)));
