@@ -2,27 +2,27 @@
 
 namespace FOF30\Tests\Form\Field;
 
-use FOF30\Form\Field\Checkbox;
+use FOF30\Form\Field\Checkboxes;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
 
-require_once __DIR__.'/CheckboxDataprovider.php';
+require_once __DIR__.'/CheckboxesDataprovider.php';
 
 /**
- * @covers  FOF30\Form\Field\Checkbox::<private>
- * @covers  FOF30\Form\Field\Checkbox::<protected>
+ * @covers  FOF30\Form\Field\Checkboxes::<private>
+ * @covers  FOF30\Form\Field\Checkboxes::<protected>
  */
-class CheckboxTest extends FOFTestCase
+class CheckboxesTest extends FOFTestCase
 {
     /**
-     * @group           Checkbox
-     * @group           Checkbox__get
-     * @covers          FOF30\Form\Field\Checkbox::__get
-     * @dataProvider    CheckboxDataprovider::getTest__get
+     * @group           Checkboxes
+     * @group           Checkboxes__get
+     * @covers          FOF30\Form\Field\Checkboxes::__get
+     * @dataProvider    CheckboxesDataprovider::getTest__get
      */
     public function test__get($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Checkbox', array('getStatic', 'getRepeatable'));
+        $field = $this->getMock('FOF30\Form\Field\Checkboxes', array('getStatic', 'getRepeatable'));
         $field->expects($this->exactly($check['static']))->method('getStatic');
         $field->expects($this->exactly($check['repeat']))->method('getRepeatable');
 
@@ -35,20 +35,20 @@ class CheckboxTest extends FOFTestCase
     }
 
     /**
-     * @group           Checkbox
-     * @group           CheckboxGetStatic
-     * @covers          FOF30\Form\Field\Checkbox::getStatic
-     * @dataProvider    CheckboxDataprovider::getTestGetStatic
+     * @group           Checkboxes
+     * @group           CheckboxesGetStatic
+     * @covers          FOF30\Form\Field\Checkboxes::getStatic
+     * @dataProvider    CheckboxesDataprovider::getTestGetStatic
      */
     public function testGetStatic($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Checkbox', array('getInput', 'getFieldContents'));
+        $field = $this->getMock('FOF30\Form\Field\Checkboxes', array('getInput', 'getFieldContents'));
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('id' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="Checkbox" name="foobar" ';
+        $data  = '<field type="Checkboxes" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -63,20 +63,20 @@ class CheckboxTest extends FOFTestCase
     }
 
     /**
-     * @group           Checkbox
-     * @group           CheckboxGetRepeatable
-     * @covers          FOF30\Form\Field\Checkbox::getRepeatable
-     * @dataProvider    CheckboxDataprovider::getTestGetRepeatable
+     * @group           Checkboxes
+     * @group           CheckboxesGetRepeatable
+     * @covers          FOF30\Form\Field\Checkboxes::getRepeatable
+     * @dataProvider    CheckboxesDataprovider::getTestGetRepeatable
      */
     public function testGetRepeatable($test, $check)
     {
-        $field = $this->getMock('FOF30\Form\Field\Checkbox', array('getInput', 'getFieldContents'));
+        $field = $this->getMock('FOF30\Form\Field\Checkboxes', array('getInput', 'getFieldContents'));
         $field->expects($this->exactly($check['input']))->method('getInput');
         $field->expects($this->exactly($check['contents']))->method('getFieldContents')->with(array('class' => 'foo'));
 
         $field->id = 'foo';
 
-        $data  = '<field type="Checkbox" name="foobar" ';
+        $data  = '<field type="Checkboxes" name="foobar" ';
 
         if($test['legacy'])
         {
@@ -91,22 +91,22 @@ class CheckboxTest extends FOFTestCase
     }
 
     /**
-     * @group           Checkbox
-     * @group           CheckboxGetFieldContents
-     * @covers          FOF30\Form\Field\Checkbox::getFieldContents
-     * @dataProvider    CheckboxDataprovider::getTestGetFieldContents
+     * @group           Checkboxes
+     * @group           CheckboxesGetFieldContents
+     * @covers          FOF30\Form\Field\Checkboxes::getFieldContents
+     * @dataProvider    CheckboxesDataprovider::getTestGetFieldContents
      */
     public function testGetFieldContents($test, $check)
     {
-        $msg = 'Checkbox::getFieldContents %s - Case: '.$check['case'];
+        $msg = 'Checkboxes::getFieldContents %s - Case: '.$check['case'];
 
-        $field = new Checkbox();
+        $field = new Checkboxes();
 
-        $data = '<field type="Checkbox" ';
+        $data = '<field type="Checkboxes" ';
 
-        if($test['value'])
+        if($test['translate'])
         {
-            $data .= 'value="'.$test['value'].'" ';
+            $data .= 'translate="true" ';
         }
 
         $data .= '/>';
@@ -114,10 +114,7 @@ class CheckboxTest extends FOFTestCase
         $xml = simplexml_load_string($data);
         ReflectionHelper::setValue($field, 'element', $xml);
 
-        foreach($test['attribs'] as $attrib => $value)
-        {
-            $field->$attrib = $value;
-        }
+        $field->setValue($test['value']);
 
         $html = $field->getFieldContents($test['options']);
 
