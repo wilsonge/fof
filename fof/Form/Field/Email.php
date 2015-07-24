@@ -10,6 +10,7 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JText;
 
 defined('_JEXEC') or die;
@@ -145,7 +146,7 @@ class Email extends \JFormFieldEMail implements FieldInterface
 		$id    = isset($fieldOptions['id']) ? 'id="' . $fieldOptions['id'] . '" ' : '';
 		$class = $this->class . (isset($fieldOptions['class']) ? ' ' . $fieldOptions['class'] : '');
 
-		$show_link         = in_array((string) $this->element['show_link'], array('true', '1', 'on', 'yes'));
+		$show_link         = StringHelper::toBool((string) $this->element['show_link']);
 		$empty_replacement = $this->element['empty_replacement'] ? (string) $this->element['empty_replacement'] : '';
 
 		if (!empty($empty_replacement) && empty($this->value))
@@ -172,7 +173,7 @@ class Email extends \JFormFieldEMail implements FieldInterface
 				$value . '</a>';
 		}
 
-		return '<span ' . ($id ? $id : '') . 'class="' . $class . '"">' .
+		return '<span ' . ($id ? $id : '') . 'class="' . $class . '">' .
 			$html .
 			'</span>';
 	}
