@@ -191,8 +191,12 @@ class Email extends \JFormFieldEMail implements FieldInterface
 
 		// Replace [ITEM:ID] in the URL with the item's key value (usually:
 		// the auto-incrementing numeric ID)
-		$keyfield = $this->item->getKeyName();
-		$replace  = $this->item->$keyfield;
+        if (is_null($this->item))
+        {
+            $this->item = $this->form->getModel();
+        }
+
+		$replace  = $this->item->getId();
 		$ret = str_replace('[ITEM:ID]', $replace, $ret);
 
 		// Replace the [ITEMID] in the URL with the current Itemid parameter
@@ -202,26 +206,12 @@ class Email extends \JFormFieldEMail implements FieldInterface
 		$ret = str_replace('[TOKEN]', \JFactory::getSession()->getFormToken(), $ret);
 
 		// Replace other field variables in the URL
-		$fields = $this->item->getTableFields();
+		$data = $this->item->getData();
 
-		foreach ($fields as $fielddata)
+		foreach ($data as $field => $value)
 		{
-			$fieldname = $fielddata->Field;
-
-			if (empty($fieldname))
-			{
-				$fieldname = $fielddata->column_name;
-			}
-
-			$search    = '[ITEM:' . strtoupper($fieldname) . ']';
-			$replace   = $this->item->$fieldname;
-
-			if (!is_string($replace))
-			{
-				continue;
-			}
-
-			$ret  = str_replace($search, $replace, $ret);
+			$search = '[ITEM:' . strtoupper($field) . ']';
+			$ret    = str_replace($search, $value, $ret);
 		}
 
 		return $ret;
