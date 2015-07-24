@@ -3,8 +3,11 @@
 namespace FOF30\Tests\Form\Field;
 
 use FOF30\Form\Field\Email;
-use FOF30\Tests\Helpers\FOFTestCase;
+use FOF30\Form\Form;
+use FOF30\Tests\Helpers\ClosureHelper;
+use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Stubs\Model\DataModelStub;
 
 require_once __DIR__.'/EmailDataprovider.php';
 
@@ -12,8 +15,22 @@ require_once __DIR__.'/EmailDataprovider.php';
  * @covers  FOF30\Form\Field\Email::<private>
  * @covers  FOF30\Form\Field\Email::<protected>
  */
-class EmailTest extends FOFTestCase
+class EmailTest extends DatabaseTest
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->saveFactoryState();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->restoreFactoryState();
+    }
+
     /**
      * @group           Email
      * @group           Email__get
@@ -123,5 +140,53 @@ class EmailTest extends FOFTestCase
         $html = $field->getFieldContents($test['options']);
 
         $this->assertEquals($check['result'], $html, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           Email
+     * @group           EmailParseFieldTags
+     * @covers          FOF30\Form\Field\Email::parseFieldTags
+     * @dataProvider    EmailDataprovider::getTestParseFieldTags
+     */
+    public function testParseFieldTags($test, $check)
+    {
+        $msg = 'Email::parseFieldTags %s - Case: '.$check['case'];
+
+        $config = array(
+            'idFieldName' => 'foftest_foobar_id',
+            'tableName'   => '#__foftest_foobars'
+        );
+
+        $fakeSession = new ClosureHelper(array(
+            'getFormToken' => function(){
+                return '_FAKE_SESSION_';
+            }
+        ));
+
+        \JFactory::$session = $fakeSession;
+
+        $input = static::$container->input;
+        $input->set('Itemid', 100);
+
+        $model = new DataModelStub(static::$container, $config);
+        $form  = new Form(static::$container, 'Foobar');
+        $field = new Email();
+
+        if($test['load'])
+        {
+            $model->find($test['load']);
+        }
+
+        if($test['assign'])
+        {
+            $field->item = $model;
+        }
+
+        $form->setModel($model);
+        $field->setForm($form);
+
+        $result = ReflectionHelper::invoke($field, 'parseFieldTags', $test['text']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
     }
 }

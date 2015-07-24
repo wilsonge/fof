@@ -184,4 +184,45 @@ class EmailDataprovider
 
         return $data;
     }
+
+    public static function getTestParseFieldTags()
+    {
+        $data[] = array(
+            'input' => array(
+                'load'   => false,
+                'assign' => false,
+                'text'   => '__ID:[ITEM:ID]__ __ITEMID:[ITEMID]__ __TOKEN:[TOKEN]__ __TITLE:[ITEM:TITLE]__'
+            ),
+            'check' => array(
+                'case' => 'Record no assigned and not loaded',
+                'result' => '__ID:__ __ITEMID:100__ __TOKEN:_FAKE_SESSION___ __TITLE:__'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'load'   => 1,
+                'assign' => false,
+                'text'   => '__ID:[ITEM:ID]__ __ITEMID:[ITEMID]__ __TOKEN:[TOKEN]__ __TITLE:[ITEM:TITLE]__'
+            ),
+            'check' => array(
+                'case' => 'Record no assigned and loaded',
+                'result' => '__ID:1__ __ITEMID:100__ __TOKEN:_FAKE_SESSION___ __TITLE:Guinea Pig row__'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'load'   => 1,
+                'assign' => true,
+                'text'   => '__WRONG:[ITEM:WRONG]__'
+            ),
+            'check' => array(
+                'case' => 'Record assigned and loaded, field not existing',
+                'result' => '__WRONG:[ITEM:WRONG]__'
+            )
+        );
+
+        return $data;
+    }
 }
