@@ -13,7 +13,7 @@ use FOF30\Model\DataModel;
 
 defined('_JEXEC') or die;
 
-\JFormHelper::loadFieldClass('list');
+\JFormHelper::loadFieldClass('text');
 
 /**
  * Form Field class for FOF
@@ -142,7 +142,7 @@ class GroupedButton extends \JFormFieldText implements FieldInterface
 			}
 
 			$buttonXML   = new \SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
-			$buttonField = new Button($this->form);
+			$buttonField = new Button();
 
 			// Pass required objects to the field
 			$buttonField->item = $this->item;
