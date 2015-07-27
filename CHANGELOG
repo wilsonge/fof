@@ -1,6 +1,16 @@
-FOF 3.0.1
+FOF 3.0.1 –– Updated to 27/7/15 commit e7cd34fae5cea8d27b89eb0e40e878bcc06673a7
 ================================================================================
++ Added Params service to the container to easily get/set the component's options
++ Added appropriate responses on CRUD json save
++ Color Field
++ Added parse_value attribute in the Model field. Allows for `[ITEM:fieldName]` replacement in rendered drop-down values.
+~ Use the 'as' parameter of the JDatabase API for the HasMany relation
+~ Ip helper class: let the workarounds be disabled
 # [HIGH] The "callable" type hint is not compatible with PHP 5.3
+# [HIGH] DataModel reorder is non-deterministic when multiple records with the same ordering value exist in the same scope
+# [MEDIUM] You couldn't create new records using HTTP verbs (e.g. JSON API)
+# [MEDIUM] DataModel's automatic validation for INT columns with '0' default value was broken
+# [LOW] Front-end rendering of XML forms results in a superfluous div when sidebar rendering is disabled.
 
 FOF 3.0.0
 ================================================================================
