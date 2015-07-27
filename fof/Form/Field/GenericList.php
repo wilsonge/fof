@@ -163,14 +163,15 @@ class GenericList extends \JFormFieldList implements FieldInterface
 	/**
 	 * Gets the active option's label given an array of JHtml options
 	 *
-	 * @param   array   $data      The JHtml options to parse
-	 * @param   mixed   $selected  The currently selected value
-	 * @param   string  $optKey    Key name
-	 * @param   string  $optText   Value name
+	 * @param   array   $data           The JHtml options to parse
+	 * @param   mixed   $selected       The currently selected value
+	 * @param   string  $optKey         Key name
+	 * @param   string  $optText        Value name
+	 * @param   bool    $selectFirst    Should I automatically select the first option?
 	 *
 	 * @return  mixed   The label of the currently selected option
 	 */
-	public static function getOptionName($data, $selected = null, $optKey = 'value', $optText = 'text')
+	public static function getOptionName($data, $selected = null, $optKey = 'value', $optText = 'text', $selectFirst = true)
 	{
 		$ret = null;
 
@@ -193,7 +194,7 @@ class GenericList extends \JFormFieldList implements FieldInterface
 				$text = $element;
 			}
 
-			if (is_null($ret))
+			if (is_null($ret) && $selectFirst)
 			{
 				$ret = $text;
 			}
