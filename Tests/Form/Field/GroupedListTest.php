@@ -99,8 +99,6 @@ class GroupedListTest extends FOFTestCase
      */
     public function testGetFieldContents($test, $check)
     {
-        $this->markTestSkipped('GroupedList::getOptionName is broken, we have to fix it before testing it');
-
         $msg = 'GroupedList::getFieldContents %s - Case: '.$check['case'];
 
         $field = new GroupedList();
@@ -129,10 +127,5 @@ class GroupedListTest extends FOFTestCase
         $html = $field->getFieldContents($test['options']);
 
         $this->assertEquals($check['result'], $html, sprintf($msg, 'Returned the wrong result'));
-    }
-
-    public function testGetOptionName()
-    {
-        $this->markTestSkipped('GroupedList::getOptionName is broken, we have to fix it before testing it');
     }
 }

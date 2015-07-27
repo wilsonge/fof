@@ -117,15 +117,40 @@ class GroupedListDataprovider
     {
         $data[] = array(
             'input' => array(
-                'value'   => '2',
+                'value'   => '3',
                 'options' => array()
             ),
             'check' => array(
-                'case'   => 'No default options or field options',
-                'result' => '<span class="">Registered</span>'
+                'case'   => 'Value found, no additional options',
+                'result' => '<span class="fof-groupedlist-group">Group 2</span><span class="fof-groupedlist-item">Option 3</span>'
             )
         );
-        
+
+        $data[] = array(
+            'input' => array(
+                'value'   => '3',
+                'options' => array(
+                    'id' => 'foo-id',
+                    'class' => 'foo-class'
+                )
+            ),
+            'check' => array(
+                'case'   => 'Value found, with additional options',
+                'result' => '<span id="foo-id-group" class="fof-groupedlist-group foo-class">Group 2</span><span id="foo-id-item" class="fof-groupedlist-item foo-class">Option 3</span>'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'value'   => '100',
+                'options' => array()
+            ),
+            'check' => array(
+                'case'   => 'Value not found',
+                'result' => '<span class="fof-groupedlist-group"></span><span class="fof-groupedlist-item"></span>'
+            )
+        );
+
         return $data;
     }
 }
