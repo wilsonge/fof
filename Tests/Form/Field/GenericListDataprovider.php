@@ -274,6 +274,325 @@ class GenericListDataprovider
         return $data;
     }
 
+    public static function getTestGetOptions()
+    {
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(),
+                'options' => array(
+                    array('value' => 'foo', 'text' => 'Foobar', 'extra' => ''),
+                    array('value' => 'dummy', 'text' => 'Dummy', 'extra' => ''),
+                )
+            ),
+            'check' => array(
+                'case'   => 'Simple list with options set in the XML code',
+                'result' => array (
+                    (object)array(
+                        'value' => 'foo',
+                        'text' => 'Foobar',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                    (object)array(
+                        'value' => 'dummy',
+                        'text' => 'Dummy',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(),
+                'options' => array(
+                    array('value' => 'foo', 'text' => 'Foobar', 'extra' => 'class="test" disabled="true"'),
+                    array('value' => 'dummy', 'text' => 'Dummy', 'extra' => 'onclick="__ONCLICK__"'),
+                )
+            ),
+            'check' => array(
+                'case'   => 'Simple list with options set in the XML code (extra attribs)',
+                'result' => array (
+                    (object)array(
+                        'value' => 'foo',
+                        'text' => 'Foobar',
+                        'disable' => true,
+                        'class' => 'test',
+                        'onclick' => '',
+                    ),
+                    (object)array(
+                        'value' => 'dummy',
+                        'text' => 'Dummy',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '__ONCLICK__',
+                    ),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'order' => 'name'
+                ),
+                'options' => array(
+                    array('value' => 'foo', 'text' => 'Foobar', 'extra' => ''),
+                    array('value' => 'dummy', 'text' => 'Dummy', 'extra' => ''),
+                )
+            ),
+            'check' => array(
+                'case'   => 'Simple list with options set in the XML code - with ordering',
+                'result' => array (
+                    (object)array(
+                        'value' => 'dummy',
+                        'text' => 'Dummy',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                    (object)array(
+                        'value' => 'foo',
+                        'text' => 'Foobar',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'order' => 'name',
+                    'order_dir' => 'desc'
+                ),
+                'options' => array(
+                    array('value' => 'foo', 'text' => 'Foobar', 'extra' => ''),
+                    array('value' => 'dummy', 'text' => 'Dummy', 'extra' => ''),
+                )
+            ),
+            'check' => array(
+                'case'   => 'Simple list with options set in the XML code - with reverse ordering',
+                'result' => array (
+                    (object)array(
+                        'value' => 'foo',
+                        'text' => 'Foobar',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                    (object)array(
+                        'value' => 'dummy',
+                        'text' => 'Dummy',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'source_class' => 'NonExistingClass',
+                    'source_method' => 'notHere'
+                ),
+                'options' => array()
+            ),
+            'check' => array(
+                'case'   => 'Using a non existing class and method',
+                'result' => array ()
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'source_class' => 'Fakeapp\Site\Model\Foobar',
+                    'source_method' => 'notHere'
+                ),
+                'options' => array()
+            ),
+            'check' => array(
+                'case'   => 'Correct class but non existing method',
+                'result' => array ()
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'source_file'   => 'admin://Standalone.php',
+                    'source_class'  => 'Standalone',
+                    'source_method' => 'getOptions'
+                ),
+                'options' => array()
+            ),
+            'check' => array(
+                'case'   => 'Correct class and method (direct include)',
+                'result' => array (
+                    (object)array(
+                        'value' => 'first',
+                        'text' => 'First item',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 'second',
+                        'text' => 'Second item',
+                        'disable' => false,
+                    )
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'source_class' => 'Fakeapp\Site\Model\Foobar',
+                    'source_method' => 'getOptions'
+                ),
+                'options' => array()
+            ),
+            'check' => array(
+                'case'   => 'Correct class and method (autoloader)',
+                'result' => array (
+                    (object)array(
+                        'value' => 'first',
+                        'text' => 'First item',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 'second',
+                        'text' => 'Second item',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 1,
+                        'text' => 'Yes',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 0,
+                        'text' => 'No',
+                        'disable' => false,
+                    ),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'source_class' => 'Fakeapp\Site\Model\Foobar',
+                    'source_method' => 'getOptions',
+                    'source_translate' => false
+                ),
+                'options' => array()
+            ),
+            'check' => array(
+                'case'   => 'Correct class and method, no translate (autoloader)',
+                'result' => array (
+                    (object)array(
+                        'value' => 'first',
+                        'text' => 'First item',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 'second',
+                        'text' => 'Second item',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 1,
+                        'text' => 'JYES',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 0,
+                        'text' => 'JNO',
+                        'disable' => false,
+                    ),
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'source_class' => 'Fakeapp\Site\Model\Foobar',
+                    'source_method' => 'getOptionsWithKeys',
+                    'source_key' => 'value',
+                    'source_value' => 'text'
+                ),
+                'options' => array()
+            ),
+            'check' => array(
+                'case'   => 'Correct class and method, options with keys (autoloader)',
+                'result' => array (
+                    (object)array(
+                        'value' => 'first',
+                        'text' => 'First item',
+                        'disable' => false,
+                    ),
+                    (object)array(
+                        'value' => 'second',
+                        'text' => 'Second item',
+                        'disable' => false,
+                    )
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'attribs' => array(
+                    'source_class' => 'Fakeapp\Site\Model\Foobar',
+                    'source_method' => 'getOptionsWithKeys',
+                    'source_format' => 'optionsobject'
+                ),
+                'options' => array(
+                    array('value' => 'foo', 'text' => 'Foobar', 'extra' => ''),
+                    array('value' => 'dummy', 'text' => 'Dummy', 'extra' => ''),
+                )
+            ),
+            'check' => array(
+                'case'   => 'Merging class options with XML ones',
+                'result' => array (
+                    (object) array(
+                        'value' => 'foo',
+                        'text' => 'Foobar',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                    (object) array(
+                        'value' => 'dummy',
+                        'text' => 'Dummy',
+                        'disable' => false,
+                        'class' => '',
+                        'onclick' => '',
+                    ),
+                    array (
+                        'value' => 'first',
+                        'text' => 'First item',
+                    ),
+                    array (
+                        'value' => 'second',
+                        'text' => 'Second item',
+                    ),
+                )
+            )
+        );
+
+        return $data;
+    }
+
     public static function getTestParseFieldTags()
     {
         $data[] = array(

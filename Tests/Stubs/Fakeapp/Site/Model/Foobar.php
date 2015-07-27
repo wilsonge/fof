@@ -18,4 +18,34 @@ class Foobar extends ModelStub
     {
         return $data;
     }
+
+    /**
+     * This method is used in {@link GenericListTest::testGetOptions} to test fetching the options
+     * from a class method
+     */
+    public static function getOptions()
+    {
+        $options = array(
+            'first' => 'First item',
+            'second' => 'Second item',
+            '1' => 'JYES',
+            '0' => 'JNO',
+        );
+
+        return $options;
+    }
+
+    /**
+     * This method is used in {@link GenericListTest::testGetOptions} to test fetching the options
+     * from a class method
+     */
+    public static function getOptionsWithKeys()
+    {
+        $options = array(
+            array('value' => 'first', 'text' => 'First item'),
+            array('value' => 'second', 'text' => 'Second item'),
+        );
+
+        return $options;
+    }
 }

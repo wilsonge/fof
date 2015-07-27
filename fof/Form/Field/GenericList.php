@@ -10,6 +10,7 @@ namespace FOF30\Form\Field;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JHtml;
 use \JText;
 
@@ -305,8 +306,8 @@ class GenericList extends \JFormFieldList implements FieldInterface
 		$source_method    = empty($this->element['source_method']) ? '' : (string) $this->element['source_method'];
 		$source_key       = empty($this->element['source_key']) ? '*' : (string) $this->element['source_key'];
 		$source_value     = empty($this->element['source_value']) ? '*' : (string) $this->element['source_value'];
-		$source_translate = empty($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
-		$source_translate = in_array(strtolower($source_translate), array('true','yes','1','on')) ? true : false;
+		$source_translate = is_null($this->element['source_translate']) ? 'true' : (string) $this->element['source_translate'];
+		$source_translate = StringHelper::toBool($source_translate) ? true : false;
 		$source_format    = empty($this->element['source_format']) ? '' : (string) $this->element['source_format'];
 
 		if ($source_class && $source_method)

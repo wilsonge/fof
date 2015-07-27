@@ -17,4 +17,18 @@ class Standalone
     {
         return $data;
     }
+
+    /**
+     * This method is used in {@link GenericListTest::testGetOptions} to test fetching the options
+     * from a class method
+     */
+    public static function getOptions()
+    {
+        $options = array(
+            'first' => 'First item',
+            'second' => 'Second item'
+        );
+
+        return $options;
+    }
 }

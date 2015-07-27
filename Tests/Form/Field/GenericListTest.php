@@ -7,6 +7,7 @@ use FOF30\Form\Form;
 use FOF30\Tests\Helpers\ClosureHelper;
 use FOF30\Tests\Helpers\DatabaseTest;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Helpers\TestContainer;
 use FOF30\Tests\Stubs\Model\DataModelStub;
 
 require_once __DIR__.'/GenericListDataprovider.php';
@@ -157,6 +158,56 @@ class GenericListTest extends DatabaseTest
         $msg = 'GenericList::getOptionName %s - Case: '.$check['case'];
 
         $result = GenericList::getOptionName($test['data'], $test['selected'], $test['optkey'], $test['opttext']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           GenericList
+     * @group           GenericListGetOptions
+     * @covers          FOF30\Form\Field\GenericList::getOptions
+     * @dataProvider    GenericListDataprovider::getTestGetOptions
+     */
+    public function testGetOptions($test, $check)
+    {
+        $msg = 'GenericList::getOptions %s - Case: '.$check['case'];
+
+        $container = new TestContainer(array(
+            'componentName'	=> 'com_fakeapp',
+            // I have to mock the parsePath method, otherwise he will use the paths to our Guinea Pig site
+            'template' => new ClosureHelper(array(
+                'parsePath' => function($self, $path){
+                    return preg_replace('#^.*?://(.*)#', JPATH_TESTS.'/Stubs/Fakeapp/$1', $path);
+                }
+            ))
+        ));
+
+        $field = new GenericList();
+        ReflectionHelper::setValue($field, 'fieldname', 'foftest');
+
+        $data = '<field type="GenericList" ';
+
+        foreach($test['attribs'] as $key => $value)
+        {
+            $data .= $key.'="'.$value.'" ';
+        }
+
+        $data .= '>';
+
+        foreach ($test['options'] as $option)
+        {
+            $data .= '<option value="'.$option['value'].'" '.$option['extra'].' >'.$option['text'].'</option>';
+        }
+
+        $data .= '</field>';
+
+        $xml = simplexml_load_string($data);
+        ReflectionHelper::setValue($field, 'element', $xml);
+
+        $form = new Form($container, 'Foobar');
+        $field->setForm($form);
+
+        $result = ReflectionHelper::invoke($field, 'getOptions');
 
         $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
     }
