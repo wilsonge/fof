@@ -1575,7 +1575,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return  $this  Self, for chaining
 	 */
-	public function chunk($chunkSize, callable $callback)
+	public function chunk($chunkSize, $callback)
 	{
 		$totalItems = $this->count();
 
@@ -3459,7 +3459,7 @@ class DataModel extends Model implements \JTableInterface
 	 *
 	 * @return $this
 	 */
-	public function whereHas($relation, callable $callBack, $replace = true)
+	public function whereHas($relation, $callBack, $replace = true)
 	{
 		$this->has($relation, 'callback', $callBack, $replace);
 

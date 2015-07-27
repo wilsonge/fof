@@ -1,3 +1,7 @@
+FOF 3.0.1
+================================================================================
+# [HIGH] The "callable" type hint is not compatible with PHP 5.3
+
 FOF 3.0.0
 ================================================================================
 + CLI tool to quickly create FOF components – not included in the library ZIP package, look at https://github.com/akeeba/fof/tree/development/cli

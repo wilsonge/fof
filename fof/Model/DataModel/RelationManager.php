@@ -332,7 +332,7 @@ class RelationManager
 	 *
 	 * @throws Relation\Exception\RelationNotFound
 	 */
-	public function getData($name, callable $callback = null, \FOF30\Utils\Collection $dataCollection = null)
+	public function getData($name, $callback = null, \FOF30\Utils\Collection $dataCollection = null)
 	{
 		if (!isset($this->relations[$name]))
 		{
