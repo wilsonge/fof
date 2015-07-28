@@ -178,14 +178,21 @@ class GroupedList extends \JFormFieldGroupedList implements FieldInterface
 	{
 		if ($groupKey) {}; // Keeps phpStorm from freaking out
 
-		$ret = null;
+		$ret     = null;
 
 		foreach ($data as $dataKey => $group)
 		{
+            $noGroup = true;
+
             if (is_array($group) || is_object($group))
 			{
 				$label = $dataKey;
-				$noGroup = false;
+
+                // If the key is a string, most likely is the title of group
+                if(is_string($dataKey))
+                {
+                    $noGroup = false;
+                }
 			}
 			else
 			{
