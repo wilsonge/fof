@@ -34,6 +34,8 @@ class TestJoomlaPlatform extends PlatformJoomla
 
     public static $uriBase = null;
 
+    public static $uriRoot = null;
+
     /** @var \Closure Supply a closure to perform additional checks */
     public static $authorise = null;
 
@@ -61,6 +63,7 @@ class TestJoomlaPlatform extends PlatformJoomla
         static::$baseDirs         = null;
         static::$user             = null;
         static::$uriBase          = null;
+        static::$uriRoot          = null;
         static::$authorise        = null;
         static::$runPlugins       = null;
         static::$config           = null;
@@ -86,6 +89,16 @@ class TestJoomlaPlatform extends PlatformJoomla
         }
 
         return parent::URIbase($pathonly);
+    }
+
+    public function URIroot($pathonly = false, $path = null)
+    {
+        if(isset(static::$uriRoot))
+        {
+            return static::$uriRoot;
+        }
+
+        return parent::URIroot($pathonly, $path);
     }
 
     public function authorise($action, $assetname)
