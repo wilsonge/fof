@@ -153,4 +153,169 @@ class GroupedListDataprovider
 
         return $data;
     }
+
+    public static function getTestGetOptionName()
+    {
+        $data[] = array(
+            'input' => array(
+                'selected' => 3,
+                'optKey'   => 'value',
+                'optText'  => 'text',
+                'data'     => array (
+                    'Group 1' => array (
+                        (object) array(
+                            'value' => '0',
+                            'text' => 'Option 1',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                        (object)array(
+                            'value' => '1',
+                            'text' => 'Option 2',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                    ),
+                    'Group 2' => array (
+                        (object)array(
+                            'value' => '3',
+                            'text' => 'Option 3',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                        (object)array(
+                            'value' => '4',
+                            'text' => 'Option 4',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                    )
+                )
+            ),
+            'check' => array(
+                'case'   => 'Grouped options only, value found',
+                'result' => array (
+                    'group' => 'Group 2',
+                    'item' => 'Option 3',
+                )
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'selected' => 100,
+                'optKey'   => 'value',
+                'optText'  => 'text',
+                'data'     => array (
+                    'Group 1' => array (
+                        (object) array(
+                            'value' => '0',
+                            'text' => 'Option 1',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                        (object)array(
+                            'value' => '1',
+                            'text' => 'Option 2',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                    ),
+                    'Group 2' => array (
+                        (object)array(
+                            'value' => '3',
+                            'text' => 'Option 3',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                        (object)array(
+                            'value' => '4',
+                            'text' => 'Option 4',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                    )
+                )
+            ),
+            'check' => array(
+                'case'   => 'Grouped options only, value not found',
+                'result' => null
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'selected' => 6,
+                'optKey'   => 'value',
+                'optText'  => 'text',
+                'data'     => array (
+                    'Group 1' => array (
+                        (object) array(
+                            'value' => '0',
+                            'text' => 'Option 1',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                        (object)array(
+                            'value' => '1',
+                            'text' => 'Option 2',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                    ),
+                    'Group 2' => array (
+                        (object)array(
+                            'value' => '3',
+                            'text' => 'Option 3',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                        (object)array(
+                            'value' => '4',
+                            'text' => 'Option 4',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                    ),
+                    2 => array (
+                        (object)array(
+                            'value' => '5',
+                            'text' => 'Option 5',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                        (object)array(
+                            'value' => '6',
+                            'text' => 'Option 6',
+                            'disable' => false,
+                            'class' => '',
+                            'onclick' => '',
+                        ),
+                    ),
+                )
+            ),
+            'check' => array(
+                'case'   => 'Grouped and not grouped options, value found',
+                'result' => array (
+                    'group' => '',
+                    'item' => 'Option 6',
+                )
+            )
+        );
+
+        return $data;
+    }
 }

@@ -128,4 +128,19 @@ class GroupedListTest extends FOFTestCase
 
         $this->assertEquals($check['result'], $html, sprintf($msg, 'Returned the wrong result'));
     }
+
+    /**
+     * @group           GroupedList
+     * @group           GroupedListGetOptionName
+     * @covers          FOF30\Form\Field\GroupedList::getOptionName
+     * @dataProvider    GroupedListDataprovider::getTestGetOptionName
+     */
+    public function testGetOptionName($test, $check)
+    {
+        $msg = 'GroupedList::getOptionName %s - Case: '.$check['case'];
+
+        $result = GroupedList::getOptionName($test['data'], $test['selected'], 'items', $test['optKey'], $test['optText']);
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
 }
