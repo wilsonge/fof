@@ -70,18 +70,20 @@ if (function_exists('date_default_timezone_get') && function_exists('date_defaul
 	@date_default_timezone_set($serverTimezone);
 }
 
-//Am I in Travis CI?
-if (getenv('TRAVIS'))
-{
-	require_once __DIR__ . '/config_travis.php';
+$jversion_test = getenv('JVERSION_TEST') ? getenv('JVERSION_TEST') : '3.4';
 
-	$siteroot = $fofTestConfig[getenv('JVERSION_TEST')];
+require_once __DIR__ . '/environments.php';
+
+$siteroot = $environments[$jversion_test];
+
+//Am I in Travis CI?
+if(getenv('TRAVIS'))
+{
+    // TODO More work needed
 }
 else
 {
 	require_once __DIR__ . '/config.php';
-
-	$siteroot = $fofTestConfig['site_root'];
 }
 
 // Set up the Joomla! environment
@@ -106,8 +108,16 @@ if (!defined('JPATH_TESTS'))
 require_once JPATH_LIBRARIES . '/import.legacy.php';
 require_once JPATH_LIBRARIES . '/cms.php';
 
-// This is required to force Joomla! to read the correct configuration.php file...
-$config = JFactory::getConfig(JPATH_SITE . '/configuration.php');
+// Since there is no configuration file inside Joomla cloned repo, we have to read the installation one...
+$config = JFactory::getConfig(JPATH_SITE . '/installation/configuration.php-dist');
+
+// ... and then hijack some details
+$config->set('host', $fofTestConfig['host']);
+$config->set('user', $fofTestConfig['user']);
+$config->set('password', $fofTestConfig['password']);
+$config->set('db', $fofTestConfig['db']);
+$config->set('tmp_path', JPATH_ROOT.'/tmp');
+$config->set('log_path', JPATH_ROOT.'/logs');
 
 // Let's use our class to create the schema
 $importer = new \FOF30\Database\Installer(JFactory::getDbo(), JPATH_TESTS.'/Stubs/schema');

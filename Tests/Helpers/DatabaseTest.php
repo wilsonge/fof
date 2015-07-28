@@ -82,18 +82,15 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
         if(!$connection)
         {
-            // Let's use the config file of our guinea pig
-            require_once JPATH_BASE.'/configuration.php';
-
-            $config = new \JConfig();
+            $config = \JFactory::getConfig();
 
             // P.A. Test database prefix is fixed with jos_ so we can setup common tables
             $options = array (
-                'driver'	=> ((isset ($config)) && ($config->dbtype != 'mysqli')) ? $config->dbtype : 'mysql',
-                'host' 		=> isset ($config) ? $config->host : '127.0.0.1',
-                'user' 		=> isset ($config) ? $config->user : 'utuser',
-                'password' 	=> isset ($config) ? $config->password : 'ut1234',
-                'database' 	=> isset ($config) ? $config->db : 'joomla_ut',
+                'driver'	=> ((isset ($config)) && ($config->get('dbtype') != 'mysqli')) ? $config->get('dbtype') : 'mysql',
+                'host' 		=> $config->get('host', '127.0.0.1'),
+                'user' 		=> $config->get('user', 'utuser'),
+                'password' 	=> $config->get('password', 'ut1234'),
+                'database' 	=> $config->get('db', 'joomla_ut'),
                 'prefix' 	=> 'jos_'
             );
 
