@@ -42,4 +42,3 @@ after_script:
 notifications:
   email: false
 
-script: phpunit -c phpunit.xml --group Form

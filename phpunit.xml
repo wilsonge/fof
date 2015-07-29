@@ -10,7 +10,7 @@
 	<testsuites>
 		<testsuite name="FOF Unit Tests">
 			<directory>Tests</directory>
-      <exclude>Tests/environments</exclude>
+      <!--<exclude>Tests/environments</exclude>-->
 		</testsuite>
 	</testsuites>
 
