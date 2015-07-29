@@ -74,7 +74,19 @@ $jversion_test = getenv('JVERSION_TEST') ? getenv('JVERSION_TEST') : '3.4';
 
 require_once __DIR__ . '/environments.php';
 
+if(!isset($environments[$jversion_test]))
+{
+    echo('Joomla environment '.$jversion_test.' not recognized');
+    exit(1);
+}
+
 $siteroot = $environments[$jversion_test];
+
+if(!$siteroot)
+{
+    echo('Empty siteroot, we can not continue');
+    exit(1);
+}
 
 //Am I in Travis CI?
 if(getenv('TRAVIS'))
