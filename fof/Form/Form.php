@@ -8,7 +8,6 @@
 namespace FOF30\Form;
 
 use FOF30\Container\Container;
-use FOF30\Form\Field\Model;
 use FOF30\Form\Header\HeaderBase;
 use FOF30\Model\DataModel;
 use FOF30\View\DataView\DataViewInterface;
