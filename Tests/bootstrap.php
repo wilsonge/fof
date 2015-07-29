@@ -79,7 +79,7 @@ $siteroot = $environments[$jversion_test];
 //Am I in Travis CI?
 if(getenv('TRAVIS'))
 {
-    // TODO More work needed
+    require_once __DIR__ . '/config_travis.php';
 }
 else
 {
