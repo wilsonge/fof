@@ -27,6 +27,7 @@
 /Tests/environments/
 /Tests/coverage
 /Tests/config.php
+/Tests/debug.txt
 
 /vendor/*
 

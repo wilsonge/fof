@@ -8,6 +8,11 @@
 // Required to load FOF and Joomla!
 define('_JEXEC', 1);
 
+if (!defined('JPATH_TESTS'))
+{
+    define('JPATH_TESTS', __DIR__);
+}
+
 // Include the FOF autoloader.
 if (!class_exists('FOF30\\Autoloader\\Autoloader'))
 {
@@ -27,6 +32,8 @@ require_once __DIR__ . '/../fof/Utils/helpers.php';
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Tests\\', __DIR__);
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('Fakeapp\\', __DIR__ . '/Stubs/Fakeapp');
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('Dummyapp\\', __DIR__ . '/Stubs/Dummyapp');
+
+\FOF30\Tests\Helpers\TravisLogger::reset();
 
 // Include the Composer autoloader.
 if (false == include_once __DIR__ . '/../vendor/autoload.php')
@@ -82,6 +89,8 @@ if(!isset($environments[$jversion_test]))
 
 $siteroot = $environments[$jversion_test];
 
+\FOF30\Tests\Helpers\TravisLogger::log(4, $siteroot);
+
 if(!$siteroot)
 {
     echo('Empty siteroot, we can not continue');
@@ -109,11 +118,6 @@ if (!defined('_JDEFINES'))
 	define('JPATH_BASE', $siteroot);
 
 	require_once JPATH_BASE . '/includes/defines.php';
-}
-
-if (!defined('JPATH_TESTS'))
-{
-	define('JPATH_TESTS', __DIR__);
 }
 
 // Bootstrap the CMS libraries.

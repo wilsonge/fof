@@ -37,7 +37,6 @@ class ConfigurationTest extends FOFTestCase
 	 */
 	public function testConstructor()
 	{
-        exit(22);
 		$x = self::$container->appConfig;
 
 		$this->assertInstanceOf('\\FOF30\\Configuration\\Configuration', $x, 'Configuration object must be of correct type');
