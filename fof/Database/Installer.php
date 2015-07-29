@@ -126,7 +126,7 @@ class Installer
 			$attributes = $action->attributes();
 
 			// Get the table / view name
-			$table = $attributes->table ? $attributes->table : '';
+			$table = (string)($attributes->table ? $attributes->table : '');
 
 			if (empty($table))
 			{
