@@ -15,7 +15,10 @@ abstract class TravisLogger
     {
         self::close();
 
-        unlink(JPATH_TESTS.'/debug.txt');
+        if(file_exists(JPATH_TESTS.'/debug.txt'))
+        {
+            unlink(JPATH_TESTS.'/debug.txt');
+        }
     }
 
     public static function log($level, $message = '')
@@ -68,7 +71,11 @@ abstract class TravisLogger
 
     protected static function close()
     {
-        fclose(self::$fp);
+        if(is_resource(self::$fp))
+        {
+            fclose(self::$fp);
+        }
+
         self::$fp = null;
     }
 
