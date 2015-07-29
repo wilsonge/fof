@@ -112,12 +112,40 @@ require_once JPATH_LIBRARIES . '/cms.php';
 $config = JFactory::getConfig(JPATH_SITE . '/installation/configuration.php-dist');
 
 // ... and then hijack some details
+// Let's force the driver to PDO to prevent connection dropping errors
+$config->set('dbtype', 'pdomysql');
 $config->set('host', $fofTestConfig['host']);
 $config->set('user', $fofTestConfig['user']);
 $config->set('password', $fofTestConfig['password']);
 $config->set('db', $fofTestConfig['db']);
 $config->set('tmp_path', JPATH_ROOT.'/tmp');
 $config->set('log_path', JPATH_ROOT.'/logs');
+
+// Do I have a Joomla database schema ready? If not, let's import the installation SQL file
+$db = JFactory::getDbo();
+
+try
+{
+    $db->setQuery('SHOW COLUMNS FROM `jos_assets`')->execute();
+}
+catch (Exception $e)
+{
+    // Core table missing, let's import them
+    $file = JPATH_SITE.'/installation/sql/mysql/joomla.sql';
+    $queries = $db->splitSql(file_get_contents($file));
+
+    foreach($queries as $query)
+    {
+        $query = trim($query);
+
+        if(!$query)
+        {
+            continue;
+        }
+
+        $db->setQuery($query)->execute();
+    }
+}
 
 // Let's use our class to create the schema
 $importer = new \FOF30\Database\Installer(JFactory::getDbo(), JPATH_TESTS.'/Stubs/schema');

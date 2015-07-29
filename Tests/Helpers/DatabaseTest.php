@@ -94,7 +94,7 @@ abstract class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
                 'prefix' 	=> 'jos_'
             );
 
-            $pdo = new \PDO($options['driver'].':host='.$options['host'].';dbname='.$options['database'], $options['user'], $options['password']);
+            $pdo = new \PDO('mysql:host='.$options['host'].';dbname='.$options['database'], $options['user'], $options['password']);
             $connection = $this->createDefaultDBConnection($pdo, $options['database']);
         }
 
