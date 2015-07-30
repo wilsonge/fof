@@ -329,6 +329,11 @@ class Model extends GenericList implements FieldInterface
 			$this->item = $item;
 		}
 
+        if (is_null($this->item))
+        {
+            $this->item = $this->form->getModel();
+        }
+
         $replace  = $this->item->getId();
         $ret = str_replace('[ITEM:ID]', $replace, $ret);
 
