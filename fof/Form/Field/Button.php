@@ -92,10 +92,13 @@ class Button extends Text implements FieldInterface
 		$text     = $this->element['text'] ? (string) $this->element['text'] : '';
 		$class    = $this->class ? $this->class : '';
 		$icon     = $this->element['icon'] ? '<span class="icon ' . (string) $this->element['icon'] . '"></span> ' : '';
+
+		if ($this->element['listItemTask'])
+			$this->onclick = "listItemTask('cb" . $this->item->getId() . "', '" . (string)$this->element['listItemTask'] . "')";
 		$onclick  = $this->onclick ? 'onclick="' . $this->onclick . '" ' : '';
 		$url      = $this->element['url'] ? 'href="' . $this->parseFieldTags((string) $this->element['url']) . '" ' : '';
 		$title    = $this->element['title'] ? 'title="' . JText::_((string) $this->element['title']) . '" ' : '';
-        $useValue = StringHelper::toBool((string) $this->element['use_value']);
+		$useValue = in_array((string) $this->element['use_value'], array('true', '1', 'on', 'yes'));
 
 		if (!$useValue)
 		{
