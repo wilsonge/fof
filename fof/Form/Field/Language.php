@@ -23,6 +23,8 @@ defined('_JEXEC') or die;
  */
 class Language extends \JFormFieldLanguage implements FieldInterface
 {
+    protected static $cachedOptions = array();
+
 	/**
 	 * @var  string  Static field output
 	 */
@@ -99,8 +101,6 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 	 */
 	protected function getOptions()
 	{
-		static $cachedOptions = array();
-
 		$client = (string) $this->element['client'];
 
 		if ($client != 'site' && $client != 'administrator')
@@ -108,12 +108,12 @@ class Language extends \JFormFieldLanguage implements FieldInterface
 			$client = 'site';
 		}
 
-		if (!isset($cachedOptions[$client]))
+		if (!isset(static::$cachedOptions[$client]))
 		{
-			$cachedOptions[$client] = parent::getOptions();
+			static::$cachedOptions[$client] = parent::getOptions();
 		}
 
-		$options = array_merge($cachedOptions[$client]);
+		$options = array_merge(static::$cachedOptions[$client]);
 
 		$noneoption = $this->element['none'] ? $this->element['none'] : null;
 
