@@ -204,15 +204,16 @@ class Media extends \JFormFieldMedia implements FieldInterface
 
 		$imagePath = $directory . $this->value;
 
-		if ($this->value && file_exists(JPATH_ROOT . '/' . $imagePath))
+        $platform = $this->form->getContainer()->platform;
+        $baseDirs = $platform->getPlatformBaseDirs();
+
+		if ($this->value && file_exists($baseDirs['root'] . '/' . $imagePath))
 		{
-			$src = $this->form->getContainer()->platform->URIroot() . $imagePath;
-		}
-		else
-		{
-			$src = '';
+			$src = $platform->URIroot() . '/' . $imagePath;
+            return JHtml::image($src, $alt, $imgattr);
 		}
 
-		return JHtml::image($src, $alt, $imgattr);
+        // JHtml::image returns weird stuff when an empty path is provided, so let's be safe than sorry and return empty
+        return '';
 	}
 }
