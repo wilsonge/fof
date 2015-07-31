@@ -11,6 +11,7 @@ use FOF30\Container\Container;
 use FOF30\Form\FieldInterface;
 use FOF30\Form\Form;
 use FOF30\Model\DataModel;
+use FOF30\Utils\StringHelper;
 use \JHtml;
 use \JText;
 
@@ -60,7 +61,7 @@ class Model extends GenericList implements FieldInterface
 	 *
 	 * @var null|array
 	 */
-	protected $loadedOptions = null;
+	protected static $loadedOptions = null;
 
 	/**
 	 * Method to get certain otherwise inaccessible properties from the form field object.
@@ -108,7 +109,7 @@ class Model extends GenericList implements FieldInterface
 	 */
 	public function getStatic()
 	{
-		$class = $this->class ? ' class="' . $this->class . '"' : '';
+		$class = $this->class ? 'class="' . $this->class . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
 			htmlspecialchars(GenericList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
@@ -145,7 +146,8 @@ class Model extends GenericList implements FieldInterface
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
 
-		$value = GenericList::getOptionName($this->getOptions(), $this->value);
+        // Ask GenericList::getOptionName to not automatically select the first value
+		$value = GenericList::getOptionName($this->getOptions(), $this->value, 'value', 'text', false);
 
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($value))
@@ -182,33 +184,33 @@ class Model extends GenericList implements FieldInterface
 		return $html;
 	}
 
-	/**
-	 * Method to get the field options.
-	 *
-	 * @return  array  The field option objects.
-	 */
+    /**
+     * Method to get the field options.
+     *
+     * @param   bool $forceReset
+     *
+     * @return  array The field option objects.
+     */
 	protected function getOptions($forceReset = false)
 	{
-		static $loadedOptions = array();
-
 		$myFormKey = $this->form->getName() . '#$#' . (string) $this->element['model'];
 
-		if ($forceReset && isset($loadedOptions[$myFormKey]))
+		if ($forceReset && isset(static::$loadedOptions[$myFormKey]))
 		{
-			unset($loadedOptions[$myFormKey]);
+			unset(static::$loadedOptions[$myFormKey]);
 		}
 
-		if (!isset($loadedOptions[$myFormKey]))
+		if (!isset(static::$loadedOptions[$myFormKey]))
 		{
 			$options = array();
 
 			// Initialize some field attributes.
-			$key = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
-			$value = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
-			$valueReplace = $this->element['parse_value'] ? (string) $this->element['parse_value'] : false;
-			$translate = $this->element['translate'] ? (string) $this->element['translate'] : false;
-			$applyAccess = $this->element['apply_access'] ? (string) $this->element['apply_access'] : 'false';
-			$modelName = (string) $this->element['model'];
+			$key             = $this->element['key_field'] ? (string) $this->element['key_field'] : 'value';
+			$value           = $this->element['value_field'] ? (string) $this->element['value_field'] : (string) $this->element['name'];
+			$valueReplace    = StringHelper::toBool($this->element['parse_value']);
+			$translate       = StringHelper::toBool($this->element['translate']);
+			$applyAccess     = StringHelper::toBool($this->element['apply_access']);
+			$modelName       = (string) $this->element['model'];
 			$nonePlaceholder = (string) $this->element['none'];
 
 			$with = $this->element['with'] ? (string) $this->element['with'] : null;
@@ -224,10 +226,6 @@ class Model extends GenericList implements FieldInterface
 			{
 				$options[] = JHtml::_('select.option', null, JText::_($nonePlaceholder));
 			}
-
-			// Process field atrtibutes
-			$applyAccess = strtolower($applyAccess);
-			$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 			// Explode model name into component name and prefix
 			$componentName = $this->form->getContainer()->componentName;
@@ -264,13 +262,13 @@ class Model extends GenericList implements FieldInterface
 			/** @var \SimpleXMLElement $stateoption */
 			foreach ($this->element->children() as $stateoption)
 			{
-				// Only add <option /> elements.
+				// Only add <state /> elements.
 				if ($stateoption->getName() != 'state')
 				{
 					continue;
 				}
 
-				$stateKey = (string) $stateoption['key'];
+				$stateKey   = (string) $stateoption['key'];
 				$stateValue = (string) $stateoption;
 
 				$model->setState($stateKey, $stateValue);
@@ -307,10 +305,10 @@ class Model extends GenericList implements FieldInterface
 			// Merge any additional options in the XML definition.
 			$options = array_merge(parent::getOptions(), $options);
 
-			$loadedOptions[$myFormKey] = $options;
+            static::$loadedOptions[$myFormKey] = $options;
 		}
 
-		return $loadedOptions[$myFormKey];
+		return static::$loadedOptions[$myFormKey];
 	}
 
 	/**
