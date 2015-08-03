@@ -165,3 +165,5 @@ catch (Exception $e)
 $importer = new \FOF30\Database\Installer(JFactory::getDbo(), JPATH_TESTS.'/Stubs/schema');
 $importer->updateSchema();
 unset($importer);
+\FOF30\Tests\Helpers\TravisLogger::reset();
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Boostrap ended');
