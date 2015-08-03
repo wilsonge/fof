@@ -171,7 +171,7 @@ class Ordering extends \JFormField implements FieldInterface
 
 		$view = $this->form->getView();
 
-		$ordering = $view->getLists()->order == 'ordering';
+		$ordering = $view->getLists()->order == $this->item->getFieldAlias('ordering');
 
 		if (!$view->hasAjaxOrderingSupport())
 		{

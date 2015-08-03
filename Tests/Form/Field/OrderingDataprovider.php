@@ -120,4 +120,123 @@ class OrderingDataprovider
 
         return $data;
     }
+
+    public static function getTestGetRepeatable()
+    {
+        $data[] = array(
+            'input' => array(
+                'properties' => array(
+                    'rowid' => 2,
+                    'value' => 10
+                ),
+                'attribs'    => array(),
+                'mock' => array(
+                    'order' => 'id',
+                    'ajax'  => false,
+                    'perms' => false
+                )
+            ),
+            'check' => array(
+                'case' => 'No ajax support, list not ordered by the ordering field',
+                'result' => '<span>__ORDER_UP__</span><span>__ORDER_DOWN__</span><input type="text" name="order[]" size="5" value="10" disabled="disabled"class="text-area-order" style="text-align: center" />'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'properties' => array(
+                    'rowid' => 2,
+                    'value' => 10
+                ),
+                'attribs'    => array(),
+                'mock' => array(
+                    'order' => 'ordering',
+                    'ajax'  => false,
+                    'perms' => false
+                )
+            ),
+            'check' => array(
+                'case' => 'No ajax support, list ordered by the ordering field',
+                'result' => '<span>__ORDER_UP__</span><span>__ORDER_DOWN__</span><input type="text" name="order[]" size="5" value="10" class="text-area-order" style="text-align: center" />'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'properties' => array(
+                    'rowid' => 2,
+                    'value' => 10
+                ),
+                'attribs'    => array(),
+                'mock' => array(
+                    'order' => 'id',
+                    'ajax'  => array('saveOrder' => true),
+                    'perms' => false
+                )
+            ),
+            'check' => array(
+                'case' => 'Ajax support, list not ordered by the ordering field, no edit perms',
+                'result' => '<span class="sortable-handler inactive" ><i class="icon-menu"></i></span>'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'properties' => array(
+                    'rowid' => 2,
+                    'value' => 10
+                ),
+                'attribs'    => array(),
+                'mock' => array(
+                    'order' => 'id',
+                    'ajax'  => array('saveOrder' => true),
+                    'perms' => true
+                )
+            ),
+            'check' => array(
+                'case' => 'Ajax support, list not ordered by the ordering field, with edit perms',
+                'result' => '<div class="order-disabled"><span class="sortable-handler " title="" rel="tooltip"><i class="icon-menu"></i></span></div>'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'properties' => array(
+                    'rowid' => 2,
+                    'value' => 10
+                ),
+                'attribs'    => array(),
+                'mock' => array(
+                    'order' => 'ordering',
+                    'ajax'  => array('saveOrder' => true),
+                    'perms' => true
+                )
+            ),
+            'check' => array(
+                'case' => 'Ajax support, list ordered by the ordering field, with edit perms',
+                'result' => '<div class="order-enabled"><span class="sortable-handler " title="" rel="tooltip"><i class="icon-menu"></i></span><input type="text" name="order[]" size="5" class="input-mini text-area-order" value="10" /></div>'
+            )
+        );
+
+        $data[] = array(
+            'input' => array(
+                'properties' => array(
+                    'rowid' => 2,
+                    'value' => 10
+                ),
+                'attribs'    => array(),
+                'mock' => array(
+                    'order' => 'ordering',
+                    'ajax'  => array('saveOrder' => false),
+                    'perms' => true
+                )
+            ),
+            'check' => array(
+                'case' => 'Ajax support but no saveOrder, list ordered by the ordering field, with edit perms',
+                'result' => '<div class="order-enabled"><span class="sortable-handler inactive tip-top" title="JORDERINGDISABLED" rel="tooltip"><i class="icon-menu"></i></span><input type="text" name="order[]" size="5" class="input-mini text-area-order" value="10" /></div>'
+            )
+        );
+
+        return $data;
+    }
 }
