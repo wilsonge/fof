@@ -79,7 +79,7 @@ abstract class TravisLogger
         self::$fp = null;
     }
 
-    protected function isEnabled()
+    protected static function isEnabled()
     {
         return getenv('TRAVIS');
     }

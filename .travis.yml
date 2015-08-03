@@ -33,7 +33,7 @@ install:
   - composer install
 
 before_script:
-  - if [[ "$DB" == "mysql" ]]; then mysql -e 'create database fof_test;'; fi
+  - mysql -e 'create database myapp_test;'
 
 after_script:
   - cat Tests/debug.txt
