@@ -35,9 +35,10 @@ install:
   - composer install
 
 before_script:
-  - mysql -u root --password='' -e 'create database fof_test;'
+  - mysql -u root -e 'create database fof_test;'
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'%'"
   - mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost'"
+  - mysql -u root -e 'FLUSH PRIVILEGES;'
 
 after_script:
   - cat Tests/debug.txt
