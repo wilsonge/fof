@@ -40,5 +40,3 @@ after_script:
 
 notifications:
   email: false
-
-script: vendor/bin/phpunit ./Tests
