@@ -34,7 +34,7 @@ install:
 
 before_script:
   - mysql -e 'create database fof_test;'
-  - mysql -e 'GRANT ALL PRIVILEGES ON fof_test.* TO 'travis'@'%' WITH GRANT OPTION;'
+  - mysql -e 'GRANT ALL PRIVILEGES ON fof_test.* TO travis@% WITH GRANT OPTION;'
   - mysql -e 'FLUSH PRIVILEGES;'
 
 after_script:
