@@ -34,6 +34,7 @@ require_once __DIR__ . '/../fof/Utils/helpers.php';
 \FOF30\Autoloader\Autoloader::getInstance()->addMap('Dummyapp\\', __DIR__ . '/Stubs/Dummyapp');
 
 \FOF30\Tests\Helpers\TravisLogger::reset();
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Log reset');
 
 // Include the Composer autoloader.
 if (false == include_once __DIR__ . '/../vendor/autoload.php')
@@ -42,6 +43,8 @@ if (false == include_once __DIR__ . '/../vendor/autoload.php')
 
 	exit(1);
 }
+
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Autoloader included');
 
 // Don't report strict errors. This is needed because sometimes a test complains about arguments passed as reference
 ini_set('zend.ze1_compatibility_mode', '0');
@@ -79,6 +82,8 @@ if (function_exists('date_default_timezone_get') && function_exists('date_defaul
 
 $jversion_test = getenv('JVERSION_TEST') ? getenv('JVERSION_TEST') : '3.4';
 
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Including environment info. Joomla version: '.$jversion_test);
+
 require_once __DIR__ . '/environments.php';
 
 if(!isset($environments[$jversion_test]))
@@ -98,6 +103,7 @@ if(!$siteroot)
 //Am I in Travis CI?
 if(getenv('TRAVIS'))
 {
+    \FOF30\Tests\Helpers\TravisLogger::log(4, 'Including special Travis configuration file');
     require_once __DIR__ . '/config_travis.php';
 }
 else
@@ -105,6 +111,7 @@ else
 	require_once __DIR__ . '/config.php';
 }
 
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Including defines.php from Joomla environment');
 // Set up the Joomla! environment
 if (file_exists($siteroot . '/defines.php'))
 {
@@ -119,12 +126,15 @@ if (!defined('_JDEFINES'))
 }
 
 // Bootstrap the CMS libraries.
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Bootstrap the CMS libraries.');
 require_once JPATH_LIBRARIES . '/import.legacy.php';
 require_once JPATH_LIBRARIES . '/cms.php';
 
 // Since there is no configuration file inside Joomla cloned repo, we have to read the installation one...
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Including configuration.php-dist from Joomla environment');
 $config = JFactory::getConfig(JPATH_SITE . '/installation/configuration.php-dist');
 
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Changing values for the JConfig object');
 // ... and then hijack some details
 // Let's force the driver to PDO to prevent connection dropping errors
 $config->set('dbtype', 'pdomysql');
@@ -140,10 +150,13 @@ $db = JFactory::getDbo();
 
 try
 {
+    \FOF30\Tests\Helpers\TravisLogger::log(4, 'Checking if core tables are there');
     $db->setQuery('SHOW COLUMNS FROM `jos_assets`')->execute();
 }
 catch (Exception $e)
 {
+    \FOF30\Tests\Helpers\TravisLogger::log(4, 'Core tables not found, attempt to create them');
+
     // Core table missing, let's import them
     $file = JPATH_SITE.'/installation/sql/mysql/joomla.sql';
     $queries = $db->splitSql(file_get_contents($file));
@@ -157,13 +170,24 @@ catch (Exception $e)
             continue;
         }
 
-        $db->setQuery($query)->execute();
+        try
+        {
+            $db->setQuery($query)->execute();
+        }
+        catch(Exception $e)
+        {
+            // Something went wrong, let's log the exception and then throw it again
+            \FOF30\Tests\Helpers\TravisLogger::log(4, 'An error occurred while creating core tables. Error: '.$e->getMessage());
+            throw $e;
+        }
     }
 }
+
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Create test specific tables');
 
 // Let's use our class to create the schema
 $importer = new \FOF30\Database\Installer(JFactory::getDbo(), JPATH_TESTS.'/Stubs/schema');
 $importer->updateSchema();
 unset($importer);
-\FOF30\Tests\Helpers\TravisLogger::reset();
+
 \FOF30\Tests\Helpers\TravisLogger::log(4, 'Boostrap ended');
