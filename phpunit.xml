@@ -7,12 +7,12 @@
     beStrictAboutTestSize="true"
     colors="true"
 >
-	<testsuites>
+	<!--<testsuites>
 		<testsuite name="FOF Unit Tests">
 			<directory>Tests</directory>
       <exclude>Tests/environments</exclude>
 		</testsuite>
-	</testsuites>
+	</testsuites>-->
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
