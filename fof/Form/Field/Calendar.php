@@ -138,8 +138,6 @@ class Calendar extends \JFormFieldCalendar implements FieldInterface
 		$config = $this->form->getContainer()->platform->getConfig();
 		$user   = $this->form->getContainer()->platform->getUser();
 
-        TravisLogger::log(4, 'Configuration offset: '.$config->get('offset'));
-
 		// Check for empty date values
 		if (empty($this->value) || $this->value == $this->form->getContainer()->platform->getDbo()->getNullDate() || $this->value == '0000-00-00')
 		{

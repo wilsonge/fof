@@ -29,6 +29,7 @@ env:
 branches:
   only:
     - development
+    - debug-travis
 
 install:
   - composer selfupdate
