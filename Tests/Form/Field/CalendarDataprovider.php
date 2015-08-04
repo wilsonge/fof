@@ -308,6 +308,11 @@ class CalendarDataprovider
             )
         );
 
+        // This is an annoying case: we default to the PHP local time, which means that it could be different between
+        // dev machines and Travis build. So we can't hardcode any number, but follow the whole logic and hope for the best
+        $jDate = new \JDate('2015-08-22 12:00:00');
+        $value = strftime('%Y-%m-%d %H:%M:%S', $jDate->getTimestamp());
+
         $data[]= array(
             'input' => array(
                 'display' => 'repeatable',
@@ -330,7 +335,7 @@ class CalendarDataprovider
             ),
             'check' => array(
                 'case' => 'Repeatable field',
-                'result' => '<span class="foobar_id ">2015-08-22 14:00:00</span>'
+                'result' => '<span class="foobar_id ">'.$value.'</span>'
             )
         );
 
