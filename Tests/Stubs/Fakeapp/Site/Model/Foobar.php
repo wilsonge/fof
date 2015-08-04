@@ -14,7 +14,7 @@ class Foobar extends ModelStub
      *
      * @return array
      */
-    public function formCallback($data)
+    public static function formCallback($data)
     {
         return $data;
     }
