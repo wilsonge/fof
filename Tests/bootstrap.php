@@ -95,6 +95,8 @@ if(!isset($environments[$jversion_test]))
 
 $siteroot = $environments[$jversion_test];
 
+\FOF30\Tests\Helpers\TravisLogger::log(4, 'Siteroot for this tests: '.$siteroot);
+
 if(!$siteroot)
 {
     echo('Empty siteroot, we can not continue');
