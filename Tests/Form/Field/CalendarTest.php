@@ -93,19 +93,9 @@ class CalendarTest extends FOFTestCase
         $platform = static::$container->platform;
 
         // Let's mock the config object, so I can have a fixed configuration
-        $platform::$config = function(){
-            return new ClosureHelper(array(
-                'get' => function($self, $key, $default = null){
-                    if($key == 'offset')
-                    {
-                        return 'Europe/Rome';
-                    }
-
-                    return $default;
-                }
-            ));
-        };
-
+        $config = \JFactory::getConfig();
+        $config->set('offset', 'Europe/Rome');
+        
         // Let's mock the user timezone, too
         $platform::$user = new ClosureHelper(array(
             'getParam' => function($self, $key, $default = null) use ($test){
