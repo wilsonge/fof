@@ -89,6 +89,7 @@ require_once __DIR__ . '/environments.php';
 if(!isset($environments[$jversion_test]))
 {
     echo('Joomla environment '.$jversion_test.' not recognized');
+    \FOF30\Tests\Helpers\TravisLogger::log(4, 'Joomla environment '.$jversion_test.' not recognized');
     exit(1);
 }
 
@@ -97,6 +98,7 @@ $siteroot = $environments[$jversion_test];
 if(!$siteroot)
 {
     echo('Empty siteroot, we can not continue');
+    \FOF30\Tests\Helpers\TravisLogger::log(4, 'Empty siteroot, we can not continue');
     exit(1);
 }
 
