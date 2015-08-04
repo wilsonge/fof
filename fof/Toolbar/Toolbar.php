@@ -315,11 +315,21 @@ class Toolbar
 			JToolBarHelper::divider();
 		}
 
-		if ($this->perms->editstate)
+		// Published buttons are only added if there is a enabled field in the table
+		try
 		{
-			JToolBarHelper::publishList();
-			JToolBarHelper::unpublishList();
-			JToolBarHelper::divider();
+			$model = $this->container->factory->model($view);
+
+			if ($model->hasField('enabled') && $this->perms->editstate)
+			{
+				JToolBarHelper::publishList();
+				JToolBarHelper::unpublishList();
+				JToolBarHelper::divider();
+			}
+		}
+		catch (\Exception $e)
+		{
+			// Yeah. Let's not add the buttons if we can't load the model...
 		}
 
 		if ($this->perms->delete)
