@@ -5,6 +5,7 @@ namespace FOF30\Tests\Form\Field;
 use FOF30\Form\Field\Published;
 use FOF30\Tests\Helpers\FOFTestCase;
 use FOF30\Tests\Helpers\ReflectionHelper;
+use FOF30\Tests\Stubs\Model\DataModelStub;
 
 require_once __DIR__.'/PublishedDataprovider.php';
 
@@ -14,6 +15,22 @@ require_once __DIR__.'/PublishedDataprovider.php';
  */
 class PublishedTest extends FOFTestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->saveFactoryState();
+
+        \JFactory::$application = $this->getMockCmsApp();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        $this->restoreFactoryState();
+    }
+
     /**
      * @group           Published
      * @group           Published__get
@@ -57,5 +74,55 @@ class PublishedTest extends FOFTestCase
         $result = $field->getStatic();
 
         $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           Published
+     * @group           PublishedGetRepeatable
+     * @covers          FOF30\Form\Field\Published::getRepeatable
+     * @dataProvider    PublishedDataprovider::getTestGetRepeatable
+     */
+    public function testGetRepeatable($test, $check)
+    {
+        $msg = 'Published::getRepeatable %s - Case: '.$check['case'];
+
+        $field = new Published();
+
+        $data = '<field type="Published" ';
+
+        foreach($test['attribs'] as $key => $value)
+        {
+            $data .= $key.'="'.$value.'" ';
+        }
+
+        $data .= '/>';
+
+        $xml = simplexml_load_string($data);
+        ReflectionHelper::setValue($field, 'element', $xml);
+
+        $config = array('tableName' => '#__foftest_foobars', 'idFieldName' => 'foftest_foobar_id');
+        $model = new DataModelStub(static::$container, $config);
+
+        $field->value = 5;
+        $field->rowid = 2;
+        $field->item  = $model;
+
+        $result = $field->getRepeatable();
+
+        $this->assertEquals($check['result'], $result, sprintf($msg, 'Returned the wrong result'));
+    }
+
+    /**
+     * @group           Published
+     * @group           PublishedGetRepeatable
+     * @covers          FOF30\Form\Field\Published::getRepeatable
+     */
+    public function testGetRepeatableException()
+    {
+        $this->setExpectedException('FOF30\Form\Exception\DataModelRequired');
+
+        $field = new Published();
+
+        $field->getRepeatable();
     }
 }
