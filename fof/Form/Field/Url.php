@@ -210,6 +210,12 @@ class Url extends \JFormFieldUrl implements FieldInterface
 
         foreach ($data as $field => $value)
         {
+            // Skip non-processable values
+            if(is_array($value) || is_object($value))
+            {
+                continue;
+            }
+
             $search = '[ITEM:' . strtoupper($field) . ']';
             $ret    = str_replace($search, $value, $ret);
         }
