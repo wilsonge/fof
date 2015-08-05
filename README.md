@@ -73,7 +73,7 @@ Once you have made your changes please sure you read the "How do I submit a Pull
 
 Unit Testing is an especially sensitive coding area. We'd recommend to first take a look at the [Unit Testing introductory presentation](http://prezi.com/qqv6dqkoqvl3/php-unit-testing-a-practical-approach/) by FOF contributor Davide Tampellini. It will get you up to speed with how testing works.
 
-All tests are stored in the [tests/unit/suites/fof](https://github.com/akeeba/fof/tree/development/tests/unit/suites/fof) directory of the Git repository. As you saw in the presentation the folder structure mirrors that of the fof directory of the Git repository.
+All tests are stored in the [Tests](https://github.com/akeeba/fof/tree/development/Tests) directory of the Git repository. As you saw in the presentation the folder structure mirrors that of the fof directory of the Git repository.
 
 Once you have made your changes please sure you read the "How do I submit a Pull Request" section to find out how to contribute your changes to the project.
 
