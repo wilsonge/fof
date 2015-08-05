@@ -26,6 +26,7 @@ require_once JPATH_TESTS.'/Stubs/Joomla/JToolbarHelper.php';
 class ToolbarTest extends FOFTestCase
 {
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::__construct
      */
     public function test__construct()
@@ -64,6 +65,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::renderToolbar
      * @dataProvider    ToolbarDataprovider::getTestRenderToolbar
      */
@@ -110,6 +112,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::onCpanelsBrowse
      * @dataProvider    ToolbarDataprovider::getTestOnCpanelsBrowse
      */
@@ -137,6 +140,8 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
+     * @group           ToolbarOnBrowse
      * @covers          FOF30\Toolbar\Toolbar::onBrowse
      * @dataProvider    ToolbarDataprovider::getTestOnBrowse
      */
@@ -154,7 +159,7 @@ class ToolbarTest extends FOFTestCase
             $options['factory'] = new ClosureHelper(array(
                 'model' => function() use ($test, $TestContainer){
 
-                    if($test['model'] == 'checkin'){
+                    if($test['model'] == 'specialfields'){
                         $config = array(
                             'idFieldName' => 'foftest_foobar_id',
                             'tableName'   => '#__foftest_foobars'
@@ -193,6 +198,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::onRead
      * @dataProvider    ToolbarDataprovider::getTestOnRead
      */
@@ -220,6 +226,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::onAdd
      * @dataProvider    ToolbarDataprovider::getTestOnAdd
      */
@@ -246,6 +253,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::onEdit
      * @dataProvider    ToolbarDataprovider::getTestOnEdit
      */
@@ -263,6 +271,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::clearLinks
      */
     public function testClearLinks()
@@ -277,6 +286,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::getLinks
      */
     public function testGetLinks()
@@ -292,6 +302,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::appendLink
      * @dataProvider    ToolbarDataprovider::getTestAppendLink
      */
@@ -311,6 +322,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::prefixLink
      */
     public function testPrefixLink()
@@ -329,6 +341,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::renderSubmenu
      * @dataProvider    ToolbarDataprovider::getTestRenderSubmenu
      */
@@ -354,6 +367,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::getRenderFrontendButtons
      */
     public function testGetRenderFrontendButtons()
@@ -366,6 +380,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::setRenderFrontendButtons
      */
     public function testSetRenderFrontendButtons()
@@ -378,6 +393,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::getRenderFrontendSubmenu
      */
     public function testGetRenderFrontendSubmenu()
@@ -390,6 +406,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::setRenderFrontendSubmenu
      */
     public function testSetRenderFrontendSubmenu()
@@ -402,6 +419,7 @@ class ToolbarTest extends FOFTestCase
     }
 
     /**
+     * @group           Toolbar
      * @covers          FOF30\Toolbar\Toolbar::isDataView
      * @dataProvider    ToolbarDataprovider::getTestIsDataView
      */

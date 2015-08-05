@@ -304,15 +304,13 @@ class ToolbarDataprovider
                 'model'   => ''
             ),
             array(
-                'case' => 'On backend, is a dataview',
+                'case' => 'On backend, is a dataview, no model',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1,
                     'addNew' => 1,
                     'editList' => 1,
-                    'divider' => 2,
-                    'publishList' => 1,
-                    'unpublishList' => 1,
+                    'divider' => 1,
                     'deleteList' => 1
                 )
             )
@@ -333,10 +331,10 @@ class ToolbarDataprovider
                     'editstate' => true,
                     'delete'    => true,
                 ),
-                'model'   => 'checkin'
+                'model'   => 'specialfields'
             ),
             array(
-                'case' => 'On backend, is a dataview, model with checkin support',
+                'case' => 'On backend, is a dataview, model with special fields support',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1,
@@ -369,15 +367,13 @@ class ToolbarDataprovider
                 'model'   => 'bare'
             ),
             array(
-                'case' => 'On backend, is a dataview, model no checkin support',
+                'case' => 'On backend, is a dataview, model no special fields support',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1,
                     'addNew' => 1,
                     'editList' => 1,
-                    'divider' => 2,
-                    'publishList' => 1,
-                    'unpublishList' => 1,
+                    'divider' => 1,
                     'deleteList' => 1
                 )
             )
@@ -402,6 +398,32 @@ class ToolbarDataprovider
             ),
             array(
                 'case' => 'On backend, is a dataview, user can\'t do anything',
+                'submenu' => true,
+                'methods' => array(
+                    'title' => 1
+                )
+            )
+        );
+
+        $data[] = array(
+            array(
+                'mock' => array(
+                    'isAdmin'  => true,
+                    'dataView' => true
+                ),
+                'submenu' => false,
+                'buttons' => false,
+                'perms'   => array(
+                    'manage'    => false,
+                    'create'    => false,
+                    'edit'      => false,
+                    'editstate' => false,
+                    'delete'    => false,
+                ),
+                'model'   => 'specialfields'
+            ),
+            array(
+                'case' => 'On backend, is a dataview, model with special fields support, user can\'t do anything',
                 'submenu' => true,
                 'methods' => array(
                     'title' => 1

@@ -288,7 +288,7 @@ class Toolbar
 
 		// Setup
 		$option = $this->container->componentName;
-		$view = $this->container->input->getCmd('view', 'cpanel');
+		$view   = $this->container->input->getCmd('view', 'cpanel');
 
 		// Set toolbar title
 		$subtitle_key = strtoupper($option . '_TITLE_' . $view);
@@ -343,7 +343,7 @@ class Toolbar
 		{
 			$model = $this->container->factory->model($view);
 
-			if ($model->hasField('locked_on'))
+			if ($model->hasField('locked_on') && $this->perms->edit)
 			{
 				JToolBarHelper::checkin();
 			}
