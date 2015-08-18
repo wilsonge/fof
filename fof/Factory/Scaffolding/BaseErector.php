@@ -167,7 +167,7 @@ class BaseErector implements ErectorInterface
 			case 'smalltext':
 			case 'longtext':
 			case 'mediumtext':
-			$detectedType = 'Text';
+				$detectedType = 'Text';
 				break;
 
 			case 'date':
@@ -188,13 +188,10 @@ class BaseErector implements ErectorInterface
 			case 'int':
 			case 'integer':
 			case 'bigint':
-				$detectedType = 'Integer';
-				break;
-
 			case 'float':
 			case 'double':
 			case 'currency':
-				$detectedType = 'Text';
+				$detectedType = 'Numeric';
 				break;
 
 			case 'enum':
