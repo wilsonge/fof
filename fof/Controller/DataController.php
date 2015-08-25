@@ -67,6 +67,7 @@ class DataController extends Controller
 		'orderdown' => 'core.edit.state',
 		'publish' => 'core.edit.state',
 		'remove' => 'core.delete',
+		'forceRemove' => 'core.delete',
 		'save' => '&getACLForApplySave', // Save task: call the getACLForApplySave method
 		'savenew' => 'core.create',
 		'saveorder' => 'core.edit.state',
@@ -1256,11 +1257,28 @@ class DataController extends Controller
 	}
 
 	/**
-	 * Delete selected item(s)
+	 * Delete or trash selected item(s). The model's softDelete flag determines if the items should be trashed (enabled
+	 * state changed to -2) or deleted (completely removed from database)
 	 *
 	 * @return  void
 	 */
 	public function remove()
+	{
+		$this->deleteOrTrash(false);
+	}
+
+	/**
+	 * Deletes the selected item(s). Unlike remove() this method will force delete the record (completely removed from
+	 * database)
+	 *
+	 * @return  void
+	 */
+	public function forceRemove()
+	{
+		$this->deleteOrTrash(true);
+	}
+
+	protected function deleteOrTrash($forceDelete = false)
 	{
 		// CSRF prevention
 		$this->csrfProtection();
@@ -1284,7 +1302,14 @@ class DataController extends Controller
 					$model->checkIn($userId);
 				}
 
-				$model->delete();
+				if ($forceDelete)
+				{
+					$model->forceDelete();
+				}
+				else
+				{
+					$model->delete();
+				}
 			}
 		}
 		catch (\Exception $e)

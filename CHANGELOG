@@ -4,6 +4,7 @@ FOF 3.0.1 –– Updated to 27/7/15 commit e7cd34fae5cea8d27b89eb0e40e878bcc0667
 + Added appropriate responses on CRUD json save
 + Color Field
 + Added parse_value attribute in the Model field. Allows for `[ITEM:fieldName]` replacement in rendered drop-down values.
++ Added forceDelete method in DataController to always delete, never trash, selected record(s)
 ~ Use the 'as' parameter of the JDatabase API for the HasMany relation
 ~ Ip helper class: let the workarounds be disabled
 # [HIGH] The "callable" type hint is not compatible with PHP 5.3
