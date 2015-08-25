@@ -1328,6 +1328,8 @@ class DataController extends Controller
 		}
 
 		$userId = $this->container->platform->getUser()->id;
+		$id     = $model->getId();
+		$data   = $this->input->getData();
 
 		if ($model->isLocked($userId))
 		{
@@ -1343,16 +1345,15 @@ class DataController extends Controller
 					$customURL = base64_decode($customURL);
 				}
 
+				$eventName = 'onAfterApplySaveError';
+				$result = $this->triggerEvent($eventName, array(&$data, $id, $e));
+
 				$url = !empty($customURL) ? $customURL : 'index.php?option=' . $this->container->componentName . '&view=' . $this->container->inflector->pluralize($this->view) . $this->getItemidURLSuffix();
 				$this->setRedirect($url, $e->getMessage(), 'error');
 
 				return false;
 			}
 		}
-
-		$id = $model->getId();
-
-		$data = $this->input->getData();
 
 		// Set the layout to form, if it's not set in the URL
 		if (is_null($this->layout))
