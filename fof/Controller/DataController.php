@@ -1391,6 +1391,9 @@ class DataController extends Controller
 		{
 			$status = false;
 			$error = $e->getMessage();
+
+			$eventName = 'onAfterApplySaveError';
+			$result = $this->triggerEvent($eventName, array(&$data, $model->getId(), $e));
 		}
 
 		if (!$status)
