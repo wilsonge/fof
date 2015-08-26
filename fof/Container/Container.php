@@ -47,7 +47,7 @@ defined('_JEXEC') or die;
  * @property  string                                   $bareComponentName  The name of the component without com_ (something)
  * @property  string                                   $componentNamespace The namespace of the component's classes (\Foobar)
  * @property  string                                   $frontEndPath       The absolute path to the front-end files
- * @property  string                                   $backEndPath        The absolute path to the front-end files
+ * @property  string                                   $backEndPath        The absolute path to the back-end files
  * @property  string                                   $thisPath           The preferred path. Backend for Admin application, frontend otherwise
  * @property  string                                   $rendererClass      The fully qualified class name of the view renderer we'll be using. Must implement FOF30\Render\RenderInterface.
  * @property  string                                   $factoryClass       The fully qualified class name of the MVC Factory object, default is FOF30\Factory\BasicFactory.
