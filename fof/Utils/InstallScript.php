@@ -894,6 +894,8 @@ class InstallScript
 			$data['component_id'] = $component_id;
 			$data['img'] = ((string)$menuElement->attributes()->img) ? (string)$menuElement->attributes()->img : 'class:component';
 			$data['home'] = 0;
+			$data['path'] = '';
+			$data['params'] = '';
 		}
 		// No menu element was specified, Let's make a generic menu item
 		else
@@ -910,6 +912,8 @@ class InstallScript
 			$data['component_id'] = $component_id;
 			$data['img'] = 'class:component';
 			$data['home'] = 0;
+			$data['path'] = '';
+			$data['params'] = '';
 		}
 
 		try
