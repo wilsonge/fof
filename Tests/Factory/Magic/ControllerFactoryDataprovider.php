@@ -85,7 +85,8 @@ class ControllerFactoryDataprovider
                     'getItemidURLSuffix' => 'getItemidURLSuffix',
                     'display' => 'display',
                     'main' => 'main',
-                    '__default' => 'main'
+                    '__default' => 'main',
+                    'forceRemove' => 'forceRemove'
                 ),
             )
         );
@@ -154,7 +155,8 @@ class ControllerFactoryDataprovider
                     'getItemidURLSuffix' => 'getItemidURLSuffix',
                     'display' => 'display',
                     'main' => 'main',
-                    '__default' => 'main'
+                    '__default' => 'main',
+                    'forceRemove' => 'forceRemove'
                 ),
             )
         );
@@ -219,7 +221,8 @@ class ControllerFactoryDataprovider
                     'getItemidURLSuffix' => 'getItemidURLSuffix',
                     'display' => 'display',
                     'main' => 'main',
-                    '__default' => 'main'
+                    '__default' => 'main',
+                    'forceRemove' => 'forceRemove'
                 ),
             )
         );
