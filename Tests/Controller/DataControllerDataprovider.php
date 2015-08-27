@@ -34,6 +34,7 @@ class DataControllerDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 )
             )
         );
@@ -68,7 +69,8 @@ class DataControllerDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
-                    'foo' => 'core.foo.bar'
+                    'foo' => 'core.foo.bar',
+                    'forceRemove' => 'core.delete'
                 )
             )
         );
