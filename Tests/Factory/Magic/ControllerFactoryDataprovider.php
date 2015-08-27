@@ -58,6 +58,7 @@ class ControllerFactoryDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 ),
                 'cache' => array('browse', 'read'),
                 'taskMap' => array(
@@ -126,6 +127,7 @@ class ControllerFactoryDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 ),
                 'cache' => array('browse', 'read'),
                 'taskMap' => array(
@@ -190,6 +192,7 @@ class ControllerFactoryDataprovider
                     'saveorder' => 'core.edit.state',
                     'trash' => 'core.edit.state',
                     'unpublish' => 'core.edit.state',
+                    'forceRemove' => 'core.delete'
                 ),
                 'cache' => array('browse', 'read'),
                 'taskMap' => array(
