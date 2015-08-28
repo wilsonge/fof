@@ -887,7 +887,7 @@ HTML;
 		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . "\n";
 		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . "\n";
 
-		$html .= "\t" . '<input type="hidden" name="' . \JFactory::getSession()->getFormToken() . '" value="1" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="' . $this->container->session->getFormToken() . '" value="1" />' . "\n";
 
 		// End the form
 		$html .= '</form>' . "\n";
@@ -1006,7 +1006,7 @@ HTML;
 			$html .= "\t" . '<input type="hidden" name="tmpl" value="' . $tmpl . '" />' . "\n";
 		}
 
-		$html .= "\t" . '<input type="hidden" name="' . \JFactory::getSession()->getFormToken() . '" value="1" />' . "\n";
+		$html .= "\t" . '<input type="hidden" name="' . $this->container->session->getFormToken() . '" value="1" />' . "\n";
 
 		$html .= $this->renderFormRaw($form, $model, 'edit');
 		$html .= '</form>';
