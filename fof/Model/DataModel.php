@@ -1078,6 +1078,9 @@ class DataModel extends Model implements \JTableInterface
 			// Update ourselves with the new ID field's value
 			$this->{$this->idFieldName} = $db->insertid();
 
+			// Rebase the relations with the newly created model
+			$this->relationManager->rebase($this);			
+
 			$this->triggerEvent('onAfterCreate');
 		}
 		else
