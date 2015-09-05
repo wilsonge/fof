@@ -78,7 +78,7 @@ class Json extends Raw implements DataViewInterface
 		{
 			$this->limitStart = $model->getState('limitstart', 0);
 			$this->limit = $model->getState('limit', 0);
-			$this->items = $model->getItemsArray($this->limitStart, $this->limit);
+			$this->items = $model->get(true, $this->limitStart, $this->limit);
 			$this->total = $model->count();
 		}
 
