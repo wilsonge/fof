@@ -47,6 +47,15 @@ class BasicFactory implements FactoryInterface
 	/** @var  bool  When enabled, FOF will commit the scaffolding results to disk. */
 	protected $saveScaffolding = false;
 
+    /** @var  bool  When enabled, FOF will commit controller scaffolding results to disk. */
+    protected $saveControllerScaffolding = false;
+
+    /** @var  bool  When enabled, FOF will commit model scaffolding results to disk. */
+    protected $saveModelScaffolding = false;
+
+    /** @var  bool  When enabled, FOF will commit view scaffolding results to disk. */
+    protected $saveViewScaffolding = false;
+
 	/**
 	 * Public constructor for the factory object
 	 *
@@ -340,6 +349,66 @@ class BasicFactory implements FactoryInterface
 	{
 		$this->saveScaffolding = (bool) $saveScaffolding;
 	}
+
+    /**
+     * Should we save controller to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveControllerScaffolding($state)
+    {
+        $this->saveControllerScaffolding = (bool) $state;
+    }
+
+    /**
+     * Should we save controller scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveControllerScaffolding()
+    {
+        return $this->saveControllerScaffolding;
+    }
+
+    /**
+     * Should we save model to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveModelScaffolding($state)
+    {
+        $this->saveModelScaffolding = (bool) $state;
+    }
+
+    /**
+     * Should we save model scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveModelScaffolding()
+    {
+        return $this->saveModelScaffolding;
+    }
+
+    /**
+     * Should we save view to disk?
+     *
+     * @param   boolean $state
+     */
+    public function setSaveViewScaffolding($state)
+    {
+        $this->saveViewScaffolding = (bool) $state;
+    }
+
+    /**
+     * Should we save view scaffolding to disk?
+     *
+     * @return  boolean $state
+     */
+    public function isSaveViewScaffolding()
+    {
+        return $this->saveViewScaffolding;
+    }
 
 	/**
 	 * Creates a Controller object
