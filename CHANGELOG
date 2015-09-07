@@ -1,4 +1,4 @@
-FOF 3.0.1 –– Updated to 25/8/15 commit ca628b805c13ae0227f8a8b4ca1acdc08cc81c34
+FOF 3.0.1
 ================================================================================
 + Added Params service to the container to easily get/set the component's options
 + Added appropriate responses on CRUD json save
@@ -9,8 +9,10 @@ FOF 3.0.1 –– Updated to 25/8/15 commit ca628b805c13ae0227f8a8b4ca1acdc08cc81
 + Numeric field type
 + Added forceDelete method in DataController to always delete, never trash, selected record(s)
 + Added onAfterApplySaveError event in DataController when saving fails
++ Rebasing of relation after item creation
 ~ Use the 'as' parameter of the JDatabase API for the HasMany relation
 ~ Ip helper class: let the workarounds be disabled
+~ Updating bundled cacert.pem
 # [HIGH] The "callable" type hint is not compatible with PHP 5.3
 # [HIGH] DataModel reorder is non-deterministic when multiple records with the same ordering value exist in the same scope
 # [HIGH] LayoutHelper: we aren't loading files from the layouts directory
@@ -18,6 +20,9 @@ FOF 3.0.1 –– Updated to 25/8/15 commit ca628b805c13ae0227f8a8b4ca1acdc08cc81
 # [MEDIUM] You couldn't create new records using HTTP verbs (e.g. JSON API)
 # [MEDIUM] DataModel's automatic validation for INT columns with '0' default value was broken
 # [LOW] Front-end rendering of XML forms results in a superfluous div when sidebar rendering is disabled.
+# [LOW] InstallScript::_createAdminMenus didn't assign values for NOT NULL columns of the menu database table
+# [LOW] AkeebaStrapper renderer would not access the session through the container
+# [LOW] Json view would use getItemsArray() instead of get() thus not making use of eager loaded relations
 
 FOF 3.0.0
 ================================================================================
