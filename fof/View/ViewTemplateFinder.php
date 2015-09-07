@@ -280,11 +280,13 @@ class ViewTemplateFinder
 		}
 
 		// Add this side of the application
+		$paths[] = ($isAdmin ? $componentPaths['admin'] : $componentPaths['site']) . '/ViewTemplates/' . $parts['view'];
 		$paths[] = ($isAdmin ? $componentPaths['admin'] : $componentPaths['site']) . '/View/' . $parts['view'] . '/tmpl';
 
 		// Add the other side of the application for "any:" URIs
 		if ($parts['admin'] == -1)
 		{
+			$paths[] = ($isAdmin ? $componentPaths['site'] : $componentPaths['admin']) . '/ViewTemplates/' . $parts['view'];
 			$paths[] = ($isAdmin ? $componentPaths['site'] : $componentPaths['admin']) . '/View/' . $parts['view'] . '/tmpl';
 		}
 

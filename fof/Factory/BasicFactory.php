@@ -502,6 +502,9 @@ class BasicFactory implements FactoryInterface
 			// Template override
 			$template_root . '/' . $viewName,
 			$template_root . '/' . $viewNameAlt,
+            // Forms inside the specialized folder for easier template overrides
+            $file_root . '/ViewTemplates/' . $viewName,
+            $file_root . '/ViewTemplates/' . $viewNameAlt,
 			// This side of the component
 			$file_root . '/View/' . $viewName . '/tmpl',
 			$file_root . '/View/' . $viewNameAlt . '/tmpl',
@@ -510,6 +513,10 @@ class BasicFactory implements FactoryInterface
 		// The other side of the component
 		if ($this->formLookupInOtherSide)
 		{
+            // Forms inside the specialized folder for easier template overrides
+            $paths[] = $alt_file_root . '/ViewTemplates/' . $viewName;
+            $paths[] = $alt_file_root . '/ViewTemplates/' . $viewNameAlt;
+
 			$paths[] = $alt_file_root . '/View/' . $viewName . '/tmpl';
 			$paths[] = $alt_file_root . '/View/' . $viewNameAlt . '/tmpl';
 		}
