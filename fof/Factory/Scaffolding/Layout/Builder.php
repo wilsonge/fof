@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF30\Factory\Scaffolding;
+namespace FOF30\Factory\Scaffolding\Layout;
 
 use FOF30\Container\Container;
 use SimpleXMLElement;
@@ -94,7 +94,7 @@ class Builder
 		$model = $this->container->factory->model($viewName);
 
 		// Create the scaffolding object and build the XML file
-		$className = 'FOF30\\Factory\\Scaffolding\\' . $builderType . 'Erector';
+		$className = 'FOF30\\Factory\\Scaffolding\\Layout\\' . $builderType . 'Erector';
 
 		/** @var ErectorInterface $erector */
 		$erector = new $className($this, $model, $viewName);

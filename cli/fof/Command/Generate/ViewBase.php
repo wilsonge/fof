@@ -2,7 +2,7 @@
 
 namespace FOF30\Generator\Command\Generate;
 use FOF30\Generator\Command\Command as Command;
-use FOF30\Factory\Scaffolding\Builder as ScaffoldingBuilder;
+use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
 use FOF30\Container\Container as Container;
 
 abstract class ViewBase extends Command {
@@ -12,7 +12,7 @@ abstract class ViewBase extends Command {
 	 * @param  object $composer The composer.json info
 	 * @return string           The component name
 	 */
-	protected function getComponent($composer) 
+	protected function getComponent($composer)
 	{
 		// We do have a composer file, so we can start working
 		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
@@ -28,7 +28,7 @@ abstract class ViewBase extends Command {
 	 * @param  object $input The input object
 	 * @return string        The view name
 	 */
-	protected function getViewName($input) 
+	protected function getViewName($input)
 	{
 		// Get the view
 		$args = $input->args;
@@ -47,18 +47,18 @@ abstract class ViewBase extends Command {
 	 * @param  string $view      The view name
 	 * @param  string $viewType  The type of the view (default, form, item)
 	 * @param  boolean $backend   If it's for the backend
-	 * 
+	 *
 	 * @return string            The xml generated
-	 * 
-	 * @throws Exception Can throw exceptions. @see ScaffoldingBuilder
+	 *
+	 * @throws \Exception Can throw exceptions. @see LayoutBuilder
 	 */
-	protected function createViewFile($component, $view, $viewType, $backend) 
-	{		
+	protected function createViewFile($component, $view, $viewType, $backend)
+	{
 		$container = Container::getInstance($component);
 		$container->factory->setSaveScaffolding(true);
 
 		// plural / singular
-		if ($viewType != 'default') 
+		if ($viewType != 'default')
 		{
 			$view = $container->inflector->singularize($view);
 		}
@@ -70,8 +70,8 @@ abstract class ViewBase extends Command {
 
 		$container->frontEndPath = $backend ? $container->backEndPath : $container->frontEndPath;
 
-		$scaffolding = new ScaffoldingBuilder($container);
-		
+		$scaffolding = new LayoutBuilder($container);
+
 		$return = $scaffolding->make('form.' . $viewType, $view);
 
 		// And switch them back!
@@ -87,20 +87,20 @@ abstract class ViewBase extends Command {
 	 * @param  object $input    The input object
 	 * @param  string $viewType The type of the view (item, default, form)
 	 */
-	protected function createView($composer, $input, $viewType) 
+	protected function createView($composer, $input, $viewType)
 	{
 		$this->setDevServer();
 
 		$view 		= $this->getViewName($input);
 		$component 	= $this->getComponent($composer);
 
-		if (!$component) 
+		if (!$component)
 		{
 			$this->out("Can't find component details in composer.json file. Run 'fof init'");
 			exit();
 		}
 
-		if (!$view) 
+		if (!$view)
 		{
 			$this->out("Syntax: fof generate " . $viewType . "view <name>");
 			exit();
@@ -110,7 +110,7 @@ abstract class ViewBase extends Command {
 		$backend = !$input->get('frontend', false);
 
 		try {
-				
+
 			// Create the view
 			$this->createViewFile($component, $view, $viewType, $backend);
 
@@ -120,9 +120,9 @@ abstract class ViewBase extends Command {
 			// All ok!
 			$this->out($message);
 
-		} catch(Exception $e) {
+		} catch(\Exception $e) {
 			if ($e instanceof \FOF30\Model\DataModel\Exception\NoTableColumns) {
-				
+
 				$container = Container::getInstance($component);
 
 				$this->out("FOF cannot find a database table for " . $view . '. It should be name #__' . $component . '_' . $container->inflector->pluralize($view));

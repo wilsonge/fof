@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF30\Factory\Scaffolding;
+namespace FOF30\Factory\Scaffolding\Layout;
 
 use FOF30\Model\DataModel;
 
@@ -14,7 +14,7 @@ class BaseErector implements ErectorInterface
 	/**
 	 * The Builder which called us
 	 *
-	 * @var \FOF30\Factory\Scaffolding\Builder
+	 * @var \FOF30\Factory\Scaffolding\Layout\Builder
 	 */
 	protected $builder = null;
 
@@ -56,7 +56,7 @@ class BaseErector implements ErectorInterface
 	/**
 	 * Construct the erector object
 	 *
-	 * @param   \FOF30\Factory\Scaffolding\Builder $parent   The parent builder
+	 * @param   \FOF30\Factory\Scaffolding\Layout\Builder $parent   The parent builder
 	 * @param   \FOF30\Model\DataModel             $model    The model we're erecting a scaffold against
 	 * @param   string                             $viewName The view name for this model
 	 */

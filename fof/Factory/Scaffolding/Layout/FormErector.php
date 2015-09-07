@@ -5,7 +5,7 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF30\Factory\Scaffolding;
+namespace FOF30\Factory\Scaffolding\Layout;
 
 use FOF30\Model\DataModel;
 

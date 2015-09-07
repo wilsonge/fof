@@ -18,7 +18,7 @@ use FOF30\Factory\Exception\ModelNotFound;
 use FOF30\Factory\Exception\ToolbarNotFound;
 use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
-use FOF30\Factory\Scaffolding\Builder as ScaffoldingBuilder;
+use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
 use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
@@ -244,7 +244,7 @@ class BasicFactory implements FactoryInterface
 		{
 			if ($this->scaffolding)
 			{
-				$scaffolding = new ScaffoldingBuilder($this->container);
+				$scaffolding = new LayoutBuilder($this->container);
 				$xml = $scaffolding->make($source, $viewName);
 
 				if (!is_null($xml))
