@@ -215,23 +215,29 @@ class Container extends ContainerBase
 
 		// Get the values overrides from fof.xml
 		$values = array_merge(array(
-			'factoryClass' => '\\FOF30\\Factory\\BasicFactory',
-			'platformClass' => '\\FOF30\\Platform\\Joomla\\Platform',
-			'scaffolding' => false,
-			'saveScaffolding' => false,
+			'factoryClass'      => '\\FOF30\\Factory\\BasicFactory',
+			'platformClass'     => '\\FOF30\\Platform\\Joomla\\Platform',
+			'scaffolding'       => false,
+			'saveScaffolding'   => false,
+			'saveControllerScaffolding' => false,
+			'saveModelScaffolding'      => false,
+			'saveViewScaffolding'       => false,
 		), $values);
 
 		$values = array_merge($values, array(
-			'componentName' => $component,
-			'componentNamespace' => $namespace,
-			'frontEndPath' => $frontEndPath,
-			'backEndPath' => $backEndPath,
-			'thisPath' => $thisPath,
-			'rendererClass' => $appConfig->get('container.rendererClass', null),
-			'factoryClass' => $appConfig->get('container.factoryClass', $values['factoryClass']),
-			'platformClass' => $appConfig->get('container.platformClass', $values['platformClass']),
-			'scaffolding' => $appConfig->get('container.scaffolding', $values['scaffolding']),
-			'saveScaffolding' => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
+			'componentName'     => $component,
+			'componentNamespace'=> $namespace,
+			'frontEndPath'      => $frontEndPath,
+			'backEndPath'       => $backEndPath,
+			'thisPath'          => $thisPath,
+			'rendererClass'     => $appConfig->get('container.rendererClass', null),
+			'factoryClass'      => $appConfig->get('container.factoryClass', $values['factoryClass']),
+			'platformClass'     => $appConfig->get('container.platformClass', $values['platformClass']),
+			'scaffolding'       => $appConfig->get('container.scaffolding', $values['scaffolding']),
+			'saveScaffolding'   => $appConfig->get('container.saveScaffolding', $values['saveScaffolding']),
+			'saveControllerScaffolding' => $appConfig->get('container.saveControllerScaffolding', $values['saveControllerScaffolding']),
+			'saveModelScaffolding'      => $appConfig->get('container.saveModelScaffolding', $values['saveModelScaffolding']),
+			'saveViewScaffolding'       => $appConfig->get('container.saveViewScaffolding', $values['saveViewScaffolding']),
 		));
 
 		if (empty($values['rendererClass']))
@@ -427,6 +433,21 @@ class Container extends ContainerBase
 				{
 					$factory->setSaveScaffolding($c['saveScaffolding']);
 				}
+
+                if (isset($c['saveControllerScaffolding']))
+                {
+                    $factory->setSaveControllerScaffolding($c['saveControllerScaffolding']);
+                }
+
+                if (isset($c['saveModelScaffolding']))
+                {
+                    $factory->setSaveModelScaffolding($c['saveModelScaffolding']);
+                }
+
+                if (isset($c['saveViewScaffolding']))
+                {
+                    $factory->setSaveViewScaffolding($c['saveViewScaffolding']);
+                }
 
 				return $factory;
 			};
