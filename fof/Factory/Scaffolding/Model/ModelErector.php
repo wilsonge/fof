@@ -8,6 +8,7 @@
 namespace FOF30\Factory\Scaffolding\Model;
 
 use FOF30\Model\DataModel;
+use FOF30\Utils\ModelTypeHints;
 
 /**
  *
@@ -63,6 +64,17 @@ class ModelErector implements ErectorInterface
         $code .= PHP_EOL;
         $code .= "defined('_JEXEC') or die;".PHP_EOL;
         $code .= PHP_EOL;
+
+        // Let's create some type-hints for the model class
+        $typeHints = new ModelTypeHints($this->model);
+        $docBlock  = $typeHints->getHints();
+
+        // I have to replace parent class name with the current one
+        $lines = explode("\n", $docBlock);
+        $lines[1] = ' * Model '.$fullPath;
+        $docBlock = implode("\n", $lines);
+
+        $code .= $docBlock;
         $code .= 'class '.$className.' extends '.$baseClass.PHP_EOL;
         $code .= '{'.PHP_EOL;
         $code .= PHP_EOL;
