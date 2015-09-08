@@ -20,6 +20,7 @@ use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
 use FOF30\Factory\Scaffolding\Controller\Builder as ControllerBuilder;
+use FOF30\Factory\Scaffolding\Model\Builder as ModelBuilder;
 use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
@@ -139,7 +140,34 @@ class BasicFactory implements FactoryInterface
 
 		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($this->container->inflector->singularize($viewName));
 
-		return $this->createModel($modelClass, $config);
+        try
+        {
+            $model = $this->createModel($modelClass, $config);
+        }
+        catch(ModelNotFound $e)
+        {
+            // Do I have to create and save the class file? If not, let's rethrow the exception
+            if(!$this->saveModelScaffolding)
+            {
+                throw $e;
+            }
+
+            // By default model classes are plural
+            $modelClass  = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
+            $scaffolding = new ModelBuilder($this->container);
+
+            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+            if($scaffolding->make($modelClass, $viewName))
+            {
+                $model = $this->model($viewName, $config);
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
+        return $model;
 	}
 
 	/**

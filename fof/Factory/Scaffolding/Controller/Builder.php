@@ -36,7 +36,7 @@ class Builder
 	 * @param   string  $requestedClass     The requested class, with full qualifier ie Myapp\Site\Controller\Foobar
 	 * @param   string  $viewName           The name of the view linked to this controller
 	 *
-	 * @return  string|null  The XML source or null if we can't make a scaffolding XML
+	 * @return  bool    True on success, false otherwise
 	 */
 	public function make($requestedClass, $viewName)
 	{
@@ -61,7 +61,7 @@ class Builder
 
         return true;
 	}
-    
+
 	/**
 	 * Gets the container this builder belongs to
 	 *

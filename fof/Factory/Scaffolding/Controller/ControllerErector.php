@@ -24,7 +24,7 @@ class ControllerErector implements ErectorInterface
     protected $builder = null;
 
     /**
-     * The Model attached to the view we're building
+     * The Controller attached to the view we're building
      *
      * @var \FOF30\Controller\DataController
      */
