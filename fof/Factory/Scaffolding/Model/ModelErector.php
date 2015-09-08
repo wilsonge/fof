@@ -67,12 +67,8 @@ class ModelErector implements ErectorInterface
 
         // Let's create some type-hints for the model class
         $typeHints = new ModelTypeHints($this->model);
+        $typeHints->setClassName($fullPath);
         $docBlock  = $typeHints->getHints();
-
-        // I have to replace parent class name with the current one
-        $lines = explode("\n", $docBlock);
-        $lines[1] = ' * Model '.$fullPath;
-        $docBlock = implode("\n", $lines);
 
         $code .= $docBlock;
         $code .= 'class '.$className.' extends '.$baseClass.PHP_EOL;
