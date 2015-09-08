@@ -21,6 +21,7 @@ use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
 use FOF30\Factory\Scaffolding\Controller\Builder as ControllerBuilder;
 use FOF30\Factory\Scaffolding\Model\Builder as ModelBuilder;
+use FOF30\Factory\Scaffolding\View\Builder as ViewBuilder;
 use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
@@ -181,7 +182,10 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function view($viewName, $viewType = 'html', array $config = array())
 	{
-		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
+        $container = $this->container;
+        $prefix    = $this->container->getNamespacePrefix();
+
+		$viewClass = $prefix . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
 
 		try
 		{
@@ -191,9 +195,36 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$viewClass = $this->container->getNamespacePrefix() . 'View\\' . ucfirst($this->container->inflector->singularize($viewName)) . '\\' . ucfirst($viewType);
+		$viewClass = $prefix . 'View\\' . ucfirst($container->inflector->singularize($viewName)) . '\\' . ucfirst($viewType);
 
-		return $this->createView($viewClass, $config);
+        try
+        {
+            $view = $this->createView($viewClass, $config);
+        }
+        catch(ViewNotFound $e)
+        {
+            // Do I have to create and save the class file? If not, let's rethrow the exception. Note: I can only create HTML views
+            if(!$this->saveViewScaffolding)
+            {
+                throw $e;
+            }
+
+            // By default view classes are plural
+            $viewClass = $prefix . 'View\\' . ucfirst($container->inflector->pluralize($viewName)) . '\\' . ucfirst($viewType);
+            $scaffolding = new ViewBuilder($this->container);
+
+            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+            if($scaffolding->make($viewClass, $viewName, $viewType))
+            {
+                $view = $this->view($viewName, $viewType, $config);
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
+        return $view;
 	}
 
 	/**
