@@ -19,6 +19,7 @@ use FOF30\Factory\Exception\ToolbarNotFound;
 use FOF30\Factory\Exception\TransparentAuthenticationNotFound;
 use FOF30\Factory\Exception\ViewNotFound;
 use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
+use FOF30\Factory\Scaffolding\Controller\Builder as ControllerBuilder;
 use FOF30\Form\Form;
 use FOF30\Model\Model;
 use FOF30\Toolbar\Toolbar;
@@ -86,9 +87,34 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
+        $controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
 
-		return $this->createController($controllerClass, $config);
+        try
+        {
+            $controller = $this->createController($controllerClass, $config);
+        }
+        catch(ControllerNotFound $e)
+        {
+            // Do I have to create and save the class file? If not, let's rethrow the exception
+            if(!$this->saveControllerScaffolding)
+            {
+                throw $e;
+            }
+
+            $scaffolding = new ControllerBuilder($this->container);
+
+            // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
+            if($scaffolding->make($controllerClass, $viewName))
+            {
+                $controller = $this->controller($viewName, $config);
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+
+		return $controller;
 	}
 
 	/**
