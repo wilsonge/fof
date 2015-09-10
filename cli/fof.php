@@ -94,9 +94,32 @@ if (file_exists(dirname(__DIR__) . '/includes/defines.php')) {
 } else {
 	// Do we have .fof file?
 	if (!file_exists(getcwd() . '/.fof')) {
-		echo 'cannot find .fof';
-		// TODO: ask the path to a joomla site to create the .fof file
-		exit();
+		fwrite(STDOUT, "Could not find a .fof file. Let me generate it for you \n");
+
+		// Get the site dev path
+		$path = false;
+		while (!$path) {
+			// Get Path to the dev site
+			fwrite(STDOUT, "What's the dev site location? ( /var/www/ )\n");
+			$path = rtrim(fread(STDIN, 8192), "\n");
+
+			if (!$path || !is_dir($path)) {
+				$path = false;
+				fwrite(STDOUT, "The path does not exists\n");
+			}
+
+			// Check if it's joomla
+			if (!is_file($path . '/configuration.php')) {
+				$path = false;
+				fwrite(STDOUT, "he path does not contain a Joomla Website\n");
+			}
+		}
+
+		// All ok, write the .fof file
+		$fof = array('dev' => $path);
+		$fofFile = fopen(getcwd() . '/.fof', 'w');
+		fwrite($fofFile, json_encode($fof));
+		fclose($fofFile);
 	}
 
 	// load from .fof file
