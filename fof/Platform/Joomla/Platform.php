@@ -294,6 +294,13 @@ class Platform extends BasePlatform
 	 */
 	public function getUser($id = null)
 	{
+		// If I'm in CLI and I have an ID, let's load the User directly, otherwise JFactory will check the session
+		// (which doesn't exists in CLI)
+		if($this->isCli() && $id)
+		{
+			return \JUser::getInstance($id);
+		}
+
 		return \JFactory::getUser($id);
 	}
 
