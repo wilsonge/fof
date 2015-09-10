@@ -40,8 +40,8 @@ class Language extends Observer
 			$model->blacklistFilters('language');
 		}
 
-		// Make sure the field actually exists
-		if (!$model->hasField('language'))
+		// Make sure the field actually exists AND we're not in CLI
+		if (!$model->hasField('language') || $model->getContainer()->platform->isCli())
 		{
 			return;
 		}
