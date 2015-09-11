@@ -834,7 +834,7 @@ class Controller
 		// Ensure the type is not overwritten by a previous call to setMessage.
 		if (empty($this->messageType))
 		{
-			$this->messageType = 'info';
+			$this->messageType = 'message';
 		}
 
 		// If the type is explicitly set, set it.
