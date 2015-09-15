@@ -29,7 +29,7 @@ class FofApp extends JApplicationCli
 		{
 			$cgiMode = true;
 		}
-		
+
 		// If a input object is given use it.
 		if ($input instanceof JInput)
 		{
@@ -89,18 +89,18 @@ class FofApp extends JApplicationCli
 		{
 			$this->loadDispatcher();
 		}
-		
+
 		// Load the configuration object.
 		$this->loadConfiguration($this->fetchConfigurationData());
-		
+
 		// Set the execution datetime and timestamp;
 		$this->set('execution.datetime', gmdate('Y-m-d H:i:s'));
 		$this->set('execution.timestamp', time());
-		
+
 		// Set the current directory.
 		$this->set('cwd', getcwd());
 	}
-	
+
 	/**
 	 * The main entry point of the application
 	 */
@@ -122,7 +122,7 @@ class FofApp extends JApplicationCli
 		// Register the current namespace with the autoloader
 		FOF30\Autoloader\Autoloader::getInstance()->addMap('FOF30\\Generator\\', array($path));
 		FOF30\Autoloader\Autoloader::getInstance()->register();
-			
+
 		// Get command
 		$command = array_shift($args);
 		$command = ucfirst(strtolower($command));
@@ -131,23 +131,30 @@ class FofApp extends JApplicationCli
 		$class = 'FOF30\Generator\Command\\' . $command;
 		$partial_class = $class;
 
-		while (count($args)) {
+		while (count($args))
+        {
 			$command = array_shift($args);
 			$command = ucfirst(strtolower($command));
 			$partial_class = $class . '\\' . $command;
-			
-			if (class_exists($partial_class)) {
+
+			if (class_exists($partial_class))
+            {
 				$class = $partial_class;
 			}
 		}
 
-		try {
-			if (class_exists($class)) {
+		try
+        {
+			if (class_exists($class))
+            {
 				$class = new $class();
 				$class->execute($composer, $this->input);
 			}
-		} catch(Exception $e) {
+		}
+        catch(Exception $e)
+        {
 			$this->out($e);
+
 			exit();
 		}
 	}
@@ -156,13 +163,13 @@ class FofApp extends JApplicationCli
 	 * Load the informations from the composer.json file
 	 * @return object The composer file informations
 	 */
-	protected function getComposerInfo() 
+	protected function getComposerInfo()
 	{
 		$this->out("Checking for Existing Composer File...");
 
 		// Does the composer file exists?
-		if (!file_exists(getcwd() . '/composer.json')) {
-			
+		if (!file_exists(getcwd() . '/composer.json'))
+        {
 			// Ask to create it
 			$this->out("Can't find a composer.json file in this directory. Run \"composer init\" to create it");
 			exit();
@@ -177,10 +184,11 @@ class FofApp extends JApplicationCli
 	/**
 	 * Disable PHP time limit
 	 */
-	protected function disableTimeLimit() 
+	protected function disableTimeLimit()
 	{
 		// Unset time limits
 		$safe_mode = true;
+
 		if (function_exists('ini_get'))
 		{
 			$safe_mode = ini_get('safe_mode');
@@ -196,7 +204,7 @@ class FofApp extends JApplicationCli
 	/**
 	 * Perform tedious tasks as loading Joomla files, error handling, etc
 	 */
-	protected function loadLibraries() 
+	protected function loadLibraries()
 	{
 		// Set all errors to output the messages to the console, in order to
 		// avoid infinite loops in JError ;)
@@ -212,7 +220,9 @@ class FofApp extends JApplicationCli
 
 		// Allow inclusion of Joomla! files
 		if (!defined('_JEXEC'))
-			define('_JEXEC', 1);
+        {
+            define('_JEXEC', 1);
+        }
 
 		// Load FOF
 		if (!defined('FOF30_INCLUDED') && !@include_once(JPATH_LIBRARIES . '/fof30/include.php'))
@@ -224,7 +234,7 @@ class FofApp extends JApplicationCli
 	/**
 	 * Display the generator banner informations
 	 */
-	protected function displayBanner() 
+	protected function displayBanner()
 	{
 		$year			 = gmdate('Y');
 		$phpversion		 = PHP_VERSION;
@@ -245,10 +255,10 @@ class FofApp extends JApplicationCli
 	/**
 	 * Load the Joomla Configuration from specific path
 	 *
-	 * @param string $path The directory where we should find the configuration.php file 
+	 * @param string $path The directory where we should find the configuration.php file
 	 */
 	public function reloadConfiguration($path)
-	{			
+	{
 		// Load the configuration object.
 		$this->loadConfiguration($this->fetchConfigurationData($path . '/configuration.php'));
 	}

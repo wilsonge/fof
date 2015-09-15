@@ -1,12 +1,13 @@
 <?php
 
 namespace FOF30\Generator\Command\Generate;
+
 use FOF30\Generator\Command\Command as Command;
 use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
 use FOF30\Container\Container as Container;
 
-abstract class ViewBase extends Command {
-
+abstract class ViewBase extends Command
+{
 	/**
 	 * Get the Component name from the composer file
 	 * @param  object $composer The composer.json info
@@ -34,7 +35,8 @@ abstract class ViewBase extends Command {
 		$args = $input->args;
 		$view = false;
 
-		if ($args) {
+		if ($args)
+        {
 			$view = array_pop($args);
 		}
 
@@ -109,8 +111,8 @@ abstract class ViewBase extends Command {
 		// Backend or frontend?
 		$backend = !$input->get('frontend', false);
 
-		try {
-
+		try
+        {
 			// Create the view
 			$this->createViewFile($component, $view, $viewType, $backend);
 
@@ -120,9 +122,11 @@ abstract class ViewBase extends Command {
 			// All ok!
 			$this->out($message);
 
-		} catch(\Exception $e) {
-			if ($e instanceof \FOF30\Model\DataModel\Exception\NoTableColumns) {
-
+		}
+        catch(\Exception $e)
+        {
+			if ($e instanceof \FOF30\Model\DataModel\Exception\NoTableColumns)
+            {
 				$container = Container::getInstance($component);
 
 				$this->out("FOF cannot find a database table for " . $view . '. It should be name #__' . $component . '_' . $container->inflector->pluralize($view));
@@ -130,8 +134,8 @@ abstract class ViewBase extends Command {
 			}
 
 			$this->out($e);
+
 			exit();
 		}
 	}
-
 }

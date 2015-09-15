@@ -1,11 +1,13 @@
 <?php
 
 namespace FOF30\Generator\Command;
+
 use FOF30\Generator\Command\Command as Command;
 
-class Help extends Command {
-	
-	public function execute($composer, $input) {
+class Help extends Command
+{
+	public function execute($composer, $input)
+    {
 		$this->out("");
 		$this->out(str_repeat('-', 79));
 		$this->out("FOF3 Generator Usage:");
@@ -23,5 +25,4 @@ class Help extends Command {
 		$this->out(str_repeat('-', 79));
 		$this->out("");
 	}
-
 }
