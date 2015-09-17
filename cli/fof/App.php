@@ -4,6 +4,7 @@
  * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  */
+use FOF30\Generator\Command\Command;
 
 /**
  * FOF3 Generator App
@@ -65,6 +66,7 @@ class FofApp extends JApplicationCli
 					$argc	 = count($argv);
 					$_SERVER['argv'] = $argv;
 				}
+
 				if (class_exists('JInputCLI'))
 				{
 					$this->input = new JInputCLI();
@@ -117,7 +119,7 @@ class FofApp extends JApplicationCli
 		$this->disableTimeLimit();
 
 		// Get arguments
-		$args = $this->input->args;
+		$args = (array) $this->input->args;
 
 		$composer = $this->getComposerInfo();
 
@@ -135,24 +137,12 @@ class FofApp extends JApplicationCli
 
 		// Run automatically every know command
 		$class = 'FOF30\Generator\Command\\' . $command;
-		$partial_class = $class;
-
-		while (count($args))
-        {
-			$command = array_shift($args);
-			$command = ucfirst(strtolower($command));
-			$partial_class = $class . '\\' . $command;
-
-			if (class_exists($partial_class))
-            {
-				$class = $partial_class;
-			}
-		}
 
 		try
         {
 			if (class_exists($class))
             {
+                /** @var Command $class */
 				$class = new $class();
 				$class->execute($composer, $this->input);
 			}
