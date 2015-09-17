@@ -7,6 +7,10 @@
 
 namespace FOF30\Generator\Command;
 
+use JFactory;
+use JFile;
+use JFolder;
+
 abstract class Command
 {
     /**
@@ -25,7 +29,7 @@ abstract class Command
 	 */
 	protected function getComponentName($composer)
 	{
-		$extra = ($composer->extra && $composer->extra->fof) ? $composer->extra->fof : false;
+		$extra        = ($composer->extra && $composer->extra->fof) ? $composer->extra->fof : false;
 		$default_name = $extra ? $extra->name : array_pop(explode("/", $composer->name));
 		$default_name = $default_name ? $default_name : 'com_foobar';
 
@@ -39,8 +43,11 @@ abstract class Command
 
 		if (!$extra)
         {
-			\JFactory::getApplication()->out("What's your component name? (" . $default_name . ")");
-			$name = \JFactory::getApplication()->in();
+            /** @var \FofApp $app */
+            $app = JFactory::getApplication();
+
+			$app->out("What's your component name? (" . $default_name . ")");
+			$name = $app->in();
 		}
 
 		if (!$name)
@@ -70,30 +77,33 @@ abstract class Command
 	 */
 	public function setDevServer($force = false)
 	{
+        $path = '';
+
 		// .fof file not found, ask the user!
-		if (!\JFile::exists(getcwd() . '/.fof') || $force)
+		if (!JFile::exists(getcwd() . '/.fof') || $force)
         {
 			$this->out("What's the dev site location? ( /var/www/ )");
 			$path = $this->in();
 
-			if (!$path || !\JFolder::exists($path))
+			if (!$path || !JFolder::exists($path))
             {
 				$this->out('The path does not exists');
 				$this->setDevServer();
 			}
 
-			if (!\JFile::exists($path . '/configuration.php'))
+			if (!JFile::exists($path . '/configuration.php'))
             {
 				$this->out('The path does not contain a Joomla Website');
 				$this->setDevServer();
 			}
 
 			$fof = array('dev' => $path);
-			\JFile::write(getcwd() . '/.fof', json_encode($fof));
+
+			JFile::write(getcwd() . '/.fof', json_encode($fof));
 		}
         else
         {
-			$fof = json_decode(\JFile::read(getcwd() . '/.fof'));
+			$fof = json_decode(JFile::read(getcwd() . '/.fof'));
 
 			if ($fof && $fof->dev)
             {
@@ -101,8 +111,15 @@ abstract class Command
 			}
 		}
 
+        if(!$path)
+        {
+            throw new \RuntimeException("Could not detect the path to the dev server");
+        }
+
 		// Load the configuration object.
-		\JFactory::getApplication()->reloadConfiguration($path);
+        /** @var \FofApp $app */
+        $app = JFactory::getApplication();
+		$app->reloadConfiguration($path);
 	}
 
 	/**
@@ -110,7 +127,10 @@ abstract class Command
 	 */
 	protected function in()
     {
-		return \JFactory::getApplication()->in();
+        /** @var \FofApp $app */
+        $app = JFactory::getApplication();
+
+		return $app->in();
 	}
 
 	/**
@@ -118,7 +138,10 @@ abstract class Command
 	 */
 	protected function out($content)
     {
-		return \JFactory::getApplication()->out($content);
+        /** @var \FofApp $app */
+        $app = JFactory::getApplication();
+
+		return $app->out($content);
 	}
 
     /**
