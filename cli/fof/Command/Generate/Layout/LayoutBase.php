@@ -15,32 +15,6 @@ use FOF30\Model\DataModel\Exception\NoTableColumns;
 abstract class LayoutBase extends Command
 {
 	/**
-	 * Get the Component name from the composer file
-	 * @param  object $composer The composer.json info
-	 * @return string           The component name
-	 */
-	protected function getComponent($composer)
-	{
-		// We do have a composer file, so we can start working
-		$composer->extra = $composer->extra ? $composer->extra : array('fof' => array());
-		$composer->extra->fof = $composer->extra->fof ? $composer->extra->fof : array();
-
-		$component = $composer->extra->fof->name;
-
-		return $component;
-	}
-
-	/**
-	 * Get the view name from the input
-	 * @param  object $input The input object
-	 * @return string        The view name
-	 */
-	protected function getViewName($input)
-	{
-		return ucfirst(strtolower($input->getString('name')));
-	}
-
-	/**
 	 * Create the xml file for a give view type
 	 * @param  string $component The component name
 	 * @param  string $view      The view name
