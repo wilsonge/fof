@@ -29,5 +29,15 @@ class Help extends Command
 		$this->out("fof help: Show this help");
 		$this->out(str_repeat('-', 79));
 		$this->out("");
+
+        /*
+         * fof generate --name foobars --controller
+         * fof generate --name foobars --model
+         * fof generate --name foobars --view
+         * fof generate --name foobars --mvc
+         *
+         * fof generate --name foobars --layout item
+         * fof generate --name foobars --layout
+         */
 	}
 }

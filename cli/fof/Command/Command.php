@@ -7,8 +7,18 @@
 
 namespace FOF30\Generator\Command;
 
-class Command
+abstract class Command
 {
+    /**
+     * This is where we execute the whole logic of the command
+     *
+     * @param   \stdClass               $composer
+     * @param   \JInput     $input
+     *
+     * @return
+     */
+    abstract public function execute($composer, $input);
+
 	/**
 	 * Get the component's name from the user
 	 * @return string The name of the component (com_foobar)
