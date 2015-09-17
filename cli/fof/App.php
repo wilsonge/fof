@@ -149,7 +149,7 @@ class FofApp extends JApplicationCli
 		}
         catch(Exception $e)
         {
-			$this->out($e);
+			$this->out($e->getMessage());
 
 			exit();
 		}

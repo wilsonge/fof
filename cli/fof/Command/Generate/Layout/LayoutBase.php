@@ -37,16 +37,7 @@ abstract class LayoutBase extends Command
 	 */
 	protected function getViewName($input)
 	{
-		// Get the view
-		$args = $input->args;
-		$view = false;
-
-		if ($args)
-        {
-			$view = array_pop($args);
-		}
-
-		return ucfirst(strtolower($view));
+		return ucfirst(strtolower($input->getString('name')));
 	}
 
 	/**
