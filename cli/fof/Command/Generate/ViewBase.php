@@ -10,6 +10,7 @@ namespace FOF30\Generator\Command\Generate;
 use FOF30\Generator\Command\Command as Command;
 use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
 use FOF30\Container\Container as Container;
+use FOF30\Model\DataModel\Exception\NoTableColumns;
 
 abstract class ViewBase extends Command
 {
@@ -61,7 +62,8 @@ abstract class ViewBase extends Command
 	 */
 	protected function createViewFile($component, $view, $viewType, $backend)
 	{
-		$container = Container::getInstance($component);
+        // Let's force the use of the Magic Factory
+		$container = Container::getInstance($component, array('factoryClass' => 'FOF30\\Factory\\MagicFactory'));
 		$container->factory->setSaveScaffolding(true);
 
 		// plural / singular
@@ -130,11 +132,11 @@ abstract class ViewBase extends Command
 		}
         catch(\Exception $e)
         {
-			if ($e instanceof \FOF30\Model\DataModel\Exception\NoTableColumns)
+			if ($e instanceof NoTableColumns)
             {
 				$container = Container::getInstance($component);
 
-				$this->out("FOF cannot find a database table for " . $view . '. It should be name #__' . $component . '_' . $container->inflector->pluralize($view));
+				$this->out("FOF cannot find a database table for " . $view . '. It should be named #__' . $component . '_' . strtolower($container->inflector->pluralize($view)));
 				exit();
 			}
 
