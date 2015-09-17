@@ -9,7 +9,7 @@ namespace FOF30\Generator\Command\Generate;
 
 use FOF30\Generator\Command\Command as Command;
 
-class DefaultView extends ViewBase
+class DefaultLayout extends LayoutBase
 {
 	public function execute($composer, $input)
     {

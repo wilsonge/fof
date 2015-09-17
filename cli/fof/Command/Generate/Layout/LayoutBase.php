@@ -12,7 +12,7 @@ use FOF30\Factory\Scaffolding\Layout\Builder as LayoutBuilder;
 use FOF30\Container\Container as Container;
 use FOF30\Model\DataModel\Exception\NoTableColumns;
 
-abstract class ViewBase extends Command
+abstract class LayoutBase extends Command
 {
 	/**
 	 * Get the Component name from the composer file
