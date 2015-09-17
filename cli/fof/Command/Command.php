@@ -14,17 +14,43 @@ use JFolder;
 abstract class Command
 {
     /**
-     * This is where we execute the whole logic of the command
+     * Parsed contents of composer.json
      *
-     * @param   \stdClass               $composer
-     * @param   \JInput     $input
+     * @var \stdClass
+     */
+    protected $composer;
+
+    /**
+     * Input coming from the CLI
+     *
+     * @var \JInput
+     */
+    protected $input;
+
+    /**
+     * Name of the component
+     *
+     * @var string
+     */
+    protected $component;
+
+    public function __construct($composer, $input)
+    {
+        $this->composer  = $composer;
+        $this->input     = $input;
+        $this->component = $this->getComponent($composer);
+    }
+
+    /**
+     * This is where we execute the whole logic of the command
      *
      * @return
      */
-    abstract public function execute($composer, $input);
+    abstract public function execute();
 
 	/**
 	 * Get the component's name from the user
+     *
 	 * @return string The name of the component (com_foobar)
 	 */
 	protected function getComponentName($composer)
@@ -133,9 +159,13 @@ abstract class Command
 		return $app->in();
 	}
 
-	/**
-	 * Proxy the out() call to the application
-	 */
+    /**
+     * Proxy the out() call to the application
+     *
+     * @param   string $content     Outputs some text on the console
+     *
+     * @return \JApplicationCli
+     */
 	protected function out($content)
     {
         /** @var \FofApp $app */

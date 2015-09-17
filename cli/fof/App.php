@@ -143,8 +143,8 @@ class FofApp extends JApplicationCli
 			if (class_exists($class))
             {
                 /** @var Command $class */
-				$class = new $class();
-				$class->execute($composer, $this->input);
+				$class = new $class($composer, $this->input);
+				$class->execute();
 			}
 		}
         catch(Exception $e)

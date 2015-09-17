@@ -4,24 +4,23 @@ namespace FOF30\Generator\Command;
 
 class Generate extends Command
 {
-    public function execute($composer, $input)
+    public function execute()
     {
         // Run some checks
-        $this->doChecks($input);
+        $this->doChecks();
 
         // Ok, I have to generate something, but... what?
-        $class = $this->getClass($input);
+        $class = $this->getClass();
 
         /** @var Command $generator */
-        $generator = new $class();
-        $generator->execute($composer, $input);
+        $generator = new $class($this->composer, $this->input);
+        $generator->execute();
     }
 
-    /**
-     * @param   \JInput $input
-     */
-    protected function doChecks($input)
+    protected function doChecks()
     {
+        $input = $this->input;
+
         // Do I have a name of the view?
         if(!$input->getString('name'))
         {
@@ -57,8 +56,9 @@ class Generate extends Command
         throw new \RuntimeException("You have to specify **what** you want to create: model, view, controller or layout");
     }
 
-    protected function getClass($input)
+    protected function getClass()
     {
+        $input  = $this->input;
         $class  = 'FOF30\\Generator\\Command\\Generate';
         $return = '';
 

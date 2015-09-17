@@ -11,8 +11,8 @@ use FOF30\Generator\Command\Command as Command;
 
 class ItemLayout extends LayoutBase
 {
-	public function execute($composer, $input)
+	public function execute()
     {
-		$this->createView($composer, $input, 'item');
+		$this->createView($this->composer, $this->input, 'item');
 	}
 }
