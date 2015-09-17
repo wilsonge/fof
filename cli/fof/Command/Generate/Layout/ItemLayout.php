@@ -5,11 +5,11 @@
  * @license     GNU GPL version 2 or later
  */
 
-namespace FOF30\Generator\Command\Generate;
+namespace FOF30\Generator\Command\Generate\Layout;
 
 use FOF30\Generator\Command\Command as Command;
 
-class Item extends LayoutBase
+class ItemLayout extends LayoutBase
 {
 	public function execute($composer, $input)
     {
