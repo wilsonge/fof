@@ -13,6 +13,6 @@ class DefaultLayout extends LayoutBase
 {
 	public function execute()
     {
-		$this->createView($this->composer, $this->input, 'default');
+		$this->createView('default');
 	}
 }

@@ -13,8 +13,8 @@ class Layouts extends LayoutBase
 {
 	public function execute()
     {
-		$this->createView($this->composer, $this->input, 'default');
-		$this->createView($this->composer, $this->input, 'form');
-		$this->createView($this->composer, $this->input, 'item');
+		$this->createView('default');
+		$this->createView('form');
+		$this->createView('item');
 	}
 }

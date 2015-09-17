@@ -13,6 +13,6 @@ class FormLayout extends LayoutBase
 {
 	public function execute()
     {
-		$this->createView($this->composer, $this->input, 'form');
+		$this->createView('form');
 	}
 }

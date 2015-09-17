@@ -16,7 +16,7 @@ abstract class LayoutBase extends Command
 {
 	/**
 	 * Create the xml file for a give view type
-	 * @param  string $component The component name
+
 	 * @param  string $view      The view name
 	 * @param  string $viewType  The type of the view (default, form, item)
 	 * @param  boolean $backend   If it's for the backend
@@ -25,10 +25,10 @@ abstract class LayoutBase extends Command
 	 *
 	 * @throws \Exception Can throw exceptions. @see LayoutBuilder
 	 */
-	protected function createViewFile($component, $view, $viewType, $backend)
+	protected function createViewFile($view, $viewType, $backend)
 	{
         // Let's force the use of the Magic Factory
-		$container = Container::getInstance($component, array('factoryClass' => 'FOF30\\Factory\\MagicFactory'));
+		$container = Container::getInstance($this->component, array('factoryClass' => 'FOF30\\Factory\\MagicFactory'));
 		$container->factory->setSaveScaffolding(true);
 
 		// plural / singular
@@ -40,7 +40,7 @@ abstract class LayoutBase extends Command
 		// Small trick: being in the CLI, the builder always tries to build in the frontend
 		// Let's switch paths :)
 		$originalFrontendPath = $container->frontEndPath;
-		$originalBackendPath = $container->backEndPath;
+		$originalBackendPath  = $container->backEndPath;
 
 		$container->frontEndPath = $backend ? $container->backEndPath : $container->frontEndPath;
 
@@ -50,25 +50,23 @@ abstract class LayoutBase extends Command
 
 		// And switch them back!
 		$container->frontEndPath = $originalFrontendPath;
-		$container->backEndPath = $originalBackendPath;
+		$container->backEndPath  = $originalBackendPath;
 
 		return $return;
 	}
 
-	/**
-	 * Create the view
-	 * @param  object $composer The composer.json info
-	 * @param  object $input    The input object
-	 * @param  string $viewType The type of the view (item, default, form)
-	 */
-	protected function createView($composer, $input, $viewType)
+    /**
+     * Create the view
+     *
+     * @param   string $viewType The type of the view (item, default, form)
+     */
+	protected function createView($viewType)
 	{
 		$this->setDevServer();
 
-		$view 		= $this->getViewName($input);
-		$component 	= $this->getComponent($composer);
+		$view = $this->getViewName($this->input);
 
-		if (!$component)
+		if (!$this->component)
 		{
 			$this->out("Can't find component details in composer.json file. Run 'fof init'");
 			exit();
@@ -81,12 +79,12 @@ abstract class LayoutBase extends Command
 		}
 
 		// Backend or frontend?
-		$backend = !$input->get('frontend', false);
+		$backend = !$this->input->get('frontend', false);
 
 		try
         {
 			// Create the view
-			$this->createViewFile($component, $view, $viewType, $backend);
+			$this->createViewFile($view, $viewType, $backend);
 
 			$message = $backend ? "Backend" : "Frontend";
 			$message .= " " . $viewType . " view for " . $view . ' created!';
@@ -99,9 +97,9 @@ abstract class LayoutBase extends Command
         {
 			if ($e instanceof NoTableColumns)
             {
-				$container = Container::getInstance($component);
+				$container = Container::getInstance($this->component);
 
-				$this->out("FOF cannot find a database table for " . $view . '. It should be named #__' . $component . '_' . strtolower($container->inflector->pluralize($view)));
+				$this->out("FOF cannot find a database table for " . $view . '. It should be named #__' . $this->component . '_' . strtolower($container->inflector->pluralize($view)));
 				exit();
 			}
 
