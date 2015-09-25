@@ -144,7 +144,7 @@ class Csv extends Html implements DataViewInterface
 		else
 		{
 			// Default CSV behaviour in case the template isn't there!
-			if (empty($items))
+			if (count($items) === 0)
 			{
 				throw new AccessForbidden;
 			}
