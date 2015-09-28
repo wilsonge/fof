@@ -72,6 +72,10 @@ class Generate extends Command
             {
                 $return = $class.'\\Layouts';
             }
+            else
+            {
+                $return = $class.'\\'.ucfirst($layout).'Layout';
+            }
         }
 
         if(!$return || !class_exists($return))
