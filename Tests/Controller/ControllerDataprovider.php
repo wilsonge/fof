@@ -733,7 +733,7 @@ class ControllerDataprovider
                 'case'     => 'Url is set, message and type are null; controller messageType is null',
                 'redirect' => 'index.php',
                 'message'  => null,
-                'type'     => 'info'
+                'type'     => 'message'
             )
         );
 
