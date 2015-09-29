@@ -59,6 +59,14 @@ class BasicFactory implements FactoryInterface
     /** @var  bool  When enabled, FOF will commit view scaffolding results to disk. */
     protected $saveViewScaffolding = false;
 
+    /**
+     * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
+     * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for valid values
+     *
+     * @var   string
+     */
+    protected $section = 'auto';
+
 	/**
 	 * Public constructor for the factory object
 	 *
@@ -79,7 +87,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function controller($viewName, array $config = array())
 	{
-		$controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($viewName);
+		$controllerClass = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\' . ucfirst($viewName);
 
 		try
 		{
@@ -89,7 +97,7 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-        $controllerClass = $this->container->getNamespacePrefix() . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
+        $controllerClass = $this->container->getNamespacePrefix($this->getSection()) . 'Controller\\' . ucfirst($this->container->inflector->singularize($viewName));
 
         try
         {
@@ -129,7 +137,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function model($viewName, array $config = array())
 	{
-		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
+		$modelClass = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($viewName);
 
 		try
 		{
@@ -139,7 +147,7 @@ class BasicFactory implements FactoryInterface
 		{
 		}
 
-		$modelClass = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($this->container->inflector->singularize($viewName));
+		$modelClass = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($this->container->inflector->singularize($viewName));
 
         try
         {
@@ -154,7 +162,7 @@ class BasicFactory implements FactoryInterface
             }
 
             // By default model classes are plural
-            $modelClass  = $this->container->getNamespacePrefix() . 'Model\\' . ucfirst($viewName);
+            $modelClass  = $this->container->getNamespacePrefix($this->getSection()) . 'Model\\' . ucfirst($viewName);
             $scaffolding = new ModelBuilder($this->container);
 
             // Was the scaffolding successful? If so let's call ourself again, otherwise throw a not found exception
@@ -183,7 +191,7 @@ class BasicFactory implements FactoryInterface
 	public function view($viewName, $viewType = 'html', array $config = array())
 	{
         $container = $this->container;
-        $prefix    = $this->container->getNamespacePrefix();
+        $prefix    = $this->container->getNamespacePrefix($this->getSection());
 
 		$viewClass = $prefix . 'View\\' . ucfirst($viewName) . '\\' . ucfirst($viewType);
 
@@ -236,7 +244,7 @@ class BasicFactory implements FactoryInterface
 	 */
 	public function dispatcher(array $config = array())
 	{
-		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
+		$dispatcherClass = $this->container->getNamespacePrefix($this->getSection()) . 'Dispatcher\\Dispatcher';
 
 		try
 		{
@@ -258,7 +266,7 @@ class BasicFactory implements FactoryInterface
 	 */
     public function toolbar(array $config = array())
 	{
-		$toolbarClass = $this->container->getNamespacePrefix() . 'Toolbar\\Toolbar';
+		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'Toolbar\\Toolbar';
 
 		try
 		{
@@ -280,7 +288,7 @@ class BasicFactory implements FactoryInterface
 	 */
     public function transparentAuthentication(array $config = array())
 	{
-		$authClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+		$authClass = $this->container->getNamespacePrefix($this->getSection()) . 'TransparentAuthentication\\TransparentAuthentication';
 
 		try
 		{
@@ -731,4 +739,20 @@ class BasicFactory implements FactoryInterface
 
 		return $result;
 	}
+
+    /**
+     * @return string
+     */
+    public function getSection()
+    {
+        return $this->section;
+    }
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section)
+    {
+        $this->section = $section;
+    }
 }

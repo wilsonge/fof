@@ -148,7 +148,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
 	public function dispatcher(array $config = array())
 	{
-		$dispatcherClass = $this->container->getNamespacePrefix() . 'Dispatcher\\Dispatcher';
+		$dispatcherClass = $this->container->getNamespacePrefix($this->getSection()) . 'Dispatcher\\Dispatcher';
 
 		try
 		{
@@ -181,7 +181,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
     public function toolbar(array $config = array())
 	{
-		$toolbarClass = $this->container->getNamespacePrefix() . 'Toolbar\\Toolbar';
+		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'Toolbar\\Toolbar';
 
 		try
 		{
@@ -215,7 +215,7 @@ class SwitchFactory extends BasicFactory implements FactoryInterface
 	 */
     public function transparentAuthentication(array $config = array())
 	{
-		$toolbarClass = $this->container->getNamespacePrefix() . 'TransparentAuthentication\\TransparentAuthentication';
+		$toolbarClass = $this->container->getNamespacePrefix($this->getSection()) . 'TransparentAuthentication\\TransparentAuthentication';
 
 		try
 		{
