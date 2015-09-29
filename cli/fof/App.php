@@ -107,6 +107,9 @@ class FofApp extends JApplicationCli
 
 		// Set the current directory.
 		$this->set('cwd', getcwd());
+
+        // $_SERVER variables required by the view, let's fake them
+        $_SERVER['HTTP_HOST'] = 'http://www.example.com';
 	}
 
 	/**
@@ -258,4 +261,12 @@ class FofApp extends JApplicationCli
 		// Load the configuration object.
 		$this->loadConfiguration($this->fetchConfigurationData($path . '/configuration.php'));
 	}
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return 'system';
+    }
 }
