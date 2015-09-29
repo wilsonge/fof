@@ -15,6 +15,8 @@ class Generate extends Command
         /** @var Command $generator */
         $generator = new $class($this->composer, $this->input);
         $generator->execute();
+
+        $this->out('Class correctly created');
     }
 
     protected function doChecks()
@@ -77,17 +79,21 @@ class Generate extends Command
                 $return = $class.'\\'.ucfirst($layout).'Layout';
             }
         }
-        elseif($input->get('controller'))
+        else
         {
-            $return = $class.'\\Controller\\Controller';
-        }
-        elseif($input->get('model'))
-        {
-            $return = $class.'\\Model\\Model';
-        }
-        elseif($input->get('view'))
-        {
-            $return = $class.'\\View\\View';
+            $commands = array('controller', 'model', 'view', 'mvc');
+
+            foreach($commands as $command)
+            {
+                if(!$input->get($command))
+                {
+                    continue;
+                }
+
+                $return = $class.'\\'.ucfirst($command).'\\'.ucfirst($command);
+
+                break;
+            }
         }
 
         if(!$return || !class_exists($return))
