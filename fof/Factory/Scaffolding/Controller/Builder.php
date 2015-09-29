@@ -20,6 +20,14 @@ class Builder
 	/** @var  \FOF30\Container\Container  The container we belong to */
 	protected $container = null;
 
+    /**
+     * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
+     * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for valid values
+     *
+     * @var   string
+     */
+    protected $section = 'auto';
+
 	/**
 	 * Create the scaffolding builder instance
 	 *
@@ -48,10 +56,12 @@ class Builder
 
         // I have to magically create the controller class
         $magic         = new ControllerFactory($this->container);
+        $magic->setSection($this->getSection());
         $fofController = $magic->make($viewName);
 
 		/** @var ErectorInterface $erector */
         $erector = new ControllerErector($this, $fofController, $viewName);
+        $erector->setSection($this->getSection());
 		$erector->build();
 
         if(!class_exists($requestedClass))
@@ -71,4 +81,20 @@ class Builder
 	{
 		return $this->container;
 	}
+
+    /**
+     * @return string
+     */
+    public function getSection()
+    {
+        return $this->section;
+    }
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section)
+    {
+        $this->section = $section;
+    }
 }
