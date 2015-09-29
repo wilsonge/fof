@@ -81,6 +81,10 @@ class Generate extends Command
         {
             $return = $class.'\\Controller\\Controller';
         }
+        elseif($input->get('model'))
+        {
+            $return = $class.'\\Model\\Model';
+        }
 
         if(!$return || !class_exists($return))
         {
