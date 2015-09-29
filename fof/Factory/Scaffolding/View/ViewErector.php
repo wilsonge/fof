@@ -44,6 +44,14 @@ class ViewErector implements ErectorInterface
      */
     protected $viewType = null;
 
+    /**
+     * Section used to build the namespace prefix. We have to pass it since in CLI scaffolding we need
+     * to force the section we're in (ie Site or Admin). {@see \FOF30\Container\Container::getNamespacePrefix() } for valid values
+     *
+     * @var   string
+     */
+    protected $section = 'auto';
+
     public function __construct(Builder $parent, Html $view, $viewName, $viewType)
     {
         $this->builder  = $parent;
@@ -56,7 +64,7 @@ class ViewErector implements ErectorInterface
 	{
         $container = $this->builder->getContainer();
         $view      = ucfirst($container->inflector->pluralize($this->viewName));
-        $fullPath  = $container->getNamespacePrefix() . 'View\\' . $view.'\\'.ucfirst($this->viewType);
+        $fullPath  = $container->getNamespacePrefix($this->getSection()) . 'View\\' . $view.'\\'.ucfirst($this->viewType);
 
         // Let's remove the last part and use it to create the class name
         $parts     = explode('\\', trim($fullPath, '\\'));
@@ -92,4 +100,20 @@ class ViewErector implements ErectorInterface
 
         return $path;
 	}
+
+    /**
+     * @return string
+     */
+    public function getSection()
+    {
+        return $this->section;
+    }
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section)
+    {
+        $this->section = $section;
+    }
 }

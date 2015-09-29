@@ -85,6 +85,10 @@ class Generate extends Command
         {
             $return = $class.'\\Model\\Model';
         }
+        elseif($input->get('view'))
+        {
+            $return = $class.'\\View\\View';
+        }
 
         if(!$return || !class_exists($return))
         {
