@@ -11,8 +11,9 @@ use FOF30\Generator\Command\Command as Command;
 
 class Init extends Command
 {
-	public function execute($composer, $input)
+	public function execute()
     {
+        $composer = $this->composer;
 
 		// We do have a composer file, so we can start working
 		$composer->extra = $composer->extra ? $composer->extra : array('fof' => new \stdClass());
@@ -24,11 +25,11 @@ class Init extends Command
 		$info->name = $this->getComponentName($composer);
 
 		$files = array(
-			'backend' => 'component/backend',
-			'frontend' => 'component/frontend',
-			'media' => 'component/media',
-			'translationsbackend' => 'translations/component/backend',
-			'translationsfrontend' => 'translations/component/frontend'
+			'backend'               => 'component/backend',
+			'frontend'              => 'component/frontend',
+			'media'                 => 'component/media',
+			'translationsbackend'   => 'translations/component/backend',
+			'translationsfrontend'  => 'translations/component/frontend'
 		);
 
 		$info->paths = array();
