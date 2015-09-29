@@ -77,6 +77,10 @@ class Generate extends Command
                 $return = $class.'\\'.ucfirst($layout).'Layout';
             }
         }
+        elseif($input->get('controller'))
+        {
+            $return = $class.'\\Controller\\Controller';
+        }
 
         if(!$return || !class_exists($return))
         {
