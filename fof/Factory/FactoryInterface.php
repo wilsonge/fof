@@ -183,4 +183,14 @@ interface FactoryInterface
 	 * @param boolean $saveScaffolding
 	 */
 	public function setSaveScaffolding($saveScaffolding);
+
+    /**
+     * @return string
+     */
+    public function getSection();
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section);
 }

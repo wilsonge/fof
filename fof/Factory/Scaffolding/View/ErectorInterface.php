@@ -27,4 +27,14 @@ interface ErectorInterface
 	 * @return  void
 	 */
 	public function build();
+
+    /**
+     * @return string
+     */
+    public function getSection();
+
+    /**
+     * @param string $section
+     */
+    public function setSection($section);
 }

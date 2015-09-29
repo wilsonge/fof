@@ -2,7 +2,7 @@
 <?php
 /**
  * @package     FOF
- * @author 		Daniele Rosario (daniele@weble.it)	
+ * @author 		Daniele Rosario (daniele@weble.it)
  * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
  * @license     GNU GPL version 2 or later
  *
@@ -26,8 +26,9 @@
  */
 
 $phar = Phar::running(false);
+
 if ($phar)
-{	
+{
 	Phar::interceptFileFuncs();
 	$phar_path = "phar://" . $phar . '/';
 }
@@ -48,9 +49,11 @@ define('DS', DIRECTORY_SEPARATOR);
 // JSON_PRETTY_PRINT only in PHP 5.4.0
 $minphp = '5.4.0';
 
-if (version_compare(PHP_VERSION, $minphp, 'lt')) {
+if (version_compare(PHP_VERSION, $minphp, 'lt'))
+{
 	$curversion = PHP_VERSION;
 	$bindir = PHP_BINDIR;
+
 	echo <<< ENDWARNING
 ================================================================================
 WARNING! Incompatible PHP version $curversion
@@ -89,27 +92,35 @@ ENDWARNING;
 $cwd = getcwd();
 
 // Are we in a joomla site (/cli/fof.php) ?
-if (file_exists(dirname(__DIR__) . '/includes/defines.php')) {
+if (file_exists(dirname(__DIR__) . '/includes/defines.php'))
+{
 	$dir = dirname(__DIR__);
-} else {
+}
+else
+{
 	// Do we have .fof file?
-	if (!file_exists(getcwd() . '/.fof')) {
+	if (!file_exists(getcwd() . '/.fof'))
+    {
 		fwrite(STDOUT, "Could not find a .fof file. Let me generate it for you \n");
 
 		// Get the site dev path
 		$path = false;
-		while (!$path) {
+
+		while (!$path)
+        {
 			// Get Path to the dev site
 			fwrite(STDOUT, "What's the dev site location? ( /var/www/ )\n");
 			$path = rtrim(fread(STDIN, 8192), "\n");
 
-			if (!$path || !is_dir($path)) {
+			if (!$path || !is_dir($path))
+            {
 				$path = false;
 				fwrite(STDOUT, "The path does not exists\n");
 			}
 
 			// Check if it's joomla
-			if (!is_file($path . '/configuration.php')) {
+			if (!is_file($path . '/configuration.php'))
+            {
 				$path = false;
 				fwrite(STDOUT, "he path does not contain a Joomla Website\n");
 			}
@@ -118,13 +129,16 @@ if (file_exists(dirname(__DIR__) . '/includes/defines.php')) {
 		// All ok, write the .fof file
 		$fof = array('dev' => $path);
 		$fofFile = fopen(getcwd() . '/.fof', 'w');
+
 		fwrite($fofFile, json_encode($fof));
 		fclose($fofFile);
 	}
 
 	// load from .fof file
 	$fof = json_decode(file_get_contents(getcwd() . '/.fof'));
-	if ($fof && $fof->dev) {
+
+	if ($fof && $fof->dev)
+    {
 		$dir = $fof->dev;
 	}
 }
@@ -133,6 +147,7 @@ if (!defined('_JDEFINES'))
 {
 	$path = rtrim($dir, DIRECTORY_SEPARATOR);
 	define('JPATH_BASE', $path);
+
 	require_once JPATH_BASE . '/includes/defines.php';
 }
 

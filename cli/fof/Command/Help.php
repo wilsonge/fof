@@ -1,27 +1,30 @@
 <?php
+/**
+ * @package     FOF
+ * @copyright   2010-2015 Nicholas K. Dionysopoulos / Akeeba Ltd
+ * @license     GNU GPL version 2 or later
+ */
 
 namespace FOF30\Generator\Command;
+
 use FOF30\Generator\Command\Command as Command;
 
-class Help extends Command {
-	
-	public function execute($composer, $input) {
+class Help extends Command
+{
+	public function execute()
+    {
 		$this->out("");
 		$this->out(str_repeat('-', 79));
 		$this->out("FOF3 Generator Usage:");
 		$this->out("fof init: Initialize a component");
-		$this->out("fof generate defaultview <view>: Create the backend form.default.xml file for the given view");
-		$this->out("fof generate formview <view>: Create the backend form.form.xml file for the given view");
-		$this->out("fof generate itemview <view>: Create the backend form.item.xml file for the given view");
-		$this->out("fof generate views <view>: Create all 3 backend view types for the given view");
-		$this->out("fof generate defaultview <view> --frontend: Create the frontend form.default.xml file for the given view");
-		$this->out("fof generate formview <view> --frontend: Create the frontend form.form.xml file for the given view");
-		$this->out("fof generate itemview <view> --frontend: Create the frontend form.item.xml file for the given view");
-		$this->out("fof generate views <view> --frontend: Create all 3 frontend view types for the given view");
-		$this->out("fof setdevserver: Set the dev server location");
-		$this->out("fof help: Show this help");
+        $this->out("fof setdevserver: Set the dev server location");
+        $this->out("fof help: Show this help");
+        $this->out("fof generate --name <viewName> --controller [--frontend]: Generate the controller for the <viewName> view");
+        $this->out("fof generate --name <viewName> --model [--frontend]: Generate the model for the <viewName> view");
+        $this->out("fof generate --name <viewName> --view [--frontend]: Generate the view for the <viewName> view");
+        $this->out("fof generate --name <viewName> --layout [--frontend]: Generate the all the 3 layout files (default, item, form) for the <viewName> view");
+        $this->out("fof generate --name <viewName> --layout item [--frontend]: Generate the all the item layout file for the <viewName> view");
 		$this->out(str_repeat('-', 79));
 		$this->out("");
 	}
-
 }
