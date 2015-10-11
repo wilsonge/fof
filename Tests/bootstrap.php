@@ -122,6 +122,11 @@ else
     }
 
 	require_once __DIR__ . '/config.php';
+
+	if (isset($fofTestConfig['site_root']))
+	{
+		$siteroot = $fofTestConfig['site_root'];
+	}
 }
 
 if(!isset($fofTestConfig['host']) || !isset($fofTestConfig['user']) || !isset($fofTestConfig['password']) || !isset($fofTestConfig['db']))
