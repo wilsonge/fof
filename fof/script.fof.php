@@ -130,6 +130,9 @@ class lib_fof30InstallerScript
 		$dbInstaller = new FOF30\Database\Installer($db, $sqlSource);
 		$dbInstaller->updateSchema();
 
+        // Since we're adding common table, I have to nuke the installer cache, otherwise checks on their existence would fail
+        $dbInstaller->nukeCache();
+
 		// Clear the FOF cache
 		$fakeController = \FOF30\Container\Container::getInstance('com_FOOBAR');
 		$fakeController->platform->clearCache();
