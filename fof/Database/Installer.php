@@ -91,6 +91,16 @@ class Installer
 		$this->forcedFile = $forcedFile;
 	}
 
+    /**
+     * Clears the internal table list cache
+     *
+     * @return  void
+     */
+    public function nukeCache()
+    {
+        static::$allTables = array();
+    }
+
 	/**
 	 * Creates or updates the database schema
 	 *
