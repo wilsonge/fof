@@ -13,6 +13,7 @@ FOF 3.0.1
 ~ Use the 'as' parameter of the JDatabase API for the HasMany relation
 ~ Ip helper class: let the workarounds be disabled
 ~ Updating bundled cacert.pem
+~ Clear the OPcache when installing / updaing an extension as long as it uses Installscript
 # [HIGH] The "callable" type hint is not compatible with PHP 5.3
 # [HIGH] DataModel reorder is non-deterministic when multiple records with the same ordering value exist in the same scope
 # [HIGH] LayoutHelper: we aren't loading files from the layouts directory
