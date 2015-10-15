@@ -456,7 +456,6 @@ class Controller
 			}
 
 			// Set up safe URL parameters
-
 			if (!is_array($urlparams))
 			{
 				$urlparams = array(
