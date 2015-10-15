@@ -31,6 +31,14 @@ class DataController extends Controller
 	 */
 	protected $cacheableTasks = array('browse', 'read');
 
+    /**
+     * Variables that should be taken in account while working with the cache. You can set them in Controller constructor
+     * or inside onBefore* methods
+     *
+     * @var false|array
+     */
+    protected $cacheParams = false;
+
 	/**
 	 * Do we have a valid XML form?
 	 *
@@ -162,7 +170,7 @@ class DataController extends Controller
 			// Error: deal with it in REST api way
 			if ($this->messageType == 'error') {
 				$response = new \JResponseJson($this->message, $this->message, true);
-				
+
 				echo $response;
 
 				$this->redirect = false;
@@ -421,7 +429,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('browse', $this->cacheableTasks));
+		$this->display(in_array('browse', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
@@ -473,7 +481,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('read', $this->cacheableTasks));
+		$this->display(in_array('read', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
@@ -531,7 +539,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('add', $this->cacheableTasks));
+		$this->display(in_array('add', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
@@ -609,7 +617,7 @@ class DataController extends Controller
 		}
 
 		// Display the view
-		$this->display(in_array('edit', $this->cacheableTasks));
+		$this->display(in_array('edit', $this->cacheableTasks), $this->cacheParams);
 	}
 
 	/**
