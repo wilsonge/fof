@@ -1017,13 +1017,14 @@ class DataModel extends Model implements \JTableInterface
 	 * update the data on the table and will throw an Exception denoting a database error. It is generally a BAD idea
 	 * using JOINs instead of relations. If unsure, use relations.
 	 *
-	 * @param   null|array $data           [Optional] Data to bind
-	 * @param   string     $orderingFilter A WHERE clause used to apply table item reordering
-	 * @param   array      $ignore         A list of fields to ignore when binding $data
+	 * @param   null|array  $data            [Optional] Data to bind
+	 * @param   string      $orderingFilter  A WHERE clause used to apply table item reordering
+	 * @param   array       $ignore          A list of fields to ignore when binding $data
+	 * @para    boolean     $resetRelations  Should I automatically reset relations if relation-important fields are changed?
 	 *
 	 * @return   DataModel  Self, for chaining
 	 */
-	public function save($data = null, $orderingFilter = '', $ignore = null)
+	public function save($data = null, $orderingFilter = '', $ignore = null, $resetRelations = true)
 	{
 		// Stash the primary key
 		$oldPKValue = $this->getId();
@@ -1079,7 +1080,10 @@ class DataModel extends Model implements \JTableInterface
 			$this->{$this->idFieldName} = $db->insertid();
 
 			// Rebase the relations with the newly created model
-			$this->relationManager->rebase($this);			
+			if ($resetRelations)
+			{
+				$this->relationManager->rebase($this);
+			}
 
 			$this->triggerEvent('onAfterCreate');
 		}
@@ -1123,7 +1127,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// If we have relations we compare the data to the copy of the data before bind.
-		if (count($relationImportantFields))
+		if (count($relationImportantFields) && $resetRelations)
 		{
 			// Since array_diff_assoc doesn't work recursively we have to do it the EXCRUCIATINGLY SLOW WAY. Sad panda :(
 			$keysRecord = (is_array($this->recordData) && !empty($this->recordData)) ? array_keys($this->recordData) : array();
@@ -1223,7 +1227,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 
 		// Save this record
-		$this->save($data, $orderingFilter, $ignore);
+		$this->save($data, $orderingFilter, $ignore, false);
 
 		// Push all relations specified (or all relations if $relations is null)
 		$relManager   = $this->getRelations();
