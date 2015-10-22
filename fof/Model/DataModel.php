@@ -1085,7 +1085,7 @@ class DataModel extends Model implements \JTableInterface
 				$this->relationManager->rebase($this);
 			}
 
-			$this->triggerEvent('onAfterCreate');
+			$this->triggerEvent('onAfterCreate', array($dataObject));
 		}
 		else
 		{
@@ -1093,7 +1093,7 @@ class DataModel extends Model implements \JTableInterface
 
 			$db->updateObject($this->tableName, $dataObject, $this->idFieldName, true);
 
-			$this->triggerEvent('onAfterUpdate');
+			$this->triggerEvent('onAfterUpdate', array($dataObject));
 		}
 
 		// If an ordering filter is set, attempt reorder the rows in the table based on the filter and value.
