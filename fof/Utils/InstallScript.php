@@ -8,16 +8,13 @@
 namespace FOF30\Utils;
 
 use FOF30\Database\Installer;
-use FOF30\Template\Template;
 use Exception;
-use JDate;
 use JFactory;
 use JFile;
 use JFolder;
 use JInstaller;
 use JLoader;
 use JLog;
-use JText;
 
 defined('_JEXEC') or die;
 
@@ -381,12 +378,12 @@ class InstallScript
 
 		foreach ($this->cliScriptFiles as $script)
 		{
-			if (JFile::exists(JPATH_ROOT . '/cli/' . $script))
+			if (is_file(JPATH_ROOT . '/cli/' . $script))
 			{
 				JFile::delete(JPATH_ROOT . '/cli/' . $script);
 			}
 
-			if (JFile::exists($src . '/' . $this->cliSourcePath . '/' . $script))
+			if (is_file($src . '/' . $this->cliSourcePath . '/' . $script))
 			{
 				JFile::copy($src . '/' . $this->cliSourcePath . '/' . $script, JPATH_ROOT . '/cli/' . $script);
 			}
@@ -676,7 +673,7 @@ class InstallScript
 			{
 				$f = JPATH_ROOT . '/' . $file;
 
-				if (!JFile::exists($f))
+				if (!is_file($f))
 				{
 					continue;
 				}
@@ -692,7 +689,7 @@ class InstallScript
 			{
 				$f = JPATH_ROOT . '/' . $folder;
 
-				if (!JFolder::exists($f))
+				if (!is_dir($f))
 				{
 					continue;
 				}
