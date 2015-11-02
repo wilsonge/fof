@@ -142,7 +142,7 @@ class GroupedButton extends \JFormFieldText implements FieldInterface
 			}
 
 			$buttonXML   = new \SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
-			$buttonField = new Button();
+			$buttonField = new Button($this->form);
 
 			// Pass required objects to the field
 			$buttonField->item = $this->item;
