@@ -845,7 +845,12 @@ class Toolbar
 		switch ($type)
 		{
 			case 'title':
-				$icon = isset($attributes['icon']) ? $attributes['icon'] : 'generic.png';
+				$icon  = isset($attributes['icon']) ? $attributes['icon'] : 'generic.png';
+				if (isset($attributes['translate']))
+				{
+					$value = JText::_($value);
+				}
+
 				JToolbarHelper::title($value, $icon);
 				break;
 
