@@ -793,7 +793,6 @@ HTML;
 
 				$m		 = 1 - $m;
 				$rowClass	 = 'row' . $m;
-				$i++;
 
 				$fields = $form->getFieldset('items');
 
@@ -842,6 +841,8 @@ HTML;
 				}
 
 				$html .= "\t\t\t\t<tr class=\"$rowClass\">\n" . $rowHtml . "\t\t\t\t</tr>\n";
+
+				$i++;
 			}
 		}
 		elseif ($norows_placeholder)
