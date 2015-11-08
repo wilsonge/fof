@@ -783,8 +783,9 @@ HTML;
 		if ($count = count($items))
 		{
 			$m = 1;
+			$i = 0;
 
-			foreach ($items as $i => $item)
+			foreach ($items as $item)
 			{
 				$rowHtml = '';
 
@@ -792,6 +793,7 @@ HTML;
 
 				$m		 = 1 - $m;
 				$rowClass	 = 'row' . $m;
+				$i++;
 
 				$fields = $form->getFieldset('items');
 

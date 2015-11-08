@@ -2,6 +2,7 @@ FOF 3.0.3
 ================================================================================
 + gh-565 Fine grained caching control for controller tasks
 # [HIGH] push() does not save relations of new items
+# [MEDIUM] gh-571 $rowId is not a monotonically increasing ID
 
 FOF 3.0.2
 ================================================================================
