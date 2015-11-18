@@ -246,6 +246,7 @@ class Joomla extends Extension
 		$test = strtolower($version);
 		$alphaQualifierPosition = strpos($test, 'alpha-');
 		$betaQualifierPosition = strpos($test, 'beta-');
+		$betaQualifierPosition2 = strpos($test, '-beta');
 		$rcQualifierPosition = strpos($test, 'rc-');
 		$rcQualifierPosition2 = strpos($test, 'rc');
 		$devQualifiedPosition = strpos($test, 'dev');
@@ -267,6 +268,17 @@ class Joomla extends Extension
 				$betaRevision = 1;
 			}
 			$test = substr($test, 0, $betaQualifierPosition) . '.b' . $betaRevision;
+		}
+		elseif ($betaQualifierPosition2 !== false)
+		{
+			$betaRevision = substr($test, $betaQualifierPosition2 + 5);
+
+			if (!$betaRevision)
+			{
+				$betaRevision = 1;
+			}
+
+			$test = substr($test, 0, $betaQualifierPosition2) . '.b' . $betaRevision;
 		}
 		elseif ($rcQualifierPosition !== false)
 		{
