@@ -161,7 +161,34 @@ class Csv extends Html implements DataViewInterface
 
 				foreach ($this->csvFields as $f)
 				{
+					$exist = false;
+
+					// If we have a dot and it isn't part of the field name, we are dealing with relations
+					if (!$model->hasField($f) && strpos($f, '.'))
+					{
+						$methods = explode('.', $f);
+						$object = $item;
+						// Let's see if the relation exists
+						foreach ($methods as $method)
+						{
+							if (isset($object->$method))
+							{
+								$exist = true;
+								$object = $object->$method;
+							}
+							else
+							{
+								$exist = false;
+								break;
+							}
+						}
+					}
+
 					if (in_array($f, $keys))
+					{
+						$temp[] = $f;
+					}
+					elseif($exist)
 					{
 						$temp[] = $f;
 					}
@@ -193,7 +220,21 @@ class Csv extends Html implements DataViewInterface
 
 				foreach ($keys as $k)
 				{
-                    $v = $item->$k;
+					// If our key contains a dot and it isn't part of the field name, we are dealing with relations
+					if (!$model->hasField($k) && strpos($k, '.'))
+					{
+						$methods = explode('.', $k);
+						$v = $item;
+
+						foreach ($methods as $method)
+						{
+							$v = $v->$method;
+						}
+					}
+					else
+					{
+						$v = $item->$k;
+					}
 
 					if (is_array($v))
 					{
