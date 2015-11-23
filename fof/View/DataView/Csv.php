@@ -70,7 +70,7 @@ class Csv extends Html implements DataViewInterface
 		{
 			$view = $this->input->getCmd('view', 'cpanel');
 			$view = $this->container->inflector->pluralize($view);
-			$this->csvFilename = strtolower($view);
+			$this->csvFilename = strtolower($view) . '.csv';
 		}
 
 		if (array_key_exists('csv_fields', $config))
