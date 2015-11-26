@@ -166,7 +166,7 @@ class Dispatcher
 		$this->controller = $this->container->factory->controller($view, $this->config);
 		$status = $this->controller->execute($task);
 
-        if($status)
+        if($status !== false)
         {
             try
             {
