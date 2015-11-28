@@ -4,8 +4,9 @@ FOF 3.0.3
 + gh-570 Pass the form to child, needed for parseFieldTags
 + gh-565 Fine grained caching control for controller tasks
 ~ InstallScript: use is_file / is_dir instead of JFile/JFolder
-# [HIGH] push() does not save relations of new items
 # [MEDIUM] gh-571 $rowId is not a monotonically increasing ID
+# [HIGH] push() does not save relations of new items
+# [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
 
 FOF 3.0.2
 ================================================================================
