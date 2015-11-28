@@ -1,3 +1,7 @@
+FOF 3.0.4
+================================================================================
+# [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
+
 FOF 3.0.3
 ================================================================================
 + gh-572 Allow to translate toolbar title in fof.xml
@@ -6,7 +10,6 @@ FOF 3.0.3
 ~ InstallScript: use is_file / is_dir instead of JFile/JFolder
 # [MEDIUM] gh-571 $rowId is not a monotonically increasing ID
 # [HIGH] push() does not save relations of new items
-# [HIGH] If you declared onBefore/onAfter Controller methods public FOF would erroneously treat them as tasks
 
 FOF 3.0.2
 ================================================================================
