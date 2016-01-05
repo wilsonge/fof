@@ -1039,7 +1039,7 @@ class DataModel extends Model implements \JTableInterface
 		// If we have relations we keep a copy of the data before bind.
 		if (count($relationImportantFields))
 		{
-			$dataBeforeBind = array_merge($this->recordData);
+			$dataBeforeBind = $this->recordData;
 		}
 
 		// Bind any (optional) data. If no data is provided, the current record data is used
@@ -1089,7 +1089,7 @@ class DataModel extends Model implements \JTableInterface
 		}
 		else
 		{
-			$this->triggerEvent('onBeforeUpdate', array(&$dataObject));
+			$this->triggerEvent('onBeforeUpdate', array(&$dataObject, $dataBeforeBind));
 
 			$db->updateObject($this->tableName, $dataObject, $this->idFieldName, true);
 
